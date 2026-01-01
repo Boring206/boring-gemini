@@ -21,7 +21,7 @@ Boring 是一個自主開發循環系統，利用最新的 **Google Gen AI SDK (
 # 從本地源碼安裝 (推薦)
 git clone https://github.com/Boring206/boring-gemini.git
 cd boring-gemini
-pip install -e ".[all,dev]"
+pip install -e ".[all,dev]" # 包含 pytest, coverage, fastmcp
 
 # 安裝推薦的 Gemini Extensions (含 NotebookLM MCP)
 boring setup-extensions
@@ -75,8 +75,22 @@ pip install boring-gemini[mcp]
 1. 開啟 Cursor Settings → MCP Servers
 2. 新增 Server：
    - **Name**: `boring`
-   - **Command**: `boring-mcp`
+   - **Command**: `boring-mcp` (確保 `boring-mcp` 在 PATH 中，或使用絕對路徑)
    - **Transport**: `stdio`
+
+或直接使用 JSON 配置 (適用於 Claude Desktop / VS Code ):
+
+```json
+{
+  "mcpServers": {
+    "boring": {
+      "command": "boring-mcp",
+      "args": [],
+      "env": {}
+    }
+  }
+}
+```
 
 ---
 
@@ -92,6 +106,17 @@ gemini login
 # 2. 以 Privacy Mode 啟動
 boring start --backend cli
 ```
+
+### Gemini CLI 整合 (讓 Gemini CLI 操作 Boring)
+
+如果您希望在 `gemini` 終端機中直接呼叫 Boring 工具 (如啟動任務、查詢狀態)：
+
+```bash
+# 將 boring-mcp 註冊到 Gemini CLI
+gemini mcp add boring boring-mcp
+```
+
+註冊後，您就可以在 `gemini` 聊天中說：「幫我用 boring 跑一個任務...」。
 
 ---
 
