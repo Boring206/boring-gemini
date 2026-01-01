@@ -62,6 +62,28 @@ boring-monitor
 
 ---
 
+## 🌍 多語言支援說明 (Language Support)
+
+Boring 利用 Gemini 的強大能力，支援 **所有主流程式語言** 的開發，但在自動化驗證上有所區別：
+
+| 能力 | Python 專案 🐍 | 非 Python 專案 (Node.js, Go, etc.) 🌐 |
+| :--- | :--- | :--- |
+| **代碼生成** | ✅ **支援度 100%** | ✅ **支援度 100%** (Gemini 可生成任意語言代碼) |
+| **自動驗證** | ✅ **完整支援** (Syntax check, `pytest`, `ruff` 自動修復) | ⚠️ **部分支援** (僅能生成代碼，無法自動執行 npm test 或 lint) |
+
+> **建議**：非 Python 專案建議您手動執行測試，並將錯誤訊息貼回給 Agent，它依然能幫您修復錯誤。
+
+## 🔮 未來展望 (Future Roadmap)
+
+我們致力於讓 Boring 成為跨語言、全能型的 AI 代理。未來的開發重點包括：
+
+- **多語言自動化驗證**：引入 `npm test`, `cargo test` 等支援，實現非 Python 專案的自動化測試與修復。
+- **更強大的 MCP 生態**：整合更多 MCP Server (如 Filesystem, Postgres)，讓 Agent 能操作更多外部工具。
+- **強化推理能力**：深度整合 "Critical Thinking" 模式，在執行危險操作前進行更嚴謹的邏輯檢查。
+- **Web GUI 儀表板**：除了終端機 TUI，也計畫提供網頁版儀表板，提供更豐富的視覺化數據。
+
+---
+
 ## 🔌 IDE 整合 (Cursor / VS Code)
 
 透過 MCP 將 Boring 整合到 IDE，讓 AI 代理直接在編輯器中協作：
