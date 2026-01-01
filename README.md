@@ -172,7 +172,7 @@ my-project/
 
 ## 💖 致謝
 
-本專案深受 [github/spec-kit](https://github.com/github/spec-kit) 與 [frankbria/boring-claude-code](https://github.com/frankbria/boring-claude-code) 啟發。
+本專案深受 [github/spec-kit](https://github.com/github/spec-kit) 與 [frankbria/raplph-claude-code](https://github.com/frankbria/raplph-claude-code) 啟發。
 
 ---
 **準備好讓 AI 幫您構建專案了嗎？** 🚀
