@@ -1,7 +1,6 @@
 # Boring for Gemini
 
-[![PyPI - Version](https://img.shields.io/pypi/v/boring-gemini.svg)](https://pypi.org/project/boring-gemini)
-[![Python Version](https://img.shields.io/pypi/pyversions/boring-gemini.svg)](https://pypi.org/project/boring-gemini)
+
 
 > **基於 Gemini 驅動的自主 AI 開發代理 (V4.1)，具備 Function Calling、Diff Patching、向量記憶與 Interactions API 支援。**
 
