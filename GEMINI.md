@@ -137,6 +137,10 @@ pytest tests/test_core.py
 | `boring-import <prd> <name>` | Import a PRD into a new project |
 | `boring-monitor` | Start the live monitoring dashboard |
 
+## External Tools & MCP Integration
+
+**Important Note:** The Model Context Protocol (MCP) integrations referenced here (such as `notebooklm-mcp`) are designed specifically for the `@google/gemini-cli`. If you are using other clients or environments, you will need to configure these MCP servers independently according to their respective documentation.
+
 ## Exit Conditions
 
 The loop automatically exits when detecting:

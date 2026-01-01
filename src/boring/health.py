@@ -293,14 +293,28 @@ def check_ruff() -> HealthCheckResult:
     )
 
 
-def run_health_check(project_root: Optional[Path] = None) -> HealthReport:
-    """Run all health checks and return report."""
+def run_health_check(project_root: Optional[Path] = None, backend: str = "api") -> HealthReport:
+    """Run all health checks and return report.
+    
+    Args:
+        project_root: Project directory path.
+        backend: Backend mode ('api' or 'cli'). CLI mode skips API key check.
+    """
     project_root = project_root or settings.PROJECT_ROOT
     
     report = HealthReport()
     
-    # Core checks
-    report.checks.append(check_api_key())
+    # Core checks - API key only required for API backend
+    if backend.lower() == "cli":
+        report.checks.append(HealthCheckResult(
+            name="API Key",
+            status=HealthStatus.SKIP,
+            message="Using CLI OAuth (no API key needed)",
+            suggestion="Run 'gemini login' if not authenticated"
+        ))
+    else:
+        report.checks.append(check_api_key())
+    
     report.checks.append(check_python_version())
     report.checks.append(check_required_dependencies())
     

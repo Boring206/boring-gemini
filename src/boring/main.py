@@ -181,12 +181,14 @@ def memory_clear():
 
 
 @app.command()
-def health():
+def health(
+    backend: str = typer.Option("api", "--backend", "-b", help="Backend: 'api' (SDK) or 'cli' (local CLI)")
+):
     """
     Run system health checks.
     
     Verifies:
-    - API Key configuration
+    - API Key configuration (skipped in CLI mode)
     - Python version compatibility
     - Required dependencies
     - Git repository status
@@ -195,7 +197,7 @@ def health():
     """
     from .health import run_health_check, print_health_report
     
-    report = run_health_check()
+    report = run_health_check(backend=backend)
     is_healthy = print_health_report(report)
     
     if not is_healthy:

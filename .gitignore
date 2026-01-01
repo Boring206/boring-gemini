@@ -36,3 +36,11 @@ target/
 .idea/
 *.swp
 *.swo
+
+# Boring for Gemini state files
+.circuit_breaker_state
+.circuit_breaker_history
+
+# Python build artifacts
+src/boring_gemini.egg-info/
+
