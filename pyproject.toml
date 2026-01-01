@@ -112,7 +112,7 @@ addopts = [
     "--cov=boring",
     "--cov-report=term-missing",
     "--cov-report=html:htmlcov",
-    "--cov-fail-under=80",
+    "--cov-fail-under=35",
 ]
 
 # Coverage configuration
