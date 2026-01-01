@@ -53,7 +53,8 @@ if MCP_AVAILABLE and mcp is not None:
     def run_boring(
         task_description: str,
         verification_level: str = "STANDARD",
-        max_loops: int = 5
+        max_loops: int = 5,
+        use_cli: Optional[bool] = None
     ) -> dict:
         """
         Run Boring autonomous development agent on a task.
@@ -62,13 +63,19 @@ if MCP_AVAILABLE and mcp is not None:
             task_description: Description of the development task to complete
             verification_level: Verification level (BASIC, STANDARD, FULL)
             max_loops: Maximum number of loop iterations
+            use_cli: Whether to use Gemini CLI (supports extensions). Defaults to auto-detect.
             
         Returns:
             Task execution result with status, files modified, and message
         """
         try:
-            from .loop import AgentLoop
+            from .loop import StatefulAgentLoop
             from .config import settings
+            import shutil
+            
+            # Auto-detect CLI if not specified
+            if use_cli is None:
+                use_cli = shutil.which("gemini") is not None
             
             # Create temporary PROMPT.md with task
             prompt_file = settings.PROJECT_ROOT / "PROMPT.md"
@@ -85,19 +92,21 @@ if MCP_AVAILABLE and mcp is not None:
             
             try:
                 # Run the agent loop
-                loop = AgentLoop(
-                    verification_level=verification_level.upper()
+                # Note: We use StatefulAgentLoop which allows CLI/SDK switching
+                loop = StatefulAgentLoop(
+                    verification_level=verification_level.upper(),
+                    use_cli=use_cli,
+                    verbose=True
                 )
                 
                 # Note: In MCP context, we run synchronously
-                # This is a simplified execution
                 loop.run()
                 
                 return {
                     "status": "SUCCESS",
-                    "message": f"Task completed with verification level {verification_level}",
+                    "message": f"Task completed (CLI Mode: {use_cli})",
                     "files_modified": 0,  # TODO: Track actual count
-                    "loops_completed": 1
+                    "loops_completed": loop.context.loop_count if hasattr(loop, 'context') else 1
                 }
                 
             finally:
