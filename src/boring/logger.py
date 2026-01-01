@@ -1,32 +1,69 @@
 """
-Logging Module for Boring V4.0
+Logging Module for Boring V5.0
 
-Provides centralized logging and status management.
+Provides centralized structured logging using structlog.
+Supports both console and JSON file output for observability.
 """
 
 import json
+import sys
+import logging
 from pathlib import Path
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, Any
 
+import structlog
 from rich.console import Console
 
 console = Console()
 
+# Configure Python's logging first
+logging.basicConfig(
+    format="%(message)s",
+    level=logging.INFO,
+)
 
-def log_status(log_dir: Path, level: str, message: str):
+# Configure structlog
+structlog.configure(
+    processors=[
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.PositionalArgumentsFormatter(),
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.format_exc_info,
+        structlog.processors.UnicodeDecoder(),
+        structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+    ],
+    logger_factory=structlog.stdlib.LoggerFactory(),
+    wrapper_class=structlog.stdlib.BoundLogger,
+    cache_logger_on_first_use=True,
+)
+
+
+def get_logger(name: str = "boring") -> structlog.stdlib.BoundLogger:
+    """Get a structured logger instance."""
+    return structlog.get_logger(name)
+
+
+# Global logger for module-level use
+_logger = get_logger()
+
+
+def log_status(log_dir: Path, level: str, message: str, **kwargs: Any):
     """
-    Logs status messages to console and a file.
+    Logs status messages using structlog with console and file output.
     
     Args:
         log_dir: Directory for log files
         level: Log level (INFO, WARN, ERROR, SUCCESS, LOOP)
         message: Message to log
+        **kwargs: Additional structured fields
     """
     log_dir.mkdir(parents=True, exist_ok=True)
     log_file = log_dir / "boring.log"
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+    # Console output with Rich colors
     color_map = {
         "INFO": "blue",
         "WARN": "yellow",
@@ -37,10 +74,28 @@ def log_status(log_dir: Path, level: str, message: str):
         "CRITICAL": "bold red",
     }
     style = color_map.get(level.upper(), "default")
-    console.print(f"[{timestamp}] [[{level.upper()}]] {message}", style=style)
+    
+    # Format extra fields for display
+    extra_str = ""
+    if kwargs:
+        extra_str = " " + " ".join(f"{k}={v}" for k, v in kwargs.items())
+    
+    console.print(f"[{timestamp}] [[{level.upper()}]] {message}{extra_str}", style=style)
+    
+    # File output in JSON Lines format for analysis
+    log_entry = {
+        "timestamp": timestamp,
+        "level": level.upper(),
+        "message": message,
+        **kwargs
+    }
     
     with open(log_file, "a", encoding="utf-8") as f:
-        f.write(f"[{timestamp}] [{level.upper()}] {message}\n")
+        f.write(json.dumps(log_entry) + "\n")
+    
+    # Also log via structlog for consistent observability
+    log_method = getattr(_logger, level.lower(), _logger.info)
+    log_method(message, **kwargs)
 
 
 def update_status(
@@ -84,6 +139,9 @@ def update_status(
 
     with open(status_file, "w", encoding="utf-8") as f:
         json.dump(status_data, f, indent=4)
+    
+    # Log status update structurally
+    _logger.debug("status_updated", loop=loop_count, status=status, calls=calls_made)
 
 
 def get_log_tail(log_dir: Path, lines: int = 10) -> list[str]:

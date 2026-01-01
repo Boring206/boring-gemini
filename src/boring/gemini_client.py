@@ -1,114 +1,127 @@
 """
-Gemini SDK Client for Boring
+Gemini SDK Client for Boring (V5.0)
 
-Pure Python wrapper around google-generativeai SDK.
-Replaces the Node.js CLI subprocess approach.
+Uses the unified Google Gen AI SDK (google-genai).
+Migrated from deprecated google-generativeai package.
+Features: Async support, Tenacity retry, Structured logging.
 """
 
 import os
 import time
-import warnings
+import asyncio
 from pathlib import Path
 from typing import Optional, Tuple, List, Dict, Any
-from datetime import datetime
 
-# Suppress FutureWarning from google-generativeai during import
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", category=FutureWarning)
-    try:
-        import google.generativeai as genai
-        from google.api_core import exceptions as google_exceptions
-        GENAI_AVAILABLE = True
-    except ImportError:
-        GENAI_AVAILABLE = False
-        genai = None
-        google_exceptions = None
+from tenacity import (
+    retry,
+    stop_after_attempt,
+    wait_exponential,
+    retry_if_exception_type,
+)
 
-from .logger import log_status
+# New unified SDK imports
+try:
+    from google import genai
+    from google.genai import types
+    GENAI_AVAILABLE = True
+except ImportError:
+    GENAI_AVAILABLE = False
+    genai = None
+    types = None
 
-
+from .logger import log_status, get_logger
 from .config import settings
+
+# Structured logger for this module
+_logger = get_logger("gemini_client")
 
 # Default model (from settings)
 DEFAULT_MODEL = settings.DEFAULT_MODEL
 
 # =============================================================================
-# FUNCTION CALLING TOOLS (V4.0)
+# FUNCTION CALLING TOOLS (V5.0 - Updated for google-genai)
 # =============================================================================
-BORING_TOOLS = {
-    "function_declarations": [
-        {
-            "name": "write_file",
-            "description": "Writes complete code to a file. Use this for new files or complete rewrites.",
-            "parameters": {
-                "type": "OBJECT",
-                "properties": {
-                    "file_path": {
-                        "type": "STRING",
-                        "description": "Relative path to the file, e.g., src/main.py"
-                    },
-                    "content": {
-                        "type": "STRING",
-                        "description": "The complete code content to write."
-                    }
-                },
-                "required": ["file_path", "content"]
-            }
-        },
-        {
-            "name": "search_replace",
-            "description": "Perform a targeted search-and-replace on an existing file. More efficient than rewriting entire files.",
-            "parameters": {
-                "type": "OBJECT",
-                "properties": {
-                    "file_path": {
-                        "type": "STRING",
-                        "description": "Relative path to the file to modify"
-                    },
-                    "search": {
-                        "type": "STRING",
-                        "description": "The exact text to search for (must match exactly)"
-                    },
-                    "replace": {
-                        "type": "STRING",
-                        "description": "The text to replace the search text with"
-                    }
-                },
-                "required": ["file_path", "search", "replace"]
-            }
-        },
-        {
-            "name": "report_status",
-            "description": "Report the current task status. Call this at the end of every response.",
-            "parameters": {
-                "type": "OBJECT",
-                "properties": {
-                    "status": {
-                        "type": "STRING",
-                        "enum": ["IN_PROGRESS", "COMPLETE"],
-                        "description": "Current status of the task"
-                    },
-                    "tasks_completed": {
-                        "type": "INTEGER",
-                        "description": "Number of tasks completed in this loop"
-                    },
-                    "files_modified": {
-                        "type": "INTEGER",
-                        "description": "Number of files modified"
-                    },
-                    "exit_signal": {
-                        "type": "BOOLEAN",
-                        "description": "True only if ALL tasks in @fix_plan.md are marked [x]"
-                    }
-                },
-                "required": ["status", "tasks_completed", "files_modified", "exit_signal"]
-            }
-        }
+def get_boring_tools() -> List[Any]:
+    """Return tool definitions compatible with google-genai SDK."""
+    if not GENAI_AVAILABLE:
+        return []
+    
+    return [
+        types.Tool(
+            function_declarations=[
+                types.FunctionDeclaration(
+                    name="write_file",
+                    description="Writes complete code to a file. Use this for new files or complete rewrites.",
+                    parameters=types.Schema(
+                        type=types.Type.OBJECT,
+                        properties={
+                            "file_path": types.Schema(
+                                type=types.Type.STRING,
+                                description="Relative path to the file, e.g., src/main.py"
+                            ),
+                            "content": types.Schema(
+                                type=types.Type.STRING,
+                                description="The complete code content to write."
+                            )
+                        },
+                        required=["file_path", "content"]
+                    )
+                ),
+                types.FunctionDeclaration(
+                    name="search_replace",
+                    description="Perform a targeted search-and-replace on an existing file. More efficient than rewriting entire files.",
+                    parameters=types.Schema(
+                        type=types.Type.OBJECT,
+                        properties={
+                            "file_path": types.Schema(
+                                type=types.Type.STRING,
+                                description="Relative path to the file to modify"
+                            ),
+                            "search": types.Schema(
+                                type=types.Type.STRING,
+                                description="The exact text to search for (must match exactly)"
+                            ),
+                            "replace": types.Schema(
+                                type=types.Type.STRING,
+                                description="The text to replace the search text with"
+                            )
+                        },
+                        required=["file_path", "search", "replace"]
+                    )
+                ),
+                types.FunctionDeclaration(
+                    name="report_status",
+                    description="Report the current task status. Call this at the end of every response.",
+                    parameters=types.Schema(
+                        type=types.Type.OBJECT,
+                        properties={
+                            "status": types.Schema(
+                                type=types.Type.STRING,
+                                description="Current status of the task (IN_PROGRESS or COMPLETE)"
+                            ),
+                            "tasks_completed": types.Schema(
+                                type=types.Type.INTEGER,
+                                description="Number of tasks completed in this loop"
+                            ),
+                            "files_modified": types.Schema(
+                                type=types.Type.INTEGER,
+                                description="Number of files modified"
+                            ),
+                            "exit_signal": types.Schema(
+                                type=types.Type.BOOLEAN,
+                                description="True only if ALL tasks in @fix_plan.md are marked [x]"
+                            )
+                        },
+                        required=["status", "tasks_completed", "files_modified", "exit_signal"]
+                    )
+                )
+            ]
+        )
     ]
-}
+
 
 SYSTEM_INSTRUCTION_OPTIMIZED = """
-You are Boring, an elite Autonomous AI Developer (V4.0 with Function Calling).
+You are Boring, an elite Autonomous AI Developer (V5.0 with Function Calling).
 Your goal is to complete the tasks in PROMPT.md by writing robust, production-ready code.
 
 ### 1. Output Format (USE FUNCTION CALLS)
@@ -158,13 +171,18 @@ Before writing code, verify:
 - Did I update @fix_plan.md to mark my completed task as [x]?
 """
 
+
 class GeminiClient:
     """
-    Lightweight wrapper around the Google Generative AI SDK.
+    Lightweight wrapper around the Google Gen AI SDK.
+    
+    V5.0 Changes:
+    - Stateless client architecture (no GenerativeModel object)
+    - Pydantic-based response models
+    - Updated function calling with types.Tool
     
     Handles:
     - API key configuration
-    - Model initialization
     - Content generation
     - Rate limit handling
     - Error recovery
@@ -180,7 +198,7 @@ class GeminiClient:
         Initialize the Gemini client.
         
         Args:
-            api_key: Google API key. If None, reads from GOOGLE_API_KEY env var (via settings).
+            api_key: Google API key. If None, reads from GOOGLE_API_KEY env var.
             model_name: Gemini model to use.
             log_dir: Directory for logging.
         """
@@ -189,8 +207,8 @@ class GeminiClient:
         
         if not GENAI_AVAILABLE:
             raise ImportError(
-                "google-generativeai package not installed. "
-                "Install with: pip install google-generativeai"
+                "google-genai package not installed. "
+                "Install with: pip install google-genai"
             )
         
         # Get API key (Prioritize arg -> settings -> env)
@@ -201,35 +219,22 @@ class GeminiClient:
                 "Set it in your environment or .env file."
             )
         
-        # Configure the SDK
-        genai.configure(api_key=self.api_key)
+        # Initialize the stateless client (V5.0 pattern)
+        self.client = genai.Client(api_key=self.api_key)
         
-        # Initialize the model with Function Calling tools
-        self.use_function_calling = True
-        try:
-            self.model = genai.GenerativeModel(
-                model_name,
-                system_instruction=SYSTEM_INSTRUCTION_OPTIMIZED,
-                tools=[BORING_TOOLS]  # V4.0: Enable Function Calling
-            )
+        # Get tools for function calling
+        self.tools = get_boring_tools()
+        self.use_function_calling = len(self.tools) > 0
+        
+        log_status(self.log_dir, "INFO", f"Gemini SDK V5.0 initialized with model: {model_name}")
+        if self.use_function_calling:
             log_status(self.log_dir, "INFO", "Function Calling enabled")
-        except Exception as e:
-            # Fallback to non-tool mode if tools not supported
-            log_status(self.log_dir, "WARN", f"Function Calling not available: {e}")
-            self.use_function_calling = False
-            self.model = genai.GenerativeModel(
-                model_name,
-                system_instruction=SYSTEM_INSTRUCTION_OPTIMIZED
-            )
-        
-        log_status(self.log_dir, "INFO", f"Gemini SDK initialized with model: {model_name}")
     
     def generate(
         self,
         prompt: str,
         context: str = "",
-        # Deprecated system_instruction arg as it's now model-level, but kept for compat
-        system_instruction: str = "", 
+        system_instruction: str = "",
         timeout_seconds: int = settings.TIMEOUT_MINUTES * 60
     ) -> Tuple[str, bool]:
         """
@@ -238,7 +243,7 @@ class GeminiClient:
         Args:
             prompt: The main prompt/instructions
             context: Additional context to prepend
-            system_instruction: (Deprecated) System-level instructions, now set in init
+            system_instruction: System-level instructions
             timeout_seconds: Request timeout
         
         Returns:
@@ -247,9 +252,6 @@ class GeminiClient:
         # Build the full prompt
         full_prompt_parts = []
         
-        # Note: Proper system_instruction is set in GenerativeModel constructor
-        # We append context and prompt to the user message
-        
         if context:
             full_prompt_parts.append(f"# Context\n{context}")
         
@@ -257,40 +259,42 @@ class GeminiClient:
         
         full_prompt = "\n\n---\n\n".join(full_prompt_parts)
         
+        # Build contents with proper Part objects
+        contents = [types.Content(
+            role="user",
+            parts=[types.Part(text=full_prompt)]
+        )]
+        
         try:
-            # Generate content
-            response = self.model.generate_content(
-                full_prompt,
-                generation_config=genai.GenerationConfig(
+            # Generate content using stateless client
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    system_instruction=system_instruction or SYSTEM_INSTRUCTION_OPTIMIZED,
                     temperature=0.7,
                     max_output_tokens=8192,
-                ),
-                request_options={"timeout": timeout_seconds}
+                )
             )
             
-            # Extract text from response
+            # Extract text from response (Pydantic model)
             if response and response.text:
                 return response.text, True
             else:
                 log_status(self.log_dir, "WARN", "Empty response from Gemini")
                 return "", False
                 
-        except google_exceptions.ResourceExhausted as e:
-            log_status(self.log_dir, "ERROR", f"Rate limit exceeded: {e}")
-            return f"RATE_LIMIT_ERROR: {e}", False
-            
-        except google_exceptions.InvalidArgument as e:
-            # Handle overload error or token limit
-            log_status(self.log_dir, "ERROR", f"Invalid argument: {e}")
-            return f"INVALID_ARGUMENT_ERROR: {e}", False
-
-        except google_exceptions.DeadlineExceeded as e:
-            log_status(self.log_dir, "ERROR", f"Request timeout: {e}")
-            return f"TIMEOUT_ERROR: {e}", False
-            
         except Exception as e:
-            log_status(self.log_dir, "ERROR", f"Unexpected error: {e}")
-            return f"UNEXPECTED_ERROR: {e}", False
+            error_str = str(e).lower()
+            if "429" in str(e) or "resource_exhausted" in error_str:
+                log_status(self.log_dir, "ERROR", f"Rate limit exceeded: {e}")
+                return f"RATE_LIMIT_ERROR: {e}", False
+            elif "deadline" in error_str or "timeout" in error_str:
+                log_status(self.log_dir, "ERROR", f"Request timeout: {e}")
+                return f"TIMEOUT_ERROR: {e}", False
+            else:
+                log_status(self.log_dir, "ERROR", f"Unexpected error: {e}")
+                return f"UNEXPECTED_ERROR: {e}", False
     
     def generate_with_retry(
         self,
@@ -345,14 +349,22 @@ class GeminiClient:
         full_prompt_parts.append(f"# Task\n{prompt}")
         full_prompt = "\n\n---\n\n".join(full_prompt_parts)
         
+        # Build contents
+        contents = [types.Content(
+            role="user",
+            parts=[types.Part(text=full_prompt)]
+        )]
+        
         try:
-            response = self.model.generate_content(
-                full_prompt,
-                generation_config=genai.GenerationConfig(
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    system_instruction=SYSTEM_INSTRUCTION_OPTIMIZED,
                     temperature=0.7,
                     max_output_tokens=8192,
-                ),
-                request_options={"timeout": timeout_seconds}
+                    tools=self.tools if self.use_function_calling else None,
+                )
             )
             
             # Extract function calls and text
@@ -366,9 +378,11 @@ class GeminiClient:
                             # Check for function call
                             if hasattr(part, 'function_call') and part.function_call:
                                 fc = part.function_call
+                                # Use model_dump() for Pydantic models
+                                args = dict(fc.args) if hasattr(fc.args, '__iter__') else {}
                                 function_calls.append({
                                     "name": fc.name,
-                                    "args": dict(fc.args) if fc.args else {}
+                                    "args": args
                                 })
                             # Check for text
                             elif hasattr(part, 'text') and part.text:
@@ -384,21 +398,17 @@ class GeminiClient:
             
             return text_response, function_calls, True
             
-        except google_exceptions.ResourceExhausted as e:
-            log_status(self.log_dir, "ERROR", f"Rate limit exceeded: {e}")
-            return f"RATE_LIMIT_ERROR: {e}", [], False
-            
-        except google_exceptions.InvalidArgument as e:
-            log_status(self.log_dir, "ERROR", f"Invalid argument: {e}")
-            return f"INVALID_ARGUMENT_ERROR: {e}", [], False
-
-        except google_exceptions.DeadlineExceeded as e:
-            log_status(self.log_dir, "ERROR", f"Request timeout: {e}")
-            return f"TIMEOUT_ERROR: {e}", [], False
-            
         except Exception as e:
-            log_status(self.log_dir, "ERROR", f"Unexpected error in generate_with_tools: {e}")
-            return f"UNEXPECTED_ERROR: {e}", [], False
+            error_str = str(e).lower()
+            if "429" in str(e) or "resource_exhausted" in error_str:
+                log_status(self.log_dir, "ERROR", f"Rate limit exceeded: {e}")
+                return f"RATE_LIMIT_ERROR: {e}", [], False
+            elif "deadline" in error_str or "timeout" in error_str:
+                log_status(self.log_dir, "ERROR", f"Request timeout: {e}")
+                return f"TIMEOUT_ERROR: {e}", [], False
+            else:
+                log_status(self.log_dir, "ERROR", f"Unexpected error in generate_with_tools: {e}")
+                return f"UNEXPECTED_ERROR: {e}", [], False
 
     def process_function_calls(
         self,

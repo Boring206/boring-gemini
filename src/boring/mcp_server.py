@@ -1,5 +1,5 @@
 """
-MCP Server for Boring V4.0
+MCP Server for Boring V5.0 (FastMCP)
 
 Provides IDE integration via Model Context Protocol (MCP).
 This allows Boring to be used directly from:
@@ -16,7 +16,7 @@ Usage:
 """
 
 try:
-    from mcp.server.fastmcp import FastMCP
+    from fastmcp import FastMCP
     MCP_AVAILABLE = True
 except ImportError:
     MCP_AVAILABLE = False

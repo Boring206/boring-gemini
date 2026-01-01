@@ -87,6 +87,39 @@ def get_progress_panel() -> Panel | None:
         return None
 
 
+def get_circuit_panel() -> Panel:
+    """Creates a Rich Panel for circuit breaker status."""
+    cb_file = Path(".circuit_breaker_state")
+    if not cb_file.exists():
+        return Panel(Text("Circuit Breaker: CLOSED", style="green"), title="[bold green]🔌 Circuit Status[/bold green]", border_style="green")
+    
+    try:
+        data = json.loads(cb_file.read_text())
+        state = data.get("state", "CLOSED")
+        failures = data.get("failures", 0)
+        
+        # Color-coded states
+        if state == "CLOSED":
+            style = "bold green"
+            icon = "✅"
+        elif state == "HALF_OPEN":
+            style = "bold yellow"
+            icon = "⚠️"
+        else:  # OPEN
+            style = "bold red"
+            icon = "🛑"
+        
+        table = Table.grid(expand=True)
+        table.add_column(style="bold", width=12)
+        table.add_column()
+        table.add_row("State:", Text(f"{icon} {state}", style=style))
+        table.add_row("Failures:", str(failures))
+        
+        return Panel(table, title=f"[{style}]🔌 Circuit Breaker[/{style}]", border_style=style.split()[-1])
+    except Exception:
+        return Panel(Text("Cannot read circuit state", style="dim"), title="🔌 Circuit Breaker")
+
+
 def get_logs_panel() -> Panel:
     """Creates a Rich Panel for recent log entries."""
     log_content = []

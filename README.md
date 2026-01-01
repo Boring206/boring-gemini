@@ -1,0 +1,131 @@
+[![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
+
+# Boring for Gemini (V5.0)
+
+> **企業級自主 AI 開發代理、Unified Gemini SDK、FastMCP 與結構化可觀測性。**
+
+Boring 是一個自主開發循環系統，利用最新的 **Google Gen AI SDK (V5.0)** 反覆迭代改進您的專案。V5.0 達到了 production-ready 標準，具備極致的穩定性、可觀測性與擴展性。
+
+---
+
+## 🚀 快速開始
+
+### 前置需求
+- **Python 3.9+**
+- **Google API Key**: 設定環境變數 `GOOGLE_API_KEY`。
+- **(核心建議) ruff & pytest**: 用於進階驗證。
+
+### 1. 安裝與設定
+
+```bash
+# 從本地源碼安裝 (推薦)
+git clone https://github.com/Boring206/boring-gemini.git
+cd boring-gemini
+pip install -e ".[all,dev]"
+
+# 安裝推薦的 Gemini Extensions (含 NotebookLM MCP)
+boring setup-extensions
+```
+
+### 2. 啟動開發循環
+
+```bash
+# 啟動開發循環 (預設開啟 Function Calling + STANDARD 驗證)
+boring start
+
+# 啟動儀表板進行即時監控
+boring-monitor
+```
+
+---
+
+## 🏗️ V5.0 核心特性 (Production Grade)
+
+1.  **💎 Unified Gemini SDK (V5.0)**:
+    - 遷移至最新的 `google-genai` SDK，支援最新的模型特性。
+    - 採用 Stateless Client 架構，大幅提升大型專案併發處理能力。
+2.  **🔌 FastMCP 深度整合**:
+    - 內建基於 `fastmcp` 的 MCP Server，極速整合至 Cursor / VS Code。
+    - 提供 `run_boring`、`boring_status` 等豐富工具集。
+3.  **Circuit Breaker V5.0**:
+    - 具備 **HALF_OPEN** 自動恢復狀態，智慧判斷服務是否可用。
+    - 避免無意義的 API 請求與 Token 浪費。
+4.  **📊 結構化可觀測性 (Observability)**:
+    - 整合 `structlog` 輸出 **JSON Lines** 日誌，方便進行進階分析。
+    - 具備 `tenacity` 指數退避重試，應對 transient 網路異常。
+5.  **即時監控 Dashboard**:
+    - 儀表板新增 **Circuit Breaker 狀態面板**。
+    - 視覺化顯示 Loops 統計、Token 消耗與 API 延遲。
+6.  **自動化 API 文件**:
+    - 使用 `MkDocs` + `mkdocstrings` 從內建 docstrings 自動生成文件。
+    - 隨附 `CONTRIBUTING.md` 引導開發者共同維護。
+
+---
+
+## 🔌 IDE 整合 (Cursor / VS Code)
+
+透過 MCP 將 Boring 整合到 IDE，讓 AI 代理直接在編輯器中協作：
+
+### 安裝 MCP 支援
+```bash
+pip install boring-gemini[mcp]
+```
+
+### Cursor 配置
+1. 開啟 Cursor Settings → MCP Servers
+2. 新增 Server：
+   - **Name**: `boring`
+   - **Command**: `boring-mcp`
+   - **Transport**: `stdio`
+
+---
+
+## Privacy Mode (無需 API Key)
+
+使用本地 Gemini CLI (OAuth)，完全無需設定 `GOOGLE_API_KEY`：
+
+```bash
+# 1. 安裝 Gemini CLI
+npm install -g @google/gemini-cli
+gemini login
+
+# 2. 以 Privacy Mode 啟動
+boring start --backend cli
+```
+
+---
+
+## 📋 指令參考
+
+| 指令 | 說明 |
+|:--|:--|
+| `boring start` | 啟動自主開發代理 |
+| `boring-monitor` | 啟動 TUI 即時儀表板 |
+| `boring health` | 🏥 檢查 API、Git、依賴狀態 |
+| `boring-mcp` | 啟動 MCP Server |
+| `boring setup-extensions` | 安裝 `context7`, `criticalthink`, `notebooklm-mcp` |
+| `boring reset-circuit` | 手動重置斷路器 |
+
+---
+
+## 📁 專案結構
+
+```
+my-project/
+├── .gemini/            # Gemini CLI 指令擴充 (如 speckit.toml)
+├── .boring_memory/      # SQLite 核心資料庫 (Loops, Errors, Metrics)
+├── .boring_extensions/  # 擴展配置與快取
+├── PROMPT.md           # 開發核心指令
+├── @fix_plan.md        # 任務進度追蹤 (Agent 退出依據)
+├── src/                # 專案原始碼
+└── logs/               # [NEW] JSON Lines 結構化日誌
+```
+
+---
+
+## 💖 致謝
+
+本專案深受 [github/spec-kit](https://github.com/github/spec-kit) 與 [frankbria/boring-claude-code](https://github.com/frankbria/boring-claude-code) 啟發。
+
+---
+**準備好讓 AI 幫您構建專案了嗎？** 🚀
