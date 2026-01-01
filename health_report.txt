@@ -1,0 +1,29 @@
+2026-01-01 16:02:15.836588: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-01-01 16:02:16.446200: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+WARNING:tensorflow:From C:\Users\User\AppData\Roaming\Python\Python312\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+                            🏥 Boring Health Check                             
+┌───────────────────┬─────────┬───────────────────────────────────────────────┐
+│ Check             │ Status  │ Details                                       │
+├───────────────────┼─────────┼───────────────────────────────────────────────┤
+│ API Key           │ ❌ FAIL │ GOOGLE_API_KEY not set                        │
+│                   │         │ → Set environment variable: export            │
+│                   │         │ GOOGLE_API_KEY='your-key'                     │
+│ Python Version    │ ✅ PASS │ Python 3.12.6                                 │
+│ Dependencies      │ ✅ PASS │ All required packages installed               │
+│ PROMPT.md         │ ❌ FAIL │ PROMPT.md not found                           │
+│                   │         │ → Create PROMPT.md with your development      │
+│                   │         │ instructions                                  │
+│ Git Repository    │ ⚠️ WARN  │ 12 uncommitted change(s)                      │
+│                   │         │ → Consider committing before running Boring   │
+│ Optional Features │ ✅ PASS │ Available: Vector Memory, Embeddings          │
+│ Gemini CLI        │ ✅ PASS │ Found at                                      │
+│                   │         │ C:\Users\User\AppData\Roaming\npm\gemini.CMD  │
+│ Ruff Linter       │ ⚠️ WARN  │ Not found (optional)                          │
+│                   │         │ → pip install ruff                            │
+└───────────────────┴─────────┴───────────────────────────────────────────────┘
+
+┌────────────────────────────────── Summary ──────────────────────────────────┐
+│ ✗ Issues Found                                                              │
+│ Passed: 4 | Warnings: 2 | Failed: 2                                         │
+└─────────────────────────────────────────────────────────────────────────────┘

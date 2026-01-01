@@ -1,64 +1,58 @@
 # Spec-Kit Integration for Gemini CLI
 # Maps standard Spec-Driven Development workflows to CLI commands
 
-[command]
 name = "speckit"
 description = "Spec-Kit workflows: plan, tasks, analyze, clarify"
+prompt = "Spec-Kit tools. Available subcommands: plan, tasks, analyze, clarify, constitution, checklist"
 
 # 1. PLAN
-[command.subcommands.plan]
+[subcommands.plan]
 description = "Create implementation plan from specs (Define -> Plan)"
-[command.subcommands.plan.prompt]
-text = """
+prompt = """
 Please execute the Speckit Plan Workflow.
 Reference the workflow file: @.agent/workflows/speckit-plan.md
 Goal: Read openspec/specs/*.md and generate IMPLEMENTATION_PLAN.md
 """
 
 # 2. TASKS
-[command.subcommands.tasks]
+[subcommands.tasks]
 description = "Break down plan into actionable tasks (Plan -> Tasks)"
-[command.subcommands.tasks.prompt]
-text = """
+prompt = """
 Please execute the Speckit Tasks Workflow.
 Reference the workflow file: @.agent/workflows/speckit-tasks.md
 Goal: Read IMPLEMENTATION_PLAN.md and generate @fix_plan.md
 """
 
 # 3. ANALYZE
-[command.subcommands.analyze]
+[subcommands.analyze]
 description = "Analyze consistency between specs and code"
-[command.subcommands.analyze.prompt]
-text = """
+prompt = """
 Please execute the Speckit Analyze Workflow.
 Reference the workflow file: @.agent/workflows/speckit-analyze.md
 Goal: check for inconsistencies between specs/ and src/
 """
 
 # 4. CLARIFY
-[command.subcommands.clarify]
+[subcommands.clarify]
 description = "Clarify ambiguous requirements"
-[command.subcommands.clarify.prompt]
-text = """
+prompt = """
 Please execute the Speckit Clarify Workflow.
 Reference the workflow file: @.agent/workflows/speckit-clarify.md
 Goal: Ask clarifying questions about the project specs
 """
 # 5. CONSTITUTION
-[command.subcommands.constitution]
+[subcommands.constitution]
 description = "Create project constitution (Principles & Guidelines)"
-[command.subcommands.constitution.prompt]
-text = """
+prompt = """
 Please execute the Speckit Constitution Workflow.
 Reference the workflow file: @.agent/workflows/speckit-constitution.md
 Goal: Create openspec/constitution.md
 """
 
 # 6. CHECKLIST
-[command.subcommands.checklist]
+[subcommands.checklist]
 description = "Generate quality checklist for requirements"
-[command.subcommands.checklist.prompt]
-text = """
+prompt = """
 Please execute the Speckit Checklist Workflow.
 Reference the workflow file: @.agent/workflows/speckit-checklist.md
 Goal: Generate a quality checklist for the current specs

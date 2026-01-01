@@ -10,27 +10,27 @@ from rich.table import Table
 from rich.live import Live
 from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 
-from .config import settings, init_directories
-from .circuit import (
+from ..config import settings, init_directories
+from ..circuit import (
     should_halt_execution, 
     record_loop_result, 
     reset_circuit_breaker,
 )
-from .logger import log_status
-from .limiter import (
+from ..logger import log_status
+from ..limiter import (
     increment_call_counter, 
     can_make_call,
     wait_for_reset,
     init_call_tracking
 )
-from .response_analyzer import analyze_response
-from .gemini_client import create_gemini_client, GeminiClient
-from .file_patcher import process_gemini_output
-from .utils import check_and_install_dependencies, check_syntax
-from .backup import BackupManager
-from .memory import MemoryManager, LoopMemory
-from .verification import CodeVerifier
-from .extensions import ExtensionsManager
+from ..response_analyzer import analyze_response
+from ..gemini_client import create_gemini_client, GeminiClient
+from ..file_patcher import process_gemini_output
+from ..utils import check_and_install_dependencies, check_syntax
+from ..backup import BackupManager
+from ..memory import MemoryManager, LoopMemory
+from ..verification import CodeVerifier
+from ..extensions import ExtensionsManager
 
 console = Console()
 
@@ -106,7 +106,7 @@ class AgentLoop:
             
             # === HUMAN-IN-THE-LOOP: Enter interactive mode ===
             try:
-                from .interactive import enter_interactive_mode
+                from ..interactive import enter_interactive_mode
                 
                 should_resume = enter_interactive_mode(
                     reason="Circuit Breaker OPEN - Too many consecutive failures",
@@ -392,7 +392,7 @@ class AgentLoop:
         # We need to fix AgentLoop to accept an adapter or initialize it.
         
         # Let's fix this method to use the proper CLI structure
-        from .cli_client import GeminiCLIAdapter
+        from ..cli_client import GeminiCLIAdapter
         
         adapter = GeminiCLIAdapter(
             model_name=self.model_name,
@@ -408,7 +408,7 @@ class AgentLoop:
         
         # Try Smart Context
         try:
-            from .context_selector import create_context_selector
+            from ..context_selector import create_context_selector
             selector = create_context_selector(settings.PROJECT_ROOT)
             context_str = selector.generate_context_injection(prompt)
         except ImportError:
@@ -448,7 +448,7 @@ class AgentLoop:
         Args:
             files_to_check: List of modified files to check (optional)
         """
-        from .utils import check_syntax
+        from ..utils import check_syntax
         
         # Use modified files if available, otherwise fall back to full scan
         if files_to_check is None:
@@ -478,7 +478,7 @@ class AgentLoop:
     
     def _full_syntax_check(self) -> Tuple[bool, str]:
         """Full syntax check of all Python files in src."""
-        from .utils import check_syntax
+        from ..utils import check_syntax
         
         src_dir = settings.PROJECT_ROOT / "src"
         if not src_dir.exists():

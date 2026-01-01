@@ -13,5 +13,6 @@ Module Structure:
 from .agent import StatefulAgentLoop
 from .context import LoopContext
 from .base import LoopState
+from .legacy import AgentLoop
 
-__all__ = ["StatefulAgentLoop", "LoopContext", "LoopState"]
+__all__ = ["StatefulAgentLoop", "LoopContext", "LoopState", "AgentLoop"]
