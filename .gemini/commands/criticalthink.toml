@@ -1,0 +1,20 @@
+# Critical Thinking Command for Ralph
+# Invokes critical analysis of AI's previous response
+
+[command]
+name = "criticalthink"
+description = "Critically analyze the previous AI response for errors, biases, and improvements"
+
+[command.prompt]
+text = """
+Please critically analyze your previous response:
+
+1. **Factual Accuracy**: Are there any factual errors or unverified claims?
+2. **Logic Check**: Is the reasoning sound? Are there any logical fallacies?
+3. **Completeness**: Did I miss any important considerations?
+4. **Code Quality** (if applicable): Are there bugs, security issues, or performance problems?
+5. **Assumptions**: What assumptions did I make that might be wrong?
+
+If you find issues, provide corrected information.
+If the response was sound, confirm the key points.
+"""

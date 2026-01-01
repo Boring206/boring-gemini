@@ -1,0 +1,6 @@
+[console_scripts]
+boring = boring.main:app
+boring-import = boring.setup:import_app
+boring-mcp = boring.mcp_server:main
+boring-monitor = boring.monitor:app
+boring-setup = boring.setup:setup_app
