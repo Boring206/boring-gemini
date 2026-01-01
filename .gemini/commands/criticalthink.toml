@@ -1,12 +1,10 @@
-# Critical Thinking Command for Ralph
+# Critical Thinking Command for Boring
 # Invokes critical analysis of AI's previous response
 
-[command]
 name = "criticalthink"
 description = "Critically analyze the previous AI response for errors, biases, and improvements"
 
-[command.prompt]
-text = """
+prompt = """
 Please critically analyze your previous response:
 
 1. **Factual Accuracy**: Are there any factual errors or unverified claims?
