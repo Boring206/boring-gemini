@@ -27,6 +27,7 @@ class Extension:
     repo_url: str
     description: str
     auto_use: bool = False  # Whether to automatically invoke in prompts
+    install_command: Optional[List[str]] = None  # Custom command to install/add the extension
 
 
 # Recommended extensions
@@ -51,9 +52,10 @@ RECOMMENDED_EXTENSIONS = [
     ),
     Extension(
         name="notebooklm-mcp",
-        repo_url="https://github.com/PleasePrompto/notebooklm-mcp.git",
+        repo_url="https://github.com/PleasePrompto/notebooklm-mcp.git",  # Not used for custom command
         description="NotebookLM integration for knowledge-based AI responses",
-        auto_use=False  # Manual invocation for research queries
+        auto_use=False,
+        install_command=["mcp", "add", "notebooklm", "npx", "-y", "notebooklm-mcp@latest"]
     ),
 ]
 
@@ -97,35 +99,42 @@ class ExtensionsManager:
         except Exception:
             return []
     
-    def install_extension(self, repo_url: str) -> Tuple[bool, str]:
+    def install_extension(self, extension: Extension) -> Tuple[bool, str]:
         """Install a Gemini CLI extension."""
         if not self.is_gemini_available():
             return False, "Gemini CLI not found"
         
         # Check if already installed
         installed = self.get_installed_extensions()
-        repo_name = repo_url.rstrip("/").split("/")[-1] # simplistic check
         
-        # Better check: repo_url match or name match
-        if any(repo_name in ext for ext in installed) or any(repo_url in ext for ext in installed):
-             return True, f"Already installed: {repo_url}"
+        # Check for installation (name based)
+        if any(extension.name in ext for ext in installed):
+             return True, f"Already installed: {extension.name}"
 
         try:
-            console.print(f"[blue]Installing extension: {repo_url}[/blue]")
+            if extension.install_command:
+                # Custom installation command (e.g., mcp add)
+                cmd = [self.gemini_cmd] + extension.install_command
+                console.print(f"[blue]Running custom install: {' '.join(cmd)}[/blue]")
+            else:
+                # Standard extension install
+                cmd = [self.gemini_cmd, "extensions", "install", extension.repo_url]
+                console.print(f"[blue]Installing extension: {extension.repo_url}[/blue]")
+
             result = subprocess.run(
-                [self.gemini_cmd, "extensions", "install", repo_url],
+                cmd,
                 capture_output=True,
                 text=True,
-                timeout=120 # Increased timeout for slow network/large repos
+                timeout=300 # Increased timeout
             )
             
             if result.returncode == 0:
-                return True, f"Successfully installed: {repo_url}"
+                return True, f"Successfully installed: {extension.name}"
             else:
-                # Check for "already installed" in stderr/stdout to be safe
+                # Check for "already installed" or "already exists"
                 error_msg = result.stderr or result.stdout
-                if "already installed" in error_msg.lower():
-                     return True, f"Already installed: {repo_url}"
+                if "already" in error_msg.lower():
+                     return True, f"Already installed: {extension.name}"
                 return False, f"Installation failed: {error_msg}"
         except subprocess.TimeoutExpired:
             return False, "Installation timed out"
@@ -136,7 +145,7 @@ class ExtensionsManager:
         """Install all recommended extensions."""
         results = {}
         for ext in RECOMMENDED_EXTENSIONS:
-            success, message = self.install_extension(ext.repo_url)
+            success, message = self.install_extension(ext)
             results[ext.name] = (success, message)
             if success:
                 console.print(f"[green]✓ {ext.name}[/green]")

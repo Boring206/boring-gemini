@@ -19,7 +19,8 @@ from typing import Optional, Tuple
 from dataclasses import dataclass
 
 from .logger import log_status
-from .interfaces import LLMClient
+from .logger import log_status
+from .interfaces import LLMClient, LLMResponse
 
 
 @dataclass
@@ -49,7 +50,7 @@ class GeminiCLIAdapter(LLMClient):
         log_dir: Optional[Path] = None,
         timeout_seconds: int = 300
     ):
-        self.model_name = model_name
+        self._model_name = model_name
         self.log_dir = log_dir or Path("logs")
         self.timeout_seconds = timeout_seconds
         
@@ -64,6 +65,38 @@ class GeminiCLIAdapter(LLMClient):
             )
         
         log_status(self.log_dir, "INFO", f"Gemini CLI Adapter initialized: {self.cli_path}")
+
+    @property
+    def model_name(self) -> str:
+        """Return the model name being used."""
+        return self._model_name
+
+    @property
+    def is_available(self) -> bool:
+        """Check if the client is properly configured and available."""
+        return self.cli_path is not None
+    
+    def generate_with_tools(
+        self,
+        prompt: str,
+        context: str = "",
+        timeout_seconds: int = 900,
+        **kwargs
+    ) -> LLMResponse:
+        """
+        Generate a response that includes text (tools not yet supported in CLI adapter).
+        Ignores tool definitions for now and returns plain text wrapped in LLMResponse.
+        """
+        # Fallback to standard generate since CLI doesn't support complex tool calls easily yet
+        text, success = self.generate(prompt, context)
+        
+        return LLMResponse(
+            text=text,
+            function_calls=[],
+            success=success,
+            error=None if success else "Generation failed",
+            metadata={"source": "gemini-cli-adapter"}
+        )
     
     def generate(self, prompt: str, context: str = "", **kwargs) -> Tuple[str, bool]:
         """
