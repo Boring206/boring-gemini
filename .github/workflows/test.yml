@@ -26,8 +26,7 @@ jobs:
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest pydantic typer rich tenacity gitpython
-        pip install -e .
+        pip install -e ".[dev]"
 
     - name: Install Node dependencies
       run: |

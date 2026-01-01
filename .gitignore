@@ -44,3 +44,6 @@ target/
 # Python build artifacts
 src/boring_gemini.egg-info/
 
+# Coverage reports
+.coverage
+
