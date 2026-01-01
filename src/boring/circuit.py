@@ -1,5 +1,5 @@
 """
-Circuit Breaker Module for Boring V4.0
+Circuit Breaker Module for Boring V5.0
 
 Implements the Circuit Breaker pattern to prevent infinite loops
 when the agent keeps failing repeatedly.
@@ -7,7 +7,7 @@ when the agent keeps failing repeatedly.
 States:
 - CLOSED: Normal operation
 - OPEN: Halted due to failures
-- HALF_OPEN: Testing recovery
+- HALF_OPEN: Testing recovery (allows 1 test request)
 """
 
 import json

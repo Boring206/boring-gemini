@@ -20,23 +20,29 @@ dependencies = [
     "typer[all]>=0.9.0",
     "rich>=13.0.0",
     "python-dotenv",
-    "google-generativeai>=0.8.0",  # Pure Python Gemini SDK
+    "google-genai>=1.0.0",  # Unified Google Gen AI SDK (replaces google-generativeai)
     "python-dateutil",
     "gitpython",
     "pydantic-settings>=2.0.0",
+    "structlog>=24.0.0",  # Structured logging for observability
+    "tenacity>=8.0.0",  # Retry with exponential backoff
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
     "pytest-mock>=3.0.0",
+    "pytest-cov>=4.0.0",  # Coverage reporting
+    "pytest-asyncio>=0.21.0",  # Async test support
+    "mkdocs>=1.5.0",  # API documentation
+    "mkdocstrings[python]>=0.24.0",  # Python docstring extraction
 ]
 vector = [
     "chromadb>=0.4.0",
     "sentence-transformers>=2.2.0",
 ]
 mcp = [
-    "mcp>=1.0.0",
+    "fastmcp>=0.4.0",  # FastMCP framework for MCP server
 ]
 all = [
     "chromadb>=0.4.0",
@@ -94,3 +100,33 @@ warn_return_any = true
 warn_unused_ignores = true
 ignore_missing_imports = true
 
+# Pytest configuration
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+addopts = [
+    "-v",
+    "--tb=short",
+    "--cov=boring",
+    "--cov-report=term-missing",
+    "--cov-report=html:htmlcov",
+    "--cov-fail-under=80",
+]
+
+# Coverage configuration
+[tool.coverage.run]
+source = ["src/boring"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+]

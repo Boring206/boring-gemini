@@ -49,6 +49,12 @@ RECOMMENDED_EXTENSIONS = [
         description="Browser automation and debugging capabilities",
         auto_use=False
     ),
+    Extension(
+        name="notebooklm-mcp",
+        repo_url="https://github.com/PleasePrompto/notebooklm-mcp.git",
+        description="NotebookLM integration for knowledge-based AI responses",
+        auto_use=False  # Manual invocation for research queries
+    ),
 ]
 
 
