@@ -1,3 +1,5 @@
+[![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
+
 # Boring for Gemini
 
 
