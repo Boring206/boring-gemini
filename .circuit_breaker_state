@@ -1,0 +1,11 @@
+{
+    "state": "CLOSED",
+    "failures": 1,
+    "last_failure_time": 1767175050,
+    "last_loop_info": {
+        "loop": 1,
+        "files_changed": 0,
+        "has_errors": true,
+        "output_length": 0
+    }
+}
