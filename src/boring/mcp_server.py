@@ -15,6 +15,143 @@ Usage:
     boring-mcp
 """
 
+# ==============================================================================
+# CRITICAL: STDOUT INTERCEPTOR FOR MCP DEBUGGING
+# This MUST be at the very top, BEFORE any other imports
+# It captures any write to stdout and logs the stack trace to stderr
+# ==============================================================================
+import sys
+import os
+import traceback
+
+# Set MCP mode flag IMMEDIATELY to signal all downstream modules
+os.environ["BORING_MCP_MODE"] = "1"
+
+class _StdoutInterceptor:
+    """
+    Intercepts all writes to stdout and logs them to stderr with stack trace.
+    This helps identify which module/code is polluting the stdout stream.
+    
+    In production MCP mode, this prevents any non-JSON output from reaching stdout.
+    The interceptor can be disabled by setting BORING_MCP_DEBUG_PASSTHROUGH=1.
+    """
+    
+    def __init__(self, original_stdout):
+        self._original = original_stdout
+        self._passthrough = os.environ.get("BORING_MCP_DEBUG_PASSTHROUGH") == "1"
+        self._mcp_started = False
+    
+    def write(self, data: str):
+        if not data or data.strip() == "":
+            return  # Ignore empty writes
+        
+        # If passthrough is enabled or MCP has started, let it through
+        if self._passthrough or self._mcp_started:
+            return self._original.write(data)
+        
+        # AUTO-ALLOW JSON-RPC messages (starts with '{' or is just whitespace/newline after JSON)
+        # This is critical for FastMCP to work before mark_mcp_started() is called
+        stripped = data.strip()
+        if stripped.startswith("{") or stripped.startswith("["):
+            # Looks like JSON, let it through and mark MCP as started
+            self._mcp_started = True
+            return self._original.write(data)
+        
+        # Also allow newlines that follow JSON (buffered writes)
+        if data in ("\n", "\r\n", "\r"):
+            return self._original.write(data)
+        
+        # Otherwise, log the pollution attempt to stderr with stack trace
+        stack = traceback.format_stack()
+        # Filter out this interceptor's own frames
+        filtered_stack = [frame for frame in stack if "_StdoutInterceptor" not in frame]
+        
+        sys.stderr.write("\n" + "=" * 60 + "\n")
+        sys.stderr.write("⚠️  STDOUT POLLUTION DETECTED!\n")
+        sys.stderr.write("=" * 60 + "\n")
+        sys.stderr.write(f"Data attempted to write: {repr(data[:200])}{'...' if len(data) > 200 else ''}\n")
+        sys.stderr.write("-" * 60 + "\n")
+        sys.stderr.write("Stack trace (culprit):\n")
+        sys.stderr.write("".join(filtered_stack[-8:]))  # Last 8 frames
+        sys.stderr.write("=" * 60 + "\n\n")
+        sys.stderr.flush()
+        
+        # Do NOT write to original stdout to preserve MCP protocol
+        return
+    
+    def flush(self):
+        self._original.flush()
+    
+    def fileno(self):
+        return self._original.fileno()
+    
+    def isatty(self):
+        return self._original.isatty()
+    
+    def mark_mcp_started(self):
+        """Call this when MCP protocol handshake begins to allow JSON-RPC through."""
+        self._mcp_started = True
+    
+    @property
+    def encoding(self):
+        return self._original.encoding
+    
+    @property
+    def errors(self):
+        return getattr(self._original, 'errors', None)
+    
+    @property
+    def buffer(self):
+        """Return the underlying binary buffer.
+        
+        FastMCP and other libraries may access sys.stdout.buffer for binary writes.
+        We return the original's buffer to allow binary I/O to work correctly.
+        """
+        return self._original.buffer
+    
+    @property
+    def mode(self):
+        return getattr(self._original, 'mode', 'w')
+    
+    @property
+    def name(self):
+        return getattr(self._original, 'name', '<stdout>')
+    
+    @property
+    def newlines(self):
+        return getattr(self._original, 'newlines', None)
+    
+    @property
+    def line_buffering(self):
+        return getattr(self._original, 'line_buffering', False)
+    
+    @property
+    def write_through(self):
+        return getattr(self._original, 'write_through', False)
+    
+    def readable(self):
+        return False
+    
+    def writable(self):
+        return True
+    
+    def seekable(self):
+        return False
+    
+    def close(self):
+        pass  # Don't close stdout
+    
+    def detach(self):
+        return self._original.detach()
+
+# Install the interceptor (only if not already installed)
+if not isinstance(sys.stdout, _StdoutInterceptor):
+    sys.stdout = _StdoutInterceptor(sys.stdout)
+
+# ==============================================================================
+# END OF STDOUT INTERCEPTOR
+# ==============================================================================
+
 try:
     from fastmcp import FastMCP
     MCP_AVAILABLE = True
@@ -646,6 +783,10 @@ def run_server():
         from .config import settings
         print(f"[DEBUG] Boring MCP Server v5.0", file=sys.stderr)
         print(f"[DEBUG] Project Root: {settings.PROJECT_ROOT}", file=sys.stderr)
+    
+    # 5. Mark interceptor that MCP protocol is starting - allow JSON-RPC through
+    if isinstance(sys.stdout, _StdoutInterceptor):
+        sys.stdout.mark_mcp_started()
     
     # Run with stdio transport - this is the ONLY thing that should touch stdout
     mcp.run(transport="stdio")
