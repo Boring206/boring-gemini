@@ -249,6 +249,322 @@ if MCP_AVAILABLE and mcp is not None:
             return "PROMPT.md not found"
         except Exception as e:
             return f"Error reading prompt: {e}"
+    
+    # ========================================
+    # SpecKit Workflow Tools
+    # ========================================
+    
+    def _read_workflow(workflow_name: str) -> str:
+        """Helper to read workflow content from .agent/workflows/."""
+        from .config import settings
+        workflow_path = settings.PROJECT_ROOT / ".agent" / "workflows" / f"{workflow_name}.md"
+        if workflow_path.exists():
+            return workflow_path.read_text(encoding="utf-8")
+        return f"Workflow '{workflow_name}' not found at {workflow_path}"
+    
+    def _execute_workflow(workflow_name: str, context: Optional[str] = None) -> dict:
+        """Execute a SpecKit workflow using the AI agent."""
+        from .config import settings
+        import shutil
+        
+        workflow_content = _read_workflow(workflow_name)
+        
+        # Build prompt combining workflow instructions with optional context
+        prompt_parts = [
+            f"# Execute SpecKit Workflow: {workflow_name}",
+            "",
+            "## Workflow Instructions",
+            workflow_content,
+        ]
+        
+        if context:
+            prompt_parts.extend([
+                "",
+                "## Additional Context",
+                context,
+            ])
+        
+        prompt_parts.extend([
+            "",
+            "## Task",
+            f"Please execute the {workflow_name} workflow following the instructions above.",
+            "Analyze the current project state and generate the appropriate output.",
+        ])
+        
+        full_prompt = "\n".join(prompt_parts)
+        
+        # Check if we should use CLI
+        use_cli = shutil.which("gemini") is not None
+        
+        try:
+            if use_cli:
+                # Use Gemini CLI for execution (supports extensions)
+                from .cli_client import GeminiCLIAdapter
+                client = GeminiCLIAdapter()
+                result = client.generate(full_prompt)
+                return {
+                    "status": "SUCCESS",
+                    "workflow": workflow_name,
+                    "mode": "CLI",
+                    "result": result,
+                    "workflow_instructions": workflow_content[:500] + "..." if len(workflow_content) > 500 else workflow_content
+                }
+            else:
+                # Use SDK for execution
+                from .gemini_client import GeminiClient
+                client = GeminiClient()
+                result = client.generate(full_prompt)
+                return {
+                    "status": "SUCCESS",
+                    "workflow": workflow_name,
+                    "mode": "SDK",
+                    "result": result,
+                    "workflow_instructions": workflow_content[:500] + "..." if len(workflow_content) > 500 else workflow_content
+                }
+        except Exception as e:
+            return {
+                "status": "ERROR",
+                "workflow": workflow_name,
+                "error": str(e),
+                "workflow_instructions": workflow_content
+            }
+    
+    @mcp.tool()
+    def speckit_plan(context: Optional[str] = None) -> dict:
+        """
+        Execute SpecKit Plan workflow - Create technical implementation plan from requirements.
+        
+        Args:
+            context: Optional additional context about requirements or constraints
+            
+        Returns:
+            Workflow execution result with implementation plan guidance
+        """
+        return _execute_workflow("speckit-plan", context)
+    
+    @mcp.tool()
+    def speckit_tasks(context: Optional[str] = None) -> dict:
+        """
+        Execute SpecKit Tasks workflow - Break implementation plan into actionable tasks.
+        
+        Args:
+            context: Optional context about the implementation plan
+            
+        Returns:
+            Workflow execution result with task breakdown
+        """
+        return _execute_workflow("speckit-tasks", context)
+    
+    @mcp.tool()
+    def speckit_analyze(context: Optional[str] = None) -> dict:
+        """
+        Execute SpecKit Analyze workflow - Analyze consistency between specs and code.
+        
+        Cross-checks:
+        - Spec vs Plan alignment
+        - Plan vs Tasks coverage
+        - Internal consistency (no contradictions)
+        
+        Args:
+            context: Optional focus areas or specific files to analyze
+            
+        Returns:
+            Analysis report with aligned items, gaps, and conflicts
+        """
+        return _execute_workflow("speckit-analyze", context)
+    
+    @mcp.tool()
+    def speckit_clarify(context: Optional[str] = None) -> dict:
+        """
+        Execute SpecKit Clarify workflow - Identify and clarify ambiguous requirements.
+        
+        Looks for:
+        - Undefined terms
+        - Unhandled edge cases
+        - Incorrect assumptions
+        - Contradictions
+        
+        Args:
+            context: Optional specific areas that need clarification
+            
+        Returns:
+            List of clarifying questions with suggested options
+        """
+        return _execute_workflow("speckit-clarify", context)
+    
+    @mcp.tool()
+    def speckit_constitution(context: Optional[str] = None) -> dict:
+        """
+        Execute SpecKit Constitution workflow - Create project guiding principles.
+        
+        Generates:
+        - Mission statement
+        - Core principles
+        - Quality standards
+        - Development guidelines
+        
+        Args:
+            context: Optional project vision or constraints
+            
+        Returns:
+            Project constitution template and guidance
+        """
+        return _execute_workflow("speckit-constitution", context)
+    
+    @mcp.tool()
+    def speckit_checklist(context: Optional[str] = None) -> dict:
+        """
+        Execute SpecKit Checklist workflow - Generate quality validation checklist.
+        
+        Creates binary Pass/Fail checklist items covering:
+        - Completeness (error states, loading states, empty states)
+        - Clarity (unambiguous logic)
+        - Testability (can be verified automatically)
+        
+        Args:
+            context: Optional specific feature or requirement to check
+            
+        Returns:
+            Quality checklist for the given context
+        """
+        return _execute_workflow("speckit-checklist", context)
+    
+    # ========================================
+    # Boring Integration Tools
+    # ========================================
+    
+    @mcp.tool()
+    def boring_setup_extensions() -> dict:
+        """
+        Install recommended Gemini CLI extensions for enhanced capabilities.
+        
+        Installs:
+        - context7: Up-to-date library documentation
+        - slash-criticalthink: Critical analysis of AI outputs
+        - chrome-devtools-mcp: Browser automation
+        - notebooklm-mcp: Knowledge-based AI responses
+        
+        Returns:
+            Installation results for each extension
+        """
+        try:
+            from .extensions import ExtensionsManager
+            from .config import settings
+            
+            manager = ExtensionsManager(settings.PROJECT_ROOT)
+            
+            if not manager.is_gemini_available():
+                return {
+                    "status": "SKIPPED",
+                    "message": "Gemini CLI not found. Install with: npm install -g @google/gemini-cli"
+                }
+            
+            results = manager.install_recommended_extensions()
+            
+            return {
+                "status": "SUCCESS",
+                "installed": [name for name, (success, _) in results.items() if success],
+                "failed": [name for name, (success, _) in results.items() if not success],
+                "details": {name: msg for name, (_, msg) in results.items()}
+            }
+        except Exception as e:
+            return {
+                "status": "ERROR",
+                "error": str(e)
+            }
+    
+    @mcp.tool()
+    def boring_list_workflows() -> dict:
+        """
+        List all available .agent/workflows in the project.
+        
+        Returns:
+            List of available workflows with descriptions
+        """
+        try:
+            from .config import settings
+            
+            workflows_dir = settings.PROJECT_ROOT / ".agent" / "workflows"
+            
+            if not workflows_dir.exists():
+                return {
+                    "status": "NOT_FOUND",
+                    "message": f"Workflows directory not found: {workflows_dir}"
+                }
+            
+            workflows = []
+            for workflow_file in workflows_dir.glob("*.md"):
+                content = workflow_file.read_text(encoding="utf-8")
+                
+                # Extract description from YAML frontmatter
+                description = ""
+                if content.startswith("---"):
+                    try:
+                        end_idx = content.index("---", 3)
+                        frontmatter = content[3:end_idx]
+                        for line in frontmatter.split("\n"):
+                            if line.startswith("description:"):
+                                description = line.split(":", 1)[1].strip()
+                                break
+                    except ValueError:
+                        pass
+                
+                workflows.append({
+                    "name": workflow_file.stem,
+                    "file": workflow_file.name,
+                    "description": description,
+                    "path": str(workflow_file)
+                })
+            
+            return {
+                "status": "SUCCESS",
+                "count": len(workflows),
+                "workflows": workflows
+            }
+        except Exception as e:
+            return {
+                "status": "ERROR",
+                "error": str(e)
+            }
+    
+    # ========================================
+    # Workflow Resources
+    # ========================================
+    
+    @mcp.resource("boring://workflows/list")
+    def get_workflows_list() -> str:
+        """List all available workflows as a resource."""
+        try:
+            from .config import settings
+            
+            workflows_dir = settings.PROJECT_ROOT / ".agent" / "workflows"
+            
+            if not workflows_dir.exists():
+                return "No workflows directory found"
+            
+            lines = ["# Available SpecKit Workflows", ""]
+            
+            for workflow_file in sorted(workflows_dir.glob("*.md")):
+                content = workflow_file.read_text(encoding="utf-8")
+                
+                # Extract description
+                description = ""
+                if content.startswith("---"):
+                    try:
+                        end_idx = content.index("---", 3)
+                        frontmatter = content[3:end_idx]
+                        for line in frontmatter.split("\n"):
+                            if line.startswith("description:"):
+                                description = line.split(":", 1)[1].strip()
+                                break
+                    except ValueError:
+                        pass
+                
+                lines.append(f"- **{workflow_file.stem}**: {description}")
+            
+            return "\n".join(lines)
+        except Exception as e:
+            return f"Error listing workflows: {e}"
 
 
 def run_server():
@@ -259,8 +575,21 @@ def run_server():
         print("Or: pip install mcp")
         sys.exit(1)
     
-    print("Starting Boring MCP Server...")
-    print("Tools available: run_boring, boring_health_check, boring_status, boring_verify")
+    print("Starting Boring MCP Server v5.0...")
+    print("")
+    print("Core Tools:")
+    print("  - run_boring, boring_health_check, boring_status, boring_verify")
+    print("")
+    print("SpecKit Workflow Tools:")
+    print("  - speckit_plan, speckit_tasks, speckit_analyze")
+    print("  - speckit_clarify, speckit_constitution, speckit_checklist")
+    print("")
+    print("Integration Tools:")
+    print("  - boring_setup_extensions, boring_list_workflows")
+    print("")
+    print("Resources:")
+    print("  - boring://project/status, boring://project/prompt")
+    print("  - boring://workflows/list")
     
     # Run with stdio transport for IDE integration
     mcp.run(transport="stdio")
