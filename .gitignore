@@ -47,3 +47,24 @@ src/boring_gemini.egg-info/
 # Coverage reports
 .coverage
 
+
+# Boring Artifacts
+.boring_memory/
+.boring_brain/
+.gemini/
+
+# Test Artifacts
+.pytest_cache/
+htmlcov/
+site/
+.tox/
+
+# Temporary Verification Scripts
+check_mcp_tool_output.py
+verify_mcp_integrity.py
+inspect_memory.py
+
+# Python Distributions
+*.egg-info/
+dist/
+build/

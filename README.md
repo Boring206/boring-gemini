@@ -91,19 +91,15 @@ Boring 利用 Gemini 的強大能力，支援 **所有主流程式語言** 的�
 
 透過 MCP 將 Boring 整合到 IDE，讓 AI 代理直接在編輯器中協作：
 
-### 安裝 MCP 支援
+### 1. 基礎安裝
 ```bash
 pip install boring-gemini[mcp]
 ```
 
-### Cursor 配置
-1. 開啟 Cursor Settings → MCP Servers
-2. 新增 Server：
-   - **Name**: `boring`
-   - **Command**: `boring-mcp` (確保 `boring-mcp` 在 PATH 中，或使用絕對路徑)
-   - **Transport**: `stdio`
+### 2. 進階配置 (推薦：多 Server 模式)
+為了讓 Agent 能同時使用 **Boring**, **NotebookLM**, **Context7** 等強大工具，建議在 IDE 中配置多個 MCP Server。
 
-或直接使用 JSON 配置 (適用於 Claude Desktop / VS Code ):
+**Cursor Settings → MCP Servers (JSON 配置範例)**：
 
 ```json
 {
@@ -112,10 +108,42 @@ pip install boring-gemini[mcp]
       "command": "boring-mcp",
       "args": [],
       "env": {}
+    },
+    "notebooklm": {
+      "command": "npx",
+      "args": ["-y", "notebooklm-mcp@latest"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/context7-mcp"]
+    },
+    "criticalthink": {
+      "command": "npx",
+      "args": ["-y", "slash-criticalthink"]
     }
   }
 }
 ```
+
+> **為什麼這樣配置？**
+> - **@boring**: 負責核心開發邏輯、SpecKit 流程 (`run_boring`, `speckit_plan`)。
+> - **@notebooklm**: 提供私有知識庫查詢 (RAG)。
+> - **@context7**: 提供最新的函式庫文檔查詢。
+> - **@criticalthink**: 提供深度邏輯批判與推理能力。
+
+---
+
+### 3. 替代方案：透過 Boring 間接使用 (CLI 模式)
+如果您不想配置多個 Server，`boring-mcp` 也可以在內部透過 `gemini` CLI 間接呼叫這些擴展。
+
+1. **安裝 CLI 與擴展**:
+   ```bash
+   npm install -g @google/gemini-cli
+   boring setup-extensions
+   ```
+2. **使用**:
+   當您呼叫 `run_boring` 時，若系統偵測到 CLI 環境，會自動嘗試使用這些擴展。
+   *(注意：這種方式不如多 Server 模式靈活，僅適用於 run_boring 內部自動化)*
 
 ---
 
