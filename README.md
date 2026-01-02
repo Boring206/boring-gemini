@@ -46,7 +46,7 @@ boring-monitor
     - 採用 Stateless Client 架構，大幅提升大型專案併發處理能力。
 2.  **🔌 FastMCP 深度整合**:
     - 內建基於 `fastmcp` 的 MCP Server，極速整合至 Cursor / VS Code。
-    - 提供 `run_boring`、`boring_status` 等豐富工具集。
+    - 提供 `run_boring`、`speckit_plan`、`boring_status` 等豐富工具集。
 3.  **Circuit Breaker V5.0**:
     - 具備 **HALF_OPEN** 自動恢復狀態，智慧判斷服務是否可用。
     - 避免無意義的 API 請求與 Token 浪費。
@@ -59,6 +59,9 @@ boring-monitor
 6.  **自動化 API 文件**:
     - 使用 `MkDocs` + `mkdocstrings` 從內建 docstrings 自動生成文件。
     - 隨附 `CONTRIBUTING.md` 引導開發者共同維護。
+7.  **🧩 SpecKit 深度整合**:
+    - 完整整合 Spec-Driven Development 流程 (`plan`, `tasks`, `analyze`)。
+    - 直接在 IDE 透過 MCP 呼叫 SpecKit 工具，無需切換終端機。
 
 ---
 
@@ -113,6 +116,25 @@ pip install boring-gemini[mcp]
   }
 }
 ```
+
+---
+
+## 🧩 SpecKit 整合 (Spec-Driven Development)
+
+Boring V5.0 將 SpecKit 完整整合至 MCP Server，讓您能在 IDE 中直接執行規格驅動開發流程：
+
+### 核心 SpecKit 工具
+- **`speckit_plan`**: 根據規格自動產生 `IMPLEMENTATION_PLAN.md`。
+- **`speckit_tasks`**: 將計畫拆解為 `task.md` 可執行任務。
+- **`speckit_analyze`**: 分析規格、計畫與代碼的一致性。
+- **`speckit_clarify`**: 針對模糊需求提問，釐清規格。
+- **`speckit_constitution`**: 建立專案憲法與原則。
+- **`speckit_checklist`**: 產生品質驗收清單。
+
+### 使用方式 (Cursor / VS Code)
+在 Chat 中輸入 `@boring` 即可呼叫上述工具，例如：
+> 「@boring 請執行 speckit_plan 幫我規劃實作」
+> 「@boring 執行 speckit_analyze 檢查目前實作與規格是否一致」
 
 ---
 
