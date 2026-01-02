@@ -30,14 +30,38 @@ class SearchReplaceOp:
 
 # Pattern for SEARCH_REPLACE blocks (Git-style conflict markers)
 SEARCH_REPLACE_PATTERN = re.compile(
-    r"<<<<<<< SEARCH\n(.*?)\n=======\n(.*?)\n>>>>>>> REPLACE",
-    re.DOTALL
+    r"<{5,}\s*SEARCH\s*\n(.*?)\n={5,}\s*\n(.*?)\n>{5,}\s*REPLACE",
+    re.DOTALL | re.IGNORECASE
 )
 
 # Pattern with file path header
 FILE_SEARCH_REPLACE_PATTERN = re.compile(
-    r"(?:FILE|Path):\s*([^\n]+)\n<<<<<<< SEARCH\n(.*?)\n=======\n(.*?)\n>>>>>>> REPLACE",
+    r"(?:FILE|Path|file):\s*([^\n]+)\n<{5,}\s*SEARCH\s*\n(.*?)\n={5,}\s*\n(.*?)\n>{5,}\s*REPLACE",
     re.DOTALL | re.IGNORECASE
+)
+
+# Aider-style pattern: <<<<<<< SEARCH / ======= / >>>>>>> REPLACE
+AIDER_PATTERN = re.compile(
+    r"```[a-z]*\s*\n?(?:FILE|file)?:?\s*([^\n]*)\n?<<<<<<< SEARCH\n(.*?)\n=======\n(.*?)\n>>>>>>> REPLACE\n?```",
+    re.DOTALL
+)
+
+# Claude-style pattern: SEARCH_REPLACE_START / SEARCH_REPLACE_END with separator
+CLAUDE_PATTERN = re.compile(
+    r"(?:SEARCH_REPLACE_START|<<<SEARCH_REPLACE>>>)\s*\n(?:FILE|Path)?:?\s*([^\n]*)\n?(.*?)\n(?:===+|---+)\n(.*?)\n(?:SEARCH_REPLACE_END|<<<\/SEARCH_REPLACE>>>)",
+    re.DOTALL | re.IGNORECASE
+)
+
+# OLD/NEW style pattern: SEARCH_REPLACE_START with OLD: and NEW: markers
+OLD_NEW_PATTERN = re.compile(
+    r"SEARCH_REPLACE_START\s*\n(?:FILE|Path)?:?\s*([^\n]*)\n?OLD:\s*(.*?)\nNEW:\s*(.*?)\nSEARCH_REPLACE_END",
+    re.DOTALL | re.IGNORECASE
+)
+
+# Simple diff-style: --- a/file / +++ b/file blocks
+DIFF_PATTERN = re.compile(
+    r"---\s*a?/?([^\n]+)\n\+\+\+\s*b?/?[^\n]+\n@@[^\n]*@@\n(.*?)(?=\n---|\n```|$)",
+    re.DOTALL
 )
 
 
@@ -45,17 +69,50 @@ def extract_search_replace_blocks(output: str) -> List[Dict[str, str]]:
     """
     Parse output for SEARCH_REPLACE blocks.
     
+    Supports multiple formats:
+    - Git-style: <<<<<<< SEARCH / ======= / >>>>>>> REPLACE
+    - Aider-style: Within code blocks
+    - Claude-style: SEARCH_REPLACE_START / SEARCH_REPLACE_END
+    - With or without file path headers
+    
     Returns:
         List of dicts with 'file_path' (optional), 'search', 'replace'
     """
     blocks: List[Dict[str, str]] = []
     
-    # Try pattern with file path first
+    # Try pattern with file path first (highest priority)
     for match in FILE_SEARCH_REPLACE_PATTERN.finditer(output):
         blocks.append({
             "file_path": match.group(1).strip(),
             "search": match.group(2),
             "replace": match.group(3)
+        })
+    
+    # Try Aider-style blocks
+    for match in AIDER_PATTERN.finditer(output):
+        file_path = match.group(1).strip() if match.group(1) else ""
+        blocks.append({
+            "file_path": file_path,
+            "search": match.group(2),
+            "replace": match.group(3)
+        })
+    
+    # Try Claude-style blocks
+    for match in CLAUDE_PATTERN.finditer(output):
+        file_path = match.group(1).strip() if match.group(1) else ""
+        blocks.append({
+            "file_path": file_path,
+            "search": match.group(2),
+            "replace": match.group(3)
+        })
+    
+    # Try OLD/NEW style blocks
+    for match in OLD_NEW_PATTERN.finditer(output):
+        file_path = match.group(1).strip() if match.group(1) else ""
+        blocks.append({
+            "file_path": file_path,
+            "search": match.group(2).strip(),
+            "replace": match.group(3).strip()
         })
     
     # If no file-path blocks found, try simple blocks

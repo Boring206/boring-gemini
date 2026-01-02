@@ -198,9 +198,40 @@ except ImportError:
     FastMCP = None
 
 import sys
+import time
 from pathlib import Path
 from typing import Optional
 from dataclasses import dataclass
+from collections import defaultdict
+
+# ==============================================================================
+# PER-TOOL RATE LIMITING
+# ==============================================================================
+# Prevents abuse by limiting calls per tool per hour
+
+_TOOL_CALL_COUNTS: dict = defaultdict(list)  # tool_name -> list of timestamps
+_RATE_LIMITS = {
+    "run_boring": 10,       # Max 10 runs per hour
+    "boring_verify": 30,    # Max 30 verifications per hour
+    "speckit_plan": 20,     # Max 20 plans per hour
+    "default": 60           # Default: 60 calls per hour
+}
+
+def _check_rate_limit(tool_name: str) -> tuple[bool, str]:
+    """Check if tool is within rate limit. Returns (allowed, message)."""
+    limit = _RATE_LIMITS.get(tool_name, _RATE_LIMITS["default"])
+    now = time.time()
+    hour_ago = now - 3600
+    
+    # Clean old entries
+    _TOOL_CALL_COUNTS[tool_name] = [t for t in _TOOL_CALL_COUNTS[tool_name] if t > hour_ago]
+    
+    if len(_TOOL_CALL_COUNTS[tool_name]) >= limit:
+        remaining = int(3600 - (now - _TOOL_CALL_COUNTS[tool_name][0]))
+        return False, f"Rate limit exceeded for {tool_name}. Try again in {remaining}s."
+    
+    _TOOL_CALL_COUNTS[tool_name].append(now)
+    return True, ""
 
 # ==============================================================================
 # DYNAMIC PROJECT ROOT DETECTION for MCP mode
@@ -405,6 +436,11 @@ if MCP_AVAILABLE and mcp is not None:
             Task execution result with status, files modified, and message
         """
         try:
+            # Rate limit check
+            allowed, msg = _check_rate_limit("run_boring")
+            if not allowed:
+                return {"status": "RATE_LIMITED", "message": msg}
+            
             from .loop import StatefulAgentLoop
             from .config import settings
             import shutil
@@ -419,22 +455,26 @@ if MCP_AVAILABLE and mcp is not None:
             
             # Determine environment
             is_mcp = os.environ.get("BORING_MCP_MODE") == "1"
+            has_api_key = os.environ.get("GOOGLE_API_KEY") is not None
 
-            # Auto-detect CLI if not specified
+            # Auto-detect backend if not specified
             if use_cli is None:
-                has_cli = shutil.which("gemini") is not None
                 if is_mcp:
-                    # In MCP mode, if CLI is available, use it for Autonomous Mode.
-                    # Otherwise, fall back to Architect Mode (Delegated).
-                    use_cli = has_cli
+                    # CRITICAL: In MCP mode, NEVER spawn nested gemini CLI.
+                    # This causes hangs due to resource conflicts.
+                    # Prefer SDK if API key available, else Interactive mode.
+                    use_cli = False
                 else:
-                    use_cli = has_cli
+                    # Outside MCP, use CLI if available
+                    use_cli = shutil.which("gemini") is not None
                 
             # Auto-enable interactive mode logic
             if interactive is None:
-                # If we are NOT using CLI, we likely need delegation (Architect Mode)
-                # If we ARE using CLI, we run autonomously (Non-Interactive)
-                interactive = not use_cli
+                if is_mcp:
+                    # In MCP: Use SDK if we have API key, else Delegation
+                    interactive = not has_api_key
+                else:
+                    interactive = not use_cli
             
             # Create temporary PROMPT.md with task
             prompt_file = project_root / "PROMPT.md"

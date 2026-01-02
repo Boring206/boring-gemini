@@ -14,15 +14,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `boring_apply_patch`: Single-file search/replace operations
   - `boring_verify_file`: Single-file syntax and lint verification
   - `boring_extract_patches`: Extract and apply patches from AI output
+  - `boring_done`: Clean exit mechanism for agent completion signaling
 - **Universal IDE Compatibility**: Works with Cursor, Claude Desktop, VS Code, and any MCP-compatible client
+- **Verified Platforms**: Gemini CLI, Antigravity, Cursor officially tested and verified
+- **Text-to-Tool Extraction**: CLI mode now parses `# File:` and `SEARCH_REPLACE` blocks automatically
 
 ### Changed
-- **README.md**: Added "多種部署方式" (Universal Installation) section
-- **README.md**: Added "細粒度工具" (Granular Tools) section with usage examples
+- **README.md**: Complete refactor for clarity; mandatory config block with context7/notebooklm
+- **MCP Mode Backend**: Disabled nested CLI spawning to prevent hangs (use SDK or Delegation)
+- **SpecKit Workflows**: Added autonomous mode instruction injection for CLI execution
 - **Version bump**: 4.1.0 → 5.1.0
 
+### Fixed
+- **Critical**: `run_boring` hanging in Gemini CLI due to nested process spawning
+- **Critical**: `speckit_*` tools refusing execution in non-interactive CLI mode
+- `boring_health_check` failing when API key not set but CLI available
+
 ### Documentation
-- Smithery installation guide
+- Smithery installation guide with complete JSON config example
 - Docker build and run commands
 - Docker Compose example configuration
 
