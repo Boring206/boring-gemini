@@ -1,7 +1,12 @@
+name: "boring-gemini"
+version: "5.1.0"
+description: "Enterprise-grade autonomous AI development agent"
 runtime: "container"
 build:
   dockerfile: "Dockerfile"
   context: "."
 startCommand:
   type: "stdio"
-  commandFunction: "boring-mcp"
+  configSchema:
+    type: "object"
+    properties: {}
