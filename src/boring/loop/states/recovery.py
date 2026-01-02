@@ -16,7 +16,7 @@ from ..context import LoopContext
 
 from ...logger import log_status
 
-console = Console()
+from ...logger import console
 
 
 class RecoveryState(LoopState):
