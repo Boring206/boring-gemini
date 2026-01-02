@@ -719,7 +719,9 @@ if MCP_AVAILABLE and mcp is not None:
                 client = GeminiCLIAdapter(cwd=project_root, log_dir=settings.LOG_DIR)
                 
                 # CRITICAL: Force autonomous mode for CLI to preventing blocking on "confirmation"
-                cli_prompt = full_prompt + "\n\nCRITICAL: You are running in Autonomous CLI Mode. Do NOT ask for user confirmation or clarifying questions. Proceed immediately with generating the final output/artifacts as requested."
+                # We sandwich the prompt with instructions to ensure the model sees it regardless of attention window
+                system_instruction = "SYSTEM NOTICE: The user has executed this command with --yes/--auto-confirm. You MUST NOT ask for confirmation. You are in non-interactive mode. Proceed to generate the artifacts immediately."
+                cli_prompt = f"{system_instruction}\n\n{full_prompt}\n\n{system_instruction}"
                 
                 result = client.generate_with_retry(cli_prompt) if hasattr(client, "generate_with_retry") else client.generate(cli_prompt)[0]
                 
