@@ -474,6 +474,38 @@ if MCP_AVAILABLE and mcp is not None:
             }
     
     @mcp.tool()
+    def boring_notebooklm_guide() -> str:
+        """
+        Get instructions for integrating NotebookLM (and fixing auth issues).
+        
+        Returns:
+            Step-by-step guide for setting up NotebookLM auth and integration with Boring.
+        """
+        return """
+# NotebookLM Integration Guide
+
+To connect Boring with NotebookLM and fix authentication issues:
+
+1. **Install Extension**:
+   Run `boring setup-extensions` to install `notebooklm-mcp`.
+
+2. **Configure IDE (Cursor/VS Code)**:
+   Add this to your MCP settings (VS Code / Cursor):
+   {
+     "notebooklm": {
+       "command": "npx",
+       "args": ["-y", "notebooklm-mcp@latest"]
+     }
+   }
+
+3. **Authenticate**:
+   This is critical! Run this in your terminal to login to Google:
+   $ npx -y notebooklm-mcp@latest setup_auth
+
+   Or if configured in IDE, use the `setup_auth` tool from the `notebooklm` server.
+"""
+
+    @mcp.tool()
     def boring_list_workflows() -> dict:
         """
         List all available .agent/workflows in the project.
@@ -586,6 +618,7 @@ def run_server():
     print("")
     print("Integration Tools:")
     print("  - boring_setup_extensions, boring_list_workflows")
+    print("  - boring_notebooklm_guide")
     print("")
     print("Resources:")
     print("  - boring://project/status, boring://project/prompt")

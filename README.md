@@ -138,6 +138,31 @@ Boring V5.0 將 SpecKit 完整整合至 MCP Server，讓您能在 IDE 中直接�
 
 ---
 
+## 📚 NotebookLM 整合 (Knowledge Base)
+
+Boring 支援與 NotebookLM 協同工作，讓 Agent 能查詢您的私有知識庫。由於 NotebookLM 需要 Google 帳號權限，請依照以下步驟配置：
+
+1. **安裝 Extension**:
+   執行 `boring setup-extensions` 確保 `notebooklm-mcp` 已安裝。
+
+2. **配置 IDE (Cursor/VS Code)**:
+   在 MCP 設定中新增 NotebookLM Server (與 boring 並列)：
+   ```json
+   "notebooklm": {
+     "command": "npx",
+     "args": ["-y", "notebooklm-mcp@latest"]
+   }
+   ```
+
+3. **執行認證 (解決無法連接問題)**:
+   在 IDE 中呼叫 `notebooklm` 的 `setup_auth` 工具，或在終端機執行：
+   ```bash
+   npx -y notebooklm-mcp@latest setup_auth
+   ```
+   這一步至關重要！它會開啟瀏覽器進行登入。完成後，Agent 才能存取您的筆記本。
+
+---
+
 ## Privacy Mode (無需 API Key)
 
 使用本地 Gemini CLI (OAuth)，完全無需設定 `GOOGLE_API_KEY`：
