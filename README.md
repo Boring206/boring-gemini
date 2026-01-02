@@ -1,8 +1,9 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Version](https://img.shields.io/badge/Version-5.1.0-green.svg)](https://github.com/Boring206/boring-gemini)
 
-# Boring for Gemini (V5.0)
+# Boring for Gemini (V5.1)
 
-> **企業級自主 AI 開發代理、Unified Gemini SDK、FastMCP 與結構化可觀測性。**
+> **企業級自主 AI 開發代理、Smithery/Docker 部署、細粒度 MCP 工具與 IDE 通用整合。**
 
 Boring 是一個自主開發循環系統，利用最新的 **Google Gen AI SDK (V5.0)** 反覆迭代改進您的專案。V5.0 達到了 production-ready 標準，具備極致的穩定性、可觀測性與擴展性。
 
@@ -12,7 +13,7 @@ Boring 是一個自主開發循環系統，利用最新的 **Google Gen AI SDK (
 
 ### 前置需求
 - **Python 3.9+**
-- **Google API Key**: 設定環境變數 `GOOGLE_API_KEY`。
+- **Google API Key**: 設定環境變數 `GOOGLE_API_KEY` (僅 SDK 模式需要；若使用 CLI 模式則由 CLI 負責認證)。
 - **(核心建議) ruff & pytest**: 用於進階驗證。
 
 ### 1. 安裝與設定
@@ -36,6 +37,60 @@ boring start
 # 啟動儀表板進行即時監控
 boring-monitor
 ```
+
+---
+
+## 🌐 多種部署方式 (Universal Installation)
+
+Boring 支援多種安裝方式，讓您在任何 IDE 環境中使用：
+
+### 方式 1: Smithery (推薦 - 一鍵安裝)
+
+[Smithery.ai](https://smithery.ai) 提供最簡單的 MCP Server 安裝方式：
+
+```bash
+# 透過 Smithery CLI 安裝
+npx @smithery/cli install boring-gemini
+
+# 或在 Claude Desktop / Cursor 中搜索 "boring-gemini"
+```
+
+安裝後自動配置到您的 IDE，無需手動設定。
+
+### 方式 2: Docker (跨平台一致性)
+
+使用 Docker 在任何環境中運行：
+
+```bash
+# 構建鏡像
+docker build -t boring-mcp .
+
+# 運行 MCP Server (stdio 模式)
+docker run -i boring-mcp
+
+# 帶環境變數運行
+docker run -i \
+  -e GOOGLE_API_KEY="your-key" \
+  -v /path/to/project:/app/project \
+  boring-mcp
+```
+
+**Docker Compose 示例**：
+```yaml
+services:
+  boring-mcp:
+    build: .
+    environment:
+      - BORING_PROJECT_ROOT=/app/project
+    volumes:
+      - ./my-project:/app/project
+    stdin_open: true
+    tty: true
+```
+
+### 方式 3: pip 本地安裝
+
+見上方「安裝與設定」章節。
 
 ---
 
@@ -116,7 +171,8 @@ Boring 利用 Gemini 的強大能力，支援 **所有主流程式語言** 的�
     "boring": {
       "command": "python",
       "args": ["-m", "boring.mcp_server"],
-      "env": {}
+      // 若從源碼執行，請指向 boring-gemini 倉庫目錄
+      "cwd": "c:/path/to/boring-gemini-source"
     },
     "notebooklm": {
       "command": "npx",
@@ -139,12 +195,52 @@ Boring 利用 Gemini 的強大能力，支援 **所有主流程式語言** 的�
 > 1. **穩定性**：使用 `python -m` 呼叫可避免 Windows PATH 解析問題。
 > 2. **協議純淨**：Boring V5.0 已針對 Antigravity 優化，啟動時 **零 stdout 輸出**，防止連線崩潰。
 > 3. **功能連動**：將多個伺服器並列，讓 Agent 能同時運用 RAG (NotebookLM) 與開發工具 (Boring)。
+> 4. **動態專案鎖定**：Boring 支援 **Dynamic Project Root**。您無需在設定檔中寫死 `BORING_PROJECT_ROOT`。
+>    - **自動偵測**：Boring 會自動根據 Tool 傳入的 `project_path` 或當前工作目錄尋找專案。
+>    - **多專案切換**：同一個 Server 實例可服務多個專案，只需在對話中告知 Agent 切換路徑即可。
+
+> **工具級參數**：
+> 所有的 MCP 工具現在都接受一個選用的 `project_path` 參數，您可以在對話中直接告訴 AI 專案路徑，例如：「使用 boring_list_workflows 並搜尋路徑 D:\MyProject」。
+
+### 3. Dual Mode & Interactive Delegation (New in V5.1)
+
+Boring 被設計為能夠根據環境自動切換模式的「變色龍」架構：
+
+-   **Autonomous Mode (Standard)**:
+    -   **場景**: 在 `gemini` CLI 中運行，或系統 PATH 中有安裝 `gemini` CLI。
+    -   **行為**: Boring 全自動驅動開發循環，直接調用 Gemini API 生成代碼並執行。
+    -   **特點**: 直接使用系統 CLI 認證，**無需設定 `GOOGLE_API_KEY`**。
+    -   **角色**: **Autonomous Agent (Thinker + Doer)**。
+
+-   **Interactive / Delegated Mode**:
+    -   **場景**: 在 **Cursor**、**VS Code** 中運行，或者環境中沒有安裝系統級 `gemini` CLI。
+    -   **行為**: Boring 轉變為 **Architect (架構師)**。它負責分析專案、規劃變更、驗證前次工作，但將 **"寫代碼"** 的工作 **委派 (Delegate)** 給您的 IDE 或宿主 Agent。
+    -   **工作流**:
+        1.  您調用 `boring` (例如透過 MCP 工具 `run_boring`)。
+        2.  Boring 分析上下文，生成精確的 **Prompt** 和 **Instructions**。
+        3.  Boring 將這些指令作為 **Tool Result** 直接返回給 Cursor。
+        4.  **Cursor (或您)** 使用 IDE 的原生 AI 功能執行這些指令。
+        5.  您再次調用 `boring`，它會自動驗證剛才的修改，並規劃下一步。
+    -   **角色**: **Architect & Verifier (Thinker only)**。
+
+> **提示**: 您可以通過 `run_boring` 工具的 `interactive` 參數強制指定模式。但通常情況下，Boring 會根據環境自動做出最正確的選擇。
 
 > [!IMPORTANT]
-> **常見錯誤排查**：
-> 1. **`context7` 404 錯誤**：請確保使用 `@upstash/context7-mcp`（而非 `@anthropic`）。
-> 2. **EOF / 連線超時**：請確保 `npx` 帶有 `-y` 參數，以免在背景等待確認輸入導致超時。
-> 3. **npm token 錯誤**：這通常與本機 npm 認證相關，但在使用 `-y` 存取公共套件時通常不會發生。
+> **常見錯誤排查 (Troubleshooting)**：
+>
+> 1.  **`invalid character 'M'` (或 JSON 解析錯誤)**：
+>     -   **原因**：使用 `boring-mcp` 可執行檔時，Python 輸出了額外日誌 (stdout) 汙染了 MCP 協議。
+>     -   **解決**：請改用 **優化配置 (python -m boring.mcp_server)**，這能保證純淨的輸出。
+>
+> 2.  **執行後「沒有後續」 / 感覺卡住**：
+>     -   **原因**：這是 **Interactive Mode** 的正常行為！Boring 擔任架構師 (Architect) 生成 Prompt 後，會主動停止並將執行權交還給 Cursor (Builder)。
+>     -   **解決**：不需要等待，請直接查看 Boring 回傳的 `Tool Result` (Instructions)，並使用 Cursor 執行它。
+>
+> 3.  **`Workflow not found`**：
+>     -   **原因**：安裝包中缺少模板檔案。
+>     -   **解決**：請在專案根目錄執行 `pip install .` 重新安裝修復版。
+>
+> 4.  **`context7` 404 錯誤**：請確保使用 `@upstash/context7-mcp`。
 
 ---
 
@@ -178,6 +274,38 @@ Boring V5.0 將 SpecKit 完整整合至 MCP Server，讓您能在 IDE 中直接�
 在 Chat 中輸入 `@boring` 即可呼叫上述工具，例如：
 > 「@boring 請執行 speckit_plan 幫我規劃實作」
 > 「@boring 執行 speckit_analyze 檢查目前實作與規格是否一致」
+
+---
+
+## 🔧 細粒度工具 (Granular Tools)
+
+V5.1 新增了細粒度工具，讓您不需運行完整 Agent Loop 即可執行特定操作：
+
+### 補丁與修改
+| 工具 | 功能 | 使用場景 |
+|:--|:--|:--|
+| `boring_apply_patch` | 對單一檔案執行 Search/Replace | 快速修改代碼、修復小錯誤 |
+| `boring_extract_patches` | 從 AI 輸出中提取並應用補丁 | 解析 AI 回應中的代碼修改 |
+
+### 驗證工具
+| 工具 | 功能 | 使用場景 |
+|:--|:--|:--|
+| `boring_verify_file` | 驗證單一檔案 (語法、Lint) | 快速檢查剛修改的檔案 |
+| `boring_verify` | 驗證整個專案 | 全面品質檢查 |
+
+### 使用範例
+
+```python
+# 透過 MCP 呼叫 (Cursor/Claude Desktop)
+@boring boring_apply_patch(
+    file_path="src/main.py",
+    search_text="def old_name():",
+    replace_text="def new_name():"
+)
+
+# 驗證修改結果
+@boring boring_verify_file(file_path="src/main.py")
+```
 
 ---
 

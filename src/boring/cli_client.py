@@ -48,11 +48,13 @@ class GeminiCLIAdapter(LLMClient):
         self,
         model_name: str = "gemini-2.0-flash-exp",
         log_dir: Optional[Path] = None,
-        timeout_seconds: int = 300
+        timeout_seconds: int = 300,
+        cwd: Optional[Path] = None
     ):
         self._model_name = model_name
         self.log_dir = log_dir or Path("logs")
         self.timeout_seconds = timeout_seconds
+        self.cwd = cwd
         
         # Verify CLI is installed
         self.cli_path = shutil.which("gemini")
@@ -64,7 +66,7 @@ class GeminiCLIAdapter(LLMClient):
                 "  gemini login"
             )
         
-        log_status(self.log_dir, "INFO", f"Gemini CLI Adapter initialized: {self.cli_path}")
+        log_status(self.log_dir, "INFO", f"Gemini CLI Adapter initialized: {self.cli_path} (cwd: {self.cwd})")
 
     @property
     def model_name(self) -> str:
@@ -158,10 +160,12 @@ class GeminiCLIAdapter(LLMClient):
         try:
             result = subprocess.run(
                 cmd,
+                stdin=subprocess.DEVNULL,  # CRITICAL: Prevent inheriting MCP's stdin
                 capture_output=True,
                 text=True,
                 timeout=self.timeout_seconds,
-                encoding="utf-8"
+                encoding="utf-8",
+                cwd=self.cwd  # Execute in project context
             )
             
             # Check for authentication errors
@@ -209,6 +213,7 @@ class GeminiCLIAdapter(LLMClient):
         try:
             result = subprocess.run(
                 cmd,
+                stdin=subprocess.DEVNULL,  # CRITICAL: Prevent inheriting MCP's stdin
                 capture_output=True,
                 text=True,
                 timeout=self.timeout_seconds,
@@ -277,9 +282,10 @@ def check_cli_authenticated() -> Tuple[bool, str]:
         # Run a simple test command
         result = subprocess.run(
             ["gemini", "-p", "hi", "--output-format", "text"],
+            stdin=subprocess.DEVNULL,  # CRITICAL: Prevent inheriting MCP's stdin
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=5  # Short timeout to avoid hangs
         )
         
         stderr = result.stderr.lower() if result.stderr else ""

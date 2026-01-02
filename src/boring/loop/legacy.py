@@ -317,6 +317,7 @@ class AgentLoop:
         try:
             tree_result = subprocess.run(
                 ["cmd", "/c", "tree", "/F", "/A", "src"],
+                stdin=subprocess.DEVNULL,
                 capture_output=True, text=True, timeout=10,
                 cwd=settings.PROJECT_ROOT
             )
@@ -336,6 +337,7 @@ class AgentLoop:
         try:
             git_result = subprocess.run(
                 ["git", "diff", "--stat", "HEAD~1"],
+                stdin=subprocess.DEVNULL,
                 capture_output=True, text=True, timeout=10,
                 cwd=settings.PROJECT_ROOT
             )

@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.0] - 2026-01-02
+
+### Added
+- **Smithery Deployment**: `smithery.yaml` configuration for one-click installation across all IDEs
+- **Docker Support**: Multi-stage `Dockerfile` with python:3.9-slim, non-root user, and health checks
+- **Granular MCP Tools**:
+  - `boring_apply_patch`: Single-file search/replace operations
+  - `boring_verify_file`: Single-file syntax and lint verification
+  - `boring_extract_patches`: Extract and apply patches from AI output
+- **Universal IDE Compatibility**: Works with Cursor, Claude Desktop, VS Code, and any MCP-compatible client
+
+### Changed
+- **README.md**: Added "多種部署方式" (Universal Installation) section
+- **README.md**: Added "細粒度工具" (Granular Tools) section with usage examples
+- **Version bump**: 4.1.0 → 5.1.0
+
+### Documentation
+- Smithery installation guide
+- Docker build and run commands
+- Docker Compose example configuration
+
 ## [4.1.0] - 2025-12-31
 
 ### Added

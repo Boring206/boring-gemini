@@ -4,14 +4,7 @@ site_author: Boring206
 repo_url: https://github.com/Boring206/boring-gemini
 
 theme:
-  name: material
-  palette:
-    primary: deep-purple
-    accent: amber
-  features:
-    - navigation.sections
-    - navigation.expand
-    - search.highlight
+  name: readthedocs
 
 plugins:
   - search

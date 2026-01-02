@@ -1,70 +1,118 @@
-# Ralph generated files
+# ==============================================================================
+# Boring for Gemini - Git Ignore
+# ==============================================================================
+
+# Boring Runtime State Files
 .call_count
 .last_reset
 .exit_signals
 status.json
+.circuit_breaker_state
+.circuit_breaker_history
+
+# Boring Memory & Brain
+.boring_memory/
+.boring_brain/
+.boring_delegated_prompt.md
+
+# Gemini CLI
+.gemini/
 
 # Logs
 logs/*
 !logs/.gitkeep
 *.log
 
-# Generated documentation
+# ==============================================================================
+# Python
+# ==============================================================================
+
+# Byte-compiled
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+env/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+src/boring_gemini.egg-info/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ==============================================================================
+# Documentation
+# ==============================================================================
 docs/generated/*
 !docs/generated/.gitkeep
+site/
 
-# OS files
-.DS_Store
-Thumbs.db
-
-# Temporary files
-*.tmp
-.temp/
-
-# Node modules (if using Node.js projects)
-node_modules/
-
-# Python cache (if using Python projects)
-__pycache__/
-*.pyc
-
-# Rust build (if using Rust projects)
-target/
-
-# IDE files
+# ==============================================================================
+# IDE / Editor
+# ==============================================================================
 .vscode/
 .idea/
 *.swp
 *.swo
+*.sublime-workspace
+*.sublime-project
 
-# Boring for Gemini state files
-.circuit_breaker_state
-.circuit_breaker_history
+# ==============================================================================
+# OS Files
+# ==============================================================================
+.DS_Store
+Thumbs.db
+Desktop.ini
 
-# Python build artifacts
-src/boring_gemini.egg-info/
+# ==============================================================================
+# Environment & Secrets
+# ==============================================================================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
 
-# Coverage reports
-.coverage
-
-
-# Boring Artifacts
-.boring_memory/
-.boring_brain/
-.gemini/
-
-# Test Artifacts
-.pytest_cache/
-htmlcov/
-site/
-.tox/
+# ==============================================================================
+# Temporary Files
+# ==============================================================================
+*.tmp
+.temp/
+tmp/
 
 # Temporary Verification Scripts
 check_mcp_tool_output.py
 verify_mcp_integrity.py
 inspect_memory.py
 
-# Python Distributions
-*.egg-info/
-dist/
-build/
+# ==============================================================================
+# Other Languages (for multi-language projects)
+# ==============================================================================
+
+# Node.js
+node_modules/
+
+# Rust
+target/
+

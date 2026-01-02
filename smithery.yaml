@@ -1,0 +1,46 @@
+# Smithery Configuration for Boring MCP Server
+# https://smithery.ai/docs/config
+#
+# Boring - Autonomous AI Development Agent
+# Provides IDE integration via Model Context Protocol (MCP)
+
+# Use container runtime for maximum flexibility (Python-based)
+runtime: container
+
+# Build configuration for Docker
+build:
+  dockerfile: Dockerfile
+  dockerBuildPath: .
+
+# Start command configuration
+startCommand:
+  type: http
+  
+  # Configuration schema - defines user-configurable options
+  # Smithery uses this to generate configuration UI
+  configSchema:
+    type: object
+    properties:
+      GOOGLE_API_KEY:
+        type: string
+        description: "Google API Key for Gemini SDK mode. Optional if using CLI mode."
+      BORING_PROJECT_ROOT:
+        type: string
+        description: "Optional: Override project root directory. Auto-detected if not set."
+      BORING_VERIFICATION_LEVEL:
+        type: string
+        enum: ["BASIC", "STANDARD", "FULL", "SEMANTIC"]
+        default: "STANDARD"
+        description: "Default verification level for code checks."
+    # No required fields - Boring can auto-detect most settings
+    required: []
+  
+  # Example configuration for testing
+  exampleConfig:
+    BORING_VERIFICATION_LEVEL: "STANDARD"
+
+# Environment variables to inject
+env:
+  BORING_MCP_MODE: "1"
+  # These can be overridden by user config
+  PYTHONUNBUFFERED: "1"

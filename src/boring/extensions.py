@@ -90,6 +90,7 @@ class ExtensionsManager:
         try:
             result = subprocess.run(
                 [self.gemini_cmd, "extensions", "list"],
+                stdin=subprocess.DEVNULL,
                 capture_output=True,
                 text=True,
                 timeout=10
@@ -126,6 +127,7 @@ class ExtensionsManager:
 
             result = subprocess.run(
                 cmd,
+                stdin=subprocess.DEVNULL,
                 capture_output=True,
                 text=True,
                 timeout=300 # Increased timeout

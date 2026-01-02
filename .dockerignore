@@ -1,0 +1,75 @@
+# ==============================================================================
+# Docker Ignore File for Boring MCP Server
+# ==============================================================================
+
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+htmlcov/
+.coverage
+.pytest_cache/
+.mypy_cache/
+
+# Virtual Environments
+.venv
+venv/
+ENV/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.cursor/
+
+# Project-specific
+.boring_memory/
+.boring_brain/
+.boring_extensions/
+logs/
+*.log
+.call_count
+.last_reset
+.exit_signals
+.circuit_breaker_state
+
+# Documentation build
+docs/_build/
+site/
+
+# Tests (not needed in production)
+tests/
+pytest.ini
+.coverage
+
+# Development files
+*.md
+!README.md
+Makefile
+.pre-commit-config.yaml
+
+# Smithery (not needed inside container)
+smithery.yaml

@@ -91,10 +91,10 @@ def setup_new_project(
         shutil.copytree(templates_dir / "specs", project_path / "specs", dirs_exist_ok=True)
 
     # Initialize git
-    subprocess.run(["git", "init"], check=True, capture_output=True)
+    subprocess.run(["git", "init"], stdin=subprocess.DEVNULL, check=True, capture_output=True)
     (project_path / "README.md").write_text(f"# {project_name}\n")
-    subprocess.run(["git", "add", "."], check=True, capture_output=True)
-    subprocess.run(["git", "commit", "-m", "Initial Boring project setup"], check=True, capture_output=True)
+    subprocess.run(["git", "add", "."], stdin=subprocess.DEVNULL, check=True, capture_output=True)
+    subprocess.run(["git", "commit", "-m", "Initial Boring project setup"], stdin=subprocess.DEVNULL, check=True, capture_output=True)
 
     console.print(f"✅ Project [bold green]{project_name}[/bold green] created at {project_path}!")
     console.print("\nNext steps:")
