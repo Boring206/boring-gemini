@@ -1273,7 +1273,39 @@ To connect Boring with NotebookLM and fix authentication issues:
         Returns:
             Confirmation string.
         """
-        return f"Task marked as done. Message delivered: {message}"
+        # Send Windows desktop notification
+        notification_sent = False
+        try:
+            # Try win10toast first (most reliable on Windows)
+            from win10toast import ToastNotifier
+            toaster = ToastNotifier()
+            toaster.show_toast(
+                "🤖 Boring Agent",
+                message[:200],  # Truncate long messages
+                duration=5,
+                threaded=True
+            )
+            notification_sent = True
+        except ImportError:
+            try:
+                # Fallback to plyer (cross-platform)
+                from plyer import notification
+                notification.notify(
+                    title="🤖 Boring Agent",
+                    message=message[:200],
+                    timeout=5
+                )
+                notification_sent = True
+            except ImportError:
+                pass  # No notification library available
+        except Exception:
+            pass  # Notification failed, continue anyway
+        
+        status = "✅ Task done"
+        if notification_sent:
+            status += " (Desktop notification sent)"
+        
+        return f"{status}. Message: {message}"
 
     @mcp.tool()
     def boring_list_workflows(project_path: Optional[str] = None) -> dict:

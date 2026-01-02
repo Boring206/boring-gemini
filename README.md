@@ -84,6 +84,7 @@ boring setup-extensions
 | **`run_boring`** | **主要入口**。給它一個任務描述，它會自動規劃並執行。 |
 | **`boring_verify`** | 執行全專案檢查 (Lint, Test, Import)。 |
 | **`boring_health_check`** | 檢查系統健康狀態。 |
+| **`boring_done`** | 🔔 完成通知。Agent 完成任務時呼叫，會發送 **Windows 桌面通知**。 |
 
 ### 2. SpecKit 工作流 (Spec-Driven)
 
@@ -99,6 +100,7 @@ boring setup-extensions
 | :--- | :--- |
 | **`boring_apply_patch`** | 精確修改檔案 (Search/Replace)，不破壞其他部分。 |
 | **`boring_verify_file`** | 單檔快速驗證。 |
+| **`boring_extract_patches`** | 從 AI 輸出中萃取並套用程式碼修改 (支援多種格式)。 |
 
 ---
 
