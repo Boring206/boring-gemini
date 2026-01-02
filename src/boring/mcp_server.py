@@ -422,22 +422,19 @@ if MCP_AVAILABLE and mcp is not None:
 
             # Auto-detect CLI if not specified
             if use_cli is None:
+                has_cli = shutil.which("gemini") is not None
                 if is_mcp:
-                    # In MCP mode, default to False to prefer delegation (Interactive Mode)
-                    # unless user EXPLICITLY sets use_cli=True
-                    use_cli = False
+                    # In MCP mode, if CLI is available, use it for Autonomous Mode.
+                    # Otherwise, fall back to Architect Mode (Delegated).
+                    use_cli = has_cli
                 else:
-                    # In standard terminal mode, auto-use CLI if available
-                    use_cli = shutil.which("gemini") is not None
+                    use_cli = has_cli
                 
             # Auto-enable interactive mode logic
             if interactive is None:
-                if is_mcp and not use_cli:
-                     # Default to Interactive in MCP context (Architect Mode)
-                     interactive = True
-                else:
-                     # Otherwise, fallback to CLI availability check
-                     interactive = not use_cli and shutil.which("gemini") is None
+                # If we are NOT using CLI, we likely need delegation (Architect Mode)
+                # If we ARE using CLI, we run autonomously (Non-Interactive)
+                interactive = not use_cli
             
             # Create temporary PROMPT.md with task
             prompt_file = project_root / "PROMPT.md"
@@ -720,7 +717,12 @@ if MCP_AVAILABLE and mcp is not None:
                 from .cli_client import GeminiCLIAdapter
                 # Initialize CLI adapter with project root as CWD and correct log dir
                 client = GeminiCLIAdapter(cwd=project_root, log_dir=settings.LOG_DIR)
-                result = client.generate(full_prompt)
+                
+                # CRITICAL: Force autonomous mode for CLI to preventing blocking on "confirmation"
+                cli_prompt = full_prompt + "\n\nCRITICAL: You are running in Autonomous CLI Mode. Do NOT ask for user confirmation or clarifying questions. Proceed immediately with generating the final output/artifacts as requested."
+                
+                result = client.generate_with_retry(cli_prompt) if hasattr(client, "generate_with_retry") else client.generate(cli_prompt)[0]
+                
                 return {
                     "status": "SUCCESS",
                     "workflow": workflow_name,

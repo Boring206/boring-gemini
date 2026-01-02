@@ -5,6 +5,8 @@
 
 > **企業級自主 AI 開發代理 (Autonomous Developer)**  
 > 專為 Cursor / Claude Desktop / VS Code 打造，利用 Google Gemini 模型驅動的自動化編碼與驗證引擎。
+>
+> ✅ **Verified Platforms**: Gemini CLI • Antigravity • Cursor
 
 ---
 
