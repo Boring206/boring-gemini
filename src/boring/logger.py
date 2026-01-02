@@ -8,6 +8,7 @@ Supports both console and JSON file output for observability.
 import json
 import sys
 import logging
+import os
 from pathlib import Path
 from datetime import datetime, timedelta
 from typing import Optional, Any
@@ -15,7 +16,9 @@ from typing import Optional, Any
 import structlog
 from rich.console import Console
 
-console = Console()
+# MCP-compatible Rich Console (stderr, quiet in MCP mode)
+_is_mcp_mode = os.environ.get("BORING_MCP_MODE") == "1"
+console = Console(stderr=True, quiet=_is_mcp_mode)
 
 # Configure Python's logging first
 logging.basicConfig(

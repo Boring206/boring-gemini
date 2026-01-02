@@ -23,7 +23,9 @@ from rich.panel import Panel
 from .config import settings
 from .logger import log_status
 
-console = Console()
+# MCP-compatible Rich Console (stderr, quiet in MCP mode)
+_is_mcp_mode = os.environ.get("BORING_MCP_MODE") == "1"
+console = Console(stderr=True, quiet=_is_mcp_mode)
 
 
 class HealthStatus(Enum):
@@ -197,7 +199,9 @@ def check_required_dependencies() -> HealthCheckResult:
 
 
 def check_optional_dependencies() -> HealthCheckResult:
-    """Check optional dependencies."""
+    """Check optional dependencies without importing (to avoid slow TensorFlow/PyTorch load)."""
+    import importlib.util
+    
     optional = {
         "chromadb": "Vector Memory",
         "sentence_transformers": "Embeddings",
@@ -206,10 +210,12 @@ def check_optional_dependencies() -> HealthCheckResult:
     missing = []
     
     for package, feature in optional.items():
-        try:
-            __import__(package)
+        # Use find_spec to check if package is installed WITHOUT importing it
+        # This is MUCH faster than __import__ for heavy packages like sentence_transformers
+        spec = importlib.util.find_spec(package)
+        if spec is not None:
             available.append(feature)
-        except ImportError:
+        else:
             missing.append(feature)
     
     if not available:

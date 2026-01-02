@@ -87,26 +87,35 @@ Boring 利用 Gemini 的強大能力，支援 **所有主流程式語言** 的�
 
 ---
 
-## 🔌 IDE 整合 (Cursor / VS Code)
+## 🔌 IDE 整合 (Cursor / Claude Desktop / VS Code)
 
-透過 MCP 將 Boring 整合到 IDE，讓 AI 代理直接在編輯器中協作：
+透過 MCP 將 Boring 整合到您的開發環境：
 
-### 1. 基礎安裝
-```bash
-pip install boring-gemini[mcp]
+### 1. 通用簡單配置 (適用於 Claude Desktop)
+最簡單的配置方式，直接使用安裝好的指令。
+
+**%APPDATA%\Claude\claude_desktop_config.json**：
+```json
+{
+  "mcpServers": {
+    "boring": {
+      "command": "boring-mcp"
+    }
+  }
+}
 ```
 
-### 2. 進階配置 (推薦：多 Server 模式)
-為了讓 Agent 能同時使用 **Boring**, **NotebookLM**, **Context7** 等強大工具，建議在 IDE 中配置多個 MCP Server。
+---
 
-**Cursor Settings → MCP Servers (JSON 配置範例)**：
+### 2. Antigravity / Cursor 優化配置 (推薦)
+針對具有強大工具呼叫能力的 **Antigravity** 或 **Cursor**，建議使用以下配置以獲得最高穩定性與全功能支援：
 
 ```json
 {
   "mcpServers": {
     "boring": {
-      "command": "boring-mcp",
-      "args": [],
+      "command": "python",
+      "args": ["-m", "boring.mcp_server"],
       "env": {}
     },
     "notebooklm": {
@@ -115,21 +124,27 @@ pip install boring-gemini[mcp]
     },
     "context7": {
       "command": "npx",
-      "args": ["-y", "@anthropic/context7-mcp"]
+      "args": ["-y", "@upstash/context7-mcp"]
     },
     "criticalthink": {
       "command": "npx",
-      "args": ["-y", "slash-criticalthink"]
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     }
   }
 }
 ```
 
-> **為什麼這樣配置？**
-> - **@boring**: 負責核心開發邏輯、SpecKit 流程 (`run_boring`, `speckit_plan`)。
-> - **@notebooklm**: 提供私有知識庫查詢 (RAG)。
-> - **@context7**: 提供最新的函式庫文檔查詢。
-> - **@criticalthink**: 提供深度邏輯批判與推理能力。
+> [!IMPORTANT]
+> **為什麼 Antigravity 推薦這樣寫？**
+> 1. **穩定性**：使用 `python -m` 呼叫可避免 Windows PATH 解析問題。
+> 2. **協議純淨**：Boring V5.0 已針對 Antigravity 優化，啟動時 **零 stdout 輸出**，防止連線崩潰。
+> 3. **功能連動**：將多個伺服器並列，讓 Agent 能同時運用 RAG (NotebookLM) 與開發工具 (Boring)。
+
+> [!IMPORTANT]
+> **常見錯誤排查**：
+> 1. **`context7` 404 錯誤**：請確保使用 `@upstash/context7-mcp`（而非 `@anthropic`）。
+> 2. **EOF / 連線超時**：請確保 `npx` 帶有 `-y` 參數，以免在背景等待確認輸入導致超時。
+> 3. **npm token 錯誤**：這通常與本機 npm 認證相關，但在使用 `-y` 存取公共套件時通常不會發生。
 
 ---
 
