@@ -49,6 +49,7 @@ class StatefulAgentLoop:
         prompt_file: Optional[Path] = None,
         context_file: Optional[Path] = None,
         verification_level: str = "STANDARD",
+        interactive: bool = False,
     ):
         """Initialize the agent loop with configuration."""
         init_directories()
@@ -58,6 +59,7 @@ class StatefulAgentLoop:
             model_name=model_name,
             use_cli=use_cli,
             verbose=verbose,
+            interactive=interactive,
             verification_level=verification_level.upper(),
             project_root=settings.PROJECT_ROOT,
             log_dir=settings.LOG_DIR,
@@ -90,20 +92,21 @@ class StatefulAgentLoop:
             log_status(ctx.log_dir, "WARN", f"Failed to init storage: {e}")
         
         # Gemini client (SDK mode only)
-        if not ctx.use_cli:
-            ctx.gemini_client = create_gemini_client(
-                log_dir=ctx.log_dir, 
-                model_name=ctx.model_name
-            )
-            if not ctx.gemini_client:
-                raise RuntimeError("Failed to initialize Gemini SDK client")
-        else:
-            # Verify CLI is available
-            if not shutil.which("gemini"):
-                raise RuntimeError(
-                    "Gemini CLI not found in PATH. "
-                    "Install with: npm install -g @google/gemini-cli"
+        if not ctx.interactive:
+            if not ctx.use_cli:
+                ctx.gemini_client = create_gemini_client(
+                    log_dir=ctx.log_dir, 
+                    model_name=ctx.model_name
                 )
+                if not ctx.gemini_client:
+                    raise RuntimeError("Failed to initialize Gemini SDK client")
+            else:
+                # Verify CLI is available
+                if not shutil.which("gemini"):
+                    raise RuntimeError(
+                        "Gemini CLI not found in PATH. "
+                        "Install with: npm install -g @google/gemini-cli"
+                    )
         
         # Log status
         if ctx.verbose:

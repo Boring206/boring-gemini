@@ -56,7 +56,11 @@ class ThinkingState(LoopState):
             prompt = self._build_prompt(context)
             context_str = self._build_context(context)
             
-            # Call Gemini API
+            # Interactive Mode: Delegate to Host
+            if context.interactive:
+                return self._execute_delegated(context, prompt, context_str)
+            
+            # Autonomous Mode: Call Gemini API
             if context.use_cli:
                 return self._execute_cli(context, prompt, context_str)
             else:
@@ -66,7 +70,44 @@ class ThinkingState(LoopState):
             log_status(context.log_dir, "ERROR", f"Generation failed: {e}")
             context.errors_this_loop.append(str(e))
             return StateResult.FAILURE
-    
+
+    def _execute_delegated(self, context: LoopContext, prompt: str, context_str: str) -> StateResult:
+        """Delegate execution to the host environment (IDE/User)."""
+        log_status(context.log_dir, "INFO", "Delegating execution to host environment")
+        
+        # Prepare delegation message
+        message = (
+            f"# 🛑 Interactive Action Required\n\n"
+            f"The Boring Agent has prepared the context and instructions. "
+            f"Please execute the following using your IDE's AI:\n\n"
+            f"## Instructions\n"
+            f"{prompt}\n\n"
+            f"## Context Summary\n"
+            f"Included {len(context_str)} chars of project context.\n\n"
+            f"## Next Steps\n"
+            f"1. Read the instructions above.\n"
+            f"2. Apply the changes using your AI Assistant.\n"
+            f"3. Run `boring` again to verify and continue.\n"
+        )
+        
+        # Save explicit prompt for user convenience
+        output_file = context.project_root / ".boring_delegated_prompt.md"
+        try:
+            full_content = f"{prompt}\n\n# Context\n{context_str}"
+            output_file.write_text(full_content, encoding="utf-8")
+            message += f"\n(Full prompt saved to: {output_file.name})"
+        except Exception:
+            pass
+            
+        console.print(Panel(message, title="Delegation Mode", border_style="yellow"))
+        
+        # Store message for tool return
+        context.output_content = message
+        
+        # Mark as success but exit loop
+        context.mark_exit("Delegated to Host")
+        return StateResult.EXIT
+
     def next_state(self, context: LoopContext, result: StateResult) -> Optional[LoopState]:
         """Determine next state based on generation result."""
         # Record telemetry
@@ -198,7 +239,8 @@ class ThinkingState(LoopState):
         adapter = GeminiCLIAdapter(
             model_name=context.model_name,
             log_dir=context.log_dir,
-            timeout_seconds=settings.TIMEOUT_MINUTES * 60
+            timeout_seconds=settings.TIMEOUT_MINUTES * 60,
+            cwd=context.project_root
         )
         
         timestamp = time.strftime('%Y-%m-%d_%H-%M-%S')

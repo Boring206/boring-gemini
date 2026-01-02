@@ -111,6 +111,7 @@ def check_git_repo(project_root: Path) -> HealthCheckResult:
         # Check for uncommitted changes
         result = subprocess.run(
             ["git", "status", "--porcelain"],
+            stdin=subprocess.DEVNULL,
             capture_output=True,
             text=True,
             cwd=project_root,

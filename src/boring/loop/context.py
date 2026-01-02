@@ -33,6 +33,7 @@ class LoopContext:
     model_name: str = settings.DEFAULT_MODEL
     use_cli: bool = False
     verbose: bool = False
+    interactive: bool = False
     verification_level: str = "STANDARD"
     project_root: Path = field(default_factory=lambda: settings.PROJECT_ROOT)
     log_dir: Path = field(default_factory=lambda: settings.LOG_DIR)

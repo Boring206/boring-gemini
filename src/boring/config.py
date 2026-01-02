@@ -28,11 +28,31 @@ class Settings(BaseSettings):
     
     # Project Paths
     def _find_project_root() -> Path:
-        """Find project root by looking for anchor files."""
+        """Find project root by looking for anchor files.
+        
+        Search strategy:
+        1. First try CWD and its parents (for boring start command)
+        2. Then try __file__ location and its parents (for MCP server)
+        3. Fall back to CWD if nothing found
+        """
+        anchor_files = [".git", ".boring_brain", ".agent"]
+        
+        # Strategy 1: Search from CWD
         current = Path.cwd()
         for parent in [current] + list(current.parents):
-            if (parent / ".git").exists() or (parent / ".boring_brain").exists():
-                return parent
+            for anchor in anchor_files:
+                if (parent / anchor).exists():
+                    return parent
+        
+        # Strategy 2: Search from this file's location (for MCP mode)
+        # This file is at src/boring/config.py, so project root is 3 levels up
+        file_location = Path(__file__).resolve().parent.parent.parent
+        for parent in [file_location] + list(file_location.parents):
+            for anchor in anchor_files:
+                if (parent / anchor).exists():
+                    return parent
+        
+        # Strategy 3: Fallback to CWD
         return current
 
     PROJECT_ROOT: Path = Field(default_factory=_find_project_root)

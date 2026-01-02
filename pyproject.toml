@@ -1,7 +1,7 @@
 [project]
 name = "boring-gemini"
-version = "4.1.0"
-description = "Autonomous AI development loop with Function Calling, Diff Patching, Vector Memory, and Advanced Verification."
+version = "5.1.0"
+description = "Enterprise-grade autonomous AI development agent with Smithery/Docker deployment, granular MCP tools, and IDE-agnostic integration."
 authors = [
     { name = "Boring206", email = "C112156246@nkust.edu.tw" }
 ]
@@ -71,7 +71,7 @@ where = ["src"]
 include = ["boring*"]
 
 [tool.setuptools.package-data]
-boring = ["templates/*"]
+boring = ["templates/**/*", "templates/workflows/*", "templates/specs/*"]
 
 # Ruff linter configuration
 [tool.ruff]

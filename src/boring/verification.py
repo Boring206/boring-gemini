@@ -11,6 +11,7 @@ Implements rules-based verification for generated code:
 import subprocess
 import sys
 import re
+import os
 from pathlib import Path
 from typing import Tuple, List, Dict, Optional
 from dataclasses import dataclass
@@ -39,9 +40,10 @@ class CodeVerifier:
     3. FULL: Syntax + Linting + Tests (requires pytest)
     """
     
-    def __init__(self, project_root: Path = None, log_dir: Path = None):
+    def __init__(self, project_root: Path = None, log_dir: Path = None, judge = None):
         self.project_root = project_root or settings.PROJECT_ROOT
         self.log_dir = log_dir or settings.LOG_DIR
+        self.judge = judge
         
         # Check available tools
         self.has_ruff = self._check_tool("ruff", "--version")
@@ -52,6 +54,7 @@ class CodeVerifier:
         try:
             result = subprocess.run(
                 [tool, version_arg],
+                stdin=subprocess.DEVNULL,
                 capture_output=True,
                 timeout=5
             )
@@ -105,6 +108,7 @@ class CodeVerifier:
         try:
             result = subprocess.run(
                 ["ruff", "check", str(file_path), "--output-format", "text"],
+                stdin=subprocess.DEVNULL,
                 capture_output=True,
                 text=True,
                 timeout=30,
@@ -210,6 +214,7 @@ class CodeVerifier:
         try:
             result = subprocess.run(
                 ["pytest", str(test_target), "-v", "--tb=short", "-q"],
+                stdin=subprocess.DEVNULL,
                 capture_output=True,
                 text=True,
                 timeout=120,
@@ -264,27 +269,46 @@ class CodeVerifier:
         results.append(self.verify_syntax(file_path))
         
         # Standard level adds linting
-        if level in ["STANDARD", "FULL"]:
+        if level in ["STANDARD", "FULL", "SEMANTIC"]:
             results.append(self.verify_lint(file_path))
             results.append(self.verify_imports(file_path))
+            
+        # Semantic level adds LLM Judge
+        if level == "SEMANTIC" and self.judge:
+            results.append(self.verify_semantics(file_path))
         
         return results
     
     def verify_project(self, level: str = "STANDARD") -> Tuple[bool, str]:
         """
         Verify all Python files in the project.
-        
-        Returns:
-            (all_passed, summary_message)
         """
-        src_dir = self.project_root / "src"
-        if not src_dir.exists():
-            return True, "No src directory found"
+        target_dir = self.project_root / "src"
+        scan_root = True
+        
+        if target_dir.exists():
+            scan_root = False
+        else:
+            target_dir = self.project_root
+            
+        if not target_dir.exists():
+             return True, "Project directory not found"
         
         all_results: List[VerificationResult] = []
         
-        for py_file in src_dir.rglob("*.py"):
-            all_results.extend(self.verify_file(py_file, level))
+        # Exclude common dirs if scanning root
+        excludes = {".git", ".github", ".vscode", ".idea", "venv", ".venv", "node_modules", "build", "dist", "__pycache__"}
+        
+        # Efficiently walk directory avoiding excluded paths
+        for root, dirs, files in os.walk(target_dir):
+            # Modify dirs in-place to prune traversal
+            dirs[:] = [d for d in dirs if d not in excludes]
+            
+            root_path = Path(root)
+            for file in files:
+                if file.endswith(".py"):
+                    file_path = root_path / file
+                    all_results.extend(self.verify_file(file_path, level))
         
         # Run tests if FULL level
         if level == "FULL":
@@ -306,6 +330,52 @@ class CodeVerifier:
                 summary_parts.append(f"💡 Suggestion: {result.suggestions[0]}")
         
         return False, "\n".join(summary_parts)
+
+    def verify_semantics(self, file_path: Path) -> VerificationResult:
+        """Run LLM Judge on file."""
+        try:
+             content = file_path.read_text(encoding="utf-8")
+             # Determine if we should be interactive (TODO: Pass this down properly)
+             # For now, we assume if judge exists we try normal mode, BUT we need a way to signal interactive
+             # Let's try passing the flag if the judge was init'd with interactive context? 
+             # Or just check result structure.
+             
+             # FORCE INT: As per user request ("give it to cursor"), we default to interactive prompt generation
+             # when running inside an IDE context.
+             feedback = self.judge.grade_code(file_path.name, content, interactive=True)
+             
+             if feedback.get("status") == "pending_manual_review":
+                 return VerificationResult(
+                     passed=False, # Technically failed auto-verify
+                     check_type="semantic",
+                     message="⚠️ Manual Review Required (Delegated to Cursor)",
+                     details=["Copy the prompt below to Cursor AI:"],
+                     suggestions=[feedback.get("prompt", "")]
+                 )
+
+             score = feedback.get("score", 0)
+             passed = score >= 4.0
+             
+             details = []
+             if "breakdown" in feedback:
+                 for k, v in feedback["breakdown"].items():
+                     details.append(f"{k}: {v.get('score')}/5 - {v.get('comment')}")
+             
+             return VerificationResult(
+                 passed=passed,
+                 check_type="semantic",
+                 message=f"Semantic Score: {score}/5.0 ({'PASS' if passed else 'FAIL'})",
+                 details=details,
+                 suggestions=feedback.get("suggestions", [])
+             )
+        except Exception as e:
+             return VerificationResult(
+                 passed=False,
+                 check_type="semantic",
+                 message=f"Judge failed: {e}",
+                 details=[],
+                 suggestions=[]
+             )
     
     def generate_feedback_prompt(self, results: List[VerificationResult]) -> str:
         """Generate a detailed feedback prompt for the AI based on verification results."""
