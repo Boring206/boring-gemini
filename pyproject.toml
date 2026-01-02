@@ -43,6 +43,7 @@ vector = [
 ]
 mcp = [
     "fastmcp>=0.4.0",  # FastMCP framework for MCP server
+    "win10toast>=0.9; platform_system=='Windows'",  # Windows desktop notifications
 ]
 all = [
     "chromadb>=0.4.0",
