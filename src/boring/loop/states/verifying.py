@@ -20,7 +20,7 @@ from ...circuit import record_loop_result
 from ...limiter import increment_call_counter
 from ...config import settings
 
-console = Console()
+from ...logger import console
 
 
 class VerifyingState(LoopState):

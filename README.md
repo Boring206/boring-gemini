@@ -51,11 +51,34 @@ Boring 支援多種安裝方式，讓您在任何 IDE 環境中使用：
 ```bash
 # 透過 Smithery CLI 安裝
 npx @smithery/cli install boring-gemini
-
-# 或在 Claude Desktop / Cursor 中搜索 "boring-gemini"
 ```
 
-安裝後自動配置到您的 IDE，無需手動設定。
+**重要的配置說明 (Required Configuration)**
+Boring 的核心能力深度依賴 `context7` (用於查詢技術文件) 與 `notebooklm` (用於 RAG)。
+由於 Smithery 僅能部署 Boring 本體，**您必須**在設定檔中手動加入以下配套服務，才能獲得完整的開發體驗：
+
+```json
+{
+  "mcpServers": {
+    "boring": {
+      "command": "npx",
+      "args": ["-y", "@smithery/cli", "run", "boring-gemini", "--config", "{}"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    },
+    "criticalthink": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "notebooklm": {
+      "command": "npx",
+      "args": ["-y", "notebooklm-mcp@latest"]
+    }
+  }
+}
+```
 
 ### 方式 2: Docker (跨平台一致性)
 
@@ -106,7 +129,7 @@ services:
     - **`boring_apply_patch`**: 高效 SEARCH/REPLACE 修改，避免大檔案覆寫風險。
     - **`boring_verify_file`**: 即時語句與 Lint 檢查，確保每一行代碼都正確。
     - **`boring_extract_patches`**: 從任意冗長 AI 輸出中提取有效補丁。
-4.  **�️ 企業級驗證系統 (CodeVerifier)**:
+4.  **企業級驗證系統 (CodeVerifier)**:
     - **五級驗證**: `BASIC`, `STANDARD`, `FULL`, `SEMANTIC` (LLM-as-a-Judge)。
     - **自動修復**: 結合 `ruff` 與 `pytest` 自動偵測並嘗試修復錯誤。
 5.  **Circuit Breaker V5.0 (智能斷路)**:
@@ -152,7 +175,7 @@ Boring 利用 Gemini 的強大能力，支援 **所有主流程式語言** 的�
 ### 1. 通用簡單配置 (適用於 Claude Desktop)
 最簡單的配置方式，直接使用安裝好的指令。
 
-**%APPDATA%\Claude\claude_desktop_config.json**：
+**%APPDATA%\Claude\claude_desktop_config.json**或者gemini.json：
 ```json
 {
   "mcpServers": {
@@ -366,8 +389,11 @@ boring start --backend cli
 如果您希望在 `gemini` 終端機中直接呼叫 Boring 工具 (如啟動任務、查詢狀態)：
 
 ```bash
-# 將 boring-mcp 註冊到 Gemini CLI
+# 將 boring-mcp 註冊到 Gemini CLI (本地安裝版)
 gemini mcp add boring boring-mcp
+
+# 或者，如果您已發布到 Smithery (免安裝，直接運行)
+gemini mcp add boring npx -- -y @smithery/cli run boring-gemini
 ```
 
 註冊後，您就可以在 `gemini` 聊天中說：「幫我用 boring 跑一個任務...」。

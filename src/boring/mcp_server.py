@@ -27,6 +27,55 @@ import traceback
 # Set MCP mode flag IMMEDIATELY to signal all downstream modules
 os.environ["BORING_MCP_MODE"] = "1"
 
+class _BytesInterceptor:
+    """
+    Intercepts binary writes to stdout.buffer.
+    This is necessary because some libraries (like Rich) may write directly to buffer
+    or use binary mode, bypassing the text-based _StdoutInterceptor.
+    """
+    def __init__(self, original_buffer, parent):
+        self._original = original_buffer
+        self._parent = parent
+
+    def write(self, data):
+        # Handle both bytes and memoryview
+        if isinstance(data, memoryview):
+            data_bytes = data.tobytes()
+        else:
+            data_bytes = data
+
+        if self._parent._passthrough or self._parent._mcp_started:
+            return self._original.write(data)
+
+        stripped = data_bytes.strip()
+        if stripped.startswith(b"{") or stripped.startswith(b"["):
+             self._parent._mcp_started = True
+             return self._original.write(data)
+        
+        if data_bytes in (b"\n", b"\r\n", b"\r"):
+            return self._original.write(data)
+
+        # Log to stderr
+        try:
+             # Attempt to decode for cleaner logs, fallback to repr
+             try:
+                 text = data_bytes.decode('utf-8', errors='replace')
+                 sys.stderr.write(f"\n[STDOUT POLLUTION (BYTES)] {text[:200]}\n")
+             except:
+                 sys.stderr.write(f"\n[STDOUT POLLUTION (BYTES)] {repr(data_bytes[:200])}\n")
+        except:
+             pass
+             
+        # Return length to pretend we wrote it
+        return len(data)
+
+    def flush(self):
+        self._original.flush()
+    
+    def __getattr__(self, name):
+        return getattr(self._original, name)
+
+
 class _StdoutInterceptor:
     """
     Intercepts all writes to stdout and logs them to stderr with stack trace.
@@ -40,20 +89,19 @@ class _StdoutInterceptor:
         self._original = original_stdout
         self._passthrough = os.environ.get("BORING_MCP_DEBUG_PASSTHROUGH") == "1"
         self._mcp_started = False
+        self._buffer_wrapper = None
     
     def write(self, data: str):
-        if not data or data.strip() == "":
-            return  # Ignore empty writes
+        if not data:
+            return
         
         # If passthrough is enabled or MCP has started, let it through
         if self._passthrough or self._mcp_started:
             return self._original.write(data)
         
         # AUTO-ALLOW JSON-RPC messages (starts with '{' or is just whitespace/newline after JSON)
-        # This is critical for FastMCP to work before mark_mcp_started() is called
         stripped = data.strip()
         if stripped.startswith("{") or stripped.startswith("["):
-            # Looks like JSON, let it through and mark MCP as started
             self._mcp_started = True
             return self._original.write(data)
         
@@ -61,22 +109,8 @@ class _StdoutInterceptor:
         if data in ("\n", "\r\n", "\r"):
             return self._original.write(data)
         
-        # Otherwise, log the pollution attempt to stderr with stack trace
-        stack = traceback.format_stack()
-        # Filter out this interceptor's own frames
-        filtered_stack = [frame for frame in stack if "_StdoutInterceptor" not in frame]
-        
-        sys.stderr.write("\n" + "=" * 60 + "\n")
-        sys.stderr.write("⚠️  STDOUT POLLUTION DETECTED!\n")
-        sys.stderr.write("=" * 60 + "\n")
-        sys.stderr.write(f"Data attempted to write: {repr(data[:200])}{'...' if len(data) > 200 else ''}\n")
-        sys.stderr.write("-" * 60 + "\n")
-        sys.stderr.write("Stack trace (culprit):\n")
-        sys.stderr.write("".join(filtered_stack[-8:]))  # Last 8 frames
-        sys.stderr.write("=" * 60 + "\n\n")
-        sys.stderr.flush()
-        
-        # Do NOT write to original stdout to preserve MCP protocol
+        # Otherwise, log the pollution attempt to stderr
+        sys.stderr.write(f"\n[STDOUT POLLUTION] {repr(data[:200])}\n")
         return
     
     def flush(self):
@@ -86,7 +120,9 @@ class _StdoutInterceptor:
         return self._original.fileno()
     
     def isatty(self):
-        return self._original.isatty()
+        # FORCE FALSE to prevent tools like Rich from auto-detecting TTY and 
+        # using using buffer/colors which might bypass interception
+        return False
     
     def mark_mcp_started(self):
         """Call this when MCP protocol handshake begins to allow JSON-RPC through."""
@@ -102,12 +138,14 @@ class _StdoutInterceptor:
     
     @property
     def buffer(self):
-        """Return the underlying binary buffer.
-        
-        FastMCP and other libraries may access sys.stdout.buffer for binary writes.
-        We return the original's buffer to allow binary I/O to work correctly.
-        """
-        return self._original.buffer
+        """Return the intercepted binary buffer."""
+        if self._buffer_wrapper is None:
+            # Check if original has buffer (it should)
+            if hasattr(self._original, 'buffer'):
+                self._buffer_wrapper = _BytesInterceptor(self._original.buffer, self)
+            else:
+                return None
+        return self._buffer_wrapper
     
     @property
     def mode(self):
@@ -465,7 +503,18 @@ if MCP_AVAILABLE and mcp is not None:
         try:
             from .health import run_health_check
             
-            report = run_health_check()
+            import os
+            import shutil
+            
+            # Auto-detect backend: If no API key but CLI exists, check CLI health
+            has_key = "GOOGLE_API_KEY" in os.environ and os.environ["GOOGLE_API_KEY"]
+            has_cli = shutil.which("gemini") is not None
+            
+            backend = "api"
+            if not has_key and has_cli:
+                backend = "cli"
+            
+            report = run_health_check(backend=backend)
             
             checks = []
             for check in report.checks:
@@ -1167,6 +1216,20 @@ To connect Boring with NotebookLM and fix authentication issues:
 
    Or if configured in IDE, use the `setup_auth` tool from the `notebooklm` server.
 """
+
+    @mcp.tool()
+    def boring_done(message: str) -> str:
+        """
+        Report task completion to the user.
+        Use this tool when you have finished your work and want to show a final message.
+        
+        Args:
+            message: The message to show to the user.
+            
+        Returns:
+            Confirmation string.
+        """
+        return f"Task marked as done. Message delivered: {message}"
 
     @mcp.tool()
     def boring_list_workflows(project_path: Optional[str] = None) -> dict:

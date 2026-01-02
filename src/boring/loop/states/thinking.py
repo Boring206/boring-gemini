@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 from ...config import settings
 from ...logger import log_status
 
-console = Console()
+from ...logger import console
 
 
 class ThinkingState(LoopState):

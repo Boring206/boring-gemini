@@ -26,7 +26,7 @@ from ..storage import create_storage
 from ..gemini_client import create_gemini_client
 from ..backup import BackupManager
 
-console = Console()
+from ..logger import console
 
 
 class StatefulAgentLoop:

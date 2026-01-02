@@ -19,7 +19,7 @@ from ...logger import log_status
 from ...backup import BackupManager
 from ...security import validate_file_path, sanitize_content
 
-console = Console()
+from ...logger import console
 
 
 class PatchingState(LoopState):
