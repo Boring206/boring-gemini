@@ -9,6 +9,7 @@
 status.json
 .circuit_breaker_state
 .circuit_breaker_history
+.response_analysis
 
 # Boring Memory & Brain
 .boring_memory/
@@ -22,6 +23,7 @@ status.json
 logs/*
 !logs/.gitkeep
 *.log
+gemini_output_*.log
 
 # ==============================================================================
 # Python
@@ -49,12 +51,14 @@ dist/
 .eggs/
 src/boring_gemini.egg-info/
 
-# Testing
+# Testing & Quality
 .pytest_cache/
 .coverage
 htmlcov/
 .tox/
 .nox/
+.ruff_cache/
+.hypothesis/
 
 # Type checking
 .mypy_cache/
@@ -67,6 +71,7 @@ dmypy.json
 docs/generated/*
 !docs/generated/.gitkeep
 site/
+mkdocs_build/
 
 # ==============================================================================
 # IDE / Editor
@@ -77,6 +82,7 @@ site/
 *.swo
 *.sublime-workspace
 *.sublime-project
+.cursor/
 
 # ==============================================================================
 # OS Files
@@ -100,6 +106,7 @@ Desktop.ini
 *.tmp
 .temp/
 tmp/
+temp/
 
 # Temporary Verification Scripts
 check_mcp_tool_output.py
@@ -112,7 +119,9 @@ inspect_memory.py
 
 # Node.js
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Rust
 target/
-

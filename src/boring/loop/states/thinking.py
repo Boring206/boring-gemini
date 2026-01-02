@@ -235,6 +235,8 @@ class ThinkingState(LoopState):
     def _execute_cli(self, context: LoopContext, prompt: str, context_str: str) -> StateResult:
         """Execute using Gemini CLI."""
         from ...cli_client import GeminiCLIAdapter
+        from ...diff_patcher import extract_search_replace_blocks
+        from ...file_patcher import extract_file_blocks
         
         adapter = GeminiCLIAdapter(
             model_name=context.model_name,
@@ -246,16 +248,64 @@ class ThinkingState(LoopState):
         timestamp = time.strftime('%Y-%m-%d_%H-%M-%S')
         context.output_file = context.log_dir / f"gemini_output_{timestamp}.log"
         
-        response_text, success = adapter.generate(prompt, context=context_str)
+        # Inject instruction for Text-based Tools if likely needed
+        text_tools_instruction = (
+            "\n\nSYSTEM: You are in CLI Mode. Tools are not available natively.\n"
+            "To write files, use:\n"
+            "# File: path/to/file\n"
+            "```code\ncontent\n```\n\n"
+            "To edit, use SEARCH/REPLACE blocks.\n"
+            "To finish, say: boring_done(message=\"...\")"
+        )
+        cli_prompt = prompt + text_tools_instruction
+        
+        response_text, success = adapter.generate(cli_prompt, context=context_str)
         
         context.output_content = response_text
-        # CLI mode doesn't have structured function calls
         context.function_calls = []
+        
+        # EXTRACT TOOLS FROM TEXT
+        # 1. File Blocks
+        file_blocks = extract_file_blocks(response_text)
+        for path, content in file_blocks.items():
+            context.function_calls.append({
+                "name": "write_file",
+                "args": {"file_path": path, "content": content}
+            })
+
+        # 2. Search/Replace Blocks
+        sr_blocks = extract_search_replace_blocks(response_text)
+        for block in sr_blocks:
+            context.function_calls.append({
+                "name": "search_replace",
+                "args": {
+                    "file_path": block.get("file_path"),
+                    "search": block.get("search"),
+                    "replace": block.get("replace")
+                }
+            })
+            
+        # 3. Done Signal
+        if "boring_done" in response_text or "Task completed" in response_text:
+             # Extract message if possible or use default
+             msg = "Completed via CLI"
+             if 'boring_done(message="' in response_text:
+                 try:
+                     msg = response_text.split('boring_done(message="')[1].split('"')[0]
+                 except:
+                     pass
+             context.function_calls.append({
+                 "name": "report_status",
+                 "args": {"status": "COMPLETE", "exit_signal": True, "message": msg}
+             })
         
         try:
             context.output_file.write_text(response_text, encoding="utf-8")
         except Exception:
             pass
+        
+        if context.function_calls:
+            log_status(context.log_dir, "INFO", f"Extracted {len(context.function_calls)} tool calls from text")
         
         return StateResult.SUCCESS if success else StateResult.FAILURE
     
