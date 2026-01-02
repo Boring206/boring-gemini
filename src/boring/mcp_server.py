@@ -31,8 +31,7 @@ from dataclasses import dataclass
 # Create MCP server instance
 if MCP_AVAILABLE:
     mcp = FastMCP(
-        name="Boring AI Development Agent",
-        json_response=True
+        name="Boring AI Development Agent"
     )
 else:
     mcp = None
@@ -602,27 +601,30 @@ To connect Boring with NotebookLM and fix authentication issues:
 def run_server():
     """Run the MCP server."""
     if not MCP_AVAILABLE:
-        print("ERROR: MCP package not installed.")
-        print("Install with: pip install boring-gemini[mcp]")
-        print("Or: pip install mcp")
+        print("ERROR: MCP package not installed.", file=sys.stderr)
+        print("Install with: pip install boring-gemini[mcp]", file=sys.stderr)
+        print("Or: pip install mcp", file=sys.stderr)
         sys.exit(1)
     
-    print("Starting Boring MCP Server v5.0...")
-    print("")
-    print("Core Tools:")
-    print("  - run_boring, boring_health_check, boring_status, boring_verify")
-    print("")
-    print("SpecKit Workflow Tools:")
-    print("  - speckit_plan, speckit_tasks, speckit_analyze")
-    print("  - speckit_clarify, speckit_constitution, speckit_checklist")
-    print("")
-    print("Integration Tools:")
-    print("  - boring_setup_extensions, boring_list_workflows")
-    print("  - boring_notebooklm_guide")
-    print("")
-    print("Resources:")
-    print("  - boring://project/status, boring://project/prompt")
-    print("  - boring://workflows/list")
+    from .config import settings
+    
+    print(f"Starting Boring MCP Server v5.0...", file=sys.stderr)
+    print(f"Project Root: {settings.PROJECT_ROOT}", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("Core Tools:", file=sys.stderr)
+    print("  - run_boring, boring_health_check, boring_status, boring_verify", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("SpecKit Workflow Tools:", file=sys.stderr)
+    print("  - speckit_plan, speckit_tasks, speckit_analyze", file=sys.stderr)
+    print("  - speckit_clarify, speckit_constitution, speckit_checklist", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("Integration Tools:", file=sys.stderr)
+    print("  - boring_setup_extensions, boring_list_workflows", file=sys.stderr)
+    print("  - boring_notebooklm_guide", file=sys.stderr)
+    print("", file=sys.stderr)
+    print("Resources:", file=sys.stderr)
+    print("  - boring://project/status, boring://project/prompt", file=sys.stderr)
+    print("  - boring://workflows/list", file=sys.stderr)
     
     # Run with stdio transport for IDE integration
     mcp.run(transport="stdio")

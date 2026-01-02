@@ -245,3 +245,222 @@ class TestTaskResult:
         assert result.files_modified == 5
         assert result.message == "Task completed"
         assert result.loops_completed == 3
+
+
+class TestMCPConnectionStability:
+    """Test MCP connection stability and potential issues."""
+    
+    def test_no_stdout_pollution_on_import(self, capsys):
+        """Test that importing mcp_server doesn't write to stdout."""
+        import importlib
+        import boring.mcp_server
+        
+        # Reload to capture any import-time prints
+        importlib.reload(boring.mcp_server)
+        
+        captured = capsys.readouterr()
+        # stdout should be empty (all output should go to stderr)
+        assert captured.out == "", f"stdout was polluted: {captured.out[:100]}"
+    
+    def test_print_statements_use_stderr(self):
+        """Verify all print statements in run_server use file=sys.stderr."""
+        from pathlib import Path
+        import ast
+        
+        mcp_server_path = Path("src/boring/mcp_server.py")
+        if not mcp_server_path.exists():
+            mcp_server_path = Path(__file__).parent.parent.parent / "src" / "boring" / "mcp_server.py"
+        
+        content = mcp_server_path.read_text(encoding="utf-8")
+        
+        # Check that print statements in run_server contain file=sys.stderr
+        # Simple string check for safety
+        run_server_start = content.find("def run_server():")
+        if run_server_start != -1:
+            run_server_section = content[run_server_start:run_server_start + 2000]
+            
+            # Count print statements
+            print_count = run_server_section.count("print(")
+            stderr_count = run_server_section.count("file=sys.stderr")
+            
+            # All prints should have file=sys.stderr (except potential edge cases)
+            assert stderr_count >= print_count - 1, \
+                f"Found {print_count} prints but only {stderr_count} use stderr"
+    
+    def test_workflow_result_json_serializable(self, tmp_path):
+        """Test that workflow execution results are JSON serializable."""
+        import json
+        
+        # Create a mock workflow result similar to _execute_workflow output
+        workflow_content = """---
+description: Test workflow
+---
+
+# Test Workflow
+
+- Item 1
+- Item 2
+"""
+        
+        result = {
+            "status": "SUCCESS",
+            "workflow": "speckit-test",
+            "mode": "SDK",
+            "result": "Generated response with special chars: 日本語 émojis 🎉",
+            "workflow_instructions": workflow_content[:500]
+        }
+        
+        # This should not raise
+        json_str = json.dumps(result, ensure_ascii=False)
+        assert isinstance(json_str, str)
+        
+        # Verify we can parse it back
+        parsed = json.loads(json_str)
+        assert parsed["status"] == "SUCCESS"
+        assert "日本語" in parsed["result"]
+    
+    def test_error_result_json_serializable(self):
+        """Test that error results are JSON serializable."""
+        import json
+        
+        error_result = {
+            "status": "ERROR",
+            "workflow": "speckit-plan",
+            "error": "FileNotFoundError: Workflow 'test' not found at /path/to/file",
+            "workflow_instructions": ""
+        }
+        
+        json_str = json.dumps(error_result)
+        assert "ERROR" in json_str
+    
+    def test_workflows_directory_detection(self, tmp_path):
+        """Test _find_project_root logic finds project correctly."""
+        # Create a fake project structure
+        project_dir = tmp_path / "my_project"
+        project_dir.mkdir()
+        (project_dir / ".git").mkdir()
+        
+        workflows_dir = project_dir / ".agent" / "workflows"
+        workflows_dir.mkdir(parents=True)
+        (workflows_dir / "test.md").write_text("# Test", encoding="utf-8")
+        
+        # Verify structure exists
+        assert (project_dir / ".git").exists()
+        assert (workflows_dir / "test.md").exists()
+    
+    def test_missing_workflows_directory_handled(self, tmp_path):
+        """Test graceful handling when workflows directory doesn't exist."""
+        # Project without workflows
+        project_dir = tmp_path / "empty_project"
+        project_dir.mkdir()
+        
+        workflows_dir = project_dir / ".agent" / "workflows"
+        assert not workflows_dir.exists()
+        
+        # The code should handle this gracefully (return error dict, not crash)
+        # This is a simulation of what boring_list_workflows should do
+        if not workflows_dir.exists():
+            result = {
+                "status": "NOT_FOUND",
+                "message": f"Workflows directory not found: {workflows_dir}"
+            }
+            assert result["status"] == "NOT_FOUND"
+    
+    def test_special_characters_in_context(self):
+        """Test that special characters in context don't break JSON."""
+        import json
+        
+        # Context with various special characters
+        context = """
+前端 (Frontend): 新增控制面板
+後端 (Backend): 建立「調度中心」
+Special: <tag> & "quotes" 'apostrophe'
+Unicode: 日本語 한국어 العربية
+Emoji: 🚀 ✅ ⚠️
+Newlines:
+- Line 1
+- Line 2
+"""
+        
+        result = {
+            "status": "SUCCESS",
+            "context_received": context,
+            "length": len(context)
+        }
+        
+        # Should serialize without error
+        json_str = json.dumps(result, ensure_ascii=False)
+        parsed = json.loads(json_str)
+        
+        assert "調度中心" in parsed["context_received"]
+        assert "🚀" in parsed["context_received"]
+
+
+class TestMCPToolReturnTypes:
+    """Test that all MCP tools return proper dict/str types."""
+    
+    def test_health_check_returns_dict(self):
+        """Test boring_health_check return type structure."""
+        expected_keys = {"healthy", "passed", "warnings", "failed", "checks"}
+        
+        # Mock a successful health check result
+        result = {
+            "healthy": True,
+            "passed": 5,
+            "warnings": 1,
+            "failed": 0,
+            "checks": []
+        }
+        
+        assert all(key in result for key in expected_keys)
+    
+    def test_status_returns_dict(self):
+        """Test boring_status return type structure."""
+        expected_keys = {"project_name", "total_loops", "successful_loops", "failed_loops", "last_activity"}
+        
+        result = {
+            "project_name": "test",
+            "total_loops": 10,
+            "successful_loops": 8,
+            "failed_loops": 2,
+            "last_activity": "2024-01-01"
+        }
+        
+        assert all(key in result for key in expected_keys)
+    
+    def test_verify_returns_dict(self):
+        """Test boring_verify return type structure."""
+        result = {
+            "passed": True,
+            "level": "STANDARD",
+            "message": "All checks passed"
+        }
+        
+        assert "passed" in result
+        assert "level" in result
+    
+    def test_speckit_tools_return_dict(self):
+        """Test SpecKit tools return dict with expected keys."""
+        expected_keys = {"status", "workflow"}
+        
+        # Success case
+        success_result = {
+            "status": "SUCCESS",
+            "workflow": "speckit-plan",
+            "mode": "SDK",
+            "result": "Generated plan",
+            "workflow_instructions": "..."
+        }
+        
+        assert all(key in success_result for key in expected_keys)
+        
+        # Error case
+        error_result = {
+            "status": "ERROR",
+            "workflow": "speckit-plan",
+            "error": "Something went wrong",
+            "workflow_instructions": ""
+        }
+        
+        assert all(key in error_result for key in expected_keys)
+

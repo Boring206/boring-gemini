@@ -27,7 +27,15 @@ class Settings(BaseSettings):
     )
     
     # Project Paths
-    PROJECT_ROOT: Path = Field(default_factory=Path.cwd)
+    def _find_project_root() -> Path:
+        """Find project root by looking for anchor files."""
+        current = Path.cwd()
+        for parent in [current] + list(current.parents):
+            if (parent / ".git").exists() or (parent / ".boring_brain").exists():
+                return parent
+        return current
+
+    PROJECT_ROOT: Path = Field(default_factory=_find_project_root)
     LOG_DIR: Path = Field(default=Path("logs"))
     BRAIN_DIR: Path = Field(default=Path(".boring_brain"))
     BACKUP_DIR: Path = Field(default=Path(".boring_backups"))
