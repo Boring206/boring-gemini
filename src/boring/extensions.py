@@ -14,10 +14,13 @@ from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass
 from rich.console import Console
 
+import os
 from .config import settings
 from .logger import log_status
 
-console = Console()
+# MCP-compatible Rich Console (stderr, quiet in MCP mode)
+_is_mcp_mode = os.environ.get("BORING_MCP_MODE") == "1"
+console = Console(stderr=True, quiet=_is_mcp_mode)
 
 
 @dataclass

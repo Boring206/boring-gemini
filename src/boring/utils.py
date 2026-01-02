@@ -1,12 +1,16 @@
 import re
 import subprocess
 import sys
+import os
 import ast
 from pathlib import Path
 from typing import List, Tuple
 from rich.console import Console
 
-console = Console()
+# In MCP mode, Rich Console MUST output to stderr to avoid corrupting JSON-RPC protocol
+# Check for BORING_MCP_MODE environment variable, set by mcp_server.py's run_server()
+_is_mcp_mode = os.environ.get("BORING_MCP_MODE") == "1"
+console = Console(stderr=True, quiet=_is_mcp_mode)  # Always stderr, optionally quiet
 
 def check_syntax(file_path: Path) -> Tuple[bool, str]:
     """

@@ -599,34 +599,55 @@ To connect Boring with NotebookLM and fix authentication issues:
 
 
 def run_server():
-    """Run the MCP server."""
+    """Run the MCP server.
+    
+    CRITICAL: For Antigravity/IDE compatibility, this function MUST NOT output
+    anything to stdout before or during MCP protocol initialization.
+    All non-JSON output goes to stderr or is suppressed entirely.
+    """
     if not MCP_AVAILABLE:
+        # Error messages go to stderr, then exit
         print("ERROR: MCP package not installed.", file=sys.stderr)
         print("Install with: pip install boring-gemini[mcp]", file=sys.stderr)
-        print("Or: pip install mcp", file=sys.stderr)
         sys.exit(1)
     
-    from .config import settings
+    import os
+    import logging
     
-    print(f"Starting Boring MCP Server v5.0...", file=sys.stderr)
-    print(f"Project Root: {settings.PROJECT_ROOT}", file=sys.stderr)
-    print("", file=sys.stderr)
-    print("Core Tools:", file=sys.stderr)
-    print("  - run_boring, boring_health_check, boring_status, boring_verify", file=sys.stderr)
-    print("", file=sys.stderr)
-    print("SpecKit Workflow Tools:", file=sys.stderr)
-    print("  - speckit_plan, speckit_tasks, speckit_analyze", file=sys.stderr)
-    print("  - speckit_clarify, speckit_constitution, speckit_checklist", file=sys.stderr)
-    print("", file=sys.stderr)
-    print("Integration Tools:", file=sys.stderr)
-    print("  - boring_setup_extensions, boring_list_workflows", file=sys.stderr)
-    print("  - boring_notebooklm_guide", file=sys.stderr)
-    print("", file=sys.stderr)
-    print("Resources:", file=sys.stderr)
-    print("  - boring://project/status, boring://project/prompt", file=sys.stderr)
-    print("  - boring://workflows/list", file=sys.stderr)
+    # ============================================================
+    # CRITICAL: Set MCP mode flag for all downstream imports
+    # This tells other modules (utils.py, etc.) to suppress stdout
+    # ============================================================
+    os.environ["BORING_MCP_MODE"] = "1"
     
-    # Run with stdio transport for IDE integration
+    # ============================================================
+    # CRITICAL: Suppress ALL stdout output for MCP protocol compliance
+    # Antigravity and other MCP clients expect ONLY JSON-RPC on stdout
+    # ============================================================
+    
+    # 1. Redirect all Python logging to stderr (in case any library logs to stdout)
+    logging.basicConfig(
+        level=logging.WARNING,  # Only warnings and above
+        format='%(name)s: %(message)s',
+        stream=sys.stderr,
+        force=True  # Override any existing configuration
+    )
+    
+    # 2. Suppress verbose loggers that might leak to stdout
+    for logger_name in ['httpx', 'httpcore', 'anyio', 'mcp', 'fastmcp', 'rich']:
+        logging.getLogger(logger_name).setLevel(logging.ERROR)
+    
+    # 3. Set environment variable to suppress Rich console output
+    os.environ.setdefault('TERM', 'dumb')  # Disable fancy terminal output
+    os.environ.setdefault('NO_COLOR', '1')  # Disable color codes
+    
+    # 4. Only output startup info if explicitly requested via DEBUG env var
+    if os.environ.get('BORING_MCP_DEBUG'):
+        from .config import settings
+        print(f"[DEBUG] Boring MCP Server v5.0", file=sys.stderr)
+        print(f"[DEBUG] Project Root: {settings.PROJECT_ROOT}", file=sys.stderr)
+    
+    # Run with stdio transport - this is the ONLY thing that should touch stdout
     mcp.run(transport="stdio")
 
 
