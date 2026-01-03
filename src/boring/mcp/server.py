@@ -3,9 +3,12 @@ import logging
 import os
 from contextlib import contextmanager
 
+from . import interceptors
+# Install interceptors immediately BEFORE any other imports to catch early stdout pollution
+interceptors.install_interceptors()
+
 # Import all modules to register tools with FastMCP
 from . import instance
-from . import interceptors
 from . import resources
 # Import tools packages to trigger decorators
 from .tools import (
@@ -42,11 +45,7 @@ def run_server():
         sys.stderr.write("Error: 'fastmcp' not found. Install with: pip install fastmcp\n")
         sys.exit(1)
 
-    # 1. Install stdout interceptor immediately
-    # This prevents any print() statement from corrupting the JSON-RPC stream
-    interceptors.install_interceptors()
-    
-    # 2. Configure logging
+    # 1. Configured logging
     with _configure_logging():
         if os.environ.get("BORING_MCP_DEBUG") == "1":
             sys.stderr.write("[boring-mcp] Server starting...\n")
