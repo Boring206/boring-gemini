@@ -116,7 +116,7 @@ class WorkflowManager:
     @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
     def _fetch_url(self, url: str) -> str:
         """Fetch URL content with retry logic."""
-        log_status("INFO", f"Downloading workflow from {url}...")
+        log_status(self.project_root / "logs", "INFO", f"Downloading workflow from {url}...")
         with urllib.request.urlopen(url, timeout=10) as response:
             return response.read().decode("utf-8")
 
@@ -213,7 +213,7 @@ class WorkflowManager:
             if target_file.exists():
                 backup_path = self.base_dir / f"{target_name}.md.bak"
                 shutil.copy2(target_file, backup_path)
-                log_status("INFO", f"Backed up existing workflow to {backup_path.name}")
+                log_status(self.project_root / "logs", "INFO", f"Backed up existing workflow to {backup_path.name}")
 
             # Write new content
             target_file.write_text(package.content, encoding="utf-8")
@@ -251,7 +251,7 @@ class WorkflowManager:
             filename = f"{name}.bwf.json"
 
             # 2. Upload to GitHub Gist
-            log_status("INFO", f"Publishing '{name}' to GitHub Gist...")
+            log_status(self.project_root / "logs", "INFO", f"Publishing '{name}' to GitHub Gist...")
             
             payload = {
                 "description": f"Boring Workflow: {name}",

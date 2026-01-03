@@ -128,6 +128,16 @@ temp/
 check_mcp_tool_output.py
 verify_mcp_integrity.py
 inspect_memory.py
+inspect_resource.py
+debug_output.txt
+coverage_output.txt
+
+# Backup folders
+.boring_backups/
+
+# Accidental folder names with spaces
+=== Starting Loop*/
+Self-Healing/
 
 # ==============================================================================
 # Other Languages (for multi-language projects)

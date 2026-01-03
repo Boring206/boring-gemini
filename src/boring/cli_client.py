@@ -19,7 +19,7 @@ from typing import Optional, Tuple
 from dataclasses import dataclass
 
 from .logger import log_status
-from .logger import log_status
+
 from .interfaces import LLMClient, LLMResponse
 
 
@@ -66,7 +66,7 @@ class GeminiCLIAdapter(LLMClient):
                 "  gemini login"
             )
         
-        log_status("INFO", f"Gemini CLI Adapter initialized: {self.cli_path} (cwd: {self.cwd})", log_dir=self.log_dir)
+        log_status(self.log_dir, "INFO", f"Gemini CLI Adapter initialized: {self.cli_path} (cwd: {self.cwd})")
 
     @property
     def model_name(self) -> str:
@@ -118,10 +118,10 @@ class GeminiCLIAdapter(LLMClient):
             return response.text, response.success
         except PermissionError as e:
             # Authentication error
-            log_status("ERROR", str(e), log_dir=self.log_dir)
+            log_status(self.log_dir, "ERROR", str(e))
             return str(e), False
         except Exception as e:
-            log_status("ERROR", f"CLI error: {e}", log_dir=self.log_dir)
+            log_status(self.log_dir, "ERROR", f"CLI error: {e}")
             return str(e), False
     
     def generate_with_retry(
@@ -144,7 +144,7 @@ class GeminiCLIAdapter(LLMClient):
             
             # Retry on transient errors
             if attempt < max_retries - 1:
-                log_status("WARN", f"Retry {attempt + 1}/{max_retries}", log_dir=self.log_dir)
+                log_status(self.log_dir, "WARN", f"Retry {attempt + 1}/{max_retries}")
         
         return text, False
 
@@ -276,7 +276,7 @@ def create_cli_adapter(
     try:
         return GeminiCLIAdapter(model_name=model_name, log_dir=log_dir)
     except FileNotFoundError as e:
-        log_status("ERROR", str(e), log_dir=log_dir or Path("logs"))
+        log_status(log_dir or Path("logs"), "ERROR", str(e))
         return None
 
 

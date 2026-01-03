@@ -99,10 +99,14 @@ A Python application crashed with the following error. Analyze the traceback and
 >>>>>>>
 """
         console.print("[yellow]🚑 Asking Gemini for a fix...[/yellow]")
-        response = self.adapter.generate(prompt)
+        response_text, success = self.adapter.generate(prompt)
+        
+        if not success:
+            console.print(f"[red]AI generation failed: {response_text}[/red]")
+            raise exception
         
         # 3. Apply Fix
-        if self._apply_fix(file_path, response):
+        if self._apply_fix(file_path, response_text):
             console.print("[bold green]✅ Fix applied successfully![/bold green]")
             console.print("[bold]🔄 Please restart the application to run the fixed code.[/bold]")
             return None # Cannot resume execution of crashed frame easily in Python
