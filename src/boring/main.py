@@ -427,7 +427,30 @@ def dashboard():
 
 
 
+@app.command()
+def verify(
+    level: str = typer.Option("STANDARD", "--level", "-l", help="Verification level: BASIC, STANDARD, FULL, SEMANTIC"),
+):
+    """
+    Run code verification on the project.
+    """
+    from .verification import CodeVerifier
+    
+    console.print(f"[bold blue]🔍 Running Verification (Level: {level})[/bold blue]")
+    
+    verifier = CodeVerifier(settings.PROJECT_ROOT)
+    passed, msg = verifier.verify_project(level.upper())
+    
+    if passed:
+        console.print(f"[green]✅ Verification Passed[/green]")
+        console.print(msg)
+    else:
+        console.print(f"[red]❌ Verification Failed[/red]")
+        console.print(msg)
+        raise typer.Exit(code=1)
+
 @app.command("auto-fix")
+
 def auto_fix(
     target: str = typer.Argument(..., help="File path to fix"),
     max_attempts: int = typer.Option(3, "--max-attempts", "-n", help="Max fix attempts per cycle"),
@@ -593,6 +616,121 @@ def hooks_status():
                 console.print(f"  ⚠️ {hook_name}: [yellow]Custom hook (not Boring)[/yellow]")
         else:
             console.print(f"  ❌ {hook_name}: [dim]Not installed[/dim]")
+
+@app.command()
+def learn():
+    """
+    Extract learned patterns from project history (.boring_memory).
+    
+    Analyses successful loops and error fixes to create reusable patterns
+    in .boring_brain/learned_patterns/.
+    """
+    from .brain_manager import create_brain_manager
+    from .storage import SQLiteStorage
+    
+    console.print(f"[bold blue]🧠 Analyzing Project History...[/bold blue]")
+    
+    # 1. Initialize Storage
+    storage = SQLiteStorage(settings.PROJECT_ROOT)
+    
+    # 2. Initialize Brain
+    brain = create_brain_manager(settings.PROJECT_ROOT)
+    
+    # 3. Learn
+    result = brain.learn_from_memory(storage)
+    
+    if result["status"] == "SUCCESS":
+        new_count = result.get("new_patterns", 0)
+        total = result.get("total_patterns", 0)
+        
+        if new_count > 0:
+            console.print(f"[green]✨ Learned {new_count} new patterns![/green]")
+        else:
+            console.print("[dim]No new patterns found in recent history.[/dim]")
+            
+        console.print(f"Total Knowledge Base: [bold]{total}[/bold] patterns")
+    else:
+        console.print(f"[red]Learning failed: {result.get('error')}[/red]")
+        raise typer.Exit(1)
+
+
+# ========================================
+# Workspace Management
+# ========================================
+workspace_app = typer.Typer(help="Manage multi-project workspace.")
+app.add_typer(workspace_app, name="workspace")
+
+@workspace_app.command("list")
+def workspace_list(tag: Optional[str] = typer.Option(None, "--tag", "-t", help="Filter by tag")):
+    """List all projects in the workspace."""
+    from .workspace import get_workspace_manager
+    
+    manager = get_workspace_manager()
+    projects = manager.list_projects(tag)
+    
+    if not projects:
+        console.print("[dim]Workspace is empty. Add projects with 'boring workspace add'.[/dim]")
+        return
+        
+    console.print(f"[bold blue]Workspace Projects ({len(projects)}):[/bold blue]")
+    
+    for p in projects:
+        name = p['name']
+        path = p['path']
+        is_active = p.get('is_active', False)
+        marker = "🟢" if is_active else "⚪"
+        style = "bold green" if is_active else "white"
+        
+        console.print(f"  {marker} [{style}]{name}[/{style}] [dim]({path})[/dim]")
+        if p.get('description'):
+            console.print(f"     [dim]└─ {p['description']}[/dim]")
+
+@workspace_app.command("add")
+def workspace_add(
+    name: str = typer.Argument(..., help="Unique project name"),
+    path: str = typer.Argument(".", help="Project path (default: current dir)"),
+    description: str = typer.Option("", "--desc", "-d", help="Project description"),
+):
+    """Add a project to the workspace."""
+    from .workspace import get_workspace_manager
+    
+    manager = get_workspace_manager()
+    result = manager.add_project(name, path, description)
+    
+    if result["status"] == "SUCCESS":
+        console.print(f"[green]✓ Added project '{name}'[/green]")
+    else:
+        console.print(f"[red]Error: {result['message']}[/red]")
+        raise typer.Exit(1)
+
+@workspace_app.command("remove")
+def workspace_remove(name: str = typer.Argument(..., help="Project name to remove")):
+    """Remove a project from the workspace."""
+    from .workspace import get_workspace_manager
+    
+    manager = get_workspace_manager()
+    result = manager.remove_project(name)
+    
+    if result["status"] == "SUCCESS":
+        console.print(f"[yellow]Removed project '{name}'[/yellow]")
+    else:
+        console.print(f"[red]Error: {result['message']}[/red]")
+        raise typer.Exit(1)
+
+@workspace_app.command("switch")
+def workspace_switch(name: str = typer.Argument(..., help="Project name to switch to")):
+    """Switch active context to another project."""
+    from .workspace import get_workspace_manager
+    
+    manager = get_workspace_manager()
+    result = manager.switch_project(name)
+    
+    if result["status"] == "SUCCESS":
+        console.print(f"[green]✓ Switched context to '{name}'[/green]")
+        console.print(f"[dim]Path: {result['path']}[/dim]")
+    else:
+        console.print(f"[red]Error: {result['message']}[/red]")
+        raise typer.Exit(1)
 
 if __name__ == "__main__":
     app()

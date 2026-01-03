@@ -175,14 +175,21 @@ def check_required_dependencies() -> HealthCheckResult:
     
     for package in required:
         try:
-            __import__(package.replace(".", "_") if "." in package else package)
+            # 1. Try importing exactly as specified (handles 'google.generativeai')
+            __import__(package)
         except ImportError:
             try:
-                # Try alternate import
-                parts = package.split(".")
-                __import__(parts[0])
+                # 2. Try importing with dots replaced by underscores
+                if "." in package:
+                    __import__(package.replace(".", "_"))
             except ImportError:
-                missing.append(package)
+                try:
+                    # 3. Try importing top level package
+                    parts = package.split(".")
+                    __import__(parts[0])
+                except ImportError:
+                    # 4. If all fail, append to missing
+                    missing.append(package)
     
     if missing:
         return HealthCheckResult(
