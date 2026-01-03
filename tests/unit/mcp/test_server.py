@@ -2,13 +2,15 @@ import pytest
 import sys
 from unittest.mock import MagicMock, patch
 import boring.audit # Pre-import to ensure package structure is loaded
-from boring.mcp.server import run_server
+# from boring.mcp.server import run_server  # Moved inside tests to avoid relative import issues
 
 class TestServer:
 
     @patch("boring.mcp.server.instance")
     def test_run_server(self, mock_instance):
         """Test server startup sequence."""
+        from boring.mcp.server import run_server
+        
         mock_instance.MCP_AVAILABLE = True
         mock_instance.mcp = MagicMock()
         mock_instance.mcp._tools = []
@@ -22,6 +24,8 @@ class TestServer:
     @patch("boring.mcp.server.instance")
     def test_run_server_no_mcp(self, mock_instance, mock_exit):
         """Test exit when FastMCP is missing."""
+        from boring.mcp.server import run_server
+        
         mock_instance.MCP_AVAILABLE = False
         
         run_server()
