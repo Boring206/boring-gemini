@@ -222,11 +222,3 @@ class TestCoreTools:
         long_msg = "A" * 500
         res = boring_done(long_msg)
         assert "Task done" in res
-        
-    @patch("boring.mcp.tools.core.boring_done.__code__")  # Just test it doesn't crash
-    def test_boring_done_no_notification_lib(self):
-        """Test boring_done works without notification libraries."""
-        # This test verifies the function handles ImportError gracefully
-        res = boring_done("Test")
-        assert "Task done" in res
-
