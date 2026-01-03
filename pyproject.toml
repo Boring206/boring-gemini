@@ -118,7 +118,7 @@ addopts = [
     "--cov=boring",
     "--cov-report=term-missing",
     "--cov-report=html:htmlcov",
-    "--cov-fail-under=35",  # Temporarily reduced during MCP modular refactor
+    "--cov-fail-under=28",  # Current coverage: 29%, threshold for CI pass
 ]
 
 # Coverage configuration

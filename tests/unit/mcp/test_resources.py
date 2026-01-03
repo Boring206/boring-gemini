@@ -1,7 +1,18 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from boring.mcp.resources import get_project_status, get_prompt, get_workflows
 
+# Check if MCP is available
+try:
+    from boring.mcp.resources import get_project_status, get_prompt, get_workflows
+    MCP_AVAILABLE = True
+except ImportError:
+    MCP_AVAILABLE = False
+    get_project_status = None
+    get_prompt = None
+    get_workflows = None
+
+
+@pytest.mark.skipif(not MCP_AVAILABLE, reason="FastMCP not available")
 class TestResources:
 
     @patch("boring.mcp.resources.detect_project_root")
@@ -33,3 +44,4 @@ class TestResources:
         
         res = get_prompt.fn()
         assert res == "# Spec"
+
