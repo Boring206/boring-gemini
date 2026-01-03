@@ -6,13 +6,14 @@
 > **企業級自主 AI 開發代理 (Autonomous Developer)**  
 > 專為 Cursor / Claude Desktop / VS Code 打造，利用 Google Gemini 模型驅動的自動化編碼與驗證引擎。
 >
-> ✅ **Verified Platforms**: Gemini CLI • Antigravity • Cursor
+> ✅ **Verified Platforms**: Gemini CLI • Antigravity • Cursor • VS Code • Claude Desktop (**Universal MCP Support**)
 
 ---
 
 ## 🚀 核心優勢 (Why Boring?)
 
 - **🤖 Autonomous & Architect Mode**: 既能自動寫全套程式 (Standalone)，也能作為架構師 (Architect) 指揮您的 IDE AI 協同工作。
+- **🔌 Universal MCP Compatibility**: **CLI 與 IDE 完全相容！** 無論是在終端機使用 `gemini` 指令，還是在 Cursor/VS Code 中使用，都能享受完全一致的 MCP 體驗。
 - **🔌 Full MCP Support**: 完美整合 Protocol，支援 `context7` (查文件)、`notebooklm` (查知識庫) 與 `criticalthink` (深度思考)。
 - **🛡️ 企業級防護**: 內建斷路器 (Circuit Breaker)、自動修復 (Self-Healing) 與 100% 測試覆蓋率。
 - **🔌 Local-First Architecture**: 主打 CLI 整合，預設使用本地 `gemini` 指令，無需 API Key 即可運作，資料隱私更有保障。

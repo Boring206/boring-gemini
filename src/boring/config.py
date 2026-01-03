@@ -87,6 +87,22 @@ settings = Settings()
 
 # Ensure critical directories exist
 def init_directories():
+    # Ensure they are Path objects (Pydantic might leave them as strings if loaded from env improperly)
+    if isinstance(settings.LOG_DIR, str): settings.LOG_DIR = Path(settings.LOG_DIR)
+    if isinstance(settings.BRAIN_DIR, str): settings.BRAIN_DIR = Path(settings.BRAIN_DIR)
+    if isinstance(settings.BACKUP_DIR, str): settings.BACKUP_DIR = Path(settings.BACKUP_DIR)
+    if isinstance(settings.MEMORY_DIR, str): settings.MEMORY_DIR = Path(settings.MEMORY_DIR)
+
+    # Ensure they are absolute (relative to PROJECT_ROOT if not)
+    if not settings.LOG_DIR.is_absolute():
+        settings.LOG_DIR = settings.PROJECT_ROOT / settings.LOG_DIR
+    if not settings.BRAIN_DIR.is_absolute():
+        settings.BRAIN_DIR = settings.PROJECT_ROOT / settings.BRAIN_DIR
+    if not settings.BACKUP_DIR.is_absolute():
+        settings.BACKUP_DIR = settings.PROJECT_ROOT / settings.BACKUP_DIR
+    if not settings.MEMORY_DIR.is_absolute():
+        settings.MEMORY_DIR = settings.PROJECT_ROOT / settings.MEMORY_DIR
+
     settings.LOG_DIR.mkdir(parents=True, exist_ok=True)
     settings.BRAIN_DIR.mkdir(parents=True, exist_ok=True)
     settings.BACKUP_DIR.mkdir(parents=True, exist_ok=True)
