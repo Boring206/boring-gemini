@@ -24,6 +24,7 @@ from .tools import (
 )
 from .v9_tools import register_v9_tools
 from .utils import get_project_root_or_error, detect_project_root
+from ..audit import audited  # Moved to top-level to avoid import issues in tests
 
 @contextmanager
 def _configure_logging():
@@ -56,8 +57,8 @@ def run_server():
         "get_project_root_or_error": get_project_root_or_error,
         "detect_project_root": detect_project_root
     }
-    from ...audit import audited
     register_v9_tools(instance.mcp, audited, helpers)
+
     
     # 3. Configured logging
     with _configure_logging():
