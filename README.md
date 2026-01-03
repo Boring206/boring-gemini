@@ -155,6 +155,63 @@ ignore = [
 ]
 ```
 
+### 1.3 🔌 Plugin System (V9.0 New) 🆕
+
+在不修改核心代碼的情況下，輕鬆擴展 Boring 的功能。
+
+#### 📁 Plugin 目錄
+- **專案級**: `{project_root}/.boring_plugins/` (優先)
+- **全域級**: `~/.boring/plugins/`
+
+#### ✍️ 創建 Plugin
+
+```python
+# ~/.boring/plugins/my_linter.py
+from boring.plugins import plugin
+
+@plugin(
+    name="my_custom_linter",
+    description="自訂 Lint 規則",
+    version="1.0.0",
+    author="Your Name",
+    tags=["lint", "validation"]
+)
+def my_custom_linter(file_path: str) -> dict:
+    """驗證檔案並返回結果。"""
+    # 您的邏輯
+    issues = []
+    if "TODO" in open(file_path).read():
+        issues.append({"line": 1, "msg": "Found TODO comment"})
+    
+    return {"passed": len(issues) == 0, "issues": issues}
+```
+
+#### 🚀 使用 Plugin
+
+| 工具 | 說明 |
+|------|------|
+| `boring_list_plugins` | 列出所有已註冊 Plugin |
+| `boring_run_plugin(name="my_custom_linter", file_path="test.py")` | 執行指定 Plugin |
+| `boring_reload_plugins` | 熱載入 (檔案變更後自動載入) |
+
+#### 📦 實用 Plugin 範例
+
+```python
+# 自動格式化 imports
+@plugin(name="sort_imports", description="排序 import 語句")
+def sort_imports(file_path: str) -> dict:
+    import subprocess
+    result = subprocess.run(["isort", file_path], capture_output=True)
+    return {"status": "SUCCESS" if result.returncode == 0 else "ERROR"}
+
+# 統計程式碼行數
+@plugin(name="line_counter", description="計算程式碼行數")
+def line_counter(directory: str = ".") -> dict:
+    from pathlib import Path
+    total = sum(1 for f in Path(directory).rglob("*.py") for _ in open(f))
+    return {"total_lines": total}
+```
+
 ---
 
 ### 1. 核心工具 (Core Tools)

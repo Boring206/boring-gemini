@@ -43,8 +43,9 @@ class TestWorkflowPackage:
 
 class TestWorkflowManager:
     @pytest.fixture
-    def manager(self):
-        return WorkflowManager(Path("/fake/project"))
+    def manager(self, tmp_path):
+        """Create manager with temp directory instead of /fake."""
+        return WorkflowManager(tmp_path)
 
     def test_parse_frontmatter(self, manager):
         content = "---\nname: test\nversion: 1.0\n---\n# Body"
