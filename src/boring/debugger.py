@@ -112,7 +112,7 @@ A Python application crashed with the following error. Analyze the traceback and
             return None # Cannot resume execution of crashed frame easily in Python
         else:
             console.print("[red]❌ Could not apply fix automatically.[/red]")
-            console.print(f"[dim]AI Response:\n{response}[/dim]")
+            console.print(f"[dim]AI Response:\n{response_text}[/dim]")
             raise exception
 
     def _find_relevant_frame(self, tb):

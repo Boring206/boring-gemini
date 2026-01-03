@@ -61,6 +61,49 @@
     ```
     > **注意**: `notebooklm` 需要登入，初次使用請執行 `npx -y notebooklm-mcp@latest setup_auth` 完成 Google 認證。
 
+### 方式二：手動安裝到 Cursor / Antigravity (推薦 / IDE 專用)
+
+若 Smithery 暫時不可用，您可以使用本機 Python 環境直接載入：
+
+1.  **確保已安裝 Boring**:
+    ```bash
+    pip install -e .
+    ```
+
+2.  **取得 Python 執行路徑**:
+    在終端機執行 `where python` (Windows) 或 `which python` (Mac/Linux)，記下路徑（例如：`C:\Python312\python.exe`）。
+
+3.  **配置 MCP 設定**:
+    在 **Antigravity** (`mcp_config.json`) 或 **Cursor** (MCP 設定面板) 中加入以下配置：
+
+    ```json
+    {
+      "mcpServers": {
+        "boring": {
+          "command": "python", 
+          "args": ["-m", "boring.mcp.server"],
+          "env": {
+            "PYTHONPATH": "您的_boring-gemini_專案絕對路徑"
+          }
+        },
+        "context7": {
+          "command": "npx",
+          "args": ["-y", "@upstash/context7-mcp"]
+        },
+        "criticalthink": {
+          "command": "npx",
+          "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+        },
+        "notebooklm": {
+          "command": "npx",
+          "args": ["-y", "notebooklm-mcp@latest"]
+        }
+      }
+    }
+    ```
+    > **💡 提示**: 將 `python` 替換為步驟 2 取得的絕對路徑，`PYTHONPATH` 設為您 `boring-gemini` 資料夾的絕對路徑。
+
+
 ### 開發者方式：Python Source (適合貢獻代碼)
 
 ```bash

@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch, mock_open
 import json
 from pathlib import Path
 import sys
+import time
 
 # Mock streamlit before importing dashboard
 # Mock streamlit before importing dashboard
@@ -38,6 +39,7 @@ class TestDashboard:
         """Test main dashboard layout generation."""
         mock_version.return_value = "1.0.0"
         mock_st.__version__ = "1.0.0"
+        mock_st.sidebar.slider.return_value = 2 # Fixed refresh_rate
         
         # Mock load_json to return dummy data
         mock_load_json.side_effect = [
@@ -61,7 +63,7 @@ class TestDashboard:
         mock_st.columns.side_effect = columns_side_effect
         
         # Mock session state to allow attribute access
-        mock_st.session_state = MagicMock()
+        mock_st.session_state.last_refresh = time.time()
         
         # Mock tabs
         mock_st.tabs.return_value = [MagicMock(), MagicMock(), MagicMock()]
@@ -86,10 +88,11 @@ class TestDashboard:
     def test_main_no_data(self, mock_load_json, mock_st):
         """Test dashboard handles missing data gracefully."""
         mock_st.__version__ = "1.0.0"
+        mock_st.sidebar.slider.return_value = 2
         mock_load_json.return_value = None
         mock_st.columns.side_effect = lambda x: [MagicMock()] * 4 if x == 4 else [MagicMock(), MagicMock()]
         mock_st.tabs.return_value = [MagicMock(), MagicMock(), MagicMock()]
-        mock_st.session_state = MagicMock()
+        mock_st.session_state.last_refresh = time.time()
         
         main()
         
@@ -100,8 +103,9 @@ class TestDashboard:
     def test_main_brain_explorer(self, mock_st):
         """Test Brain Explorer tab logic."""
         mock_st.__version__ = "1.0.0"
+        mock_st.sidebar.slider.return_value = 2
         mock_st.columns.side_effect = lambda x: [MagicMock()] * 4 if x == 4 else [MagicMock(), MagicMock()]
-        mock_st.session_state = MagicMock()
+        mock_st.session_state.last_refresh = time.time()
         
         # Mock os.walk for brain dir
         with patch("os.walk", return_value=[("/brain", [], ["file.md"])]), \
