@@ -52,14 +52,14 @@ def get_logger(name: str = "boring") -> structlog.stdlib.BoundLogger:
 _logger = get_logger()
 
 
-def log_status(level: str, message: str, log_dir: Optional[Path] = None, **kwargs: Any):
+def log_status(log_dir: Any, level: str, message: str, **kwargs: Any):
     """
     Logs status messages using structlog with console and file output.
     
     Args:
+        log_dir: Directory for log files (Path or str). If None/False, only logs to console.
         level: Log level (INFO, WARN, ERROR, SUCCESS, LOOP)
         message: Message to log
-        log_dir: Directory for log files (Optional, if None only logs to console/stderr)
         **kwargs: Additional structured fields
     """
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
