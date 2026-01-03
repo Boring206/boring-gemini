@@ -425,9 +425,7 @@ def dashboard():
         console.print(f"[bold red]Failed to launch dashboard:[/bold red] {e}")
         raise typer.Exit(1)
 
-    except Exception as e:
-        console.print(f"[bold red]Failed to launch dashboard:[/bold red] {e}")
-        raise typer.Exit(1)
+
 
 @app.command("auto-fix")
 def auto_fix(

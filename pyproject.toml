@@ -61,7 +61,7 @@ boring = "boring.main:app"
 boring-monitor = "boring.monitor:app"
 boring-setup = "boring.setup:setup_app"
 boring-import = "boring.setup:import_app"
-boring-mcp = "boring.mcp_server:main"
+boring-mcp = "boring.mcp.server:run_server"
 
 [project.urls]
 Homepage = "https://github.com/Boring206/boring-gemini"
@@ -118,7 +118,7 @@ addopts = [
     "--cov=boring",
     "--cov-report=term-missing",
     "--cov-report=html:htmlcov",
-    "--cov-fail-under=35",
+    "--cov-fail-under=35",  # Temporarily reduced during MCP modular refactor
 ]
 
 # Coverage configuration
