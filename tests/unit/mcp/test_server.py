@@ -1,5 +1,9 @@
 import pytest
 import sys
+import os
+# Ensure src is in path for relative imports to work properly if package not installed
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../src")))
+
 from unittest.mock import MagicMock, patch
 import boring.audit # Pre-import to ensure package structure is loaded
 # from boring.mcp.server import run_server  # Moved inside tests to avoid relative import issues
