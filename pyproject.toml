@@ -1,7 +1,7 @@
 [project]
-name = "boring-gemini"
-version = "5.2.0"
-description = "Enterprise-grade autonomous AI development agent with Smithery/Docker deployment, granular MCP tools, and IDE-agnostic integration."
+name = "boring"
+version = "9.0.0"
+description = "Enterprise-grade autonomous AI development agent with Plugin System, Multi-Project Workspace, Auto-Fix Pipeline, and 30+ MCP tools."
 authors = [
     { name = "Boring206", email = "C112156246@nkust.edu.tw" }
 ]
@@ -10,7 +10,7 @@ requires-python = ">=3.9"
 keywords = ["gemini", "ai", "autonomous-agent", "devops"]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
     "Topic :: Software Development :: Build Tools",
     "Topic :: Scientific/Engineering :: Artificial Intelligence"
@@ -20,35 +20,40 @@ dependencies = [
     "typer[all]>=0.9.0",
     "rich>=13.0.0",
     "python-dotenv",
-    "google-genai>=1.0.0",  # Unified Google Gen AI SDK (replaces google-generativeai)
+    "google-genai>=1.0.0",
     "python-dateutil",
     "gitpython",
     "pydantic-settings>=2.0.0",
-    "structlog>=24.0.0",  # Structured logging for observability
-    "tenacity>=8.0.0",  # Retry with exponential backoff
+    "structlog>=24.0.0",
+    "tenacity>=8.0.0",
 ]
 
 [project.optional-dependencies]
+gui = [
+    "streamlit>=1.30.0",
+    "pyarrow",
+]
 dev = [
     "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
     "pytest-mock>=3.0.0",
-    "pytest-cov>=4.0.0",  # Coverage reporting
-    "pytest-asyncio>=0.21.0",  # Async test support
-    "mkdocs>=1.5.0",  # API documentation
-    "mkdocstrings[python]>=0.24.0",  # Python docstring extraction
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "types-python-dateutil",
+    "mkdocs>=1.5.0",
+    "mkdocstrings[python]>=0.24.0",
 ]
 vector = [
     "chromadb>=0.4.0",
     "sentence-transformers>=2.2.0",
 ]
 mcp = [
-    "fastmcp>=0.4.0",  # FastMCP framework for MCP server
-    "win10toast>=0.9; platform_system=='Windows'",  # Windows desktop notifications
+    "fastmcp>=0.4.0",
+    "win10toast>=0.9; platform_system=='Windows'",
 ]
 all = [
-    "chromadb>=0.4.0",
-    "sentence-transformers>=2.2.0",
-    "mcp>=1.0.0",
+    "boring[gui,dev,vector,mcp]",
 ]
 
 [project.scripts]

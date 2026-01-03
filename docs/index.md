@@ -34,4 +34,4 @@ pip install boring-gemini
 
 ## License
 
-MIT License - See [LICENSE](https://github.com/Boring206/boring-gemini/blob/main/LICENSE)
+Apache License 2.0 - See [LICENSE](https://github.com/Boring206/boring-gemini/blob/main/LICENSE)
