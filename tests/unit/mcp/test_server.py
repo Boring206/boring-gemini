@@ -1,6 +1,7 @@
 import pytest
 import sys
 from unittest.mock import MagicMock, patch
+import boring.audit # Pre-import to ensure package structure is loaded
 from boring.mcp.server import run_server
 
 class TestServer:
