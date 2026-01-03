@@ -1,4 +1,4 @@
-# GEMINI.md - Boring for Gemini
+# GEMINI.md - Boring for Gemini (V5.2)
 
 ## Project Overview
 
@@ -11,6 +11,8 @@ The system is built entirely in **Python**, using modern CLI frameworks and rich
 - **Intelligent Exit Detection:** The loop automatically terminates when it detects project completion through multiple signals (done signals, task list completion, test saturation).
 - **Safeguards:** Implements rate limiting (to manage API costs), a circuit breaker (to prevent getting stuck in failing loops), and graceful handling of API usage limits.
 - **Live Monitoring:** Provides real-time monitoring of the agent's status, logs, and API call usage via `boring-monitor`.
+- **🆕 Dynamic Workflow Evolution (V5.2):** AI can dynamically modify SpecKit workflows based on project needs with rollback support.
+- **🆕 Knowledge Base (.boring_brain):** Persistent storage for workflow adaptations, learned patterns, and evaluation rubrics.
 
 **Technology Stack:**
 - **Language:** Python 3.9+
@@ -20,6 +22,7 @@ The system is built entirely in **Python**, using modern CLI frameworks and rich
   - `@google/gemini-cli` (the AI agent, installed via npm)
   - `gitpython` (for Git operations)
   - `tenacity` (for retries)
+  - `fastmcp` (for MCP server)
 
 ## Building and Running
 

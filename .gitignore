@@ -13,7 +13,10 @@ status.json
 
 # Boring Memory & Brain
 .boring_memory/
-.boring_brain/
+.boring_brain/learned_patterns/
+.boring_brain/workflow_adaptations/
+# Keep rubrics/ - these are shareable evaluation criteria
+!.boring_brain/rubrics/
 .boring_delegated_prompt.md
 
 # Gemini CLI

@@ -41,8 +41,12 @@ ruff check src/
 boring-gemini/
 ├── src/boring/          # Main package
 │   ├── gemini_client.py # Gemini SDK wrapper
-│   ├── loop/            # State machine
-│   └── ...
+│   ├── mcp_server.py    # MCP tools (21+)
+│   ├── workflow_evolver.py # 🆕 Dynamic workflow evolution
+│   └── loop/            # State machine
+├── .agent/workflows/    # SpecKit workflows (evolvable)
+│   └── _base/          # Base templates for rollback
+├── .boring_brain/       # 🆕 Knowledge base
 ├── tests/               # Test suite
 │   ├── unit/
 │   └── integration/

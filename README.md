@@ -1,7 +1,7 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-5.1.0-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-5.2.0-green.svg)](https://github.com/Boring206/boring-gemini)
 
-# Boring for Gemini (V5.1)
+# Boring for Gemini (V5.2)
 
 > **企業級自主 AI 開發代理 (Autonomous Developer)**  
 > 專為 Cursor / Claude Desktop / VS Code 打造，利用 Google Gemini 模型驅動的自動化編碼與驗證引擎。
@@ -23,7 +23,7 @@
 
 請選擇適合您的方式：
 
-### 推薦方式：Smithery (一鍵部署，免 Python 環境)
+### 推薦方式：Smithery (一鍵部署，免 Python 環境)(目前失敗註冊smithery不知道爲什麼所以這是未來期許.....)
 
 最適合 **Cursor** 或 **Claude Desktop** 使用者。
 
@@ -82,9 +82,13 @@ boring setup-extensions
 | 工具名稱 | 用途 |
 | :--- | :--- |
 | **`run_boring`** | **主要入口**。給它一個任務描述，它會自動規劃並執行。 |
+| **`boring_quickstart`** | 🆕 **新手引導**。取得推薦步驟和可用工具清單。 |
 | **`boring_verify`** | 執行全專案檢查 (Lint, Test, Import)。 |
 | **`boring_health_check`** | 檢查系統健康狀態。 |
 | **`boring_done`** | 🔔 完成通知。Agent 完成任務時呼叫，會發送 **Windows 桌面通知**。 |
+| **`boring_learn`** | 🆕 從 `.boring_memory` 提取學習模式到 `.boring_brain`。 |
+| **`boring_create_rubrics`** | 🆕 創建評估標準 (LLM-as-Judge)。 |
+| **`boring_brain_summary`** | 🆕 查看知識庫摘要。 |
 
 ### 2. SpecKit 工作流 (Spec-Driven)
 
@@ -93,6 +97,20 @@ boring setup-extensions
 | **`speckit_plan`** | 根據 PRD 生成 `IMPLEMENTATION_PLAN.md`。 |
 | **`speckit_tasks`** | 將計畫拆解為 `task.md`。 |
 | **`speckit_analyze`** | 比對 Code 與 Spec 的一致性 (Consistency Check)。 |
+| **`speckit_constitution`** | 建立專案核心原則與開發準則。 |
+| **`speckit_clarify`** | AI 反問模式，釐清模糊需求。 |
+| **`speckit_checklist`** | 生成品質驗證檢查清單。 |
+
+### 2.1 動態工作流程演化 (Workflow Evolution) 🆕
+
+AI 可根據專案需求**動態修改** SpecKit 工作流程：
+
+| 工具名稱 | 用途 |
+| :--- | :--- |
+| **`speckit_evolve_workflow`** | 修改工作流程內容以適應專案。 |
+| **`speckit_reset_workflow`** | 回滾到原始模板。 |
+| **`speckit_backup_workflows`** | 備份所有工作流程到 `_base/`。 |
+| **`speckit_workflow_status`** | 查看工作流程演化狀態。 |
 
 ### 3. 微操作 (Granular Tools)
 
@@ -101,6 +119,29 @@ boring setup-extensions
 | **`boring_apply_patch`** | 精確修改檔案 (Search/Replace)，不破壞其他部分。 |
 | **`boring_verify_file`** | 單檔快速驗證。 |
 | **`boring_extract_patches`** | 從 AI 輸出中萃取並套用程式碼修改 (支援多種格式)。 |
+
+---
+
+## 💡 使用範例
+
+### 快速開始
+```
+你: 請幫我建立一個 TypeScript API 專案的規劃
+AI: (呼叫 speckit_plan) 生成 implementation_plan.md...
+```
+
+### 動態演化工作流程
+```
+你: 這個專案需要特別強調安全測試，請調整 speckit-checklist 工作流程
+AI: (呼叫 speckit_evolve_workflow) 已修改 speckit-checklist.md，
+    添加了 OWASP Top 10 安全檢查項目...
+```
+
+### 使用記憶系統
+```
+你: 上次解決類似問題的方式是什麼？
+AI: (查詢 .boring_memory) 找到 3 個相關經驗，建議使用...
+```
 
 ---
 
@@ -132,7 +173,14 @@ gemini mcp add boring npx -- -y @smithery/cli run boring-gemini
 
 ```text
 my-project/
-├── .boring_memory/      # 錯誤學習資料庫 (Error Learning)
+├── .boring_memory/      # 錯誤學習資料庫 (SQLite)
+├── .boring_brain/       # 🆕 知識庫 (演化記錄、學習模式)
+│   ├── workflow_adaptations/
+│   ├── learned_patterns/
+│   └── rubrics/
+├── .agent/workflows/    # SpecKit 工作流程
+│   ├── _base/          # 基礎模板備份
+│   └── *.md            # 可演化的活動版本
 ├── PROMPT.md           # 專案核心指令
 ├── @fix_plan.md        # 任務進度表
 ├── src/                # 您的源碼
@@ -141,4 +189,4 @@ my-project/
 
 ---
 
-**Boring V5.1 - Making AI Development Boringly Reliable.**
+**Boring V5.2 - Making AI Development Boringly Reliable.**
