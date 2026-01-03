@@ -9,7 +9,7 @@ from ...audit import audited
 # ==============================================================================
 
 @audited
-def boring_evaluate(target: str, context: str = "", level: str = "DIRECT", interactive: bool = False) -> str:
+def boring_evaluate(target: str, context: str = "", level: str = "DIRECT", interactive: bool = False, project_path: Optional[str] = None) -> str:
     """
     Evaluate code quality using Advanced Evaluation techniques (LLM-as-a-Judge).
     
@@ -20,6 +20,7 @@ def boring_evaluate(target: str, context: str = "", level: str = "DIRECT", inter
               - DIRECT: Direct Scoring (1-5 scale) against strict rubrics.
               - PAIRWISE: (Coming soon) Compare valid alternatives.
        interactive: If True, returns the PROMPT instead of executing it. Useful for IDE AI.
+       project_path: Optional explicit path to project root
               
     Returns:
         Evaluation report (JSON score) or Prompt (if interactive=True).
@@ -29,7 +30,7 @@ def boring_evaluate(target: str, context: str = "", level: str = "DIRECT", inter
     if not allowed:
         return f"⏱️ Rate limited: {msg}"
         
-    project_root = detect_project_root()
+    project_root = detect_project_root(project_path)
     if not project_root:
         return "❌ No valid Boring project found. Run in project root."
         

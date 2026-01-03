@@ -10,38 +10,44 @@ class TestSettings:
 
     def test_settings_has_project_root(self):
         """Test that settings has PROJECT_ROOT."""
-        from boring.config import settings
+        from boring.config import Settings
         
+        # Create a fresh settings instance to avoid global mock contamination
+        settings = Settings()
         assert hasattr(settings, 'PROJECT_ROOT')
         assert isinstance(settings.PROJECT_ROOT, Path)
 
     def test_settings_has_log_dir(self):
         """Test that settings has LOG_DIR."""
-        from boring.config import settings
+        from boring.config import Settings
         
+        settings = Settings()
         assert hasattr(settings, 'LOG_DIR')
         assert isinstance(settings.LOG_DIR, Path)
 
     def test_settings_has_timeout(self):
         """Test that settings has TIMEOUT_MINUTES."""
-        from boring.config import settings
+        from boring.config import Settings
         
+        settings = Settings()
         assert hasattr(settings, 'TIMEOUT_MINUTES')
         assert isinstance(settings.TIMEOUT_MINUTES, int)
         assert settings.TIMEOUT_MINUTES > 0
 
     def test_settings_has_max_loops(self):
         """Test that settings has MAX_LOOPS."""
-        from boring.config import settings
+        from boring.config import Settings
         
+        settings = Settings()
         assert hasattr(settings, 'MAX_LOOPS')
         assert isinstance(settings.MAX_LOOPS, int)
         assert settings.MAX_LOOPS > 0
 
     def test_settings_has_default_model(self):
         """Test that settings has DEFAULT_MODEL."""
-        from boring.config import settings
+        from boring.config import Settings
         
+        settings = Settings()
         assert hasattr(settings, 'DEFAULT_MODEL')
         assert isinstance(settings.DEFAULT_MODEL, str)
 
@@ -57,8 +63,10 @@ class TestSettingsClass:
 
     def test_project_root_is_path(self):
         """Test that PROJECT_ROOT is a Path."""
-        from boring.config import settings
+        from boring.config import Settings
         
+        # Create fresh instance to avoid mock contamination
+        settings = Settings()
         assert isinstance(settings.PROJECT_ROOT, Path)
 
 
