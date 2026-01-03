@@ -5,12 +5,24 @@ import pytest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
-from boring.dashboard import (
-    Dashboard,
-    DashboardState,
-    LoopMetrics,
-    create_dashboard,
+try:
+    from boring.dashboard import (
+        Dashboard,
+        DashboardState,
+        LoopMetrics,
+        create_dashboard,
+    )
+    HAS_STREAMLIT = True
+except ImportError:
+    HAS_STREAMLIT = False
+
+from boring.interactive import (
+    InteractiveSession,
+    InteractiveAction,
 )
+
+pytestmark = pytest.mark.skipif(not HAS_STREAMLIT, reason="Streamlit not installed")
+
 
 from boring.interactive import (
     InteractiveSession,
