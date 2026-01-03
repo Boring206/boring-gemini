@@ -112,7 +112,7 @@ class BrainManager:
             success_loops = [l for l in recent_loops if l.get("status") == "SUCCESS"]
             
             # Get error patterns with solutions
-            error_patterns = storage.get_common_errors(limit=20)
+            error_patterns = storage.get_top_errors(limit=20)
             solved_patterns = [e for e in error_patterns if e.get("solution")]
             
             # Extract patterns

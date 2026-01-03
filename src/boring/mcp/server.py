@@ -22,6 +22,8 @@ from .tools import (
     integration,
     evaluation
 )
+from .v9_tools import register_v9_tools
+from .utils import get_project_root_or_error, detect_project_root
 
 @contextmanager
 def _configure_logging():
@@ -45,7 +47,19 @@ def run_server():
         sys.stderr.write("Error: 'fastmcp' not found. Install with: pip install fastmcp\n")
         sys.exit(1)
 
-    # 1. Configured logging
+    # 1. Install stdout interceptor immediately
+    # This prevents any print() statement from corrupting the JSON-RPC stream
+    interceptors.install_interceptors()
+    
+    # 2. Register V9 Tools
+    helpers = {
+        "get_project_root_or_error": get_project_root_or_error,
+        "detect_project_root": detect_project_root
+    }
+    from ...audit import audited
+    register_v9_tools(instance.mcp, audited, helpers)
+    
+    # 3. Configured logging
     with _configure_logging():
         if os.environ.get("BORING_MCP_DEBUG") == "1":
             sys.stderr.write("[boring-mcp] Server starting...\n")

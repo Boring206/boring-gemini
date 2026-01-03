@@ -37,7 +37,6 @@ def boring_apply_patch(
         )
     """
     try:
-        from ...diff_patcher import DiffPatcher
         from ...config import settings
         
         # Resolve project root

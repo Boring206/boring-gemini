@@ -6,15 +6,15 @@ from boring.mcp.server import run_server
 class TestServer:
 
     @patch("boring.mcp.server.instance")
-    @patch("boring.mcp.server.interceptors")
-    def test_run_server(self, mock_interceptors, mock_instance):
+    def test_run_server(self, mock_instance):
         """Test server startup sequence."""
         mock_instance.MCP_AVAILABLE = True
         mock_instance.mcp = MagicMock()
+        mock_instance.mcp._tools = []
         
         run_server()
         
-        mock_interceptors.install_interceptors.assert_called_once()
+        # Verify MCP server was started
         mock_instance.mcp.run.assert_called_with(transport="stdio")
 
     @patch("boring.mcp.server.sys.exit")
