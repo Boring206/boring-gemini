@@ -140,6 +140,8 @@ def start(
         debugger.run_with_healing(loop.run)
             
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         console.print(f"[bold red]Fatal Error:[/bold red] {e}")
         if self_heal:
              console.print("[dim]Debugger failed to heal this crash.[/dim]")
@@ -421,6 +423,118 @@ def dashboard():
         console.print("\n[yellow]Dashboard stopped.[/yellow]")
     except Exception as e:
         console.print(f"[bold red]Failed to launch dashboard:[/bold red] {e}")
+        raise typer.Exit(1)
+
+    except Exception as e:
+        console.print(f"[bold red]Failed to launch dashboard:[/bold red] {e}")
+        raise typer.Exit(1)
+
+@app.command("auto-fix")
+def auto_fix(
+    target: str = typer.Argument(..., help="File path to fix"),
+    max_attempts: int = typer.Option(3, "--max-attempts", "-n", help="Max fix attempts per cycle"),
+    backend: str = typer.Option("cli", "--backend", "-b", help="Backend: 'api' (SDK) or 'cli' (local CLI)"),
+    model: str = typer.Option("default", "--model", "-m", help="Gemini model to use"),
+    verification_level: str = typer.Option("STANDARD", "--verify", help="Verification level")
+):
+    """
+    Auto-fix syntax and linting errors in a file.
+    """
+    from .auto_fix import AutoFixPipeline
+    from .cli_client import GeminiCLIAdapter
+    from .gemini_client import GeminiClient
+    from .verification import CodeVerifier
+    from .loop import AgentLoop
+    from .memory import MemoryManager
+    
+    target_path = Path(target).resolve()
+    if not target_path.exists():
+        console.print(f"[red]Error: Target '{target}' not found.[/red]")
+        raise typer.Exit(1)
+        
+    project_root = target_path.parent
+    # Walk up to find project root (marker: .git or pyproject.toml)
+    current = project_root
+    while current.parent != current:
+        if (current / ".git").exists() or (current / "pyproject.toml").exists():
+            project_root = current
+            break
+        current = current.parent
+
+    console.print(f"[bold blue]🔧 Auto-Fixing {target_path.name} in {project_root}...[/bold blue]")
+
+    # Wrapper for Verification
+    def verify_wrapper(level, project_path):
+        verifier = CodeVerifier(Path(project_path))
+        passed, msg = verifier.verify_project(level)
+        # We need structured issues if possible, but verifier returns (bool, str)
+        # AutoFixPipeline expects dict with 'issues' list if failed.
+        # We'll try to parse the msg or just treat it as one issue.
+        return {
+            "passed": passed,
+            "message": msg,
+            "issues": [msg] if not passed else []
+        }
+
+    # Wrapper for Agent Loop
+    def run_boring_wrapper(task_description, verification_level, max_loops, project_path):
+        project_path_obj = Path(project_path)
+        
+        # Write task to PROMPT.md (temp arg override)
+        prompt_file = project_path_obj / "PROMPT.md"
+        original_prompt = prompt_file.read_text(encoding="utf-8") if prompt_file.exists() else ""
+        prompt_file.write_text(task_description, encoding="utf-8")
+        
+        try:
+            # Configure settings locally
+            settings.PROJECT_ROOT = project_path_obj
+            settings.MAX_LOOPS = max_loops
+            
+            loop = AgentLoop(
+                model_name=model,
+                use_cli=(backend.lower() == "cli"),
+                verification_level=verification_level,
+                prompt_file=prompt_file,
+                verbose=False # Keep it cleaner
+            )
+            
+            # Run loop
+            loop.run()
+            
+            # Check result
+            memory = MemoryManager(project_path_obj)
+            history = memory.get_loop_history(last_n=1)
+            
+            if history and history[0].get('status') == 'SUCCESS':
+                return {"status": "SUCCESS", "message": "Fix applied successfully"}
+            else:
+                return {"status": "FAILED", "message": "Agent failed to fix issues."}
+                
+        except Exception as e:
+            return {"status": "ERROR", "message": str(e)}
+        finally:
+            # Restore prompt file if it existed
+            if original_prompt:
+                prompt_file.write_text(original_prompt, encoding="utf-8")
+            elif prompt_file.exists():
+                prompt_file.unlink()
+
+    try:
+        pipeline = AutoFixPipeline(
+            project_root=project_root,
+            max_iterations=max_attempts, # Pipeline uses this for overall cycles
+            verification_level=verification_level
+        )
+        
+        result = pipeline.run(run_boring_wrapper, verify_wrapper)
+        
+        if result["status"] == "SUCCESS":
+            console.print(f"[green]✅ Optimized successfully after {result['iterations']} iterations.[/green]")
+        else:
+            console.print(f"[red]❌ {result['message']}[/red]")
+            
+    except Exception as e:
+        console.print(f"[red]Auto-fix failed: {e}[/red]")
         raise typer.Exit(1)
 
 # ========================================

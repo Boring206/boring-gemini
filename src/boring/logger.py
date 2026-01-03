@@ -65,6 +65,8 @@ def log_status(level: str, message: str, log_dir: Optional[Path] = None, **kwarg
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
     if log_dir:
+        if isinstance(log_dir, str):
+            log_dir = Path(log_dir)
         log_dir.mkdir(parents=True, exist_ok=True)
         log_file = log_dir / "boring.log"
     else:
