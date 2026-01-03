@@ -490,6 +490,21 @@ if MCP_AVAILABLE and mcp is not None:
             )
             
             try:
+                # Snapshot files before running (for tracking changes)
+                import subprocess
+                files_before = set()
+                try:
+                    # Use git to track changes if available
+                    result = subprocess.run(
+                        ["git", "ls-files", "-m", "-o", "--exclude-standard"],
+                        cwd=project_root,
+                        capture_output=True,
+                        text=True
+                    )
+                    files_before = set(result.stdout.strip().split('\n')) if result.returncode == 0 else set()
+                except:
+                    pass
+                
                 # Run the agent loop
                 # Note: We use StatefulAgentLoop which allows CLI/SDK switching
                 loop = StatefulAgentLoop(
@@ -502,6 +517,24 @@ if MCP_AVAILABLE and mcp is not None:
                 # Note: In MCP context, we run synchronously
                 loop.run()
                 
+                # Calculate files modified
+                files_modified = 0
+                try:
+                    result = subprocess.run(
+                        ["git", "ls-files", "-m", "-o", "--exclude-standard"],
+                        cwd=project_root,
+                        capture_output=True,
+                        text=True
+                    )
+                    if result.returncode == 0:
+                        files_after = set(result.stdout.strip().split('\n'))
+                        new_or_changed = files_after - files_before
+                        files_modified = len([f for f in new_or_changed if f])
+                except:
+                    # Fallback: check context if available
+                    if hasattr(loop, 'context') and hasattr(loop.context, 'files_modified'):
+                        files_modified = loop.context.files_modified
+                
                 message = f"Task completed (CLI Mode: {use_cli})"
                 if interactive:
                     if hasattr(loop, 'context') and loop.context.output_content:
@@ -512,7 +545,7 @@ if MCP_AVAILABLE and mcp is not None:
                 return {
                     "status": "SUCCESS",
                     "message": message,
-                    "files_modified": 0,  # TODO: Track actual count
+                    "files_modified": files_modified,
                     "loops_completed": loop.context.loop_count if hasattr(loop, 'context') else 1
                 }
                 
@@ -567,14 +600,95 @@ if MCP_AVAILABLE and mcp is not None:
                 "passed": report.passed,
                 "warnings": report.warnings,
                 "failed": report.failed,
-                "checks": checks
+                "checks": checks,
+                "backend": backend
             }
             
+        except ImportError as e:
+            return {
+                "healthy": False,
+                "error": f"Missing dependency: {e}",
+                "suggestion": "Run: pip install boring-gemini[health]"
+            }
         except Exception as e:
             return {
                 "healthy": False,
-                "error": str(e)
+                "error": str(e),
+                "error_type": type(e).__name__
             }
+    
+    @mcp.tool()
+    def boring_quickstart(project_path: Optional[str] = None) -> dict:
+        """
+        Get a comprehensive quick start guide for new users.
+        
+        Returns recommended first steps, available tools, and common workflows.
+        Perfect for onboarding and exploring Boring capabilities.
+        
+        Args:
+            project_path: Optional explicit path to project root.
+                          If not provided, auto-detects from CWD.
+            
+        Returns:
+            Dict containing:
+            - welcome: Welcome message with version
+            - project_detected: Whether a valid project was found
+            - recommended_first_steps: Ordered list of getting started steps
+            - available_workflows: Categorized tools (spec_driven, evolution, verification)
+            - tips: Helpful usage tips
+            
+        Example:
+            boring_quickstart()
+            # Returns: {"welcome": "...", "project_detected": true, ...}
+        """
+        try:
+            project_root, error = _get_project_root_or_error(project_path)
+            has_project = project_root is not None
+            
+            guide = {
+                "welcome": "👋 Welcome to Boring for Gemini V5.2!",
+                "project_detected": has_project,
+                "recommended_first_steps": [],
+                "available_workflows": {
+                    "spec_driven": [
+                        "speckit_plan - Create implementation plan from requirements",
+                        "speckit_tasks - Break plan into actionable tasks",
+                        "speckit_analyze - Check code vs spec consistency"
+                    ],
+                    "evolution": [
+                        "speckit_evolve_workflow - Adapt workflows to project needs",
+                        "speckit_reset_workflow - Rollback to base template"
+                    ],
+                    "verification": [
+                        "boring_verify - Run lint, tests, and import checks",
+                        "boring_verify_file - Quick single-file validation"
+                    ]
+                },
+                "tips": [
+                    "💡 Use speckit_clarify when requirements are unclear",
+                    "💡 Check boring_health_check before starting",
+                    "💡 Workflows are dynamic - evolve them for your project!"
+                ]
+            }
+            
+            if has_project:
+                guide["recommended_first_steps"] = [
+                    "1. boring_health_check - Verify system is ready",
+                    "2. speckit_plan - Create your implementation plan",
+                    "3. speckit_tasks - Generate task checklist",
+                    "4. run_boring - Start autonomous development"
+                ]
+            else:
+                guide["recommended_first_steps"] = [
+                    "1. Create a project directory with PROMPT.md",
+                    "2. Run boring-setup <project-name> to initialize",
+                    "3. boring_health_check - Verify system is ready"
+                ]
+            
+            return guide
+            
+        except Exception as e:
+            return {"status": "ERROR", "error": str(e)}
     
     @mcp.tool()
     def boring_status(project_path: Optional[str] = None) -> dict:
@@ -897,6 +1011,271 @@ if MCP_AVAILABLE and mcp is not None:
             Quality checklist for the given context
         """
         return _execute_workflow("speckit-checklist", context, project_path)
+    
+    # ========================================
+    # Workflow Evolution Tools
+    # ========================================
+    
+    @mcp.tool()
+    def speckit_evolve_workflow(
+        workflow_name: str,
+        new_content: str,
+        reason: str,
+        project_path: Optional[str] = None
+    ) -> dict:
+        """
+        Evolve a SpecKit workflow with new content for project-specific customization.
+        
+        AI can use this to dynamically modify workflows based on project needs.
+        Original workflows are automatically backed up to .agent/workflows/_base/
+        directory for safe rollback using speckit_reset_workflow.
+        
+        Evolvable workflows:
+        - speckit-plan: Implementation planning template
+        - speckit-tasks: Task breakdown template  
+        - speckit-constitution: Project principles template
+        - speckit-clarify: Requirement clarification template
+        - speckit-analyze: Consistency analysis template
+        - speckit-checklist: Quality checklist template
+        
+        Args:
+            workflow_name: Workflow to modify (without .md extension)
+                           Example: "speckit-plan" (not "speckit-plan.md")
+            new_content: Complete new workflow content (markdown format)
+                         Must include YAML frontmatter with description
+            reason: Why this evolution is needed (stored in evolution history)
+            project_path: Optional explicit path to project root
+            
+        Returns:
+            Dict with status, old_hash, new_hash, and backup_created flag
+            
+        Example:
+            speckit_evolve_workflow(
+                workflow_name="speckit-plan",
+                new_content="---\\ndescription: React-specific planning\\n---\\n# Plan...",
+                reason="Optimize for React/Next.js projects"
+            )
+            # Returns: {"status": "SUCCESS", "old_hash": "abc...", "new_hash": "def..."}
+            
+        Error cases:
+            - Workflow not found: {"status": "ERROR", "error": "Workflow not found"}
+            - Invalid content: {"status": "ERROR", "error": "Content must include frontmatter"}
+        """
+        try:
+            from .workflow_evolver import WorkflowEvolver
+            from .config import settings
+            
+            project_root, error = _get_project_root_or_error(project_path)
+            if error:
+                return error
+            
+            _configure_runtime_for_project(project_root)
+            
+            evolver = WorkflowEvolver(project_root, settings.LOG_DIR)
+            return evolver.evolve_workflow(workflow_name, new_content, reason)
+            
+        except Exception as e:
+            return {"status": "ERROR", "error": str(e), "workflow": workflow_name}
+    
+    @mcp.tool()
+    def speckit_reset_workflow(
+        workflow_name: str,
+        project_path: Optional[str] = None
+    ) -> dict:
+        """
+        Reset a workflow to its original base template.
+        
+        Use this to undo workflow evolutions and restore the default.
+        
+        Args:
+            workflow_name: Workflow to reset (e.g., "speckit-plan")
+            project_path: Optional explicit path to project root
+            
+        Returns:
+            Reset result
+        """
+        try:
+            from .workflow_evolver import WorkflowEvolver
+            from .config import settings
+            
+            project_root, error = _get_project_root_or_error(project_path)
+            if error:
+                return error
+            
+            _configure_runtime_for_project(project_root)
+            
+            evolver = WorkflowEvolver(project_root, settings.LOG_DIR)
+            return evolver.reset_workflow(workflow_name)
+            
+        except Exception as e:
+            return {"status": "ERROR", "error": str(e)}
+    
+    @mcp.tool()
+    def speckit_backup_workflows(project_path: Optional[str] = None) -> dict:
+        """
+        Backup all SpecKit workflows to _base/ directory.
+        
+        Creates backup copies of all evolvable workflows for rollback.
+        Safe to call multiple times (won't overwrite existing backups).
+        
+        Args:
+            project_path: Optional explicit path to project root
+            
+        Returns:
+            Backup results for each workflow
+        """
+        try:
+            from .workflow_evolver import WorkflowEvolver
+            from .config import settings
+            
+            project_root, error = _get_project_root_or_error(project_path)
+            if error:
+                return error
+            
+            _configure_runtime_for_project(project_root)
+            
+            evolver = WorkflowEvolver(project_root, settings.LOG_DIR)
+            results = evolver.backup_all_workflows()
+            
+            return {
+                "status": "SUCCESS",
+                "backed_up": [k for k, v in results.items() if v],
+                "failed": [k for k, v in results.items() if not v]
+            }
+            
+        except Exception as e:
+            return {"status": "ERROR", "error": str(e)}
+    
+    @mcp.tool()
+    def speckit_workflow_status(
+        workflow_name: str,
+        project_path: Optional[str] = None
+    ) -> dict:
+        """
+        Get evolution status of a workflow.
+        
+        Shows current hash, base hash, and whether workflow has been evolved.
+        
+        Args:
+            workflow_name: Workflow to check
+            project_path: Optional explicit path to project root
+            
+        Returns:
+            Workflow status with hashes and evolution state
+        """
+        try:
+            from .workflow_evolver import WorkflowEvolver
+            from .config import settings
+            
+            project_root, error = _get_project_root_or_error(project_path)
+            if error:
+                return error
+            
+            _configure_runtime_for_project(project_root)
+            
+            evolver = WorkflowEvolver(project_root, settings.LOG_DIR)
+            return evolver.get_workflow_status(workflow_name)
+            
+        except Exception as e:
+            return {"status": "ERROR", "error": str(e)}
+    
+    # ========================================
+    # Brain Learning Tools
+    # ========================================
+    
+    @mcp.tool()
+    def boring_learn(project_path: Optional[str] = None) -> dict:
+        """
+        Trigger learning from .boring_memory to .boring_brain.
+        
+        Extracts successful patterns from loop history and error solutions,
+        storing them in learned_patterns/ for future reference.
+        
+        Args:
+            project_path: Optional explicit path to project root
+            
+        Returns:
+            Learning result with patterns extracted
+        """
+        try:
+            from .brain_manager import BrainManager
+            from .storage import SQLiteStorage
+            from .config import settings
+            
+            project_root, error = _get_project_root_or_error(project_path)
+            if error:
+                return error
+            
+            _configure_runtime_for_project(project_root)
+            
+            # Initialize storage and brain
+            storage = SQLiteStorage(project_root / ".boring_memory", settings.LOG_DIR)
+            brain = BrainManager(project_root, settings.LOG_DIR)
+            
+            # Learn from memory
+            return brain.learn_from_memory(storage)
+            
+        except Exception as e:
+            return {"status": "ERROR", "error": str(e)}
+    
+    @mcp.tool()
+    def boring_create_rubrics(project_path: Optional[str] = None) -> dict:
+        """
+        Create default evaluation rubrics in .boring_brain/rubrics/.
+        
+        Creates rubrics for: implementation_plan, task_list, code_quality.
+        These are used for LLM-as-Judge evaluation.
+        
+        Args:
+            project_path: Optional explicit path to project root
+            
+        Returns:
+            List of rubrics created
+        """
+        try:
+            from .brain_manager import BrainManager
+            from .config import settings
+            
+            project_root, error = _get_project_root_or_error(project_path)
+            if error:
+                return error
+            
+            _configure_runtime_for_project(project_root)
+            
+            brain = BrainManager(project_root, settings.LOG_DIR)
+            return brain.create_default_rubrics()
+            
+        except Exception as e:
+            return {"status": "ERROR", "error": str(e)}
+    
+    @mcp.tool()
+    def boring_brain_summary(project_path: Optional[str] = None) -> dict:
+        """
+        Get summary of .boring_brain knowledge base.
+        
+        Shows counts of patterns, rubrics, and adaptations.
+        
+        Args:
+            project_path: Optional explicit path to project root
+            
+        Returns:
+            Brain summary
+        """
+        try:
+            from .brain_manager import BrainManager
+            from .config import settings
+            
+            project_root, error = _get_project_root_or_error(project_path)
+            if error:
+                return error
+            
+            _configure_runtime_for_project(project_root)
+            
+            brain = BrainManager(project_root, settings.LOG_DIR)
+            return brain.get_brain_summary()
+            
+        except Exception as e:
+            return {"status": "ERROR", "error": str(e)}
     
     # ========================================
     # Granular Tools (Exposed Internal Capabilities)
@@ -1264,14 +1643,27 @@ To connect Boring with NotebookLM and fix authentication issues:
     @mcp.tool()
     def boring_done(message: str) -> str:
         """
-        Report task completion to the user.
+        Report task completion to the user with desktop notification.
+        
         Use this tool when you have finished your work and want to show a final message.
+        This will:
+        1. Attempt to send a Windows desktop notification (visible even if terminal is minimized)
+        2. Return a confirmation string with the message status
+        
+        Notification backends (in order of preference):
+        - win10toast: Native Windows 10/11 toast notifications
+        - plyer: Cross-platform fallback (Windows/macOS/Linux)
         
         Args:
-            message: The message to show to the user.
+            message: The completion message to show to the user.
+                     Will be truncated to 200 characters for notification.
             
         Returns:
-            Confirmation string.
+            Confirmation string indicating if notification was sent.
+            
+        Example:
+            boring_done("Task completed! Created 3 files and fixed 2 bugs.")
+            # Returns: "✅ Task done (Desktop notification sent). Message: ..."
         """
         # Send Windows desktop notification
         notification_sent = False

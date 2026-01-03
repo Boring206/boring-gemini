@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.2.0] - 2026-01-03
+
+### Added
+- **Dynamic Workflow Evolution**: AI can now modify SpecKit workflows based on project needs
+  - `speckit_evolve_workflow`: Modify workflow content dynamically
+  - `speckit_reset_workflow`: Rollback to base template
+  - `speckit_backup_workflows`: Backup all workflows to `_base/` directory
+  - `speckit_workflow_status`: Check workflow evolution state
+- **WorkflowEvolver Module**: Core engine for workflow evolution (`src/boring/workflow_evolver.py`)
+- **Base Templates**: All 6 SpecKit workflows backed up to `.agent/workflows/_base/`
+- **`.boring_brain` Directory Structure**:
+  - `workflow_adaptations/`: Evolution history
+  - `learned_patterns/`: Successful patterns
+  - `rubrics/`: Evaluation criteria
+- **Complete SpecKit Tool Coverage**: Added missing tools to README
+  - `speckit_constitution`, `speckit_clarify`, `speckit_checklist`
+
+### Changed
+- **README.md**: Updated to V5.2.0 with workflow evolution documentation
+- **Project Structure**: Enhanced with `.boring_brain` knowledge base
+
+### Fixed
+- Improved project structure documentation in README
+
 ## [5.1.0] - 2026-01-02
 
 ### Added
