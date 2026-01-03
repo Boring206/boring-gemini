@@ -44,6 +44,9 @@ def run_server():
     """
     Main entry point for the Boring MCP server.
     """
+    # 0. Set MCP Mode flag to silence tool outputs (e.g. health check)
+    os.environ["BORING_MCP_MODE"] = "1"
+
     if not instance.MCP_AVAILABLE:
         sys.stderr.write("Error: 'fastmcp' not found. Install with: pip install fastmcp\n")
         sys.exit(1)

@@ -53,14 +53,15 @@ def register_v9_tools(mcp, audited, helpers):
     def boring_run_plugin(
         name: str,
         project_path: Optional[str] = None,
-        **kwargs
+        args: Optional[dict] = None
     ) -> dict:
         """
         Execute a registered plugin by name.
         
         Args:
             name: Plugin name to execute
-            **kwargs: Arguments to pass to the plugin
+            project_path: Optional project root path
+            args: Arguments to pass to the plugin
         """
         from ..plugins import PluginLoader
         
@@ -68,7 +69,9 @@ def register_v9_tools(mcp, audited, helpers):
         loader = PluginLoader(project_root)
         loader.load_all()
         
-        return loader.execute_plugin(name, **kwargs)
+        # Unpack args if provided, else empty dict
+        plugin_kwargs = args if args else {}
+        return loader.execute_plugin(name, **plugin_kwargs)
     
     @mcp.tool()
     @audited
