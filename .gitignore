@@ -1,5 +1,5 @@
 # ==============================================================================
-# Boring for Gemini - Git Ignore
+# Boring for Gemini - Git Ignore (V9.0)
 # ==============================================================================
 
 # Boring Runtime State Files
@@ -11,7 +11,7 @@ status.json
 .circuit_breaker_history
 .response_analysis
 
-# Boring Memory & Brain
+# Boring Memory & Brain (local state, NOT for sharing)
 .boring_memory/
 .boring_brain/learned_patterns/
 .boring_brain/workflow_adaptations/
@@ -19,14 +19,26 @@ status.json
 !.boring_brain/rubrics/
 .boring_delegated_prompt.md
 
-# Gemini CLI
+# Boring Plugins (user-specific)
+.boring_plugins/
+
+# Gemini CLI (local cache)
 .gemini/
+
+# Workspace Config (user-specific)
+workspace.json
+
+# Audit Logs (local only)
+logs/audit.jsonl
 
 # Logs
 logs/*
 !logs/.gitkeep
 *.log
-gemini_output_*.log
+
+# Temporary helper scripts
+gemini_help.txt
+*.bwf.json
 
 # ==============================================================================
 # Python
@@ -53,6 +65,7 @@ dist/
 *.egg
 .eggs/
 src/boring_gemini.egg-info/
+src/boring.egg-info/
 
 # Testing & Quality
 .pytest_cache/
@@ -125,6 +138,8 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
 
 # Rust
 target/
+

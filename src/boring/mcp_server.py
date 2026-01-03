@@ -1,3 +1,17 @@
+# Copyright 2025-2026 Frank Bria & Boring206
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
 MCP Server for Boring V5.0 (FastMCP)
 
@@ -411,9 +425,15 @@ class TaskResult:
     loops_completed: int
 
 
+# Initialize Audit Logger
+from .audit import audited, AuditLogger
+_audit_logger = AuditLogger.get_instance(Path.cwd() / "logs")
+
+
 if MCP_AVAILABLE and mcp is not None:
     
     @mcp.tool()
+    @audited
     def run_boring(
         task_description: str,
         verification_level: str = "STANDARD",
@@ -440,6 +460,31 @@ if MCP_AVAILABLE and mcp is not None:
             allowed, msg = _check_rate_limit("run_boring")
             if not allowed:
                 return {"status": "RATE_LIMITED", "message": msg}
+            
+            # --- Input Validation ---
+            if not task_description or not task_description.strip():
+                return {
+                    "status": "ERROR",
+                    "message": "task_description cannot be empty.",
+                    "suggestion": "Provide a clear description of the task, e.g., 'Fix login validation bug'."
+                }
+            
+            valid_levels = ("BASIC", "STANDARD", "FULL", "SEMANTIC")
+            if verification_level.upper() not in valid_levels:
+                return {
+                    "status": "ERROR",
+                    "message": f"Invalid verification_level: '{verification_level}'.",
+                    "suggestion": f"Use one of: {', '.join(valid_levels)}"
+                }
+            verification_level = verification_level.upper()
+            
+            if not (1 <= max_loops <= 20):
+                return {
+                    "status": "ERROR",
+                    "message": f"max_loops must be between 1 and 20, got {max_loops}.",
+                    "suggestion": "Use a reasonable value like 5 (default) or 10 for complex tasks."
+                }
+            # --- End Validation ---
             
             from .loop import StatefulAgentLoop
             from .config import settings
@@ -730,6 +775,7 @@ if MCP_AVAILABLE and mcp is not None:
             }
     
     @mcp.tool()
+    @audited
     def boring_verify(level: str = "STANDARD", project_path: Optional[str] = None) -> dict:
         """
         Run code verification on the project.
@@ -742,6 +788,17 @@ if MCP_AVAILABLE and mcp is not None:
             Verification results including pass/fail and any errors
         """
         try:
+            # --- Input Validation ---
+            valid_levels = ("BASIC", "STANDARD", "FULL", "SEMANTIC")
+            if level.upper() not in valid_levels:
+                return {
+                    "status": "ERROR",
+                    "passed": False,
+                    "message": f"Invalid level: '{level}'.",
+                    "suggestion": f"Use one of: {', '.join(valid_levels)}"
+                }
+            # --- End Validation ---
+            
             from .verification import CodeVerifier
             from .config import settings
             from .cli_client import GeminiCLIAdapter
@@ -1700,6 +1757,158 @@ To connect Boring with NotebookLM and fix authentication issues:
         return f"{status}. Message: {message}"
 
     @mcp.tool()
+    def boring_evaluate(target: str, context: str = "", level: str = "DIRECT", interactive: bool = False) -> str:
+        """
+        Evaluate code quality using Advanced Evaluation techniques (LLM-as-a-Judge).
+        
+        Args:
+           target: File path or content to evaluate.
+           context: Optional context or requirements.
+           level: Evaluation technique:
+                  - DIRECT: Direct Scoring (1-5 scale) against strict rubrics.
+                  - PAIRWISE: (Coming soon) Compare valid alternatives.
+           interactive: If True, returns the PROMPT instead of executing it. Useful for IDE AI.
+                  
+        Returns:
+            Evaluation report (JSON score) or Prompt (if interactive=True).
+        """
+        # Rate limit check
+        allowed, msg = _check_rate_limit("boring_evaluate")
+        if not allowed:
+            return f"⏱️ Rate limited: {msg}"
+            
+        project_root = check_project_root()
+        if not project_root:
+            return "❌ No valid Boring project found. Run in project root."
+            
+        settings.PROJECT_ROOT = project_root
+        
+        from .judge import LLMJudge
+        from .cli_client import GeminiCLIAdapter
+        
+        # Initialize Judge
+        adapter = GeminiCLIAdapter(model_name=settings.DEFAULT_MODEL)
+        
+        # In interactive mode, we don't strictly need the CLI to be functional if we just want prompts
+        if not adapter.is_available and not interactive:
+             return "❌ Gemini CLI not found. Install it or use interactive=True to generate prompts."
+
+        judge = LLMJudge(adapter)
+        
+        # Resolve target
+        target_path = Path(target)
+        if not target_path.is_absolute():
+            target_path = project_root / target_path
+            
+        if not target_path.exists():
+            return f"❌ Target not found: {target}"
+            
+        if target_path.is_file():
+            # Safe file reading with encoding fallback
+            try:
+                content = target_path.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                try:
+                    content = target_path.read_text(encoding="latin-1")
+                except Exception as e:
+                    return f"❌ Cannot read file (binary or encoding issue): {e}"
+            except Exception as e:
+                return f"❌ File read error: {e}"
+                
+            result = judge.grade_code(target_path.name, content, interactive=interactive)
+            
+            if interactive:
+                prompt_content = result.get('prompt', 'Error generating prompt')
+                return f"### 📋 Evaluation Prompt (Copy to Chat)\n\nUse this prompt to evaluate `{target_path.name}` using your current AI context:\n\n```markdown\n{prompt_content}\n```"
+            
+            score = result.get("score", 0)
+            summary = result.get("summary", "No summary")
+            suggestions = result.get("suggestions", [])
+            
+            # Format report
+            emoji = "🟢" if score >= 4 else "🟡" if score >= 3 else "🔴"
+            report = f"# {emoji} Evaluation: {target_path.name}\n"
+            report += f"**Score**: {score}/5.0\n\n"
+            report += f"**Summary**: {summary}\n\n"
+            
+            if suggestions:
+                report += "## 💡 Suggestions\n"
+                for s in suggestions:
+                    report += f"- {s}\n"
+                    
+            return report
+        
+        # Directory support: evaluate all Python files
+        if target_path.is_dir():
+            py_files = list(target_path.glob("*.py"))
+            if not py_files:
+                return f"❌ No Python files found in directory: {target}"
+            
+            reports = []
+            for py_file in py_files[:5]:  # Limit to 5 files to avoid overload
+                try:
+                    content = py_file.read_text(encoding="utf-8")
+                    result = judge.grade_code(py_file.name, content, interactive=False)
+                    score = result.get("score", 0)
+                    emoji = "🟢" if score >= 4 else "🟡" if score >= 3 else "🔴"
+                    reports.append(f"{emoji} **{py_file.name}**: {score}/5.0")
+                except Exception:
+                    reports.append(f"⚠️ **{py_file.name}**: Error reading")
+            
+            return "# Directory Evaluation\n\n" + "\n".join(reports)
+            
+        return "❌ Invalid target type."
+
+    @mcp.tool()
+    def boring_install_workflow(source: str, project_path: str = None) -> str:
+        """
+        Install a Boring Workflow from a file path or URL.
+        This enables sharing and reusing community workflows.
+        
+        Args:
+            source: Local .bwf.json file path OR a URL (http/https).
+            project_path: Optional explicit path to project root.
+            
+        Returns:
+            Success or error message.
+        """
+        root = _detect_project_root(project_path)
+        if not root:
+             return "Error: Could not detect project root."
+        
+        from .workflow_manager import WorkflowManager
+        manager = WorkflowManager(root)
+        
+        success, msg = manager.install_workflow(source)
+        return f"{'✅' if success else '❌'} {msg}"
+
+    @mcp.tool()
+    def boring_export_workflow(name: str, author: str = "Anonymous", project_path: str = None) -> str:
+        """
+        Export a local workflow to a sharable .bwf.json package.
+        
+        Args:
+            name: Workflow name (e.g., 'speckit-plan' without extension).
+            author: Name of the creator.
+            project_path: Optional explicit path to project root.
+            
+        Returns:
+            Path to the created package or error message.
+        """
+        root = _detect_project_root(project_path)
+        if not root:
+             return "Error: Could not detect project root."
+             
+        from .workflow_manager import WorkflowManager
+        manager = WorkflowManager(root)
+        
+        path, msg = manager.export_workflow(name, author)
+        
+        if path:
+             return f"✅ Exported to: {path}\n{msg}"
+        return f"❌ Error: {msg}"
+
+    @mcp.tool()
     def boring_list_workflows(project_path: Optional[str] = None) -> dict:
         """
         List all available .agent/workflows in the project.
@@ -1801,6 +2010,113 @@ To connect Boring with NotebookLM and fix authentication issues:
         except Exception as e:
             return f"Error listing workflows: {e}"
 
+
+    # ========================================
+    # Local Teams: Git Hooks Tools
+    # ========================================
+    
+    @mcp.tool()
+    def boring_hooks_install(project_path: Optional[str] = None) -> dict:
+        """
+        Install Boring Git hooks (pre-commit, pre-push) for local code quality enforcement.
+        
+        This is the "Local Teams" feature - automatic verification before every commit/push.
+        
+        Args:
+            project_path: Optional explicit path to project root.
+            
+        Returns:
+            Installation result as dict with status, message, and suggestion.
+        """
+        root = _detect_project_root(project_path)
+        if not root:
+            return {
+                "status": "ERROR",
+                "message": "Could not detect project root.",
+                "suggestion": "Run 'boring-setup <project-name>' or set BORING_PROJECT_ROOT env var."
+            }
+        
+        from .hooks import HooksManager
+        manager = HooksManager(root)
+        
+        # --- Idempotency Check ---
+        status = manager.status()
+        if status.get("is_git_repo"):
+            hooks_info = status.get("hooks", {})
+            all_boring = all(
+                h.get("is_boring_hook", False) 
+                for h in hooks_info.values() 
+                if h.get("installed", False)
+            )
+            any_installed = any(h.get("installed", False) for h in hooks_info.values())
+            if any_installed and all_boring:
+                return {
+                    "status": "SKIPPED",
+                    "message": "Hooks already installed.",
+                    "hooks": hooks_info
+                }
+        # --- End Idempotency Check ---
+        
+        success, msg = manager.install_all()
+        if success:
+            return {
+                "status": "SUCCESS",
+                "message": "Hooks installed successfully!",
+                "details": msg,
+                "tip": "Your commits and pushes will now be verified automatically."
+            }
+        return {
+            "status": "ERROR",
+            "message": msg
+        }
+    
+    @mcp.tool()
+    def boring_hooks_uninstall(project_path: Optional[str] = None) -> dict:
+        """
+        Remove Boring Git hooks.
+        
+        Args:
+            project_path: Optional explicit path to project root.
+            
+        Returns:
+            Uninstallation result as dict with status and message.
+        """
+        root = _detect_project_root(project_path)
+        if not root:
+            return {
+                "status": "ERROR",
+                "message": "Could not detect project root.",
+                "suggestion": "Run 'boring-setup <project-name>' or set BORING_PROJECT_ROOT env var."
+            }
+        
+        from .hooks import HooksManager
+        manager = HooksManager(root)
+        
+        success, msg = manager.uninstall_all()
+        return {
+            "status": "SUCCESS" if success else "ERROR",
+            "message": msg
+        }
+    
+    @mcp.tool()
+    def boring_hooks_status(project_path: Optional[str] = None) -> dict:
+        """
+        Get status of installed Git hooks.
+        
+        Args:
+            project_path: Optional explicit path to project root.
+            
+        Returns:
+            Dict with hook installation status.
+        """
+        root = _detect_project_root(project_path)
+        if not root:
+            return {"error": "Could not detect project root."}
+        
+        from .hooks import HooksManager
+        manager = HooksManager(root)
+        
+        return manager.status()
 
 def run_server():
     """Run the MCP server.

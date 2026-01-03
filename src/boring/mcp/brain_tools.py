@@ -1,0 +1,97 @@
+# Copyright 2025 Boring for Gemini Authors
+# SPDX-License-Identifier: Apache-2.0
+"""
+Brain MCP Tools - Learning and evaluation tools.
+
+This module contains tools for AI learning and evaluation:
+- boring_learn: Extract patterns from memory to brain
+- boring_evaluate: LLM-as-a-Judge code evaluation
+- boring_create_rubrics: Create evaluation rubrics
+- boring_brain_summary: Knowledge base summary
+"""
+
+from pathlib import Path
+from typing import Optional
+
+
+def register_brain_tools(mcp, audited, helpers):
+    """
+    Register brain/learning tools with the MCP server.
+    
+    Args:
+        mcp: FastMCP server instance
+        audited: Audit decorator function
+        helpers: Dict of helper functions
+    """
+    _get_project_root_or_error = helpers["get_project_root_or_error"]
+    _configure_runtime_for_project = helpers["configure_runtime"]
+    
+    @mcp.tool()
+    @audited
+    def boring_learn(project_path: Optional[str] = None) -> dict:
+        """
+        Trigger learning from .boring_memory to .boring_brain.
+        
+        Extracts successful patterns from loop history and error solutions,
+        storing them in learned_patterns/ for future reference.
+        """
+        from ..brain_manager import BrainManager
+        from ..storage import SQLiteStorage
+        from ..config import settings
+        
+        project_root, error = _get_project_root_or_error(project_path)
+        if error:
+            return error
+        
+        _configure_runtime_for_project(project_root)
+        
+        storage = SQLiteStorage(project_root / ".boring_memory", settings.LOG_DIR)
+        brain = BrainManager(project_root, settings.LOG_DIR)
+        
+        return brain.learn_from_memory(storage)
+    
+    @mcp.tool()
+    @audited
+    def boring_create_rubrics(project_path: Optional[str] = None) -> dict:
+        """
+        Create default evaluation rubrics in .boring_brain/rubrics/.
+        
+        Creates rubrics for: implementation_plan, task_list, code_quality.
+        """
+        from ..brain_manager import BrainManager
+        from ..config import settings
+        
+        project_root, error = _get_project_root_or_error(project_path)
+        if error:
+            return error
+        
+        _configure_runtime_for_project(project_root)
+        
+        brain = BrainManager(project_root, settings.LOG_DIR)
+        return brain.create_default_rubrics()
+    
+    @mcp.tool()
+    @audited
+    def boring_brain_summary(project_path: Optional[str] = None) -> dict:
+        """
+        Get summary of .boring_brain knowledge base.
+        
+        Shows counts of patterns, rubrics, and adaptations.
+        """
+        from ..brain_manager import BrainManager
+        from ..config import settings
+        
+        project_root, error = _get_project_root_or_error(project_path)
+        if error:
+            return error
+        
+        _configure_runtime_for_project(project_root)
+        
+        brain = BrainManager(project_root, settings.LOG_DIR)
+        return brain.get_brain_summary()
+    
+    return {
+        "boring_learn": boring_learn,
+        "boring_create_rubrics": boring_create_rubrics,
+        "boring_brain_summary": boring_brain_summary
+    }

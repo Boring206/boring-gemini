@@ -1,0 +1,53 @@
+Boring-Gemini
+Copyright 2025-2026 Frank Bria & Boring206
+
+This product includes software developed at:
+- Github Spec-Kit (https://github.com/github/spec-kit)
+  Copyright (c) 2024 GitHub, Inc.
+  Licensed under the MIT License
+
+- Ralph-Claude-Code (https://github.com/frankbria/ralph-claude-code)
+  Copyright (c) 2024 Frank Bria
+  Licensed under the MIT License
+
+- Typer (https://github.com/tiangolo/typer)
+  Copyright (c) 2019 Sebastian Ramírez
+  Licensed under the MIT License
+
+- Rich (https://github.com/Textualize/rich)
+  Copyright (c) 2020 Will McGugan
+  Licensed under the MIT License
+
+- GitPython (https://github.com/gitpython-developers/GitPython)
+  Copyright (c) 2008, 2011 Michael Trier and contributors
+  Licensed under the BSD-3-Clause License
+
+- Streamlit (https://github.com/streamlit/streamlit)
+  Copyright (c) Streamlit Inc.
+  Licensed under the Apache License 2.0
+
+- google-genai (https://github.com/googleapis/python-genai)
+  Copyright (c) Google LLC
+  Licensed under the Apache License 2.0
+
+- FastMCP (https://github.com/jlowin/fastmcp)
+  Copyright (c) Jeremiah Lowin
+  Licensed under the Apache License 2.0
+
+- Context7 (https://github.com/upstash/context7)
+  Copyright (c) Upstash, Inc.
+  Licensed under the MIT License / Service Terms
+
+- Sequential Thinking (slash-criticalthink) (https://github.com/abagames/slash-criticalthink)
+  Copyright (c) abagames
+  Licensed under the MIT License
+
+- Chrome DevTools MCP (https://github.com/ChromeDevTools/chrome-devtools-mcp)
+  Copyright (c) The Chromium Authors
+  Licensed under the MIT License
+
+- NotebookLM MCP (https://github.com/jacob-bd/notebooklm-mcp)
+  Copyright (c) Jacob BD
+  Licensed under the MIT License
+
+

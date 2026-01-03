@@ -1,3 +1,17 @@
+# Copyright 2025-2026 Frank Bria & Boring206
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import typer
 from pathlib import Path
 from typing import Optional
@@ -55,6 +69,9 @@ def start(
     prompt: Optional[str] = typer.Option(None, "--prompt", "-p", help="Custom prompt file path"),
     timeout: int = typer.Option(settings.TIMEOUT_MINUTES, "--timeout", "-t", help="Timeout in minutes per loop"),
     experimental: bool = typer.Option(False, "--experimental", "-x", help="Use new State Pattern architecture (v4.0)"),
+    # Debugger / Self-Healing
+    debug: bool = typer.Option(False, "--debug", "-d", help="Enable verbose debugger tracing"),
+    self_heal: bool = typer.Option(False, "--self-heal", "-H", help="Enable crash auto-repair (Self-Healing 2.0)"),
 ):
     """
     Start the autonomous development loop.
@@ -91,6 +108,10 @@ def start(
         else:
             console.print("[bold blue]📡 API Mode: Using Gemini SDK[/bold blue]")
 
+        # Debugger Setup
+        from .debugger import BoringDebugger
+        debugger = BoringDebugger(model_name=model if use_cli else "default", enable_healing=self_heal, verbose=debug)
+
         # Choose loop implementation
         if experimental:
             console.print("[bold magenta]🧪 Experimental: Using State Pattern Architecture[/bold magenta]")
@@ -110,9 +131,20 @@ def start(
                 verification_level=verification.upper(),
                 prompt_file=Path(prompt) if prompt else None
             )
-        loop.run()
+            console.print(f"[bold green]Starting Boring Loop (Timeout: {settings.TIMEOUT_MINUTES}m)[/bold green]")
+        
+        if self_heal:
+            console.print("[bold yellow]🚑 Self-Healing Enabled: I will attempt to fix crashes automatically.[/bold yellow]")
+
+        # Execute with Debugger Wrapper
+        debugger.run_with_healing(loop.run)
+            
     except Exception as e:
         console.print(f"[bold red]Fatal Error:[/bold red] {e}")
+        if self_heal:
+             console.print("[dim]Debugger failed to heal this crash.[/dim]")
+        else:
+             console.print("[dim]Tip: Run with --self-heal to attempt auto-repair.[/dim]")
         raise typer.Exit(code=1)
 
 @app.command()
@@ -214,12 +246,241 @@ def version():
     try:
         ver = pkg_version("boring-gemini")
     except Exception:
-        ver = "4.0.0"
+        ver = "7.0.0"
     
     console.print(f"[bold blue]Boring[/bold blue] v{ver}")
     console.print(f"  Model: {settings.DEFAULT_MODEL}")
     console.print(f"  Project: {settings.PROJECT_ROOT}")
 
+# --- Workflow Hub CLI ---
+workflow_app = typer.Typer(help="Manage Boring Workflows (Hub)")
+app.add_typer(workflow_app, name="workflow")
+
+@workflow_app.command("list")
+def workflow_list():
+    """List local workflows."""
+    from .workflow_manager import WorkflowManager
+    manager = WorkflowManager()
+    flows = manager.list_local_workflows()
+    
+    console.print("[bold blue]Available Workflows:[/bold blue]")
+    if not flows:
+        console.print("  [dim]No workflows found in .agent/workflows[/dim]")
+        return
+
+    for f in flows:
+        console.print(f"  - {f}")
+
+@workflow_app.command("export")
+def workflow_export(
+    name: str = typer.Argument(..., help="Workflow name (e.g. 'speckit-plan')"),
+    author: str = typer.Option("Anonymous", "--author", "-a", help="Author name")
+):
+    """Export a workflow to .bwf.json package."""
+    from .workflow_manager import WorkflowManager
+    manager = WorkflowManager()
+    path, msg = manager.export_workflow(name, author)
+    
+    if path:
+        console.print(f"[green]✓ Exported to: {path}[/green]")
+    else:
+        console.print(f"[red]Error: {msg}[/red]")
+        raise typer.Exit(1)
+
+@workflow_app.command("publish")
+def workflow_publish(
+    name: str = typer.Argument(..., help="Workflow name to publish"),
+    token: str = typer.Option(None, "--token", "-t", help="GitHub Personal Access Token (or set GITHUB_TOKEN env var)"),
+    public: bool = typer.Option(True, "--public/--private", help="Make Gist public or secret")
+):
+    """Publish a workflow to GitHub Gist registry."""
+    import os
+    
+    # Resolve token
+    gh_token = token or os.environ.get("GITHUB_TOKEN")
+    if not gh_token:
+        console.print("[red]Error: GitHub Token required.[/red]")
+        console.print("Please set [bold]GITHUB_TOKEN[/bold] env var or use [bold]--token[/bold] option.")
+        console.print("Create one at: https://github.com/settings/tokens (Scpoe: gist)")
+        raise typer.Exit(1)
+
+    from .workflow_manager import WorkflowManager
+    manager = WorkflowManager()
+    
+    with console.status(f"[bold green]Publishing {name} to GitHub Gist...[/bold green]"):
+        success, msg = manager.publish_workflow(name, gh_token, public)
+    
+    if success:
+        console.print(f"[green]✓ Published Successfully![/green]")
+        console.print(msg)
+    else:
+        console.print(f"[red]Publish Failed: {msg}[/red]")
+        raise typer.Exit(1)
+
+@app.command()
+def evaluate(
+    target: str = typer.Argument(..., help="File path to evaluate"),
+    context: str = typer.Option("", "--context", "-c", help="Optional context"),
+    level: str = typer.Option("DIRECT", "--level", "-l", help="Evaluation level"),
+    backend: str = typer.Option("cli", "--backend", "-b", help="Backend: 'api' (SDK) or 'cli' (local CLI)"),
+    model: str = typer.Option("default", "--model", "-m", help="Gemini model to use")
+):
+    """
+    Evaluate code quality using LLM-as-a-Judge.
+    """
+    from .judge import LLMJudge
+    from .cli_client import GeminiCLIAdapter
+    from .gemini_client import GeminiClient
+    
+    # Check if target exists
+    target_path = Path(target)
+    if not target_path.exists():
+        console.print(f"[red]Error: Target '{target}' not found.[/red]")
+        raise typer.Exit(1)
+        
+    console.print(f"[bold blue]🤔 Evaluating {target_path.name}...[/bold blue]")
+
+    try:
+        if backend.lower() == "cli":
+            adapter = GeminiCLIAdapter(model_name=model)
+            console.print("[dim]Using Local CLI Backend[/dim]")
+        else:
+            # API Mode
+            adapter = GeminiClient(model_name=model)
+            if not adapter.is_available:
+                console.print("[red]Error: API Key not found. Use --backend cli or set GOOGLE_API_KEY.[/red]")
+                raise typer.Exit(1)
+            console.print("[dim]Using Gemini API Backend[/dim]")
+
+        judge = LLMJudge(adapter)
+        
+        content = target_path.read_text(encoding="utf-8")
+        result = judge.grade_code(target_path.name, content)
+        
+        score = result.get("score", 0)
+        summary = result.get("summary", "No summary")
+        suggestions = result.get("suggestions", [])
+        
+        emoji = "🟢" if score >= 4 else "🟡" if score >= 3 else "🔴"
+        console.print(f"\n[bold]{emoji} Score: {score}/5.0[/bold]")
+        console.print(f"[italic]{summary}[/italic]\n")
+        
+        if suggestions:
+            console.print("[bold]💡 Suggestions:[/bold]")
+            for s in suggestions:
+                console.print(f"  - {s}")
+                
+    except Exception as e:
+        console.print(f"[red]Evaluation failed: {e}[/red]")
+        raise typer.Exit(1)
+
+@workflow_app.command("install")
+def workflow_install(
+    source: str = typer.Argument(..., help="File path or URL to .bwf.json")
+):
+    """Install a workflow from file or URL."""
+    from .workflow_manager import WorkflowManager
+    manager = WorkflowManager()
+    success, msg = manager.install_workflow(source)
+    
+    if success:
+        console.print(f"[green]{msg}[/green]")
+    else:
+        console.print(f"[red]Error: {msg}[/red]")
+        raise typer.Exit(1)
+
+
+@app.command()
+def dashboard():
+    """
+    Launch the Boring Visual Dashboard (localhost Web UI).
+    """
+    import subprocess
+    import sys
+    
+    dashboard_path = Path(__file__).parent / "dashboard.py"
+    
+    # Check if streamlit is installed
+    try:
+        import streamlit
+    except ImportError:
+        console.print("[bold red]❌ Dashboard dependencies not found.[/bold red]")
+        console.print("\nPlease install the GUI extras:")
+        console.print("  [cyan]pip install -e \".\\[gui\\]\"[/cyan]")
+        raise typer.Exit(1)
+
+    console.print(f"🚀 Launching Dashboard at [bold green]http://localhost:8501[/bold green]")
+    console.print("Press Ctrl+C to stop.")
+    
+    try:
+        subprocess.run(
+            [sys.executable, "-m", "streamlit", "run", str(dashboard_path)],
+            check=True
+        )
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Dashboard stopped.[/yellow]")
+    except Exception as e:
+        console.print(f"[bold red]Failed to launch dashboard:[/bold red] {e}")
+        raise typer.Exit(1)
+
+# ========================================
+# Local Teams: Git Hooks Commands
+# ========================================
+hooks_app = typer.Typer(help="Git hooks for local code quality enforcement.")
+app.add_typer(hooks_app, name="hooks")
+
+@hooks_app.command("install")
+def hooks_install():
+    """Install Boring Git hooks (pre-commit, pre-push)."""
+    from .hooks import HooksManager
+    
+    manager = HooksManager()
+    success, msg = manager.install_all()
+    
+    if success:
+        console.print(f"[bold green]✅ Hooks installed![/bold green]")
+        console.print(msg)
+        console.print("\n[dim]Your commits will now be verified automatically.[/dim]")
+    else:
+        console.print(f"[red]Error: {msg}[/red]")
+        raise typer.Exit(1)
+
+@hooks_app.command("uninstall")
+def hooks_uninstall():
+    """Remove Boring Git hooks."""
+    from .hooks import HooksManager
+    
+    manager = HooksManager()
+    success, msg = manager.uninstall_all()
+    
+    if success:
+        console.print(f"[yellow]Hooks removed.[/yellow]")
+        console.print(msg)
+    else:
+        console.print(f"[red]Error: {msg}[/red]")
+        raise typer.Exit(1)
+
+@hooks_app.command("status")
+def hooks_status():
+    """Show status of installed hooks."""
+    from .hooks import HooksManager
+    
+    manager = HooksManager()
+    status = manager.status()
+    
+    if not status["is_git_repo"]:
+        console.print("[yellow]Not a Git repository.[/yellow]")
+        return
+    
+    console.print("[bold]Git Hooks Status:[/bold]")
+    for hook_name, info in status["hooks"].items():
+        if info["installed"]:
+            if info["is_boring_hook"]:
+                console.print(f"  ✅ {hook_name}: [green]Boring hook active[/green]")
+            else:
+                console.print(f"  ⚠️ {hook_name}: [yellow]Custom hook (not Boring)[/yellow]")
+        else:
+            console.print(f"  ❌ {hook_name}: [dim]Not installed[/dim]")
 
 if __name__ == "__main__":
     app()

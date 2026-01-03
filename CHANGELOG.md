@@ -5,6 +5,90 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [9.0.0] - 2026-01-03
+
+### Added
+- **Plugin System**: Extensible tool registration without modifying core code
+  - `boring_list_plugins`: List all registered plugins
+  - `boring_run_plugin`: Execute a plugin by name
+  - `boring_reload_plugins`: Hot-reload changed plugins
+  - Decorator-based API: `@plugin(name, description)`
+  - Plugin directories: `~/.boring/plugins/` and `.boring_plugins/`
+- **Multi-Project Workspace**: Manage multiple projects simultaneously
+  - `boring_workspace_add`: Register a project
+  - `boring_workspace_remove`: Unregister a project
+  - `boring_workspace_list`: List all projects with tags
+  - `boring_workspace_switch`: Switch active project context
+- **Auto-Fix Pipeline**: Automated verify-and-fix loop
+  - `boring_auto_fix`: Runs up to 3 iterations of verify → fix → verify
+  - `AutoFixPipeline` class with progress tracking
+- **Pattern Mining**: Context-aware suggestions based on project state
+  - `boring_suggest_next`: AI-powered next-step recommendations
+  - `PatternMiner` with 5 default patterns and custom pattern support
+- **Streaming Progress**: Real-time progress reporting
+  - `boring_get_progress`: Poll task progress
+  - `ProgressReporter` with file output for IDE polling
+  - `StreamingTaskManager` for concurrent task tracking
+
+### New Files
+- `src/boring/plugins/__init__.py`, `loader.py`
+- `src/boring/streaming.py`
+- `src/boring/workspace.py`
+- `src/boring/auto_fix.py`
+- `src/boring/pattern_mining.py`
+- `src/boring/mcp/v9_tools.py`
+
+## [8.0.0] - 2026-01-03
+
+### Added
+- **Audit Logging**: Structured JSONL logging for all MCP tool invocations
+  - `AuditLogger` class with singleton pattern
+  - `@audited` decorator for automatic logging
+  - Sensitive data redaction (`[REDACTED]` for tokens/keys)
+  - Output to `logs/audit.jsonl`
+- **Modular MCP Architecture**: Split tools into focused modules
+  - `src/boring/mcp/core_tools.py`: Essential tools
+  - `src/boring/mcp/speckit_tools.py`: SpecKit workflows
+  - `src/boring/mcp/brain_tools.py`: Learning and evaluation
+  - `src/boring/mcp/async_utils.py`: Async execution utilities
+- **Async Support**: Non-blocking execution framework
+  - `ThreadPoolExecutor` with 4 workers
+  - `@run_in_thread` decorator
+  - `AsyncTaskRunner` with progress callbacks
+
+### Changed
+- `@audited` decorator applied to `run_boring` and `boring_verify`
+
+## [7.0.0] - 2026-01-03
+
+### Added
+- **Serverless Registry (GitHub Gist)**: 真正的去中心化工作流倉庫
+  - `boring workflow publish`: 一鍵發布工作流到 GitHub Gist，自動生成安裝連結。
+  - 支援 Token 認證 (`--token` 或 `GITHUB_TOKEN`)。
+  - 支援公開 (`--public`) 或私密 (`--private`) 發布。
+  
+### Optimized (Local-First)
+- **Zero-Config Evaluation**: `boring evaluate` now defaults to local CLI usage (`gemini` command), removing the need for an API key.
+- **Workflow Resilience**: Added auto-retry mechanism for network downloads and robust YAML parsing.
+
+## [6.0.0] - 2026-01-03
+
+### Added
+- **Boring Hub (Workflow Ecosystem)**: 實現工作流的分享與再利用
+  - `boring workflow export`: 將工作流打包為 `.bwf.json`
+  - `boring workflow install`: 從檔案或 URL 安裝工作流
+  - `boring workflow list`: 列出本地可用工作流
+- **MCP Tools for Hub**:
+  - `boring_install_workflow`: 讓 AI 協助安裝工作流
+  - `boring_export_workflow`: 讓 AI 協助分享工作流
+- **Workflow Manager**: 核心引擎 (`src/boring/workflow_manager.py`)
+- **Logger Upgrade**: 重構 `log_status` 支援更靈活的 CLI 調用
+
+### Breaking Changes
+- `log_status` 函數簽名變更：`log_dir` 參數變為 Optional 且移至參數列表後方。
+
 ## [5.2.0] - 2026-01-03
 
 ### Added
@@ -28,6 +112,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Improved project structure documentation in README
+- **Documentation**: Comprehensive "Pro Tips" section in README for advanced usage
+- **Documentation**: Added copy-pasteable MCP Prompts for all 21 tools
+- **Documentation**: Added IDE-specific rollback instructions (MCP Mode)
+- **Documentation**: Added Agent Mode vs Micro Mode comparison guide
 
 ## [5.1.0] - 2026-01-02
 

@@ -1,7 +1,7 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-5.2.0-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-9.0.0-green.svg)](https://github.com/Boring206/boring-gemini)
 
-# Boring for Gemini (V5.2)
+# Boring for Gemini (V9.0)
 
 > **企業級自主 AI 開發代理 (Autonomous Developer)**  
 > 專為 Cursor / Claude Desktop / VS Code 打造，利用 Google Gemini 模型驅動的自動化編碼與驗證引擎。
@@ -15,6 +15,7 @@
 - **🤖 Autonomous & Architect Mode**: 既能自動寫全套程式 (Standalone)，也能作為架構師 (Architect) 指揮您的 IDE AI 協同工作。
 - **🔌 Full MCP Support**: 完美整合 Protocol，支援 `context7` (查文件)、`notebooklm` (查知識庫) 與 `criticalthink` (深度思考)。
 - **🛡️ 企業級防護**: 內建斷路器 (Circuit Breaker)、自動修復 (Self-Healing) 與 100% 測試覆蓋率。
+- **🔌 Local-First Architecture**: 主打 CLI 整合，預設使用本地 `gemini` 指令，無需 API Key 即可運作，資料隱私更有保障。
 - **🧩 Spec-Driven Development**: 整合 SpecKit，從 PRD 到 Code 實現 100% 規格一致性。
 
 ---
@@ -62,10 +63,16 @@
 ### 開發者方式：Python Source (適合貢獻代碼)
 
 ```bash
-# Clone & Install
+# Clone & Install (Lightweight Default)
 git clone https://github.com/Boring206/boring-gemini.git
 cd boring-gemini
-pip install -e ".[all,dev]"
+pip install -e .
+
+# Install with Dashboard Support
+pip install -e ".[gui]"
+
+# Install for Development
+pip install -e ".[dev]"
 
 # 安裝擴展
 boring setup-extensions
@@ -83,14 +90,180 @@ boring setup-extensions
 | :--- | :--- |
 | **`run_boring`** | **主要入口**。給它一個任務描述，它會自動規劃並執行。 |
 | **`boring_quickstart`** | 🆕 **新手引導**。取得推薦步驟和可用工具清單。 |
-| **`boring_verify`** | 執行全專案檢查 (Lint, Test, Import)。 |
+| **`boring_verify`** | 🛡️ **程式碼驗證**。支援 4 種級別 (見下方說明)。 |
 | **`boring_health_check`** | 檢查系統健康狀態。 |
 | **`boring_done`** | 🔔 完成通知。Agent 完成任務時呼叫，會發送 **Windows 桌面通知**。 |
-| **`boring_learn`** | 🆕 從 `.boring_memory` 提取學習模式到 `.boring_brain`。 |
-| **`boring_create_rubrics`** | 🆕 創建評估標準 (LLM-as-Judge)。 |
-| **`boring_brain_summary`** | 🆕 查看知識庫摘要。 |
+| **`boring_learn`** | 🧠 **經驗學習**。從 `.boring_memory` 提取成功模式到 `.boring_brain`。 |
+| **`boring_evaluate`** | 📊 **Advanced Evaluation**。使用 LLM-as-a-Judge 評估代碼品質。 |
+| **`boring_dashboard`** | 👁️ **Visual Monitor**。啟動 Web UI 監控面板 (`localhost:8501`)。 |
+| **`boring_create_rubrics`** | 創建評估標準 (LLM-as-a-Judge)。 |
+| **`boring_brain_summary`** | 查看知識庫摘要。 |
+| **`boring_hooks_install`** | 安裝 Git Hooks (pre-commit + pre-push)。 |
+| **`boring_hooks_uninstall`** | 移除 Git Hooks。 |
+| **`boring_hooks_status`** | 查看 Hook 安裝狀態。 |
+
+### 1.1 🔌 V9 新功能 (V9.0 New Features) 🆕
+
+| 工具名稱 | 用途 |
+| :--- | :--- |
+| **`boring_auto_fix`** | 🔧 **自動修復**。驗證失敗時自動修復，最多 3 輪循環。 |
+| **`boring_suggest_next`** | 🧠 **智慧建議**。根據專案狀態推薦下一步動作。 |
+| **`boring_workspace_add`** | 📂 新增專案到工作區。 |
+| **`boring_workspace_remove`** | 📂 從工作區移除專案。 |
+| **`boring_workspace_list`** | 📂 列出工作區所有專案。 |
+| **`boring_workspace_switch`** | 📂 切換當前活動專案。 |
+| **`boring_list_plugins`** | 🔌 列出已註冊的外掛。 |
+| **`boring_run_plugin`** | 🔌 執行指定外掛。 |
+| **`boring_reload_plugins`** | 🔌 熱載入已變更的外掛。 |
+| **`boring_get_progress`** | 📊 取得執行中任務的進度。 |
+
+### 1.2 🤖 Local Teams (Git Hooks)
+
+本地版 "Boring for Teams"！透過 Git Hooks 在 commit/push 前自動驗證代碼。
+
+```bash
+# 安裝 Hooks
+boring hooks install
+
+# 查看狀態
+boring hooks status
+
+# 移除 Hooks
+boring hooks uninstall
+```
+
+| Hook | 觸發時機 | 驗證級別 |
+|------|----------|----------|
+| `pre-commit` | 每次 commit | `STANDARD` (語法 + Lint) |
+| `pre-push` | 每次 push | `FULL` (語法 + Lint + 測試) |
+
+> 💡 **工作原理**: Hook 呼叫 `boring verify`，而 `boring verify` 靠 **[Ruff](https://docs.astral.sh/ruff/)** (超快的 Python Linter) 來定義什麼是「好代碼」。
+
+#### 📝 自訂規則 (可選)
+
+在專案根目錄建立 `ruff.toml` 來客製化 Lint 規則：
+
+```toml
+# ruff.toml
+line-length = 120  # 允許更長的行
+
+[lint]
+ignore = [
+    "T201",  # 允許 print()
+    "F401",  # 允許未使用的 import
+]
+```
+
+---
+
+### 1. 核心工具 (Core Tools)
+
+| 工具名稱 | 用途 |
+| :--- | :--- |
+| **`run_boring`** | **主要入口**。給它一個任務描述，它會自動規劃並執行。 |
+| **`boring_quickstart`** | 🆕 **新手引導**。取得推薦步驟和可用工具清單。 |
+| **`boring_verify`** | 🛡️ **程式碼驗證**。支援 4 種級別 (見下方說明)。 |
+| **`boring_health_check`** | 檢查系統健康狀態。 |
+| **`boring_done`** | 🔔 完成通知。Agent 完成任務時呼叫，會發送 **Windows 桌面通知**。 |
+
+### 2. SpecKit 工作流 (Spec-Driven Development) 🆕
+
+透過標準化工作流，將需求轉化為高品質代碼。
+
+| 工具名稱 | 說明 |
+| :--- | :--- |
+| **`speckit_plan`** | 🗺️ **規劃**。根據需求建立技術實作計畫。 |
+| **`speckit_tasks`** | 📝 **拆解**。將計畫拆解為可執行的任務清單。 |
+| **`speckit_analyze`** | 🔍 **分析**。檢查 Spec、Plan 與 Code 之間的一致性。 |
+| **`speckit_clarify`** | ❓ **釐清**。找出需求中的模糊地帶並提問。 |
+| **`speckit_checklist`** | ✅ **檢查表**。生成功能驗收清單。 |
+| **`speckit_constitution`** | 📜 **憲章**。建立專案的指導原則與開發規範。 |
+
+**進階工作流管理**:
+- `speckit_evolve_workflow`: 為專案客製化工作流 (例如：針對 React 專案修改 Plan 模板)。
+- `speckit_reset_workflow`: 恢復預設工作流。
+- `speckit_backup_workflows`: 備份當前工作流設定。
+
+### 3. 本地團隊協作 (Local Teams) 🆕
+
+透過 Git Hooks 在 commit/push 前自動驗證代碼。
+
+```bash
+boring hooks install    # 安裝 Hooks
+boring hooks status     # 查看狀態
+boring hooks uninstall  # 移除 Hooks
+```
+
+- **pre-commit**: 執行 `boring verify --level STANDARD` (語法 + Lint)
+- **pre-push**: 執行 `boring verify --level FULL` (語法 + Lint + 測試)
+
+### 4. 大腦與學習 (Brain & Learning) 🧠
+
+Boring 具備記憶與自我進化能力。
+
+| 工具名稱 | 說明 |
+| :--- | :--- |
+| **`boring_learn`** | 彙整記憶，將成功模式提取至長期記憶 (`.boring_brain`)。 |
+| **`boring_evaluate`** | **LLM-as-a-Judge**。評估代碼品質 (支援 Direct Scoring 與 Pairwise Comparison)。 |
+| **`boring_create_rubrics`**| 創建評估標準 (Rubrics) 供 Judge 使用。 |
+| **`boring_brain_summary`** | 查看當前知識庫摘要 (已學模式、Rubrics 數量)。 |
+
+### 5. 整合與擴展 (Integration & Extensions) 🔌
+
+| 工具名稱 | 說明 |
+| :--- | :--- |
+| **`boring_setup_extensions`**| 一鍵安裝推薦擴展 (Context7, NotebookLM 等)。 |
+| **`boring_notebooklm_guide`**| 取得 NotebookLM 整合與認證指南。 |
+| **`boring_install_workflow`**| 從網址或檔案安裝社群分享的工作流 (.bwf.json)。 |
+| **`boring_export_workflow`** | 將你的工作流打包分享。 |
+| **`boring_apply_patch`** | 精準代碼修改 (不啟動完整 Agent Loop)。 |
+
+---
+
+### 🎓 專家級技巧 (Pro Tips)
+
+#### 💡 Tip 1: 善用 SpecKit "三部曲"
+在開始寫代碼前，依序執行這三個工具，能大幅降低錯誤率：
+1. `speckit_clarify` (釐清需求)
+2. `speckit_plan` (制定計畫)
+3. `speckit_checklist` (建立驗收標準)
+**這就是 "Measure Twice, Cut Once" 的 AI 實踐！**
+
+#### 💡 Tip 2: 讓已學經驗發揮作用
+定期執行 `boring_learn`。下次執行任務時，Agent 會自動參考 `.boring_brain/learned_patterns` 中的成功案例，避免犯同樣的錯誤。
+
+#### � Tip 3: 自定義你的 AI 裁判
+覺得預設的代碼檢查太寬鬆？
+1. 修改 `.boring_brain/rubrics/code_quality.json`
+2. 使用 `boring_evaluate(..., level="DIRECT")`
+3. AI 將會依據**你的標準**來評分！
+
+#### 💡 Tip 4: 混合開發模式
+- 小修改？直接用 `boring_apply_patch`。
+- 大功能？用 `run_boring`。
+- 寫完不確定？用 `boring_evaluate` 打分數。
+
+| `STANDARD` | 語法 + Lint (Ruff) | 🔵 中等 |
+| `FULL` | 語法 + Lint + Import 檢查 + 測試 | 🟠 較慢 |
+| `SEMANTIC` | 以上全部 + **LLM 評估程式碼品質** | 🔴 最慢但最完整 |
+
+> 💡 `SEMANTIC` 級別會使用 LLM-as-Judge 評估可讀性、安全性、架構品質。
+
+#### 🧠 `boring_learn` — 經驗學習系統
+
+從 `.boring_memory` 資料庫中提取成功解決問題的模式，儲存到 `.boring_brain` 知識庫：
+
+```
+開發過程 → AI 遇錯並修復 → 記錄到 .boring_memory
+專案結束 → 執行 boring_learn → 提取成功模式到 .boring_brain
+下次專案 → AI 自動參考學過的模式！
+```
+
+> 💡 建議在專案完成後執行 `boring_learn`，讓 AI 累積經驗變得更聰明！
 
 ### 2. SpecKit 工作流 (Spec-Driven)
+
+Boring 採用 **Spec-Driven Development**，確保程式碼與需求 100% 一致。
 
 | 工具名稱 | 用途 |
 | :--- | :--- |
@@ -101,9 +274,64 @@ boring setup-extensions
 | **`speckit_clarify`** | AI 反問模式，釐清模糊需求。 |
 | **`speckit_checklist`** | 生成品質驗證檢查清單。 |
 
-### 2.1 動態工作流程演化 (Workflow Evolution) 🆕
+#### 📐 標準開發流程
 
-AI 可根據專案需求**動態修改** SpecKit 工作流程：
+```mermaid
+graph LR
+    A[PRD 需求] --> B(speckit_clarify)
+    B --> C(speckit_constitution)
+    C --> D(speckit_plan)
+    D --> E(speckit_tasks)
+    E --> F[開始編碼]
+```
+
+```mermaid
+graph LR
+    A[PRD 需求] --> B(speckit_clarify)
+    B --> C(speckit_constitution)
+    C --> D(speckit_plan)
+    D --> E(speckit_tasks)
+    E --> F[開始編碼]
+```
+
+### 2.1 🌐 Boring Hub (Workflow Ecosystem) 🆕
+
+Boring V7.0 引入了 **Workflow Sharing** 生態系，支援 **Serverless Registry (GitHub Gist)**，您可以將最佳實踐像 `npm publish` 一樣發布。
+
+| 工具名稱 | 用途 |
+| :--- | :--- |
+| **`boring_export_workflow`** | 打包工作流為 `.bwf.json`。 |
+| **`boring_install_workflow`** | 從 Gist URL 或檔案安裝工作流。 |
+| **`boring workflow publish`** | **[NEW]** 一鍵發布到 GitHub Gist，自動生成分享連結。 |
+
+#### 📦 如何分享經驗 (Publish & Share)
+
+**CLI 快速發布：**
+```bash
+# 1. 發布 (需 GITHUB_TOKEN - 權限: gist)
+#    申請連結: https://github.com/settings/tokens/new?scopes=gist&description=Boring+CLI
+boring workflow publish speckit-plan --token ghp_xxxx
+
+# 輸出：
+# ✓ Published Successfully!
+# Scan this to install:
+# boring workflow install https://gist.githubusercontent.com/... (Raw Gist URL)
+# 
+# 💡 如果忘了 URL，可到 Gist 頁面點擊 "Raw" 按鈕獲取 (需為 .bwf.json 內容)
+```
+
+**MCP 對話模式：**
+> AI: "幫我把目前的 security-check 工作流發布到 Gist 分享給大家"
+2. **Distribute**: 將生成的 `speckit-plan.bwf.json` 上傳到 GitHub Gist 或任何 HTTP Server。
+3. **Install**:
+   - 別人只需執行：`boring workflow install https://.../speckit-plan.bwf.json`
+   - 或對 AI 說：*"幫我從這個 URL 安裝工作流..."*
+
+> 💡 **Boring Hub 願景**: 讓全世界的開發者不再重複造輪子，直接使用由專家驗證過的高效開發流程！
+
+### 2.2 動態工作流程演化 (Workflow Evolution) 🆕
+
+AI 可根據專案需求 **動態修改** SpecKit 工作流程，實現「自適應開發」。
 
 | 工具名稱 | 用途 |
 | :--- | :--- |
@@ -112,13 +340,56 @@ AI 可根據專案需求**動態修改** SpecKit 工作流程：
 | **`speckit_backup_workflows`** | 備份所有工作流程到 `_base/`。 |
 | **`speckit_workflow_status`** | 查看工作流程演化狀態。 |
 
+#### 🧬 演化機制 (Fork -> Evolve -> Rollback)
+
+當您發現預設流程不適用時（例如：需要特殊的 Security Check）：
+
+1. **Evolve**: 呼叫 `speckit_evolve_workflow` 修改 `checklist.md`。
+2. **Backup**: 系統自動將原始 `checklist.md` 備份到 `_base/`。
+3. **Use**: 之後 AI 會使用新的、強化版的工作流程。
+4. **Learn**: 這些修改會被記錄，成為未來專案的經驗。
+
+> 💡 **Pro Tip**: 不同類型的專案（Web, CLI, Data）應該演化出不同的工作流程！
+
+#### 💻 CLI 快速指令 (New)
+
+如果您有安裝擴展 (setup-extensions)，可以直接在終端機操作：
+
+```bash
+# 修改工作流
+gemini speckit evolve
+
+# 回滾工作流
+gemini speckit reset
+```
+
+#### 🧩 IDE (MCP Mode) 操作
+
+如果您是在 **Cursor / VS Code / Claude Desktop** 中使用：
+
+直接對 AI 下指令即可 (MCP 會呼叫 `speckit_reset_workflow`)：
+
+> "把 speckit-checklist 重置回預設值"
+> "Restore speckit-plan to original state"
+
 ### 3. 微操作 (Granular Tools)
+
+提供給高階用戶的「手術刀級」工具，適合精確控制。
 
 | 工具名稱 | 用途 |
 | :--- | :--- |
-| **`boring_apply_patch`** | 精確修改檔案 (Search/Replace)，不破壞其他部分。 |
-| **`boring_verify_file`** | 單檔快速驗證。 |
-| **`boring_extract_patches`** | 從 AI 輸出中萃取並套用程式碼修改 (支援多種格式)。 |
+| **`boring_apply_patch`** | 精確修改檔案 (Search/Replace)，支援 fuzzy match。 |
+| **`boring_verify_file`** | 單檔快速驗證，不需掃描全專案。 |
+| **`boring_extract_patches`** | 從 AI 輸出中萃取並套用程式碼。 |
+
+#### Agent Mode vs Micro Mode
+
+| 模式 | 適用情境 | 推薦工具 |
+|------|----------|----------|
+| **Agent Mode** | 需要規劃、多檔案連動、複雜重構 | `run_boring`, SpecKit Tools |
+| **Micro Mode** | 單一檔案修復、明確的小修改、Code Review | `apply_patch`, `verify_file` |
+
+> 💡 **Pro Tip**: 在使用 **Cursor Composer** 或 **Claude Artifact** 時，Micro Tools 特別好用，因為您可以自己控制流程，只讓 Boring 負責「寫入」和「驗證」。
 
 ---
 
@@ -662,4 +933,50 @@ my-project/
 
 ---
 
-**Boring V5.2 - Making AI Development Boringly Reliable.**
+## 🌟 Future Roadmap: 邁向「不可或缺」 (The Road to Indispensable)
+
+我們不只想做一個好用的工具，我們想定義 **AI Native Development** 的標準。
+
+**Boring V7.0 - Making AI Development Boringly Reliable.**
+## 1. 🌐 Boring Hub: Official Central Registry (V8.0+) 🚧
+我們計畫建立一個官方的 **Official Central Registry** (類似 `npmjs.com` 或 `PyPI`)，提供：
+- **Centralized Index**: 可搜尋的官方套件庫。
+- **Versioning**: 嚴格的版本管理 (SemVer)。
+- **Web UI**: 視覺化的工作流瀏覽與評價系統。
+> *Target Architecture*: 基於 OCI Registry 標準或 PEP 503 Simple Repository API。
+
+### 2. 🤖 Boring for Teams (Future Aspiration / Server Required)
+⚠️ *此功能需要 Server/CI 環境，作為未來雲端協作的願景規劃：*
+- **PR Reviewer**: 自動審查 Pull Request (GitHub Actions)
+- **Spec Guard**: 禁止不符合 Spec 的程式碼合併
+- **Team Memory**: 團隊共享的錯誤知識庫 (Cloud DB)
+
+---
+
+## 🙏 Acknowledgements (致謝)
+
+本專案的誕生與持續發展，特別感謝：
+
+- **Google Student Plan**: 感謝 Google 提供學生方案支持，讓我們有足夠的運算資源探索 AI Agent 的極限。
+- **Claude Skill**: 本專案的架構設計深受 Claude Skill 啟發，引領我們實現了更強大的工具整合與思維鏈路。
+- **FastMCP**: 感謝 FastMCP 提供高效的 MCP 伺服器開發框架，簡化了工具整合的流程。
+- **Spec-Kit**: 參考了 [Spec-Kit](https://github.com/github/spec-kit) 的標準化流程，提升了專案的開發規範與品質。
+- **Ralph-Claude-Code**: 借鑒了 [Ralph-Claude-Code](https://github.com/frankbria/ralph-claude-code) 的實作思路，優化了 AI 與程式碼的互動體驗。
+- **Ruff**: 感謝 [Ruff](https://docs.astral.sh/ruff/) 提供高效的 Python Linter，讓我們的代碼品質更上一層樓。
+- **Smithery**: 感謝 [Smithery](https://github.com/smitheryjs/smithery) 提供高效的 MCP 伺服器開發框架，簡化了工具整合的流程。
+- **Context7**: 本專案整合了 [Context7](https://context7.com/) (MIT License)，為 AI 提供最即時、精準的函式庫與框架文檔支持。
+- **Sequential Thinking**: 感謝 [slash-criticalthink](https://github.com/abagames/slash-criticalthink) (MIT License) 提供的思維鏈路擴展，強化了 AI 在處理複雜問題時的判斷與推理能力。
+- **Chrome DevTools MCP**: 感謝 [chrome-devtools-mcp](https://github.com/ChromeDevTools/chrome-devtools-mcp) (MIT License) 讓 AI 具備強大的瀏覽器自動化與 UI 測試能力。
+- **NotebookLM MCP**: 融合了 [notebooklm-mcp](https://github.com/jacob-bd/notebooklm-mcp) (MIT License) 的強大知識整合能力，讓開發者能將個人知識庫無縫導入 AI 開發工作流。
+- **Advanced Evaluation**: 感謝 [Advanced Evaluation](https://github.com/frankbria/advanced-evaluation) (MIT License) 提供的高階評估標準與 Rubric 框架，確保了本專案代碼品質的卓越。
+
+
+
+
+
+---
+
+## 📝 License (授權)
+
+Apache License 2.0
+

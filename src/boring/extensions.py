@@ -360,6 +360,22 @@ Please execute the Speckit Checklist Workflow.
 Reference the workflow file: @.agent/workflows/speckit-checklist.md
 Goal: Generate a quality checklist for the current specs
 """
+
+# 7. EVOLVE (Advanced)
+[subcommands.evolve]
+description = "Evolve a workflow using speckit_evolve_workflow"
+prompt = """
+Please use the 'speckit_evolve_workflow' tool to modify a workflow.
+You should ask me which workflow to modify and what changes to make if I haven't specified.
+"""
+
+# 8. RESET (Advanced)
+[subcommands.reset]
+description = "Reset a workflow using speckit_reset_workflow"
+prompt = """
+Please use the 'speckit_reset_workflow' tool to rollback a workflow to its base template.
+You should ask me which workflow to reset if I haven't specified.
+"""
 '''
     
     speckit_toml.write_text(content, encoding="utf-8")

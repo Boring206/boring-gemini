@@ -52,19 +52,23 @@ def get_logger(name: str = "boring") -> structlog.stdlib.BoundLogger:
 _logger = get_logger()
 
 
-def log_status(log_dir: Path, level: str, message: str, **kwargs: Any):
+def log_status(level: str, message: str, log_dir: Optional[Path] = None, **kwargs: Any):
     """
     Logs status messages using structlog with console and file output.
     
     Args:
-        log_dir: Directory for log files
         level: Log level (INFO, WARN, ERROR, SUCCESS, LOOP)
         message: Message to log
+        log_dir: Directory for log files (Optional, if None only logs to console/stderr)
         **kwargs: Additional structured fields
     """
-    log_dir.mkdir(parents=True, exist_ok=True)
-    log_file = log_dir / "boring.log"
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
+    if log_dir:
+        log_dir.mkdir(parents=True, exist_ok=True)
+        log_file = log_dir / "boring.log"
+    else:
+        log_file = None
 
     # Console output with Rich colors
     color_map = {
@@ -86,15 +90,16 @@ def log_status(log_dir: Path, level: str, message: str, **kwargs: Any):
     console.print(f"[{timestamp}] [[{level.upper()}]] {message}{extra_str}", style=style)
     
     # File output in JSON Lines format for analysis
-    log_entry = {
-        "timestamp": timestamp,
-        "level": level.upper(),
-        "message": message,
-        **kwargs
-    }
-    
-    with open(log_file, "a", encoding="utf-8") as f:
-        f.write(json.dumps(log_entry) + "\n")
+    if log_file:
+        log_entry = {
+            "timestamp": timestamp,
+            "level": level.upper(),
+            "message": message,
+            **kwargs
+        }
+        
+        with open(log_file, "a", encoding="utf-8") as f:
+            f.write(json.dumps(log_entry) + "\n")
     
     # Also log via structlog for consistent observability
     log_method = getattr(_logger, level.lower(), _logger.info)

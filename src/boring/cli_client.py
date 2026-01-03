@@ -66,7 +66,7 @@ class GeminiCLIAdapter(LLMClient):
                 "  gemini login"
             )
         
-        log_status(self.log_dir, "INFO", f"Gemini CLI Adapter initialized: {self.cli_path} (cwd: {self.cwd})")
+        log_status("INFO", f"Gemini CLI Adapter initialized: {self.cli_path} (cwd: {self.cwd})", log_dir=self.log_dir)
 
     @property
     def model_name(self) -> str:
@@ -118,10 +118,10 @@ class GeminiCLIAdapter(LLMClient):
             return response.text, response.success
         except PermissionError as e:
             # Authentication error
-            log_status(self.log_dir, "ERROR", str(e))
+            log_status("ERROR", str(e), log_dir=self.log_dir)
             return str(e), False
         except Exception as e:
-            log_status(self.log_dir, "ERROR", f"CLI error: {e}")
+            log_status("ERROR", f"CLI error: {e}", log_dir=self.log_dir)
             return str(e), False
     
     def generate_with_retry(
@@ -144,23 +144,40 @@ class GeminiCLIAdapter(LLMClient):
             
             # Retry on transient errors
             if attempt < max_retries - 1:
-                log_status(self.log_dir, "WARN", f"Retry {attempt + 1}/{max_retries}")
+                log_status("WARN", f"Retry {attempt + 1}/{max_retries}", log_dir=self.log_dir)
         
         return text, False
+
+    def chat(self, prompt: str, interactive: bool = False, **kwargs) -> str:
+        """
+        Chat interface (alias for generate in CLI adapter).
+        
+        Args:
+            prompt: The message to send.
+            interactive: Ignored in CLI adapter (always non-interactive via subprocess).
+        
+        Returns:
+            The response string.
+        """
+        text, success = self.generate(prompt, **kwargs)
+        if not success:
+            raise RuntimeError(f"Gemini CLI generation failed: {text}")
+        return text
     
     def _execute_cli(self, prompt: str) -> CLIResponse:
         """Execute Gemini CLI with prompt."""
-        cmd = [
-            self.cli_path,
-            "-p", prompt,
-            "-m", self.model_name,
-            "--output-format", "text"
-        ]
+        cmd = [self.cli_path]
+        
+        # Only add model flag if not using default
+        if self.model_name != "default":
+             cmd.extend(["-m", self.model_name])
+             
+        cmd.extend(["--output-format", "text"])
         
         try:
             result = subprocess.run(
                 cmd,
-                stdin=subprocess.DEVNULL,  # CRITICAL: Prevent inheriting MCP's stdin
+                input=prompt,  # Pass prompt via stdin to avoid length limits
                 capture_output=True,
                 text=True,
                 timeout=self.timeout_seconds,
@@ -203,17 +220,17 @@ class GeminiCLIAdapter(LLMClient):
     
     def _execute_cli_json(self, prompt: str) -> CLIResponse:
         """Execute Gemini CLI with JSON output format."""
-        cmd = [
-            self.cli_path,
-            "-p", prompt,
-            "-m", self.model_name,
-            "--output-format", "json"
-        ]
+        cmd = [self.cli_path]
+        
+        if self.model_name != "default":
+            cmd.extend(["-m", self.model_name])
+            
+        cmd.extend(["--output-format", "json"])
         
         try:
             result = subprocess.run(
                 cmd,
-                stdin=subprocess.DEVNULL,  # CRITICAL: Prevent inheriting MCP's stdin
+                input=prompt,  # Pass prompt via stdin
                 capture_output=True,
                 text=True,
                 timeout=self.timeout_seconds,
@@ -259,7 +276,7 @@ def create_cli_adapter(
     try:
         return GeminiCLIAdapter(model_name=model_name, log_dir=log_dir)
     except FileNotFoundError as e:
-        log_status(log_dir or Path("logs"), "ERROR", str(e))
+        log_status("ERROR", str(e), log_dir=log_dir or Path("logs"))
         return None
 
 
