@@ -20,14 +20,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `tools/knowledge.py`: Brain/memory tools
   - `tools/integration.py`: Extension setup
   - `tools/evaluation.py`: LLM Judge evaluation
-- **Comprehensive MCP Tests**: New test suite in `tests/unit/mcp/`
-  - 50+ unit tests covering all MCP tool modules
-  - 94% test pass rate achieved
-- **Project Cleanup**: Removed temporary files and folders
+- **Unit Tests for MCP**: Test suite in `tests/unit/mcp/` covering core MCP functionality
+- **Plugin System Documentation**: Added comprehensive plugin guide to README
 
 ### Changed
 - Modular architecture improves maintainability and testability
 - Updated `.gitignore` with additional temporary file patterns
+
+### Fixed
+- Project cleanup: removed stale files and directories
 
 ## [9.0.0] - 2026-01-03
 
