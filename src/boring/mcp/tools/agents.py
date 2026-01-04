@@ -25,7 +25,8 @@ def register_agent_tools(mcp, helpers: dict):
     @mcp.tool(description="Run full multi-agent workflow (Architect -> Coder -> Reviewer)", annotations={"readOnlyHint": False, "openWorldHint": True})
     def boring_multi_agent(
         task: Annotated[str, Field(description="What to build/fix (detailed description)")],
-        auto_approve_plans: Annotated[bool, Field(description="Skip human approval for plans (default False)")] = False
+        auto_approve_plans: Annotated[bool, Field(description="Skip human approval for plans (default False)")] = False,
+        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Run multi-agent workflow: Architect → Coder → Reviewer.
@@ -34,8 +35,13 @@ def register_agent_tools(mcp, helpers: dict):
         1. **Architect**: Creates implementation plan
         2. **Coder**: Implements the code
         3. **Reviewer**: Reviews for bugs, security, edge cases
+        
+        Args:
+            task: What to build/fix (detailed description)
+            auto_approve_plans: Skip human approval for plans (default False)
+            project_path: Optional explicit path to project root
         """
-        project_root = get_project_root_or_error()
+        project_root = get_project_root_or_error(project_path)
         
         # Import here to avoid circular imports
         from ..gemini_client import create_gemini_client
@@ -98,15 +104,20 @@ def register_agent_tools(mcp, helpers: dict):
     
     @mcp.tool(description="Run Architect agent to create implementation plan", annotations={"readOnlyHint": False, "openWorldHint": True})
     def boring_agent_plan(
-        task: Annotated[str, Field(description="What to build/fix")]
+        task: Annotated[str, Field(description="What to build/fix")],
+        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Run ONLY the Architect agent to create an implementation plan.
         
         Use this when you want to review the plan before committing to
         the full multi-agent workflow.
+        
+        Args:
+            task: What to build/fix
+            project_path: Optional explicit path to project root
         """
-        project_root = get_project_root_or_error()
+        project_root = get_project_root_or_error(project_path)
         
         from ..gemini_client import create_gemini_client
         from ..agents import ArchitectAgent, AgentContext, AgentRole
@@ -151,14 +162,19 @@ def register_agent_tools(mcp, helpers: dict):
     
     @mcp.tool(description="Run Reviewer agent on existing code", annotations={"readOnlyHint": True, "openWorldHint": True})
     def boring_agent_review(
-        file_paths: Annotated[str, Field(description="Comma-separated list of files to review")] = None
+        file_paths: Annotated[str, Field(description="Comma-separated list of files to review")] = None,
+        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Run ONLY the Reviewer agent on existing code.
         
         Use this for code review without the full multi-agent workflow.
+        
+        Args:
+            file_paths: Comma-separated list of files to review
+            project_path: Optional explicit path to project root
         """
-        project_root = get_project_root_or_error()
+        project_root = get_project_root_or_error(project_path)
         
         from ..gemini_client import create_gemini_client
         from ..agents import ReviewerAgent, AgentContext, AgentRole
