@@ -1,7 +1,7 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Version](https://img.shields.io/badge/Version-10.1.0-green.svg)](https://github.com/Boring206/boring-gemini)
 [![Evaluation](https://img.shields.io/badge/Evaluation-100%2F100-brightgreen.svg)]()
-
+[![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 # Boring for Gemini (V10.1)
 
 > **企業級自主 AI 開發代理 (Autonomous Developer)**  
