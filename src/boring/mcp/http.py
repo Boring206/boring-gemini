@@ -31,9 +31,10 @@ def main():
     
     try:
         # Import and setup server
-        from boring.mcp.server import create_server
+        # Use get_server_instance to bypass @smithery.server decorator
+        from boring.mcp.server import get_server_instance
         
-        mcp = create_server()
+        mcp = get_server_instance()
         
         # Safe tool count (compatible with different FastMCP versions)
         tool_count = len(getattr(mcp, '_tools', getattr(mcp, 'tools', {})))

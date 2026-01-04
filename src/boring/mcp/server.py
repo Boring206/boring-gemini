@@ -49,10 +49,11 @@ def _configure_logging():
     yield
 
 
-def _setup_server():
+
+def get_server_instance():
     """
-    Common setup for the MCP server.
-    Returns the configured FastMCP instance.
+    Get the configured FastMCP server instance (raw).
+    Use this for direct access without Smithery decorators (e.g. for http.py).
     """
     os.environ["BORING_MCP_MODE"] = "1"
     
@@ -69,6 +70,7 @@ def _setup_server():
     return instance.mcp
 
 
+
 def create_server():
     """
     Create and return a FastMCP server instance for Smithery deployment.
@@ -78,7 +80,7 @@ def create_server():
     
     Note: Smithery uses HTTP transport, not stdio.
     """
-    mcp_instance = _setup_server()
+    mcp_instance = get_server_instance()
     
     if os.environ.get("BORING_MCP_DEBUG") == "1":
         sys.stderr.write("[boring-mcp] Creating server for Smithery...\n")
