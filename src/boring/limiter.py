@@ -10,11 +10,7 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from typing import Optional
 
-from rich.console import Console
-
-from .logger import log_status
-
-console = Console()
+from .logger import log_status, console
 
 
 def init_call_tracking(
@@ -122,7 +118,7 @@ def wait_for_reset(
 
     console.print(f"[blue]Sleeping for {wait_seconds} seconds until next hour...[/blue]")
     
-    with Console().status("[bold green]Waiting for rate limit reset...[/bold green]") as status:
+    with console.status("[bold green]Waiting for rate limit reset...[/bold green]") as status:
         while wait_seconds > 0:
             hours, remainder = divmod(wait_seconds, 3600)
             minutes, seconds = divmod(remainder, 60)

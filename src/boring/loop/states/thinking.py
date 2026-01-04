@@ -190,22 +190,29 @@ class ThinkingState(LoopState):
         timestamp = time.strftime('%Y-%m-%d_%H-%M-%S')
         context.output_file = context.log_dir / f"gemini_output_{timestamp}.log"
         
-        # Show progress
-        with Live(console=console, screen=False, auto_refresh=True) as live:
-            progress = Progress(
-                SpinnerColumn(),
-                TextColumn("[progress.description]{task.description}"),
-                TimeElapsedColumn(),
-                console=console
-            )
-            progress.add_task("[cyan]Gemini Thinking...", total=None)
-            live.update(Panel(progress, title="[bold blue]SDK Generation[/bold blue]"))
-            
-            # Call API with function calling
-            text_response, function_calls, success = context.gemini_client.generate_with_tools(
+        # Show progress (only if not in quiet/mcp mode)
+        if not context.verbose and console.quiet:
+             # Fast path: just call without Live UI
+             text_response, function_calls, success = context.gemini_client.generate_with_tools(
                 prompt=prompt,
                 context=context_str
             )
+        else:
+            with Live(console=console, screen=False, auto_refresh=True) as live:
+                progress = Progress(
+                    SpinnerColumn(),
+                    TextColumn("[progress.description]{task.description}"),
+                    TimeElapsedColumn(),
+                    console=console
+                )
+                progress.add_task("[cyan]Gemini Thinking...", total=None)
+                live.update(Panel(progress, title="[bold blue]SDK Generation[/bold blue]"))
+                
+                # Call API with function calling
+                text_response, function_calls, success = context.gemini_client.generate_with_tools(
+                    prompt=prompt,
+                    context=context_str
+                )
         
         # Store results
         context.output_content = text_response or ""

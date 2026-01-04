@@ -27,13 +27,18 @@ class _BytesInterceptor:
         if self._parent._passthrough or self._parent._mcp_started:
             return self._original.write(data)
 
+        # AUTO-ALLOW JSON-RPC messages 
         stripped = data_bytes.strip()
-        if stripped.startswith(b"{") or stripped.startswith(b"["):
+        if stripped.startswith(b"{") and b'"jsonrpc"' in data_bytes:
              self._parent._mcp_started = True
              return self._original.write(data)
         
         if data_bytes in (b"\n", b"\r\n", b"\r"):
             return self._original.write(data)
+        
+        # If BORING_MCP_MODE is not set, let it through
+        if os.environ.get("BORING_MCP_MODE") != "1":
+             return self._original.write(data)
 
         # Log to stderr
         try:
@@ -79,9 +84,12 @@ class _StdoutInterceptor:
         if self._passthrough or self._mcp_started:
             return self._original.write(data)
         
-        # AUTO-ALLOW JSON-RPC messages (starts with '{' or is just whitespace/newline after JSON)
+        # AUTO-ALLOW JSON-RPC messages 
+        # We check for '{' which starts a JSON-RPC object.
+        # We avoid '[' because it often captures log messages starting with '[INFO]'.
+        # For maximum reliability, we also check for the "jsonrpc" key.
         stripped = data.strip()
-        if stripped.startswith("{") or stripped.startswith("["):
+        if stripped.startswith("{") and '"jsonrpc"' in data:
             self._mcp_started = True
             return self._original.write(data)
         
@@ -90,6 +98,10 @@ class _StdoutInterceptor:
             return self._original.write(data)
         
         # Otherwise, log the pollution attempt to stderr
+        # If BORING_MCP_MODE is not set, we might be in testing/CLI mode, so let it through if not MCP started
+        if os.environ.get("BORING_MCP_MODE") != "1":
+             return self._original.write(data)
+
         sys.stderr.write(f"\n[STDOUT POLLUTION] {repr(data[:200])}\n")
         return
     

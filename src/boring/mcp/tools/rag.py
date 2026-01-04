@@ -50,7 +50,9 @@ def register_rag_tools(mcp, helpers: dict):
         Returns:
             Status message with indexing statistics
         """
-        project_root = get_project_root_or_error(project_path)
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error.get("message")
         retriever = get_retriever(project_root)
         
         if not retriever.is_available:
@@ -72,6 +74,7 @@ def register_rag_tools(mcp, helpers: dict):
                 f"- Functions: {idx.functions}\n"
                 f"- Classes: {idx.classes}\n"
                 f"- Methods: {idx.methods}\n"
+                f"- Script chunks: {getattr(idx, 'script_chunks', 0)}\n"
                 f"- Skipped: {idx.skipped_files}"
             )
         
@@ -101,15 +104,41 @@ def register_rag_tools(mcp, helpers: dict):
         Returns:
             Formatted search results with code snippets
         """
-        project_root = get_project_root_or_error(project_path)
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error.get("message")
         retriever = get_retriever(project_root)
         
         if not retriever.is_available:
-            return "❌ RAG not available. Run boring_rag_index first."
+            return (
+                "❌ RAG not available.\n\n"
+                "**Install dependencies:**\n"
+                "```bash\n"
+                "pip install chromadb sentence-transformers\n"
+                "```"
+            )
         
-        # Ensure index exists
-        if retriever.collection and retriever.collection.count() == 0:
-            return "❌ RAG index is empty. Run boring_rag_index first."
+        # Enhanced index health check with diagnostics
+        if retriever.collection:
+            chunk_count = retriever.collection.count()
+            if chunk_count == 0:
+                return (
+                    "❌ RAG index is empty.\n\n"
+                    "**Solution:** Run `boring_rag_index` first to index your codebase:\n"
+                    "```\n"
+                    "boring_rag_index(force=True)\n"
+                    "```\n\n"
+                    "**Tip:** Use `boring_rag_status` to check index health."
+                )
+        else:
+            return (
+                "❌ RAG collection not initialized.\n\n"
+                "**Solution:** Run `boring_rag_index` to create the index."
+            )
+        
+        # Normalize file_filter for cross-platform compatibility
+        if file_filter:
+            file_filter = file_filter.replace("\\", "/")
         
         results = retriever.retrieve(
             query=query,
@@ -119,7 +148,13 @@ def register_rag_tools(mcp, helpers: dict):
         )
         
         if not results:
-            return f"🔍 No results found for: {query}"
+            return (
+                f"🔍 No results found for: **{query}**\n\n"
+                f"**Suggestions:**\n"
+                f"- Try a different query\n"
+                f"- Check if code exists in indexed files\n"
+                f"- Run `boring_rag_status` to verify index health"
+            )
         
         parts = [f"🔍 Found {len(results)} results for: **{query}**\n"]
         
@@ -135,6 +170,72 @@ def register_rag_tools(mcp, helpers: dict):
             )
         
         return "\n".join(parts)
+    
+    @mcp.tool(description="Check RAG index health and statistics", annotations={"readOnlyHint": True, "openWorldHint": False})
+    def boring_rag_status(
+        project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    ) -> str:
+        """
+        Check RAG index health and provide diagnostic information.
+        
+        Use this to verify the index is properly built and contains expected data.
+        
+        Args:
+            project_path: Optional explicit path to project root
+        
+        Returns:
+            Comprehensive index health report
+        """
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error.get("message")
+        retriever = get_retriever(project_root)
+        
+        report = ["# 📊 RAG Index Status\n"]
+        
+        # Check ChromaDB availability
+        if not retriever.is_available:
+            report.append("## ❌ ChromaDB Not Available\n")
+            report.append("Install dependencies:\n```bash\npip install chromadb sentence-transformers\n```\n")
+            return "\n".join(report)
+        
+        report.append("## ✅ ChromaDB Available\n")
+        
+        # Check collection status
+        if retriever.collection:
+            chunk_count = retriever.collection.count()
+            report.append(f"**Indexed Chunks:** {chunk_count}\n")
+            
+            if chunk_count == 0:
+                report.append("\n## ⚠️ Index Empty\n")
+                report.append("Run `boring_rag_index(force=True)` to build the index.\n")
+            else:
+                report.append("\n## ✅ Index Healthy\n")
+                
+                # Get detailed stats
+                stats = retriever.get_stats()
+                if stats.index_stats:
+                    idx = stats.index_stats
+                    report.append(f"- **Files indexed:** {idx.total_files}\n")
+                    report.append(f"- **Functions:** {idx.functions}\n")
+                    report.append(f"- **Classes:** {idx.classes}\n")
+                    report.append(f"- **Methods:** {idx.methods}\n")
+                    report.append(f"- **Skipped:** {idx.skipped_files}\n")
+                
+                if stats.graph_stats:
+                    graph = stats.graph_stats
+                    report.append(f"\n**Dependency Graph:**\n")
+                    report.append(f"- Nodes: {graph.total_nodes}\n")
+                    report.append(f"- Edges: {graph.total_edges}\n")
+        else:
+            report.append("## ❌ Collection Not Initialized\n")
+            report.append("Run `boring_rag_index` to create the index.\n")
+        
+        # Check persist directory
+        if retriever.persist_dir.exists():
+            report.append(f"\n**Persist Directory:** `{retriever.persist_dir}`\n")
+        
+        return "\n".join(report)
     
     @mcp.tool(description="Get code context (callers/callees)", annotations={"readOnlyHint": True, "openWorldHint": False})
     def boring_rag_context(
@@ -160,7 +261,9 @@ def register_rag_tools(mcp, helpers: dict):
         Returns:
             Categorized code context for safe modification
         """
-        project_root = get_project_root_or_error(project_path)
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error.get("message")
         retriever = get_retriever(project_root)
         
         if not retriever.is_available:
@@ -228,7 +331,9 @@ def register_rag_tools(mcp, helpers: dict):
         Returns:
             Additional related code chunks
         """
-        project_root = get_project_root_or_error(project_path)
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error.get("message")
         retriever = get_retriever(project_root)
         
         if not retriever.is_available:

@@ -1,242 +1,204 @@
 """
-MCP Tools for Multi-Agent System
+MCP Tools for Multi-Agent System (Pure CLI Mode)
 
-Exposes multi-agent orchestration as MCP tools.
+Returns CLI command templates for multi-agent orchestration.
+No internal API calls - the IDE or Gemini CLI executes the commands.
 """
 
-import asyncio
-from pathlib import Path
-from typing import Optional, Dict, Any, Annotated
-from pydantic import Field
+from typing import Annotated
 
-from boring.agents import AgentOrchestrator, run_multi_agent
+from pydantic import Field
 
 
 def register_agent_tools(mcp, helpers: dict):
     """
-    Register Multi-Agent tools with the MCP server.
+    Register Multi-Agent tools with the MCP server (Pure CLI Mode).
     
     Args:
         mcp: FastMCP instance
         helpers: Dict with helper functions
     """
     get_project_root_or_error = helpers.get("get_project_root_or_error")
-    
-    @mcp.tool(description="Run full multi-agent workflow (Architect -> Coder -> Reviewer)", annotations={"readOnlyHint": False, "openWorldHint": True})
+
+    @mcp.tool(description="Run full multi-agent workflow (Architect -> Coder -> Reviewer)", annotations={"readOnlyHint": True, "openWorldHint": True})
     def boring_multi_agent(
         task: Annotated[str, Field(description="What to build/fix (detailed description)")],
         auto_approve_plans: Annotated[bool, Field(description="Skip human approval for plans (default False)")] = False,
         project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
-    ) -> str:
+    ) -> dict:
         """
-        Run multi-agent workflow: Architect → Coder → Reviewer.
+        Return CLI commands for multi-agent workflow: Architect → Coder → Reviewer.
         
-        This orchestrates three specialized AI agents:
-        1. **Architect**: Creates implementation plan
-        2. **Coder**: Implements the code
-        3. **Reviewer**: Reviews for bugs, security, edge cases
+        This tool returns a structured template with CLI commands to execute.
+        The actual AI execution happens in your IDE or Gemini CLI, not internally.
         
         Args:
             task: What to build/fix (detailed description)
             auto_approve_plans: Skip human approval for plans (default False)
             project_path: Optional explicit path to project root
         """
-        project_root = get_project_root_or_error(project_path)
-        
-        # Import here to avoid circular imports
-        from ..gemini_client import create_gemini_client
-        
-        client = create_gemini_client()
-        if not client:
-            return "❌ Could not create LLM client. Check API key."
-        
-        # Run async in sync context
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-        
-        try:
-            result = loop.run_until_complete(
-                run_multi_agent(
-                    task=task,
-                    project_root=project_root,
-                    llm_client=client,
-                    auto_approve=auto_approve_plans
-                )
-            )
-        except Exception as e:
-            return f"❌ Multi-agent execution failed: {e}"
-        
-        # Format result
-        if result.get("success"):
-            files = result.get("modified_files", [])
-            verdict = result.get("verdict", "UNKNOWN")
-            iterations = result.get("iterations", 0)
-            
-            output = [
-                "✅ **Multi-Agent Workflow Complete**",
-                "",
-                f"**Verdict:** {verdict}",
-                f"**Iterations:** {iterations}",
-                f"**Files Modified:** {len(files)}",
-                ""
-            ]
-            
-            if files:
-                output.append("### Modified Files")
-                for f in files[:10]:
-                    output.append(f"- `{f}`")
-            
-            if result.get("plan"):
-                output.append("\n### Implementation Plan (Summary)")
-                plan = result["plan"]
-                output.append(plan[:1000] + "..." if len(plan) > 1000 else plan)
-            
-            if result.get("note"):
-                output.append(f"\n**Note:** {result['note']}")
-            
-            return "\n".join(output)
-        else:
-            reason = result.get("reason", "Unknown error")
-            return f"❌ Multi-agent workflow failed: {reason}"
-    
-    @mcp.tool(description="Run Architect agent to create implementation plan", annotations={"readOnlyHint": False, "openWorldHint": True})
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error
+
+        # Build multi-step CLI workflow
+        steps = [
+            {
+                "step": 1,
+                "agent": "Architect",
+                "description": "Create implementation plan",
+                "prompt": f"You are a software architect. Analyze this task and create a detailed implementation plan.\n\nTask: {task}\n\nOutput a structured plan with:\n1. File changes needed\n2. Dependencies\n3. Step-by-step implementation guide",
+                "cli_command": f'gemini --prompt "You are a software architect. Create an implementation plan for: {task[:100]}..."'
+            },
+            {
+                "step": 2,
+                "agent": "Coder",
+                "description": "Implement the plan",
+                "prompt": f"You are a senior developer. Implement the following task according to the plan.\n\nTask: {task}",
+                "cli_command": f'gemini --prompt "Implement: {task[:100]}..."'
+            },
+            {
+                "step": 3,
+                "agent": "Reviewer",
+                "description": "Review the implementation",
+                "prompt": "You are a code reviewer. Review the changes for:\n1. Bugs\n2. Security issues\n3. Edge cases\n4. Code quality",
+                "cli_command": 'gemini --prompt "Review the recent code changes for bugs and security issues"'
+            }
+        ]
+
+        return {
+            "status": "WORKFLOW_TEMPLATE",
+            "workflow": "multi-agent",
+            "project_root": str(project_root),
+            "task": task,
+            "auto_approve": auto_approve_plans,
+            "steps": steps,
+            "message": (
+                "This is a multi-agent workflow template.\n"
+                "Execute each step in sequence using the Gemini CLI or your IDE AI.\n"
+                "Review the output of each step before proceeding to the next."
+            ),
+            "quick_command": f'gemini --prompt "{task}"'
+        }
+
+    @mcp.tool(description="Run Architect agent to create implementation plan", annotations={"readOnlyHint": True, "openWorldHint": True})
     def boring_agent_plan(
         task: Annotated[str, Field(description="What to build/fix")],
         project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
-    ) -> str:
+    ) -> dict:
         """
-        Run ONLY the Architect agent to create an implementation plan.
+        Return a CLI command to run the Architect agent.
         
-        Use this when you want to review the plan before committing to
-        the full multi-agent workflow.
+        Use this when you want to create an implementation plan.
+        The actual AI execution happens in your IDE or Gemini CLI.
         
         Args:
             task: What to build/fix
             project_path: Optional explicit path to project root
         """
-        project_root = get_project_root_or_error(project_path)
-        
-        from ..gemini_client import create_gemini_client
-        from ..agents import ArchitectAgent, AgentContext, AgentRole
-        
-        client = create_gemini_client()
-        if not client:
-            return "❌ Could not create LLM client."
-        
-        architect = ArchitectAgent(client)
-        context = AgentContext(
-            project_root=project_root,
-            task_description=task
-        )
-        
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-        
-        try:
-            result = loop.run_until_complete(architect.execute(context))
-        except Exception as e:
-            return f"❌ Architect failed: {e}"
-        
-        plan = result.artifacts.get("plan", "No plan generated")
-        files = result.artifacts.get("files", [])
-        
-        output = [
-            "# 🏗️ Architect's Implementation Plan",
-            "",
-            plan,
-            ""
-        ]
-        
-        if files:
-            output.append("## Files to Modify")
-            for f in files:
-                output.append(f"- `{f}`")
-        
-        return "\n".join(output)
-    
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error
+
+        architect_prompt = f"""You are a senior software architect. Analyze the following task and create a detailed implementation plan.
+
+## Task
+{task}
+
+## Requirements
+1. List all files that need to be created or modified
+2. Describe the changes needed in each file
+3. Identify any dependencies or prerequisites
+4. Provide a step-by-step implementation guide
+5. Note any potential risks or edge cases
+
+## Output Format
+Use markdown with clear sections for each file and step.
+"""
+
+        return {
+            "status": "WORKFLOW_TEMPLATE",
+            "workflow": "architect",
+            "project_root": str(project_root),
+            "task": task,
+            "suggested_prompt": architect_prompt,
+            "cli_command": f'gemini --prompt "{task[:100]}... Create an implementation plan"',
+            "message": (
+                "Use this prompt with your IDE AI or Gemini CLI to create an implementation plan.\n"
+                "The architect agent analyzes the task and provides a structured plan."
+            )
+        }
+
     @mcp.tool(description="Run Reviewer agent on existing code", annotations={"readOnlyHint": True, "openWorldHint": True})
     def boring_agent_review(
         file_paths: Annotated[str, Field(description="Comma-separated list of files to review")] = None,
         project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
-    ) -> str:
+    ) -> dict:
         """
-        Run ONLY the Reviewer agent on existing code.
+        Return a CLI command to run the Reviewer agent.
         
-        Use this for code review without the full multi-agent workflow.
+        Use this to review code for bugs, security issues, and improvements.
         
         Args:
             file_paths: Comma-separated list of files to review
             project_path: Optional explicit path to project root
         """
-        project_root = get_project_root_or_error(project_path)
-        
-        from ..gemini_client import create_gemini_client
-        from ..agents import ReviewerAgent, AgentContext, AgentRole
-        
-        client = create_gemini_client()
-        if not client:
-            return "❌ Could not create LLM client."
-        
-        reviewer = ReviewerAgent(client, project_root)
-        
-        # Build context with files
-        context = AgentContext(
-            project_root=project_root,
-            task_description="Review the provided code for bugs, security issues, and improvements"
-        )
-        
-        # Add code output resource
-        if file_paths:
-            files = [f.strip() for f in file_paths.split(",")]
-            content_parts = []
-            
-            for file_path in files:
-                full_path = project_root / file_path
-                if full_path.exists():
-                    try:
-                        content = full_path.read_text(encoding="utf-8")
-                        content_parts.append(f"### {file_path}\n```python\n{content}\n```")
-                    except Exception:
-                        pass
-            
-            context.set_resource("code_output", "\n\n".join(content_parts), AgentRole.CODER)
-            context.set_resource("modified_files", files, AgentRole.CODER)
-        else:
-            return "❌ Please provide file_paths to review (comma-separated)"
-        
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-        
-        try:
-            result = loop.run_until_complete(reviewer.execute(context))
-        except Exception as e:
-            return f"❌ Reviewer failed: {e}"
-        
-        verdict = result.artifacts.get("verdict", "UNKNOWN")
-        issues = result.artifacts.get("issues", {})
-        review = result.artifacts.get("review", "No review generated")
-        
-        # Summary
-        critical = len(issues.get("critical", []))
-        major = len(issues.get("major", []))
-        minor = len(issues.get("minor", []))
-        
-        output = [
-            "# 🔍 Code Review Results",
-            "",
-            f"**Verdict:** {verdict}",
-            f"**Issues:** {critical} critical, {major} major, {minor} minor",
-            "",
-            review
-        ]
-        
-        return "\n".join(output)
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error
+
+        if not file_paths:
+            return {
+                "status": "ERROR",
+                "message": "Please provide file_paths to review (comma-separated)",
+                "suggestion": "Example: file_paths='src/main.py,src/utils.py'"
+            }
+
+        files = [f.strip() for f in file_paths.split(",")]
+
+        # Build file content for review
+        file_contents = []
+        for file_path in files:
+            full_path = project_root / file_path
+            if full_path.exists():
+                try:
+                    content = full_path.read_text(encoding="utf-8")
+                    file_contents.append(f"### {file_path}\n```\n{content[:3000]}\n```")
+                except Exception as e:
+                    file_contents.append(f"### {file_path}\nError reading file: {e}")
+            else:
+                file_contents.append(f"### {file_path}\nFile not found")
+
+        reviewer_prompt = f"""You are a senior code reviewer. Review the following code for:
+
+1. **Bugs**: Logic errors, edge cases, off-by-one errors
+2. **Security**: Input validation, injection risks, authentication issues
+3. **Performance**: N+1 queries, unnecessary loops, memory leaks
+4. **Code Quality**: Readability, maintainability, naming conventions
+
+## Files to Review
+
+{chr(10).join(file_contents)}
+
+## Output Format
+Provide a structured review with:
+- **Verdict**: APPROVED / NEEDS_CHANGES / REJECTED
+- **Critical Issues**: Must fix before merge
+- **Major Issues**: Should fix
+- **Minor Issues**: Nice to have
+- **Suggestions**: Improvements
+"""
+
+        return {
+            "status": "WORKFLOW_TEMPLATE",
+            "workflow": "reviewer",
+            "project_root": str(project_root),
+            "files": files,
+            "suggested_prompt": reviewer_prompt,
+            "cli_command": f'gemini --prompt "Review these files: {", ".join(files)}"',
+            "message": (
+                "Use this prompt with your IDE AI or Gemini CLI to review the code.\n"
+                "The reviewer agent checks for bugs, security issues, and code quality."
+            )
+        }
+

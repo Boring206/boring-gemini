@@ -213,17 +213,24 @@ class LLMJudge:
         (Truncated if too long)
         
         INSTRUCTIONS:
-        1. Rate each criterion from 1-5.
-        2. Calculate weighted average score.
+        1. Rate EACH dimension from 1-5:
+           - Cleanliness: Code readability, naming, formatting
+           - Security: Auth handling, input validation, secrets management
+           - Performance: Algorithm efficiency, memory usage, caching
+           - Maintainability: Modularity, documentation, testability
+        2. Calculate overall weighted average score.
         3. Provide specific improvement suggestions.
         
-        OUTPUT JSON format ONLY:
+        OUTPUT JSON format ONLY (no other text):
         {{
             "score": <float 1.0-5.0>,
             "summary": "<short summary>",
-            "breakdown": {{
-                "<criterion_name>": {{ "score": <int>, "comment": "..." }}
+            "dimensions": {{
+                "cleanliness": {{ "score": <int 1-5>, "comment": "..." }},
+                "security": {{ "score": <int 1-5>, "comment": "..." }},
+                "performance": {{ "score": <int 1-5>, "comment": "..." }},
+                "maintainability": {{ "score": <int 1-5>, "comment": "..." }}
             }},
-            "suggestions": ["fix 1", "fix 2"]
+            "suggestions": ["fix 1", "fix 2", "fix 3"]
         }}
         '''

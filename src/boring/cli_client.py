@@ -172,17 +172,21 @@ class GeminiCLIAdapter(LLMClient):
         if self.model_name != "default":
              cmd.extend(["-m", self.model_name])
              
-        cmd.extend(["--output-format", "text"])
+        # CRITICAL: Use non-interactive flags to prevent hangs in MCP/headless mode
+        # -p - : Read prompt from stdin
+        # --yolo: Auto-approve all tools (required for non-interactive loop)
+        cmd.extend(["--output-format", "text", "--yolo", "-p", "-"])
         
         try:
             result = subprocess.run(
                 cmd,
-                input=prompt,  # Pass prompt via stdin to avoid length limits
+                input=prompt,  # Pass prompt via stdin
                 capture_output=True,
                 text=True,
                 timeout=self.timeout_seconds,
                 encoding="utf-8",
-                cwd=self.cwd  # Execute in project context
+                cwd=self.cwd,
+                stdin=None # subprocess.run with input=... handles stdin
             )
             
             # Check for authentication errors
@@ -225,7 +229,8 @@ class GeminiCLIAdapter(LLMClient):
         if self.model_name != "default":
             cmd.extend(["-m", self.model_name])
             
-        cmd.extend(["--output-format", "json"])
+        # CRITICAL: Use non-interactive flags
+        cmd.extend(["--output-format", "json", "--yolo", "-p", "-"])
         
         try:
             result = subprocess.run(
@@ -234,7 +239,8 @@ class GeminiCLIAdapter(LLMClient):
                 capture_output=True,
                 text=True,
                 timeout=self.timeout_seconds,
-                encoding="utf-8"
+                encoding="utf-8",
+                cwd=self.cwd
             )
             
             if result.returncode != 0:

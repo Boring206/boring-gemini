@@ -84,14 +84,28 @@ class GeminiClient:
         
         # Get API key (Prioritize arg -> settings -> env)
         self.api_key = api_key or settings.GOOGLE_API_KEY or os.environ.get("GOOGLE_API_KEY", "")
-        if not self.api_key:
-            raise ValueError(
-                "GOOGLE_API_KEY not set. "
-                "Set it in your environment or .env file."
-            )
         
-        # Initialize the stateless client (V5.0 pattern)
-        self.client = genai.Client(api_key=self.api_key)
+        self.backend = "sdk"
+        self.cli_adapter = None
+        
+        if not self.api_key:
+            # Fallback to CLI if possible
+            from ..cli_client import check_cli_available, GeminiCLIAdapter
+            if check_cli_available():
+                _logger.info("No API key found. Falling back to Gemini CLI backend.")
+                self.backend = "cli"
+                self.cli_adapter = GeminiCLIAdapter(model_name=self.model_name, log_dir=self.log_dir)
+            else:
+                raise ValueError(
+                    "GOOGLE_API_KEY not set and Gemini CLI not found. "
+                    "Please set GOOGLE_API_KEY or install @google/gemini-cli."
+                )
+        
+        # Initialize SDK client if using SDK backend
+        if self.backend == "sdk":
+            self.client = genai.Client(api_key=self.api_key)
+        else:
+            self.client = None
         
         # Get tools for function calling
         self.tools = get_boring_tools()
@@ -137,16 +151,39 @@ class GeminiClient:
         )]
         
         try:
+            if self.backend == "cli":
+                return self.cli_adapter.generate(prompt, context)
+
             # Generate content using stateless client
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=contents,
-                config=types.GenerateContentConfig(
-                    system_instruction=system_instruction or SYSTEM_INSTRUCTION_OPTIMIZED,
-                    temperature=0.7,
-                    max_output_tokens=8192,
+            try:
+                response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=contents,
+                    config=types.GenerateContentConfig(
+                        system_instruction=system_instruction or SYSTEM_INSTRUCTION_OPTIMIZED,
+                        temperature=0.7,
+                        max_output_tokens=8192,
+                    )
                 )
-            )
+            except Exception as e:
+                # Handle Model Not Found (404) with fallback
+                if "404" in str(e) or "not found" in str(e).lower():
+                    fallback_model = "gemini-1.5-flash"
+                    if self.model_name != fallback_model:
+                        _logger.warning(f"Model {self.model_name} not found. Falling back to {fallback_model}")
+                        response = self.client.models.generate_content(
+                            model=fallback_model,
+                            contents=contents,
+                            config=types.GenerateContentConfig(
+                                system_instruction=system_instruction or SYSTEM_INSTRUCTION_OPTIMIZED,
+                                temperature=0.7,
+                                max_output_tokens=8192,
+                            )
+                        )
+                    else:
+                        raise e
+                else:
+                    raise e
             
             # Extract text from response (Pydantic model)
             if response and response.text:
@@ -227,16 +264,41 @@ class GeminiClient:
         )]
         
         try:
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=contents,
-                config=types.GenerateContentConfig(
-                    system_instruction=SYSTEM_INSTRUCTION_OPTIMIZED,
-                    temperature=0.7,
-                    max_output_tokens=8192,
-                    tools=self.tools if self.use_function_calling else None,
+            if self.backend == "cli":
+                res = self.cli_adapter.generate_with_tools(prompt, context)
+                return res.text, res.function_calls, res.success
+
+            try:
+                response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=contents,
+                    config=types.GenerateContentConfig(
+                        system_instruction=SYSTEM_INSTRUCTION_OPTIMIZED,
+                        temperature=0.7,
+                        max_output_tokens=8192,
+                        tools=self.tools if self.use_function_calling else None,
+                    )
                 )
-            )
+            except Exception as e:
+                # Handle Model Not Found (404) with fallback
+                if "404" in str(e) or "not found" in str(e).lower():
+                    fallback_model = "gemini-1.5-flash"
+                    if self.model_name != fallback_model:
+                        _logger.warning(f"Model {self.model_name} not found in tools call. Falling back to {fallback_model}")
+                        response = self.client.models.generate_content(
+                            model=fallback_model,
+                            contents=contents,
+                            config=types.GenerateContentConfig(
+                                system_instruction=SYSTEM_INSTRUCTION_OPTIMIZED,
+                                temperature=0.7,
+                                max_output_tokens=8192,
+                                tools=self.tools if self.use_function_calling else None,
+                            )
+                        )
+                    else:
+                        raise e
+                else:
+                    raise e
             
             # Extract function calls and text
             function_calls = []

@@ -44,6 +44,7 @@ class IndexStats:
     functions: int = 0
     classes: int = 0
     methods: int = 0
+    script_chunks: int = 0
     skipped_files: int = 0
 
 
@@ -129,8 +130,10 @@ class CodeIndexer:
         
         try:
             rel_path = str(file_path.relative_to(self.project_root))
+            # Normalize to forward slashes for cross-platform consistency
+            rel_path = rel_path.replace("\\", "/")
         except ValueError:
-            rel_path = str(file_path)
+            rel_path = str(file_path).replace("\\", "/")
         
         lines = content.splitlines()
         
@@ -163,23 +166,42 @@ class CodeIndexer:
             )
         
         # 3. Top-level functions and classes
+        covered_lines = set()
+        if module_doc:
+            covered_lines.update(range(1, self._get_docstring_end_line(tree) + 1))
+        if imports:
+            covered_lines.update(range(imports["start"], imports["end"] + 1))
+
         for node in ast.iter_child_nodes(tree):
-            if isinstance(node, ast.FunctionDef) or isinstance(node, ast.AsyncFunctionDef):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 self.stats.functions += 1
-                yield self._chunk_from_function(node, rel_path, lines)
+                chunk = self._chunk_from_function(node, rel_path, lines)
+                covered_lines.update(range(chunk.start_line, chunk.end_line + 1))
+                yield chunk
                 
             elif isinstance(node, ast.ClassDef):
                 self.stats.classes += 1
                 # Yield class header
-                yield self._chunk_from_class(node, rel_path, lines)
+                chunk = self._chunk_from_class(node, rel_path, lines)
+                # Note: header covered lines
+                covered_lines.update(range(chunk.start_line, chunk.end_line + 1))
+                yield chunk
                 
                 # Yield methods separately
                 for method in node.body:
                     if isinstance(method, (ast.FunctionDef, ast.AsyncFunctionDef)):
                         self.stats.methods += 1
-                        yield self._chunk_from_function(
+                        m_chunk = self._chunk_from_function(
                             method, rel_path, lines, parent=node.name
                         )
+                        covered_lines.update(range(m_chunk.start_line, m_chunk.end_line + 1))
+                        yield m_chunk
+
+        # 4. Fallback: Capture remaining top-level code as "script" chunks
+        script_code_chunks = self._extract_script_chunks(tree, lines, covered_lines, rel_path)
+        for chunk in script_code_chunks:
+            self.stats.script_chunks += 1
+            yield chunk
     
     def _chunk_from_function(
         self, 
@@ -313,6 +335,86 @@ class CodeIndexer:
             "end": end,
             "modules": sorted(set(modules))
         }
+
+    def _extract_script_chunks(
+        self, 
+        tree: ast.Module, 
+        lines: List[str], 
+        covered_lines: Set[int],
+        rel_path: str
+    ) -> List[CodeChunk]:
+        """Extract remaining top-level code as script chunks."""
+        script_chunks = []
+        
+        # Collect all line ranges for non-indexed top-level nodes
+        nodes_to_index = []
+        for node in ast.iter_child_nodes(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, 
+                                ast.Import, ast.ImportFrom)):
+                continue
+            if isinstance(node, ast.Expr) and isinstance(node.value, ast.Constant):
+                continue
+            
+            node_start = node.lineno
+            node_end = node.end_lineno or node_start
+            
+            # Ensure it's not a node that was partially covered (rare but safe)
+            if any(l in covered_lines for l in range(node_start, node_end + 1)):
+                continue
+                
+            nodes_to_index.append((node_start, node_end))
+
+        if not nodes_to_index:
+            return []
+
+        # Sort by start line
+        nodes_to_index.sort()
+
+        current_chunk_start = nodes_to_index[0][0]
+        current_chunk_end = nodes_to_index[0][1]
+
+        for i in range(1, len(nodes_to_index)):
+            n_start, n_end = nodes_to_index[i]
+            
+            # If the gap between nodes contains any covered lines, we must split
+            has_gap_covered = any(l in covered_lines for l in range(current_chunk_end + 1, n_start))
+            
+            if not has_gap_covered and n_start <= current_chunk_end + 5: # Small gap allowed
+                current_chunk_end = n_end
+            else:
+                # Split
+                script_chunks.append(self._create_script_chunk(
+                    current_chunk_start, current_chunk_end, rel_path, lines
+                ))
+                current_chunk_start = n_start
+                current_chunk_end = n_end
+
+        # Last one
+        script_chunks.append(self._create_script_chunk(
+            current_chunk_start, current_chunk_end, rel_path, lines
+        ))
+            
+        return script_chunks
+
+    def _create_script_chunk(
+        self, 
+        start: int, 
+        end: int, 
+        rel_path: str, 
+        lines: List[str]
+    ) -> CodeChunk:
+        """Helper to create a script chunk."""
+        content = "\n".join(lines[start - 1:end])
+        return CodeChunk(
+            chunk_id=self._make_id(rel_path, f"script_{start}"),
+            file_path=rel_path,
+            chunk_type="script",
+            name=f"script_L{start}",
+            content=content,
+            start_line=start,
+            end_line=end,
+            dependencies=[] # Could extract deps here too if needed
+        )
     
     def _get_docstring_end_line(self, tree: ast.Module) -> int:
         """Get the ending line of module docstring."""

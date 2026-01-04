@@ -53,7 +53,9 @@ def register_shadow_tools(mcp, helpers: dict):
         Returns:
             Shadow Mode status summary
         """
-        project_root = get_project_root_or_error(project_path)
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error.get("message")
         guard = get_shadow_guard(project_root)
         
         pending = guard.get_pending_operations()
@@ -105,7 +107,9 @@ def register_shadow_tools(mcp, helpers: dict):
             note: Optional note explaining the approval
             project_path: Optional explicit path to project root
         """
-        project_root = get_project_root_or_error(project_path)
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error.get("message")
         guard = get_shadow_guard(project_root)
         
         if guard.approve_operation(operation_id, note):
@@ -129,7 +133,9 @@ def register_shadow_tools(mcp, helpers: dict):
             note: Optional note explaining the rejection
             project_path: Optional explicit path to project root
         """
-        project_root = get_project_root_or_error(project_path)
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error.get("message")
         guard = get_shadow_guard(project_root)
         
         if guard.reject_operation(operation_id, note):
@@ -154,7 +160,9 @@ def register_shadow_tools(mcp, helpers: dict):
             mode: New mode (DISABLED, ENABLED, or STRICT)
             project_path: Optional explicit path to project root
         """
-        project_root = get_project_root_or_error(project_path)
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error.get("message")
         
         # Validate mode
         mode_upper = mode.upper()
@@ -194,7 +202,9 @@ def register_shadow_tools(mcp, helpers: dict):
         Returns:
             Count of cleared operations
         """
-        project_root = get_project_root_or_error(project_path)
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error.get("message")
         guard = get_shadow_guard(project_root)
         
         count = guard.clear_pending()
