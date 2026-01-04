@@ -19,7 +19,6 @@ startCommand:
     type: "object"
     # Validating criteria: "Making configuration optional improves user experience"
     # NOT mark any field as 'required' if the server can start without it (even if limited)
-    required: []
     properties:
       GOOGLE_API_KEY:
         type: "string"
@@ -30,6 +29,7 @@ startCommand:
         title: "MCP Mode"
         description: "Set to '1' to enable MCP mode"
         default: "1"
+        enum: ["0", "1"]
       LOG_LEVEL:
         type: "string"
         title: "Log Level"
