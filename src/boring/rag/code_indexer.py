@@ -137,10 +137,16 @@ class CodeIndexer:
 
     def _index_universal_file(self, file_path: Path) -> Iterator[CodeChunk]:
         """
-        Smart chunking for non-Python files using regex delimiters.
+        Smart chunking for non-Python files using Tree-sitter or regex fallback.
         Supports C-style languages (JS, TS, Java, C++, Go, Rust) and Markdown.
         """
         import re
+        try:
+            from .parser import TreeSitterParser
+            ts_parser = TreeSitterParser()
+        except ImportError:
+            ts_parser = None
+
         try:
             content = file_path.read_text(encoding="utf-8")
         except Exception as e:
@@ -148,6 +154,26 @@ class CodeIndexer:
             return
             
         rel_path = self._get_rel_path(file_path)
+        
+        # 1. Try Tree-sitter Parsing
+        if ts_parser and ts_parser.is_available():
+            ts_chunks = ts_parser.parse_file(file_path)
+            if ts_chunks:
+                for chunk in ts_chunks:
+                     yield CodeChunk(
+                        chunk_id=self._make_id(rel_path, f"{chunk.type}_{chunk.name}"),
+                        file_path=rel_path,
+                        chunk_type=f"code_{chunk.type}",
+                        name=chunk.name,
+                        content=chunk.content,
+                        start_line=chunk.start_line,
+                        end_line=chunk.end_line
+                    )
+                # If we got chunks, assume we handled the file well enough (for now).
+                # Optionally we could index the gaps as well, but definitions are key.
+                return
+
+        # 2. Fallback to Smart Regex Chunking (if Tree-sitter unavailable or unsupported language)
         lines = content.splitlines()
         
         # Regex patterns for common block starts
