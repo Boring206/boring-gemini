@@ -27,7 +27,7 @@ def register_v9_tools(mcp, audited, helpers):
     # Plugin Tools
     # =========================================================================
     
-    @mcp.tool(description="List all available plugins locally and globally", annotations={"tags": ["plugins", "system"]})
+    @mcp.tool(description="List all available plugins locally and globally", annotations={"readOnlyHint": True, "openWorldHint": False})
     @audited
     def boring_list_plugins(
         project_path: Annotated[str, Field(description="Path to project root (default: current directory)")] = None
@@ -51,7 +51,7 @@ def register_v9_tools(mcp, audited, helpers):
             "plugin_directories": [str(d) for d in loader.plugin_dirs]
         }
     
-    @mcp.tool(description="Execute a specific plugin by name", annotations={"tags": ["plugins", "execution"]})
+    @mcp.tool(description="Execute a specific plugin by name", annotations={"readOnlyHint": False, "openWorldHint": True})
     @audited
     def boring_run_plugin(
         name: Annotated[str, Field(description="Plugin name to execute")],
@@ -71,7 +71,7 @@ def register_v9_tools(mcp, audited, helpers):
         plugin_kwargs = args if args else {}
         return loader.execute_plugin(name, **plugin_kwargs)
     
-    @mcp.tool(description="Reload all plugins from disk", annotations={"tags": ["plugins", "hot-reload"]})
+    @mcp.tool(description="Reload all plugins from disk", annotations={"readOnlyHint": False, "idempotentHint": True})
     @audited
     def boring_reload_plugins(
         project_path: Annotated[str, Field(description="Path to project root (default: current directory)")] = None
@@ -98,7 +98,7 @@ def register_v9_tools(mcp, audited, helpers):
     # Workspace Tools
     # =========================================================================
     
-    @mcp.tool(description="Register a new project in the workspace", annotations={"tags": ["workspace", "management"]})
+    @mcp.tool(description="Register a new project in the workspace", annotations={"readOnlyHint": False, "idempotentHint": False})
     @audited
     def boring_workspace_add(
         name: Annotated[str, Field(description="Unique project name")],
@@ -114,7 +114,7 @@ def register_v9_tools(mcp, audited, helpers):
         manager = get_workspace_manager()
         return manager.add_project(name, path, description, tags)
     
-    @mcp.tool(description="Unregister a project from the workspace", annotations={"tags": ["workspace", "management"]})
+    @mcp.tool(description="Unregister a project from the workspace", annotations={"readOnlyHint": False, "destructiveHint": True})
     @audited
     def boring_workspace_remove(
         name: Annotated[str, Field(description="Name of project to remove")]
@@ -129,7 +129,7 @@ def register_v9_tools(mcp, audited, helpers):
         manager = get_workspace_manager()
         return manager.remove_project(name)
     
-    @mcp.tool(description="List all registered projects", annotations={"tags": ["workspace", "query"]})
+    @mcp.tool(description="List all registered projects", annotations={"readOnlyHint": True, "openWorldHint": False})
     @audited
     def boring_workspace_list(
         tag: Annotated[str, Field(description="Optional filter by tag")] = None
@@ -148,7 +148,7 @@ def register_v9_tools(mcp, audited, helpers):
             "active_project": manager.active_project
         }
     
-    @mcp.tool(description="Switch active project context", annotations={"tags": ["workspace", "context"]})
+    @mcp.tool(description="Switch active project context", annotations={"readOnlyHint": False, "idempotentHint": True})
     @audited
     def boring_workspace_switch(
         name: Annotated[str, Field(description="Name of the project to switch context to")]
@@ -167,7 +167,7 @@ def register_v9_tools(mcp, audited, helpers):
     # Auto-Fix Tool
     # =========================================================================
     
-    @mcp.tool(description="Run automated fix loop", annotations={"tags": ["automation", "repair"]})
+    @mcp.tool(description="Run automated fix loop", annotations={"readOnlyHint": False, "destructiveHint": False})
     @audited
     def boring_auto_fix(
         max_iterations: Annotated[int, Field(description="Maximum fix attempts (default: 3)")] = 3,
@@ -222,7 +222,7 @@ def register_v9_tools(mcp, audited, helpers):
     # Pattern Mining Tools
     # =========================================================================
     
-    @mcp.tool(description="Get AI suggestions for next steps", annotations={"tags": ["intelligence", "planning"]})
+    @mcp.tool(description="Get AI suggestions for next steps", annotations={"readOnlyHint": True, "openWorldHint": False})
     @audited
     def boring_suggest_next(
         limit: Annotated[int, Field(description="Maximum suggestions to return")] = 3,
@@ -256,7 +256,7 @@ def register_v9_tools(mcp, audited, helpers):
             "project_state": miner.analyze_project_state(project_root)
         }
     
-    @mcp.tool(description="Check status of long-running task", annotations={"tags": ["system", "monitoring"]})
+    @mcp.tool(description="Check status of long-running task", annotations={"readOnlyHint": True, "openWorldHint": False})
     @audited
     def boring_get_progress(
         task_id: Annotated[str, Field(description="ID of the task to check")]

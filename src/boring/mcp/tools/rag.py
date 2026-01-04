@@ -32,7 +32,7 @@ def register_rag_tools(mcp, helpers: dict):
     """
     get_project_root_or_error = helpers.get("get_project_root_or_error")
     
-    @mcp.tool(description="Index codebase for RAG", annotations={"tags": ["rag", "index"]})
+    @mcp.tool(description="Index codebase for RAG", annotations={"readOnlyHint": False, "idempotentHint": True})
     def boring_rag_index(
         force: Annotated[bool, Field(description="If True, rebuild index even if it exists")] = False
     ) -> str:
@@ -75,7 +75,7 @@ def register_rag_tools(mcp, helpers: dict):
         
         return f"✅ RAG Index ready with {count} chunks"
     
-    @mcp.tool(description="Semantic code search", annotations={"tags": ["rag", "search"]})
+    @mcp.tool(description="Semantic code search", annotations={"readOnlyHint": True, "openWorldHint": False})
     def boring_rag_search(
         query: Annotated[str, Field(description="What you're looking for (e.g., 'authentication error handling')")],
         max_results: Annotated[int, Field(description="Maximum number of results (default 10)")] = 10,
@@ -132,7 +132,7 @@ def register_rag_tools(mcp, helpers: dict):
         
         return "\n".join(parts)
     
-    @mcp.tool(description="Get code context (callers/callees)", annotations={"tags": ["rag", "context"]})
+    @mcp.tool(description="Get code context (callers/callees)", annotations={"readOnlyHint": True, "openWorldHint": False})
     def boring_rag_context(
         file_path: Annotated[str, Field(description="Path to the file (relative to project root)")],
         function_name: Annotated[str, Field(description="Name of the function to get context for")] = None,
@@ -202,7 +202,7 @@ def register_rag_tools(mcp, helpers: dict):
         
         return "\n".join(parts)
     
-    @mcp.tool(description="Recursively expand code dependencies", annotations={"tags": ["rag", "analysis"]})
+    @mcp.tool(description="Recursively expand code dependencies", annotations={"readOnlyHint": True, "openWorldHint": False})
     def boring_rag_expand(
         chunk_id: Annotated[str, Field(description="The chunk ID to expand from (from search results)")],
         depth: Annotated[int, Field(description="How many layers to expand (default 2)")] = 2
