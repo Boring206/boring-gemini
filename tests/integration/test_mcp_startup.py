@@ -32,7 +32,13 @@ class TestMCPServerStartup:
 
         from boring.mcp.server import get_server_instance
         
-        mcp_instance = get_server_instance()
+        try:
+            mcp_instance = get_server_instance()
+        except RuntimeError as e:
+            if "fastmcp" in str(e):
+                pytest.skip("fastmcp not found (runtime error)")
+            raise e
+        
         assert mcp_instance is not None
         
         # Verify tools are registered
@@ -57,7 +63,12 @@ class TestMCPServerStartup:
         
         from boring.mcp.server import get_server_instance
         
-        mcp_instance = get_server_instance()
+        try:
+            mcp_instance = get_server_instance()
+        except RuntimeError as e:
+            if "fastmcp" in str(e):
+                pytest.skip("fastmcp not found (runtime error)")
+            raise e
         
         if hasattr(mcp_instance, '_tool_manager'):
             tool_names = list(mcp_instance._tool_manager._tools.keys())
