@@ -64,7 +64,7 @@ class Settings(BaseSettings):
 
     # Gemini Settings
     GOOGLE_API_KEY: Optional[str] = Field(default=None)
-    DEFAULT_MODEL: str = "default"
+    DEFAULT_MODEL: str = "models/gemini-2.5-flash"
     TIMEOUT_MINUTES: int = 15
     
     # V4.0 Feature Flags

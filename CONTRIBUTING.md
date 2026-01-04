@@ -43,36 +43,30 @@ ruff check src/
 5. Commit with conventional commits (`feat:`, `fix:`, `docs:`)
 6. Push and create a Pull Request
 
-## Project Structure (V9.0)
+## Project Structure (V10.5 - Pure CLI Mode)
+
+> **Important**: V10.5 introduced "Pure CLI Mode" - MCP tools like `run_boring`, `speckit_*`, and `boring_multi_agent` 
+> now return workflow templates with CLI commands instead of executing AI internally.
 
 ```
 boring-gemini/
 ├── src/boring/
-│   ├── mcp_server.py        # MCP entry point (30+ tools)
-│   ├── mcp/                  # 🆕 Modular tool packages
-│   │   ├── core_tools.py     # Essential tools
-│   │   ├── speckit_tools.py  # SpecKit workflows
-│   │   ├── brain_tools.py    # Learning tools
-│   │   ├── v9_tools.py       # 🆕 V9 features
-│   │   └── async_utils.py    # Async execution
-│   ├── plugins/              # 🆕 Plugin system
-│   │   ├── __init__.py
-│   │   └── loader.py         # PluginLoader + @plugin
-│   ├── streaming.py          # 🆕 Progress reporting
-│   ├── workspace.py          # 🆕 Multi-project manager
-│   ├── auto_fix.py           # 🆕 Auto-fix pipeline
-│   ├── pattern_mining.py     # 🆕 Suggestion engine
-│   ├── audit.py              # 🆕 JSONL audit logging
-│   ├── gemini_client.py      # Gemini SDK wrapper
-│   ├── workflow_evolver.py   # Workflow evolution
-│   └── loop/                 # State machine
+│   ├── mcp/                  # MCP Server Package
+│   │   ├── server.py         # FastMCP entry point
+│   │   ├── tools/            # Modular tool packages
+│   │   │   ├── core.py       # run_boring, health_check (Pure CLI Mode)
+│   │   │   ├── speckit.py    # SpecKit tools (Returns templates)
+│   │   │   ├── agents.py     # Multi-agent tools (Returns templates)
+│   │   │   └── ...
+│   │   └── v9_tools.py       # V9 features (auto_fix, workspace)
+│   ├── plugins/              # Plugin system
+│   ├── loop/                 # StatefulAgentLoop (standalone CLI only)
+│   ├── gemini_client.py      # Gemini SDK/CLI wrapper
+│   └── ...
 ├── .agent/workflows/         # SpecKit workflows (evolvable)
 │   └── _base/                # Base templates for rollback
 ├── .boring_brain/            # Knowledge base
-├── tests/                    # Test suite (pytest)
-│   ├── unit/
-│   └── integration/
-└── docs/                     # Documentation
+└── tests/                    # Test suite (pytest)
 ```
 
 ## 🔌 Creating Plugins

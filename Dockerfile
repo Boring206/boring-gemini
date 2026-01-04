@@ -21,7 +21,7 @@ COPY pyproject.toml README.md ./
 # Copy source code
 COPY src src
 
-# Install the project with MCP dependencies
+# Install the project with MCP dependencies (Core + MCP)
 RUN pip install --no-cache-dir ".[mcp]"
 
 # Health check endpoint

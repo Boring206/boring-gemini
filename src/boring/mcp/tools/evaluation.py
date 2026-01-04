@@ -85,14 +85,51 @@ def boring_evaluate(
                 return f"### 📋 Evaluation Prompt (Copy to Chat)\n\nUse this prompt to evaluate `{target_path.name}` using your current AI context:\n\n```markdown\n{prompt_content}\n```"
             
             score = result.get("score", 0)
-            summary = result.get("summary", "No summary")
+            summary = result.get("summary", "No summary available")
             suggestions = result.get("suggestions", [])
+            raw_response = result.get("raw", "")
+            reasoning = result.get("reasoning", "")
             
-            # Format report
+            # Check for failed evaluation - provide diagnostic info
+            if score == 0:
+                error_report = f"# ⚠️ Evaluation Failed: {target_path.name}\n\n"
+                error_report += "**Score**: 0/5 (Evaluation could not complete)\n\n"
+                error_report += "## Possible Causes:\n"
+                error_report += "1. **Gemini CLI unavailable** - Install with: `npm install -g @google/gemini-cli`\n"
+                error_report += "2. **JSON parsing failed** - LLM response was not valid JSON\n"
+                error_report += "3. **File too small** - Very short files may not have enough content to evaluate\n\n"
+                
+                if reasoning:
+                    error_report += f"## Error Details:\n{reasoning}\n\n"
+                
+                if raw_response:
+                    error_report += f"## Raw Response (first 500 chars):\n```\n{raw_response[:500]}...\n```\n\n"
+                
+                error_report += "## 💡 Try Interactive Mode:\n"
+                error_report += f"```\nboring_evaluate(target=\"{target}\", interactive=True)\n```\n"
+                error_report += "This returns the evaluation prompt for you to execute manually."
+                
+                return error_report
+            suggestions = result.get("suggestions", [])
+            dimensions = result.get("dimensions", {})
+            
+            # Format report with multi-dimensional scores
             emoji = "🟢" if score >= 4 else "🟡" if score >= 3 else "🔴"
             report = f"# {emoji} Evaluation: {target_path.name}\n"
-            report += f"**Score**: {score}/5.0\n\n"
+            report += f"**Overall Score**: {score}/5.0\n\n"
             report += f"**Summary**: {summary}\n\n"
+            
+            # Display multi-dimensional breakdown
+            if dimensions:
+                report += "## 📊 Dimension Scores\n\n"
+                report += "| Dimension | Score | Comment |\n"
+                report += "|-----------|-------|--------|\n"
+                for dim_name, dim_data in dimensions.items():
+                    dim_score = dim_data.get("score", 0)
+                    dim_comment = dim_data.get("comment", "N/A")[:60]
+                    dim_emoji = "🟢" if dim_score >= 4 else "🟡" if dim_score >= 3 else "🔴"
+                    report += f"| {dim_emoji} **{dim_name.title()}** | {dim_score}/5 | {dim_comment} |\n"
+                report += "\n"
             
             if suggestions:
                 report += "## 💡 Suggestions\n"

@@ -108,7 +108,7 @@ def ensure_project_initialized(project_root: Path) -> None:
             workflows_dir.mkdir(parents=True, exist_ok=True)
             
             # Copy from templates
-            template_path = Path(__file__).parent.parent.parent / "templates" / "workflows"
+            template_path = Path(__file__).parent.parent / "templates" / "workflows"
             if template_path.exists():
                 for item in template_path.glob("*.md"):
                     shutil.copy2(item, workflows_dir / item.name)
@@ -123,7 +123,7 @@ def ensure_project_initialized(project_root: Path) -> None:
         prompt_file = project_root / "PROMPT.md"
         if not prompt_file.exists():
             # Try copy from template, else create basic
-            template_prompt = Path(__file__).parent.parent.parent / "templates" / "PROMPT.md"
+            template_prompt = Path(__file__).parent.parent / "templates" / "PROMPT.md"
             if template_prompt.exists():
                 shutil.copy2(template_prompt, prompt_file)
             else:

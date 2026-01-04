@@ -234,6 +234,43 @@ When working with external libraries, invoke: `use context7`
         
         return "\n".join(lines)
 
+    def register_boring_mcp(self) -> Tuple[bool, str]:
+        """Register Boring as an MCP server for the Gemini CLI."""
+        if not self.is_gemini_available():
+            return False, "Gemini CLI not found"
+
+        # Determine the boring-mcp command
+        boring_mcp_cmd = shutil.which("boring-mcp")
+        if not boring_mcp_cmd:
+            # Fallback to python -m if the script isn't in PATH
+            import sys
+            boring_mcp_cmd = f'"{sys.executable}" -m boring.mcp.server'
+        else:
+            boring_mcp_cmd = f'"{boring_mcp_cmd}"'
+
+        try:
+            # We use 'boring' as the name in Gemini CLI
+            cmd = [
+                self.gemini_cmd, "mcp", "add", "boring", 
+                "command", boring_mcp_cmd
+            ]
+            
+            # Note: We use shell=True on Windows if command has spaces and quotes
+            process = subprocess.run(
+                " ".join(cmd) if os.name == "nt" else cmd,
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                shell=(os.name == "nt")
+            )
+            
+            if process.returncode == 0:
+                return True, "Successfully registered Boring MCP with Gemini CLI"
+            else:
+                return False, f"Registration failed: {process.stderr or process.stdout}"
+        except Exception as e:
+            return False, f"Error: {e}"
+
 
 def setup_project_extensions(project_root: Path = None):
     """
@@ -313,8 +350,9 @@ prompt = "Spec-Kit tools. Available subcommands: plan, tasks, analyze, clarify, 
 description = "Create implementation plan from specs (Define -> Plan)"
 prompt = """
 Please execute the Speckit Plan Workflow.
+INVOKE TOOL: speckit_plan (Pass relevant context if provided)
 Reference the workflow file: @.agent/workflows/speckit-plan.md
-Goal: Read openspec/specs/*.md and generate IMPLEMENTATION_PLAN.md
+Goal: Read openspec/specs/*.md and generate implementation_plan.md
 """
 
 # 2. TASKS
@@ -322,8 +360,9 @@ Goal: Read openspec/specs/*.md and generate IMPLEMENTATION_PLAN.md
 description = "Break down plan into actionable tasks (Plan -> Tasks)"
 prompt = """
 Please execute the Speckit Tasks Workflow.
+INVOKE TOOL: speckit_tasks (Pass relevant context if provided)
 Reference the workflow file: @.agent/workflows/speckit-tasks.md
-Goal: Read IMPLEMENTATION_PLAN.md and generate @fix_plan.md
+Goal: Read implementation_plan.md and generate @fix_plan.md
 """
 
 # 3. ANALYZE
@@ -331,6 +370,7 @@ Goal: Read IMPLEMENTATION_PLAN.md and generate @fix_plan.md
 description = "Analyze consistency between specs and code"
 prompt = """
 Please execute the Speckit Analyze Workflow.
+INVOKE TOOL: speckit_analyze
 Reference the workflow file: @.agent/workflows/speckit-analyze.md
 Goal: check for inconsistencies between specs/ and src/
 """

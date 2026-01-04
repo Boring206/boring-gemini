@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [10.5.0] - 2026-01-04
+
+### Changed - Pure CLI Mode Architecture
+- **`run_boring`**: Now returns CLI command template instead of executing `StatefulAgentLoop` internally (which fails in MCP mode)
+- **`boring_multi_agent`**: Returns multi-step CLI workflow template instead of internal `asyncio.run()` calls
+- **`boring_agent_plan/review`**: Returns CLI command templates for external execution
+- **`speckit_*` tools**: Return `WORKFLOW_TEMPLATE` status with suggested prompts and CLI commands
+- **`boring_auto_fix`**: Executes real verification but returns CLI commands for fixes (removed broken mock function)
+
+### Fixed
+- **Critical**: "event loop already running" error in `boring_multi_agent` and agent tools - removed all internal `asyncio` calls
+- **Critical**: `boring_auto_fix` stalling issue - was using mock function that never actually fixed anything
+- **API Connection Failures**: Tools no longer attempt internal API calls that fail in MCP environment
+- **`boring_suggest_next`**: Improved context detection - now checks multiple code locations (src/, lib/, root), detects spec/plan files, git activity, and provides accurate code/test counts
+- **Windows RAG Search**: Fixed "index is empty" issue on Windows - normalized all file paths to use forward slashes for cross-platform consistency
+- **`boring_evaluate` 0/5 Score**: Added diagnostic error reporting when evaluation fails, explaining possible causes and suggesting interactive mode
+
+### Added
+- Clear documentation about MCP mode limitations in all affected tools
+- `WORKFLOW_TEMPLATE` status type for tools that return execution templates
+- `cli_command` and `suggested_prompt` fields in tool responses for easy external execution
+- Enhanced pattern matching in `PatternMiner` with support for planning, debugging, and code review states
+- **NEW: `boring_rag_status`**: Health check tool for RAG index diagnostics
+- **NEW: Multi-dimensional evaluation**: `boring_evaluate` now returns scores for Cleanliness, Security, Performance, and Maintainability
+
+### Documentation
+- Updated README with Pure CLI Mode architecture explanation
+- Added "⚠️ V10.5 重大變更" section explaining the new behavior
+- Updated tool descriptions to reflect actual MCP mode behavior
+
 ## [10.1.0] - 2026-01-04
 
 ### Added

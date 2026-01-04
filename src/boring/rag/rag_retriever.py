@@ -491,8 +491,10 @@ class RAGRetriever:
         
         try:
             rel_path = str(file_path.relative_to(self.project_root))
+            # Normalize to forward slashes for cross-platform consistency
+            rel_path = rel_path.replace("\\", "/")
         except ValueError:
-            rel_path = str(file_path)
+            rel_path = str(file_path).replace("\\", "/")
         
         # Remove old chunks for this file
         old_chunk_ids = self._file_to_chunks.get(rel_path, [])

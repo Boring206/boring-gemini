@@ -139,6 +139,9 @@ class StatefulAgentLoop:
         while ctx.should_continue():
             # Check rate limits
             if not can_make_call(settings.PROJECT_ROOT / ".call_count", settings.MAX_HOURLY_CALLS):
+                if console.quiet:
+                    ctx.mark_exit("Rate limit reached (Quiet/MCP mode)")
+                    break
                 wait_for_reset(
                     settings.PROJECT_ROOT / ".call_count",
                     settings.PROJECT_ROOT / ".last_reset",

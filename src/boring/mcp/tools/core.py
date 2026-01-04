@@ -22,169 +22,109 @@ def run_boring(
     interactive: Annotated[bool, Field(description="Whether to run in interactive mode (auto-detected usually)")] = None
 ) -> dict:
     """
-    Run Boring autonomous development agent on a task.
+    Return CLI commands for autonomous development (Pure CLI Mode).
+    
+    In MCP mode, this tool CANNOT execute the StatefulAgentLoop directly because
+    it requires external AI (SDK or CLI) which conflicts with the MCP environment.
+    
+    Instead, it returns a structured workflow template with:
+    1. The suggested CLI command to run the Boring agent
+    2. A step-by-step guide for manual execution
+    3. Project and task information
+    
+    For TRUE autonomous execution, use the `boring start` CLI command directly.
     
     Args:
         task_description: Description of the development task to complete
         verification_level: Verification level (BASIC, STANDARD, FULL)
         max_loops: Maximum number of loop iterations
-        use_cli: Whether to use Gemini CLI (supports extensions). Defaults to auto-detect.
+        use_cli: Whether to use Gemini CLI
         project_path: Optional explicit path to project root
         
     Returns:
-        Task execution result with status, files modified, and message
+        Workflow template with CLI commands for external execution
     """
-    try:
-        # Rate limit check
-        allowed, msg = check_rate_limit("run_boring")
-        if not allowed:
-            return {"status": "RATE_LIMITED", "message": msg}
-        
-        # --- Input Validation ---
-        if not task_description or not task_description.strip():
-            return {
-                "status": "ERROR",
-                "message": "task_description cannot be empty.",
-                "suggestion": "Provide a clear description of the task, e.g., 'Fix login validation bug'."
-            }
-        
-        valid_levels = ("BASIC", "STANDARD", "FULL", "SEMANTIC")
-        if verification_level.upper() not in valid_levels:
-            return {
-                "status": "ERROR",
-                "message": f"Invalid verification_level: '{verification_level}'.",
-                "suggestion": f"Use one of: {', '.join(valid_levels)}"
-            }
-        verification_level = verification_level.upper()
-        
-        if not (1 <= max_loops <= 20):
-            return {
-                "status": "ERROR",
-                "message": f"max_loops must be between 1 and 20, got {max_loops}.",
-                "suggestion": "Use a reasonable value like 5 (default) or 10 for complex tasks."
-            }
-        # --- End Validation ---
-        
-        from ...loop import StatefulAgentLoop
-        from ...config import settings
-        import shutil
-        
-        # Resolve project root
-        project_root, error = get_project_root_or_error(project_path)
-        if error:
-            return error
-        
-        # CRITICAL: Update global settings for dependencies
-        configure_runtime_for_project(project_root)
-        
-        # Determine environment
-        is_mcp = os.environ.get("BORING_MCP_MODE") == "1"
-        has_api_key = os.environ.get("GOOGLE_API_KEY") is not None
-        
-        # Auto-detect backend if not specified
-        if use_cli is None:
-            if is_mcp:
-                # CRITICAL: In MCP mode, NEVER spawn nested gemini CLI.
-                # This causes hangs due to resource conflicts.
-                # Prefer SDK if API key available, else Interactive mode.
-                use_cli = False
-            else:
-                # Outside MCP, use CLI if available
-                use_cli = shutil.which("gemini") is not None
-            
-        # Auto-enable interactive mode logic
-        if interactive is None:
-            if is_mcp:
-                # In MCP: Use SDK if we have API key, else Delegation
-                interactive = not has_api_key
-            else:
-                interactive = not use_cli
-        
-        # Create temporary PROMPT.md with task
-        prompt_file = project_root / "PROMPT.md"
-        original_content = None
-        
-        if prompt_file.exists():
-            original_content = prompt_file.read_text(encoding="utf-8")
-        
-        # Write task to PROMPT.md
-        prompt_file.write_text(
-            f"# Task\n\n{task_description}\n",
-            encoding="utf-8"
-        )
-        
-        try:
-            # Snapshot files before running (for tracking changes)
-            import subprocess
-            files_before = set()
-            try:
-                # Use git to track changes if available
-                result = subprocess.run(
-                    ["git", "ls-files", "-m", "-o", "--exclude-standard"],
-                    cwd=project_root,
-                    capture_output=True,
-                    text=True
-                )
-                files_before = set(result.stdout.strip().split('\n')) if result.returncode == 0 else set()
-            except:
-                pass
-            
-            # Run the agent loop
-            # Note: We use StatefulAgentLoop which allows CLI/SDK switching
-            loop = StatefulAgentLoop(
-                verification_level=verification_level.upper(),
-                use_cli=use_cli,
-                interactive=interactive,
-                verbose=True
-            )
-            
-            # Note: In MCP context, we run synchronously
-            loop.run()
-            
-            # Calculate files modified
-            files_modified = 0
-            try:
-                result = subprocess.run(
-                    ["git", "ls-files", "-m", "-o", "--exclude-standard"],
-                    cwd=project_root,
-                    capture_output=True,
-                    text=True
-                )
-                if result.returncode == 0:
-                    files_after = set(result.stdout.strip().split('\n'))
-                    new_or_changed = files_after - files_before
-                    files_modified = len([f for f in new_or_changed if f])
-            except:
-                # Fallback: check context if available
-                if hasattr(loop, 'context') and hasattr(loop.context, 'files_modified'):
-                    files_modified = loop.context.files_modified
-            
-            message = f"Task completed (CLI Mode: {use_cli})"
-            if interactive:
-                if hasattr(loop, 'context') and loop.context.output_content:
-                    message = loop.context.output_content
-                else:
-                    message = "Task delegation prepared. Please check console/logs for instructions."
-            
-            return {
-                "status": "SUCCESS",
-                "message": message,
-                "files_modified": files_modified,
-                "loops_completed": loop.context.loop_count if hasattr(loop, 'context') else 1
-            }
-            
-        finally:
-            # Restore original PROMPT.md
-            if original_content is not None:
-                prompt_file.write_text(original_content, encoding="utf-8")
-                
-    except Exception as e:
+    # --- Input Validation ---
+    if not task_description or not task_description.strip():
         return {
             "status": "ERROR",
-            "message": str(e),
-            "files_modified": 0,
-            "loops_completed": 0
+            "message": "task_description cannot be empty.",
+            "suggestion": "Provide a clear description of the task, e.g., 'Fix login validation bug'."
         }
+    
+    valid_levels = ("BASIC", "STANDARD", "FULL", "SEMANTIC")
+    if verification_level.upper() not in valid_levels:
+        return {
+            "status": "ERROR",
+            "message": f"Invalid verification_level: '{verification_level}'.",
+            "suggestion": f"Use one of: {', '.join(valid_levels)}"
+        }
+    verification_level = verification_level.upper()
+    
+    if not (1 <= max_loops <= 20):
+        return {
+            "status": "ERROR",
+            "message": f"max_loops must be between 1 and 20, got {max_loops}.",
+            "suggestion": "Use a reasonable value like 5 (default) or 10 for complex tasks."
+        }
+    
+    # Resolve project root
+    project_root, error = get_project_root_or_error(project_path)
+    if error:
+        return error
+    
+    # Check if we're in MCP mode - if so, return template
+    is_mcp = os.environ.get("BORING_MCP_MODE") == "1"
+    
+    # Build the CLI command
+    cli_parts = ["boring", "start"]
+    if max_loops != 5:
+        cli_parts.append(f"--calls {max_loops}")
+    if verification_level != "STANDARD":
+        cli_parts.append(f"--verification {verification_level.lower()}")
+    if use_cli:
+        cli_parts.append("--cli")
+    
+    cli_command = " ".join(cli_parts)
+    
+    # Create PROMPT.md content
+    prompt_content = f"# Task\n\n{task_description}\n"
+    
+    # Alternative: Gemini CLI direct execution
+    gemini_command = f'gemini --prompt "{task_description[:200]}..."'
+    
+    return {
+        "status": "WORKFLOW_TEMPLATE",
+        "workflow": "run_boring",
+        "project_root": str(project_root),
+        "task_description": task_description,
+        "verification_level": verification_level,
+        "max_loops": max_loops,
+        "is_mcp_mode": is_mcp,
+        "cli_command": cli_command,
+        "gemini_command": gemini_command,
+        "prompt_md_content": prompt_content,
+        "message": (
+            "⚠️ In MCP mode, run_boring CANNOT execute the agent loop directly.\n"
+            "The agent requires external AI (SDK/CLI) which conflicts with MCP.\n\n"
+            "**To execute this task, use ONE of these methods:**\n"
+            f"1. Run in terminal: `{cli_command}`\n"
+            f"2. Use Gemini CLI: `{gemini_command}`\n"
+            "3. Use your IDE's AI to execute the task directly.\n\n"
+            "**Or save the task to PROMPT.md and run boring:**\n"
+            f"   echo '{task_description[:100]}...' > PROMPT.md && boring start"
+        ),
+        "manual_steps": [
+            f"1. Create PROMPT.md in the project with: {task_description[:80]}...",
+            f"2. Run: {cli_command}",
+            f"3. Or use Gemini CLI: {gemini_command}",
+            "4. Use boring_verify to check results after execution"
+        ],
+        "note": (
+            "The boring agent is designed to run OUTSIDE MCP as a standalone process. "
+            "MCP tools are for status checks, verification, RAG search, and workflow templates."
+        )
+    }
 
 @audited
 def boring_health_check(
@@ -212,15 +152,17 @@ def boring_health_check(
              except:
                  pass
         
-        # Auto-detect backend: If no API key but CLI exists, check CLI health
+        # Detection logic is now centralized in GeminiClient, but for health report:
         has_key = "GOOGLE_API_KEY" in os.environ and os.environ["GOOGLE_API_KEY"]
         has_cli = shutil.which("gemini") is not None
         
         backend = "api"
         if not has_key and has_cli:
             backend = "cli"
+        elif not has_key and not has_cli:
+            backend = "none"
         
-        report = run_health_check(backend=backend)
+        report = run_health_check(backend=backend if backend != "none" else "api")
         
         checks = []
         for check in report.checks:

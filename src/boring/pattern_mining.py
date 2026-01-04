@@ -144,29 +144,73 @@ class PatternMiner:
             "has_tests": False,
             "has_errors": False,
             "task_completion": 0.0,
-            "recent_activity": None
+            "recent_activity": None,
+            "code_count": 0,
+            "test_count": 0,
+            "has_spec": False,
+            "has_plan": False,
+            "has_git": False
         }
         
-        # Check for code
+        # Check for code in multiple locations
+        py_files = []
+        
+        # Check src/ directory
         src_dir = project_root / "src"
         if src_dir.exists():
-            py_files = list(src_dir.glob("**/*.py"))
-            state["has_code"] = len(py_files) > 0
+            py_files.extend(list(src_dir.glob("**/*.py")))
         
-        # Check for tests
+        # Check lib/ directory
+        lib_dir = project_root / "lib"
+        if lib_dir.exists():
+            py_files.extend(list(lib_dir.glob("**/*.py")))
+        
+        # Check root-level .py files (excluding __pycache__)
+        root_py_files = [f for f in project_root.glob("*.py") 
+                         if f.is_file() and not str(f.parent).endswith("__pycache__")]
+        py_files.extend(root_py_files)
+        
+        # Also check for common app files
+        for name in ["main.py", "app.py", "server.py", "cli.py"]:
+            app_file = project_root / name
+            if app_file.exists() and app_file not in py_files:
+                py_files.append(app_file)
+        
+        state["has_code"] = len(py_files) > 0
+        state["code_count"] = len(py_files)
+        
+        # Check for tests in multiple locations
+        test_files = []
         tests_dir = project_root / "tests"
         if tests_dir.exists():
-            test_files = list(tests_dir.glob("**/test_*.py"))
-            state["has_tests"] = len(test_files) > 0
+            test_files.extend(list(tests_dir.glob("**/test_*.py")))
+            test_files.extend(list(tests_dir.glob("**/*_test.py")))
         
-        # Check task.md completion
-        task_file = project_root / "task.md"
-        if task_file.exists():
-            content = task_file.read_text(encoding="utf-8")
-            completed = content.count("[x]")
-            total = completed + content.count("[ ]")
-            if total > 0:
-                state["task_completion"] = completed / total
+        # Check for root-level test files
+        test_files.extend(list(project_root.glob("test_*.py")))
+        
+        state["has_tests"] = len(test_files) > 0
+        state["test_count"] = len(test_files)
+        
+        # Check for spec/plan files
+        state["has_spec"] = (project_root / "spec.md").exists() or (project_root / "PRD.md").exists()
+        state["has_plan"] = (project_root / "implementation_plan.md").exists() or (project_root / "IMPLEMENTATION_PLAN.md").exists()
+        
+        # Check for git repo
+        state["has_git"] = (project_root / ".git").exists()
+        
+        # Check task.md completion (also check @fix_plan.md)
+        task_files = [project_root / "task.md", project_root / "@fix_plan.md"]
+        total_completed = 0
+        total_tasks = 0
+        for task_file in task_files:
+            if task_file.exists():
+                content = task_file.read_text(encoding="utf-8")
+                total_completed += content.count("[x]") + content.count("[X]")
+                total_tasks += total_completed + content.count("[ ]") + content.count("[/]")
+        
+        if total_tasks > 0:
+            state["task_completion"] = total_completed / total_tasks
         
         # Check for verification errors
         exit_signals = project_root / ".exit_signals"
@@ -174,6 +218,22 @@ class PatternMiner:
             try:
                 signals = json.loads(exit_signals.read_text())
                 state["has_errors"] = signals.get("verification_failed", False)
+            except Exception:
+                pass
+        
+        # Check for recent git activity
+        if state["has_git"]:
+            try:
+                import subprocess
+                result = subprocess.run(
+                    ["git", "log", "-1", "--format=%ar"],
+                    cwd=project_root,
+                    capture_output=True,
+                    text=True,
+                    stdin=subprocess.DEVNULL
+                )
+                if result.returncode == 0 and result.stdout.strip():
+                    state["recent_activity"] = result.stdout.strip()
             except Exception:
                 pass
         
@@ -199,17 +259,44 @@ class PatternMiner:
         
         conditions = " ".join(pattern.trigger_conditions).lower()
         
-        # Match based on state
-        if "new" in conditions and not state["has_code"]:
-            score += 0.5
-        if "failed" in conditions and state["has_errors"]:
-            score += 0.6
-        if "complete" in conditions and state["task_completion"] > 0.8:
-            score += 0.5
-        if "stuck" in conditions and state["has_errors"]:
-            score += 0.4
-        if "review" in conditions and state["task_completion"] > 0.5:
-            score += 0.3
+        # Match based on state - improved logic with new fields
+        
+        # New project detection - no code OR very few files
+        if "new" in conditions or "empty" in conditions:
+            if not state.get("has_code", False):
+                score += 0.6
+            elif state.get("code_count", 0) < 3:
+                score += 0.3  # Very small project
+        
+        # Verification failure detection
+        if "failed" in conditions or "error" in conditions:
+            if state.get("has_errors", False):
+                score += 0.7
+        
+        # Feature/task completion detection
+        if "complete" in conditions or "finished" in conditions:
+            completion = state.get("task_completion", 0)
+            if completion > 0.8:
+                score += 0.6
+            elif completion > 0.5:
+                score += 0.3
+        
+        # Stuck/debugging detection (has errors but also has code)
+        if "stuck" in conditions or "debug" in conditions:
+            if state.get("has_errors", False) and state.get("has_code", False):
+                score += 0.5
+        
+        # Code review detection (has code, good completion, has tests)
+        if "review" in conditions:
+            if state.get("has_code", False) and state.get("task_completion", 0) > 0.5:
+                score += 0.4
+            if state.get("has_tests", False):
+                score += 0.2
+        
+        # Planning detection - has spec but no plan yet
+        if "plan" in conditions:
+            if state.get("has_spec", False) and not state.get("has_plan", False):
+                score += 0.5
         
         return min(score, 1.0)
     

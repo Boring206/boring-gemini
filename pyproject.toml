@@ -1,7 +1,7 @@
 [project]
 name = "boring"
-version = "10.1.0"
-description = "Enterprise-grade autonomous AI development agent with RAG Memory, Multi-Agent Orchestration, Shadow Mode (HITL), Plugin System, and 40+ MCP tools."
+version = "10.5.0"
+description = "Enterprise-grade autonomous AI development agent with Pure CLI Mode, RAG Memory, Multi-Agent Orchestration, Shadow Mode (HITL), Plugin System, and 40+ MCP tools."
 authors = [
     { name = "Boring206", email = "C112156246@nkust.edu.tw" }
 ]
@@ -66,6 +66,7 @@ boring-monitor = "boring.monitor:app"
 boring-setup = "boring.setup:setup_app"
 boring-import = "boring.setup:import_app"
 boring-mcp = "boring.mcp.server:run_server"
+boring-dashboard = "boring.dashboard:run_app"
 
 [project.urls]
 Homepage = "https://github.com/Boring206/boring-gemini"

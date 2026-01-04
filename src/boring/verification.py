@@ -107,7 +107,7 @@ class CodeVerifier:
         
         try:
             result = subprocess.run(
-                ["ruff", "check", str(file_path), "--output-format", "text"],
+                ["ruff", "check", str(file_path), "--output-format", "concise"],
                 stdin=subprocess.DEVNULL,
                 capture_output=True,
                 text=True,
@@ -126,11 +126,13 @@ class CodeVerifier:
             else:
                 # Parse ruff output
                 issues = result.stdout.strip().split("\n") if result.stdout else []
+                if not issues and result.stderr:
+                    issues = [f"Error: {result.stderr.strip()}"]
                 return VerificationResult(
                     passed=False,
                     check_type="lint",
                     message=f"Lint issues in {file_path.name}",
-                    details=issues[:10],  # Limit to 10 issues
+                    details=issues[:20],  # Increased to 20 issues
                     suggestions=["Run 'ruff check --fix' to auto-fix some issues"]
                 )
         except Exception as e:
@@ -322,12 +324,14 @@ class CodeVerifier:
         
         # Build error summary for AI
         summary_parts = ["## Verification Failed:"]
-        for result in failed[:5]:  # Limit to 5 failures
+        for result in failed[:10]:  # Increased to 10 failures
             summary_parts.append(f"\n### {result.check_type.upper()}: {result.message}")
-            for detail in result.details[:3]:
+            for detail in result.details[:10]: # Increased to 10 details
                 summary_parts.append(f"- {detail}")
             if result.suggestions:
-                summary_parts.append(f"💡 Suggestion: {result.suggestions[0]}")
+                summary_parts.append("\n💡 **Suggestions:**")
+                for suggestion in result.suggestions:
+                    summary_parts.append(f"- {suggestion}")
         
         return False, "\n".join(summary_parts)
 

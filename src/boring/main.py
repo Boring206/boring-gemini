@@ -198,7 +198,36 @@ def setup_extensions():
     setup_project_extensions(settings.PROJECT_ROOT)
     create_criticalthink_command(settings.PROJECT_ROOT)
     create_speckit_command(settings.PROJECT_ROOT)
+    
+    # Auto-register as MCP server for the CLI if possible
+    manager = ExtensionsManager(settings.PROJECT_ROOT)
+    success, msg = manager.register_boring_mcp()
+    if success:
+        console.print(f"[green]✓ {msg}[/green]")
+    else:
+        console.print(f"[dim]Note: {msg}[/dim]")
+
     console.print("[green]Extensions setup complete.[/green]")
+
+@app.command("mcp-register")
+def mcp_register():
+    """
+    Register Boring as an MCP server for the Gemini CLI.
+    This allows the 'gemini' command to use Boring's specialized tools.
+    """
+    from .extensions import ExtensionsManager
+    manager = ExtensionsManager(settings.PROJECT_ROOT)
+    
+    with console.status("[bold green]Registering Boring MCP with Gemini CLI...[/bold green]"):
+        success, msg = manager.register_boring_mcp()
+    
+    if success:
+        console.print(f"[green]✅ {msg}[/green]")
+        console.print("[dim]You can now use Boring tools in the Gemini CLI (e.g. gemini --mcp boring ...)[/dim]")
+    else:
+        console.print(f"[red]Registration failed: {msg}[/red]")
+        raise typer.Exit(1)
+
 
 @app.command()
 def memory_clear():
@@ -652,6 +681,76 @@ def learn():
     else:
         console.print(f"[red]Learning failed: {result.get('error')}[/red]")
         raise typer.Exit(1)
+
+
+# ========================================
+# RAG System Commands
+# ========================================
+rag_app = typer.Typer(help="Manage RAG (Retrieval-Augmented Generation) system.")
+app.add_typer(rag_app, name="rag")
+
+@rag_app.command("index")
+@app.command("rag-index", hidden=True)
+def rag_index(
+    force: bool = typer.Option(False, "--force", "-f", help="Force rebuild index even if it exists"),
+    project: str = typer.Option(None, "--project", "-p", help="Explicit project root path")
+):
+    """Index the codebase for RAG retrieval."""
+    from .rag import create_rag_retriever
+    
+    root = Path(project) if project else settings.PROJECT_ROOT
+    console.print(f"[bold blue]Indexing project at {root}...[/bold blue]")
+    
+    retriever = create_rag_retriever(root)
+    if not retriever.is_available:
+        console.print("[red]❌ RAG dependencies not found (chromadb, sentence-transformers)[/red]")
+        raise typer.Exit(1)
+        
+    count = retriever.build_index(force=force)
+    stats = retriever.get_stats()
+    
+    if stats.index_stats:
+        idx = stats.index_stats
+        console.print(f"\n[bold green]✅ RAG Index {'rebuilt' if force else 'ready'}[/bold green]")
+        console.print(f"  Files indexed: {idx.total_files}")
+        console.print(f"  Total chunks: {idx.total_chunks}")
+        console.print(f"  - Functions: {idx.functions}")
+        console.print(f"  - Classes: {idx.classes}")
+        console.print(f"  - Script chunks: {getattr(idx, 'script_chunks', 0)}")
+    else:
+        console.print(f"[green]✅ Index built with {count} chunks.[/green]")
+
+@rag_app.command("search")
+@app.command("rag-search", hidden=True)
+def rag_search(
+    query: str = typer.Argument(..., help="Search query"),
+    limit: int = typer.Option(5, "--limit", "-l", help="Max results"),
+    project: str = typer.Option(None, "--project", "-p", help="Explicit project root path")
+):
+    """Search the codebase semanticly."""
+    from .rag import create_rag_retriever
+    
+    root = Path(project) if project else settings.PROJECT_ROOT
+    retriever = create_rag_retriever(root)
+    
+    if not retriever.is_available:
+        console.print("[red]❌ RAG not initialized. Run 'boring rag index' first.[/red]")
+        raise typer.Exit(1)
+        
+    results = retriever.retrieve(query, n_results=limit)
+    
+    if not results:
+        console.print(f"[yellow]No results found for '{query}'[/yellow]")
+        return
+        
+    console.print(f"[bold blue]🔍 Results for '{query}':[/bold blue]\n")
+    for i, res in enumerate(results, 1):
+        chunk = res.chunk
+        console.print(f"{i}. [bold]{chunk.file_path}[/bold] -> {chunk.name} [dim](score: {res.score:.2f})[/dim]")
+        # Show a snippet
+        snippet = chunk.content[:200].replace("\n", " ")
+        console.print(f"   [italic]{snippet}...[/italic]\n")
+
 
 
 # ========================================

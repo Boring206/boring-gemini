@@ -148,5 +148,20 @@ def main():
             st.session_state.last_refresh = time.time()
             st.rerun()
 
+def run_app():
+    """Entry point for the boring-dashboard CLI command."""
+    import sys
+    import subprocess
+    from pathlib import Path
+    
+    # Find this script's path
+    script_path = Path(__file__).resolve()
+    
+    # Run streamlit
+    try:
+        subprocess.run([sys.executable, "-m", "streamlit", "run", str(script_path)] + sys.argv[1:])
+    except KeyboardInterrupt:
+        pass
+
 if __name__ == "__main__":
     main()

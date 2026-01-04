@@ -1,8 +1,8 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-10.1.0-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-10.5.0-green.svg)](https://github.com/Boring206/boring-gemini)
 [![Evaluation](https://img.shields.io/badge/Evaluation-100%2F100-brightgreen.svg)]()
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
-# Boring for Gemini (V10.1)
+# Boring for Gemini (V10.5 - Pure CLI Mode)
 
 > **企業級自主 AI 開發代理 (Autonomous Developer)**  
 > 專為 Cursor / Claude Desktop / VS Code 打造，利用 Google Gemini 模型驅動的自動化編碼與驗證引擎。
@@ -53,6 +53,23 @@
 
 ---
 
+## ⚠️ V10.5 重大變更 - Pure CLI Mode
+
+> **重要架構說明**：在 MCP 模式下（透過 Cursor/VS Code/Claude Desktop 使用），以下工具**不會直接執行 AI 操作**，而是返回「工作流程模板」和 CLI 命令供您外部執行：
+
+| 工具 | MCP 模式行為 | 執行方式 |
+|------|-------------|----------|
+| `run_boring` | 返回 CLI 命令模板 | 使用 `boring start` 在終端機執行 |
+| `boring_multi_agent` | 返回多步驟 CLI 模板 | 依序執行每個步驟的命令 |
+| `speckit_plan/tasks` | 返回工作流程模板 | 使用 `gemini --prompt` 或 IDE AI 執行 |
+| `boring_auto_fix` | 執行驗證 + 返回修復命令 | 使用返回的 prompt 手動修復 |
+
+**原因**：MCP 環境無法同時作為 AI 調用者和被調用者。真正的自主執行需透過 `boring start` CLI 命令。
+
+**正常工作的工具**：`boring_verify`, `boring_health_check`, `boring_rag_*`, `boring_apply_patch`, `boring_status`, 等輔助工具。
+
+---
+
 ## 📦 安裝指南 (Installation)
 
 請選擇適合您的方式：
@@ -100,8 +117,15 @@
 
 1.  **確保已安裝 Boring**:
     ```bash
-    pip install -e .
+    pip install -e .(安裝核心)
+    pip install ".[gui]"(安裝 GUI)
+    pip install ".[all]"  # 安裝所有功能 (含 MCP + Dashboard + 向量記憶)
     ```
+
+    > **注意**: 
+    > * **本地監控 (TUI)**: 執行 `boring-monitor` 可開啟終端機版儀表板 (輕量、快速)。
+    > * **Web Dashboard (網頁版)**: 執行 `boring-dashboard` 可開啟圖形化儀表板 (需安裝 `.[gui]`)。安裝後即可在任何專案目錄執行，且不再依賴原始原始碼目錄。
+    > * **Smithery 部署**: 雲端環境通常僅作為 MCP Server 運作，不需要安裝 GUI 套件，故 Smithery 設定僅需核心功能 (`.[mcp]`) 即可，無法直接存取 Dashboard。
 
 2.  **取得 Python 執行路徑**:
     在終端機執行 `where python` (Windows) 或 `which python` (Mac/Linux)，記下路徑（例如：`C:\Python312\python.exe`）。
@@ -165,7 +189,7 @@ boring setup-extensions
 
 | 工具名稱 | 用途 |
 | :--- | :--- |
-| **`run_boring`** | **主要入口**。給它一個任務描述，它會自動規劃並執行。 |
+| **`run_boring`** | **返回 CLI 命令模板**。在 MCP 模式下返回 `boring start` 命令，需在終端機執行。 |
 | **`boring_quickstart`** | 🆕 **新手引導**。取得推薦步驟和可用工具清單。 |
 | **`boring_verify`** | 🛡️ **程式碼驗證**。支援 4 種級別 (見下方說明)。 |
 | **`boring_health_check`** | 檢查系統健康狀態。 |
@@ -183,7 +207,7 @@ boring setup-extensions
 
 | 工具名稱 | 用途 |
 | :--- | :--- |
-| **`boring_auto_fix`** | 🔧 **自動修復**。驗證失敗時自動修復，最多 3 輪循環。 |
+| **`boring_auto_fix`** | 🔧 **驗證 + 修復模板**。執行驗證並返回修復命令模板。 |
 | **`boring_suggest_next`** | 🧠 **智慧建議**。根據專案狀態推薦下一步動作。 |
 | **`boring_workspace_add`** | 📂 新增專案到工作區。 |
 | **`boring_workspace_remove`** | 📂 從工作區移除專案。 |
@@ -306,12 +330,12 @@ def line_counter(directory: str = ".") -> dict:
 
 | 工具名稱 | 說明 |
 | :--- | :--- |
-| **`speckit_plan`** | 🗺️ **規劃**。根據需求建立技術實作計畫。 |
-| **`speckit_tasks`** | 📝 **拆解**。將計畫拆解為可執行的任務清單。 |
-| **`speckit_analyze`** | 🔍 **分析**。檢查 Spec、Plan 與 Code 之間的一致性。 |
-| **`speckit_clarify`** | ❓ **釐清**。找出需求中的模糊地帶並提問。 |
-| **`speckit_checklist`** | ✅ **檢查表**。生成功能驗收清單。 |
-| **`speckit_constitution`** | 📜 **憲章**。建立專案的指導原則與開發規範。 |
+| **`speckit_plan`** | 🗺️ **規劃模板**。返回工作流程模板，需用 CLI 或 IDE AI 執行。 |
+| **`speckit_tasks`** | 📝 **拆解模板**。返回任務拆解的工作流程模板。 |
+| **`speckit_analyze`** | 🔍 **分析模板**。返回一致性檢查的工作流程模板。 |
+| **`speckit_clarify`** | ❓ **釐清模板**。返回需求釐清的工作流程模板。 |
+| **`speckit_checklist`** | ✅ **檢查表模板**。返回驗收清單生成的工作流程模板。 |
+| **`speckit_constitution`** | 📜 **憲章模板**。返回專案準則建立的工作流程模板。 |
 
 **進階工作流管理**:
 - `speckit_evolve_workflow`: 為專案客製化工作流 (例如：針對 React 專案修改 Plan 模板)。
@@ -1106,6 +1130,21 @@ my-project/
 
 
 ---
+
+## 🛠️ 常見問題排除 (Troubleshooting)
+
+### Windows File Locking (WinError 32)
+**問題**: 執行 `pip install .` 時出現 `OSError: [WinError 32] 程式無法存取檔案，因為檔案正由另一個程序使用`。
+
+**原因**: 這通常是因為 Boring 的 CLI (或是其啟動的 MCP Server) 正在運行，鎖定了安裝目錄中的檔案。
+
+**解決方案**:
+1. **關閉所有相關程序**: 確保所有 IDE (Cursor, VS Code, Claude Desktop) 都已關閉，或至少已停用 Boring MCP 伺服器。
+2. **檢查背景工作**: 在終端機檢查是否有殘留的 `boring` 或 `python` 程序正在執行。
+3. **重新安裝**: 關閉程序後再次嘗試 `pip install .`。
+
+---
+
 
 ## 📝 License (授權)
 
