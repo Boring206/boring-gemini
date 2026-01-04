@@ -1,5 +1,5 @@
 Boring-Gemini
-Copyright 2025-2026 Frank Bria & Boring206
+Copyright 2026 Boring206
 
 This product includes software developed at:
 - Github Spec-Kit (https://github.com/github/spec-kit)
@@ -34,6 +34,14 @@ This product includes software developed at:
   Copyright (c) Jeremiah Lowin
   Licensed under the Apache License 2.0
 
+- Starlette (https://github.com/encode/starlette)
+  Copyright (c) Encode OSS Ltd.
+  Licensed under the BSD-3-Clause License
+
+- Uvicorn (https://github.com/encode/uvicorn)
+  Copyright (c) Encode OSS Ltd.
+  Licensed under the BSD-3-Clause License
+
 - Context7 (https://github.com/upstash/context7)
   Copyright (c) Upstash, Inc.
   Licensed under the MIT License / Service Terms
@@ -49,5 +57,3 @@ This product includes software developed at:
 - NotebookLM MCP (https://github.com/jacob-bd/notebooklm-mcp)
   Copyright (c) Jacob BD
   Licensed under the MIT License
-
-
