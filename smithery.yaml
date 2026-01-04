@@ -6,6 +6,7 @@ description: "Enterprise-grade autonomous AI development agent for Python (CLI/F
 repository: "https://github.com/Boring206/boring-gemini"
 homepage: "https://github.com/Boring206/boring-gemini"
 documentation: "https://github.com/Boring206/boring-gemini/blob/main/README.md"
+icon: "https://avatars.githubusercontent.com/u/156481716?s=200&v=4"
 tags: ["ai", "agent", "gemini", "autonomous", "devops", "local"]
 
 build:

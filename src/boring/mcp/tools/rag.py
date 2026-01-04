@@ -5,7 +5,7 @@ Exposes RAG functionality as MCP tools for AI agents.
 """
 
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional, List, Annotated
 
 from boring.rag import RAGRetriever, create_rag_retriever
 
@@ -32,7 +32,9 @@ def register_rag_tools(mcp, helpers: dict):
     get_project_root_or_error = helpers.get("get_project_root_or_error")
     
     @mcp.tool()
-    def boring_rag_index(force: bool = False) -> str:
+    def boring_rag_index(
+        force: Annotated[bool, "If True, rebuild index even if it exists"] = False
+    ) -> str:
         """
         Index the codebase for RAG retrieval.
         
@@ -74,10 +76,10 @@ def register_rag_tools(mcp, helpers: dict):
     
     @mcp.tool()
     def boring_rag_search(
-        query: str,
-        max_results: int = 10,
-        expand_graph: bool = True,
-        file_filter: Optional[str] = None
+        query: Annotated[str, "What you're looking for (e.g., 'authentication error handling')"],
+        max_results: Annotated[int, "Maximum number of results (default 10)"] = 10,
+        expand_graph: Annotated[bool, "Include related code via dependency graph (default True)"] = True,
+        file_filter: Annotated[Optional[str], "Filter by file path substring (e.g., 'auth' or 'src/api')"] = None
     ) -> str:
         """
         Search the codebase using semantic RAG retrieval.
@@ -131,9 +133,9 @@ def register_rag_tools(mcp, helpers: dict):
     
     @mcp.tool()
     def boring_rag_context(
-        file_path: str,
-        function_name: Optional[str] = None,
-        class_name: Optional[str] = None
+        file_path: Annotated[str, "Path to the file (relative to project root)"],
+        function_name: Annotated[Optional[str], "Name of the function to get context for"] = None,
+        class_name: Annotated[Optional[str], "Name of the class (if getting class context)"] = None
     ) -> str:
         """
         Get comprehensive context for modifying a specific code location.
@@ -200,7 +202,10 @@ def register_rag_tools(mcp, helpers: dict):
         return "\n".join(parts)
     
     @mcp.tool()
-    def boring_rag_expand(chunk_id: str, depth: int = 2) -> str:
+    def boring_rag_expand(
+        chunk_id: Annotated[str, "The chunk ID to expand from (from search results)"],
+        depth: Annotated[int, "How many layers to expand (default 2)"] = 2
+    ) -> str:
         """
         Smart expand: Get deeper dependency context for a specific chunk.
         
