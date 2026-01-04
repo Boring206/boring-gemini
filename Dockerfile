@@ -4,8 +4,16 @@ FROM python:3.12-slim
 # Set working directory
 WORKDIR /app
 
-# Install git (required for boring-gemini functionality)
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+ENV BORING_MCP_MODE=1
+
+# Install system dependencies (git for boring-gemini functionality)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy project configuration files first for caching
 COPY pyproject.toml README.md ./
@@ -16,17 +24,12 @@ COPY src src
 # Install the project with MCP dependencies
 RUN pip install --no-cache-dir ".[mcp]"
 
-# Environment variables
-# Ensure unbuffered output for logging
-ENV PYTHONUNBUFFERED=1
-# Set BORING_MCP_MODE to suppress Rich output and force JSON-RPC
-ENV BORING_MCP_MODE=1
-# Set the port for Smithery HTTP transport
-ENV PORT=8000
+# Health check endpoint
+HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:${PORT:-8000}/health || exit 1
 
-# Expose the HTTP port
+# Document the port
 EXPOSE 8000
 
-# Run the MCP server with HTTP transport for Smithery
-# Smithery expects HTTP transport on the specified PORT
-CMD ["python", "-c", "from boring.mcp.server import create_server; server = create_server(); server.run(transport='sse', port=8000)"]
+# Run the HTTP server module
+CMD ["python", "-m", "boring.mcp.http"]
