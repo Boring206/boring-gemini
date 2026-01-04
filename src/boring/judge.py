@@ -267,7 +267,9 @@ CODE ({filename}):
 INSTRUCTIONS:
 1. Rate EACH dimension (1-5) based on the language's best practices.
 2. Provide specific, actionable improvement suggestions.
-3. Assign a CONFIDENCE score (0.0-1.0) reflecting your certainty based on the visible code context.
+3. Assign a CONFIDENCE score (0.0-1.0) reflecting your certainty.
+4. Provide "Strategic Advice" (Long-term architectural direction).
+5. Provide a "First Step" (Immediate, concrete action to take right now).
 
 BIAS MITIGATION:
 - Avoid Length Bias: Do not score higher just because the code is longer. Concise is often better.
@@ -283,5 +285,7 @@ OUTPUT JSON ONLY.
     "dimensions": {{
 {dimensions_json}
     }},
-    "suggestions": ["fix 1", "fix 2"]
+    "suggestions": ["fix 1", "fix 2"],
+    "strategic_advice": "<High-level advice for long-term health>",
+    "first_step": "<The single most important immediate action>"
 }}'''

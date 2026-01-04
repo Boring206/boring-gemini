@@ -46,4 +46,6 @@ startCommand:
         description: "Allow dangerous operations without prompt (NOT RECOMMENDED)."
         default: false
     additionalProperties: false
+    required:
+      - GOOGLE_API_KEY
 

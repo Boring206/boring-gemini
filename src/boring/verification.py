@@ -477,6 +477,14 @@ class CodeVerifier:
                  for k, v in dimensions.items():
                      details.append(f"{k}: {v.get('score')}/5 - {v.get('comment')}")
              
+             strategic = feedback.get("strategic_advice")
+             first_step = feedback.get("first_step")
+             
+             if strategic:
+                 details.append(f"\n🧠 Strategic Advice: {strategic}")
+             if first_step:
+                 details.append(f"👣 First Step: {first_step}")
+             
              return VerificationResult(
                  passed=passed,
                  check_type="semantic",
