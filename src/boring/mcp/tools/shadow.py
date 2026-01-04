@@ -83,10 +83,10 @@ def register_shadow_tools(mcp, helpers: dict):
         
         return "\n".join(output)
     
-    @mcp.tool(description="Approve a pending Shadow Mode operation", tags=["shadow-mode", "action"])
+    @mcp.tool(description="Approve a pending Shadow Mode operation", annotations={"tags": ["shadow-mode", "action"]})
     def boring_shadow_approve(
         operation_id: Annotated[str, "ID of the operation to approve (from shadow_status)"],
-        note: Annotated[Optional[str], "Optional note explaining the approval"] = None
+        note: Annotated[str, "Optional note explaining the approval"] = None
     ) -> str:
         """
         Approve a pending Shadow Mode operation.
@@ -101,10 +101,10 @@ def register_shadow_tools(mcp, helpers: dict):
         else:
             return f"❌ Operation `{operation_id}` not found"
 
-    @mcp.tool(description="Reject a pending Shadow Mode operation", tags=["shadow-mode", "action"])
+    @mcp.tool(description="Reject a pending Shadow Mode operation", annotations={"tags": ["shadow-mode", "action"]})
     def boring_shadow_reject(
         operation_id: Annotated[str, "ID of the operation to reject"],
-        note: Annotated[Optional[str], "Optional note explaining the rejection"] = None
+        note: Annotated[str, "Optional note explaining the rejection"] = None
     ) -> str:
         """
         Reject a pending Shadow Mode operation.

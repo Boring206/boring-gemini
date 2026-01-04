@@ -31,7 +31,7 @@ def register_rag_tools(mcp, helpers: dict):
     """
     get_project_root_or_error = helpers.get("get_project_root_or_error")
     
-    @mcp.tool(description="Index codebase for RAG", tags=["rag", "index"])
+    @mcp.tool(description="Index codebase for RAG", annotations={"tags": ["rag", "index"]})
     def boring_rag_index(
         force: Annotated[bool, "If True, rebuild index even if it exists"] = False
     ) -> str:
@@ -74,12 +74,12 @@ def register_rag_tools(mcp, helpers: dict):
         
         return f"✅ RAG Index ready with {count} chunks"
     
-    @mcp.tool(description="Semantic code search", tags=["rag", "search"])
+    @mcp.tool(description="Semantic code search", annotations={"tags": ["rag", "search"]})
     def boring_rag_search(
         query: Annotated[str, "What you're looking for (e.g., 'authentication error handling')"],
         max_results: Annotated[int, "Maximum number of results (default 10)"] = 10,
         expand_graph: Annotated[bool, "Include related code via dependency graph (default True)"] = True,
-        file_filter: Annotated[Optional[str], "Filter by file path substring (e.g., 'auth' or 'src/api')"] = None
+        file_filter: Annotated[str, "Filter by file path substring (e.g., 'auth' or 'src/api')"] = None
     ) -> str:
         """
         Search the codebase using semantic RAG retrieval.
@@ -131,11 +131,11 @@ def register_rag_tools(mcp, helpers: dict):
         
         return "\n".join(parts)
     
-    @mcp.tool(description="Get code context (callers/callees)", tags=["rag", "context"])
+    @mcp.tool(description="Get code context (callers/callees)", annotations={"tags": ["rag", "context"]})
     def boring_rag_context(
         file_path: Annotated[str, "Path to the file (relative to project root)"],
-        function_name: Annotated[Optional[str], "Name of the function to get context for"] = None,
-        class_name: Annotated[Optional[str], "Name of the class (if getting class context)"] = None
+        function_name: Annotated[str, "Name of the function to get context for"] = None,
+        class_name: Annotated[str, "Name of the class (if getting class context)"] = None
     ) -> str:
         """
         Get comprehensive context for modifying a specific code location.
@@ -201,7 +201,7 @@ def register_rag_tools(mcp, helpers: dict):
         
         return "\n".join(parts)
     
-    @mcp.tool(description="Recursively expand code dependencies", tags=["rag", "analysis"])
+    @mcp.tool(description="Recursively expand code dependencies", annotations={"tags": ["rag", "analysis"]})
     def boring_rag_expand(
         chunk_id: Annotated[str, "The chunk ID to expand from (from search results)"],
         depth: Annotated[int, "How many layers to expand (default 2)"] = 2

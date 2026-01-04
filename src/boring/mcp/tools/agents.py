@@ -148,9 +148,9 @@ def register_agent_tools(mcp, helpers: dict):
         
         return "\n".join(output)
     
-    @mcp.tool(description="Run Reviewer agent on existing code", tags=["agents", "review"])
+    @mcp.tool(description="Run Reviewer agent on existing code", annotations={"tags": ["agents", "review"]})
     def boring_agent_review(
-        file_paths: Annotated[Optional[str], "Comma-separated list of files to review"] = None
+        file_paths: Annotated[str, "Comma-separated list of files to review"] = None
     ) -> str:
         """
         Run ONLY the Reviewer agent on existing code.
