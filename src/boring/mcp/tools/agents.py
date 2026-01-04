@@ -8,7 +8,7 @@ import asyncio
 from pathlib import Path
 from typing import Optional, Dict, Any
 
-from ..agents import AgentOrchestrator, run_multi_agent
+from boring.agents import AgentOrchestrator, run_multi_agent
 
 
 def register_agent_tools(mcp, helpers: dict):
