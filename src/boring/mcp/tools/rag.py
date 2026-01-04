@@ -212,7 +212,7 @@ def register_rag_tools(mcp, helpers: dict):
     def boring_rag_expand(
         chunk_id: Annotated[str, Field(description="The chunk ID to expand from (from search results)")],
         depth: Annotated[int, Field(description="How many layers to expand (default 2)")] = 2,
-        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+        project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Smart expand: Get deeper dependency context for a specific chunk.

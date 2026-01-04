@@ -163,7 +163,7 @@ def register_agent_tools(mcp, helpers: dict):
     @mcp.tool(description="Run Reviewer agent on existing code", annotations={"readOnlyHint": True, "openWorldHint": True})
     def boring_agent_review(
         file_paths: Annotated[str, Field(description="Comma-separated list of files to review")] = None,
-        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+        project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Run ONLY the Reviewer agent on existing code.
