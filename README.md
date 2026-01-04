@@ -1,3 +1,4 @@
+[![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Version](https://img.shields.io/badge/Version-9.1.0-green.svg)](https://github.com/Boring206/boring-gemini)
 
@@ -1070,13 +1071,8 @@ my-project/
 - **NotebookLM MCP**: 融合了 [notebooklm-mcp](https://github.com/jacob-bd/notebooklm-mcp) (MIT License) 的強大知識整合能力，讓開發者能將個人知識庫無縫導入 AI 開發工作流。
 - **Advanced Evaluation**: 感謝 [Advanced Evaluation](https://github.com/frankbria/advanced-evaluation) (MIT License) 提供的高階評估標準與 Rubric 框架，確保了本專案代碼品質的卓越。
 
-
-
-
-
 ---
 
 ## 📝 License (授權)
 
 Apache License 2.0
-
