@@ -35,10 +35,11 @@ def main():
         
         mcp = create_server()
         
-        logger.info(f"Registered tools: {len(mcp._tools)}")
+        # Safe tool count (compatible with different FastMCP versions)
+        tool_count = len(getattr(mcp, '_tools', getattr(mcp, 'tools', {})))
+        logger.info(f"Registered tools: {tool_count}")
         
         # Run with SSE transport (Streamable HTTP for MCP)
-        # FastMCP supports 'sse' transport for HTTP/SSE
         mcp.run(transport="sse", host=host, port=port)
         
     except Exception as e:
