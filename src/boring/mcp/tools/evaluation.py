@@ -14,7 +14,7 @@ def boring_evaluate(
     target: Annotated[str, Field(description="File path or content to evaluate")],
     context: Annotated[str, Field(description="Optional context or requirements")] = "",
     level: Annotated[str, Field(description="Evaluation technique: DIRECT (score 1-5), PAIRWISE (comparison)")] = "DIRECT",
-    interactive: Annotated[bool, Field(description="If True, returns the PROMPT instead of executing it. Useful for IDE AI.")] = False,
+    interactive: Annotated[bool, Field(description="If True, returns the PROMPT instead of executing it. Useful for IDE AI.")] = None,
     project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> str:
     """
@@ -49,10 +49,21 @@ def boring_evaluate(
         from ...judge import LLMJudge
         from ...cli_client import GeminiCLIAdapter
         
+        # Auto-detect MCP mode: If running as MCP tool, default to interactive
+        # This allows IDE AI (Cursor, Claude Desktop) to execute the evaluation
+        import os
+        is_mcp_mode = os.environ.get("BORING_MCP_MODE", "0") == "1"
+        
+        # In MCP mode, default to interactive unless explicitly set to False
+        if is_mcp_mode and interactive is None:
+            interactive = True
+        elif interactive is None:
+            interactive = False
+        
         # Initialize Judge
         adapter = GeminiCLIAdapter(model_name=settings.DEFAULT_MODEL)
         
-        # In interactive mode, we don't strictly need the CLI to be functional if we just want prompts
+        # In interactive mode, we don't strictly need the CLI to be functional
         if not adapter.is_available and not interactive:
              return "❌ Gemini CLI not found. Install it or use interactive=True to generate prompts."
 
@@ -164,3 +175,4 @@ def boring_evaluate(
 
 if MCP_AVAILABLE and mcp is not None:
     mcp.tool(description="Evaluate code quality (LLM Judge)", annotations={"readOnlyHint": True, "openWorldHint": True})(boring_evaluate)
+
