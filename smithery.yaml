@@ -27,12 +27,12 @@ startCommand:
         description: "Set to '1' to enable MCP mode"
         default: "1"
       LOG_LEVEL:
-        type: "string"
+        type: ["string", "null"]
         description: "Logging level (DEBUG, INFO, WARNING, ERROR)"
         default: "INFO"
         enum: ["DEBUG", "INFO", "WARNING", "ERROR"]
       PROJECT_ROOT_DEFAULT:
-        type: "string"
+        type: ["string", "null"]
         description: "Default project path if not specified in tool calls (optional)"
       BORING_ALLOW_DANGEROUS:
         type: "boolean"
