@@ -35,7 +35,7 @@ def register_shadow_tools(mcp, helpers: dict):
     """
     get_project_root_or_error = helpers.get("get_project_root_or_error")
     
-    @mcp.tool(description="Get Shadow Mode status and pending operations", annotations={"tags": ["shadow-mode", "status"]})
+    @mcp.tool(description="Get Shadow Mode status and pending operations", annotations={"readOnlyHint": True, "openWorldHint": False})
     def boring_shadow_status() -> str:
         """
         Get Shadow Mode status and pending approvals.
@@ -84,7 +84,7 @@ def register_shadow_tools(mcp, helpers: dict):
         
         return "\n".join(output)
     
-    @mcp.tool(description="Approve a pending Shadow Mode operation", annotations={"tags": ["shadow-mode", "action"]})
+    @mcp.tool(description="Approve a pending Shadow Mode operation", annotations={"readOnlyHint": False, "idempotentHint": True})
     def boring_shadow_approve(
         operation_id: Annotated[str, Field(description="ID of the operation to approve (from shadow_status)")],
         note: Annotated[str, Field(description="Optional note explaining the approval")] = None
@@ -102,7 +102,7 @@ def register_shadow_tools(mcp, helpers: dict):
         else:
             return f"❌ Operation `{operation_id}` not found"
 
-    @mcp.tool(description="Reject a pending Shadow Mode operation", annotations={"tags": ["shadow-mode", "action"]})
+    @mcp.tool(description="Reject a pending Shadow Mode operation", annotations={"readOnlyHint": False, "idempotentHint": True})
     def boring_shadow_reject(
         operation_id: Annotated[str, Field(description="ID of the operation to reject")],
         note: Annotated[str, Field(description="Optional note explaining the rejection")] = None
@@ -120,7 +120,7 @@ def register_shadow_tools(mcp, helpers: dict):
         else:
             return f"❓ Operation `{operation_id}` not found"
 
-    @mcp.tool(description="Change Shadow Mode protection level", annotations={"tags": ["shadow-mode", "config"]})
+    @mcp.tool(description="Change Shadow Mode protection level", annotations={"readOnlyHint": False, "idempotentHint": True})
     def boring_shadow_mode(
         mode: Annotated[str, Field(description="New mode (DISABLED, ENABLED, or STRICT)")]
     ) -> str:
@@ -181,7 +181,7 @@ def register_shadow_tools(mcp, helpers: dict):
         except Exception as e:
             return f"❌ Failed to set mode: {e}"
     
-    @mcp.tool(description="Clear all pending Shadow Mode operations", annotations={"tags": ["shadow-mode", "action"]})
+    @mcp.tool(description="Clear all pending Shadow Mode operations", annotations={"readOnlyHint": False, "destructiveHint": True})
     def boring_shadow_clear() -> str:
         """
         Clear all pending Shadow Mode operations.

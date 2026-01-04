@@ -22,7 +22,7 @@ def register_agent_tools(mcp, helpers: dict):
     """
     get_project_root_or_error = helpers.get("get_project_root_or_error")
     
-    @mcp.tool(description="Run full multi-agent workflow (Architect -> Coder -> Reviewer)", annotations={"tags": ["agents", "workflow"]})
+    @mcp.tool(description="Run full multi-agent workflow (Architect -> Coder -> Reviewer)", annotations={"readOnlyHint": False, "openWorldHint": True})
     def boring_multi_agent(
         task: Annotated[str, Field(description="What to build/fix (detailed description)")],
         auto_approve_plans: Annotated[bool, Field(description="Skip human approval for plans (default False)")] = False
@@ -96,7 +96,7 @@ def register_agent_tools(mcp, helpers: dict):
             reason = result.get("reason", "Unknown error")
             return f"❌ Multi-agent workflow failed: {reason}"
     
-    @mcp.tool(description="Run Architect agent to create implementation plan", annotations={"tags": ["agents", "planning"]})
+    @mcp.tool(description="Run Architect agent to create implementation plan", annotations={"readOnlyHint": False, "openWorldHint": True})
     def boring_agent_plan(
         task: Annotated[str, Field(description="What to build/fix")]
     ) -> str:
@@ -149,7 +149,7 @@ def register_agent_tools(mcp, helpers: dict):
         
         return "\n".join(output)
     
-    @mcp.tool(description="Run Reviewer agent on existing code", annotations={"tags": ["agents", "review"]})
+    @mcp.tool(description="Run Reviewer agent on existing code", annotations={"readOnlyHint": True, "openWorldHint": True})
     def boring_agent_review(
         file_paths: Annotated[str, Field(description="Comma-separated list of files to review")] = None
     ) -> str:
