@@ -1,4 +1,5 @@
-from typing import Optional
+from typing import Optional, Annotated
+from pydantic import Field
 from ..instance import mcp, MCP_AVAILABLE
 from ..utils import check_rate_limit, get_project_root_or_error, configure_runtime_for_project
 from ...audit import audited
@@ -8,7 +9,10 @@ from ...audit import audited
 # ==============================================================================
 
 @audited
-def boring_verify(level: str = "STANDARD", project_path: Optional[str] = None) -> dict:
+def boring_verify(
+    level: Annotated[str, Field(description="Verification level: BASIC (syntax), STANDARD (lint), FULL (tests), SEMANTIC (judge)")] = "STANDARD",
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Run code verification on the project.
     
@@ -74,9 +78,9 @@ def boring_verify(level: str = "STANDARD", project_path: Optional[str] = None) -
 
 @audited
 def boring_verify_file(
-    file_path: str,
-    level: str = "STANDARD",
-    project_path: Optional[str] = None
+    file_path: Annotated[str, Field(description="Relative path to the file to verify (from project root)")],
+    level: Annotated[str, Field(description="Verification level: BASIC, STANDARD, FULL")] = "STANDARD",
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Verify a single file for syntax errors, linting issues, and import problems.
@@ -168,5 +172,5 @@ def boring_verify_file(
 # ==============================================================================
 
 if MCP_AVAILABLE and mcp is not None:
-    mcp.tool()(boring_verify)
-    mcp.tool()(boring_verify_file)
+    mcp.tool(description="Verify project code", annotations={"readOnlyHint": True})(boring_verify)
+    mcp.tool(description="Verify single file", annotations={"readOnlyHint": True})(boring_verify_file)

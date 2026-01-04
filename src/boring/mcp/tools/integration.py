@@ -1,4 +1,5 @@
-from typing import Optional
+from typing import Optional, Annotated
+from pydantic import Field
 from ..instance import mcp, MCP_AVAILABLE
 from ..utils import get_project_root_or_error
 from ...audit import audited
@@ -8,7 +9,9 @@ from ...audit import audited
 # ==============================================================================
 
 @audited
-def boring_setup_extensions(project_path: Optional[str] = None) -> dict:
+def boring_setup_extensions(
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Install recommended Gemini CLI extensions for enhanced capabilities.
     
@@ -91,5 +94,5 @@ To connect Boring with NotebookLM and fix authentication issues:
 """
 
 if MCP_AVAILABLE and mcp is not None:
-    mcp.tool()(boring_setup_extensions)
-    mcp.tool()(boring_notebooklm_guide)
+    mcp.tool(description="Install recommended extensions", annotations={"readOnlyHint": False, "idempotentHint": True})(boring_setup_extensions)
+    mcp.tool(description="Get NotebookLM setup guide", annotations={"readOnlyHint": True})(boring_notebooklm_guide)

@@ -1,4 +1,5 @@
-from typing import Optional
+from typing import Optional, Annotated
+from pydantic import Field
 from ..instance import mcp, MCP_AVAILABLE
 from ..utils import get_project_root_or_error, configure_runtime_for_project
 from ...audit import audited
@@ -8,7 +9,9 @@ from ...audit import audited
 # ==============================================================================
 
 @audited
-def boring_learn(project_path: Optional[str] = None) -> dict:
+def boring_learn(
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Trigger learning from .boring_memory to .boring_brain.
     
@@ -43,7 +46,9 @@ def boring_learn(project_path: Optional[str] = None) -> dict:
         return {"status": "ERROR", "error": str(e)}
 
 @audited
-def boring_create_rubrics(project_path: Optional[str] = None) -> dict:
+def boring_create_rubrics(
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Create default evaluation rubrics in .boring_brain/rubrics/.
     
@@ -73,7 +78,9 @@ def boring_create_rubrics(project_path: Optional[str] = None) -> dict:
         return {"status": "ERROR", "error": str(e)}
 
 @audited
-def boring_brain_summary(project_path: Optional[str] = None) -> dict:
+def boring_brain_summary(
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Get summary of .boring_brain knowledge base.
     
@@ -102,6 +109,6 @@ def boring_brain_summary(project_path: Optional[str] = None) -> dict:
         return {"status": "ERROR", "error": str(e)}
 
 if MCP_AVAILABLE and mcp is not None:
-    mcp.tool()(boring_learn)
-    mcp.tool()(boring_create_rubrics)
-    mcp.tool()(boring_brain_summary)
+    mcp.tool(description="Learn patterns from memory", annotations={"readOnlyHint": False})(boring_learn)
+    mcp.tool(description="Create evaluation rubrics", annotations={"readOnlyHint": False})(boring_create_rubrics)
+    mcp.tool(description="Show knowledge base summary", annotations={"readOnlyHint": True})(boring_brain_summary)

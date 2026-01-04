@@ -1,4 +1,5 @@
-from typing import Optional
+from typing import Optional, Annotated
+from pydantic import Field
 from ..instance import mcp, MCP_AVAILABLE
 from ..utils import detect_project_root, check_rate_limit, get_project_root_or_error, configure_runtime_for_project
 from ...audit import audited
@@ -8,7 +9,9 @@ from ...audit import audited
 # ==============================================================================
 
 @audited
-def boring_hooks_install(project_path: Optional[str] = None) -> dict:
+def boring_hooks_install(
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Install Boring Git hooks (pre-commit, pre-push) for local code quality enforcement.
     
@@ -65,7 +68,9 @@ def boring_hooks_install(project_path: Optional[str] = None) -> dict:
         return {"status": "ERROR", "error": str(e)}
 
 @audited
-def boring_hooks_uninstall(project_path: Optional[str] = None) -> dict:
+def boring_hooks_uninstall(
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Remove Boring Git hooks.
     
@@ -94,7 +99,9 @@ def boring_hooks_uninstall(project_path: Optional[str] = None) -> dict:
         return {"status": "ERROR", "error": str(e)}
 
 @audited
-def boring_hooks_status(project_path: Optional[str] = None) -> dict:
+def boring_hooks_status(
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Get status of installed Git hooks.
     
@@ -119,6 +126,6 @@ def boring_hooks_status(project_path: Optional[str] = None) -> dict:
         return {"status": "ERROR", "error": str(e)}
 
 if MCP_AVAILABLE and mcp is not None:
-    mcp.tool()(boring_hooks_install)
-    mcp.tool()(boring_hooks_uninstall)
-    mcp.tool()(boring_hooks_status)
+    mcp.tool(description="Install Git hooks", annotations={"readOnlyHint": False, "idempotentHint": True})(boring_hooks_install)
+    mcp.tool(description="Uninstall Git hooks", annotations={"readOnlyHint": False, "idempotentHint": True})(boring_hooks_uninstall)
+    mcp.tool(description="Check Git hooks status", annotations={"readOnlyHint": True})(boring_hooks_status)

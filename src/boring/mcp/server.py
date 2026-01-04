@@ -134,6 +134,9 @@ def run_server():
     # 3. Register V10 Tools (RAG, Multi-Agent, Shadow Mode)
     register_v10_tools(instance.mcp, audited, helpers)
     
+    # Register Prompts
+    register_prompts(instance.mcp)
+    
     # 4. Configured logging
     with _configure_logging():
         if os.environ.get("BORING_MCP_DEBUG") == "1":

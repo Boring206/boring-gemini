@@ -1,5 +1,6 @@
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Annotated
+from pydantic import Field
 from ..instance import mcp, MCP_AVAILABLE
 from ..utils import check_rate_limit, detect_project_root, get_project_root_or_error
 from ...audit import audited
@@ -9,7 +10,13 @@ from ...audit import audited
 # ==============================================================================
 
 @audited
-def boring_evaluate(target: str, context: str = "", level: str = "DIRECT", interactive: bool = False, project_path: Optional[str] = None) -> str:
+def boring_evaluate(
+    target: Annotated[str, Field(description="File path or content to evaluate")],
+    context: Annotated[str, Field(description="Optional context or requirements")] = "",
+    level: Annotated[str, Field(description="Evaluation technique: DIRECT (score 1-5), PAIRWISE (comparison)")] = "DIRECT",
+    interactive: Annotated[bool, Field(description="If True, returns the PROMPT instead of executing it. Useful for IDE AI.")] = False,
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> str:
     """
     Evaluate code quality using Advanced Evaluation techniques (LLM-as-a-Judge).
     
@@ -119,4 +126,4 @@ def boring_evaluate(target: str, context: str = "", level: str = "DIRECT", inter
         return f"❌ Error evaluating: {str(e)}"
 
 if MCP_AVAILABLE and mcp is not None:
-    mcp.tool()(boring_evaluate)
+    mcp.tool(description="Evaluate code quality (LLM Judge)", annotations={"readOnlyHint": True, "openWorldHint": True})(boring_evaluate)
