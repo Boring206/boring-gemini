@@ -1,3 +1,4 @@
+[![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Version](https://img.shields.io/badge/Version-9.1.0-green.svg)](https://github.com/Boring206/boring-gemini)
 
@@ -332,7 +333,7 @@ Boring 具備記憶與自我進化能力。
 #### 💡 Tip 2: 讓已學經驗發揮作用
 定期執行 `boring_learn`。下次執行任務時，Agent 會自動參考 `.boring_brain/learned_patterns` 中的成功案例，避免犯同樣的錯誤。
 
-#### � Tip 3: 自定義你的 AI 裁判
+#### 💡 Tip 3: 自定義你的 AI 裁判
 覺得預設的代碼檢查太寬鬆？
 1. 修改 `.boring_brain/rubrics/code_quality.json`
 2. 使用 `boring_evaluate(..., level="DIRECT")`
@@ -1070,13 +1071,8 @@ my-project/
 - **NotebookLM MCP**: 融合了 [notebooklm-mcp](https://github.com/jacob-bd/notebooklm-mcp) (MIT License) 的強大知識整合能力，讓開發者能將個人知識庫無縫導入 AI 開發工作流。
 - **Advanced Evaluation**: 感謝 [Advanced Evaluation](https://github.com/frankbria/advanced-evaluation) (MIT License) 提供的高階評估標準與 Rubric 框架，確保了本專案代碼品質的卓越。
 
-
-
-
-
 ---
 
 ## 📝 License (授權)
 
 Apache License 2.0
-
