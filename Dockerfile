@@ -13,15 +13,20 @@ COPY pyproject.toml README.md ./
 # Copy source code
 COPY src src
 
-# Install the project and dependencies
-# Using -e . isn't necessary for a production image, direct install is better
-RUN pip install --no-cache-dir .
+# Install the project with MCP dependencies
+RUN pip install --no-cache-dir ".[mcp]"
 
 # Environment variables
 # Ensure unbuffered output for logging
 ENV PYTHONUNBUFFERED=1
 # Set BORING_MCP_MODE to suppress Rich output and force JSON-RPC
 ENV BORING_MCP_MODE=1
+# Set the port for Smithery HTTP transport
+ENV PORT=8000
 
-# Run the MCP server command installed by pip
-CMD ["boring-mcp"]
+# Expose the HTTP port
+EXPOSE 8000
+
+# Run the MCP server with HTTP transport for Smithery
+# Smithery expects HTTP transport on the specified PORT
+CMD ["python", "-c", "from boring.mcp.server import create_server; server = create_server(); server.run(transport='sse', port=8000)"]
