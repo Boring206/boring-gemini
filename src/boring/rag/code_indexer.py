@@ -12,6 +12,7 @@ Uses AST parsing to extract structured information.
 
 import ast
 import hashlib
+import os
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import List, Iterator, Optional, Set, Dict
@@ -58,16 +59,16 @@ class CodeIndexer:
     - Configurable chunk size limits
     """
     
+    SUPPORTED_EXTENSIONS: Set[str] = {
+        ".py", ".js", ".jsx", ".ts", ".tsx", ".go", ".rs", ".c", ".cpp", ".h", ".hpp", ".java", ".md"
+    }
+    
     IGNORED_DIRS: Set[str] = {
         ".git", "__pycache__", "node_modules", ".venv", "venv", 
         "htmlcov", ".pytest_cache", ".mypy_cache", ".ruff_cache",
         "dist", "build", "*.egg-info", ".boring_memory"
     }
-    
-    IGNORED_FILES: Set[str] = {
-        "__init__.py",  # Usually empty or just imports
-    }
-    
+
     def __init__(
         self, 
         project_root: Path, 
@@ -81,60 +82,142 @@ class CodeIndexer:
     
     def index_project(self) -> Iterator[CodeChunk]:
         """
-        Index all Python files in the project.
+        Index all supported files in the project.
         
         Yields:
             CodeChunk objects for each semantic unit
         """
         self.stats = IndexStats()
         
-        for py_file in self.project_root.rglob("*.py"):
-            # Skip ignored directories
-            if self._should_skip_path(py_file):
-                self.stats.skipped_files += 1
-                continue
+        # Walk through all files and filter by extension
+        for root, dirs, files in os.walk(self.project_root):
+            # Prune ignored directories
+            dirs[:] = [d for d in dirs if not self._should_skip_dir(d)]
             
-            # Skip __init__.py unless configured otherwise
-            if not self.include_init_files and py_file.name == "__init__.py":
-                continue
-            
-            self.stats.total_files += 1
-            
-            try:
-                for chunk in self.index_file(py_file):
-                    self.stats.total_chunks += 1
-                    yield chunk
-            except Exception as e:
-                logger.warning(f"Failed to index {py_file}: {e}")
-                self.stats.skipped_files += 1
-    
+            for file in files:
+                file_path = Path(root) / file
+                ext = file_path.suffix.lower()
+                
+                if ext not in self.SUPPORTED_EXTENSIONS:
+                    continue
+                
+                if not self.include_init_files and file == "__init__.py":
+                    continue
+                
+                self.stats.total_files += 1
+                
+                try:
+                    for chunk in self.index_file(file_path):
+                        self.stats.total_chunks += 1
+                        yield chunk
+                except Exception as e:
+                    logger.warning(f"Failed to index {file_path}: {e}")
+                    self.stats.skipped_files += 1
+
     def index_file(self, file_path: Path) -> Iterator[CodeChunk]:
         """
-        Extract chunks from a single Python file.
-        
-        Args:
-            file_path: Path to the Python file
-            
-        Yields:
-            CodeChunk objects
+        Extract chunks from a file (AST for Python, line-based for others).
         """
+        if file_path.suffix.lower() == ".py":
+            yield from self._index_python_file(file_path)
+        else:
+            yield from self._index_universal_file(file_path)
+    
+    def _should_skip_dir(self, dir_name: str) -> bool:
+        """Helper to check if a directory should be skipped during walk."""
+        return dir_name in self.IGNORED_DIRS or any(dir_name.endswith(ex[1:]) for ex in self.IGNORED_DIRS if ex.startswith("*"))
+
+    def _get_rel_path(self, file_path: Path) -> str:
+        """Get relative path from project root."""
+        try:
+            rel_path = str(file_path.relative_to(self.project_root))
+            return rel_path.replace("\\", "/")
+        except ValueError:
+            return str(file_path).replace("\\", "/")
+
+    def _index_universal_file(self, file_path: Path) -> Iterator[CodeChunk]:
+        """
+        Smart chunking for non-Python files using regex delimiters.
+        Supports C-style languages (JS, TS, Java, C++, Go, Rust) and Markdown.
+        """
+        import re
+        try:
+            content = file_path.read_text(encoding="utf-8")
+        except Exception as e:
+            logger.debug(f"Error reading {file_path}: {e}")
+            return
+            
+        rel_path = self._get_rel_path(file_path)
+        lines = content.splitlines()
+        
+        # Regex patterns for common block starts
+        # C/C++/Java/JS/TS/Go/Rust function/class definitions
+        block_start = re.compile(r'^\s*(?:export\s+)?(?:public\s+|private\s+|protected\s+)?(?:async\s+)?(?:func|function|class|interface|struct|impl|const|let|var|type|def)\s+([a-zA-Z0-9_]+)')
+        # Markdown headers
+        md_header = re.compile(r'^#{1,3}\s+(.+)')
+        
+        chunks = []
+        current_chunk_lines = []
+        current_start_line = 1
+        current_name = file_path.name
+        
+        for i, line in enumerate(lines):
+            line_num = i + 1
+            
+            # Check for new block start if current chunk is getting big enough
+            # or if we are just starting
+            is_start = block_start.match(line) or md_header.match(line)
+            
+            # Decide to yield current chunk
+            # 1. New block detected AND current chunk is substantial (>5 lines)
+            # 2. Current chunk is too big (>50 lines)
+            if (is_start and len(current_chunk_lines) > 5) or len(current_chunk_lines) >= 50:
+                 if current_chunk_lines:
+                     # Yield previous chunk
+                     chunk_content = "\n".join(current_chunk_lines)
+                     yield CodeChunk(
+                         chunk_id=self._make_id(rel_path, f"chunk_{current_start_line}"),
+                         file_path=rel_path,
+                         chunk_type="code_block",
+                         name=current_name,
+                         content=chunk_content,
+                         start_line=current_start_line,
+                         end_line=line_num - 1
+                     )
+                     current_chunk_lines = []
+                     current_start_line = line_num
+                     
+                     if is_start:
+                         current_name = is_start.group(1)
+            
+            current_chunk_lines.append(line)
+            
+            # If we matched a block start, update name for the *current* accumulating chunk
+            if is_start and len(current_chunk_lines) == 1:
+                current_name = is_start.group(1)
+
+        # Yield remaining
+        if current_chunk_lines:
+            yield CodeChunk(
+                chunk_id=self._make_id(rel_path, f"chunk_{current_start_line}"),
+                file_path=rel_path,
+                chunk_type="code_block",
+                name=current_name,
+                content="\n".join(current_chunk_lines),
+                start_line=current_start_line,
+                end_line=len(lines)
+            )
+
+    def _index_python_file(self, file_path: Path) -> Iterator[CodeChunk]:
+        """Extract chunks from a single Python file using AST."""
         try:
             content = file_path.read_text(encoding="utf-8")
             tree = ast.parse(content)
-        except SyntaxError as e:
-            logger.debug(f"Syntax error in {file_path}: {e}")
-            return
-        except UnicodeDecodeError as e:
-            logger.debug(f"Encoding error in {file_path}: {e}")
+        except (SyntaxError, UnicodeDecodeError) as e:
+            logger.debug(f"Error parsing {file_path}: {e}")
             return
         
-        try:
-            rel_path = str(file_path.relative_to(self.project_root))
-            # Normalize to forward slashes for cross-platform consistency
-            rel_path = rel_path.replace("\\", "/")
-        except ValueError:
-            rel_path = str(file_path).replace("\\", "/")
-        
+        rel_path = self._get_rel_path(file_path)
         lines = content.splitlines()
         
         # 1. Module docstring

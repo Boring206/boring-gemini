@@ -212,64 +212,51 @@ class LLMJudge:
 
     def _build_grade_prompt(self, filename: str, content: str, rubric: Rubric) -> str:
         criteria_text = "\n".join([f"- {c.name}: {c.description} (Weight: {c.weight})" for c in rubric.criteria])
-
-        # Check if we are running in CLI mode (heuristic via adapter type name or attribute)
-        is_cli = "GeminiCLIAdapter" in str(type(self.cli))
         
-        # Optimize Content Size for CLI
-        max_chars = 6000 if is_cli else 15000
+        # Dimensions for JSON output
+        dimensions_json = ",\n".join([f'                "{c.name.lower().replace(" ", "_")}": {{ "score": <int>, "comment": "..." }}' for c in rubric.criteria])
+
+        # Optimize Content Size
+        is_cli = "GeminiCLIAdapter" in str(type(self.cli))
+        max_chars = 8000 if is_cli else 20000
         truncated_content = content[:max_chars]
 
         # Persona Selection
         if rubric.strictness == "hostile":
-            if is_cli:
-                 # Lite Persona for CLI stability
-                persona = """You are a Hostile Architect. Falsify this design.
-                Focus ONLY on:
-                1. High Concurrency (Race conditions)
-                2. Scalability (Bottlenecks)
-                3. Resilience (Circuit breakers)
-                
-                Be brief and brutal. No nitpicking."""
-            else:
-                # Full Persona for API
-                persona = """You are a Principal Software Architect (Hostile/Critical Persona).
-                Your goal is to falsify the design, finding every potential scalability bottleneck, race condition, and architectural flaw.
-                Do NOT be polite. Do NOT focus on variable naming, formatting, or minor style issues.
-                Focus EXCLUSIVELY on:
-                1. High Concurrency & Thread Safety
-                2. System Resilience & Fault Tolerance
-                3. Data Consistency & Storage Scalability
-                4. Modern Tech Stack & Best Practices (e.g., suggesting specialized libraries over generic ones)
-                
-                Your feedback must typically include "Eye-opening" architectural suggestions that would require significant refactoring but yield massive reliability gains."""
+            persona = """You are a Principal Software Architect with an elite, critical eye.
+            Evaluate this code/design across any programming language.
+            Focus EXCLUSIVELY on:
+            1. Concurrency & Thread Safety (Race conditions, deadlocks)
+            2. Scalability & Performance Bottlenecks
+            3. Error Handling & System Resilience
+            4. Security Vulnerabilities
+            
+            Be brutal. Identify deep architectural flaws that standard linters miss."""
         elif rubric.strictness == "strict":
-            persona = "You are a Senior Security/Performance Engineer. Be rigorous and demanding."
+            persona = "You are a Senior Security and Performance Engineer. Be rigorous and demanding."
         else:
-            persona = "You are a Senior Code Reviewer. Be balanced, helpful, and constructive."
+            persona = "You are a Senior Code Reviewer. Be balanced, helpful, and follow language-specific idioms."
 
-        return f'''
-        {persona}
-        RUBRIC:
-        {criteria_text}
-        
-        CODE:
-        ```
-        {truncated_content} 
-        ```
-        
-        INSTRUCTIONS:
-        1. Rate EACH dimension (1-5).
-        2. Provide strict improvement suggestions.
-        
-        OUTPUT JSON ONLY:
-        {{
-            "score": <float>,
-            "summary": "<summary>",
-            "dimensions": {{
-                "{rubric.criteria[0].name.lower().replace(" ", "_")}": {{ "score": <int>, "comment": "..." }},
-                 ... (first 2-3 dimensions)
-            }},
-            "suggestions": ["fix 1", "fix 2"]
-        }}
-        '''
+        return f'''{persona}
+
+RUBRIC:
+{criteria_text}
+
+CODE ({filename}):
+```
+{truncated_content} 
+```
+
+INSTRUCTIONS:
+1. Rate EACH dimension (1-5) based on the language's best practices.
+2. Provide specific, actionable improvement suggestions.
+3. OUTPUT JSON ONLY.
+
+{{
+    "score": <float 1-5>,
+    "summary": "<summary>",
+    "dimensions": {{
+{dimensions_json}
+    }},
+    "suggestions": ["fix 1", "fix 2"]
+}}'''

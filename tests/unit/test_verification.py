@@ -85,7 +85,7 @@ class TestCodeVerifierLint:
         test_file.write_text("x=1")
         
         verifier = CodeVerifier(project_root=tmp_path, log_dir=tmp_path)
-        verifier.has_ruff = False  # Simulate ruff not available
+        verifier.tools["ruff"] = False  # Simulate ruff not available
         
         result = verifier.verify_lint(test_file)
         
@@ -98,7 +98,7 @@ class TestCodeVerifierLint:
         test_file.write_text("x = 1\n")
         
         verifier = CodeVerifier(project_root=tmp_path, log_dir=tmp_path)
-        verifier.has_ruff = True
+        verifier.tools["ruff"] = True
         
         with patch('subprocess.run') as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
@@ -113,7 +113,7 @@ class TestCodeVerifierLint:
         test_file.write_text("x=1")
         
         verifier = CodeVerifier(project_root=tmp_path, log_dir=tmp_path)
-        verifier.has_ruff = True
+        verifier.tools["ruff"] = True
         
         with patch('subprocess.run') as mock_run:
             mock_run.return_value = MagicMock(
@@ -157,7 +157,7 @@ class TestCodeVerifierTests:
     def test_run_tests_no_pytest(self, tmp_path):
         """Test running tests when pytest is not available."""
         verifier = CodeVerifier(project_root=tmp_path, log_dir=tmp_path)
-        verifier.has_pytest = False
+        verifier.tools["pytest"] = False
         
         result = verifier.run_tests()
         
@@ -167,7 +167,7 @@ class TestCodeVerifierTests:
     def test_run_tests_no_tests_dir(self, tmp_path):
         """Test running tests when tests directory doesn't exist."""
         verifier = CodeVerifier(project_root=tmp_path, log_dir=tmp_path)
-        verifier.has_pytest = True
+        verifier.tools["pytest"] = True
         
         result = verifier.run_tests()
         
@@ -196,7 +196,7 @@ class TestCodeVerifierProject:
         (src_dir / "module.py").write_text("def hello(): pass\n")
         
         verifier = CodeVerifier(project_root=tmp_path, log_dir=tmp_path)
-        verifier.has_ruff = False  # Skip ruff
+        verifier.tools["ruff"] = False  # Skip ruff
         
         passed, message = verifier.verify_project(level="BASIC")
         
