@@ -15,7 +15,7 @@ def boring_evaluate(
     context: Annotated[str, Field(description="Optional context or requirements")] = "",
     level: Annotated[str, Field(description="Evaluation technique: DIRECT (score 1-5), PAIRWISE (comparison)")] = "DIRECT",
     interactive: Annotated[bool, Field(description="If True, returns the PROMPT instead of executing it. Useful for IDE AI.")] = False,
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> str:
     """
     Evaluate code quality using Advanced Evaluation techniques (LLM-as-a-Judge).
