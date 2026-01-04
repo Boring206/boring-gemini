@@ -56,17 +56,12 @@ class GeminiCLIAdapter(LLMClient):
         self.timeout_seconds = timeout_seconds
         self.cwd = cwd
         
-        # Verify CLI is installed
+        # Verify CLI is available (shutil.which returns None if not found)
         self.cli_path = shutil.which("gemini")
-        if not self.cli_path:
-            raise FileNotFoundError(
-                "Gemini CLI not found. Install with:\n"
-                "  npm install -g @google/gemini-cli\n"
-                "Then authenticate with:\n"
-                "  gemini login"
-            )
-        
-        log_status(self.log_dir, "INFO", f"Gemini CLI Adapter initialized: {self.cli_path} (cwd: {self.cwd})")
+        if self.cli_path:
+            log_status(self.log_dir, "INFO", f"Gemini CLI Adapter initialized: {self.cli_path} (cwd: {self.cwd})")
+        else:
+             log_status(self.log_dir, "WARN", "Gemini CLI not found. CLI-based features will be unavailable.")
 
     @property
     def model_name(self) -> str:
@@ -329,8 +324,11 @@ def create_cli_adapter(
     Returns None if CLI is not available.
     """
     try:
-        return GeminiCLIAdapter(model_name=model_name, log_dir=log_dir)
-    except FileNotFoundError as e:
+        adapter = GeminiCLIAdapter(model_name=model_name, log_dir=log_dir)
+        if not adapter.is_available:
+            return None
+        return adapter
+    except Exception as e:
         log_status(log_dir or Path("logs"), "ERROR", str(e))
         return None
 

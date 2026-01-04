@@ -29,10 +29,38 @@ class TestEvaluationTools:
              patch("pathlib.Path.is_absolute", return_value=True), \
              patch("pathlib.Path.read_text", return_value="code"):
              
-            res = boring_evaluate("/tmp/project/file.py")
+            res = boring_evaluate("/tmp/project/file.py", interactive=False)
             
             assert "🟢 Evaluation: file.py" in res
             assert "Score**: 4.5" in res
+
+    @patch("boring.mcp.tools.evaluation.detect_project_root")
+    @patch("boring.mcp.tools.evaluation.check_rate_limit")
+    @patch("boring.mcp.tools.evaluation.os.environ.get")
+    @patch("boring.judge.LLMJudge")
+    def test_boring_evaluate_interactive(self, mock_judge_cls, mock_env, mock_limit, mock_root):
+        """Test interactive mode (prompt return)."""
+        mock_limit.return_value = (True, "")
+        mock_root.return_value = Path("/tmp/project")
+        mock_env.return_value = "1" # Simulate MCP mode
+        
+        mock_judge = MagicMock()
+        mock_judge.grade_code.return_value = {
+            "prompt": "SELECT * FROM CODE",
+            "status": "pending_manual_review"
+        }
+        mock_judge_cls.return_value = mock_judge
+        
+        with patch("pathlib.Path.exists", return_value=True), \
+             patch("pathlib.Path.is_file", return_value=True), \
+             patch("pathlib.Path.is_absolute", return_value=True), \
+             patch("pathlib.Path.read_text", return_value="code"):
+             
+            # Call without interactive param, should default to True in MCP
+            res = boring_evaluate("/tmp/project/file.py")
+            
+            assert "### 📋 Evaluation Prompt" in res
+            assert "SELECT * FROM CODE" in res
 
     @patch("boring.mcp.tools.evaluation.detect_project_root")
     @patch("boring.mcp.tools.evaluation.check_rate_limit")

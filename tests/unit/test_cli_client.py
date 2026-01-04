@@ -22,8 +22,8 @@ class TestGeminiCLIAdapter:
     @patch("shutil.which")
     def test_init_failure(self, mock_which):
         mock_which.return_value = None
-        with pytest.raises(FileNotFoundError):
-            GeminiCLIAdapter()
+        adapter = GeminiCLIAdapter()
+        assert not adapter.is_available
 
     @patch("shutil.which")
     @patch("subprocess.run")
