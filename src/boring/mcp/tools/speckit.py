@@ -103,8 +103,8 @@ def _execute_workflow(workflow_name: str, context: Optional[str] = None, project
 
 @audited
 def speckit_plan(
-    context: Annotated[Optional[str], Field(description="Optional additional context about requirements or constraints")] = None,
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    context: Annotated[str, Field(description="Optional additional context about requirements or constraints")] = None,
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Execute SpecKit Plan workflow - Create technical implementation plan from requirements.
@@ -120,8 +120,8 @@ def speckit_plan(
 
 @audited
 def speckit_tasks(
-    context: Annotated[Optional[str], Field(description="Optional context about the implementation plan")] = None,
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    context: Annotated[str, Field(description="Optional context about the implementation plan")] = None,
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Execute SpecKit Tasks workflow - Break implementation plan into actionable tasks.
@@ -137,8 +137,8 @@ def speckit_tasks(
 
 @audited
 def speckit_analyze(
-    context: Annotated[Optional[str], Field(description="Optional focus areas or specific files to analyze")] = None,
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    context: Annotated[str, Field(description="Optional focus areas or specific files to analyze")] = None,
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Execute SpecKit Analyze workflow - Analyze consistency between specs and code.
@@ -159,8 +159,8 @@ def speckit_analyze(
 
 @audited
 def speckit_clarify(
-    context: Annotated[Optional[str], Field(description="Optional specific areas that need clarification")] = None,
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    context: Annotated[str, Field(description="Optional specific areas that need clarification")] = None,
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Execute SpecKit Clarify workflow - Identify and clarify ambiguous requirements.
@@ -182,8 +182,8 @@ def speckit_clarify(
 
 @audited
 def speckit_constitution(
-    context: Annotated[Optional[str], Field(description="Optional project vision or constraints")] = None,
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    context: Annotated[str, Field(description="Optional project vision or constraints")] = None,
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Execute SpecKit Constitution workflow - Create project guiding principles.
@@ -205,8 +205,8 @@ def speckit_constitution(
 
 @audited
 def speckit_checklist(
-    context: Annotated[Optional[str], Field(description="Optional specific feature or requirement to check")] = None,
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    context: Annotated[str, Field(description="Optional specific feature or requirement to check")] = None,
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Execute SpecKit Checklist workflow - Generate quality validation checklist.
