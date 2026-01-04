@@ -7,6 +7,7 @@ Exposes multi-agent orchestration as MCP tools.
 import asyncio
 from pathlib import Path
 from typing import Optional, Dict, Any, Annotated
+from pydantic import Field
 
 from boring.agents import AgentOrchestrator, run_multi_agent
 
@@ -21,10 +22,10 @@ def register_agent_tools(mcp, helpers: dict):
     """
     get_project_root_or_error = helpers.get("get_project_root_or_error")
     
-    @mcp.tool(description="Run full multi-agent workflow (Architect -> Coder -> Reviewer)", tags=["agents", "workflow"])
+    @mcp.tool(description="Run full multi-agent workflow (Architect -> Coder -> Reviewer)", annotations={"tags": ["agents", "workflow"]})
     def boring_multi_agent(
-        task: Annotated[str, "What to build/fix (detailed description)"],
-        auto_approve_plans: Annotated[bool, "Skip human approval for plans (default False)"] = False
+        task: Annotated[str, Field(description="What to build/fix (detailed description)")],
+        auto_approve_plans: Annotated[bool, Field(description="Skip human approval for plans (default False)")] = False
     ) -> str:
         """
         Run multi-agent workflow: Architect → Coder → Reviewer.
@@ -95,9 +96,9 @@ def register_agent_tools(mcp, helpers: dict):
             reason = result.get("reason", "Unknown error")
             return f"❌ Multi-agent workflow failed: {reason}"
     
-    @mcp.tool(description="Run Architect agent to create implementation plan", tags=["agents", "planning"])
+    @mcp.tool(description="Run Architect agent to create implementation plan", annotations={"tags": ["agents", "planning"]})
     def boring_agent_plan(
-        task: Annotated[str, "What to build/fix"]
+        task: Annotated[str, Field(description="What to build/fix")]
     ) -> str:
         """
         Run ONLY the Architect agent to create an implementation plan.
@@ -150,7 +151,7 @@ def register_agent_tools(mcp, helpers: dict):
     
     @mcp.tool(description="Run Reviewer agent on existing code", annotations={"tags": ["agents", "review"]})
     def boring_agent_review(
-        file_paths: Annotated[str, "Comma-separated list of files to review"] = None
+        file_paths: Annotated[str, Field(description="Comma-separated list of files to review")] = None
     ) -> str:
         """
         Run ONLY the Reviewer agent on existing code.

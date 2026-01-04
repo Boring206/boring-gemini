@@ -8,6 +8,7 @@ This module registers all V9 local features as MCP tools.
 
 from pathlib import Path
 from typing import Optional, List, Annotated
+from pydantic import Field
 
 
 def register_v9_tools(mcp, audited, helpers):
@@ -29,7 +30,7 @@ def register_v9_tools(mcp, audited, helpers):
     @mcp.tool(description="List all available plugins locally and globally", annotations={"tags": ["plugins", "system"]})
     @audited
     def boring_list_plugins(
-        project_path: Annotated[str, "Path to project root (default: current directory)"] = None
+        project_path: Annotated[str, Field(description="Path to project root (default: current directory)")] = None
     ) -> dict:
         """
         List all registered plugins.
@@ -53,9 +54,9 @@ def register_v9_tools(mcp, audited, helpers):
     @mcp.tool(description="Execute a specific plugin by name", annotations={"tags": ["plugins", "execution"]})
     @audited
     def boring_run_plugin(
-        name: Annotated[str, "Plugin name to execute"],
-        project_path: Annotated[str, "Path to project root (default: current directory)"] = None,
-        args: Annotated[dict, "Arguments to pass to the plugin"] = None
+        name: Annotated[str, Field(description="Plugin name to execute")],
+        project_path: Annotated[str, Field(description="Path to project root (default: current directory)")] = None,
+        args: Annotated[dict, Field(description="Arguments to pass to the plugin")] = None
     ) -> dict:
         """
         Execute a registered plugin by name.
@@ -73,7 +74,7 @@ def register_v9_tools(mcp, audited, helpers):
     @mcp.tool(description="Reload all plugins from disk", annotations={"tags": ["plugins", "hot-reload"]})
     @audited
     def boring_reload_plugins(
-        project_path: Annotated[str, "Path to project root (default: current directory)"] = None
+        project_path: Annotated[str, Field(description="Path to project root (default: current directory)")] = None
     ) -> dict:
         """
         Reload plugins that have changed on disk.
@@ -100,10 +101,10 @@ def register_v9_tools(mcp, audited, helpers):
     @mcp.tool(description="Register a new project in the workspace", annotations={"tags": ["workspace", "management"]})
     @audited
     def boring_workspace_add(
-        name: Annotated[str, "Unique project name"],
-        path: Annotated[str, "Path to project root"],
-        description: Annotated[str, "Optional description"] = "",
-        tags: Annotated[List[str], "Optional tags for filtering"] = None
+        name: Annotated[str, Field(description="Unique project name")],
+        path: Annotated[str, Field(description="Path to project root")],
+        description: Annotated[str, Field(description="Optional description")] = "",
+        tags: Annotated[List[str], Field(description="Optional tags for filtering")] = None
     ) -> dict:
         """
         Add a project to the workspace.
@@ -116,7 +117,7 @@ def register_v9_tools(mcp, audited, helpers):
     @mcp.tool(description="Unregister a project from the workspace", annotations={"tags": ["workspace", "management"]})
     @audited
     def boring_workspace_remove(
-        name: Annotated[str, "Name of project to remove"]
+        name: Annotated[str, Field(description="Name of project to remove")]
     ) -> dict:
         """
         Remove a project from the workspace.
@@ -131,7 +132,7 @@ def register_v9_tools(mcp, audited, helpers):
     @mcp.tool(description="List all registered projects", annotations={"tags": ["workspace", "query"]})
     @audited
     def boring_workspace_list(
-        tag: Annotated[str, "Optional filter by tag"] = None
+        tag: Annotated[str, Field(description="Optional filter by tag")] = None
     ) -> dict:
         """
         List all projects in the workspace.
@@ -150,7 +151,7 @@ def register_v9_tools(mcp, audited, helpers):
     @mcp.tool(description="Switch active project context", annotations={"tags": ["workspace", "context"]})
     @audited
     def boring_workspace_switch(
-        name: Annotated[str, "Name of the project to switch context to"]
+        name: Annotated[str, Field(description="Name of the project to switch context to")]
     ) -> dict:
         """
         Switch the active project context.
@@ -169,9 +170,9 @@ def register_v9_tools(mcp, audited, helpers):
     @mcp.tool(description="Run automated fix loop", annotations={"tags": ["automation", "repair"]})
     @audited
     def boring_auto_fix(
-        max_iterations: Annotated[int, "Maximum fix attempts (default: 3)"] = 3,
-        verification_level: Annotated[str, "BASIC, STANDARD, or FULL"] = "STANDARD",
-        project_path: Annotated[str, "Optional project root path"] = None
+        max_iterations: Annotated[int, Field(description="Maximum fix attempts (default: 3)")] = 3,
+        verification_level: Annotated[str, Field(description="BASIC, STANDARD, or FULL")] = "STANDARD",
+        project_path: Annotated[str, Field(description="Optional project root path")] = None
     ) -> dict:
         """
         Automated verify-and-fix loop.
@@ -224,8 +225,8 @@ def register_v9_tools(mcp, audited, helpers):
     @mcp.tool(description="Get AI suggestions for next steps", annotations={"tags": ["intelligence", "planning"]})
     @audited
     def boring_suggest_next(
-        limit: Annotated[int, "Maximum suggestions to return"] = 3,
-        project_path: Annotated[str, "Optional project root path"] = None
+        limit: Annotated[int, Field(description="Maximum suggestions to return")] = 3,
+        project_path: Annotated[str, Field(description="Optional project root path")] = None
     ) -> dict:
         """
         Suggest next actions based on project state and learned patterns.
@@ -258,7 +259,7 @@ def register_v9_tools(mcp, audited, helpers):
     @mcp.tool(description="Check status of long-running task", annotations={"tags": ["system", "monitoring"]})
     @audited
     def boring_get_progress(
-        task_id: Annotated[str, "ID of the task to check"]
+        task_id: Annotated[str, Field(description="ID of the task to check")]
     ) -> dict:
         """
         Get progress of a running task.

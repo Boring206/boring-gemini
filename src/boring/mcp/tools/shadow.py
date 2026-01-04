@@ -6,6 +6,7 @@ Exposes Shadow Mode human-in-the-loop protection as MCP tools.
 
 from pathlib import Path
 from typing import Optional, Annotated
+from pydantic import Field
 
 from boring.shadow_mode import (
     ShadowModeGuard, ShadowModeLevel, 
@@ -34,7 +35,7 @@ def register_shadow_tools(mcp, helpers: dict):
     """
     get_project_root_or_error = helpers.get("get_project_root_or_error")
     
-    @mcp.tool(description="Get Shadow Mode status and pending operations", tags=["shadow-mode", "status"])
+    @mcp.tool(description="Get Shadow Mode status and pending operations", annotations={"tags": ["shadow-mode", "status"]})
     def boring_shadow_status() -> str:
         """
         Get Shadow Mode status and pending approvals.
@@ -85,8 +86,8 @@ def register_shadow_tools(mcp, helpers: dict):
     
     @mcp.tool(description="Approve a pending Shadow Mode operation", annotations={"tags": ["shadow-mode", "action"]})
     def boring_shadow_approve(
-        operation_id: Annotated[str, "ID of the operation to approve (from shadow_status)"],
-        note: Annotated[str, "Optional note explaining the approval"] = None
+        operation_id: Annotated[str, Field(description="ID of the operation to approve (from shadow_status)")],
+        note: Annotated[str, Field(description="Optional note explaining the approval")] = None
     ) -> str:
         """
         Approve a pending Shadow Mode operation.
@@ -103,8 +104,8 @@ def register_shadow_tools(mcp, helpers: dict):
 
     @mcp.tool(description="Reject a pending Shadow Mode operation", annotations={"tags": ["shadow-mode", "action"]})
     def boring_shadow_reject(
-        operation_id: Annotated[str, "ID of the operation to reject"],
-        note: Annotated[str, "Optional note explaining the rejection"] = None
+        operation_id: Annotated[str, Field(description="ID of the operation to reject")],
+        note: Annotated[str, Field(description="Optional note explaining the rejection")] = None
     ) -> str:
         """
         Reject a pending Shadow Mode operation.
@@ -119,9 +120,9 @@ def register_shadow_tools(mcp, helpers: dict):
         else:
             return f"❓ Operation `{operation_id}` not found"
 
-    @mcp.tool(description="Change Shadow Mode protection level", tags=["shadow-mode", "config"])
+    @mcp.tool(description="Change Shadow Mode protection level", annotations={"tags": ["shadow-mode", "config"]})
     def boring_shadow_mode(
-        mode: Annotated[str, "New mode (DISABLED, ENABLED, or STRICT)"]
+        mode: Annotated[str, Field(description="New mode (DISABLED, ENABLED, or STRICT)")]
     ) -> str:
         """
         Change Shadow Mode protection level.
@@ -180,7 +181,7 @@ def register_shadow_tools(mcp, helpers: dict):
         except Exception as e:
             return f"❌ Failed to set mode: {e}"
     
-    @mcp.tool(description="Clear all pending Shadow Mode operations", tags=["shadow-mode", "action"])
+    @mcp.tool(description="Clear all pending Shadow Mode operations", annotations={"tags": ["shadow-mode", "action"]})
     def boring_shadow_clear() -> str:
         """
         Clear all pending Shadow Mode operations.
