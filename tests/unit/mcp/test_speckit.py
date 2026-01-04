@@ -6,40 +6,40 @@ class TestSpecKitTools:
 
     @patch("boring.mcp.tools.speckit.get_project_root_or_error")
     @patch("boring.mcp.tools.speckit._read_workflow")
-    @patch("boring.cli_client.GeminiCLIAdapter") # Mock CLI path
-    def test_speckit_tool_execution(self, mock_cli_cls, mock_read_workflow, mock_get_root):
-        """Test a speckit tool execution via CLI adapter."""
+    def test_speckit_tool_execution(self, mock_read_workflow, mock_get_root):
+        """Test a speckit tool returns WORKFLOW_TEMPLATE."""
         mock_get_root.return_value = (MagicMock(), None)
-        mock_read_workflow.return_value = "# Workflow Plan"
+        mock_read_workflow.return_value = """---
+description: Test Description
+---
+# Workflow Plan
+1. Step A
+2. Step B"""
         
-        # Mock CLI execution
-        mock_cli_instance = MagicMock()
-        mock_cli_instance.generate_with_retry.return_value = "Plan Generated"
-        mock_cli_cls.return_value = mock_cli_instance
+        # Call the tool
+        res = speckit_plan(context="Context")
         
-        # Mock shutil.which to simulate CLI presence
-        with patch("shutil.which", return_value="/usr/bin/gemini"):
-            res = speckit_plan(context="Context")
-            
-            assert res["status"] == "SUCCESS"
-            assert res["mode"] == "CLI"
-            assert res["result"] == "Plan Generated"
+        # Assert workflow template structure
+        assert res["status"] == "WORKFLOW_TEMPLATE"
+        assert res["workflow"] == "speckit-plan"
+        assert "cli_command" in res
+        assert "suggested_prompt" in res
+        assert res["auto_execute"] is False # Default
+        assert res["description"] == "Test Description"
+        assert res["steps_count"] == 2
 
     @patch("boring.mcp.tools.speckit.get_project_root_or_error")
     @patch("boring.mcp.tools.speckit._read_workflow")
-    @patch("boring.gemini_client.GeminiClient") # Mock SDK path
-    def test_speckit_sdk_fallback(self, mock_sdk_cls, mock_read_workflow, mock_get_root):
-        """Test fallback to SDK when CLI is missing."""
+    def test_speckit_auto_execute(self, mock_read_workflow, mock_get_root):
+        """Test speckit tool with auto_execute=True."""
         mock_get_root.return_value = (MagicMock(), None)
-        mock_read_workflow.return_value = "# Workflow"
+        mock_read_workflow.return_value = """---
+description: Auto Exec
+---
+1. Step 1"""
         
-        mock_sdk_instance = MagicMock()
-        mock_sdk_instance.generate.return_value = "Result"
-        mock_sdk_cls.return_value = mock_sdk_instance
+        res = speckit_analyze(auto_execute=True)
         
-        # Mock no CLI
-        with patch("shutil.which", return_value=None):
-            res = speckit_analyze()
-            
-            assert res["status"] == "SUCCESS"
-            assert res["mode"] == "SDK"
+        assert res["status"] == "WORKFLOW_TEMPLATE"
+        assert res["auto_execute"] is True
+        assert "Auto-Execute Requested" in res["message"]

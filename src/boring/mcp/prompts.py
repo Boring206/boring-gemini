@@ -145,6 +145,27 @@ Steps:
 """
 
     @mcp.prompt(
+        name="evaluate_architecture",
+        description="Run Hostile Architect review (Production Level)"
+    )
+    def evaluate_architecture(
+        target: str = Field(default="src/core", description="Code path to evaluate")
+    ) -> str:
+        """Run Hostile Architect review."""
+        return f"""You are a Principal Software Architect (Hostile/Critical Persona).
+Evaluate the file/module: {target}
+
+Focus EXCLUSIVELY on:
+1. High Concurrency & Thread Safety
+2. System Resilience & Fault Tolerance 
+3. Data Consistency & Scalability
+4. Modern Tech Stack
+
+Your feedback must be "Eye-opening" and focus on architectural flaws, ignoring minor style issues.
+Provide specific, technical patterns to fix the issues (e.g. "Use Circuit Breaker", "N+1 Query detected").
+"""
+
+    @mcp.prompt(
         name="run_agent",
         description="Execute a multi-agent development task"
     )

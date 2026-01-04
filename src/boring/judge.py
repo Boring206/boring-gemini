@@ -56,6 +56,9 @@ class LLMJudge:
                 
         except Exception as e:
             logger.error(f"Judge failed: {e}")
+            print(f"\n[DEBUG] Judge Exception: {e}") # Explicit print
+            import traceback
+            traceback.print_exc()
             return {"score": 0, "reasoning": str(e)}
 
     def compare_plans(self, plan_a: str, plan_b: str, context: str, interactive: bool = False) -> Dict[str, Any]:
@@ -187,11 +190,21 @@ class LLMJudge:
     def _extract_json(self, response: str) -> Optional[Dict[str, Any]]:
         """Extract JSON from LLM response with robust parsing."""
         try:
+            # Clean up markdown code blocks if present
+            cleaned = response.strip()
+            if cleaned.startswith("```json"):
+                cleaned = cleaned[7:]
+            if cleaned.startswith("```"):
+                cleaned = cleaned[3:]
+            if cleaned.endswith("```"):
+                cleaned = cleaned[:-3]
+            cleaned = cleaned.strip()
+
             # Try to find JSON block
-            start = response.find('{')
-            end = response.rfind('}') + 1
+            start = cleaned.find('{')
+            end = cleaned.rfind('}') + 1
             if start >= 0 and end > start:
-                json_str = response[start:end]
+                json_str = cleaned[start:end]
                 return json.loads(json_str)
         except json.JSONDecodeError:
             logger.warning("Invalid JSON in response")
@@ -199,38 +212,64 @@ class LLMJudge:
 
     def _build_grade_prompt(self, filename: str, content: str, rubric: Rubric) -> str:
         criteria_text = "\n".join([f"- {c.name}: {c.description} (Weight: {c.weight})" for c in rubric.criteria])
+
+        # Check if we are running in CLI mode (heuristic via adapter type name or attribute)
+        is_cli = "GeminiCLIAdapter" in str(type(self.cli))
         
+        # Optimize Content Size for CLI
+        max_chars = 6000 if is_cli else 15000
+        truncated_content = content[:max_chars]
+
+        # Persona Selection
+        if rubric.strictness == "hostile":
+            if is_cli:
+                 # Lite Persona for CLI stability
+                persona = """You are a Hostile Architect. Falsify this design.
+                Focus ONLY on:
+                1. High Concurrency (Race conditions)
+                2. Scalability (Bottlenecks)
+                3. Resilience (Circuit breakers)
+                
+                Be brief and brutal. No nitpicking."""
+            else:
+                # Full Persona for API
+                persona = """You are a Principal Software Architect (Hostile/Critical Persona).
+                Your goal is to falsify the design, finding every potential scalability bottleneck, race condition, and architectural flaw.
+                Do NOT be polite. Do NOT focus on variable naming, formatting, or minor style issues.
+                Focus EXCLUSIVELY on:
+                1. High Concurrency & Thread Safety
+                2. System Resilience & Fault Tolerance
+                3. Data Consistency & Storage Scalability
+                4. Modern Tech Stack & Best Practices (e.g., suggesting specialized libraries over generic ones)
+                
+                Your feedback must typically include "Eye-opening" architectural suggestions that would require significant refactoring but yield massive reliability gains."""
+        elif rubric.strictness == "strict":
+            persona = "You are a Senior Security/Performance Engineer. Be rigorous and demanding."
+        else:
+            persona = "You are a Senior Code Reviewer. Be balanced, helpful, and constructive."
+
         return f'''
-        You are a Senior Code Reviewer. Evaluate this file: {filename}
-        
-        RUBRIC ({rubric.strictness}):
+        {persona}
+        RUBRIC:
         {criteria_text}
         
         CODE:
         ```
-        {content[:10000]} 
+        {truncated_content} 
         ```
-        (Truncated if too long)
         
         INSTRUCTIONS:
-        1. Rate EACH dimension from 1-5:
-           - Cleanliness: Code readability, naming, formatting
-           - Security: Auth handling, input validation, secrets management
-           - Performance: Algorithm efficiency, memory usage, caching
-           - Maintainability: Modularity, documentation, testability
-        2. Calculate overall weighted average score.
-        3. Provide specific improvement suggestions.
+        1. Rate EACH dimension (1-5).
+        2. Provide strict improvement suggestions.
         
-        OUTPUT JSON format ONLY (no other text):
+        OUTPUT JSON ONLY:
         {{
-            "score": <float 1.0-5.0>,
-            "summary": "<short summary>",
+            "score": <float>,
+            "summary": "<summary>",
             "dimensions": {{
-                "cleanliness": {{ "score": <int 1-5>, "comment": "..." }},
-                "security": {{ "score": <int 1-5>, "comment": "..." }},
-                "performance": {{ "score": <int 1-5>, "comment": "..." }},
-                "maintainability": {{ "score": <int 1-5>, "comment": "..." }}
+                "{rubric.criteria[0].name.lower().replace(" ", "_")}": {{ "score": <int>, "comment": "..." }},
+                 ... (first 2-3 dimensions)
             }},
-            "suggestions": ["fix 1", "fix 2", "fix 3"]
+            "suggestions": ["fix 1", "fix 2"]
         }}
         '''

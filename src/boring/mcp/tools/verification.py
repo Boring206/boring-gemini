@@ -11,13 +11,15 @@ from ...audit import audited
 @audited
 def boring_verify(
     level: Annotated[str, Field(description="Verification level: BASIC (syntax), STANDARD (lint), FULL (tests), SEMANTIC (judge)")] = "STANDARD",
+    auto_fix: Annotated[bool, Field(description="If True, auto-fix lint issues with ruff --fix before checking")] = False,
     project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Run code verification on the project.
     
     Args:
-        level: Verification level (BASIC, STANDARD, FULL)
+        level: Verification level (BASIC, STANDARD, FULL, SEMANTIC)
+        auto_fix: If True, auto-fix lint issues with ruff --fix before checking
         project_path: Optional explicit path to project root
         
     Returns:
@@ -25,13 +27,38 @@ def boring_verify(
     """
     try:
         # --- Input Validation ---
-        valid_levels = ("BASIC", "STANDARD", "FULL", "SEMANTIC")
+        valid_levels = ("BASIC", "STANDARD", "FULL", "SEMANTIC", "DOCS")
         if level.upper() not in valid_levels:
             return {
                 "status": "ERROR",
                 "passed": False,
                 "message": f"Invalid level: '{level}'.",
                 "suggestion": f"Use one of: {', '.join(valid_levels)}"
+            }
+        
+        # --- Special Handling for DOCS level (Pure CLI Mode) ---
+        if level.upper() == "DOCS":
+            # DOCS verification requires LLM analysis, which is best done via CLI directly
+            # to avoid timeout/context issues in MCP.
+            return {
+                "status": "WORKFLOW_TEMPLATE",
+                "workflow": "verify_docs",
+                "project_root": str(get_project_root_or_error(project_path)[0]),
+                "level": "DOCS",
+                "message": (
+                    "📄 **Documentation Verification Template**\n\n"
+                    "Verifying code vs documentation consistency (DOCS level) requires LLM analysis.\n"
+                    "Please execute the following command in your terminal:\n\n"
+                    "```bash\n"
+                    "boring evaluate --level DOCS\n"
+                    "```\n"
+                    "**What it checks:**\n"
+                    "- Function signatures vs Docstrings\n"
+                    "- Parameter descriptions vs Actual usage\n"
+                    "- Return type annotations vs Docstring returns"
+                ),
+                "cli_command": "boring evaluate --level DOCS",
+                "suggestion": "Run `boring evaluate --level DOCS` in your terminal."
             }
         # --- End Validation ---
         
@@ -62,13 +89,19 @@ def boring_verify(
         
         # Pass judge to verifier
         verifier = CodeVerifier(project_root, settings.LOG_DIR, judge=judge)
-        passed, message = verifier.verify_project(level.upper())
+        passed, message = verifier.verify_project(level.upper(), auto_fix=auto_fix)
         
-        return {
+        result = {
             "passed": passed,
             "level": level.upper(),
             "message": message
         }
+        
+        if auto_fix:
+            result["auto_fix"] = True
+            result["note"] = "Lint issues were auto-fixed with ruff --fix"
+        
+        return result
         
     except Exception as e:
         return {

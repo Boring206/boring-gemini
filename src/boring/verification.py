@@ -94,8 +94,8 @@ class CodeVerifier:
                 suggestions=[]
             )
     
-    def verify_lint(self, file_path: Path) -> VerificationResult:
-        """Run ruff linter on a file."""
+    def verify_lint(self, file_path: Path, auto_fix: bool = False) -> VerificationResult:
+        """Run ruff linter on a file, optionally auto-fixing issues first."""
         if not self.has_ruff:
             return VerificationResult(
                 passed=True,
@@ -104,6 +104,28 @@ class CodeVerifier:
                 details=[],
                 suggestions=["Install ruff: pip install ruff"]
             )
+        
+        fixed_count = 0
+        
+        # Auto-fix if requested
+        if auto_fix:
+            try:
+                fix_result = subprocess.run(
+                    ["ruff", "check", str(file_path), "--fix", "--unsafe-fixes"],
+                    stdin=subprocess.DEVNULL,
+                    capture_output=True,
+                    text=True,
+                    timeout=30,
+                    cwd=self.project_root
+                )
+                # Count fixed issues from output
+                if "Fixed" in fix_result.stdout:
+                    import re
+                    match = re.search(r"Fixed (\d+)", fix_result.stdout)
+                    if match:
+                        fixed_count = int(match.group(1))
+            except Exception:
+                pass  # Continue with normal check
         
         try:
             result = subprocess.run(
@@ -116,10 +138,13 @@ class CodeVerifier:
             )
             
             if result.returncode == 0:
+                message = f"Lint OK: {file_path.name}"
+                if fixed_count > 0:
+                    message = f"Lint OK: {file_path.name} (auto-fixed {fixed_count} issues)"
                 return VerificationResult(
                     passed=True,
                     check_type="lint",
-                    message=f"Lint OK: {file_path.name}",
+                    message=message,
                     details=[],
                     suggestions=[]
                 )
@@ -128,12 +153,17 @@ class CodeVerifier:
                 issues = result.stdout.strip().split("\n") if result.stdout else []
                 if not issues and result.stderr:
                     issues = [f"Error: {result.stderr.strip()}"]
+                
+                details = issues[:20]
+                if fixed_count > 0:
+                    details.insert(0, f"✅ Auto-fixed {fixed_count} issues")
+                
                 return VerificationResult(
                     passed=False,
                     check_type="lint",
                     message=f"Lint issues in {file_path.name}",
-                    details=issues[:20],  # Increased to 20 issues
-                    suggestions=["Run 'ruff check --fix' to auto-fix some issues"]
+                    details=details,
+                    suggestions=["Remaining issues require manual fix" if auto_fix else "Run 'ruff check --fix' to auto-fix some issues"]
                 )
         except Exception as e:
             return VerificationResult(
@@ -260,7 +290,7 @@ class CodeVerifier:
                 suggestions=[]
             )
     
-    def verify_file(self, file_path: Path, level: str = "STANDARD") -> List[VerificationResult]:
+    def verify_file(self, file_path: Path, level: str = "STANDARD", auto_fix: bool = False) -> List[VerificationResult]:
         """Run all applicable verifications on a file."""
         results = []
         
@@ -272,7 +302,7 @@ class CodeVerifier:
         
         # Standard level adds linting
         if level in ["STANDARD", "FULL", "SEMANTIC"]:
-            results.append(self.verify_lint(file_path))
+            results.append(self.verify_lint(file_path, auto_fix=auto_fix))
             results.append(self.verify_imports(file_path))
             
         # Semantic level adds LLM Judge
@@ -281,9 +311,13 @@ class CodeVerifier:
         
         return results
     
-    def verify_project(self, level: str = "STANDARD") -> Tuple[bool, str]:
+    def verify_project(self, level: str = "STANDARD", auto_fix: bool = False) -> Tuple[bool, str]:
         """
         Verify all Python files in the project.
+        
+        Args:
+            level: Verification level (BASIC, STANDARD, FULL, SEMANTIC)
+            auto_fix: If True, run ruff --fix before reporting lint issues
         """
         target_dir = self.project_root / "src"
         scan_root = True
@@ -297,6 +331,7 @@ class CodeVerifier:
              return True, "Project directory not found"
         
         all_results: List[VerificationResult] = []
+        total_fixed = 0
         
         # Exclude common dirs if scanning root
         excludes = {".git", ".github", ".vscode", ".idea", "venv", ".venv", "node_modules", "build", "dist", "__pycache__"}
@@ -310,7 +345,7 @@ class CodeVerifier:
             for file in files:
                 if file.endswith(".py"):
                     file_path = root_path / file
-                    all_results.extend(self.verify_file(file_path, level))
+                    all_results.extend(self.verify_file(file_path, level, auto_fix=auto_fix))
         
         # Run tests if FULL level
         if level == "FULL":

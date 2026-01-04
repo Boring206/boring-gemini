@@ -93,6 +93,13 @@ def run_boring(
     # Alternative: Gemini CLI direct execution
     gemini_command = f'gemini --prompt "{task_description[:200]}..."'
     
+    # Build suggested prompt for the AI to guide the user
+    suggested_prompt = (
+        f"I have prepared the autonomous development workflow for: '{task_description}'. "
+        f"To proceed, please execute the following command in your terminal: `{cli_command}`. "
+        "I will wait for you to run it and then we can verify the results."
+    )
+    
     return {
         "status": "WORKFLOW_TEMPLATE",
         "workflow": "run_boring",
@@ -103,27 +110,29 @@ def run_boring(
         "is_mcp_mode": is_mcp,
         "cli_command": cli_command,
         "gemini_command": gemini_command,
+        "suggested_prompt": suggested_prompt,
         "prompt_md_content": prompt_content,
         "message": (
-            "⚠️ In MCP mode, run_boring CANNOT execute the agent loop directly.\n"
-            "The agent requires external AI (SDK/CLI) which conflicts with MCP.\n\n"
-            "**To execute this task, use ONE of these methods:**\n"
-            f"1. Run in terminal: `{cli_command}`\n"
-            f"2. Use Gemini CLI: `{gemini_command}`\n"
-            "3. Use your IDE's AI to execute the task directly.\n\n"
-            "**Or save the task to PROMPT.md and run boring:**\n"
-            f"   echo '{task_description[:100]}...' > PROMPT.md && boring start"
+            "🤖 **Autonomous Developer Loop Template**\n\n"
+            "In MCP mode, `run_boring` cannot execute the agent loop directly due to "
+            "technical constraints with external AI SDKs/CLIs.\n\n"
+            "**Recommended Action:**\n"
+            f"Run this command in your terminal to start the autonomous agent:\n"
+            f"```bash\n{cli_command}\n```\n\n"
+            "**Alternative (Direct AI):**\n"
+            f"Use the Gemini CLI directly:\n"
+            f"```bash\n{gemini_command}\n```\n\n"
+            "**Manual Setup:**\n"
+            "1. Save your task to `PROMPT.md`\n"
+            "2. Run `boring start`"
         ),
         "manual_steps": [
-            f"1. Create PROMPT.md in the project with: {task_description[:80]}...",
+            f"1. Create PROMPT.md in the project with your task description",
             f"2. Run: {cli_command}",
-            f"3. Or use Gemini CLI: {gemini_command}",
+            "3. Monitor the terminal for the agent's progress",
             "4. Use boring_verify to check results after execution"
         ],
-        "note": (
-            "The boring agent is designed to run OUTSIDE MCP as a standalone process. "
-            "MCP tools are for status checks, verification, RAG search, and workflow templates."
-        )
+        "note": "The boring agent runs OUTSIDE MCP to avoid timeouts and communication conflicts."
     }
 
 @audited
@@ -364,5 +373,48 @@ if MCP_AVAILABLE and mcp is not None:
     mcp.tool(description="Run autonomous development loop", annotations={"readOnlyHint": False, "openWorldHint": True})(run_boring)
     mcp.tool(description="Check system health", annotations={"readOnlyHint": True})(boring_health_check)
     mcp.tool(description="Get quick start guide", annotations={"readOnlyHint": True})(boring_quickstart)
+@audited
+def boring_forget_all(
+    keep_current_task: bool = True
+) -> dict:
+    """
+    Signal to clear the LLM context (Context Hygiene).
+    
+    This tool doesn't modify files but sends a strong signal to the IDE or Agent
+    to clear previous conversation history to reduce hallucinations.
+    
+    Args:
+        keep_current_task: Whether to keep the current task definition in context.
+    """
+    message = "🧹 **Context Cleanup Signal**\n\n"
+    message += "I have requested a context cleanup to maintain accuracy and reduce hallucinations.\n"
+    
+    if keep_current_task:
+        message += "✅ **Preserving:** Current task definition and critical context.\n"
+    else:
+        message += "⚠️ **Wiping:** Full context reset.\n"
+        
+    message += "\n**For IDE Users (Cursor/VS Code):**\n"
+    message += "- Please click 'New Chat' or 'Clear Context' if available.\n"
+    message += "- This ensures I don't get confused by old code snippets."
+    
+    return {
+        "status": "CONTEXT_CLEAR_SIGNAL",
+        "action": "forget_all",
+        "keep_current_task": keep_current_task,
+        "message": message
+    }
+
+
+# ==============================================================================
+# TOOL REGISTRATION
+# ==============================================================================
+
+if MCP_AVAILABLE and mcp is not None:
+    # Register tools by calling the decorator with the function
+    mcp.tool(description="Run autonomous development loop", annotations={"readOnlyHint": False, "openWorldHint": True})(run_boring)
+    mcp.tool(description="Check system health", annotations={"readOnlyHint": True})(boring_health_check)
+    mcp.tool(description="Get quick start guide", annotations={"readOnlyHint": True})(boring_quickstart)
     mcp.tool(description="Get project status", annotations={"readOnlyHint": True})(boring_status)
     mcp.tool(description="Report completion with notification", annotations={"readOnlyHint": False})(boring_done)
+    mcp.tool(description="Signal to clear LLM context", annotations={"readOnlyHint": True})(boring_forget_all)
