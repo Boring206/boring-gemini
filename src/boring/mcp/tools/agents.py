@@ -6,7 +6,7 @@ Exposes multi-agent orchestration as MCP tools.
 
 import asyncio
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, Annotated
 
 from boring.agents import AgentOrchestrator, run_multi_agent
 
@@ -23,25 +23,16 @@ def register_agent_tools(mcp, helpers: dict):
     
     @mcp.tool()
     def boring_multi_agent(
-        task: str,
-        auto_approve_plans: bool = False
+        task: Annotated[str, "What to build/fix (detailed description)"],
+        auto_approve_plans: Annotated[bool, "Skip human approval for plans (default False)"] = False
     ) -> str:
         """
         Run multi-agent workflow: Architect → Coder → Reviewer.
         
         This orchestrates three specialized AI agents:
-        1. **Architect**: Creates implementation plan (human approval)
+        1. **Architect**: Creates implementation plan
         2. **Coder**: Implements the code
         3. **Reviewer**: Reviews for bugs, security, edge cases
-        
-        The loop continues until the Reviewer passes the code.
-        
-        Args:
-            task: What to build/fix (detailed description)
-            auto_approve_plans: Skip human approval for plans (default False)
-        
-        Returns:
-            Execution summary with plan, files, and review
         """
         project_root = get_project_root_or_error()
         
@@ -105,18 +96,14 @@ def register_agent_tools(mcp, helpers: dict):
             return f"❌ Multi-agent workflow failed: {reason}"
     
     @mcp.tool()
-    def boring_agent_plan(task: str) -> str:
+    def boring_agent_plan(
+        task: Annotated[str, "What to build/fix"]
+    ) -> str:
         """
         Run ONLY the Architect agent to create an implementation plan.
         
         Use this when you want to review the plan before committing to
         the full multi-agent workflow.
-        
-        Args:
-            task: What to build/fix
-        
-        Returns:
-            Implementation plan from the Architect agent
         """
         project_root = get_project_root_or_error()
         
@@ -162,17 +149,13 @@ def register_agent_tools(mcp, helpers: dict):
         return "\n".join(output)
     
     @mcp.tool()
-    def boring_agent_review(file_paths: str = None) -> str:
+    def boring_agent_review(
+        file_paths: Annotated[Optional[str], "Comma-separated list of files to review"] = None
+    ) -> str:
         """
         Run ONLY the Reviewer agent on existing code.
         
         Use this for code review without the full multi-agent workflow.
-        
-        Args:
-            file_paths: Comma-separated list of files to review (optional)
-        
-        Returns:
-            Code review from the Reviewer agent
         """
         project_root = get_project_root_or_error()
         

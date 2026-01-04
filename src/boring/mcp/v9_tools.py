@@ -7,7 +7,7 @@ This module registers all V9 local features as MCP tools.
 """
 
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional, List, Annotated
 
 
 def register_v9_tools(mcp, audited, helpers):
@@ -28,7 +28,9 @@ def register_v9_tools(mcp, audited, helpers):
     
     @mcp.tool()
     @audited
-    def boring_list_plugins(project_path: Optional[str] = None) -> dict:
+    def boring_list_plugins(
+        project_path: Annotated[Optional[str], "Path to project root (default: current directory)"] = None
+    ) -> dict:
         """
         List all registered plugins.
         
@@ -51,17 +53,12 @@ def register_v9_tools(mcp, audited, helpers):
     @mcp.tool()
     @audited
     def boring_run_plugin(
-        name: str,
-        project_path: Optional[str] = None,
-        args: Optional[dict] = None
+        name: Annotated[str, "Plugin name to execute"],
+        project_path: Annotated[Optional[str], "Path to project root (default: current directory)"] = None,
+        args: Annotated[Optional[dict], "Arguments to pass to the plugin"] = None
     ) -> dict:
         """
         Execute a registered plugin by name.
-        
-        Args:
-            name: Plugin name to execute
-            project_path: Optional project root path
-            args: Arguments to pass to the plugin
         """
         from ..plugins import PluginLoader
         
@@ -75,7 +72,9 @@ def register_v9_tools(mcp, audited, helpers):
     
     @mcp.tool()
     @audited
-    def boring_reload_plugins(project_path: Optional[str] = None) -> dict:
+    def boring_reload_plugins(
+        project_path: Annotated[Optional[str], "Path to project root (default: current directory)"] = None
+    ) -> dict:
         """
         Reload plugins that have changed on disk.
         
@@ -101,19 +100,13 @@ def register_v9_tools(mcp, audited, helpers):
     @mcp.tool()
     @audited
     def boring_workspace_add(
-        name: str,
-        path: str,
-        description: str = "",
-        tags: Optional[List[str]] = None
+        name: Annotated[str, "Unique project name"],
+        path: Annotated[str, "Path to project root"],
+        description: Annotated[str, "Optional description"] = "",
+        tags: Annotated[Optional[List[str]], "Optional tags for filtering"] = None
     ) -> dict:
         """
         Add a project to the workspace.
-        
-        Args:
-            name: Unique project name
-            path: Path to project root
-            description: Optional description
-            tags: Optional tags for filtering
         """
         from ..workspace import get_workspace_manager
         
@@ -122,7 +115,9 @@ def register_v9_tools(mcp, audited, helpers):
     
     @mcp.tool()
     @audited
-    def boring_workspace_remove(name: str) -> dict:
+    def boring_workspace_remove(
+        name: Annotated[str, "Name of project to remove"]
+    ) -> dict:
         """
         Remove a project from the workspace.
         
@@ -135,12 +130,11 @@ def register_v9_tools(mcp, audited, helpers):
     
     @mcp.tool()
     @audited
-    def boring_workspace_list(tag: Optional[str] = None) -> dict:
+    def boring_workspace_list(
+        tag: Annotated[Optional[str], "Optional filter by tag"] = None
+    ) -> dict:
         """
         List all projects in the workspace.
-        
-        Args:
-            tag: Optional filter by tag
         """
         from ..workspace import get_workspace_manager
         
