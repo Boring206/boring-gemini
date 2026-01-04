@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 from typing import Optional, Annotated
 from pydantic import Field
 from ..instance import mcp, MCP_AVAILABLE
@@ -51,7 +52,6 @@ def boring_evaluate(
         
         # Auto-detect MCP mode: If running as MCP tool, default to interactive
         # This allows IDE AI (Cursor, Claude Desktop) to execute the evaluation
-        import os
         is_mcp_mode = os.environ.get("BORING_MCP_MODE", "0") == "1"
         
         # In MCP mode, default to interactive unless explicitly set to False
@@ -175,4 +175,5 @@ def boring_evaluate(
 
 if MCP_AVAILABLE and mcp is not None:
     mcp.tool(description="Evaluate code quality (LLM Judge)", annotations={"readOnlyHint": True, "openWorldHint": True})(boring_evaluate)
+
 
