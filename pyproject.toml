@@ -49,7 +49,9 @@ vector = [
     "sentence-transformers>=2.2.0",
 ]
 mcp = [
-    "fastmcp>=0.4.0",
+    "fastmcp>=2.0.0",
+    "mcp>=1.15.0",
+    "smithery>=0.4.2",
     "win10toast>=0.9; platform_system=='Windows'",
 ]
 all = [
@@ -136,3 +138,7 @@ exclude_lines = [
     "if TYPE_CHECKING:",
     "raise NotImplementedError",
 ]
+
+# Smithery configuration for MCP server deployment
+[tool.smithery]
+server = "boring.mcp.server:create_server"

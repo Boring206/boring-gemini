@@ -26,6 +26,14 @@ from .v9_tools import register_v9_tools
 from .utils import get_project_root_or_error, detect_project_root
 from ..audit import audited  # Moved to top-level to avoid import issues in tests
 
+# Try to import Smithery decorator for HTTP deployment
+try:
+    from smithery.decorators import smithery
+    SMITHERY_AVAILABLE = True
+except ImportError:
+    SMITHERY_AVAILABLE = False
+    smithery = None
+
 @contextmanager
 def _configure_logging():
     """Configure logging to avoid polluting stdout."""
@@ -40,9 +48,54 @@ def _configure_logging():
     logging.getLogger("httpcore").setLevel(logging.WARNING)
     yield
 
+
+def _setup_server():
+    """
+    Common setup for the MCP server.
+    Returns the configured FastMCP instance.
+    """
+    os.environ["BORING_MCP_MODE"] = "1"
+    
+    if not instance.MCP_AVAILABLE:
+        raise RuntimeError("'fastmcp' not found. Install with: pip install fastmcp")
+    
+    # Register V9 Tools
+    helpers = {
+        "get_project_root_or_error": get_project_root_or_error,
+        "detect_project_root": detect_project_root
+    }
+    register_v9_tools(instance.mcp, audited, helpers)
+    
+    return instance.mcp
+
+
+def create_server():
+    """
+    Create and return a FastMCP server instance for Smithery deployment.
+    
+    This function is called by Smithery to get the server instance.
+    It must be decorated with @smithery.server() and return a FastMCP instance.
+    
+    Note: Smithery uses HTTP transport, not stdio.
+    """
+    mcp_instance = _setup_server()
+    
+    if os.environ.get("BORING_MCP_DEBUG") == "1":
+        sys.stderr.write("[boring-mcp] Creating server for Smithery...\n")
+        sys.stderr.write(f"[boring-mcp] Registered tools: {len(mcp_instance._tools)}\n")
+    
+    return mcp_instance
+
+
+# Apply Smithery decorator if available
+if SMITHERY_AVAILABLE and smithery is not None:
+    create_server = smithery.server()(create_server)
+
+
 def run_server():
     """
-    Main entry point for the Boring MCP server.
+    Main entry point for the Boring MCP server (stdio transport).
+    Used for local CLI execution: boring-mcp
     """
     # 0. Set MCP Mode flag to silence tool outputs (e.g. health check)
     os.environ["BORING_MCP_MODE"] = "1"
@@ -84,3 +137,4 @@ def run_server():
 
 if __name__ == "__main__":
     run_server()
+

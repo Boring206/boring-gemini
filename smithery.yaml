@@ -1,12 +1,13 @@
-name: "boring-gemini"
-version: "5.1.0"
-description: "Enterprise-grade autonomous AI development agent"
+# Smithery Configuration for Boring MCP Server
+# https://smithery.ai/docs/build/project-config
+
 runtime: "container"
 build:
   dockerfile: "Dockerfile"
-  context: "."
+  dockerBuildPath: "."
 startCommand:
-  type: "stdio"
+  type: "http"
   configSchema:
     type: "object"
     properties: {}
+    additionalProperties: false
