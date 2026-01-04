@@ -10,7 +10,7 @@ from ...audit import audited
 
 @audited
 def boring_hooks_install(
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Install Boring Git hooks (pre-commit, pre-push) for local code quality enforcement.
@@ -69,7 +69,7 @@ def boring_hooks_install(
 
 @audited
 def boring_hooks_uninstall(
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Remove Boring Git hooks.
@@ -100,7 +100,7 @@ def boring_hooks_uninstall(
 
 @audited
 def boring_hooks_status(
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Get status of installed Git hooks.

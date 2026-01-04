@@ -10,7 +10,7 @@ from ...audit import audited
 
 @audited
 def boring_learn(
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Trigger learning from .boring_memory to .boring_brain.
@@ -47,7 +47,7 @@ def boring_learn(
 
 @audited
 def boring_create_rubrics(
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Create default evaluation rubrics in .boring_brain/rubrics/.
@@ -79,7 +79,7 @@ def boring_create_rubrics(
 
 @audited
 def boring_brain_summary(
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Get summary of .boring_brain knowledge base.

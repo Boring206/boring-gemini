@@ -181,7 +181,7 @@ def register_shadow_tools(mcp, helpers: dict):
     
     @mcp.tool(description="Clear all pending Shadow Mode operations", annotations={"readOnlyHint": False, "destructiveHint": True})
     def boring_shadow_clear(
-        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+        project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Clear all pending Shadow Mode operations.
