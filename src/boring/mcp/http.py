@@ -54,7 +54,7 @@ MCP_CONFIG_SCHEMA = {
 
 
 def create_app():
-    """Create Starlette app with .well-known endpoints and MCP SSE routes."""
+    """Create Starlette app with .well-known endpoints and MCP HTTP routes."""
     try:
         from starlette.applications import Starlette
         from starlette.responses import JSONResponse
@@ -84,22 +84,31 @@ def create_app():
         """Health check endpoint."""
         return JSONResponse({"status": "ok", "tools": tool_count})
     
-    # Get SSE app from FastMCP
+    # Get HTTP app from FastMCP (correct method is http_app, not sse_app)
     try:
-        sse_app = mcp.sse_app()
+        # FastMCP 2.0+ uses http_app() for Streamable HTTP transport
+        mcp_http = mcp.http_app(path="/mcp")
+        logger.info("Using FastMCP http_app() for HTTP transport")
     except AttributeError:
-        # Fallback for older FastMCP versions
-        logger.warning("FastMCP.sse_app() not available, using direct run")
-        return None
+        # Fallback for older FastMCP versions - try sse_app
+        try:
+            mcp_http = mcp.sse_app()
+            logger.info("Using FastMCP sse_app() for SSE transport (legacy)")
+        except AttributeError:
+            logger.warning("FastMCP http_app() and sse_app() not available")
+            return None
     
     routes = [
         Route("/.well-known/mcp.json", mcp_server_card),
         Route("/.well-known/mcp-config", mcp_config),
         Route("/health", health),
-        Mount("/", app=sse_app),  # Mount MCP SSE at root
+        Mount("/", app=mcp_http),  # Mount MCP HTTP at root
     ]
     
-    return Starlette(routes=routes)
+    # Use mcp_http's lifespan if available
+    lifespan = getattr(mcp_http, 'lifespan', None)
+    
+    return Starlette(routes=routes, lifespan=lifespan)
 
 
 def main():
@@ -121,12 +130,12 @@ def main():
             import uvicorn
             uvicorn.run(app, host=host, port=port, log_level="info")
         else:
-            # Fallback: Use FastMCP's built-in SSE run
+            # Fallback: Use FastMCP's built-in HTTP run
             from boring.mcp.server import get_server_instance
             mcp = get_server_instance()
             tool_count = len(getattr(mcp, '_tools', getattr(mcp, 'tools', {})))
             logger.info(f"Registered tools: {tool_count}")
-            mcp.run(transport="sse", host=host, port=port)
+            mcp.run(transport="http", host=host, port=port)
         
     except Exception as e:
         logger.error(f"Failed to start HTTP server: {e}")
