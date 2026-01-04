@@ -25,8 +25,7 @@
 
 請選擇適合您的方式：
 
-### 推薦方式：Smithery (一鍵部署，免 Python 環境)(目前失敗註冊smithery不知道爲什麼所以這是未來期許.....)
-
+### 推薦方式：Smithery (一鍵部署，免 Python 環境)
 最適合 **Cursor** 或 **Claude Desktop** 使用者。
 
 1.  **安裝本體**:

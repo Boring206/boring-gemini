@@ -52,6 +52,8 @@ mcp = [
     "fastmcp>=2.0.0",
     "mcp>=1.15.0",
     "smithery>=0.4.2",
+    "uvicorn>=0.30.0",
+    "starlette>=0.37.0",
     "win10toast>=0.9; platform_system=='Windows'",
 ]
 all = [
