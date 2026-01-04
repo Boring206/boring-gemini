@@ -149,7 +149,9 @@ def register_v9_tools(mcp, audited, helpers):
     
     @mcp.tool()
     @audited
-    def boring_workspace_switch(name: str) -> dict:
+    def boring_workspace_switch(
+        name: Annotated[str, "Name of the project to switch context to"]
+    ) -> dict:
         """
         Switch the active project context.
         
@@ -167,9 +169,9 @@ def register_v9_tools(mcp, audited, helpers):
     @mcp.tool()
     @audited
     def boring_auto_fix(
-        max_iterations: int = 3,
-        verification_level: str = "STANDARD",
-        project_path: Optional[str] = None
+        max_iterations: Annotated[int, "Maximum fix attempts (default: 3)"] = 3,
+        verification_level: Annotated[str, "BASIC, STANDARD, or FULL"] = "STANDARD",
+        project_path: Annotated[Optional[str], "Optional project root path"] = None
     ) -> dict:
         """
         Automated verify-and-fix loop.
@@ -222,8 +224,8 @@ def register_v9_tools(mcp, audited, helpers):
     @mcp.tool()
     @audited
     def boring_suggest_next(
-        limit: int = 3,
-        project_path: Optional[str] = None
+        limit: Annotated[int, "Maximum suggestions to return"] = 3,
+        project_path: Annotated[Optional[str], "Optional project root path"] = None
     ) -> dict:
         """
         Suggest next actions based on project state and learned patterns.
@@ -255,7 +257,9 @@ def register_v9_tools(mcp, audited, helpers):
     
     @mcp.tool()
     @audited
-    def boring_get_progress(task_id: str) -> dict:
+    def boring_get_progress(
+        task_id: Annotated[str, "ID of the task to check"]
+    ) -> dict:
         """
         Get progress of a running task.
         
