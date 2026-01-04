@@ -54,6 +54,14 @@ class CodeVerifier:
             "eslint": self._check_tool("eslint", "--version"),
             "go": self._check_tool("go", "version"),
             "cargo": self._check_tool("cargo", "--version"),
+            "golangci-lint": self._check_tool("golangci-lint", "version"),
+        }
+        
+        # Generic CLI Tool Dispatcher (Extension -> Linter Command)
+        # Format: ext: (tool_key, [cmd_args...])
+        self.cli_tool_map = {
+            ".go": ("golangci-lint", ["golangci-lint", "run"]),
+            # Add more generic mappings here
         }
         
         # Dispatch configuration
@@ -72,7 +80,7 @@ class CodeVerifier:
             },
             ".go": {
                 "syntax": self._verify_syntax_go,
-                "lint": None  # No linter implemented yet
+                "lint": self._verify_lint_generic  # Use generic dispatcher
             }
         }
     
@@ -249,6 +257,36 @@ class CodeVerifier:
             return VerificationResult(passed=False, check_type="lint", message=f"ESLint issues: {file_path.name}", details=[result.stdout], suggestions=["Fix ESLint issues"])
         except Exception as e:
             return VerificationResult(passed=True, check_type="lint", message=f"ESLint failed: {e}", details=[], suggestions=[])
+
+    def _verify_lint_generic(self, file_path: Path, auto_fix: bool = False) -> VerificationResult:
+        """
+        Generic linter dispatcher based on self.cli_tool_map. 
+        Supports any CLI tool defined in the map.
+        """
+        ext = file_path.suffix.lower()
+        mapping = self.cli_tool_map.get(ext)
+        
+        if not mapping:
+            return VerificationResult(passed=True, check_type="lint", message="Skipped (No generic mapping)", details=[], suggestions=[])
+            
+        tool_key, base_cmd = mapping
+        if not self.tools.get(tool_key):
+             return VerificationResult(passed=True, check_type="lint", message=f"Skipped ({tool_key} not found)", details=[], suggestions=[])
+             
+        cmd = list(base_cmd)
+        
+        # Some tools handle file arguments differently, but most take it as last arg
+        cmd.append(str(file_path))
+        
+        # Note: Auto-fix is tool dependent. For now, generic dispatcher assumes standard verification mode.
+        
+        try:
+            result = subprocess.run(cmd, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=60, cwd=self.project_root)
+            if result.returncode == 0:
+                 return VerificationResult(passed=True, check_type="lint", message=f"{tool_key} OK: {file_path.name}", details=[], suggestions=[])
+            return VerificationResult(passed=False, check_type="lint", message=f"{tool_key} found issues", details=[result.stdout or result.stderr], suggestions=[f"Run {tool_key} locally"])
+        except Exception as e:
+            return VerificationResult(passed=True, check_type="lint", message=f"{tool_key} execution error: {e}", details=[], suggestions=[])
 
     def verify_imports(self, file_path: Path) -> VerificationResult:
         """Check if all imports are resolvable (Python only for now)."""

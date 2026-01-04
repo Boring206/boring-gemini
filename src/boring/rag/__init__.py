@@ -22,8 +22,11 @@ Usage:
 from .code_indexer import CodeIndexer, CodeChunk, IndexStats
 from .graph_builder import DependencyGraph, GraphStats
 from .rag_retriever import RAGRetriever, RetrievalResult, RAGStats, create_rag_retriever
+from .parser import TreeSitterParser
 
 __all__ = [
+    # Parser
+    "TreeSitterParser",
     # Indexer
     "CodeIndexer",
     "CodeChunk", 

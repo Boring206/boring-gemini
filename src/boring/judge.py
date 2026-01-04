@@ -237,7 +237,24 @@ class LLMJudge:
         else:
             persona = "You are a Senior Code Reviewer. Be balanced, helpful, and follow language-specific idioms."
 
+        # Language-Aware Guidelines
+        import os
+        ext = os.path.splitext(filename)[1].lower()
+        lang_guidelines = {
+            ".py": "Follow PEP 8, highly idiomatic Python (list comprehensions where appropriate), proper type hinting.",
+            ".go": "Follow 'Effective Go'. proper error handling (if err != nil), Go routines usage, strict formatting.",
+            ".js": "Follow idiomatic JS/Node patterns. Async/await over callbacks, no var, use const/let.",
+            ".ts": "Strict typing, interfaces vs types usage, proper generic constraints.",
+            ".rs": "Idiomatic Rust: proper borrowing/ownership, Option/Result handling, no unwrap() in production.",
+            ".java": "Standard Java conventions, proper OOP design patterns, Effective Java principles.",
+            ".cpp": "Modern C++ (17/20) standards, RAII, smart pointers over raw pointers."
+        }
+        specific_guidance = lang_guidelines.get(ext, "Follow standard best practices for this language.")
+
         return f'''{persona}
+
+LANGUAGE GUIDELINES ({ext}): 
+{specific_guidance}
 
 RUBRIC:
 {criteria_text}
