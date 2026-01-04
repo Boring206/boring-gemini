@@ -23,6 +23,7 @@ from .tools import (
     evaluation
 )
 from .v9_tools import register_v9_tools
+from .v10_tools import register_v10_tools
 from .utils import get_project_root_or_error, detect_project_root
 from ..audit import audited  # Moved to top-level to avoid import issues in tests
 
@@ -66,6 +67,9 @@ def get_server_instance():
         "detect_project_root": detect_project_root
     }
     register_v9_tools(instance.mcp, audited, helpers)
+    
+    # Register V10 Tools (RAG, Multi-Agent, Shadow Mode)
+    register_v10_tools(instance.mcp, audited, helpers)
     
     return instance.mcp
 
@@ -116,9 +120,11 @@ def run_server():
         "detect_project_root": detect_project_root
     }
     register_v9_tools(instance.mcp, audited, helpers)
-
     
-    # 3. Configured logging
+    # 3. Register V10 Tools (RAG, Multi-Agent, Shadow Mode)
+    register_v10_tools(instance.mcp, audited, helpers)
+    
+    # 4. Configured logging
     with _configure_logging():
         if os.environ.get("BORING_MCP_DEBUG") == "1":
             sys.stderr.write("[boring-mcp] Server starting...\n")

@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.0.0] - 2026-01-04
+
+### Added
+
+#### RAG Memory System (Vector + Graph)
+- **Vector-based Code Search**: Semantic search across entire codebase via ChromaDB
+- **AST-based Code Indexer**: Parses Python files into semantic chunks (functions, classes) with dependency tracking
+- **Graph RAG**: Bidirectional dependency graph with `get_impact_zone()` for smart context expansion
+- **New MCP Tools**: `boring_rag_index`, `boring_rag_search`, `boring_rag_context`, `boring_rag_expand`
+
+#### Multi-Agent Orchestration
+- **Specialized Agents**:
+  - `ArchitectAgent`: Planning & design specialist (no code writing)
+  - `CoderAgent`: Implementation specialist following the plan
+  - `ReviewerAgent`: "Devil's Advocate" security & bug reviewer
+- **Orchestrator**: Automated "Plan → Code → Review" loop with human approval checkpoints
+- **New MCP Tools**: `boring_multi_agent`, `boring_agent_plan`, `boring_agent_review`
+
+#### Shadow Mode (Human-in-the-Loop)
+- **Protection Levels**: `DISABLED`, `ENABLED` (default), `STRICT`
+- **Smart Filtering**: Auto-approves read ops; blocks HIGH/CRITICAL ops (deletion, secrets, config changes)
+- **Async Approval**: Pending operations queue for non-blocking review
+- **New MCP Tools**: `boring_shadow_status`, `boring_shadow_approve`, `boring_shadow_reject`, `boring_shadow_mode`
+
 ## [9.1.0] - 2026-01-04
 
 ### Added
