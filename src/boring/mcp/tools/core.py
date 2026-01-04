@@ -363,19 +363,9 @@ def boring_done(
     
     return f"{status}. Message: {message}"
 
-
-# ==============================================================================
-# TOOL REGISTRATION
-# ==============================================================================
-
-if MCP_AVAILABLE and mcp is not None:
-    # Register tools by calling the decorator with the function
-    mcp.tool(description="Run autonomous development loop", annotations={"readOnlyHint": False, "openWorldHint": True})(run_boring)
-    mcp.tool(description="Check system health", annotations={"readOnlyHint": True})(boring_health_check)
-    mcp.tool(description="Get quick start guide", annotations={"readOnlyHint": True})(boring_quickstart)
 @audited
 def boring_forget_all(
-    keep_current_task: bool = True
+    keep_current_task: Annotated[bool, Field(description="Whether to keep the current task definition in context")] = True
 ) -> dict:
     """
     Signal to clear the LLM context (Context Hygiene).
@@ -411,7 +401,7 @@ def boring_forget_all(
 # ==============================================================================
 
 if MCP_AVAILABLE and mcp is not None:
-    # Register tools by calling the decorator with the function
+    # Register all core tools
     mcp.tool(description="Run autonomous development loop", annotations={"readOnlyHint": False, "openWorldHint": True})(run_boring)
     mcp.tool(description="Check system health", annotations={"readOnlyHint": True})(boring_health_check)
     mcp.tool(description="Get quick start guide", annotations={"readOnlyHint": True})(boring_quickstart)
