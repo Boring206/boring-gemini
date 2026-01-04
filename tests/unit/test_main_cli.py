@@ -172,7 +172,7 @@ def test_start_api_backend_coverage(mock_loop):
     assert result.exit_code == 0
     assert mock_loop.call_args[1]["use_cli"] is False
 
-@patch("boring.main.MemoryManager")
+@patch("boring.memory.MemoryManager")
 def test_status_coverage(mock_memory):
     """Test boring status command (Coverage)."""
     runner = CliRunner()
@@ -183,7 +183,7 @@ def test_status_coverage(mock_memory):
     assert result.exit_code == 0
     assert "Test" in result.stdout
 
-@patch("boring.main.CodeVerifier")
+@patch("boring.verification.CodeVerifier")
 def test_verify_command_coverage(mock_verifier):
     """Test verify command (Coverage)."""
     runner = CliRunner()
