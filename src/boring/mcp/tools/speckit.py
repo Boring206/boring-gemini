@@ -1,7 +1,8 @@
 import shutil
 import os
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Annotated
+from pydantic import Field
 from ..instance import mcp, MCP_AVAILABLE
 from ..utils import check_rate_limit, get_project_root_or_error, configure_runtime_for_project
 from ...audit import audited
@@ -101,7 +102,10 @@ def _execute_workflow(workflow_name: str, context: Optional[str] = None, project
 # ==============================================================================
 
 @audited
-def speckit_plan(context: Optional[str] = None, project_path: Optional[str] = None) -> dict:
+def speckit_plan(
+    context: Annotated[Optional[str], Field(description="Optional additional context about requirements or constraints")] = None,
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Execute SpecKit Plan workflow - Create technical implementation plan from requirements.
     
@@ -115,7 +119,10 @@ def speckit_plan(context: Optional[str] = None, project_path: Optional[str] = No
     return _execute_workflow("speckit-plan", context, project_path)
 
 @audited
-def speckit_tasks(context: Optional[str] = None, project_path: Optional[str] = None) -> dict:
+def speckit_tasks(
+    context: Annotated[Optional[str], Field(description="Optional context about the implementation plan")] = None,
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Execute SpecKit Tasks workflow - Break implementation plan into actionable tasks.
     
@@ -129,7 +136,10 @@ def speckit_tasks(context: Optional[str] = None, project_path: Optional[str] = N
     return _execute_workflow("speckit-tasks", context, project_path)
 
 @audited
-def speckit_analyze(context: Optional[str] = None, project_path: Optional[str] = None) -> dict:
+def speckit_analyze(
+    context: Annotated[Optional[str], Field(description="Optional focus areas or specific files to analyze")] = None,
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Execute SpecKit Analyze workflow - Analyze consistency between specs and code.
     
@@ -148,7 +158,10 @@ def speckit_analyze(context: Optional[str] = None, project_path: Optional[str] =
     return _execute_workflow("speckit-analyze", context, project_path)
 
 @audited
-def speckit_clarify(context: Optional[str] = None, project_path: Optional[str] = None) -> dict:
+def speckit_clarify(
+    context: Annotated[Optional[str], Field(description="Optional specific areas that need clarification")] = None,
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Execute SpecKit Clarify workflow - Identify and clarify ambiguous requirements.
     
@@ -168,7 +181,10 @@ def speckit_clarify(context: Optional[str] = None, project_path: Optional[str] =
     return _execute_workflow("speckit-clarify", context, project_path)
 
 @audited
-def speckit_constitution(context: Optional[str] = None, project_path: Optional[str] = None) -> dict:
+def speckit_constitution(
+    context: Annotated[Optional[str], Field(description="Optional project vision or constraints")] = None,
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Execute SpecKit Constitution workflow - Create project guiding principles.
     
@@ -188,7 +204,10 @@ def speckit_constitution(context: Optional[str] = None, project_path: Optional[s
     return _execute_workflow("speckit-constitution", context, project_path)
 
 @audited
-def speckit_checklist(context: Optional[str] = None, project_path: Optional[str] = None) -> dict:
+def speckit_checklist(
+    context: Annotated[Optional[str], Field(description="Optional specific feature or requirement to check")] = None,
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Execute SpecKit Checklist workflow - Generate quality validation checklist.
     
@@ -207,9 +226,9 @@ def speckit_checklist(context: Optional[str] = None, project_path: Optional[str]
     return _execute_workflow("speckit-checklist", context, project_path)
 
 if MCP_AVAILABLE and mcp is not None:
-    mcp.tool()(speckit_plan)
-    mcp.tool()(speckit_tasks)
-    mcp.tool()(speckit_analyze)
-    mcp.tool()(speckit_clarify)
-    mcp.tool()(speckit_constitution)
-    mcp.tool()(speckit_checklist)
+    mcp.tool(description="Create implementation plan", annotations={"readOnlyHint": True, "openWorldHint": True})(speckit_plan)
+    mcp.tool(description="Create task checklist", annotations={"readOnlyHint": True, "openWorldHint": True})(speckit_tasks)
+    mcp.tool(description="Analyze spec consistency", annotations={"readOnlyHint": True, "openWorldHint": True})(speckit_analyze)
+    mcp.tool(description="Clarify requirements", annotations={"readOnlyHint": True, "openWorldHint": True})(speckit_clarify)
+    mcp.tool(description="Create project constitution", annotations={"readOnlyHint": True, "openWorldHint": True})(speckit_constitution)
+    mcp.tool(description="Create quality checklist", annotations={"readOnlyHint": True, "openWorldHint": True})(speckit_checklist)

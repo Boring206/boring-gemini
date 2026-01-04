@@ -1,6 +1,7 @@
 import os
 import shutil
-from typing import Optional
+from typing import Optional, Annotated
+from pydantic import Field
 from ..instance import mcp, MCP_AVAILABLE
 from ..utils import check_rate_limit, get_project_root_or_error, configure_runtime_for_project
 from ...audit import audited
@@ -13,12 +14,12 @@ from ...audit import audited
 
 @audited
 def run_boring(
-    task_description: str,
-    verification_level: str = "STANDARD",
-    max_loops: int = 5,
-    use_cli: Optional[bool] = None,
-    project_path: Optional[str] = None,
-    interactive: Optional[bool] = None
+    task_description: Annotated[str, Field(description="Description of the development task to complete (e.g., 'Fix login validation bug')")],
+    verification_level: Annotated[str, Field(description="Verification level: BASIC (syntax), STANDARD (lint), FULL (tests), SEMANTIC (judge)")] = "STANDARD",
+    max_loops: Annotated[int, Field(description="Maximum number of loop iterations (1-20)")] = 5,
+    use_cli: Annotated[Optional[bool], Field(description="Whether to use Gemini CLI (supports extensions). Defaults to auto-detect.")] = None,
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None,
+    interactive: Annotated[Optional[bool], Field(description="Whether to run in interactive mode (auto-detected usually)")] = None
 ) -> dict:
     """
     Run Boring autonomous development agent on a task.
@@ -241,7 +242,9 @@ def boring_health_check() -> dict:
         }
 
 @audited
-def boring_quickstart(project_path: Optional[str] = None) -> dict:
+def boring_quickstart(
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Get a comprehensive quick start guide for new users.
     
@@ -314,7 +317,9 @@ def boring_quickstart(project_path: Optional[str] = None) -> dict:
         return {"status": "ERROR", "error": str(e)}
 
 @audited
-def boring_status(project_path: Optional[str] = None) -> dict:
+def boring_status(
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Get current Boring project status.
     
@@ -353,7 +358,9 @@ def boring_status(project_path: Optional[str] = None) -> dict:
         }
 
 @audited
-def boring_done(message: str) -> str:
+def boring_done(
+    message: Annotated[str, Field(description="The completion message to display to the user")]
+) -> str:
     """
     Report task completion to the user with desktop notification.
     
@@ -400,8 +407,8 @@ def boring_done(message: str) -> str:
 
 if MCP_AVAILABLE and mcp is not None:
     # Register tools by calling the decorator with the function
-    mcp.tool()(run_boring)
-    mcp.tool()(boring_health_check)
-    mcp.tool()(boring_quickstart)
-    mcp.tool()(boring_status)
-    mcp.tool()(boring_done)
+    mcp.tool(description="Run autonomous development loop", annotations={"readOnlyHint": False, "openWorldHint": True})(run_boring)
+    mcp.tool(description="Check system health", annotations={"readOnlyHint": True})(boring_health_check)
+    mcp.tool(description="Get quick start guide", annotations={"readOnlyHint": True})(boring_quickstart)
+    mcp.tool(description="Get project status", annotations={"readOnlyHint": True})(boring_status)
+    mcp.tool(description="Report completion with notification", annotations={"readOnlyHint": False})(boring_done)

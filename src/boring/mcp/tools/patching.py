@@ -1,4 +1,5 @@
-from typing import Optional
+from typing import Optional, Annotated
+from pydantic import Field
 from ..instance import mcp, MCP_AVAILABLE
 from ..utils import check_rate_limit, get_project_root_or_error, configure_runtime_for_project
 from ...audit import audited
@@ -9,10 +10,10 @@ from ...audit import audited
 
 @audited
 def boring_apply_patch(
-    file_path: str,
-    search_text: str,
-    replace_text: str,
-    project_path: Optional[str] = None
+    file_path: Annotated[str, Field(description="Relative path to the file (from project root)")],
+    search_text: Annotated[str, Field(description="Exact text to search for (must match exactly)")],
+    replace_text: Annotated[str, Field(description="Text to replace with")],
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Apply a single search-replace patch to a file.
@@ -98,9 +99,9 @@ def boring_apply_patch(
 
 @audited
 def boring_extract_patches(
-    ai_output: str,
-    dry_run: bool = False,
-    project_path: Optional[str] = None
+    ai_output: Annotated[str, Field(description="The raw AI output containing patches")],
+    dry_run: Annotated[bool, Field(description="If True, only parse and report patches without applying")] = False,
+    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Extract and optionally apply patches from AI-generated output.
@@ -180,5 +181,5 @@ def boring_extract_patches(
         return {"status": "ERROR", "error": str(e)}
 
 if MCP_AVAILABLE and mcp is not None:
-    mcp.tool()(boring_apply_patch)
-    mcp.tool()(boring_extract_patches)
+    mcp.tool(description="Apply text patch to file", annotations={"readOnlyHint": False})(boring_apply_patch)
+    mcp.tool(description="Extract patches from AI output", annotations={"readOnlyHint": False})(boring_extract_patches)
