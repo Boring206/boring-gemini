@@ -5,7 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [10.1.0] - 2026-01-04
+
+### Added
+- **Modular LLM Architecture**: Refactored monolithic `gemini_client.py` into modular `src/boring/llm/` package (SDK, Tools, Executor).
+- **Async RAG Retrieval**: Added `retrieve_async()` to `RAGRetriever` for non-blocking high-performance queries.
+- **Integration Test Suite**: Added comprehensive integration tests (`tests/integration/test_mcp_startup.py`).
+
+### Changed
+- **CoderAgent Upgrade**: 
+  - Full support for `<<<<<<< SEARCH ... >>>>>>> REPLACE` blocks.
+  - Patch-type file application logic for targeted edits.
+  - Integrated ShadowMode directly into write operations.
+- **Security Hardening**: `AgentOrchestrator` and `CoderAgent` now enforce ShadowGuard checks before critical write operations.
+- **Quality Standards**: Increased test coverage threshold from 28% to 60%.
+
+### Removed
+- **Legacy Components**: Cleaned up deprecated code in `gemini_client.py` (now a lightweight re-export facade).
 
 ## [10.0.0] - 2026-01-04
 
