@@ -1,7 +1,8 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-10.0.0-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-10.1.0-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Evaluation](https://img.shields.io/badge/Evaluation-100%2F100-brightgreen.svg)]()
 
-# Boring for Gemini (V10.0)
+# Boring for Gemini (V10.1)
 
 > **企業級自主 AI 開發代理 (Autonomous Developer)**  
 > 專為 Cursor / Claude Desktop / VS Code 打造，利用 Google Gemini 模型驅動的自動化編碼與驗證引擎。

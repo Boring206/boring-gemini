@@ -1,5 +1,5 @@
 # ==============================================================================
-# Boring for Gemini - Git Ignore (V9.0)
+# Boring for Gemini - Git Ignore (V10.1)
 # ==============================================================================
 
 # Boring Runtime State Files
@@ -27,6 +27,7 @@ status.json
 
 # Workspace Config (user-specific)
 workspace.json
+boring_config.json
 
 # Audit Logs (local only)
 logs/audit.jsonl
@@ -39,6 +40,7 @@ logs/*
 # Temporary helper scripts
 gemini_help.txt
 *.bwf.json
+test_v10_gen.txt
 
 # ==============================================================================
 # Python
@@ -115,6 +117,8 @@ Desktop.ini
 .env.*.local
 *.pem
 *.key
+*.sqlite3
+*.db
 
 # ==============================================================================
 # Temporary Files

@@ -278,6 +278,26 @@ class RAGRetriever:
         retrieved.sort(key=lambda x: x.score, reverse=True)
         return retrieved[:n_results]
     
+    async def retrieve_async(
+        self,
+        query: str,
+        n_results: int = 10,
+        expand_graph: bool = True,
+        file_filter: Optional[str] = None,
+        chunk_types: Optional[List[str]] = None
+    ) -> List[RetrievalResult]:
+        """
+        Async version of retrieve for non-blocking operations.
+        
+        Wraps ChromaDB calls in asyncio.to_thread for async compatibility.
+        """
+        import asyncio
+        
+        def _sync_retrieve():
+            return self.retrieve(query, n_results, expand_graph, file_filter, chunk_types)
+        
+        return await asyncio.to_thread(_sync_retrieve)
+    
     def get_modification_context(
         self,
         file_path: str,

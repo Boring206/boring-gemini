@@ -29,9 +29,10 @@ class CoderAgent(Agent):
     Output includes the modified files list.
     """
     
-    def __init__(self, llm_client, project_root: Path = None):
+    def __init__(self, llm_client, project_root: Path = None, shadow_guard = None):
         super().__init__(llm_client, AgentRole.CODER)
         self.project_root = project_root or Path.cwd()
+        self.shadow_guard = shadow_guard
     
     @property
     def system_prompt(self) -> str:
@@ -149,17 +150,62 @@ Start with the most foundational files first (e.g., base classes before derived 
         # Extract file changes from response
         file_changes = self._extract_file_changes(response)
         
+        # Apply changes to disk (Optimistic Application)
+        # In a strict Shadow Mode, these would need approval via the Guard.
+        # But CoderAgent is the "Hands", so it writes.
+        applied_files = []
+        blocked_files = []
+        
+        for rel_path, change in file_changes.items():
+            try:
+                # Check ShadowMode before writing
+                if self.shadow_guard:
+                    op = {"name": "write_file", "args": {"file_path": rel_path}}
+                    pending = self.shadow_guard.check_operation(op)
+                    if pending:
+                        blocked_files.append(rel_path)
+                        print(f"ShadowMode blocked write to {rel_path} (op: {pending.operation_id})")
+                        continue
+                
+                full_path = self.project_root / rel_path
+                full_path.parent.mkdir(parents=True, exist_ok=True)
+                
+                change_type = change.get("type", "write")
+                
+                if change_type == "patch" and "patches" in change:
+                    # Apply SEARCH/REPLACE patches
+                    if full_path.exists():
+                        content = full_path.read_text(encoding="utf-8")
+                        for patch in change["patches"]:
+                            search = patch.get("search", "")
+                            replace = patch.get("replace", "")
+                            if search and search in content:
+                                content = content.replace(search, replace, 1)
+                        full_path.write_text(content, encoding="utf-8")
+                        applied_files.append(rel_path)
+                    else:
+                        print(f"Cannot patch non-existent file: {rel_path}")
+                        
+                elif "content" in change:
+                    # Full file write
+                    full_path.write_text(change["content"], encoding="utf-8")
+                    applied_files.append(rel_path)
+                
+            except Exception as e:
+                # Log error but continue
+                print(f"Failed to write {rel_path}: {e}")
+        
         # Store code output in shared resources
         context.set_resource("code_output", response, self.role)
-        context.set_resource("modified_files", list(file_changes.keys()), self.role)
+        context.set_resource("modified_files", applied_files, self.role)
         
         return AgentMessage(
             sender=self.role,
             receiver=AgentRole.REVIEWER,
             action="code_written",
-            summary=f"Implemented {len(file_changes)} files",
+            summary=f"Implemented {len(applied_files)} files: {', '.join(applied_files)}",
             artifacts={
-                "files": list(file_changes.keys()),
+                "files": applied_files,
                 "changes": file_changes,
                 "raw_output": response
             },
@@ -192,13 +238,45 @@ Start with the most foundational files first (e.g., base classes before derived 
                         "content": code_matches[0].strip()
                     }
         
-        # Also look for SEARCH/REPLACE blocks
-        sr_pattern = r'<<<<<<< SEARCH\n(.*?)\n=======\n(.*?)\n>>>>>>> REPLACE'
-        sr_matches = re.findall(sr_pattern, response, re.DOTALL)
+        # Also look for SEARCH/REPLACE blocks with file context
+        # Pattern: file marker followed by SEARCH/REPLACE block
+        sr_with_file = r'###\s*(?:Modify):\s*`([^`]+)`.*?<<<<<<< SEARCH\n(.*?)\n=======\n(.*?)\n>>>>>>> REPLACE'
+        sr_file_matches = re.findall(sr_with_file, response, re.DOTALL)
         
-        for search, replace in sr_matches:
-            # Try to find which file this belongs to
-            # Simple heuristic: find nearest file marker before this position
-            pass  # Would need position tracking for accurate matching
+        for file_path, search, replace in sr_file_matches:
+            file_path = file_path.strip()
+            if file_path in changes:
+                # Append as patch operation
+                changes[file_path]["patches"] = changes[file_path].get("patches", [])
+                changes[file_path]["patches"].append({
+                    "search": search.strip(),
+                    "replace": replace.strip()
+                })
+            else:
+                changes[file_path] = {
+                    "type": "patch",
+                    "patches": [{
+                        "search": search.strip(),
+                        "replace": replace.strip()
+                    }]
+                }
+        
+        # Standalone SEARCH/REPLACE blocks (without explicit file marker) - use last known file
+        standalone_sr = r'<<<<<<< SEARCH\n(.*?)\n=======\n(.*?)\n>>>>>>> REPLACE'
+        for match in re.finditer(standalone_sr, response, re.DOTALL):
+            search, replace = match.groups()
+            # Find the nearest preceding file marker
+            text_before = response[:match.start()]
+            file_markers = re.findall(r'###\s*(?:File|Modify|Create):\s*`([^`]+)`', text_before)
+            if file_markers:
+                target_file = file_markers[-1].strip()
+                if target_file not in changes:
+                    changes[target_file] = {"type": "patch", "patches": []}
+                if "patches" not in changes[target_file]:
+                    changes[target_file]["patches"] = []
+                # Avoid duplicates from the previous pattern
+                patch = {"search": search.strip(), "replace": replace.strip()}
+                if patch not in changes[target_file]["patches"]:
+                    changes[target_file]["patches"].append(patch)
         
         return changes

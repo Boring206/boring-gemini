@@ -47,7 +47,8 @@ class AgentOrchestrator:
         llm_client,
         project_root: Path,
         human_callback: Optional[HumanApprovalCallback] = None,
-        auto_approve_plans: bool = False
+        auto_approve_plans: bool = False,
+        shadow_guard = None
     ):
         """
         Initialize the orchestrator.
@@ -57,14 +58,16 @@ class AgentOrchestrator:
             project_root: Project root directory
             human_callback: Async callback for human approval
             auto_approve_plans: If True, skip human approval for plans
+            shadow_guard: Optional ShadowModeGuard for operation approval
         """
         self.project_root = Path(project_root)
         self.human_callback = human_callback
         self.auto_approve_plans = auto_approve_plans
+        self.shadow_guard = shadow_guard
         
         # Create specialized agents
         self.architect = ArchitectAgent(llm_client)
-        self.coder = CoderAgent(llm_client, project_root)
+        self.coder = CoderAgent(llm_client, project_root, shadow_guard=shadow_guard)
         self.reviewer = ReviewerAgent(llm_client, project_root)
         
         # Agents by role for easy lookup

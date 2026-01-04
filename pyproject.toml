@@ -1,6 +1,6 @@
 [project]
 name = "boring"
-version = "10.0.0"
+version = "10.1.0"
 description = "Enterprise-grade autonomous AI development agent with RAG Memory, Multi-Agent Orchestration, Shadow Mode (HITL), Plugin System, and 40+ MCP tools."
 authors = [
     { name = "Boring206", email = "C112156246@nkust.edu.tw" }
@@ -122,7 +122,7 @@ addopts = [
     "--cov=boring",
     "--cov-report=term-missing",
     "--cov-report=html:htmlcov",
-    "--cov-fail-under=28",  # Current coverage: 29%, threshold for CI pass
+    "--cov-fail-under=60",  # Increased from 28% for V10 quality standards
 ]
 
 # Coverage configuration
