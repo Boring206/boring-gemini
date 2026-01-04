@@ -1,8 +1,8 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-10.7.0-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-10.10.0-green.svg)](https://github.com/Boring206/boring-gemini)
 [![Evaluation](https://img.shields.io/badge/Evaluation-100%2F100-brightgreen.svg)]()
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
-# Boring for Gemini (V10.5 - Pure CLI Mode)
+# Boring for Gemini (V10.10 - Polyglot Architect Mode)
 
 > **企業級自主 AI 開發代理 (Autonomous Developer)**  
 > 專為 Cursor / Claude Desktop / VS Code 打造，利用 Google Gemini 模型驅動的自動化編碼與驗證引擎。
@@ -1023,6 +1023,11 @@ Boring 會學習！每次成功修復錯誤都會記錄：
 2. boring_verify SEMANTIC → 使用 LLM 評估程式碼品質
 ```
 
+**進階評估結果 (V10.10+):**
+- **Confidence**: AI 對自己評分的信心指數 (0.0-1.0)，低分建議人工複審。
+- **Strategic Advice**: 長期架構優化建議 (例如：拆分微服務、引入緩存層)。
+- **First Step**: 立即可以執行的第一步行動 (例如：修改 `auth.ts` 第 50 行)。
+
 **預設 Rubrics** (8 種):
 - `code_quality` - 可讀性、文件、模組化
 - `security` - 密鑰洩露、注入攻擊
@@ -1128,7 +1133,7 @@ my-project/
 
 我們不只想做一個好用的工具，我們想定義 **AI Native Development** 的標準。
 
-**Boring V10.1 - Making AI Development Boringly Reliable.**
+**Boring V10.10+ - Making AI Development Boringly Reliable.**
 ## 1. 🌐 Boring Hub: Official Central Registry (V8.0+) 🚧
 我們計畫建立一個官方的 **Official Central Registry** (類似 `npmjs.com` 或 `PyPI`)，提供：
 - **Centralized Index**: 可搜尋的官方套件庫。
