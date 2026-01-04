@@ -13,7 +13,7 @@ def speckit_evolve_workflow(
     workflow_name: Annotated[str, Field(description="Workflow to modify (without .md extension, e.g. 'speckit-plan')")],
     new_content: Annotated[str, Field(description="Complete new workflow content (markdown) with frontmatter")],
     reason: Annotated[str, Field(description="Why this evolution is needed")],
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Evolve a SpecKit workflow with new content for project-specific customization.
@@ -72,7 +72,7 @@ def speckit_evolve_workflow(
 @audited
 def speckit_reset_workflow(
     workflow_name: Annotated[str, Field(description="Workflow to reset (e.g., 'speckit-plan')")],
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Reset a workflow to its original base template.
@@ -104,7 +104,7 @@ def speckit_reset_workflow(
 
 @audited
 def speckit_backup_workflows(
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Backup all SpecKit workflows to _base/ directory.
@@ -143,7 +143,7 @@ def speckit_backup_workflows(
 @audited
 def speckit_workflow_status(
     workflow_name: Annotated[str, Field(description="Workflow to check")],
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Get evolution status of a workflow.
@@ -176,7 +176,7 @@ def speckit_workflow_status(
 @audited
 def boring_install_workflow(
     source: Annotated[str, Field(description="Local .bwf.json file path OR a URL (http/https)")],
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> str:
     """
     Install a Boring Workflow from a file path or URL.
@@ -203,7 +203,7 @@ def boring_install_workflow(
 def boring_export_workflow(
     name: Annotated[str, Field(description="Workflow name (e.g., 'speckit-plan' without extension)")],
     author: Annotated[str, Field(description="Name of the creator")] = "Anonymous",
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> str:
     """
     Export a local workflow to a sharable .bwf.json package.
@@ -231,7 +231,8 @@ def boring_export_workflow(
 
 @audited
 def boring_list_workflows(
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+
 ) -> dict:
     """
     List all available .agent/workflows in the project.
