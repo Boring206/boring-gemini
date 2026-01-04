@@ -19,10 +19,6 @@ startCommand:
   configSchema:
     type: "object"
     properties:
-      GOOGLE_API_KEY:
-        type: "string"
-        title: "Google Gemini API Key"
-        description: "Set your Google Gemini API Key (optional if using environment variable or Vertex AI)."
       BORING_MCP_MODE:
         type: "string"
         title: "MCP Mode"
