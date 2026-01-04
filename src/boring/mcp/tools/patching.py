@@ -13,7 +13,7 @@ def boring_apply_patch(
     file_path: Annotated[str, Field(description="Relative path to the file (from project root)")],
     search_text: Annotated[str, Field(description="Exact text to search for (must match exactly)")],
     replace_text: Annotated[str, Field(description="Text to replace with")],
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Apply a single search-replace patch to a file.
@@ -101,7 +101,7 @@ def boring_apply_patch(
 def boring_extract_patches(
     ai_output: Annotated[str, Field(description="The raw AI output containing patches")],
     dry_run: Annotated[bool, Field(description="If True, only parse and report patches without applying")] = False,
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Extract and optionally apply patches from AI-generated output.

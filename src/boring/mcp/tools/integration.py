@@ -10,7 +10,7 @@ from ...audit import audited
 
 @audited
 def boring_setup_extensions(
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Install recommended Gemini CLI extensions for enhanced capabilities.
