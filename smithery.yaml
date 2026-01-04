@@ -18,7 +18,6 @@ startCommand:
   type: "http"
   configSchema:
     type: "object"
-    required: []
     properties:
       GOOGLE_API_KEY:
         type: "string"
@@ -47,11 +46,4 @@ startCommand:
         description: "Allow dangerous operations without prompt (NOT RECOMMENDED)."
         default: false
     additionalProperties: false
-
-  exampleConfig:
-    GOOGLE_API_KEY: ""
-    BORING_MCP_MODE: "1"
-    LOG_LEVEL: "INFO"
-    PROJECT_ROOT_DEFAULT: "."
-    BORING_ALLOW_DANGEROUS: false
 
