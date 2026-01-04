@@ -61,6 +61,12 @@ def get_server_instance():
     if not instance.MCP_AVAILABLE:
         raise RuntimeError("'fastmcp' not found. Install with: pip install fastmcp")
     
+    # Register Resources
+    @instance.mcp.resource("boring://logs")
+    def get_logs() -> str:
+        """Get recent server logs."""
+        return "Log access not implemented in stdio mode"
+
     # Register V9 Tools
     helpers = {
         "get_project_root_or_error": get_project_root_or_error,

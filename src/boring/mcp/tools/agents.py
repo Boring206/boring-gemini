@@ -21,7 +21,7 @@ def register_agent_tools(mcp, helpers: dict):
     """
     get_project_root_or_error = helpers.get("get_project_root_or_error")
     
-    @mcp.tool()
+    @mcp.tool(description="Run full multi-agent workflow (Architect -> Coder -> Reviewer)", tags=["agents", "workflow"])
     def boring_multi_agent(
         task: Annotated[str, "What to build/fix (detailed description)"],
         auto_approve_plans: Annotated[bool, "Skip human approval for plans (default False)"] = False
@@ -95,7 +95,7 @@ def register_agent_tools(mcp, helpers: dict):
             reason = result.get("reason", "Unknown error")
             return f"❌ Multi-agent workflow failed: {reason}"
     
-    @mcp.tool()
+    @mcp.tool(description="Run Architect agent to create implementation plan", tags=["agents", "planning"])
     def boring_agent_plan(
         task: Annotated[str, "What to build/fix"]
     ) -> str:
@@ -148,7 +148,7 @@ def register_agent_tools(mcp, helpers: dict):
         
         return "\n".join(output)
     
-    @mcp.tool()
+    @mcp.tool(description="Run Reviewer agent on existing code", tags=["agents", "review"])
     def boring_agent_review(
         file_paths: Annotated[Optional[str], "Comma-separated list of files to review"] = None
     ) -> str:
