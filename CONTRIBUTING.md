@@ -60,8 +60,12 @@ boring-gemini/
 │   │   │   └── ...
 │   │   └── v9_tools.py       # V9 features (auto_fix, workspace)
 │   ├── plugins/              # Plugin system
-│   ├── loop/                 # StatefulAgentLoop (standalone CLI only)
-│   ├── gemini_client.py      # Gemini SDK/CLI wrapper
+│   ├── rag/                  # RAG System (Vector + Graph)
+│   │   ├── parser.py         # Tree-sitter AST Parser (V10.10)
+│   │   ├── code_indexer.py   # Code chunking logic
+│   │   └── ...
+│   ├── verification.py       # CodeVerifier (Generic Dispatcher)
+│   ├── judge.py              # LLM-as-a-Judge (Confidence & Bias Mitigation)
 │   └── ...
 ├── .agent/workflows/         # SpecKit workflows (evolvable)
 │   └── _base/                # Base templates for rollback
