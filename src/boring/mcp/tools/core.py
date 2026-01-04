@@ -17,9 +17,9 @@ def run_boring(
     task_description: Annotated[str, Field(description="Description of the development task to complete (e.g., 'Fix login validation bug')")],
     verification_level: Annotated[str, Field(description="Verification level: BASIC (syntax), STANDARD (lint), FULL (tests), SEMANTIC (judge)")] = "STANDARD",
     max_loops: Annotated[int, Field(description="Maximum number of loop iterations (1-20)")] = 5,
-    use_cli: Annotated[Optional[bool], Field(description="Whether to use Gemini CLI (supports extensions). Defaults to auto-detect.")] = None,
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None,
-    interactive: Annotated[Optional[bool], Field(description="Whether to run in interactive mode (auto-detected usually)")] = None
+    use_cli: Annotated[bool, Field(description="Whether to use Gemini CLI (supports extensions). Defaults to auto-detect.")] = None,
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None,
+    interactive: Annotated[bool, Field(description="Whether to run in interactive mode (auto-detected usually)")] = None
 ) -> dict:
     """
     Run Boring autonomous development agent on a task.
@@ -80,7 +80,7 @@ def run_boring(
         # Determine environment
         is_mcp = os.environ.get("BORING_MCP_MODE") == "1"
         has_api_key = os.environ.get("GOOGLE_API_KEY") is not None
-
+        
         # Auto-detect backend if not specified
         if use_cli is None:
             if is_mcp:
@@ -243,7 +243,7 @@ def boring_health_check() -> dict:
 
 @audited
 def boring_quickstart(
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Get a comprehensive quick start guide for new users.
@@ -318,7 +318,7 @@ def boring_quickstart(
 
 @audited
 def boring_status(
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Get current Boring project status.

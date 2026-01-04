@@ -37,7 +37,7 @@ def register_shadow_tools(mcp, helpers: dict):
     
     @mcp.tool(description="Get Shadow Mode status and pending operations", annotations={"readOnlyHint": True, "openWorldHint": False})
     def boring_shadow_status(
-        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Get Shadow Mode status and pending approvals.
@@ -93,7 +93,7 @@ def register_shadow_tools(mcp, helpers: dict):
     def boring_shadow_approve(
         operation_id: Annotated[str, Field(description="ID of the operation to approve (from shadow_status)")],
         note: Annotated[str, Field(description="Optional note explaining the approval")] = None,
-        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Approve a pending Shadow Mode operation.
@@ -117,7 +117,7 @@ def register_shadow_tools(mcp, helpers: dict):
     def boring_shadow_reject(
         operation_id: Annotated[str, Field(description="ID of the operation to reject")],
         note: Annotated[str, Field(description="Optional note explaining the rejection")] = None,
-        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Reject a pending Shadow Mode operation.
@@ -140,7 +140,7 @@ def register_shadow_tools(mcp, helpers: dict):
     @mcp.tool(description="Change Shadow Mode protection level", annotations={"readOnlyHint": False, "idempotentHint": True})
     def boring_shadow_mode(
         mode: Annotated[str, Field(description="New mode (DISABLED, ENABLED, or STRICT)")],
-        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Change Shadow Mode protection level.
