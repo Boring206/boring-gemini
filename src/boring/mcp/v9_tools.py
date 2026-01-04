@@ -26,7 +26,7 @@ def register_v9_tools(mcp, audited, helpers):
     # Plugin Tools
     # =========================================================================
     
-    @mcp.tool()
+    @mcp.tool(description="List all available plugins locally and globally", tags=["plugins", "system"])
     @audited
     def boring_list_plugins(
         project_path: Annotated[Optional[str], "Path to project root (default: current directory)"] = None
@@ -50,7 +50,7 @@ def register_v9_tools(mcp, audited, helpers):
             "plugin_directories": [str(d) for d in loader.plugin_dirs]
         }
     
-    @mcp.tool()
+    @mcp.tool(description="Execute a specific plugin by name", tags=["plugins", "execution"])
     @audited
     def boring_run_plugin(
         name: Annotated[str, "Plugin name to execute"],
@@ -70,7 +70,7 @@ def register_v9_tools(mcp, audited, helpers):
         plugin_kwargs = args if args else {}
         return loader.execute_plugin(name, **plugin_kwargs)
     
-    @mcp.tool()
+    @mcp.tool(description="Reload all plugins from disk", tags=["plugins", "hot-reload"])
     @audited
     def boring_reload_plugins(
         project_path: Annotated[Optional[str], "Path to project root (default: current directory)"] = None
@@ -97,7 +97,7 @@ def register_v9_tools(mcp, audited, helpers):
     # Workspace Tools
     # =========================================================================
     
-    @mcp.tool()
+    @mcp.tool(description="Register a new project in the workspace", tags=["workspace", "management"])
     @audited
     def boring_workspace_add(
         name: Annotated[str, "Unique project name"],
@@ -113,7 +113,7 @@ def register_v9_tools(mcp, audited, helpers):
         manager = get_workspace_manager()
         return manager.add_project(name, path, description, tags)
     
-    @mcp.tool()
+    @mcp.tool(description="Unregister a project from the workspace", tags=["workspace", "management"])
     @audited
     def boring_workspace_remove(
         name: Annotated[str, "Name of project to remove"]
@@ -128,7 +128,7 @@ def register_v9_tools(mcp, audited, helpers):
         manager = get_workspace_manager()
         return manager.remove_project(name)
     
-    @mcp.tool()
+    @mcp.tool(description="List all registered projects", tags=["workspace", "query"])
     @audited
     def boring_workspace_list(
         tag: Annotated[Optional[str], "Optional filter by tag"] = None
@@ -147,7 +147,7 @@ def register_v9_tools(mcp, audited, helpers):
             "active_project": manager.active_project
         }
     
-    @mcp.tool()
+    @mcp.tool(description="Switch active project context", tags=["workspace", "context"])
     @audited
     def boring_workspace_switch(
         name: Annotated[str, "Name of the project to switch context to"]
@@ -166,7 +166,7 @@ def register_v9_tools(mcp, audited, helpers):
     # Auto-Fix Tool
     # =========================================================================
     
-    @mcp.tool()
+    @mcp.tool(description="Run automated fix loop", tags=["automation", "repair"])
     @audited
     def boring_auto_fix(
         max_iterations: Annotated[int, "Maximum fix attempts (default: 3)"] = 3,
@@ -221,7 +221,7 @@ def register_v9_tools(mcp, audited, helpers):
     # Pattern Mining Tools
     # =========================================================================
     
-    @mcp.tool()
+    @mcp.tool(description="Get AI suggestions for next steps", tags=["intelligence", "planning"])
     @audited
     def boring_suggest_next(
         limit: Annotated[int, "Maximum suggestions to return"] = 3,
@@ -255,7 +255,7 @@ def register_v9_tools(mcp, audited, helpers):
             "project_state": miner.analyze_project_state(project_root)
         }
     
-    @mcp.tool()
+    @mcp.tool(description="Check status of long-running task", tags=["system", "monitoring"])
     @audited
     def boring_get_progress(
         task_id: Annotated[str, "ID of the task to check"]

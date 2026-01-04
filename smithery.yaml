@@ -34,4 +34,8 @@ startCommand:
       PROJECT_ROOT_DEFAULT:
         type: "string"
         description: "Default project path if not specified in tool calls (optional)"
+      BORING_ALLOW_DANGEROUS:
+        type: "boolean"
+        description: "Allow dangerous operations without prompt (NOT RECOMMENDED)"
+        default: false
     additionalProperties: false
