@@ -23,7 +23,7 @@ startCommand:
     properties:
       GOOGLE_API_KEY:
         type: "string"
-        description: "Google Gemini API Key (Get from aistudio.google.com)"
+        description: "Google Gemini API Key (Optional if set via env var or using Vertex AI)"
       BORING_MCP_MODE:
         type: "string"
         description: "Set to '1' to enable MCP mode"
@@ -35,7 +35,8 @@ startCommand:
         enum: ["DEBUG", "INFO", "WARNING", "ERROR"]
       PROJECT_ROOT_DEFAULT:
         type: "string"
-        description: "Default project path if not specified in tool calls (optional)"
+        description: "Default project path if not specified in tool calls"
+        default: "."
       BORING_ALLOW_DANGEROUS:
         type: "boolean"
         description: "Allow dangerous operations without prompt (NOT RECOMMENDED)"
