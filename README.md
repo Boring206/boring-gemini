@@ -71,6 +71,7 @@
 - **Deep Polyglot Parsing**: 整合 **Tree-sitter**，精準解析 Python, JS/TS, Go, Rust, Java, C/C++ 的語意結構。
 - **Universal Verifier**: `CodeVerifier` 支援通用 CLI 工具分發 (例如 `.go` -> `golangci-lint`)。
 - **Unbiased Judge**: `LLMJudge` 新增偏誤消除機制 (Bias Mitigation) 與信心分數 (Confidence Score)，評分更公正透明。
+- **Actionable Roadmap**: 評估結果現在包含 **Strategic Advice** (長期戰略) 與 **First Step** (立即行動)，直接指導架構優化方向。
 - **Language-Aware Prompts**: 自動注入語言專屬的最佳實踐 (如 Go idioms, PEP 8) 到評審提示中。
 
 ---
