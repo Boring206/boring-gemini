@@ -74,7 +74,7 @@ class TestProcessFunctionCalls:
         # Create a mock client (we'll test the method directly)
         with patch('boring.gemini_client.genai'):
             with patch('boring.gemini_client.GENAI_AVAILABLE', True):
-                with patch('boring.gemini_client.settings') as mock_settings:
+                with patch('boring.config.settings') as mock_settings:
                     mock_settings.GOOGLE_API_KEY = "test_key"
                     mock_settings.TIMEOUT_MINUTES = 15
                     
@@ -116,7 +116,7 @@ class TestProcessFunctionCalls:
         
         with patch('boring.gemini_client.genai'):
             with patch('boring.gemini_client.GENAI_AVAILABLE', True):
-                with patch('boring.gemini_client.settings') as mock_settings:
+                with patch('boring.config.settings') as mock_settings:
                     mock_settings.GOOGLE_API_KEY = "test_key"
                     mock_settings.TIMEOUT_MINUTES = 15
                     
@@ -152,7 +152,7 @@ class TestProcessFunctionCalls:
         """Test processing report_status function call."""
         with patch('boring.gemini_client.genai'):
             with patch('boring.gemini_client.GENAI_AVAILABLE', True):
-                with patch('boring.gemini_client.settings') as mock_settings:
+                with patch('boring.config.settings') as mock_settings:
                     mock_settings.GOOGLE_API_KEY = "test_key"
                     mock_settings.TIMEOUT_MINUTES = 15
                     
@@ -190,7 +190,7 @@ class TestProcessFunctionCalls:
         """Test that path traversal is blocked."""
         with patch('boring.gemini_client.genai'):
             with patch('boring.gemini_client.GENAI_AVAILABLE', True):
-                with patch('boring.gemini_client.settings') as mock_settings:
+                with patch('boring.config.settings') as mock_settings:
                     mock_settings.GOOGLE_API_KEY = "test_key"
                     mock_settings.TIMEOUT_MINUTES = 15
                     

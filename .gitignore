@@ -159,4 +159,9 @@ target/
 
 
 # Shadow Mode Pending Operations
-.boring_pending_approval.json
+
+# Cleanup & Debug Files
+test_results*.txt
+test_output.txt
+inspect_fastmcp.py
+test.py

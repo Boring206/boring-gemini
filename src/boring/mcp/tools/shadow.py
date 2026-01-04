@@ -7,7 +7,7 @@ Exposes Shadow Mode human-in-the-loop protection as MCP tools.
 from pathlib import Path
 from typing import Optional
 
-from ..shadow_mode import (
+from boring.shadow_mode import (
     ShadowModeGuard, ShadowModeLevel, 
     create_shadow_guard, PendingOperation
 )

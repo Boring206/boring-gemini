@@ -16,12 +16,23 @@ from .llm.sdk import (
     create_gemini_client,
     DEFAULT_MODEL,
     GENAI_AVAILABLE,
+    genai,
 )
 from .llm.tools import (
     get_boring_tools,
     SYSTEM_INSTRUCTION_OPTIMIZED,
 )
 from .llm.executor import ToolExecutor
+from .config import settings
+
+# Monkeypatch process_function_calls onto GeminiClient for backward compatibility
+def _process_function_calls(self, function_calls, project_root=None):
+    # Legacy method signature expected project_root as second argument
+    root = project_root or settings.PROJECT_ROOT
+    executor = ToolExecutor(root, self.log_dir)
+    return executor.process_function_calls(function_calls)
+
+GeminiClient.process_function_calls = _process_function_calls
 
 # Backwards compatibility: process_function_calls as method
 # For code that does: client.process_function_calls(...)
@@ -35,4 +46,5 @@ __all__ = [
     "ToolExecutor",
     "DEFAULT_MODEL",
     "GENAI_AVAILABLE",
+    "genai",
 ]

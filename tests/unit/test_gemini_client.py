@@ -26,7 +26,7 @@ class TestGeminiClientInit:
         """Test initialization with explicit API key."""
         from boring.gemini_client import GeminiClient
         
-        with patch('boring.gemini_client.genai') as mock_genai:
+        with patch('boring.llm.sdk.genai') as mock_genai:
             mock_genai.Client = MagicMock()
             
             client = GeminiClient(api_key="test-key-123", log_dir=tmp_path)
@@ -38,7 +38,7 @@ class TestGeminiClientInit:
         """Test that model name is set correctly."""
         from boring.gemini_client import GeminiClient, DEFAULT_MODEL
         
-        with patch('boring.gemini_client.genai') as mock_genai:
+        with patch('boring.llm.sdk.genai') as mock_genai:
             mock_genai.Client = MagicMock()
             
             client = GeminiClient(api_key="test-key", log_dir=tmp_path)
@@ -53,7 +53,7 @@ class TestGeminiClientGenerate:
         """Test successful generation."""
         from boring.gemini_client import GeminiClient
         
-        with patch('boring.gemini_client.genai') as mock_genai:
+        with patch('boring.llm.sdk.genai') as mock_genai:
             mock_client = MagicMock()
             mock_response = MagicMock()
             mock_response.text = "Hello, World!"
@@ -70,7 +70,7 @@ class TestGeminiClientGenerate:
         """Test that generate handles exceptions gracefully."""
         from boring.gemini_client import GeminiClient
         
-        with patch('boring.gemini_client.genai') as mock_genai:
+        with patch('boring.llm.sdk.genai') as mock_genai:
             mock_client = MagicMock()
             mock_client.models.generate_content.side_effect = Exception("API Error")
             mock_genai.Client.return_value = mock_client

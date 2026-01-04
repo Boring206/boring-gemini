@@ -13,7 +13,7 @@ from .base import Agent, AgentRole, AgentMessage, AgentContext, SharedResource
 from .architect import ArchitectAgent
 from .coder import CoderAgent
 from .reviewer import ReviewerAgent
-from .orchestrator import AgentOrchestrator
+from .orchestrator import AgentOrchestrator, run_multi_agent
 
 __all__ = [
     # Base
@@ -28,4 +28,5 @@ __all__ = [
     "ReviewerAgent",
     # Orchestrator
     "AgentOrchestrator",
+    "run_multi_agent",
 ]

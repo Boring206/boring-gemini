@@ -7,7 +7,7 @@ Exposes RAG functionality as MCP tools for AI agents.
 from pathlib import Path
 from typing import Optional, List
 
-from ..rag import RAGRetriever, create_rag_retriever
+from boring.rag import RAGRetriever, create_rag_retriever
 
 # Singleton retriever instance (per project)
 _retrievers: dict = {}

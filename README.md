@@ -1068,7 +1068,7 @@ my-project/
 
 我們不只想做一個好用的工具，我們想定義 **AI Native Development** 的標準。
 
-**Boring V7.0 - Making AI Development Boringly Reliable.**
+**Boring V10.1 - Making AI Development Boringly Reliable.**
 ## 1. 🌐 Boring Hub: Official Central Registry (V8.0+) 🚧
 我們計畫建立一個官方的 **Official Central Registry** (類似 `npmjs.com` 或 `PyPI`)，提供：
 - **Centralized Index**: 可搜尋的官方套件庫。

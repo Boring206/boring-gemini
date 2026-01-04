@@ -32,7 +32,13 @@ class TestMCPServerStartup:
         assert mcp_instance is not None
         
         # Verify tools are registered
-        tool_count = len(mcp_instance._tools)
+        # Access through tool manager (FastMCP v2+)
+        if hasattr(mcp_instance, '_tool_manager'):
+            tool_count = len(mcp_instance._tool_manager._tools)
+        else:
+            # Fallback for older versions or mocks
+             tool_count = len(getattr(mcp_instance, '_tools', []))
+        
         assert tool_count >= 30, f"Expected 30+ tools, got {tool_count}"
     
     def test_v10_tools_registered(self):
@@ -43,7 +49,11 @@ class TestMCPServerStartup:
         from boring.mcp.server import get_server_instance
         
         mcp_instance = get_server_instance()
-        tool_names = list(mcp_instance._tools.keys())
+        
+        if hasattr(mcp_instance, '_tool_manager'):
+            tool_names = list(mcp_instance._tool_manager._tools.keys())
+        else:
+            tool_names = list(getattr(mcp_instance, '_tools', {}).keys())
         
         # V10 RAG tools
         assert "boring_rag_index" in tool_names
@@ -66,7 +76,9 @@ class TestRAGSystem:
         from pathlib import Path
         import tempfile
         
-        with tempfile.TemporaryDirectory() as tmpdir:
+        # ignore_cleanup_errors=True is required on Windows because 
+        # ChromaDB/SQLite might hold file locks even after object is deleted
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmpdir:
             from boring.rag import create_rag_retriever
             
             retriever = create_rag_retriever(Path(tmpdir))
@@ -77,7 +89,7 @@ class TestRAGSystem:
         from pathlib import Path
         import tempfile
         
-        with tempfile.TemporaryDirectory() as tmpdir:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmpdir:
             # Create a test file
             test_file = Path(tmpdir) / "test.py"
             test_file.write_text("def hello(): pass")
@@ -98,7 +110,7 @@ class TestShadowMode:
         from pathlib import Path
         import tempfile
         
-        with tempfile.TemporaryDirectory() as tmpdir:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmpdir:
             from boring.shadow_mode import create_shadow_guard, ShadowModeLevel
             
             guard = create_shadow_guard(Path(tmpdir), mode="ENABLED")
@@ -110,7 +122,7 @@ class TestShadowMode:
         from pathlib import Path
         import tempfile
         
-        with tempfile.TemporaryDirectory() as tmpdir:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmpdir:
             from boring.shadow_mode import create_shadow_guard
             
             guard = create_shadow_guard(Path(tmpdir), mode="ENABLED")
@@ -140,7 +152,7 @@ class TestAgentSystem:
         from pathlib import Path
         import tempfile
         
-        with tempfile.TemporaryDirectory() as tmpdir:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmpdir:
             from boring.agents import AgentContext
             
             ctx = AgentContext(
