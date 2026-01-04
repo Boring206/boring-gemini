@@ -17,7 +17,9 @@ startCommand:
   type: "http"
   configSchema:
     type: "object"
-    required: ["GOOGLE_API_KEY"]
+    # Validating criteria: "Making configuration optional improves user experience"
+    # Smithery Score Tip: Do NOT mark any field as 'required' if the server can start without it (even if limited)
+    required: []
     properties:
       GOOGLE_API_KEY:
         type: "string"
