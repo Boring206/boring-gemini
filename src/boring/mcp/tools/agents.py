@@ -26,7 +26,7 @@ def register_agent_tools(mcp, helpers: dict):
     def boring_multi_agent(
         task: Annotated[str, Field(description="What to build/fix (detailed description)")],
         auto_approve_plans: Annotated[bool, Field(description="Skip human approval for plans (default False)")] = False,
-        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+        project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Run multi-agent workflow: Architect → Coder → Reviewer.
@@ -105,7 +105,7 @@ def register_agent_tools(mcp, helpers: dict):
     @mcp.tool(description="Run Architect agent to create implementation plan", annotations={"readOnlyHint": False, "openWorldHint": True})
     def boring_agent_plan(
         task: Annotated[str, Field(description="What to build/fix")],
-        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+        project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Run ONLY the Architect agent to create an implementation plan.

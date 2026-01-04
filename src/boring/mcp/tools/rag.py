@@ -35,7 +35,7 @@ def register_rag_tools(mcp, helpers: dict):
     @mcp.tool(description="Index codebase for RAG", annotations={"readOnlyHint": False, "idempotentHint": True})
     def boring_rag_index(
         force: Annotated[bool, Field(description="If True, rebuild index even if it exists")] = False,
-        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+        project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Index the codebase for RAG retrieval.
@@ -83,7 +83,7 @@ def register_rag_tools(mcp, helpers: dict):
         max_results: Annotated[int, Field(description="Maximum number of results (default 10)")] = 10,
         expand_graph: Annotated[bool, Field(description="Include related code via dependency graph (default True)")] = True,
         file_filter: Annotated[str, Field(description="Filter by file path substring (e.g., 'auth' or 'src/api')")] = None,
-        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+        project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Search the codebase using semantic RAG retrieval.
@@ -141,7 +141,7 @@ def register_rag_tools(mcp, helpers: dict):
         file_path: Annotated[str, Field(description="Path to the file (relative to project root)")],
         function_name: Annotated[str, Field(description="Name of the function to get context for")] = None,
         class_name: Annotated[str, Field(description="Name of the class (if getting class context)")] = None,
-        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+        project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Get comprehensive context for modifying a specific code location.
