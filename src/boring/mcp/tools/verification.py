@@ -11,7 +11,7 @@ from ...audit import audited
 @audited
 def boring_verify(
     level: Annotated[str, Field(description="Verification level: BASIC (syntax), STANDARD (lint), FULL (tests), SEMANTIC (judge)")] = "STANDARD",
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Run code verification on the project.
@@ -80,7 +80,7 @@ def boring_verify(
 def boring_verify_file(
     file_path: Annotated[str, Field(description="Relative path to the file to verify (from project root)")],
     level: Annotated[str, Field(description="Verification level: BASIC, STANDARD, FULL")] = "STANDARD",
-    project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
 ) -> dict:
     """
     Verify a single file for syntax errors, linting issues, and import problems.
