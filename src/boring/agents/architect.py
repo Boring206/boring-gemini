@@ -60,8 +60,8 @@ One-line summary of what we're building.
 ...
 
 ### 📁 Files to Create/Modify
-- `path/to/file.py`: [What changes and why]
-- `path/to/new_file.py`: [NEW] [Purpose]
+- `path/to/file.ext`: [What changes and why]
+- `path/to/new_file.ext`: [NEW] [Purpose]
 
 ### ⚠️ Risks & Considerations
 - Risk 1: [Description] → Mitigation: [Strategy]
@@ -158,7 +158,7 @@ Remember: You are ONLY planning. Do not write code.
         files = []
         # Match patterns like `path/to/file.py` or - `file.py`:
         patterns = [
-            r'`([^`]+\.(py|js|ts|json|yaml|yml|md|txt))`',
+            r'`([^`]+\.[a-z0-9]+)`',
             r'- `([^`]+)`.*(?:NEW|MODIFY|DELETE)',
         ]
         

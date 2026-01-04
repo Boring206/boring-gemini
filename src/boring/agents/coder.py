@@ -54,14 +54,14 @@ Your ONLY job is to IMPLEMENT. You follow the Architect's plan exactly.
 - Keep functions small and focused (< 50 lines)
 - Add docstrings to all public functions
 - Handle errors gracefully
-- Use type hints consistently
-- Follow PEP 8 for Python
+- Use type hints consistently (where applicable)
+- Follow relevant language idiomatic standards (e.g. PEP 8 for Python, Go Guidelines)
 
 ## Output Format
 For each file change, output:
 
-### File: `path/to/file.py`
-```python
+### File: `path/to/file.ext`
+```language
 # Your code here
 ```
 
@@ -218,9 +218,9 @@ Start with the most foundational files first (e.g., base classes before derived 
         
         changes = {}
         
-        # Pattern: ### File: `path/to/file.py`
+        # Pattern: ### File: `path/to/file.ext`
         file_pattern = r'###\s*(?:File|Modify|Create):\s*`([^`]+)`'
-        code_pattern = r'```(?:python|javascript|typescript|json|yaml)?\n(.*?)```'
+        code_pattern = r'```[a-z]*\n(.*?)```'
         
         # Split by file markers
         parts = re.split(file_pattern, response)

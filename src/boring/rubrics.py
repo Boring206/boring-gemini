@@ -20,7 +20,7 @@ CODE_QUALITY_RUBRIC = Rubric(
     name="Code Quality",
     description="Evaluate code for readability, maintainability, and standard practices.",
     criteria=[
-        Criterion("Readability", "Variable/function names are descriptive; logic is easy to follow.", 1.2),
+        Criterion("Readability", "Variable/function names are descriptive; logic is easy to follow; idiomatic standards are followed.", 1.2),
         Criterion("Documentation", "Docstrings and comments explain 'why', not just 'what'.", 0.8),
         Criterion("Modularity", "Functions are small and focused; separation of concerns is respected.", 1.0),
         Criterion("Error Handling", "Exceptions are caught specifically; no silent failures.", 1.0)
