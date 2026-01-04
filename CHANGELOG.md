@@ -1,5 +1,17 @@
 # Changelog
 
+## [10.10.0] - 2026-01-05
+### Added
+- **Deep Multi-Language Support**: Integrated `tree-sitter-languages` for robust AST parsing of Python, JS, TS, Go, Java, Rust, and C++.
+- **Universal Verifier**: `CodeVerifier` now supports generic CLI tool dispatching (e.g., `golangci-lint`) via configuration.
+- **Language-Aware Evaluation**: `LLMJudge` now injects language-specific best practices (PEP 8, Effective Go, etc.) into evaluation prompts.
+- **Advanced Evaluation Metrics**: Added `confidence` scores and explicit bias mitigation (Length, Verbosity, Authority) to the Judge system.
+
+### Changed
+- Refactored `CodeVerifier` to use a handler registry pattern for better extensibility.
+- Improved RAG indexing with smart fallback to regex-based chunking for unsupported languages.
+
+## [10.9.0] - Previous
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),

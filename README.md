@@ -67,6 +67,12 @@
 - **CLI Tool Support**: 支援 Pure CLI 模式下的工具調用（如 Web Search），不再受限於 API。
 - **Tools**: `evaluate_architecture` (MCP), `boring_web_search`.
 
+### 7. 🌐 Polyglot & Advanced Eval (V10.10)
+- **Deep Polyglot Parsing**: 整合 **Tree-sitter**，精準解析 Python, JS/TS, Go, Rust, Java, C/C++ 的語意結構。
+- **Universal Verifier**: `CodeVerifier` 支援通用 CLI 工具分發 (例如 `.go` -> `golangci-lint`)。
+- **Unbiased Judge**: `LLMJudge` 新增偏誤消除機制 (Bias Mitigation) 與信心分數 (Confidence Score)，評分更公正透明。
+- **Language-Aware Prompts**: 自動注入語言專屬的最佳實踐 (如 Go idioms, PEP 8) 到評審提示中。
+
 ---
 
 ## ⚠️ V10.5 重大變更 - Pure CLI Mode
