@@ -24,6 +24,7 @@ from .tools import (
 )
 from .v9_tools import register_v9_tools
 from .v10_tools import register_v10_tools
+from .prompts import register_prompts
 from .utils import get_project_root_or_error, detect_project_root
 from ..audit import audited  # Moved to top-level to avoid import issues in tests
 
@@ -76,6 +77,9 @@ def get_server_instance():
     
     # Register V10 Tools (RAG, Multi-Agent, Shadow Mode)
     register_v10_tools(instance.mcp, audited, helpers)
+    
+    # Register Prompts
+    register_prompts(instance.mcp)
     
     return instance.mcp
 
