@@ -28,6 +28,8 @@
 ### 推薦方式：Smithery (一鍵部署，免 Python 環境)
 最適合 **Cursor** 或 **Claude Desktop** 使用者。
 
+> 📖 **詳細說明**: [https://server.smithery.ai/boring/boring](https://server.smithery.ai/boring/boring)
+
 1.  **安裝本體**:
     ```bash
     npx @smithery/cli install boring-gemini
@@ -41,7 +43,7 @@
       "mcpServers": {
         "boring": {
           "command": "npx",
-          "args": ["-y", "@smithery/cli", "run", "boring-gemini", "--config", "{}"]
+          "args": ["-y", "@smithery/cli", "run", "@boring/boring", "--config", "{}"]
         },
         "context7": {
           "command": "npx",
