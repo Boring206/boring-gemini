@@ -26,6 +26,10 @@ class TestMCPServerStartup:
         import os
         os.environ["BORING_MCP_MODE"] = "1"
         
+        from boring.mcp import instance
+        if not instance.MCP_AVAILABLE:
+            pytest.skip("fastmcp not installed")
+
         from boring.mcp.server import get_server_instance
         
         mcp_instance = get_server_instance()
@@ -44,7 +48,12 @@ class TestMCPServerStartup:
     def test_v10_tools_registered(self):
         """Verify V10 tools (RAG, Agents, Shadow) are properly registered."""
         import os
-        os.environ["BORING_MCP_MODE"] = "1"
+        if os.environ.get("BORING_MCP_MODE") != "1":
+             os.environ["BORING_MCP_MODE"] = "1"
+
+        from boring.mcp import instance
+        if not instance.MCP_AVAILABLE:
+            pytest.skip("fastmcp not installed")
         
         from boring.mcp.server import get_server_instance
         
