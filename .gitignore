@@ -153,3 +153,6 @@ package-lock.json
 # Rust
 target/
 
+
+# Shadow Mode Pending Operations
+.boring_pending_approval.json

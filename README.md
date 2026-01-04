@@ -1,7 +1,7 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-9.1.0-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-10.0.0-green.svg)](https://github.com/Boring206/boring-gemini)
 
-# Boring for Gemini (V9.1)
+# Boring for Gemini (V10.0)
 
 > **企業級自主 AI 開發代理 (Autonomous Developer)**  
 > 專為 Cursor / Claude Desktop / VS Code 打造，利用 Google Gemini 模型驅動的自動化編碼與驗證引擎。
@@ -18,6 +18,37 @@
 - **🛡️ 企業級防護**: 內建斷路器 (Circuit Breaker)、自動修復 (Self-Healing) 與 100% 測試覆蓋率。
 - **🔌 Local-First Architecture**: 主打 CLI 整合，預設使用本地 `gemini` 指令，無需 API Key 即可運作，資料隱私更有保障。
 - **🧩 Spec-Driven Development**: 整合 SpecKit，從 PRD 到 Code 實現 100% 規格一致性。
+- **🧠 Advanced RAG Memory**: 內建向量資料庫 (ChromaDB) 與依賴圖 (Graph RAG)，提供精準的語義程式碼搜尋與上下文理解。
+- **👥 Multi-Agent Orchestration**: 架構師 (Architect)、工程師 (Coder)、審查員 (Reviewer) 分工協作，自動執行 Plan → Code → Review 循環。
+- **🛡️ Shadow Mode Protection**: 人機協作保護機制，所有高風險操作 (刪檔、改配置) 皆需人工批准，確保安全無虞。
+
+---
+
+## ✨ V10 重大更新功能 (New in V10)
+
+### 1. 🧠 Advanced RAG Memory (向量記憶系統)
+- **用途**: 解決 AI "忘記程式碼" 或 "找不到相關檔案" 的問題。
+- **原理**: 
+  - **Vector Search**: 使用 ChromaDB 對全專案程式碼進行語義索引 (不僅僅是關鍵字)。
+  - **Graph RAG**: 建立 AST 依賴圖 (Dependency Graph)，AI 修改函數時能自動感知 "誰呼叫了它" (Callers) 和 "它呼叫了誰" (Callees)。
+- **工具**: `boring_rag_index` (建立索引), `boring_rag_search` (搜尋), `boring_rag_context` (獲取依賴上下文)。
+
+### 2. 👥 Multi-Agent Orchestration (多代理協作)
+- **用途**: 處理複雜任務，避免單一 Prompt 過長導致的混亂。
+- **角色**:
+  - 🏗️ **Architect**: 專注規劃與設計，產出 Implementation Plan，絕不寫 Code。
+  - 👨‍💻 **Coder**: 專注實作，嚴格遵守 Architect 的計畫。
+  - 🕵️ **Reviewer (Devil's Advocate)**: 專注找碴，檢查 Bug、安全性漏洞與邊界情況。
+- **流程**: 自動執行 Plan → Code → Review 循環，直到 Reviewer 通過 (或達到最大迭代次數)。
+- **工具**: `boring_multi_agent` (啟動協作)。
+
+### 3. 🛡️ Shadow Mode (人機協作保護)
+- **用途**: 讓 AI 擁有 "Root 權限" 的同時保障安全。
+- **機制**:
+  - **Auto-Approve**: 讀取 (Read) 操作永遠自動放行。
+  - **Shadow Block**: 高風險操作 (刪檔、修改 Config、修改 Secrets) 會被攔截，進入 "Pending" 狀態。
+  - **Human-in-the-Loop**: 開發者可透過 `boring_shadow_status` 查看並批核 (`approve`) 或拒絕 (`reject`)。
+- **工具**: `boring_shadow_mode` (設定模式), `boring_shadow_approve`。
 
 ---
 
@@ -376,24 +407,17 @@ Boring 採用 **Spec-Driven Development**，確保程式碼與需求 100% 一致
 | **`speckit_clarify`** | AI 反問模式，釐清模糊需求。 |
 | **`speckit_checklist`** | 生成品質驗證檢查清單。 |
 
-#### 📐 標準開發流程
+#### 📐 標準開發流程 (V10 Multi-Agent)
 
 ```mermaid
 graph LR
     A[PRD 需求] --> B(speckit_clarify)
     B --> C(speckit_constitution)
-    C --> D(speckit_plan)
-    D --> E(speckit_tasks)
-    E --> F[開始編碼]
-```
-
-```mermaid
-graph LR
-    A[PRD 需求] --> B(speckit_clarify)
-    B --> C(speckit_constitution)
-    C --> D(speckit_plan)
-    D --> E(speckit_tasks)
-    E --> F[開始編碼]
+    C --> D(boring_agent_plan)
+    D --> E{人工核准?}
+    E -->|Yes| F(boring_multi_agent)
+    F --> G[程式碼完成]
+    F -.-> H[Reviewer Loop]
 ```
 
 ### 2.1 🌐 Boring Hub (Workflow Ecosystem) 🆕
@@ -990,14 +1014,18 @@ AI: (呼叫 speckit_clarify) 讓我問幾個問題...
 ```mermaid
 graph LR
     A[需求] --> B[speckit_clarify]
-    B --> C[speckit_plan]
-    C --> D[speckit_tasks]
-    D --> E[run_boring / IDE AI]
-    E --> F[boring_verify]
-    F --> G{通過?}
-    G -->|是| H[boring_done 🎉]
-    G -->|否| E
-    H --> I[boring_learn]
+    B --> C[boring_agent_plan]
+    C --> D{Plan OK?}
+    D -- Yes --> E[boring_multi_agent]
+    E -- 寫碼 --> F[Coder]
+    E -- 審查 --> G[Reviewer]
+    G -- Fail --> F
+    G -- Pass --> H[boring_verify]
+    H --> I{Tests Pass?}
+    I -- Yes --> J[boring_done 🎉]
+    I -- No --> F
+    J --> K[boring_rag_index]
+    K --> L[boring_learn]
 ```
 
 ---
