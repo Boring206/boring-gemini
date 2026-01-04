@@ -2,6 +2,12 @@
 # https://smithery.ai/docs/build/project-config
 
 runtime: "container"
+description: "Enterprise-grade autonomous AI development agent for Python (CLI/FastMCP). Features RAG Memory, Multi-Agent Orchestration, and Shadow Mode protection. Runs LOCALLY to edit your files."
+repository: "https://github.com/Boring206/boring-gemini"
+homepage: "https://github.com/Boring206/boring-gemini"
+documentation: "https://github.com/Boring206/boring-gemini/blob/main/README.md"
+tags: ["ai", "agent", "gemini", "autonomous", "devops", "local"]
+
 build:
   dockerfile: "Dockerfile"
   dockerBuildPath: "."
