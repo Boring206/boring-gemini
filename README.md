@@ -1,5 +1,5 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-10.5.0-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-10.7.0-green.svg)](https://github.com/Boring206/boring-gemini)
 [![Evaluation](https://img.shields.io/badge/Evaluation-100%2F100-brightgreen.svg)]()
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 # Boring for Gemini (V10.5 - Pure CLI Mode)
@@ -51,6 +51,22 @@
   - **Human-in-the-Loop**: 開發者可透過 `boring_shadow_status` 查看並批核 (`approve`) 或拒絕 (`reject`)。
 - **工具**: `boring_shadow_mode` (設定模式), `boring_shadow_approve`。
 
+### 4. 🚀 V10.6 新增功能 (New Functionality)
+- **Ruff Auto-Fix**: `boring_verify` 新增 `auto_fix=True` 參數，自動修復 Lint 問題。
+- **Semantic Commits**: `boring_commit` 自動生成語意化 Git 提交訊息。
+- **Architecture Visualization**: `boring_visualize` 生成 Mermaid 架構圖。
+- **Optimized for Claude**: `run_boring` 為 Claude CLI 優化，提供更清晰的引導。
+
+### 5. 🛠️ Phase 4 Optimization (V10.7 Full Release)
+- **Robust SpecKit**: 使用 Pydantic 進行嚴格的工作流架構驗證 (Schema Validation)。
+- **CoT Routing**: `boring_delegate` 採用 Chain-of-Thought (思維鏈) 提示，提升任務分派的準確度。
+- **Telemetry**: 完整的 `boring_delegate` 使用量監控。
+
+### 6. 🏛️ Phase 4.5 Architect Mode (V10.9)
+- **Hostile Architect**: `boring_evaluate` 現在包含 "Production Level" 評估，模擬嚴格的架構師審查（Concurrency, Scalability）。
+- **CLI Tool Support**: 支援 Pure CLI 模式下的工具調用（如 Web Search），不再受限於 API。
+- **Tools**: `evaluate_architecture` (MCP), `boring_web_search`.
+
 ---
 
 ## ⚠️ V10.5 重大變更 - Pure CLI Mode
@@ -68,7 +84,20 @@
 
 **正常工作的工具**：`boring_verify`, `boring_health_check`, `boring_rag_*`, `boring_apply_patch`, `boring_status`, 等輔助工具。
 
+### 📌 環境變數設定指南 (Client Configuration)
+
+不同的客戶端對環境變數的需求不同：
+
+| Client | `BORING_MCP_MODE` | 說明 |
+|--------|-------------------|------|
+| **Gemini CLI** | ❌ 不需要 | 原生支援，無需特別設定。 |
+| **Claude Desktop** | ✅ **必須設定為 "1"** | 需明確告知處於 MCP 模式，以啟用模板回傳機制。 |
+| **Cursor / VS Code** | ✅ **必須設定為 "1"** | 同上。 |
+| **Smithery** | ✅ **建議設定為 "1"** | 確保其作為被動工具運作 (Smithery 預設通常會注入)。 |
+
 ---
+
+
 
 ## 📦 安裝指南 (Installation)
 

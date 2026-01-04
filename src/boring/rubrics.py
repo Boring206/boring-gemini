@@ -113,6 +113,20 @@ API_DESIGN_RUBRIC = Rubric(
     ]
 )
 
+PRODUCTION_RUBRIC = Rubric(
+    name="Production Readiness",
+    description="Hostile architectural review for high-concurrency, scalable systems.",
+    criteria=[
+        Criterion("Concurrency & Thread Safety", "Race conditions, deadlocks, shared state management, and async patterns.", 2.0),
+        Criterion("Scalability & Performance", "N+1 queries, horizontal scaling bottlenecks, caching strategies, and resource efficiency.", 2.0),
+        Criterion("Resilience & Fault Tolerance", "Circuit breakers, retries, graceful degradation, and error recovery.", 1.5),
+        Criterion("Observability", "Structured logging, metrics (Prometheus/StatsD), and tracing readiness.", 1.5),
+        Criterion("Data & Storage", "Schema design, indexing, database constraints, and connection pooling.", 1.5),
+        Criterion("Modern Tech Stack", "Utilization of modern, efficient libraries and patterns (e.g. Pydantic v2, Ruff, uv).", 1.0)
+    ],
+    strictness="hostile"
+)
+
 # --- Rubric Registry for easy lookup ---
 
 RUBRIC_REGISTRY = {
@@ -124,6 +138,7 @@ RUBRIC_REGISTRY = {
     "documentation": DOCUMENTATION_RUBRIC,
     "performance": PERFORMANCE_RUBRIC,
     "api_design": API_DESIGN_RUBRIC,
+    "production": PRODUCTION_RUBRIC,
 }
 
 def get_rubric(name: str) -> Optional[Rubric]:

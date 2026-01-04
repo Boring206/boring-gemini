@@ -11,29 +11,21 @@ class TestCoreTools:
     # run_boring tests
     # =========================================================================
     
-    @patch("boring.mcp.tools.core.check_rate_limit")
     @patch("boring.mcp.tools.core.get_project_root_or_error")
-    @patch("boring.mcp.tools.core.configure_runtime_for_project")
-    @patch("boring.loop.StatefulAgentLoop")
-    def test_run_boring_success(self, mock_loop_cls, mock_configure, mock_get_root, mock_rate_limit):
-        """Test successful run_boring execution."""
+    def test_run_boring_template(self, mock_get_root):
+        """Test run_boring returns WORKFLOW_TEMPLATE."""
         mock_root = MagicMock()
         mock_get_root.return_value = (mock_root, None)
-        mock_rate_limit.return_value = (True, "")
-        
-        mock_loop_instance = MagicMock()
-        mock_loop_instance.context.loop_count = 3
-        mock_loop_instance.context.output_content = "Done."
-        mock_loop_cls.return_value = mock_loop_instance
         
         result = run_boring(
             task_description="Test task",
             project_path="/tmp/test"
         )
         
-        assert result["status"] == "SUCCESS"
-        assert result["loops_completed"] == 3
-        mock_loop_instance.run.assert_called_once()
+        assert result["status"] == "WORKFLOW_TEMPLATE"
+        assert result["workflow"] == "run_boring"
+        assert "cli_command" in result
+        assert "suggested_prompt" in result
         
     def test_run_boring_empty_task(self):
         """Test empty task validation."""
@@ -64,21 +56,10 @@ class TestCoreTools:
         res = run_boring("task", max_loops=100)
         assert res["status"] == "ERROR"
         assert "max_loops" in res["message"]
-    
-    @patch("boring.mcp.tools.core.check_rate_limit")
-    def test_run_boring_rate_limited(self, mock_rate_limit):
-        """Test rate limit handling."""
-        mock_rate_limit.return_value = (False, "Rate limit exceeded")
-        
-        res = run_boring("task")
-        assert res["status"] == "RATE_LIMITED"
-        assert "Rate limit" in res["message"]
-        
-    @patch("boring.mcp.tools.core.check_rate_limit")
+
     @patch("boring.mcp.tools.core.get_project_root_or_error")
-    def test_run_boring_no_project(self, mock_get_root, mock_rate_limit):
+    def test_run_boring_no_project(self, mock_get_root):
         """Test when no project root found."""
-        mock_rate_limit.return_value = (True, "")
         mock_get_root.return_value = (None, {"status": "ERROR", "message": "No project"})
         
         res = run_boring("task")

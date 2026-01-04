@@ -82,21 +82,70 @@ class GeminiCLIAdapter(LLMClient):
         self,
         prompt: str,
         context: str = "",
+        tools: Optional[list] = None,
         timeout_seconds: int = 900,
         **kwargs
     ) -> LLMResponse:
         """
-        Generate a response that includes text (tools not yet supported in CLI adapter).
-        Ignores tool definitions for now and returns plain text wrapped in LLMResponse.
+        Generate a response that includes text and potential tool calls.
+        Since CLI doesn't natively support tool binding, we use Prompt Engineering + JSON Parsing.
         """
-        # Fallback to standard generate since CLI doesn't support complex tool calls easily yet
-        text, success = self.generate(prompt, context)
+        # 1. Construct System Prompt for Tools
+        tool_definitions = json.dumps([t for t in tools if hasattr(t, 'to_json') or isinstance(t, dict)], default=str, indent=2) if tools else "[]"
         
+        system_instruction = f"""
+SYSTEM INSTRUCTION: You are an AI assistant with access to the following tools:
+{tool_definitions}
+
+To use a tool, you MUST output a JSON block strictly in this format:
+```json
+{{
+  "tool_calls": [
+    {{
+      "name": "tool_name",
+      "arguments": {{ "arg1": "value1" }}
+    }}
+  ]
+}}
+```
+If no tool is needed, just respond with normal text.
+"""
+        full_context = f"{context}\n\n{system_instruction}"
+        
+        # 2. Call CLI
+        text, success = self.generate(prompt, full_context)
+        
+        if not success:
+            return LLMResponse(text=text, function_calls=[], success=False, error="CLI generation failed")
+
+        # 3. Parse Output for Tool Calls
+        function_calls = []
+        clean_text = text
+        
+        try:
+            # Look for JSON block
+            import re
+            json_match = re.search(r"```json\s*(\{.*?\})\s*```", text, re.DOTALL)
+            if json_match:
+                json_str = json_match.group(1)
+                data = json.loads(json_str)
+                
+                if "tool_calls" in data:
+                    for tc in data["tool_calls"]:
+                        function_calls.append({
+                            "name": tc["name"],
+                            "args": tc["arguments"]
+                        })
+                    # Remove the tool call JSON from the visible text to keep UI clean
+                    clean_text = text.replace(json_match.group(0), "").strip()
+                    
+        except Exception as e:
+            log_status(self.log_dir, "WARN", f"Failed to parse CLI tool output: {e}")
+
         return LLMResponse(
-            text=text,
-            function_calls=[],
-            success=success,
-            error=None if success else "Generation failed",
+            text=clean_text,
+            function_calls=function_calls,
+            success=True,
             metadata={"source": "gemini-cli-adapter"}
         )
     

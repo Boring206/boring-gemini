@@ -41,6 +41,8 @@ logs/*
 gemini_help.txt
 *.bwf.json
 test_v10_gen.txt
+test_log.txt
+PROMPT_WEB.md
 
 # ==============================================================================
 # Python

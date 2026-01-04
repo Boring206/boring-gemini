@@ -144,6 +144,10 @@ class MemoryManager:
         """Get known error patterns from SQLite."""
         return self._storage.get_top_errors(50)
     
+    def record_metric(self, name: str, value: float, metadata: Optional[Dict] = None):
+        """Record a performance or usage metric."""
+        self._storage.record_metric(name, value, metadata)
+    
     def get_common_errors_warning(self) -> str:
         """Generate a warning about common errors for the AI."""
         patterns = self._storage.get_top_errors(5)

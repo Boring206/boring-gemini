@@ -193,7 +193,7 @@ def setup_extensions():
     """
     Install recommended Gemini CLI extensions for enhanced capabilities.
     """
-    from .extensions import setup_project_extensions, create_criticalthink_command, create_speckit_command
+    from .extensions import setup_project_extensions, create_criticalthink_command, create_speckit_command, ExtensionsManager
     
     setup_project_extensions(settings.PROJECT_ROOT)
     create_criticalthink_command(settings.PROJECT_ROOT)
@@ -362,6 +362,13 @@ def evaluate(
     from .judge import LLMJudge
     from .cli_client import GeminiCLIAdapter
     from .gemini_client import GeminiClient
+    from .rubrics import CODE_QUALITY_RUBRIC
+    
+    # Resolve rubric
+    rubric = _get_rubric_for_level(level)
+    if not rubric:
+        console.print(f"[yellow]Warning: Rubric '{level}' not found, falling back to Code Quality.[/yellow]")
+        rubric = CODE_QUALITY_RUBRIC
     
     # Check if target exists
     target_path = Path(target)
@@ -386,14 +393,23 @@ def evaluate(
         judge = LLMJudge(adapter)
         
         content = target_path.read_text(encoding="utf-8")
-        result = judge.grade_code(target_path.name, content)
+        result = judge.grade_code(target_path.name, content, rubric=rubric)
         
         score = result.get("score", 0)
         summary = result.get("summary", "No summary")
         suggestions = result.get("suggestions", [])
         
+        # Display Dimensions
+        console.print(f"\n[bold underline]Evaluation: {rubric.name}[/bold underline]")
+        if "dimensions" in result:
+            for dim, details in result["dimensions"].items():
+                d_score = details.get("score", 0)
+                d_comment = details.get("comment", "")
+                color = "green" if d_score >= 4 else "yellow" if d_score >= 3 else "red"
+                console.print(f"  [{color}]{dim:<25} : {d_score}/5[/] - [dim]{d_comment}[/dim]")
+
         emoji = "🟢" if score >= 4 else "🟡" if score >= 3 else "🔴"
-        console.print(f"\n[bold]{emoji} Score: {score}/5.0[/bold]")
+        console.print(f"\n[bold]{emoji} Overall Score: {score}/5.0[/bold]")
         console.print(f"[italic]{summary}[/italic]\n")
         
         if suggestions:
@@ -404,6 +420,28 @@ def evaluate(
     except Exception as e:
         console.print(f"[red]Evaluation failed: {e}[/red]")
         raise typer.Exit(1)
+
+def _get_rubric_for_level(level: str):
+    """Map verification level/string to Rubric object"""
+    from .rubrics import get_rubric, RUBRIC_REGISTRY
+    
+    # Direct name match
+    if level.lower() in RUBRIC_REGISTRY:
+        return get_rubric(level)
+    
+    # Level mapping
+    level_map = {
+        "production": "production",
+        "arch": "architecture",
+        "security": "security",
+        "perf": "performance"
+    }
+    
+    mapped = level_map.get(level.lower())
+    if mapped:
+        return get_rubric(mapped)
+        
+    return get_rubric("code_quality") # Default
 
 @workflow_app.command("install")
 def workflow_install(

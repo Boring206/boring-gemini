@@ -85,11 +85,14 @@ class TestCreateGeminiClient:
     """Tests for create_gemini_client factory function."""
 
     def test_create_gemini_client_no_key_returns_none(self, tmp_path):
-        """Test factory function with no API key."""
+        """Test factory function with no API key and no CLI fallback."""
         from boring.gemini_client import create_gemini_client
         
-        with patch.dict('os.environ', {'GOOGLE_API_KEY': ''}, clear=False):
+        # Mock dependencies to ensure NO backend is available
+        with patch.dict('os.environ', {'GOOGLE_API_KEY': ''}, clear=False), \
+             patch('boring.cli_client.check_cli_available', return_value=False):
+            
             client = create_gemini_client(log_dir=tmp_path)
             
-            # Should return None when no API key
+            # Should return None when no API key AND no CLI
             assert client is None

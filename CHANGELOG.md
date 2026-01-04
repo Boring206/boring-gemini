@@ -5,7 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [10.5.0] - 2026-01-04
+## [10.7.0] - 2026-01-05
+
+### Added - Optimization & Robustness (Phase 4)
+- **Delegate Telemetry**: usage metrics for `boring_delegate`.
+- **Robust SpecKit Parser** (P7): Pydantic validation for workflows, replacing fragile string parsing.
+- **CoT Prompting** (P8): Chain-of-Thought prompts in `boring_delegate` for better reasoning.
+- **Coverage Boost** (P9): Targeted tests for `speckit`, `memory`, `main`.
+
+### Changed
+- **Performance**: Optimized memory usage in `boring_memory`.
+
+## [10.6.0] - 2026-01-04
+
+### Added
+- **Workflow Automation**: `auto_execute` parameter for SpecKit tools (immediate execution mode)
+- **Multi-Agent Routing**: `boring_delegate` tool for semantic dispatch to specialized agents
+- **Context Hygiene**: `boring_forget_all` tool to clear LLM context while preserving task state
+- **Documentation Verification**: `boring_verify` DOCS level for checking code/doc consistency
+- **Smithery Compliance**: Validated Dockerfile and configuration for seamless deployment
 
 ### Changed - Pure CLI Mode Architecture
 - **`run_boring`**: Now returns CLI command template instead of executing `StatefulAgentLoop` internally (which fails in MCP mode)
@@ -29,6 +47,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced pattern matching in `PatternMiner` with support for planning, debugging, and code review states
 - **NEW: `boring_rag_status`**: Health check tool for RAG index diagnostics
 - **NEW: Multi-dimensional evaluation**: `boring_evaluate` now returns scores for Cleanliness, Security, Performance, and Maintainability
+- **NEW: `boring_verify` auto_fix**: Auto-fix lint issues with `ruff --fix` before checking
+- **NEW: `boring_commit`**: Generate semantic Git commit messages from task.md (Conventional Commits format)
+- **NEW: `boring_delegate`**: Multi-Agent Routing tool for sub-task delegation
+- **NEW: `boring_forget_all`**: Context Hygeine tool to optimize LLM performance
+- **NEW: `boring_verify` DOCS level**: Documentation consistency checking workflow
 
 ### Documentation
 - Updated README with Pure CLI Mode architecture explanation

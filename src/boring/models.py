@@ -91,3 +91,24 @@ class CircuitBreakerHistoryEntry(BaseModel):
         json_encoders = {
             datetime: lambda v: v.isoformat()
         }
+
+
+class WorkflowStep(BaseModel):
+    """A single step in a SpecKit workflow."""
+    index: int
+    content: str
+
+
+class Workflow(BaseModel):
+    """
+    Structured representation of a SpecKit workflow.
+    Ensures workflows have required metadata and structure.
+    """
+    name: str = Field(..., description="Workflow filename without extension")
+    description: str = Field(..., description="Description from frontmatter")
+    version: Optional[str] = Field(None, description="Workflow version")
+    steps: List[WorkflowStep] = Field(default_factory=list, description="Extracted steps")
+    raw_content: str = Field(..., description="Full original markdown content")
+    
+    class Config:
+        extra = "ignore"

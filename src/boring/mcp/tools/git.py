@@ -1,11 +1,14 @@
-from typing import Optional, Annotated
+from typing import Optional, Annotated, List
+import re
+import subprocess
+from pathlib import Path
 from pydantic import Field
 from ..instance import mcp, MCP_AVAILABLE
 from ..utils import detect_project_root, check_rate_limit, get_project_root_or_error, configure_runtime_for_project
 from ...audit import audited
 
 # ==============================================================================
-# GIT TOOLS
+# GIT HOOKS TOOLS
 # ==============================================================================
 
 @audited
@@ -125,7 +128,214 @@ def boring_hooks_status(
     except Exception as e:
         return {"status": "ERROR", "error": str(e)}
 
+
+# ==============================================================================
+# SEMANTIC GIT TOOLS
+# ==============================================================================
+
+@audited
+def boring_commit(
+    task_file: Annotated[str, Field(description="Path to task.md file (default: task.md)")] = "task.md",
+    commit_type: Annotated[str, Field(description="Commit type: auto, feat, fix, refactor, docs, chore")] = "auto",
+    scope: Annotated[str, Field(description="Optional scope for commit message (e.g., 'rag', 'auth')")] = None,
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+) -> dict:
+    """
+    Generate a semantic Git commit message from completed tasks in task.md.
+    
+    Parses task.md for completed items ([x]) and generates a Conventional Commits
+    format message. Returns the commit command for you to execute.
+    
+    Args:
+        task_file: Path to task.md file (default: task.md)
+        commit_type: Commit type (auto, feat, fix, refactor, docs, chore)
+        scope: Optional scope for commit message
+        project_path: Optional explicit path to project root
+        
+    Returns:
+        Generated commit message and command
+    """
+    project_root, error = get_project_root_or_error(project_path)
+    if error:
+        return error
+    
+    # Find task file in common locations
+    task_path = project_root / task_file
+    
+    if not task_path.exists():
+        for alt_path in [
+            project_root / ".gemini" / "task.md",
+            project_root / "openspec" / "task.md",
+            project_root / ".agent" / "task.md"
+        ]:
+            if alt_path.exists():
+                task_path = alt_path
+                break
+    
+    if not task_path.exists():
+        return {
+            "status": "NOT_FOUND",
+            "message": f"Task file not found: {task_file}",
+            "searched": [str(project_root / task_file)]
+        }
+    
+    try:
+        content = task_path.read_text(encoding="utf-8")
+    except Exception as e:
+        return {"status": "ERROR", "message": f"Cannot read task file: {e}"}
+    
+    # Parse completed tasks (lines with [x])
+    completed_pattern = r"^\s*-\s*\[x\]\s*(.+)$"
+    completed_tasks = re.findall(completed_pattern, content, re.MULTILINE | re.IGNORECASE)
+    
+    if not completed_tasks:
+        return {
+            "status": "NO_COMPLETED_TASKS",
+            "message": "No completed tasks found in task.md",
+            "hint": "Mark tasks as complete with [x] before generating commit"
+        }
+    
+    # Detect commit type from tasks if auto
+    detected_type = commit_type
+    if commit_type == "auto":
+        task_text = " ".join(completed_tasks).lower()
+        if any(word in task_text for word in ["fix", "bug", "error", "issue"]):
+            detected_type = "fix"
+        elif any(word in task_text for word in ["add", "new", "implement", "create"]):
+            detected_type = "feat"
+        elif any(word in task_text for word in ["refactor", "clean", "improve"]):
+            detected_type = "refactor"
+        elif any(word in task_text for word in ["doc", "readme", "comment"]):
+            detected_type = "docs"
+        else:
+            detected_type = "feat"
+    
+    # Detect scope from task keywords
+    detected_scope = scope
+    if not detected_scope:
+        scope_keywords = {
+            "rag": ["rag", "index", "search", "retrieve"],
+            "mcp": ["mcp", "tool", "server"],
+            "verify": ["verify", "lint", "test"]
+        }
+        task_text = " ".join(completed_tasks).lower()
+        for scope_name, keywords in scope_keywords.items():
+            if any(kw in task_text for kw in keywords):
+                detected_scope = scope_name
+                break
+    
+    # Build commit message from first task
+    main_task = completed_tasks[0].strip()
+    main_task = re.sub(r"`([^`]+)`", r"\1", main_task)  # Remove backticks
+    main_task = re.sub(r"\*\*([^*]+)\*\*", r"\1", main_task)  # Remove bold
+    main_task = main_task.lower().rstrip(".")
+    
+    scope_str = f"({detected_scope})" if detected_scope else ""
+    commit_line = f"{detected_type}{scope_str}: {main_task}"
+    
+    # Escape quotes for shell
+    escaped_message = commit_line.replace('"', '\\"')
+    
+    return {
+        "status": "SUCCESS",
+        "commit_type": detected_type,
+        "scope": detected_scope,
+        "message": commit_line,
+        "completed_tasks": len(completed_tasks),
+        "command": f'git commit -m "{escaped_message}"'
+    }
+
+
+@audited  
+def boring_visualize(
+    scope: Annotated[str, Field(description="Visualization scope: module, class, or full")] = "module",
+    output_format: Annotated[str, Field(description="Output format: mermaid, json")] = "mermaid",
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+) -> dict:
+    """
+    Generate architecture visualization from codebase structure.
+    
+    Scans Python files and generates a Mermaid.js diagram showing
+    module dependencies and relationships.
+    
+    Args:
+        scope: Visualization scope (module, class, full)
+        output_format: Output format (mermaid, json)
+        project_path: Optional explicit path to project root
+        
+    Returns:
+        Generated diagram or structure data
+    """
+    project_root, error = get_project_root_or_error(project_path)
+    if error:
+        return error
+    
+    # Find Python files
+    src_dir = project_root / "src"
+    if not src_dir.exists():
+        src_dir = project_root
+    
+    # Build module graph
+    modules = {}
+    imports = []
+    
+    for py_file in src_dir.rglob("*.py"):
+        if "__pycache__" in str(py_file):
+            continue
+        
+        try:
+            rel_path = py_file.relative_to(src_dir)
+            module_name = str(rel_path.with_suffix("")).replace("/", ".").replace("\\", ".")
+            modules[module_name] = str(rel_path)
+            
+            content = py_file.read_text(encoding="utf-8", errors="ignore")
+            from_imports = re.findall(r"^from\s+([\w.]+)\s+import", content, re.MULTILINE)
+            
+            for imp in from_imports:
+                if imp.startswith(".") or any(imp.startswith(m.split(".")[0]) for m in modules):
+                    imports.append((module_name, imp))
+        except Exception:
+            continue
+    
+    if output_format == "json":
+        return {"status": "SUCCESS", "modules": modules, "total": len(modules)}
+    
+    # Generate Mermaid diagram
+    mermaid_lines = ["graph TD"]
+    node_ids = {}
+    
+    for i, (mod_name, _) in enumerate(list(modules.items())[:15]):
+        node_id = f"M{i}"
+        node_ids[mod_name] = node_id
+        short_name = mod_name.split(".")[-1]
+        mermaid_lines.append(f"    {node_id}[{short_name}]")
+    
+    for source, target in imports[:20]:
+        src_id = node_ids.get(source)
+        tgt_id = None
+        for mod_name, mod_id in node_ids.items():
+            if target.endswith(mod_name) or mod_name.endswith(target.lstrip(".")):
+                tgt_id = mod_id
+                break
+        if src_id and tgt_id and src_id != tgt_id:
+            mermaid_lines.append(f"    {src_id} --> {tgt_id}")
+    
+    return {
+        "status": "SUCCESS",
+        "format": "mermaid",
+        "diagram": "\n".join(mermaid_lines),
+        "total_modules": len(modules)
+    }
+
+
+# ==============================================================================
+# TOOL REGISTRATION
+# ==============================================================================
+
 if MCP_AVAILABLE and mcp is not None:
     mcp.tool(description="Install Git hooks", annotations={"readOnlyHint": False, "idempotentHint": True})(boring_hooks_install)
     mcp.tool(description="Uninstall Git hooks", annotations={"readOnlyHint": False, "idempotentHint": True})(boring_hooks_uninstall)
     mcp.tool(description="Check Git hooks status", annotations={"readOnlyHint": True})(boring_hooks_status)
+    mcp.tool(description="Generate semantic Git commit from task.md", annotations={"readOnlyHint": True})(boring_commit)
+    mcp.tool(description="Generate architecture diagram from codebase", annotations={"readOnlyHint": True})(boring_visualize)
+

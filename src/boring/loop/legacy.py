@@ -430,7 +430,27 @@ class AgentLoop:
             progress.add_task("[cyan]Gemini CLI Running...", total=None)
             live.update(Panel(progress, title="[bold blue]CLI Progress[/bold blue]"))
             
-            response_text, success = adapter.generate(prompt, context=context_str)
+            # Load Tools for CLI
+            from ..mcp.tools.agents import boring_web_search
+            tools = [boring_web_search]
+
+            # Use generate_with_tools if available
+            response = adapter.generate_with_tools(
+                prompt=prompt, 
+                context=context_str,
+                tools=tools
+            )
+
+            response_text = response.text
+            success = response.success
+            
+            # TODO: Handle tool calls if any returned (currently just appends text)
+            if hasattr(response, 'function_calls') and response.function_calls:
+                 console.print(f"[bold magenta]🛠️ CLI Tool Call Requested: {response.function_calls}[/bold magenta]")
+            elif isinstance(response, dict) and 'function_calls' in response:
+                 console.print(f"[bold magenta]🛠️ CLI Tool Call Requested (Dict): {response['function_calls']}[/bold magenta]")
+            
+            pass
             
         # Write output log
         try:
