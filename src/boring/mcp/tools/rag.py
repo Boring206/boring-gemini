@@ -34,7 +34,8 @@ def register_rag_tools(mcp, helpers: dict):
     
     @mcp.tool(description="Index codebase for RAG", annotations={"readOnlyHint": False, "idempotentHint": True})
     def boring_rag_index(
-        force: Annotated[bool, Field(description="If True, rebuild index even if it exists")] = False
+        force: Annotated[bool, Field(description="If True, rebuild index even if it exists")] = False,
+        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Index the codebase for RAG retrieval.
@@ -44,11 +45,12 @@ def register_rag_tools(mcp, helpers: dict):
         
         Args:
             force: If True, rebuild index even if it exists
+            project_path: Optional explicit path to project root
         
         Returns:
             Status message with indexing statistics
         """
-        project_root = get_project_root_or_error()
+        project_root = get_project_root_or_error(project_path)
         retriever = get_retriever(project_root)
         
         if not retriever.is_available:
@@ -80,7 +82,8 @@ def register_rag_tools(mcp, helpers: dict):
         query: Annotated[str, Field(description="What you're looking for (e.g., 'authentication error handling')")],
         max_results: Annotated[int, Field(description="Maximum number of results (default 10)")] = 10,
         expand_graph: Annotated[bool, Field(description="Include related code via dependency graph (default True)")] = True,
-        file_filter: Annotated[str, Field(description="Filter by file path substring (e.g., 'auth' or 'src/api')")] = None
+        file_filter: Annotated[str, Field(description="Filter by file path substring (e.g., 'auth' or 'src/api')")] = None,
+        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Search the codebase using semantic RAG retrieval.
@@ -93,11 +96,12 @@ def register_rag_tools(mcp, helpers: dict):
             max_results: Maximum number of results (default 10)
             expand_graph: Include related code via dependency graph (default True)
             file_filter: Filter by file path substring (e.g., "auth" or "src/api")
+            project_path: Optional explicit path to project root
         
         Returns:
             Formatted search results with code snippets
         """
-        project_root = get_project_root_or_error()
+        project_root = get_project_root_or_error(project_path)
         retriever = get_retriever(project_root)
         
         if not retriever.is_available:
@@ -136,7 +140,8 @@ def register_rag_tools(mcp, helpers: dict):
     def boring_rag_context(
         file_path: Annotated[str, Field(description="Path to the file (relative to project root)")],
         function_name: Annotated[str, Field(description="Name of the function to get context for")] = None,
-        class_name: Annotated[str, Field(description="Name of the class (if getting class context)")] = None
+        class_name: Annotated[str, Field(description="Name of the class (if getting class context)")] = None,
+        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Get comprehensive context for modifying a specific code location.
@@ -150,11 +155,12 @@ def register_rag_tools(mcp, helpers: dict):
             file_path: Path to the file (relative to project root)
             function_name: Name of the function to get context for
             class_name: Name of the class (if getting class context)
+            project_path: Optional explicit path to project root
         
         Returns:
             Categorized code context for safe modification
         """
-        project_root = get_project_root_or_error()
+        project_root = get_project_root_or_error(project_path)
         retriever = get_retriever(project_root)
         
         if not retriever.is_available:
@@ -205,7 +211,8 @@ def register_rag_tools(mcp, helpers: dict):
     @mcp.tool(description="Recursively expand code dependencies", annotations={"readOnlyHint": True, "openWorldHint": False})
     def boring_rag_expand(
         chunk_id: Annotated[str, Field(description="The chunk ID to expand from (from search results)")],
-        depth: Annotated[int, Field(description="How many layers to expand (default 2)")] = 2
+        depth: Annotated[int, Field(description="How many layers to expand (default 2)")] = 2,
+        project_path: Annotated[Optional[str], Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Smart expand: Get deeper dependency context for a specific chunk.
@@ -216,11 +223,12 @@ def register_rag_tools(mcp, helpers: dict):
         Args:
             chunk_id: The chunk ID to expand from (from search results)
             depth: How many layers to expand (default 2)
+            project_path: Optional explicit path to project root
         
         Returns:
             Additional related code chunks
         """
-        project_root = get_project_root_or_error()
+        project_root = get_project_root_or_error(project_path)
         retriever = get_retriever(project_root)
         
         if not retriever.is_available:
