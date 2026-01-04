@@ -350,7 +350,7 @@ def test_version_command_fallback(mock_dependencies):
     result = runner.invoke(app, ["version"])
     
     assert result.exit_code == 0
-    assert "Boring v7.0.0" in result.stdout
+    assert "Boring v10.9.0" in result.stdout
 
 # --- Workflow Commands ---
 

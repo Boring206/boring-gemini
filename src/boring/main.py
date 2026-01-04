@@ -275,9 +275,9 @@ def version():
     from importlib.metadata import version as pkg_version
     
     try:
-        ver = pkg_version("boring-gemini")
+        ver = pkg_version("boring")
     except Exception:
-        ver = "7.0.0"
+        ver = "10.9.0"
     
     console.print(f"[bold blue]Boring[/bold blue] v{ver}")
     console.print(f"  Model: {settings.DEFAULT_MODEL}")
