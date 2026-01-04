@@ -267,10 +267,18 @@ CODE ({filename}):
 INSTRUCTIONS:
 1. Rate EACH dimension (1-5) based on the language's best practices.
 2. Provide specific, actionable improvement suggestions.
-3. OUTPUT JSON ONLY.
+3. Assign a CONFIDENCE score (0.0-1.0) reflecting your certainty based on the visible code context.
+
+BIAS MITIGATION:
+- Avoid Length Bias: Do not score higher just because the code is longer. Concise is often better.
+- Avoid Verbosity Bias: High quality code is clean and idiomatic, not necessarily complex.
+- Avoid Authority Bias: Do not assume code is correct just because it looks professional; verify the logic.
+
+OUTPUT JSON ONLY.
 
 {{
     "score": <float 1-5>,
+    "confidence": <float 0.0-1.0>,
     "summary": "<summary>",
     "dimensions": {{
 {dimensions_json}

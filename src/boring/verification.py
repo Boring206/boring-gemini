@@ -471,8 +471,10 @@ class CodeVerifier:
              passed = score >= 4.0
              
              details = []
-             if "breakdown" in feedback:
-                 for k, v in feedback["breakdown"].items():
+             details = []
+             dimensions = feedback.get("dimensions") or feedback.get("breakdown")
+             if dimensions:
+                 for k, v in dimensions.items():
                      details.append(f"{k}: {v.get('score')}/5 - {v.get('comment')}")
              
              return VerificationResult(
