@@ -187,18 +187,30 @@ def run_boring(
         }
 
 @audited
-def boring_health_check() -> dict:
+def boring_health_check(
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+) -> dict:
     """
     Check Boring system health.
     
+    Args:
+        project_path: Optional explicit path to project root (to load .env)
+
     Returns:
         Health check results including API key status, dependencies, etc.
     """
     try:
         from ...health import run_health_check
-        
         import os
         import shutil
+        
+        # Load env if project path provided
+        if project_path:
+             try:
+                 root = Path(project_path)
+                 configure_runtime_for_project(root)
+             except:
+                 pass
         
         # Auto-detect backend: If no API key but CLI exists, check CLI health
         has_key = "GOOGLE_API_KEY" in os.environ and os.environ["GOOGLE_API_KEY"]

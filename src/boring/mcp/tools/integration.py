@@ -62,7 +62,9 @@ def boring_setup_extensions(
         }
 
 @audited
-def boring_notebooklm_guide() -> str:
+def boring_notebooklm_guide(
+    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+) -> str:
     """
     Get instructions for integrating NotebookLM (and fixing auth issues).
     
