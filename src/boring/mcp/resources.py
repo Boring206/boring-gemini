@@ -17,7 +17,7 @@ if MCP_AVAILABLE and mcp is not None:
         logs = root / "logs"
         logs.mkdir(exist_ok=True)
         
-        memory = MemoryManager(root, logs)
+        memory = MemoryManager(root)
         return str(memory.get_project_state())
 
     @mcp.resource("boring://project/prompt")
