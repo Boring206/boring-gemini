@@ -13,37 +13,45 @@ tags: ["ai", "agent", "gemini", "autonomous", "devops", "local"]
 build:
   dockerfile: "Dockerfile"
   dockerBuildPath: "."
+
 startCommand:
   type: "http"
   configSchema:
     type: "object"
-    # Validating criteria: "Making configuration optional improves user experience"
-    # NOT mark any field as 'required' if the server can start without it (even if limited)
+    required: []
     properties:
       GOOGLE_API_KEY:
         type: "string"
         title: "Google Gemini API Key"
-        description: "Google Gemini API Key (Optional if set via env var or using Vertex AI)"
+        description: "Set your Google Gemini API Key (optional if using environment variable or Vertex AI)."
       BORING_MCP_MODE:
         type: "string"
         title: "MCP Mode"
-        description: "Set to '1' to enable MCP mode"
+        description: "Enable MCP mode. Set to '1' for enabled, '0' for disabled."
         default: "1"
         enum: ["0", "1"]
       LOG_LEVEL:
         type: "string"
         title: "Log Level"
-        description: "Logging level (DEBUG, INFO, WARNING, ERROR)"
+        description: "Logging level (DEBUG, INFO, WARNING, ERROR)."
         default: "INFO"
         enum: ["DEBUG", "INFO", "WARNING", "ERROR"]
       PROJECT_ROOT_DEFAULT:
         type: "string"
         title: "Default Project Root"
-        description: "Default project path if not specified in tool calls"
+        description: "Default path for new projects if not specified."
         default: "."
       BORING_ALLOW_DANGEROUS:
         type: "boolean"
         title: "Allow Dangerous Operations"
-        description: "Allow dangerous operations without prompt (NOT RECOMMENDED)"
+        description: "Allow dangerous operations without prompt (NOT RECOMMENDED)."
         default: false
     additionalProperties: false
+
+  exampleConfig:
+    GOOGLE_API_KEY: ""
+    BORING_MCP_MODE: "1"
+    LOG_LEVEL: "INFO"
+    PROJECT_ROOT_DEFAULT: "."
+    BORING_ALLOW_DANGEROUS: false
+
