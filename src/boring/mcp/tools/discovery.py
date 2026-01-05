@@ -7,9 +7,38 @@ Solves the context window issue by exposing capabilities via MCP Resources.
 AI can "discover" what tools are available instead of loading them all at once.
 """
 
-
 # Defined capabilities and their associated tool categories
 CAPABILITIES = {
+    "verification": {
+        "description": "Code quality verification and syntax checking",
+        "tools": ["boring_verify", "boring_verify_file", "boring_auto_fix"],
+        "docs": "Verify code correctness and fix lint issues.",
+    },
+    "plugins": {
+        "description": "Plugin management and execution",
+        "tools": ["boring_list_plugins", "boring_run_plugin", "boring_reload_plugins"],
+        "docs": "Manage and run external boring plugins.",
+    },
+    "workspace": {
+        "description": "Project workspace management",
+        "tools": [
+            "boring_workspace_add",
+            "boring_workspace_remove",
+            "boring_workspace_list",
+            "boring_workspace_switch",
+        ],
+        "docs": "Manage multiple projects in the boring workspace.",
+    },
+    "knowledge_base": {
+        "description": "Project learning and rubric management",
+        "tools": ["boring_learn", "boring_create_rubrics", "boring_brain_summary"],
+        "docs": "Store and retrieve learned knowledge about the project.",
+    },
+    "evaluation": {
+        "description": "Code evaluation and scoring",
+        "tools": ["boring_evaluate"],
+        "docs": "Evaluate code quality against defined rubrics.",
+    },
     "security": {
         "description": "Security scanning, secret detection, and vulnerability analysis",
         "tools": ["boring_security_scan"],
