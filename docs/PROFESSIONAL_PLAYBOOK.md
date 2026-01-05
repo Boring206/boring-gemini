@@ -66,6 +66,12 @@
 | **架構視覺化** | `/visualize_architecture` | Git Visualize (Mermaid) |
 | **查看 AI 記憶** | `/project_brain` | Brain Summary |
 | **效能優化分析** | `/optimize_performance` | Arch Evaluation |
+| **學習專案模式** | `/learn_patterns` | boring_learn |
+| **建立評估標準** | `/create_rubrics` | boring_create_rubrics |
+| **建立 RAG 索引** | `/index_codebase` | boring_rag_index |
+| **清除短期記憶** | `/reset_memory` | boring_forget_all |
+| **設定 IDE** | `/setup_ide` | boring_setup_extensions |
+| **標記任務完成** | `/mark_done` | boring_done |
 
 ---
 
