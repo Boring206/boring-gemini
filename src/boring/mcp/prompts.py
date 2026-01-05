@@ -721,3 +721,114 @@ Target: {target}
    - Suggest specific refactorings (e.g., using sets, caching, batching)
    - Provide "Before vs After" benchmarks if possible
 """
+
+    # --- Knowledge & Learning Prompts ---
+
+    @mcp.prompt(
+        name="learn_patterns",
+        description="Let AI learn project-specific patterns from recent changes",
+    )
+    def learn_patterns(
+        focus: str = Field(default="all", description="Focus area (all, naming, fixes, structure)"),
+    ) -> str:
+        """Learn project patterns."""
+        return f"""📚 **Learn Project Patterns**
+
+Focus: {focus}
+
+1. Run `boring_learn(focus='{focus}')`
+2. AI will analyze recent changes and extract:
+   - Naming conventions
+   - Common fix patterns
+   - Code structure preferences
+3. Save learned patterns to `.boring_brain/`
+4. Show summary of what was learned
+"""
+
+    @mcp.prompt(
+        name="create_rubrics", description="Create evaluation rubrics for code quality standards"
+    )
+    def create_rubrics(
+        rubric_name: str = Field(default="team_standards", description="Name for the rubric"),
+    ) -> str:
+        """Create evaluation rubrics."""
+        return f"""📏 **Create Evaluation Rubrics**
+
+Rubric Name: {rubric_name}
+
+1. Run `boring_create_rubrics(name='{rubric_name}')`
+2. Define criteria for:
+   - Code complexity thresholds
+   - Naming convention rules
+   - Documentation requirements
+   - Test coverage minimums
+3. Save to `.boring_brain/rubrics/{rubric_name}.yaml`
+4. These will be used by `boring_evaluate` for automated scoring
+"""
+
+    @mcp.prompt(name="index_codebase", description="Build or refresh semantic search index for RAG")
+    def index_codebase(
+        force: bool = Field(default=False, description="Force full reindex"),
+    ) -> str:
+        """Index codebase for RAG."""
+        return f"""🔧 **Build RAG Index**
+
+Force Reindex: {force}
+
+1. Run `boring_rag_index(force={force})`
+2. This will:
+   - Parse all source files
+   - Extract function/class definitions
+   - Build dependency graph
+   - Create semantic embeddings
+3. Once complete, use `/semantic_search` to query the codebase
+"""
+
+    @mcp.prompt(
+        name="reset_memory", description="Clear AI's short-term memory (keep long-term knowledge)"
+    )
+    def reset_memory(
+        keep_rubrics: bool = Field(default=True, description="Keep evaluation rubrics"),
+    ) -> str:
+        """Reset AI memory."""
+        return f"""🗑️ **Reset Memory**
+
+Keep Rubrics: {keep_rubrics}
+
+1. Run `boring_forget_all(keep_current_task={keep_rubrics})`
+2. This clears:
+   - Session context
+   - Short-term task memory
+3. Keeps:
+   - Learned patterns (if any)
+   - Evaluation rubrics (if keep_rubrics=True)
+4. Use when starting a completely new task
+"""
+
+    @mcp.prompt(name="setup_ide", description="Configure IDE extensions for Boring integration")
+    def setup_ide() -> str:
+        """Set up IDE integration."""
+        return """🔌 **IDE Integration Setup**
+
+1. Run `boring_setup_extensions`
+2. This will:
+   - Detect your IDE (VS Code, Cursor, etc.)
+   - Install recommended extensions
+   - Configure MCP settings
+   - Set up Git hooks
+3. Verify with `boring_health_check`
+"""
+
+    @mcp.prompt(name="mark_done", description="Mark current task as complete and generate summary")
+    def mark_done() -> str:
+        """Mark task as done."""
+        return """✅ **Mark Task Complete**
+
+1. Run `boring_done`
+2. This will:
+   - Generate completion summary
+   - Suggest a semantic commit message
+   - Update task.md status
+   - Optionally create a release note
+3. Use `/learn_patterns` afterwards to capture learnings
+"""
