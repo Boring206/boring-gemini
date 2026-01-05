@@ -1,17 +1,13 @@
 """
 Tests for security module.
 """
-import pytest
-from pathlib import Path
 
 from boring.security import (
-    validate_file_path,
     is_safe_path,
     mask_sensitive_data,
-    sanitize_filename,
     sanitize_content,
-    ALLOWED_EXTENSIONS,
-    BLOCKED_DIRECTORIES,
+    sanitize_filename,
+    validate_file_path,
 )
 
 

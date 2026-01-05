@@ -1,7 +1,8 @@
-import pytest
-from unittest.mock import MagicMock, patch
-import sys
 from pathlib import Path
+from unittest.mock import patch
+
+import pytest
+
 
 @pytest.fixture
 def mock_mcp():
@@ -12,6 +13,7 @@ def mock_mcp():
         mock.resource.return_value = lambda x: x
         yield mock
 
+
 @pytest.fixture
 def mock_project_root(tmp_path):
     """Create a temporary project root with necessary structure."""
@@ -20,6 +22,7 @@ def mock_project_root(tmp_path):
     (root / "PROMPT.md").write_text("# Test Project")
     (root / ".agent" / "workflows").mkdir(parents=True)
     return root
+
 
 @pytest.fixture
 def mock_settings():
