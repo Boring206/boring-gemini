@@ -2,6 +2,8 @@
 
 ## [10.16.0] - 2026-01-05 - Software Engineering Enforcement
 ### Added
+- **Web Dashboard**: New `boring-dashboard` command for a rich Streamlit-based visualization.
+- **Monitoring Split**: Distinguished between `boring-monitor` (TUI) and `boring-dashboard` (Web) in documentation.
 - **LSP & IDE Portability**: New `boring lsp start` command for JetBrains, Vim, and other LSP clients.
 - **Windows Stability**: Implemented robust exception handling for `ConnectionResetError` (WinError 10054) in the LSP server, ensuring graceful disconnects.
 - **CI/CD Quality Gates**: New `.github/workflows/quality-gates.yml` with 4-tier pipeline:

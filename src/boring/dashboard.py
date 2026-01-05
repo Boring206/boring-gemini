@@ -4,15 +4,13 @@ import time
 from importlib.metadata import version as get_version
 from pathlib import Path
 
-import streamlit as st
+# Streamlit placeholder for test patching and lazy loading
+st = None
 
-# Configuration
-st.set_page_config(
-    page_title="Boring Dashboard",
-    page_icon="🤖",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
+# Paths
+
+
+# Paths
 
 # Paths
 STATUS_FILE = Path("status.json")
@@ -31,6 +29,26 @@ def load_json(path: Path):
 
 
 def main():
+    global st
+    if st is None:
+        try:
+            import streamlit as streamlit_mod
+            st = streamlit_mod
+        except ImportError:
+            # Use a safe way to show help if streamlit is missing
+            print("\n[bold red]Error: Dashboard requirements not found.[/bold red]")
+            print("Please install the GUI optional dependencies:")
+            print('  [bold]pip install "boring[gui]"[/bold]\n')
+            return
+
+    # Configuration (Must be first streamlit call)
+    st.set_page_config(
+        page_title="Boring Dashboard",
+        page_icon="🤖",
+        layout="wide",
+        initial_sidebar_state="expanded",
+    )
+
     st.title("🤖 Boring Monitor")
     st.markdown("### Autonomous Agent Dashboard")
 
@@ -170,6 +188,13 @@ def run_app():
     script_path = Path(__file__).resolve()
 
     # Run streamlit
+    import importlib.util
+
+    if importlib.util.find_spec("streamlit") is None:
+        print("\n[bold red]Error: Streamlit is required for the web dashboard.[/bold red]")
+        print('Please install it with: [bold]pip install "boring[gui]"[/bold]\n')
+        return
+
     try:
         subprocess.run([sys.executable, "-m", "streamlit", "run", str(script_path)] + sys.argv[1:])
     except KeyboardInterrupt:

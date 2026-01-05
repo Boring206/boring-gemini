@@ -125,6 +125,14 @@ pip install "boring[all]"
 | `speckit_tasks` | 拆解計畫為任務清單 |
 | `speckit_analyze` | 檢查 Code-Spec 一致性 |
 
+
+## 📊 即時監控 (Live Monitoring)
+
+我們提供兩種監控方式，分別針對終端機愛好者與視覺化需求：
+
+- **終端機看板 (TUI)**：執行 `boring-monitor`。這會在終端機直接顯示運行狀態、API 呼叫次數及近期日誌，適合開發時常駐開啟。
+- **網頁儀表板 (Web Dashboard)**：執行 `boring-dashboard`。啟動視覺化介面（Streamlit），提供更豐富的專案趨勢圖與知識庫檢查功能。
+
 ---
 
 ## 🌐 支援語言
@@ -355,7 +363,6 @@ boring_diagnose --error "ModuleNotFoundError: No module named 'foo'"
 > **注意**：以下功能因需要 Server 端支援尚未實現
 
 - 🌐 **Boring Cloud**: 雲端協作與團隊共享
-- 📊 **Analytics Dashboard**: 專案品質趨勢分析
 - 🤝 **Team Workflows**: 多人工作流程同步
 - 🔐 **Enterprise SSO**: 企業級身份認證
 
