@@ -3,22 +3,20 @@
 """
 Advanced MCP Tools for Boring V10.16.
 
-Provides:
-- Security scanning (SAST, secrets, dependencies)
-- Atomic transactions (start, commit, rollback)
-- Background task execution
-- Context sync (cross-session memory)
-- User profile management
-
-All tools follow Smithery standards with proper Field descriptions.
+Consolidated tools to reduce context usage:
+- boring_security_scan
+- boring_transaction (start/commit/rollback/status)
+- boring_task (submit/status/list)
+- boring_context (save/load/list)
+- boring_profile (get/learn)
 """
 
-from typing import Annotated
+from typing import Annotated, Literal
 
 from pydantic import Field
 
 # =============================================================================
-# SECURITY SCANNING TOOLS
+# SECURITY TOOLS
 # =============================================================================
 
 
@@ -31,19 +29,17 @@ def boring_security_scan(
         str,
         Field(
             default="full",
-            description="Scan type: 'full' (all), 'secrets' (only secrets), 'vulnerabilities' (SAST), 'dependencies' (CVEs)",
+            description="Scan type: 'full', 'secrets', 'vulnerabilities', 'dependencies'",
         ),
     ] = "full",
 ) -> dict:
     """
-    Run comprehensive security scan on the codebase.
+    Run comprehensive security scan.
 
     Detects:
-    - Hardcoded secrets (API keys, tokens, passwords)
-    - Code vulnerabilities (via bandit SAST)
-    - Dependency CVEs (via pip-audit)
-
-    Returns scan results with issues categorized by severity.
+    - Hardcoded secrets
+    - Code vulnerabilities (SAST)
+    - Dependency CVEs
     """
     from pathlib import Path
 
@@ -78,80 +74,56 @@ def boring_security_scan(
                 "description": i.description,
                 "recommendation": i.recommendation,
             }
-            for i in report.issues[:20]  # Limit to 20 issues
+            for i in report.issues[:20]
         ],
     }
 
 
 # =============================================================================
-# TRANSACTION TOOLS (Atomic Operations)
+# TRANSACTION TOOLS
 # =============================================================================
 
 
-def boring_transaction_start(
-    project_path: Annotated[
-        str | None,
-        Field(default=None, description="Path to project root (default: current directory)"),
-    ] = None,
+def boring_transaction(
+    action: Annotated[
+        Literal["start", "commit", "rollback", "status"],
+        Field(description="Action to perform: start, commit, rollback, status"),
+    ],
     description: Annotated[
         str,
-        Field(default="Boring transaction", description="Description of changes being made"),
+        Field(default="Boring transaction", description="Description for 'start' action"),
     ] = "Boring transaction",
-) -> dict:
-    """
-    Start an atomic transaction with Git checkpoint.
-
-    Creates a rollback point before making risky changes.
-    Use boring_rollback to revert if something goes wrong.
-    Use boring_transaction_commit to confirm changes.
-    """
-    from boring.transactions import start_transaction
-
-    return start_transaction(project_path, description)
-
-
-def boring_transaction_commit(
     project_path: Annotated[
         str | None,
-        Field(default=None, description="Path to project root (default: current directory)"),
+        Field(default=None, description="Path to project root"),
     ] = None,
 ) -> dict:
     """
-    Commit the current transaction, making changes permanent.
+    Manage atomic transactions with Git checkpoints.
 
-    Clears the rollback checkpoint. Changes cannot be undone after this.
+    Actions:
+    - start: Create a checkpoint (stash changes)
+    - commit: Confirm changes (drop stash)
+    - rollback: Revert code to checkpoint
+    - status: Check if a transaction is active
     """
-    from boring.transactions import commit_transaction
+    from boring.transactions import (
+        commit_transaction,
+        rollback_transaction,
+        start_transaction,
+        transaction_status,
+    )
 
-    return commit_transaction(project_path)
-
-
-def boring_rollback(
-    project_path: Annotated[
-        str | None,
-        Field(default=None, description="Path to project root (default: current directory)"),
-    ] = None,
-) -> dict:
-    """
-    Rollback to the last checkpoint, discarding all changes.
-
-    Reverts all file changes made since boring_transaction_start.
-    """
-    from boring.transactions import rollback_transaction
-
-    return rollback_transaction(project_path)
-
-
-def boring_transaction_status(
-    project_path: Annotated[
-        str | None,
-        Field(default=None, description="Path to project root (default: current directory)"),
-    ] = None,
-) -> dict:
-    """Get current transaction status."""
-    from boring.transactions import transaction_status
-
-    return transaction_status(project_path)
+    if action == "start":
+        return start_transaction(project_path, description)
+    elif action == "commit":
+        return commit_transaction(project_path)
+    elif action == "rollback":
+        return rollback_transaction(project_path)
+    elif action == "status":
+        return transaction_status(project_path)
+    else:
+        return {"status": "error", "message": f"Unknown action: {action}"}
 
 
 # =============================================================================
@@ -159,210 +131,166 @@ def boring_transaction_status(
 # =============================================================================
 
 
-def boring_background_task(
-    task_type: Annotated[
-        str,
-        Field(description="Task type: 'verify', 'test', 'lint', 'security_scan'"),
+def boring_task(
+    action: Annotated[
+        Literal["submit", "status", "list"],
+        Field(description="Action: submit a task, check status, or list tasks"),
     ],
-    project_path: Annotated[
+    task_type: Annotated[
         str | None,
-        Field(default=None, description="Path to project root (default: current directory)"),
+        Field(default=None, description="Task type for 'submit': verify, test, lint, security_scan"),
+    ] = None,
+    task_id: Annotated[
+        str | None,
+        Field(default=None, description="Task ID for 'status' action"),
     ] = None,
     task_args: Annotated[
         dict | None,
-        Field(
-            default=None, description="Optional arguments for the task (e.g., {'level': 'FULL'})"
-        ),
+        Field(default=None, description="Arguments for 'submit' action"),
     ] = None,
-) -> dict:
-    """
-    Submit a task for background execution.
-
-    Runs verification, tests, or linting in a separate thread.
-    Use boring_task_status to check progress.
-    """
-    from boring.background_agent import submit_background_task
-
-    return submit_background_task(task_type, task_args or {}, project_path)
-
-
-def boring_task_status(
-    task_id: Annotated[
-        str,
-        Field(description="Task ID returned by boring_background_task"),
-    ],
-) -> dict:
-    """
-    Get status of a background task.
-
-    Returns status (pending/running/completed/failed) and result if done.
-    """
-    from boring.background_agent import get_task_status
-
-    return get_task_status(task_id)
-
-
-def boring_list_tasks(
-    status: Annotated[
+    project_path: Annotated[
         str | None,
-        Field(
-            default=None,
-            description="Filter by status: 'pending', 'running', 'completed', 'failed'",
-        ),
+        Field(default=None, description="Path to project root"),
     ] = None,
 ) -> dict:
-    """List all background tasks."""
-    from boring.background_agent import list_background_tasks
+    """
+    Manage background tasks (async execution).
 
-    return list_background_tasks(status)
+    Actions:
+    - submit: Start a new background task (requires task_type)
+    - status: Check task progress (requires task_id)
+    - list: List all tasks
+    """
+    from boring.background_agent import (
+        get_task_status,
+        list_background_tasks,
+        submit_background_task,
+    )
+
+    if action == "submit":
+        if not task_type:
+            return {"status": "error", "message": "task_type is required for submit action"}
+        return submit_background_task(task_type, task_args or {}, project_path)
+    elif action == "status":
+        if not task_id:
+            return {"status": "error", "message": "task_id is required for status action"}
+        return get_task_status(task_id)
+    elif action == "list":
+        return list_background_tasks()
+    else:
+        return {"status": "error", "message": f"Unknown action: {action}"}
 
 
 # =============================================================================
-# CONTEXT SYNC TOOLS (Cross-Session Memory)
+# CONTEXT TOOLS
 # =============================================================================
 
 
-def boring_save_context(
-    context_id: Annotated[
-        str,
-        Field(description="Unique ID for this context (e.g., 'auth-feature-v1')"),
+def boring_context(
+    action: Annotated[
+        Literal["save", "load", "list"],
+        Field(description="Action: save context, load context, or list saved contexts"),
     ],
+    context_id: Annotated[
+        str | None,
+        Field(default=None, description="Context ID for save/load"),
+    ] = None,
     summary: Annotated[
         str,
-        Field(description="Brief summary of current conversation state"),
-    ],
+        Field(default="", description="Summary for 'save' action"),
+    ] = "",
     project_path: Annotated[
         str | None,
-        Field(default=None, description="Path to project root (default: current directory)"),
+        Field(default=None, description="Path to project root"),
     ] = None,
 ) -> dict:
     """
-    Save current conversation context for later resumption.
+    Manage conversation context (Cross-Session Memory).
 
-    Enables cross-session continuity - resume work where you left off.
+    Actions:
+    - save: Save current context (requires context_id, summary)
+    - load: Load a saved context (requires context_id)
+    - list: List all saved contexts
     """
-    from boring.context_sync import save_context
+    from boring.context_sync import list_contexts, load_context, save_context
 
-    return save_context(context_id, summary, project_path)
-
-
-def boring_load_context(
-    context_id: Annotated[
-        str,
-        Field(description="Context ID to load"),
-    ],
-    project_path: Annotated[
-        str | None,
-        Field(default=None, description="Path to project root (default: current directory)"),
-    ] = None,
-) -> dict:
-    """
-    Load a previously saved context.
-
-    Returns the saved summary and any associated data.
-    """
-    from boring.context_sync import load_context
-
-    return load_context(context_id, project_path)
-
-
-def boring_list_contexts(
-    project_path: Annotated[
-        str | None,
-        Field(default=None, description="Path to project root (default: current directory)"),
-    ] = None,
-) -> dict:
-    """List all saved contexts for this project."""
-    from boring.context_sync import list_contexts
-
-    return list_contexts(project_path)
+    if action == "save":
+        if not context_id or not summary:
+            return {"status": "error", "message": "context_id and summary are required for save"}
+        return save_context(context_id, summary, project_path)
+    elif action == "load":
+        if not context_id:
+            return {"status": "error", "message": "context_id is required for load"}
+        return load_context(context_id, project_path)
+    elif action == "list":
+        return list_contexts(project_path)
+    else:
+        return {"status": "error", "message": f"Unknown action: {action}"}
 
 
 # =============================================================================
-# USER PROFILE TOOLS (Cross-Project Memory)
+# PROFILE TOOLS
 # =============================================================================
 
 
-def boring_get_profile() -> dict:
-    """
-    Get user's cross-project profile.
-
-    Contains learned patterns, coding style preferences, and architecture decisions.
-    """
-    from boring.context_sync import get_user_profile
-
-    return get_user_profile()
-
-
-def boring_learn_fix(
+def boring_profile(
+    action: Annotated[
+        Literal["get", "learn"],
+        Field(description="Action: get profile or learn a fix"),
+    ],
     error_pattern: Annotated[
-        str,
-        Field(description="The error pattern that was encountered"),
-    ],
+        str | None,
+        Field(default=None, description="Error pattern for 'learn' action"),
+    ] = None,
     fix_pattern: Annotated[
-        str,
-        Field(description="How the error was fixed"),
-    ],
+        str | None,
+        Field(default=None, description="Fix pattern for 'learn' action"),
+    ] = None,
     context: Annotated[
         str,
-        Field(default="", description="Additional context about the fix"),
+        Field(default="", description="Context for 'learn' action"),
     ] = "",
 ) -> dict:
     """
-    Record a learned fix for future reference.
+    Manage user profile (Cross-Project Memory).
 
-    Helps AI remember solutions across projects.
+    Actions:
+    - get: Get user profile and preferences
+    - learn: Record a learned fix (requires error_pattern, fix_pattern)
     """
-    from boring.context_sync import learn_fix
+    from boring.context_sync import get_user_profile, learn_fix
 
-    return learn_fix(error_pattern, fix_pattern, context)
+    if action == "get":
+        return get_user_profile()
+    elif action == "learn":
+        if not error_pattern or not fix_pattern:
+            return {"status": "error", "message": "error_pattern and fix_pattern required for learn"}
+        return learn_fix(error_pattern, fix_pattern, context)
+    else:
+        return {"status": "error", "message": f"Unknown action: {action}"}
 
 
 # =============================================================================
-# TOOL REGISTRATION
+# REGISTRATION
 # =============================================================================
 
 
 def register_advanced_tools(mcp):
-    """Register all advanced tools with the MCP server."""
-    # Security
+    """Register consolidated advanced tools."""
+    # Security (1 tool)
     mcp.tool(
         description="Run security scan (secrets, SAST, dependencies)",
         annotations={"readOnlyHint": True},
     )(boring_security_scan)
 
-    # Transactions
-    mcp.tool(description="Start atomic transaction with rollback checkpoint")(
-        boring_transaction_start
-    )
-    mcp.tool(description="Commit transaction, making changes permanent")(boring_transaction_commit)
-    mcp.tool(description="Rollback to last checkpoint, discarding changes")(boring_rollback)
-    mcp.tool(description="Get transaction status", annotations={"readOnlyHint": True})(
-        boring_transaction_status
-    )
+    # Transactions (1 tool)
+    mcp.tool(description="Manage atomic transactions (start/commit/rollback)")(boring_transaction)
 
-    # Background Tasks
-    mcp.tool(description="Submit background task (verify/test/lint/security)")(
-        boring_background_task
-    )
-    mcp.tool(description="Get background task status", annotations={"readOnlyHint": True})(
-        boring_task_status
-    )
-    mcp.tool(description="List all background tasks", annotations={"readOnlyHint": True})(
-        boring_list_tasks
-    )
+    # Background Tasks (1 tool)
+    mcp.tool(description="Manage background tasks (submit/status/list)")(boring_task)
 
-    # Context Sync
-    mcp.tool(description="Save conversation context for later resumption")(boring_save_context)
-    mcp.tool(description="Load saved context", annotations={"readOnlyHint": True})(
-        boring_load_context
-    )
-    mcp.tool(description="List all saved contexts", annotations={"readOnlyHint": True})(
-        boring_list_contexts
-    )
+    # Context (1 tool)
+    mcp.tool(description="Manage conversation context (save/load/list)")(boring_context)
 
-    # User Profile
-    mcp.tool(description="Get user's cross-project profile", annotations={"readOnlyHint": True})(
-        boring_get_profile
-    )
-    mcp.tool(description="Record a learned fix for future reference")(boring_learn_fix)
+    # Profile (1 tool)
+    mcp.tool(description="Manage user profile and learned memory")(boring_profile)
