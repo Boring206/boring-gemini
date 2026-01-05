@@ -138,6 +138,13 @@ inspect_resource.py
 debug_output.txt
 coverage_output.txt
 
+# Security Reports
+bandit_report.json
+bandit_report.txt
+safety_report.json
+pip-audit-report.json
+security_scan_results.json
+
 # Backup folders
 .boring_backups/
 
