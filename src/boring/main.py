@@ -369,8 +369,9 @@ def lsp_start(
     Start the Boring LSP/JSON-RPC Server for IDE integration.
     Connect your VS Code extension or JetBrains LSP client to this server.
     """
-    from .vscode_server import VSCodeServer
     import asyncio
+
+    from .vscode_server import VSCodeServer
 
     console.print(f"[bold green]🚀 Starting Boring LSP Server on {host}:{port}[/bold green]")
     server = VSCodeServer()
