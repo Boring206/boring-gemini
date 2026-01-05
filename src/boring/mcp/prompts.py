@@ -283,3 +283,333 @@ Steps:
 每個階段完成後，使用 `boring_agent_review` 進行程式碼審查。
 完成後提供完整的專案摘要和啟動指南。
 """
+
+    # --- Security Prompts ---
+
+    @mcp.prompt(
+        name="security_scan", description="Run comprehensive security analysis on the codebase"
+    )
+    def security_scan(
+        target: str = Field(
+            default="src/", description="Directory or file to scan for security issues"
+        ),
+    ) -> str:
+        """Run security scanning workflow."""
+        return f"""🔒 **Security Scan Mode**
+
+Target: {target}
+
+Execute security analysis:
+
+1. **Secret Detection**
+   - Run `boring_security_scan(scan_type='secrets')` to find exposed credentials
+
+2. **Vulnerability Scan (SAST)**
+   - Run `boring_security_scan(scan_type='vulnerabilities')` for static analysis
+
+3. **Dependency Audit**
+   - Run `boring_security_scan(scan_type='dependencies')` for known CVEs
+
+4. **Report**
+   - Categorize findings by severity (CRITICAL, HIGH, MEDIUM, LOW)
+   - Provide remediation steps for each issue
+"""
+
+    @mcp.prompt(
+        name="shadow_review", description="Review and approve pending Shadow Mode operations"
+    )
+    def shadow_review() -> str:
+        """Review Shadow Mode pending operations."""
+        return """🛡️ **Shadow Mode Review**
+
+Review all pending operations that require human approval:
+
+1. Run `boring_shadow_status` to list pending operations
+2. For each operation, display:
+   - Operation ID
+   - Type (file delete, system command, etc.)
+   - Risk level
+   - Proposed changes
+3. Ask me to approve or reject each operation
+4. Use `boring_shadow_approve(operation_id)` or `boring_shadow_reject(operation_id)`
+"""
+
+    # --- RAG & Memory Prompts ---
+
+    @mcp.prompt(
+        name="semantic_search", description="Search codebase using natural language queries"
+    )
+    def semantic_search(
+        query: str = Field(
+            default="authentication", description="What to search for in natural language"
+        ),
+    ) -> str:
+        """Run semantic code search."""
+        return f"""🔍 **Semantic Code Search**
+
+Query: {query}
+
+Execute search:
+
+1. Ensure index exists: `boring_rag_status`
+2. If not indexed, run: `boring_rag_index`
+3. Search: `boring_rag_search(query='{query}', expand_graph=True)`
+4. For each result:
+   - Show file path and line numbers
+   - Display code snippet
+   - Show related callers/callees
+"""
+
+    @mcp.prompt(
+        name="save_session", description="Save current session context for later resumption"
+    )
+    def save_session(
+        name: str = Field(default="work_in_progress", description="Name for the saved session"),
+    ) -> str:
+        """Save session context."""
+        return f"""💾 **Save Session Context**
+
+Session Name: {name}
+
+Save current work state:
+
+1. Run `boring_save_context(context_name='{name}')`
+2. This will save:
+   - Current working files
+   - Conversation context
+   - Pending tasks
+3. You can resume later with `boring_load_context(context_name='{name}')`
+"""
+
+    @mcp.prompt(name="load_session", description="Resume a previously saved session")
+    def load_session(
+        name: str = Field(default="", description="Name of the session to load"),
+    ) -> str:
+        """Load session context."""
+        return f"""📂 **Load Session Context**
+
+1. If no name specified, run `boring_list_contexts` to see available sessions
+2. Run `boring_load_context(context_name='{name if name else "<select from list>"}')
+3. Resume work from where you left off
+"""
+
+    # --- Transaction Prompts ---
+
+    @mcp.prompt(
+        name="safe_refactor", description="Perform risky refactoring with rollback safety net"
+    )
+    def safe_refactor(
+        target: str = Field(default="src/", description="Code to refactor"),
+        description: str = Field(default="Refactoring", description="Description of changes"),
+    ) -> str:
+        """Safe refactoring with transaction support."""
+        return f"""🔄 **Safe Refactor Mode**
+
+Target: {target}
+Description: {description}
+
+Execute with transaction safety:
+
+1. **Start Transaction**
+   - Run `boring_transaction_start(message='{description}')`
+   - This creates a Git savepoint
+
+2. **Make Changes**
+   - Perform the refactoring on `{target}`
+
+3. **Verify**
+   - Run `boring_verify(level='FULL')`
+
+4. **Decision**
+   - If tests pass: `boring_transaction_commit()`
+   - If tests fail: `boring_rollback()` (reverts all changes)
+"""
+
+    @mcp.prompt(name="rollback", description="Rollback recent changes to last safe state")
+    def rollback() -> str:
+        """Rollback changes."""
+        return """⏪ **Rollback Mode**
+
+Revert to last safe state:
+
+1. Check current transaction status
+2. Run `boring_rollback()` to restore to last savepoint
+3. Verify the rollback was successful with `boring_verify(level='STANDARD')`
+"""
+
+    # --- Background Task Prompts ---
+
+    @mcp.prompt(
+        name="background_verify", description="Run verification in background for large projects"
+    )
+    def background_verify(
+        level: str = Field(default="FULL", description="Verification level"),
+    ) -> str:
+        """Run verification in background."""
+        return f"""⏳ **Background Verification**
+
+Level: {level}
+
+For large projects, run verification without blocking:
+
+1. Submit: `boring_background_task(task_type='verify', task_args={{'level': '{level}'}})`
+2. Get task_id from response
+3. Check progress: `boring_task_status(task_id='<task_id>')`
+4. List all tasks: `boring_list_tasks()`
+"""
+
+    @mcp.prompt(name="background_test", description="Run tests in background")
+    def background_test() -> str:
+        """Run tests in background."""
+        return """🧪 **Background Test Runner**
+
+Run test suite without blocking:
+
+1. Submit: `boring_background_task(task_type='test')`
+2. Continue working while tests run
+3. Check status periodically: `boring_task_status(task_id='<task_id>')`
+"""
+
+    # --- Git & Workspace Prompts ---
+
+    @mcp.prompt(name="smart_commit", description="Create semantic commit with verification")
+    def smart_commit(
+        message: str = Field(
+            default="", description="Commit message (optional, will be generated)"
+        ),
+    ) -> str:
+        """Smart commit workflow."""
+        return f"""📝 **Smart Commit**
+
+Message: {message if message else "(will be auto-generated)"}
+
+1. Run `boring_verify(level='STANDARD')` to ensure code is clean
+2. If issues found, run `boring_auto_fix`
+3. Generate semantic commit message if not provided
+4. Run `boring_commit(message='{message if message else "<generated>"}')`
+"""
+
+    @mcp.prompt(name="switch_project", description="Switch to a different project in the workspace")
+    def switch_project(
+        project: str = Field(default="", description="Project name to switch to"),
+    ) -> str:
+        """Switch project context."""
+        return f"""🔀 **Switch Project**
+
+1. If no project specified, run `boring_workspace_list` to see available projects
+2. Run `boring_workspace_switch(name='{project if project else "<select from list>"}')`
+3. Confirm the switch was successful
+"""
+
+    @mcp.prompt(name="add_project", description="Register a new project in the workspace")
+    def add_project(
+        name: str = Field(default="my-project", description="Project name"),
+        path: str = Field(default=".", description="Path to project root"),
+    ) -> str:
+        """Add new project to workspace."""
+        return f"""➕ **Add Project to Workspace**
+
+Name: {name}
+Path: {path}
+
+1. Run `boring_workspace_add(name='{name}', path='{path}')`
+2. Optionally add tags for easier filtering
+3. Run `boring_workspace_list` to confirm registration
+"""
+
+    # --- Plugin Prompts ---
+
+    @mcp.prompt(name="run_plugin", description="Execute a Boring plugin")
+    def run_plugin(
+        plugin_name: str = Field(default="", description="Name of the plugin to run"),
+    ) -> str:
+        """Run a plugin."""
+        return f"""🔌 **Plugin Execution**
+
+1. If no plugin specified, run `boring_list_plugins` to see available plugins
+2. Run `boring_run_plugin(name='{plugin_name if plugin_name else "<select from list>"}')`
+3. Display plugin output
+"""
+
+    @mcp.prompt(name="create_plugin", description="Guide to create a new Boring plugin")
+    def create_plugin(
+        name: str = Field(default="my_plugin", description="Plugin name"),
+    ) -> str:
+        """Plugin creation guide."""
+        return f"""🔧 **Create Plugin: {name}**
+
+Create a new plugin in `.boring_plugins/{name}/`:
+
+1. **Structure**
+```
+.boring_plugins/
+└── {name}/
+    ├── plugin.yaml
+    └── __init__.py
+```
+
+2. **plugin.yaml**
+```yaml
+name: {name}
+version: 1.0.0
+description: My custom plugin
+hooks:
+  - pre_verify
+  - post_commit
+```
+
+3. **__init__.py**
+```python
+def pre_verify(context):
+    print(f"Pre-verify hook for {{context.project_path}}")
+    return {{"skip": False}}
+```
+
+4. Run `boring_reload_plugins` to register
+5. Test with `boring_run_plugin(name='{name}')`
+"""
+
+    # --- Evaluation Prompts ---
+
+    @mcp.prompt(name="evaluate_code", description="Run LLM-as-Judge evaluation on code quality")
+    def evaluate_code(
+        target: str = Field(default="src/", description="Code to evaluate"),
+        rubric: str = Field(default="default", description="Rubric name to use"),
+    ) -> str:
+        """Run code evaluation."""
+        return f"""📊 **Code Evaluation**
+
+Target: {target}
+Rubric: {rubric}
+
+1. Run `boring_evaluate(target='{target}', rubric='{rubric}')`
+2. Display scores for each criterion:
+   - Correctness
+   - Maintainability
+   - Performance
+   - Security
+3. Provide improvement suggestions for low-scoring areas
+"""
+
+    @mcp.prompt(
+        name="compare_implementations", description="A/B comparison of two code implementations"
+    )
+    def compare_implementations(
+        path_a: str = Field(default="v1/", description="First implementation path"),
+        path_b: str = Field(default="v2/", description="Second implementation path"),
+    ) -> str:
+        """Compare two implementations."""
+        return f"""⚖️ **Implementation Comparison (A/B)**
+
+A: {path_a}
+B: {path_b}
+
+1. Run `boring_evaluate(target='{path_a}', level='PAIRWISE', compare_to='{path_b}')`
+2. LLM Judge will compare:
+   - Correctness
+   - Logic quality
+   - Performance
+   - Code clarity
+3. Declare winner with justification
+4. Provide recommendations for the losing implementation
+"""

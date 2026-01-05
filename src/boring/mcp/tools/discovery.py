@@ -81,8 +81,40 @@ CAPABILITIES = {
     },
     "shadow_mode": {
         "description": "Safe execution environment with approval workflow",
-        "tools": ["boring_shadow_mode", "boring_shadow_approve", "boring_shadow_reject"],
+        "tools": [
+            "boring_shadow_mode",
+            "boring_shadow_approve",
+            "boring_shadow_reject",
+            "boring_shadow_status",
+            "boring_shadow_clear",
+        ],
         "docs": "Execute dangerous operations in shadow mode for safety.",
+    },
+    "speckit": {
+        "description": "Specification-driven development workflows",
+        "tools": [
+            "speckit_clarify",
+            "speckit_plan",
+            "speckit_tasks",
+            "speckit_analyze",
+            "speckit_checklist",
+        ],
+        "docs": "Use SpecKit to clarify requirements, create plans, and generate tasks.",
+    },
+    "auto_fix": {
+        "description": "Automated code fixing and error resolution",
+        "tools": ["boring_auto_fix", "boring_suggest_next", "boring_diagnose"],
+        "docs": "Automatically fix lint, format, and test errors.",
+    },
+    "diagnostics": {
+        "description": "Error analysis and debugging assistance",
+        "tools": ["boring_diagnose", "boring_health_check", "boring_status"],
+        "docs": "Analyze errors and check system health.",
+    },
+    "quickstart": {
+        "description": "Project initialization and setup",
+        "tools": ["boring_quickstart", "boring_hooks_install", "boring_setup_extensions"],
+        "docs": "Initialize new projects with best practices.",
     },
 }
 
