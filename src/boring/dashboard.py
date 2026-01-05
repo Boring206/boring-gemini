@@ -33,6 +33,7 @@ def main():
     if st is None:
         try:
             import streamlit as streamlit_mod
+
             st = streamlit_mod
         except ImportError:
             # Use a safe way to show help if streamlit is missing
