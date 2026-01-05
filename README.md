@@ -335,8 +335,8 @@ boring_agent_review --parallel
 **如果您使用其他 IDE（如 Cursor, IntelliJ, PyCharm, Vim 等）：**
 
 *   **Cursor / VS Code 衍生產品**：支援大部分功能。如果您使用的是 Cursor，可以將 `boring-gemini` 作為 MCP Server 添加，我（AI 助手）就能幫您調用所有工具。
-*   **IntelliJ / PyCharm**：可以透過內置的終端機使用 `boring` CLI 命令。對於即時提示，我們正計畫開發 LSP (Language Server Protocol) 支援，屆時將支援所有兼容 LSP 的編輯器。
-*   **Vim / Emacs**：建議配合 `boring` CLI 的 `--watch` 模式使用，或透過 MCP 插件（如 `none-ls` 整合）來獲得部分智慧功能。
+*   **IntelliJ / PyCharm / Vim**：您可以運行 `boring lsp start --port 9876` 啟動標準 JSON-RPC 伺服器，並配置您的 LSP 插件連線。針對 Windows 系統，我們已特別優化了連線異常處理 (WinError 10054)，確保開發環境穩定。
+*   **CLI 模式**：任何環境都能透過內置的終端機使用 `boring` 指令完成所有自動化開發任務。
 
 ---
 
