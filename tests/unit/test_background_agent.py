@@ -10,11 +10,18 @@ from boring.background_agent import BackgroundTaskRunner
 @pytest.fixture
 def runner():
     """Get a fresh runner instance."""
-    # Access private _instance to reset for tests
+    # Reset singleton for each test
     BackgroundTaskRunner._instance = None
-    runner = BackgroundTaskRunner(max_workers=2)
-    yield runner
-    runner.shutdown(wait=False)
+    BackgroundTaskRunner._lock = __import__("threading").Lock()
+    # Directly set instance attribute to allow __init__ to run
+    instance = object.__new__(BackgroundTaskRunner)
+    instance._initialized = False
+    BackgroundTaskRunner._instance = instance
+    instance.__init__(max_workers=2)
+    yield instance
+    instance.shutdown(wait=False)
+    # Clean up singleton
+    BackgroundTaskRunner._instance = None
 
 
 def test_submit_task(runner):
