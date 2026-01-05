@@ -160,3 +160,102 @@ Steps:
 2. Review the plan with me.
 3. Once approved, use `boring_multi_agent` with the task to execute it.
 """
+
+    # --- Vibe Coder Prompts (Optimized for AI Clients) ---
+
+    @mcp.prompt(
+        name="vibe_start", description="一鍵啟動完整開發流程：需求釐清 → 規劃 → 程式碼生成 → 驗證"
+    )
+    def vibe_start(
+        idea: str = Field(default="Build a REST API", description="你想要建立什麼？用自然語言描述"),
+    ) -> str:
+        """One-click full development workflow for Vibe Coders."""
+        return f"""🚀 **Vibe Coding 模式啟動**
+
+你的想法：{idea}
+
+請按順序執行以下步驟：
+
+**Phase 1: 需求釐清**
+1. 使用 `speckit_clarify` 分析需求，產生 3-5 個釐清問題
+2. 等待我回答後繼續
+
+**Phase 2: 規劃**
+3. 使用 `speckit_plan` 根據需求生成實作計畫
+4. 使用 `speckit_tasks` 將計畫拆解為任務清單
+5. 將計畫展示給我確認
+
+**Phase 3: 執行**
+6. 確認後，使用 `boring_multi_agent(task='{idea}')` 執行開發
+
+**Phase 4: 驗證**
+7. 開發完成後，使用 `boring_verify(level='FULL')` 驗證程式碼品質
+8. 如有問題，使用 `boring_auto_fix` 自動修復
+
+完成後提供摘要報告。
+"""
+
+    @mcp.prompt(name="quick_fix", description="自動修復所有程式碼問題：Lint、格式、測試錯誤")
+    def quick_fix(
+        target: str = Field(default=".", description="要修復的目標路徑"),
+    ) -> str:
+        """Auto-fix all code issues in one click."""
+        return f"""🔧 **快速修復模式**
+
+目標：{target}
+
+請按順序執行：
+
+1. **診斷階段**
+   - 執行 `boring_verify(level='FULL')` 檢查所有問題
+
+2. **修復階段**
+   - 如果有 Lint 錯誤，執行 `boring_auto_fix(max_iterations=3)`
+   - 如果有測試失敗，分析失敗原因並修復
+
+3. **驗證階段**
+   - 再次執行 `boring_verify` 確認所有問題已解決
+   - 執行 `ruff format --check` 確認格式正確
+
+4. **報告**
+   - 列出所有已修復的問題
+   - 如有無法自動修復的問題，提供手動修復建議
+"""
+
+    @mcp.prompt(name="full_stack_dev", description="全棧應用開發：前端 + 後端 + 資料庫 + 測試")
+    def full_stack_dev(
+        app_name: str = Field(default="my-app", description="應用程式名稱"),
+        stack: str = Field(
+            default="FastAPI + React + PostgreSQL",
+            description="技術棧（如：FastAPI + React + PostgreSQL）",
+        ),
+    ) -> str:
+        """Full-stack application development workflow."""
+        return f"""🏗️ **全棧開發模式**
+
+應用名稱：{app_name}
+技術棧：{stack}
+
+請執行完整的全棧開發流程：
+
+**Phase 1: 架構設計**
+1. 使用 `boring_agent_plan` 設計系統架構
+2. 規劃目錄結構、API 端點、資料模型
+
+**Phase 2: 後端開發**
+3. 建立 API 框架和路由
+4. 實作資料模型和資料庫連接
+5. 加入認證和授權機制
+
+**Phase 3: 前端開發**
+6. 建立前端專案結構
+7. 實作 UI 元件和頁面
+8. 連接後端 API
+
+**Phase 4: 測試與部署**
+9. 使用 `boring_verify(level='FULL')` 驗證
+10. 生成 Docker 配置和部署文件
+
+每個階段完成後，使用 `boring_agent_review` 進行程式碼審查。
+完成後提供完整的專案摘要和啟動指南。
+"""

@@ -125,6 +125,18 @@ pip install "boring[all]"
 | `speckit_tasks` | 拆解計畫為任務清單 |
 | `speckit_analyze` | 檢查 Code-Spec 一致性 |
 
+### 🎨 Vibe Coder Prompts (AI Client 專用)
+
+專為 Claude Desktop / Gemini CLI 用戶設計的一鍵式工作流程：
+
+| Prompt | 用途 | 使用方式 |
+|--------|------|----------|
+| `vibe_start` | 一鍵啟動完整開發流程 | `/vibe_start 建立一個 FastAPI 認證服務` |
+| `quick_fix` | 自動修復所有程式碼問題 | `/quick_fix` |
+| `full_stack_dev` | 全棧應用開發 | `/full_stack_dev my-app "Next.js + FastAPI"` |
+
+> 💡 **Vibe Coding 模式**：描述你的想法，讓 AI 處理剩下的一切！
+
 
 ## 📊 即時監控 (Live Monitoring)
 
