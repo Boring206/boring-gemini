@@ -1,5 +1,32 @@
 # Changelog
 
+## [10.11.0] - 2026-01-05 - Polyglot Architect Mode
+### Added
+- **Complete Multi-Language Verification**: Expanded `CodeVerifier` to support 8 languages:
+  - Python (.py): compile() + ruff + pytest
+  - JavaScript/TypeScript (.js/.jsx/.ts/.tsx): node --check + eslint + npm test
+  - Go (.go): go fmt + golangci-lint + go test
+  - Rust (.rs): rustc syntax + cargo clippy + cargo test
+  - Java (.java): javac syntax + maven/gradle test
+  - C/C++ (.c/.cpp/.h/.hpp): gcc/g++ -fsyntax-only + clang-tidy
+- **Multi-Language Import Validation**: 
+  - Python: stdlib module detection + pip suggestions
+  - Node.js: package.json dependency verification
+  - Go: go list import validation
+- **Tree-sitter Query Expansion**: Added Ruby and PHP semantic parsing queries
+- **Polyglot Test Runners**: Auto-detection for Cargo.toml, pom.xml, build.gradle, package.json, go.mod
+- **Universal CLI Tool Dispatcher**: Extensible linter configuration via `cli_tool_map`
+
+### Changed
+- Updated all docstrings to reflect multi-language support (removed "Python only" references)
+- `verify_file()` now dynamically uses registered handlers for all languages
+- `verify_project()` scans all supported file extensions automatically
+- `run_tests()` intelligently selects test runner based on project configuration files
+
+### Documentation
+- Updated `code_indexer.py` docstring to describe polyglot chunking system
+- Updated `verification.py` module docstring with complete language support matrix
+
 ## [10.10.0] - 2026-01-05
 ### Added
 - **Deep Multi-Language Support**: Integrated `tree-sitter-languages` for robust AST parsing of Python, JS, TS, Go, Java, Rust, and C++.

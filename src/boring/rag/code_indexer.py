@@ -1,13 +1,21 @@
 """
-Code Indexer for Vector RAG
+Universal Code Indexer for Vector RAG
 
-Splits Python files into semantic chunks:
-- Function-level chunks
-- Class-level chunks  
-- Import block chunks
-- Module docstrings
+Polyglot code chunking system supporting:
+- Python (.py): AST-based parsing with dependency extraction
+- JavaScript/TypeScript (.js/.jsx/.ts/.tsx): Tree-sitter or regex fallback
+- Go (.go), Rust (.rs), Java (.java): Tree-sitter semantic parsing
+- C/C++ (.c/.cpp/.h/.hpp): Tree-sitter parsing
+- Ruby (.rb), PHP (.php): Tree-sitter support
+- Markdown (.md): Heading-based chunking
 
-Uses AST parsing to extract structured information.
+Chunk Types:
+- Function-level chunks with signature extraction
+- Class-level chunks with inheritance tracking
+- Import block chunks with dependency metadata
+- Module docstrings and documentation
+
+Uses Python AST for .py files and Tree-sitter for all other languages.
 """
 
 import ast

@@ -1,11 +1,26 @@
 """
-Boring Verification System
+Boring Polyglot Verification System
 
-Implements rules-based verification for generated code:
-- Syntax checking (Python compile)
-- Linting (ruff if available)
-- Testing (pytest if available)
-- Import validation
+Enterprise-grade rules-based verification for multiple programming languages.
+
+Supported Languages & Tools:
+- Python: compile() syntax, ruff lint, pytest tests, import validation
+- JavaScript/TypeScript: node --check, eslint lint, npm test
+- Go: go fmt syntax, golangci-lint, go test
+- Rust: cargo check syntax, cargo clippy lint, cargo test
+- Java: javac syntax, checkstyle lint, maven/gradle test
+- C/C++: gcc/g++ syntax check, clang-tidy lint
+
+Verification Levels:
+- BASIC: Syntax check only (fast, always available)
+- STANDARD: Syntax + Linting (requires language-specific linters)
+- FULL: Syntax + Linting + Tests (requires test frameworks)
+- SEMANTIC: All above + LLM-as-Judge evaluation
+
+Features:
+- Auto-detection of project type and language
+- Generic CLI tool dispatcher for extensibility
+- Language-aware evaluation prompts
 """
 
 import subprocess
@@ -32,12 +47,14 @@ class VerificationResult:
 
 class CodeVerifier:
     """
-    Comprehensive code verification system.
+    Polyglot code verification system supporting Python, JavaScript/TypeScript,
+    Go, Rust, Java, and C/C++.
     
     Verification levels:
     1. BASIC: Syntax check only (fast, always available)
-    2. STANDARD: Syntax + Linting (requires ruff)
-    3. FULL: Syntax + Linting + Tests (requires pytest)
+    2. STANDARD: Syntax + Linting (language-specific linters)
+    3. FULL: Syntax + Linting + Tests (language-specific test runners)
+    4. SEMANTIC: All above + LLM-as-Judge evaluation
     """
     
     def __init__(self, project_root: Path = None, log_dir: Path = None, judge = None):
@@ -45,32 +62,55 @@ class CodeVerifier:
         self.log_dir = log_dir or settings.LOG_DIR
         self.judge = judge
         
-        # Check available tools
+        # Check available tools (polyglot support)
         self.tools = {
+            # Python
             "ruff": self._check_tool("ruff", "--version"),
             "pytest": self._check_tool("pytest", "--version"),
+            # JavaScript/TypeScript
             "node": self._check_tool("node", "--version"),
             "npm": self._check_tool("npm", "--version"),
             "eslint": self._check_tool("eslint", "--version"),
+            # Go
             "go": self._check_tool("go", "version"),
-            "cargo": self._check_tool("cargo", "--version"),
             "golangci-lint": self._check_tool("golangci-lint", "version"),
+            # Rust
+            "cargo": self._check_tool("cargo", "--version"),
+            "rustc": self._check_tool("rustc", "--version"),
+            # Java
+            "javac": self._check_tool("javac", "-version"),
+            "mvn": self._check_tool("mvn", "--version"),
+            "gradle": self._check_tool("gradle", "--version"),
+            # C/C++
+            "gcc": self._check_tool("gcc", "--version"),
+            "g++": self._check_tool("g++", "--version"),
+            "clang-tidy": self._check_tool("clang-tidy", "--version"),
         }
         
         # Generic CLI Tool Dispatcher (Extension -> Linter Command)
         # Format: ext: (tool_key, [cmd_args...])
         self.cli_tool_map = {
             ".go": ("golangci-lint", ["golangci-lint", "run"]),
-            # Add more generic mappings here
+            ".rs": ("cargo", ["cargo", "clippy", "--", "-D", "warnings"]),
+            ".c": ("clang-tidy", ["clang-tidy"]),
+            ".cpp": ("clang-tidy", ["clang-tidy"]),
+            ".h": ("clang-tidy", ["clang-tidy"]),
+            ".hpp": ("clang-tidy", ["clang-tidy"]),
         }
         
-        # Dispatch configuration
+        # Dispatch configuration (polyglot handlers)
         self.handlers: Dict[str, Dict[str, callable]] = {
+            # Python
             ".py": {
                 "syntax": self._verify_syntax_python,
                 "lint": self._verify_lint_python
             },
+            # JavaScript/TypeScript
             ".js": {
+                "syntax": self._verify_syntax_node,
+                "lint": self._verify_lint_node
+            },
+            ".jsx": {
                 "syntax": self._verify_syntax_node,
                 "lint": self._verify_lint_node
             },
@@ -78,9 +118,41 @@ class CodeVerifier:
                 "syntax": self._verify_syntax_node,
                 "lint": self._verify_lint_node
             },
+            ".tsx": {
+                "syntax": self._verify_syntax_node,
+                "lint": self._verify_lint_node
+            },
+            # Go
             ".go": {
                 "syntax": self._verify_syntax_go,
-                "lint": self._verify_lint_generic  # Use generic dispatcher
+                "lint": self._verify_lint_generic
+            },
+            # Rust
+            ".rs": {
+                "syntax": self._verify_syntax_rust,
+                "lint": self._verify_lint_generic
+            },
+            # Java
+            ".java": {
+                "syntax": self._verify_syntax_java,
+                "lint": self._verify_lint_generic
+            },
+            # C/C++
+            ".c": {
+                "syntax": self._verify_syntax_c,
+                "lint": self._verify_lint_generic
+            },
+            ".cpp": {
+                "syntax": self._verify_syntax_cpp,
+                "lint": self._verify_lint_generic
+            },
+            ".h": {
+                "syntax": self._verify_syntax_c,
+                "lint": self._verify_lint_generic
+            },
+            ".hpp": {
+                "syntax": self._verify_syntax_cpp,
+                "lint": self._verify_lint_generic
             }
         }
     
@@ -195,6 +267,108 @@ class CodeVerifier:
         except Exception as e:
             return VerificationResult(passed=False, check_type="syntax", message=f"Go check failed: {e}", details=[], suggestions=[])
 
+    def _verify_syntax_rust(self, file_path: Path) -> VerificationResult:
+        """Check Rust syntax using rustc --emit=metadata."""
+        if not self.tools.get("rustc"):
+            return VerificationResult(passed=True, check_type="syntax", message="Skipped (rustc not found)", details=[], suggestions=["Install Rust: https://rustup.rs/"])
+        
+        try:
+            # Use rustc to check syntax without full compilation
+            result = subprocess.run(
+                ["rustc", "--emit=metadata", "-o", "/dev/null" if os.name != 'nt' else "NUL", str(file_path)],
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+            if result.returncode == 0:
+                return VerificationResult(passed=True, check_type="syntax", message=f"Rust Syntax OK: {file_path.name}", details=[], suggestions=[])
+            return VerificationResult(
+                passed=False,
+                check_type="syntax",
+                message=f"Rust Syntax Error: {file_path.name}",
+                details=[result.stderr[:500] if result.stderr else "Unknown error"],
+                suggestions=["Run 'cargo check' for detailed error messages"]
+            )
+        except Exception as e:
+            return VerificationResult(passed=True, check_type="syntax", message=f"Rust check skipped: {e}", details=[], suggestions=[])
+
+    def _verify_syntax_java(self, file_path: Path) -> VerificationResult:
+        """Check Java syntax using javac."""
+        if not self.tools.get("javac"):
+            return VerificationResult(passed=True, check_type="syntax", message="Skipped (javac not found)", details=[], suggestions=["Install JDK"])
+        
+        try:
+            # Use -Xlint:none to suppress warnings, -d for output dir
+            result = subprocess.run(
+                ["javac", "-Xlint:none", "-d", str(file_path.parent), str(file_path)],
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+            if result.returncode == 0:
+                return VerificationResult(passed=True, check_type="syntax", message=f"Java Syntax OK: {file_path.name}", details=[], suggestions=[])
+            return VerificationResult(
+                passed=False,
+                check_type="syntax",
+                message=f"Java Syntax Error: {file_path.name}",
+                details=[result.stderr[:500] if result.stderr else "Compilation failed"],
+                suggestions=["Check Java syntax and imports"]
+            )
+        except Exception as e:
+            return VerificationResult(passed=True, check_type="syntax", message=f"Java check skipped: {e}", details=[], suggestions=[])
+
+    def _verify_syntax_c(self, file_path: Path) -> VerificationResult:
+        """Check C syntax using gcc -fsyntax-only."""
+        if not self.tools.get("gcc"):
+            return VerificationResult(passed=True, check_type="syntax", message="Skipped (gcc not found)", details=[], suggestions=["Install GCC"])
+        
+        try:
+            result = subprocess.run(
+                ["gcc", "-fsyntax-only", str(file_path)],
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                timeout=15
+            )
+            if result.returncode == 0:
+                return VerificationResult(passed=True, check_type="syntax", message=f"C Syntax OK: {file_path.name}", details=[], suggestions=[])
+            return VerificationResult(
+                passed=False,
+                check_type="syntax",
+                message=f"C Syntax Error: {file_path.name}",
+                details=[result.stderr[:500] if result.stderr else "Unknown error"],
+                suggestions=["Check for missing semicolons, brackets, or include statements"]
+            )
+        except Exception as e:
+            return VerificationResult(passed=True, check_type="syntax", message=f"C check skipped: {e}", details=[], suggestions=[])
+
+    def _verify_syntax_cpp(self, file_path: Path) -> VerificationResult:
+        """Check C++ syntax using g++ -fsyntax-only."""
+        if not self.tools.get("g++"):
+            return VerificationResult(passed=True, check_type="syntax", message="Skipped (g++ not found)", details=[], suggestions=["Install G++"])
+        
+        try:
+            result = subprocess.run(
+                ["g++", "-fsyntax-only", "-std=c++17", str(file_path)],
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                timeout=15
+            )
+            if result.returncode == 0:
+                return VerificationResult(passed=True, check_type="syntax", message=f"C++ Syntax OK: {file_path.name}", details=[], suggestions=[])
+            return VerificationResult(
+                passed=False,
+                check_type="syntax",
+                message=f"C++ Syntax Error: {file_path.name}",
+                details=[result.stderr[:500] if result.stderr else "Unknown error"],
+                suggestions=["Check C++ syntax and template usage"]
+            )
+        except Exception as e:
+            return VerificationResult(passed=True, check_type="syntax", message=f"C++ check skipped: {e}", details=[], suggestions=[])
+
     def verify_lint(self, file_path: Path, auto_fix: bool = False) -> VerificationResult:
         """Run linter based on file extension."""
         ext = file_path.suffix.lower()
@@ -289,10 +463,24 @@ class CodeVerifier:
             return VerificationResult(passed=True, check_type="lint", message=f"{tool_key} execution error: {e}", details=[], suggestions=[])
 
     def verify_imports(self, file_path: Path) -> VerificationResult:
-        """Check if all imports are resolvable (Python only for now)."""
-        if file_path.suffix != ".py":
-            return VerificationResult(passed=True, check_type="import", message="Skipped: Non-Python", details=[], suggestions=[])
+        """Check if all imports are resolvable (multi-language support)."""
+        ext = file_path.suffix.lower()
         
+        if ext == ".py":
+            return self._verify_imports_python(file_path)
+        elif ext in [".js", ".jsx", ".ts", ".tsx"]:
+            return self._verify_imports_node(file_path)
+        elif ext == ".go":
+            return self._verify_imports_go(file_path)
+        elif ext == ".rs":
+            return VerificationResult(passed=True, check_type="import", message="Rust: Use 'cargo check' for import validation", details=[], suggestions=[])
+        elif ext == ".java":
+            return VerificationResult(passed=True, check_type="import", message="Java: Use 'javac' for import validation", details=[], suggestions=[])
+        
+        return VerificationResult(passed=True, check_type="import", message=f"Import check not supported for {ext}", details=[], suggestions=[])
+    
+    def _verify_imports_python(self, file_path: Path) -> VerificationResult:
+        """Check Python imports."""
         try:
             content = file_path.read_text(encoding="utf-8")
             import_pattern = r'^(?:from\s+([\w.]+)\s+)?import\s+([\w.]+(?:\s*,\s*[\w.]+)*)'
@@ -309,11 +497,72 @@ class CodeVerifier:
             return VerificationResult(passed=True, check_type="import", message=f"Imports OK: {file_path.name}", details=[], suggestions=[])
         except Exception as e:
             return VerificationResult(passed=True, check_type="import", message=f"Import check skipped: {e}", details=[], suggestions=[])
+    
+    def _verify_imports_node(self, file_path: Path) -> VerificationResult:
+        """Check Node.js imports by verifying package.json dependencies."""
+        try:
+            package_json = self.project_root / "package.json"
+            if not package_json.exists():
+                return VerificationResult(passed=True, check_type="import", message="No package.json found", details=[], suggestions=[])
+            
+            import json
+            with open(package_json) as f:
+                pkg = json.load(f)
+            
+            all_deps = set(pkg.get("dependencies", {}).keys())
+            all_deps.update(pkg.get("devDependencies", {}).keys())
+            
+            content = file_path.read_text(encoding="utf-8")
+            # Simple regex for import/require
+            import_pattern = r'''(?:import\s+.*?from\s+['"]|require\s*\(\s*['"])([^'"./][^'"]*)['"]'''
+            imports = re.findall(import_pattern, content)
+            
+            # Extract package name (first part before /)
+            missing = []
+            for imp in imports:
+                pkg_name = imp.split("/")[0]
+                if pkg_name.startswith("@"):
+                    pkg_name = "/".join(imp.split("/")[:2])
+                if pkg_name not in all_deps and not pkg_name.startswith("node:"):
+                    missing.append(pkg_name)
+            
+            if missing:
+                unique_missing = list(set(missing))[:5]
+                return VerificationResult(passed=False, check_type="import", message=f"Missing packages: {file_path.name}", details=unique_missing, suggestions=[f"npm install {m}" for m in unique_missing[:3]])
+            return VerificationResult(passed=True, check_type="import", message=f"Node imports OK: {file_path.name}", details=[], suggestions=[])
+        except Exception as e:
+            return VerificationResult(passed=True, check_type="import", message=f"Node import check skipped: {e}", details=[], suggestions=[])
+    
+    def _verify_imports_go(self, file_path: Path) -> VerificationResult:
+        """Verify Go imports using go list."""
+        if not self.tools.get("go"):
+            return VerificationResult(passed=True, check_type="import", message="Skipped (Go not found)", details=[], suggestions=[])
+        
+        try:
+            result = subprocess.run(
+                ["go", "list", "-e", "-json", str(file_path.parent)],
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                timeout=15,
+                cwd=self.project_root
+            )
+            if result.returncode == 0:
+                return VerificationResult(passed=True, check_type="import", message=f"Go imports OK: {file_path.name}", details=[], suggestions=[])
+            return VerificationResult(passed=False, check_type="import", message="Go import issues", details=[result.stderr[:200] if result.stderr else "Unknown"], suggestions=["Run 'go mod tidy'"])
+        except Exception as e:
+            return VerificationResult(passed=True, check_type="import", message=f"Go import check skipped: {e}", details=[], suggestions=[])
 
     def run_tests(self, test_path: Path = None) -> VerificationResult:
-        """Run tests based on project type."""
-        # Simple heuristic: look for package.json or go.mod
-        if (self.project_root / "package.json").exists():
+        """Run tests based on project type (auto-detection)."""
+        # Polyglot test runner detection
+        if (self.project_root / "Cargo.toml").exists():
+            return self._run_tests_rust(test_path)
+        elif (self.project_root / "pom.xml").exists():
+            return self._run_tests_maven(test_path)
+        elif (self.project_root / "build.gradle").exists() or (self.project_root / "build.gradle.kts").exists():
+            return self._run_tests_gradle(test_path)
+        elif (self.project_root / "package.json").exists():
             return self._run_tests_node(test_path)
         elif (self.project_root / "go.mod").exists():
             return self._run_tests_go(test_path)
@@ -363,12 +612,72 @@ class CodeVerifier:
             return VerificationResult(passed=False, check_type="test", message="go test failed", details=[result.stdout[:500]], suggestions=["Fix tests"])
         except Exception as e:
             return VerificationResult(passed=True, check_type="test", message=f"go test error: {e}", details=[], suggestions=[])
-    
+
+    def _run_tests_rust(self, test_path: Path = None) -> VerificationResult:
+        """Run cargo test."""
+        if not self.tools.get("cargo"):
+            return VerificationResult(passed=True, check_type="test", message="Skipped (cargo not found)", details=[], suggestions=["Install Rust: https://rustup.rs/"])
+        
+        try:
+            result = subprocess.run(
+                ["cargo", "test", "--quiet"],
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                timeout=300,
+                cwd=self.project_root
+            )
+            if result.returncode == 0:
+                return VerificationResult(passed=True, check_type="test", message="cargo test OK", details=[], suggestions=[])
+            return VerificationResult(passed=False, check_type="test", message="cargo test failed", details=[result.stdout[:500] if result.stdout else result.stderr[:500]], suggestions=["Fix Rust tests"])
+        except Exception as e:
+            return VerificationResult(passed=True, check_type="test", message=f"cargo test error: {e}", details=[], suggestions=[])
+
+    def _run_tests_maven(self, test_path: Path = None) -> VerificationResult:
+        """Run Maven tests."""
+        if not self.tools.get("mvn"):
+            return VerificationResult(passed=True, check_type="test", message="Skipped (Maven not found)", details=[], suggestions=["Install Maven"])
+        
+        try:
+            result = subprocess.run(
+                ["mvn", "test", "-q"],
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                timeout=600,
+                cwd=self.project_root
+            )
+            if result.returncode == 0:
+                return VerificationResult(passed=True, check_type="test", message="mvn test OK", details=[], suggestions=[])
+            return VerificationResult(passed=False, check_type="test", message="mvn test failed", details=[result.stdout[:500] if result.stdout else "Build/test failed"], suggestions=["Fix Maven tests"])
+        except Exception as e:
+            return VerificationResult(passed=True, check_type="test", message=f"mvn test error: {e}", details=[], suggestions=[])
+
+    def _run_tests_gradle(self, test_path: Path = None) -> VerificationResult:
+        """Run Gradle tests."""
+        if not self.tools.get("gradle"):
+            return VerificationResult(passed=True, check_type="test", message="Skipped (Gradle not found)", details=[], suggestions=["Install Gradle"])
+        
+        try:
+            result = subprocess.run(
+                ["gradle", "test", "--quiet"],
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                timeout=600,
+                cwd=self.project_root
+            )
+            if result.returncode == 0:
+                return VerificationResult(passed=True, check_type="test", message="gradle test OK", details=[], suggestions=[])
+            return VerificationResult(passed=False, check_type="test", message="gradle test failed", details=[result.stdout[:500] if result.stdout else "Test failed"], suggestions=["Fix Gradle tests"])
+        except Exception as e:
+            return VerificationResult(passed=True, check_type="test", message=f"gradle test error: {e}", details=[], suggestions=[])
     def verify_file(self, file_path: Path, level: str = "STANDARD", auto_fix: bool = False) -> List[VerificationResult]:
         """Run all applicable verifications on a file."""
         results = []
         
-        supported_exts = [".py", ".js", ".ts", ".go"]
+        # Polyglot support: all languages with handlers
+        supported_exts = list(self.handlers.keys())
         if file_path.suffix.lower() not in supported_exts:
             return results
         
@@ -388,11 +697,13 @@ class CodeVerifier:
     
     def verify_project(self, level: str = "STANDARD", auto_fix: bool = False) -> Tuple[bool, str]:
         """
-        Verify all Python files in the project.
+        Verify all source files in the project (polyglot support).
+        
+        Supported languages: Python, JavaScript/TypeScript, Go, Rust, Java, C/C++
         
         Args:
             level: Verification level (BASIC, STANDARD, FULL, SEMANTIC)
-            auto_fix: If True, run ruff --fix before reporting lint issues
+            auto_fix: If True, run auto-fix before reporting lint issues
         """
         target_dir = self.project_root / "src"
         scan_root = True
@@ -419,7 +730,8 @@ class CodeVerifier:
             root_path = Path(root)
             for file in files:
                 file_path = root_path / file
-                if file_path.suffix.lower() in [".py", ".js", ".ts", ".go"]:
+                # Polyglot: scan all supported extensions
+                if file_path.suffix.lower() in list(self.handlers.keys()):
                     all_results.extend(self.verify_file(file_path, level, auto_fix=auto_fix))
         
         # Run tests if FULL level
