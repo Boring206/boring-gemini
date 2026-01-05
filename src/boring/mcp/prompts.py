@@ -613,3 +613,111 @@ B: {path_b}
 3. Declare winner with justification
 4. Provide recommendations for the losing implementation
 """
+
+    # --- System & Meta Prompts ---
+
+    @mcp.prompt(
+        name="audit_quality", description="Run full system audit: Health + Security + Verification"
+    )
+    def audit_quality() -> str:
+        """Run a full project audit."""
+        return """🏗️ **Full System Quality Audit**
+
+Executing comprehensive checks:
+
+1. **System Health**
+   - Run `boring_health_check` to verify environment and dependencies
+2. **Security Baseline**
+   - Run `boring_security_scan(scan_type='all')`
+3. **Code Quality**
+   - Run `boring_verify(level='STANDARD')`
+4. **Report**
+   - Summarize overall project health score
+   - List critical vulnerabilities or linting blockers
+"""
+
+    @mcp.prompt(
+        name="visualize_architecture",
+        description="Generate Mermaid diagram of project architecture",
+    )
+    def visualize_architecture(
+        scope: str = Field(
+            default="module", description="Visualization scope (module, class, full)"
+        ),
+    ) -> str:
+        """Visualize architecture."""
+        return f"""🖼️ **Architecture Visualization**
+
+Scope: {scope}
+
+1. Run `boring_visualize(scope='{scope}', output_format='mermaid')`
+2. Display the generated Mermaid diagram
+3. Briefly explain the core dependencies and module relationships
+"""
+
+    @mcp.prompt(
+        name="suggest_roadmap", description="Get AI-powered roadmap for next development steps"
+    )
+    def suggest_roadmap(
+        limit: int = Field(default=5, description="Number of suggestions to return"),
+    ) -> str:
+        """Suggest a roadmap."""
+        return f"""🗺️ **Development Roadmap**
+
+1. Run `boring_suggest_next(limit={limit})`
+2. For each suggested action:
+   - Explain the rationale
+   - Estimate the impact on the codebase
+   - Provide a confidence score
+3. Ask me which task to prioritize
+"""
+
+    @mcp.prompt(name="system_status", description="Check current project loop and task progress")
+    def system_status() -> str:
+        """Check system status."""
+        return """📊 **System & Task Status**
+
+1. Run `boring_status` to check loop counts and last activity
+2. Run `boring_list_tasks` to see all background operations
+3. Run `boring_get_progress` for any active tasks
+4. Provide a summary of the current autonomous state
+"""
+
+    @mcp.prompt(
+        name="project_brain", description="View everything the AI has learned about this project"
+    )
+    def project_brain() -> str:
+        """View learned knowledge."""
+        return """🧠 **Project Brain Summary**
+
+Show all learned patterns, rubrics, and domain knowledge:
+
+1. Run `boring_brain_summary`
+2. List:
+   - Top 5 learned fix patterns
+   - Project-specific naming conventions
+   - Active evaluation rubrics
+   - Documented architecture decisions
+"""
+
+    @mcp.prompt(
+        name="optimize_performance",
+        description="Analyze and optimize code for performance and memory",
+    )
+    def optimize_performance(
+        target: str = Field(default="src/", description="Code to optimize"),
+    ) -> str:
+        """Performance optimization workflow."""
+        return f"""⚡ **Performance Optimization Mode**
+
+Target: {target}
+
+1. **Analysis**
+   - Identify O(N^2) loops or inefficient lookups
+   - Check for redundant database/API calls
+2. **Review**
+   - Use `evaluate_architecture` with focus on "Scalability"
+3. **Strategy**
+   - Suggest specific refactorings (e.g., using sets, caching, batching)
+   - Provide "Before vs After" benchmarks if possible
+"""
