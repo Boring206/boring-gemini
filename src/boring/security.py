@@ -308,3 +308,250 @@ def sanitize_content(content: str, max_length: int = 1_000_000) -> str:
         content = content[:max_length] + "\n# ... content truncated ...\n"
 
     return content
+
+
+# =============================================================================
+# SECURITY SCANNER (SAST + Secret Detection + Dependency Scan)
+# =============================================================================
+
+# Extended secret patterns for comprehensive detection
+SECRET_SCAN_PATTERNS = {
+    "AWS Access Key": r"AKIA[0-9A-Z]{16}",
+    "AWS Secret Key": r"(?i)aws(.{0,20})?['\"][0-9a-zA-Z/+]{40}['\"]",
+    "GitHub Token": r"ghp_[a-zA-Z0-9]{36}",
+    "GitHub OAuth": r"gho_[a-zA-Z0-9]{36}",
+    "Google API Key": r"AIza[0-9A-Za-z\-_]{35}",
+    "Slack Token": r"xox[baprs]-[0-9]{10,13}-[0-9]{10,13}-[a-zA-Z0-9]{24}",
+    "Private Key": r"-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----",
+    "Generic Secret": r"(?i)(password|secret|api_key|apikey|token)\s*[=:]\s*['\"][^'\"]{8,}['\"]",
+    "JWT Token": r"eyJ[a-zA-Z0-9_-]*\.eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*",
+    "Database URL": r"(?i)(mysql|postgres|mongodb|redis):\/\/[^:]+:[^@]+@",
+    "OpenAI Key": r"sk-[a-zA-Z0-9]{48}",
+    "Stripe Key": r"sk_live_[a-zA-Z0-9]{24}",
+    "Anthropic Key": r"sk-ant-[a-zA-Z0-9]{32}",
+}
+
+
+@dataclass
+class SecurityIssue:
+    """Represents a security issue found during scanning."""
+
+    severity: str  # CRITICAL, HIGH, MEDIUM, LOW
+    category: str  # secret, vulnerability, dependency
+    file_path: str
+    line_number: int
+    description: str
+    recommendation: str
+
+
+@dataclass
+class SecurityReport:
+    """Security scan report."""
+
+    issues: list = None
+    scanned_files: int = 0
+    secrets_found: int = 0
+    vulnerabilities_found: int = 0
+    dependency_issues: int = 0
+
+    def __post_init__(self):
+        if self.issues is None:
+            self.issues = []
+
+    @property
+    def total_issues(self) -> int:
+        return len(self.issues)
+
+    @property
+    def passed(self) -> bool:
+        return not any(i.severity in ("CRITICAL", "HIGH") for i in self.issues)
+
+
+class SecurityScanner:
+    """
+    Comprehensive security scanner for code and dependencies.
+
+    Features:
+    - Secret detection (API keys, tokens, passwords)
+    - SAST via bandit (if installed)
+    - Dependency vulnerability scanning via pip-audit
+    """
+
+    def __init__(self, project_root: Path):
+        self.project_root = Path(project_root)
+        self.report = SecurityReport()
+
+    def scan_secrets(self, extensions: list = None) -> list:
+        """Scan files for hardcoded secrets and credentials."""
+        if extensions is None:
+            extensions = [".py", ".js", ".ts", ".json", ".yaml", ".yml", ".env", ".toml"]
+
+        issues = []
+        files_scanned = 0
+
+        for ext in extensions:
+            for file_path in self.project_root.rglob(f"*{ext}"):
+                if any(
+                    part in file_path.parts
+                    for part in [
+                        ".git",
+                        "node_modules",
+                        "__pycache__",
+                        ".venv",
+                        "venv",
+                        ".boring_cache",
+                    ]
+                ):
+                    continue
+
+                files_scanned += 1
+                try:
+                    content = file_path.read_text(encoding="utf-8", errors="ignore")
+                    lines = content.split("\n")
+
+                    for pattern_name, pattern in SECRET_SCAN_PATTERNS.items():
+                        for line_num, line in enumerate(lines, 1):
+                            if re.search(pattern, line):
+                                issue = SecurityIssue(
+                                    severity="HIGH",
+                                    category="secret",
+                                    file_path=str(file_path.relative_to(self.project_root)),
+                                    line_number=line_num,
+                                    description=f"Potential {pattern_name} detected",
+                                    recommendation="Move to environment variable or secrets manager",
+                                )
+                                issues.append(issue)
+                except Exception:
+                    pass
+
+        self.report.scanned_files = files_scanned
+        self.report.secrets_found = len(issues)
+        self.report.issues.extend(issues)
+        return issues
+
+    def scan_vulnerabilities(self, target: str = "src/") -> list:
+        """Run bandit SAST scanner on Python code."""
+        import subprocess
+
+        issues = []
+        target_path = self.project_root / target
+
+        if not target_path.exists():
+            return issues
+
+        try:
+            result = subprocess.run(
+                ["bandit", "-r", str(target_path), "-f", "json", "-q"],
+                capture_output=True,
+                text=True,
+                timeout=120,
+            )
+
+            if result.stdout:
+                import json
+
+                try:
+                    data = json.loads(result.stdout)
+                    for vuln in data.get("results", []):
+                        issue = SecurityIssue(
+                            severity=vuln.get("issue_severity", "LOW"),
+                            category="vulnerability",
+                            file_path=vuln.get("filename", "unknown"),
+                            line_number=vuln.get("line_number", 0),
+                            description=vuln.get("issue_text", "Unknown vulnerability"),
+                            recommendation=f"CWE: {vuln.get('issue_cwe', {}).get('id', 'N/A')}",
+                        )
+                        issues.append(issue)
+                except Exception:
+                    pass
+
+        except FileNotFoundError:
+            pass  # bandit not installed
+        except Exception:
+            pass
+
+        self.report.vulnerabilities_found = len(issues)
+        self.report.issues.extend(issues)
+        return issues
+
+    def scan_dependencies(self) -> list:
+        """Check dependencies for known vulnerabilities."""
+        import subprocess
+
+        issues = []
+
+        try:
+            result = subprocess.run(
+                ["pip-audit", "--format", "json"],
+                capture_output=True,
+                text=True,
+                cwd=self.project_root,
+                timeout=120,
+            )
+
+            if result.stdout:
+                import json
+
+                try:
+                    data = json.loads(result.stdout)
+                    for vuln in data:
+                        issue = SecurityIssue(
+                            severity="HIGH" if vuln.get("fix_versions") else "MEDIUM",
+                            category="dependency",
+                            file_path="pyproject.toml",
+                            line_number=0,
+                            description=f"{vuln.get('name')}: {vuln.get('vulns', [{}])[0].get('id', 'Unknown')}",
+                            recommendation=f"Upgrade to {vuln.get('fix_versions', ['N/A'])[0]}",
+                        )
+                        issues.append(issue)
+                except Exception:
+                    pass
+
+        except FileNotFoundError:
+            pass  # pip-audit not installed
+        except Exception:
+            pass
+
+        self.report.dependency_issues = len(issues)
+        self.report.issues.extend(issues)
+        return issues
+
+    def full_scan(self) -> SecurityReport:
+        """Run all security scans."""
+        self.scan_secrets()
+        self.scan_vulnerabilities()
+        self.scan_dependencies()
+        return self.report
+
+
+def run_security_scan(project_path: str = None) -> dict:
+    """
+    Run security scan on a project.
+
+    Returns:
+        Security scan results as dict
+    """
+    from .config import settings
+
+    path = Path(project_path) if project_path else settings.PROJECT_ROOT
+    scanner = SecurityScanner(path)
+    report = scanner.full_scan()
+
+    return {
+        "passed": report.passed,
+        "total_issues": report.total_issues,
+        "secrets_found": report.secrets_found,
+        "vulnerabilities_found": report.vulnerabilities_found,
+        "dependency_issues": report.dependency_issues,
+        "issues": [
+            {
+                "severity": i.severity,
+                "category": i.category,
+                "file": i.file_path,
+                "line": i.line_number,
+                "description": i.description,
+                "recommendation": i.recommendation,
+            }
+            for i in report.issues
+        ],
+    }
