@@ -65,7 +65,7 @@ Be constructive but firm. Save the developer from future production incidents.""
 1. **Root Cause**: What exactly failed?
 2. **Likely Culprits**: Pinpoint the file/function.
 3. **Suggested Fix**: Provide exact code changes.
-4. **🏛️ Architecture Lesson**: 
+4. **🏛️ Architecture Lesson**:
    - Why did this happen? (Design flaw? Missing abstraction?)
    - How to prevent this class of errors permanently?
    - Example: "This error happens because you're not using Dependency Injection. Refactor to inject the DB connection."
