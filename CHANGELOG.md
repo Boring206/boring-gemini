@@ -2,6 +2,8 @@
 
 ## [10.16.0] - 2026-01-05 - Software Engineering Enforcement
 ### Added
+- **LSP & IDE Portability**: New `boring lsp start` command for JetBrains, Vim, and other LSP clients.
+- **Windows Stability**: Implemented robust exception handling for `ConnectionResetError` (WinError 10054) in the LSP server, ensuring graceful disconnects.
 - **CI/CD Quality Gates**: New `.github/workflows/quality-gates.yml` with 4-tier pipeline:
   - Tier 1: Lint & Format (ruff check, ruff format)
   - Tier 2: Security Scan (bandit, safety)
