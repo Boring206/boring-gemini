@@ -137,6 +137,32 @@ pip install "boring[all]"
 
 > 💡 **Vibe Coding 模式**：描述你的想法，讓 AI 處理剩下的一切！
 
+### 🚀 Quick Start CLI (一鍵啟動)
+
+專為 Vibe Coder 設計的 CLI 入口：
+
+```bash
+# 一句話啟動完整開發流程
+boring quick-start "建立一個 FastAPI 認證服務"
+
+# 使用內建模板
+boring quick-start --template fastapi-auth
+
+# 自動批准計畫（無需確認）
+boring quick-start "TODO App" --yes
+
+# 查看可用模板
+boring templates list
+```
+
+**內建模板：**
+| 模板 ID | 說明 |
+|---------|------|
+| `fastapi-auth` | FastAPI + JWT 認證服務 |
+| `nextjs-dashboard` | Next.js 管理後台 |
+| `cli-tool` | Python CLI 工具 (Typer) |
+| `vue-spa` | Vue 3 單頁應用 |
+
 
 ## 📊 即時監控 (Live Monitoring)
 
