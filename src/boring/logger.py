@@ -50,6 +50,7 @@ def get_logger(name: str = "boring") -> structlog.stdlib.BoundLogger:
 
 # Global logger for module-level use
 _logger = get_logger()
+logger = _logger
 
 
 def log_status(log_dir: Any, level: str, message: str, **kwargs: Any):

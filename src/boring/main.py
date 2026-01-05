@@ -57,6 +57,23 @@ app = typer.Typer(
     rich_markup_mode="rich",
     add_completion=False,
 )
+@app.callback()
+def main(
+    provider: str = typer.Option(None, "--provider", "-P", help="LLM Provider: gemini, ollama, openai_compat"),
+    base_url: str = typer.Option(None, "--base-url", help="Base URL for local LLM provider"),
+    llm_model: str = typer.Option(None, "--llm-model", help="Override default model name"),
+):
+    """
+    Boring - Autonomous AI Development Agent
+    """
+    # Global settings overrides
+    if provider:
+        settings.LLM_PROVIDER = provider
+    if base_url:
+        settings.LLM_BASE_URL = base_url
+    if llm_model:
+        settings.LLM_MODEL = llm_model
+
 console = Console()
 
 @app.command()
@@ -350,40 +367,38 @@ def workflow_publish(
 
 @app.command()
 def evaluate(
-    target: str = typer.Argument(..., help="File path to evaluate"),
-    context: str = typer.Option("", "--context", "-c", help="Optional context"),
-    level: str = typer.Option("DIRECT", "--level", "-l", help="Evaluation level"),
+    target: str = typer.Argument(..., help="File path(s) to evaluate. For PAIRWISE, use comma-separated paths."),
+    level: str = typer.Option("DIRECT", "--level", "-l", help="Evaluation level: DIRECT (1-5) or PAIRWISE (A/B)"),
+    context: str = typer.Option("", "--context", "-c", help="Evaluation context or requirements"),
     backend: str = typer.Option("cli", "--backend", "-b", help="Backend: 'api' (SDK) or 'cli' (local CLI)"),
-    model: str = typer.Option("default", "--model", "-m", help="Gemini model to use")
+    model: str = typer.Option("default", "--model", "-m", help="Gemini model to use"),
+    mode: str = typer.Option("standard", "--mode", help="Evaluation mode (strictness)"),
+    interactive: bool = typer.Option(False, "--interactive", "-i", help="Interactive mode (returns prompts)")
 ):
     """
-    Evaluate code quality using LLM-as-a-Judge.
+    Evaluate code quality using LLM Judge (Polyglot & Multi-Backend).
     """
     from .judge import LLMJudge
     from .cli_client import GeminiCLIAdapter
     from .gemini_client import GeminiClient
-    from .rubrics import CODE_QUALITY_RUBRIC
-    
-    # Resolve rubric
-    rubric = _get_rubric_for_level(level)
-    if not rubric:
-        console.print(f"[yellow]Warning: Rubric '{level}' not found, falling back to Code Quality.[/yellow]")
-        rubric = CODE_QUALITY_RUBRIC
-    
-    # Check if target exists
-    target_path = Path(target)
-    if not target_path.exists():
-        console.print(f"[red]Error: Target '{target}' not found.[/red]")
-        raise typer.Exit(1)
-        
-    console.print(f"[bold blue]🤔 Evaluating {target_path.name}...[/bold blue]")
+    from .rubrics import CODE_QUALITY_RUBRIC, get_rubric
+    import json
 
+    # Resolve rubric
+    rubric = _get_rubric_for_level(level) if level.upper() != "PAIRWISE" else CODE_QUALITY_RUBRIC
+    
+    # Configure strictness
+    if mode.lower() == "strict":
+        rubric.strictness = "strict"
+    elif mode.lower() == "hostile":
+        rubric.strictness = "hostile"
+
+    # Initialize Adapter
     try:
         if backend.lower() == "cli":
             adapter = GeminiCLIAdapter(model_name=model)
             console.print("[dim]Using Local CLI Backend[/dim]")
         else:
-            # API Mode
             adapter = GeminiClient(model_name=model)
             if not adapter.is_available:
                 console.print("[red]Error: API Key not found. Use --backend cli or set GOOGLE_API_KEY.[/red]")
@@ -392,31 +407,74 @@ def evaluate(
 
         judge = LLMJudge(adapter)
         
-        content = target_path.read_text(encoding="utf-8")
-        result = judge.grade_code(target_path.name, content, rubric=rubric)
+        # Resolve Targets
+        targets = [t.strip() for t in target.split(",")]
         
-        score = result.get("score", 0)
-        summary = result.get("summary", "No summary")
-        suggestions = result.get("suggestions", [])
-        
-        # Display Dimensions
-        console.print(f"\n[bold underline]Evaluation: {rubric.name}[/bold underline]")
-        if "dimensions" in result:
-            for dim, details in result["dimensions"].items():
-                d_score = details.get("score", 0)
-                d_comment = details.get("comment", "")
-                color = "green" if d_score >= 4 else "yellow" if d_score >= 3 else "red"
-                console.print(f"  [{color}]{dim:<25} : {d_score}/5[/] - [dim]{d_comment}[/dim]")
-
-        emoji = "🟢" if score >= 4 else "🟡" if score >= 3 else "🔴"
-        console.print(f"\n[bold]{emoji} Overall Score: {score}/5.0[/bold]")
-        console.print(f"[italic]{summary}[/italic]\n")
-        
-        if suggestions:
-            console.print("[bold]💡 Suggestions:[/bold]")
-            for s in suggestions:
-                console.print(f"  - {s}")
+        # PAIRWISE MODE
+        if level.upper() == "PAIRWISE":
+            if len(targets) != 2:
+                console.print("[red]❌ PAIRWISE mode requires exactly two files.[/red]")
+                raise typer.Exit(1)
+            
+            path_a = Path(targets[0]).resolve()
+            path_b = Path(targets[1]).resolve()
+            
+            if not path_a.exists() or not path_b.exists():
+                console.print(f"[red]❌ Files not found.[/red]")
+                raise typer.Exit(1)
                 
+            console.print(f"[bold blue]⚖️ Comparing {path_a.name} vs {path_b.name}...[/bold blue]")
+            content_a = path_a.read_text(encoding="utf-8", errors="replace")
+            content_b = path_b.read_text(encoding="utf-8", errors="replace")
+            
+            result = judge.compare_code(path_a.name, content_a, path_b.name, content_b, context=context, interactive=interactive)
+            
+            if interactive:
+                console.print(json.dumps(result, indent=2))
+            else:
+                winner = result.get("winner", "TIE")
+                conf = result.get("confidence", 0.0)
+                reasoning = result.get("reasoning", "")
+                color = "green" if winner != "TIE" else "yellow"
+                console.print(f"\n[{color}]Winner: {winner}[/{color}] (Confidence: {conf})")
+                console.print(f"\nReasoning:\n{reasoning}\n")
+        
+        # DIRECT MODE
+        else:
+            target_path = Path(targets[0]).resolve()
+            if not target_path.exists():
+                console.print(f"[red]❌ Target '{target}' not found.[/red]")
+                raise typer.Exit(1)
+                
+            console.print(f"[bold blue]🧐 Evaluating {target_path.name}...[/bold blue]")
+            content = target_path.read_text(encoding="utf-8", errors="replace")
+            result = judge.grade_code(target_path.name, content, rubric=rubric, interactive=interactive)
+            
+            if interactive:
+                console.print(json.dumps(result, indent=2))
+            else:
+                score = result.get("score", 0)
+                summary = result.get("summary", "No summary")
+                suggestions = result.get("suggestions", [])
+
+                # Display Dimensions
+                if "dimensions" in result:
+                    console.print(f"\n[bold underline]Breakdown:[/bold underline]")
+                    for dim, details in result["dimensions"].items():
+                        d_score = details.get("score", 0)
+                        d_comment = details.get("comment", "")
+                        color = "green" if d_score >= 4 else "yellow" if d_score >= 3 else "red"
+                        console.print(f"  [{color}]{dim:<25} : {d_score}/5[/] - [dim]{d_comment}[/dim]")
+
+                emoji = "🟢" if score >= 4 else "🟡" if score >= 3 else "🔴"
+                console.print(f"\n[bold]{emoji} Overall Score: {score}/5.0[/bold]")
+                console.print(f"[italic]{summary}[/italic]\n")
+                
+                if suggestions:
+                    console.print("[bold]💡 Suggestions:[/bold]")
+                    for s in suggestions:
+                        console.print(f"  - {s}")
+
     except Exception as e:
         console.print(f"[red]Evaluation failed: {e}[/red]")
         raise typer.Exit(1)
@@ -497,6 +555,7 @@ def dashboard():
 @app.command()
 def verify(
     level: str = typer.Option("STANDARD", "--level", "-l", help="Verification level: BASIC, STANDARD, FULL, SEMANTIC"),
+    force: bool = typer.Option(False, "--force", "-f", help="Force verification (bypass cache)"),
 ):
     """
     Run code verification on the project.
@@ -506,7 +565,7 @@ def verify(
     console.print(f"[bold blue]🔍 Running Verification (Level: {level})[/bold blue]")
     
     verifier = CodeVerifier(settings.PROJECT_ROOT)
-    passed, msg = verifier.verify_project(level.upper())
+    passed, msg = verifier.verify_project(level.upper(), force=force)
     
     if passed:
         console.print(f"[green]✅ Verification Passed[/green]")
@@ -625,6 +684,8 @@ def auto_fix(
         console.print(f"[red]Auto-fix failed: {e}[/red]")
         raise typer.Exit(1)
 
+# evaluate_code removed (merged into evaluate)
+
 # ========================================
 # Local Teams: Git Hooks Commands
 # ========================================
@@ -730,7 +791,8 @@ app.add_typer(rag_app, name="rag")
 @rag_app.command("index")
 @app.command("rag-index", hidden=True)
 def rag_index(
-    force: bool = typer.Option(False, "--force", "-f", help="Force rebuild index even if it exists"),
+    force: bool = typer.Option(False, "--force", "-f", help="Force full rebuild of index"),
+    incremental: bool = typer.Option(True, "--incremental/--full", "-i/-F", help="Incremental indexing (default)"),
     project: str = typer.Option(None, "--project", "-p", help="Explicit project root path")
 ):
     """Index the codebase for RAG retrieval."""
@@ -744,7 +806,11 @@ def rag_index(
         console.print("[red]❌ RAG dependencies not found (chromadb, sentence-transformers)[/red]")
         raise typer.Exit(1)
         
-    count = retriever.build_index(force=force)
+    # If force is True, incremental is effectively False
+    if force:
+        incremental = False
+        
+    count = retriever.build_index(force=force, incremental=incremental)
     stats = retriever.get_stats()
     
     if stats.index_stats:
@@ -763,6 +829,7 @@ def rag_index(
 def rag_search(
     query: str = typer.Argument(..., help="Search query"),
     limit: int = typer.Option(5, "--limit", "-l", help="Max results"),
+    threshold: float = typer.Option(0.0, "--threshold", "-t", help="Minimum relevance score (0.0-1.0)"),
     project: str = typer.Option(None, "--project", "-p", help="Explicit project root path")
 ):
     """Search the codebase semanticly."""
@@ -775,7 +842,7 @@ def rag_search(
         console.print("[red]❌ RAG not initialized. Run 'boring rag index' first.[/red]")
         raise typer.Exit(1)
         
-    results = retriever.retrieve(query, n_results=limit)
+    results = retriever.retrieve(query, n_results=limit, threshold=threshold)
     
     if not results:
         console.print(f"[yellow]No results found for '{query}'[/yellow]")

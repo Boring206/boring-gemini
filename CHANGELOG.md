@@ -1,5 +1,48 @@
 # Changelog
 
+## [10.15.0] - 2026-01-05
+### Added
+- **Incremental Verification (Git)**: New `--incremental` flag for `verify_project()` to only verify files changed in Git (staged + unstaged). Uses `_get_git_changed_files()` method.
+- **Multi-Project RAG**: `RAGRetriever` now accepts `additional_roots` parameter for cross-project semantic search.
+- **Dependency Graph Visualization**: New `DependencyGraph.visualize()` method generates Mermaid flowcharts or JSON representations of code dependencies.
+- **Judge History Tracking**: `LLMJudge` now optionally accepts `QualityTracker` to automatically record evaluation scores.
+- **Custom Verification Rules**: `_load_custom_rules()` in `CodeVerifier` loads custom commands, excludes, and linter configs from `.boring.toml`.
+- **Parallel Review**: `ParallelReviewOrchestrator` runs security, performance, correctness, and API breakage reviews concurrently.
+- **Feedback Learning**: New `FeedbackLearner` class records review outcomes, tracks fix success rates, and identifies recurring issues.
+- **Interactive CLI Menu**: `MainMenu` class provides rich menu-based interface for common operations.
+- **VS Code Integration**: `VSCodeServer` JSON-RPC server exposes verify, evaluate, search, and status functions for IDE integration.
+- **Error Diagnostics**: `ErrorDiagnostics` class analyzes errors, provides detailed explanations, and suggests auto-fix commands for 15+ error patterns.
+
+### Changed
+- Updated `verify_project()` signature to include `incremental: bool = False` parameter.
+- Updated `RAGRetriever.__init__()` to support `additional_roots: Optional[List[Path]]`.
+
+## [10.13.0] - 2026-01-05
+### Added
+- **Parallel Verification**: Utilizes `ThreadPoolExecutor` for concurrent file verification, significantly speeding up large project checks.
+- **RAG Semantic Threshold**: Added `--threshold` option to `rag search` to filter low-relevance results.
+- **Contrastive Evaluation**: New `evaluate --level PAIRWISE` mode for A/B testing code changes with LLM Judge.
+- **Developer Experience**:
+  - Support for `.boring.toml` configuration file.
+  - Custom rules: `verification_excludes`, `linter_configs`, and `prompts` overrides.
+  - Rich CLI progress bars for long-running verification tasks.
+
+### Changed
+- Refactored `CodeVerifier` to support thread-safe parallel execution.
+- Optimized RAG retrieval with distance-based filtering.
+- `judge.py` now supports position bias mitigation in pairwise comparisons.
+- Optimized RAG retrieval with distance-based filtering.
+
+
+## [10.12.0] - 2026-01-05 - Performance & Enterprise Features
+### Added
+- **Incremental Verification**: New `VerificationCache` skips re-verification of unchanged files (hashing). Added `--force` flag.
+- **Incremental RAG Indexing**: `rag index` now tracks file hashes to only re-index changed files (`--incremental` by default).
+- **Local LLM Support**: Added `LLMProvider` abstraction. Support for **Ollama** and **LM Studio** (OpenAI-compatible).
+  - New global CLI options: `--provider`, `--base-url`, `--llm-model`.
+- **Quality Trend Tracking**: `QualityTracker` records evaluation scores over time.
+  - New MCP tool: `boring_quality_trend` to visualize progress charts.
+
 ## [10.11.0] - 2026-01-05 - Polyglot Architect Mode
 ### Added
 - **Complete Multi-Language Verification**: Expanded `CodeVerifier` to support 8 languages:

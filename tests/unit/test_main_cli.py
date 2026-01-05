@@ -452,6 +452,7 @@ def test_evaluate_success_cli(mock_dependencies, tmp_path):
     
     result = runner.invoke(app, ["evaluate", str(target), "--backend", "cli"])
     
+    print(f"STDOUT:\n{result.stdout}")
     assert result.exit_code == 0
     assert "Score: 4.5/5.0" in result.stdout
     assert "Good code" in result.stdout

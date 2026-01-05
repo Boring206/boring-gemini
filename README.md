@@ -1,5 +1,5 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-10.11.0-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-10.15.0-green.svg)](https://github.com/Boring206/boring-gemini)
 [![Evaluation](https://img.shields.io/badge/Smithery-58%2F58-brightgreen.svg)](https://smithery.ai/server/boring/boring)
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 
@@ -14,8 +14,8 @@
 
 | 特色 | 說明 |
 |------|------|
-| 🌐 **Polyglot Support** | 支援 Python、JS/TS、Go、Rust、Java、C/C++ 語法驗證與測試 |
-| 🤖 **Multi-Agent Orchestration** | Architect → Coder → Reviewer 自動協作循環 |
+| 🌐 **Polyglot & CLI Native** | 支援 Gemini CLI 與 Claude Code CLI 無縫切換，零 API Key 運行 |
+| 🛡️ **Parallel Verification** | 支援多執行緒平行驗證，效能提升 3-5 倍 |
 | 🧠 **RAG Memory** | 向量搜索 + 依賴圖即時檢索相關程式碼 |
 | 🛡️ **Shadow Mode** | 高風險操作需人工批准，確保安全 |
 | 📐 **Spec-Driven** | 從 PRD 到 Code 實現 100% 規格一致性 |
@@ -56,6 +56,47 @@ pip install "boring[all]"
   }
 }
 ```
+
+---
+
+## ⚡ 效能與架構 (Performance & Architecture)
+
+### 1. 增量驗證 (Incremental Verification)
+- **智慧快取 (Smart Caching)**：`.boring_cache/verification.json` 儲存檔案雜湊值。
+- **極速 (Speed)**：若檔案未變更，重新驗證 100+ 個檔案僅需 <2秒。
+- **強制模式 (Force Mode)**：使用 `boring verify --force` 可略過快取強制重跑。
+
+### 2. 增量 RAG 索引 (Incremental RAG Indexing)
+- **狀態追蹤 (State Tracking)**：僅對變更的檔案重新建立索引。
+- **CLI**：`boring rag index` (預設即為增量模式)。
+
+### 3. 本地 LLM 與 CLI 支援 (Private AI & Tool Switching)
+- **支援模式**：Gemini CLI (推薦), Claude Code CLI (推薦), Ollama (本地), SDK (API Key)。
+- **自動偵測**：系統啟動時會自動偵測本地路徑下的指令工具。
+- **設定方式**：
+  ```bash
+  boring start --provider claude-code
+  boring verify --provider gemini-cli
+  ```
+
+### 4. 品質趨勢追蹤 (Quality Trend Tracking)
+- **歷史記錄**：將稽核分數記錄於 `.boring_brain/quality_history.json`。
+- **視覺化**：使用 `boring_quality_trend` 工具繪製 ASCII 趨勢圖。
+
+### 5. 平行驗證 (Parallel Verification - V10.13)
+- **並發處理**：使用 `ThreadPoolExecutor` 最大化大型專案的 CPU 利用率。
+- **速度提升**：在全新建置 (Clean Build) 時驗證速度提升 3x-5x 倍。
+- **即時進度**：擁有獨立於 CI log 的 Rich CLI 即時進度條。
+
+### 6. 對比評估 (Contrastive Evaluation)
+- **A/B 測試**：使用 `evaluate --level PAIRWISE` 並排比較兩種實作。
+- **LLM 裁判**：由 AI 根據正確性、邏輯和效率選出優勝者。
+- **偏差緩解**：自動處理位置偏差 (Position Bias)，透過交換 A/B/A順序驗證。
+
+### 7. 開發者體驗優化 (Features & DX)
+- **配置檔**：支援 `.boring.toml` 定義專案專屬規則。
+- **自訂提示詞**：於 `[boring.prompts]` 覆寫 Judge Prompts。
+- **Linter 覆寫**：於 `[boring.linter_configs]` 自訂特定工具參數。
 
 ---
 

@@ -1,0 +1,1088 @@
+{
+  "src\\module.py": {
+    "hash": "95db429b9f11f7fdc6f445fbc56df1669bd43278611def26e61e10b89798e953",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: module.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\audit.py": {
+    "hash": "1b730872a2b7043cec81dd0d0473540855d64d653467ff3f43b661a65f6c3625",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: audit.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\auto_fix.py": {
+    "hash": "31d95e4568340ec017548503f48d136547e0fe03d5e888449ef25fc19234037e",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: auto_fix.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\backup.py": {
+    "hash": "165ff36c204c9024ce11678d12800e7ffa5d8fd14477855bf1d7c2b0bb5bbcea",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: backup.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\brain_manager.py": {
+    "hash": "58c2f34e4bf3ccc889c89a51b4806b74b854c51abcb08e0266f371b7bf801466",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: brain_manager.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\circuit.py": {
+    "hash": "3c2305a3cbb8084d88522a9b17c40cc87df3e2a419b633955f79c684219a099f",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: circuit.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\cache.py": {
+    "hash": "e4e5266db223ee3899256746916623dd6bd098531863a5f0c8817fbcb74577d2",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: cache.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\cli_client.py": {
+    "hash": "2dfdbef3161c5f69d10d7ed24e9eed6c8f3da9f217506c424e7e985cb4a46483",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: cli_client.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\config.py": {
+    "hash": "64a3a310b121160df8b61a4cb4681ecda6a440db0ac6fe2fcc4d139cc5b22d1b",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: config.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\constants.py": {
+    "hash": "87af6d1c1a8ac1441165e4758d4a1132997da3c98b29bef4c4367ea4c4c5ba63",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: constants.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\context_selector.py": {
+    "hash": "4fe9082f05af7236c8769ae4227742b2b0586ded6ac14f1ad7eb335950727e5a",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: context_selector.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\core.py": {
+    "hash": "dd2e04a41e2c0a6886af8c522c379f07ea0914fddb50867f34482b2ba3c2fecc",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: core.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\dashboard.py": {
+    "hash": "cedb97fede23ebd768fc8313e5acaf4d1215ee9e4cf7fbb2eb81eb22cbc01409",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: dashboard.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\debugger.py": {
+    "hash": "e559d7a7d2942a8c03bf04cc9c4ec54e725d3f04be947d117c9ee55371069822",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: debugger.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\diff_patcher.py": {
+    "hash": "e36826ef8eec5bd3e4db21e5d6d2e17c76c1796e25c5941e5710622c16a89207",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: diff_patcher.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\exceptions.py": {
+    "hash": "ed45e699ad4c82af3d348ba2826dedb11a86d1010ace94f1493c5e2d071c479f",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: exceptions.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\extensions.py": {
+    "hash": "6cd72b671948ac33263ec235f0d366f9c0279c9d8fdb425d44576d79d939a9ee",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: extensions.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\file_patcher.py": {
+    "hash": "d53a96854dea56a3759a42ccc9d25a477b24c291dec1fdf778df338427b2d4fa",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: file_patcher.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\gemini_client.py": {
+    "hash": "108a5dd83f50c3597481fa64dbc1a4b9388d21eeb1a092b4091338ed2c4b3ad3",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: gemini_client.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\health.py": {
+    "hash": "a30348530f3fac7cb81dc237a5a0acfc3fd76c227d3f3b2ac8561ef471fc4493",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: health.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\hooks.py": {
+    "hash": "e840c8ca0ede7a6f956793d331e193be4594b172ace062a400434f5af6de619a",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: hooks.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\interactions_client.py": {
+    "hash": "865d06f9fe805f3fa60805bcd43cdecf3892307feb8aa356544e8d97734f9f9e",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: interactions_client.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\interactive.py": {
+    "hash": "6eb2f0cb426dc91b0e2f3b715db0207d532549a216abd916e7ab66951b81f9fa",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: interactive.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\interfaces.py": {
+    "hash": "3c5129af4c227b8996f903dfac13d75ea0be50775af8fb4c071dddb80242481e",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: interfaces.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\judge.py": {
+    "hash": "4fc0b492fe7bdb7ecbc7fd9aebcd90eb47cfd7d278695d068965ac0055c9bc42",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: judge.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\logger.py": {
+    "hash": "047874d892f423819c1ee6da6886a4b67be61b4036b19f49976dc94f77d13d11",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: logger.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\limiter.py": {
+    "hash": "1529659f1d632f8b4b94747dd01a1b36f556e9ae5b14960ac5d06fbd11d0bbb8",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: limiter.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\memory.py": {
+    "hash": "04eb05f7f819bc113176d02698cd40171d0c134b8848e0dd7c26ec0552b4fda4",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: memory.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\main.py": {
+    "hash": "bd3bec74161ad22c22ef2b811310552d7580ec1d339eae192dbcebb130987d21",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: main.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\models.py": {
+    "hash": "ee25526881d379ee6fc8fddba3c93d25b9ed2a942a103ec61b3258d60753c498",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: models.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\monitor.py": {
+    "hash": "ac013887ff1b4d971c19ab3fdfe20dd27f85dbde1079cdbb3f6be3354f4715bf",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: monitor.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\pattern_mining.py": {
+    "hash": "cee7a0e40d3c51eb3e306a26d22a9e82e6e5eb117626fe54ec9b6e6c05831912",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: pattern_mining.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\quality_tracker.py": {
+    "hash": "5f0ce495c4f197deec06ffb7fbc640232b305de40a43392bc1bd0840d6347102",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: quality_tracker.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\response_analyzer.py": {
+    "hash": "e09d08d2c14cc2c8a2ad85d34d700d449d7af5fa58466b3a2b772af3199c364a",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: response_analyzer.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\rubrics.py": {
+    "hash": "3cb10fe2c3ce0e2539c1ae2b87e9063cf1c52515c44112d041e5672b9ed84d7a",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: rubrics.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\security.py": {
+    "hash": "d7af9e2381c309414df0239ccf3364aedcbb8c0859ab38ff8bae6c9fe9540616",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: security.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\setup.py": {
+    "hash": "ef5b6e65abb37a2bb4a22792fdf148c6ad72356d21eb6431572654c6861a6abd",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: setup.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\shadow_mode.py": {
+    "hash": "4b9d533f283be6590b7ea71af85c1ba1f78ab0c74b5cbc9f2d73d5d6bda16ae3",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: shadow_mode.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\storage.py": {
+    "hash": "e317462e4f8af49fef3ae878675c5b3979d44fb617719b13898d3edc0541b9ac",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: storage.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\streaming.py": {
+    "hash": "03a411aa5288b242d93ba7aab63e72ee329ef57f1400062c5d13e660f62acdaf",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: streaming.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\utils.py": {
+    "hash": "7bad359c9f73613bb40b34ac03457ab9d998980b3f5f54127dd35a83e8fd2bca",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: utils.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\vector_memory.py": {
+    "hash": "73fbc063d9ee5a0c49476baeb0eda782a9c5e7f1b0f6e528fa11c05d69498515",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: vector_memory.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\verification.py": {
+    "hash": "58bd609fc0531a6ef6d8be0437737df34d98a3b96720015a1949a3674abb8b7c",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: verification.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\workflow_evolver.py": {
+    "hash": "221df53e70fe74f2f0f37cfa117fa8dc2dcb22028638c719732787b0e95b0d5d",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: workflow_evolver.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\workflow_manager.py": {
+    "hash": "e8538807f3b002bbd1f09a7b41fd2acd7d257f8723164cefa916792439a5a437",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: workflow_manager.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\workspace.py": {
+    "hash": "d488a634e458ffa20a947ed0fc70d6b86c632a17712d4dea3aafd5dfdd817541",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: workspace.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\__init__.py": {
+    "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: __init__.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\agents\\architect.py": {
+    "hash": "e326e103e3d33dc818a9fdb1534de7e47d6bf00924683f5559599a5f76d98601",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: architect.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\agents\\base.py": {
+    "hash": "8e41d9f6e5da21fc9dc27fd3f2680c6f508db6903d2d759293411e5843ffbb73",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: base.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\agents\\coder.py": {
+    "hash": "ab66d18c599675f2701e2864b0bb60d1e64aeeea940fcaf786377e76ea3cd064",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: coder.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\agents\\orchestrator.py": {
+    "hash": "a16930ce305b0fb9bbceffdd69fe276f3690132be5e349a6074b31889560fef2",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: orchestrator.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\agents\\reviewer.py": {
+    "hash": "333283237816668c284f33ae61a6fbe5b0853c2b27f024d331d4ae0337795d12",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: reviewer.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\agents\\__init__.py": {
+    "hash": "52b635832c70e503e00048b3241538558f20e8f474b6b191efb71b5635f2c0d4",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: __init__.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\llm\\executor.py": {
+    "hash": "61df89bf5f3999c48a09aaa1749594705f80cd7b7058efc6f4523305c1a03cc0",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: executor.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\llm\\ollama.py": {
+    "hash": "ca5878d23d35bc71acd60f30621395fd24bbe492e32665b516e39f6353c5844a",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: ollama.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\llm\\openai_compat.py": {
+    "hash": "a0398827575346c09a0b07407695e7c70538baf2317c610c1a6b7798c87f8471",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: openai_compat.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\llm\\provider.py": {
+    "hash": "12a445fc25694d4228926c553091c27e2d8efe73b506025d5e0839d5f59e8b6a",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: provider.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\llm\\sdk.py": {
+    "hash": "1123e953fe9855033ee49ee5897fc5a5fb73df2fefc66afd211d2cf1ce119b42",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: sdk.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\llm\\tools.py": {
+    "hash": "e19abca7f495d50e7ae63103940c0ac80962bce860360ea3d681c717cb127abc",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: tools.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\llm\\__init__.py": {
+    "hash": "98d43813e91e14e40d90765e388ac76f1cc37844b4024fa115037587d3a75788",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: __init__.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\loop\\agent.py": {
+    "hash": "c5660d32089cc5018a64f069d48b2f00ec16ea2c7429afd5d52bbca700b3b417",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: agent.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\loop\\context.py": {
+    "hash": "b2412cd411cde770e05d907de0efedfa36e69121f55aef67b6fcf0ce18bcec05",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: context.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\loop\\base.py": {
+    "hash": "248c3884213bd6293d38453afcdb41b127fa3cdc2b3bb9dd33c9cc2223ff4f26",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: base.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\loop\\legacy.py": {
+    "hash": "69009604405cb1997008d3fbba00b8d0ef898ad67bb523844434201f1b514f67",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: legacy.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\loop\\__init__.py": {
+    "hash": "19c30865adca2956b4dca8e7a9b1edbe9097fd5061d93f5d566e4560b5482058",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: __init__.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\loop\\states\\patching.py": {
+    "hash": "ba5cd5e1492523fcb6a9259fcdbffc992f81e4e4e3b7c2cbc925ae50b5de1b2a",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: patching.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\loop\\states\\thinking.py": {
+    "hash": "2aff41453ca246841de3ce2bfdbb69a238ce3d88cd97cef62f2ba95857779e54",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: thinking.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\loop\\states\\recovery.py": {
+    "hash": "f64b0879affe66b118155d1ffed6e67fee57e8a9b38302b199333376a4c16a8c",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: recovery.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\loop\\states\\verifying.py": {
+    "hash": "7e1e715a23898141e7c9cae46aa907b1c30b61b676c6084e0a54d0b0f6a93127",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: verifying.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\loop\\states\\__init__.py": {
+    "hash": "5b7beef3fc0b3035cf66687c38de4cb0b0fdeb1d327e8cb47729b2044c666395",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: __init__.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\brain_tools.py": {
+    "hash": "0d148b439e21eb0bbc5f56e2c52d7df5e6f06b4eda2011d09a033f3946ff5d8b",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: brain_tools.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\async_utils.py": {
+    "hash": "7d1e5c035a902624cf2d37bf87f7ca01fc7075c41c147083aa782b0f9f2c6596",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: async_utils.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\core_tools.py": {
+    "hash": "dfbc27d5ad16ba24069011524587923d5ff9e14e8ed8689a4969349e1e44b399",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: core_tools.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\http.py": {
+    "hash": "1a021d60e0de10965671058ed82f15beca5d530dd4a5efb7338fb8e256d77cba",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: http.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\instance.py": {
+    "hash": "e5f785a5243b8fb2fdab928e2763b261f0a084eef721e279136a348a92b9a1ef",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: instance.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\interceptors.py": {
+    "hash": "1d5818da51229aff4ca7a5964a266b93b37d9ff9018eeaac17277b01748b3ee4",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: interceptors.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\prompts.py": {
+    "hash": "1d6e4d77c6837416f23f3e59a70d8e17cf5c29242e374257a35ccb5a4935a378",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: prompts.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\resources.py": {
+    "hash": "5e3e04fe6660e1849ca7caf542faae1275db1bbfd0c03c2fbbafa29fd687f661",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: resources.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\server.py": {
+    "hash": "104a0e71b9dab06efcda8550483caa36ccf58635fefb39804522acac06f7cfc1",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: server.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\utils.py": {
+    "hash": "c451971c476e8955c5369d2dd150b856b8e719d1f6cb1fb842ebd46af0ad7bd1",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: utils.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\speckit_tools.py": {
+    "hash": "13203702e489c2392a7352b4160ddbce53d0bd7003238edf3397125d9d91bfeb",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: speckit_tools.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\v10_tools.py": {
+    "hash": "c7434214fc21abd222937cef78bd6bc78aca621c02925b75a1f01b4e17131726",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: v10_tools.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\v9_tools.py": {
+    "hash": "e7856cd6ebd6a84725bbe7cba41d43d49c31eb1934f2db96fec131871b1868dd",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: v9_tools.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\__init__.py": {
+    "hash": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: __init__.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\tools\\agents.py": {
+    "hash": "095db226c784eef132c33d5c9a3dcbf9671be49d3639280816a850f638202a7f",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: agents.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\tools\\core.py": {
+    "hash": "9fdd4017e1bd439a6a66cd355f3e5cd7eab2c3295abaa5049c5c7be68d2c9941",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: core.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\tools\\evaluation.py": {
+    "hash": "0e6eb92d2556db90a3cb41536c4e145bf011bbffeb2ffbd1ce48a15876018f8a",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: evaluation.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\tools\\git.py": {
+    "hash": "a924b58157545be467672517472f9d1d3ed1d0e391abe3b6ab865ddadc62df1b",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: git.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\tools\\integration.py": {
+    "hash": "b320bf01090967b84af0a5a25bde7c59e6039d5c721bd102c26a30544b00014e",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: integration.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\tools\\knowledge.py": {
+    "hash": "69750e03d2017b2d4ef752efcb0b8c01cef2f251e987edc365046cef2b7d6268",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: knowledge.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\tools\\patching.py": {
+    "hash": "a689952704140d12bcd7555c4dcbca7140090e138a004a685dd9ea73826668d7",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: patching.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\tools\\quality.py": {
+    "hash": "80f14cef2504b20cac99e77d69bedb7a03b1162149c401ea8fa19cc81dabec18",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: quality.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\tools\\shadow.py": {
+    "hash": "033e4e45f55af8cc20f02e51aef83d388520c3f46e65f4f544acfd4fd4772cf0",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: shadow.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\tools\\speckit.py": {
+    "hash": "b6daa788b9189d1d2403160707ec83e35991e0c7e1417596f6e14bd8814270df",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: speckit.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\tools\\rag.py": {
+    "hash": "89b27dc932dba3aada35c61886393485b86016acc79c3990fa3224d0f7319055",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: rag.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\tools\\verification.py": {
+    "hash": "3ed7e5f968148a12aeb8290a1b8e5ef8b7626938231b13498205644e41f109b3",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: verification.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\mcp\\tools\\workflow.py": {
+    "hash": "f2d80dad2d5e1294c3b3ae524420e793a1fb3c0b058a760c59aab1a3d7ed763b",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: workflow.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\plugins\\loader.py": {
+    "hash": "fc19d1f664e8ed3b7fa81d85b4dca76906fd6cda0e406a0f9afbe0c6fe7f072d",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: loader.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\rag\\code_indexer.py": {
+    "hash": "4a3ec5f06b54908e33fb6285f5e1860a9830fde73ffc7fa4fe0d316289db815a",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: code_indexer.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\plugins\\__init__.py": {
+    "hash": "73491e0d9ed0d0540defcc415932923c0fc49342a67fa51ad71e5955053a3a67",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: __init__.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\rag\\graph_builder.py": {
+    "hash": "ae8f4bfe8c2b6345addaabe50033debb70bd789faa31caa0b3804f1543bfcf22",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: graph_builder.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\rag\\index_state.py": {
+    "hash": "09cda3aba23e91908e33841e02071cd261544343885f3a07119889c5789a8ed5",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: index_state.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\rag\\rag_retriever.py": {
+    "hash": "3504796fe97286c7eb4f3b2617f7ce79a01e17fc74508e969cd61acb6f44d8df",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: rag_retriever.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\rag\\parser.py": {
+    "hash": "120b07232045b7cc8e2b5367dec1d413cfc4db9eeb91d991733b0c93ef784057",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: parser.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\boring\\rag\\__init__.py": {
+    "hash": "4fe666ce8c9aafd6ebad24483b43297da72aee52c112cc4370c6f3830726cf8d",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: __init__.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\main.py": {
+    "hash": "c1f7a80b35f7267365e45934a0f99f8af09f027015a67dd3005e08b6486b7e86",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: main.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\utils.py": {
+    "hash": "8a75c75fbb4f709198f8d04b7a5415120894756f2b7b2e097d9fa8b37a5a6a36",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: utils.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\broken.py": {
+    "hash": "ae68d71b10e2b6d8610bba891db7219a994ce48456c6c83fd2941aaf496cbcab",
+    "result": {
+      "passed": false,
+      "check_type": "file_comparison",
+      "message": "syntax: Syntax Error in broken.py",
+      "details": [
+        "Line 1: '(' was never closed",
+        "Text: def broken("
+      ],
+      "suggestions": [
+        "Check for missing colons, parentheses, or indentation",
+        "Fix the syntax error at line 1"
+      ]
+    }
+  }
+}

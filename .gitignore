@@ -167,3 +167,6 @@ test_results*.txt
 test_output.txt
 inspect_fastmcp.py
 test.py
+debug_*.py
+cli_*.txt
+demo_*.py

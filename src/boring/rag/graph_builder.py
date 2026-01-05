@@ -262,3 +262,44 @@ class DependencyGraph:
             queue = next_queue
         
         return None  # No path found within max_depth
+
+    def visualize(self, format: str = "mermaid", max_nodes: int = 50) -> str:
+        """
+        Generate a visualization of the dependency graph.
+        
+        Args:
+            format: Output format ("mermaid" or "json")
+            max_nodes: Maximum nodes to include (for readability)
+        
+        Returns:
+            String representation of the graph
+        """
+        if format == "json":
+            import json
+            nodes = []
+            edges = []
+            for cid, chunk in list(self._chunks.items())[:max_nodes]:
+                nodes.append({"id": cid, "name": chunk.name, "type": chunk.chunk_type})
+                for callee in self.callees.get(cid, set()):
+                    edges.append({"from": cid, "to": callee})
+            return json.dumps({"nodes": nodes, "edges": edges}, indent=2)
+        
+        # Mermaid format
+        lines = ["```mermaid", "flowchart TD"]
+        
+        # Add nodes (limit for readability)
+        added = set()
+        for cid, chunk in list(self._chunks.items())[:max_nodes]:
+            safe_name = chunk.name.replace('"', "'")
+            lines.append(f'    {cid[:8]}["{safe_name}"]')
+            added.add(cid)
+        
+        # Add edges
+        for cid in added:
+            for callee in self.callees.get(cid, set()):
+                if callee in added:
+                    lines.append(f"    {cid[:8]} --> {callee[:8]}")
+        
+        lines.append("```")
+        return "\n".join(lines)
+

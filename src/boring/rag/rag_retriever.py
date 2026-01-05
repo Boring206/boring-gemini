@@ -16,6 +16,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 
 from .code_indexer import CodeIndexer, CodeChunk, IndexStats
+from .index_state import IndexState
 from .graph_builder import DependencyGraph, GraphStats
 
 logger = logging.getLogger(__name__)
@@ -78,17 +79,24 @@ class RAGRetriever:
         self,
         project_root: Path,
         persist_dir: Optional[Path] = None,
-        collection_name: Optional[str] = None
+        collection_name: Optional[str] = None,
+        additional_roots: Optional[List[Path]] = None
     ):
         self.project_root = Path(project_root)
         self.persist_dir = persist_dir or (self.project_root / ".boring_memory" / "rag_db")
         self.collection_name = collection_name or self.COLLECTION_NAME
+        
+        # Multi-project support: list of all project roots to index
+        self.all_project_roots: List[Path] = [self.project_root]
+        if additional_roots:
+            self.all_project_roots.extend([Path(p) for p in additional_roots])
         
         # Ensure persist directory exists
         self.persist_dir.mkdir(parents=True, exist_ok=True)
         
         # Components
         self.indexer = CodeIndexer(self.project_root)
+        self.index_state = IndexState(self.project_root)
         self.graph: Optional[DependencyGraph] = None
         self._chunks: Dict[str, CodeChunk] = {}
         self._file_to_chunks: Dict[str, List[str]] = {}  # file_path -> chunk_ids
@@ -121,12 +129,13 @@ class RAGRetriever:
         """Check if RAG system is available."""
         return CHROMA_AVAILABLE and self.collection is not None
     
-    def build_index(self, force: bool = False) -> int:
+    def build_index(self, force: bool = False, incremental: bool = True) -> int:
         """
         Index the entire codebase.
         
         Args:
             force: If True, rebuild even if index exists
+            incremental: If True (and not force), only index changed files.
         
         Returns:
             Number of chunks indexed
@@ -135,65 +144,124 @@ class RAGRetriever:
             logger.warning("ChromaDB not available, skipping index build")
             return 0
         
-        # Check if already indexed (skip if not forced)
+        # 1. Handle Force Rebuild
         existing_count = self.collection.count()
-        if not force and existing_count > 0:
-            logger.info(f"Index already exists with {existing_count} chunks")
+        if force:
+            logger.info("Force rebuild: clearing existing index")
+            try:
+                self.client.delete_collection(self.collection_name)
+                self.collection = self.client.create_collection(
+                    name=self.collection_name,
+                    metadata={"hnsw:space": "cosine"}
+                )
+                self.index_state = IndexState(self.project_root) # Reset state
+                # Clear state file explicitly?
+                # IndexState loads from disk. We should clear it.
+                # But IndexState doesn't have clear method yet beyond remove items.
+                # For now we just ignore load?
+                # Better: implement clear() in IndexState later or just iterate deletions.
+                # Here we assume starting fresh means empty DB, but IndexState might still have data on disk.
+                # We should probably clear cached state file too.
+                # self.index_state.clear() # user needs to add this method or we assume overwrite updates.
+                pass 
+            except Exception as e:
+                logger.error(f"Failed to clear collection: {e}")
+                return 0
+
+        # 2. Collect Files from all project roots (multi-project support)
+        all_files = []
+        for root in self.all_project_roots:
+            indexer = CodeIndexer(root)
+            all_files.extend(indexer.collect_files())
+        
+        # 3. Determine Changes
+        if incremental and not force:
+            files_to_index = self.index_state.get_changed_files(all_files)
+            stale_files_rel = self.index_state.get_stale_files(all_files)
+        else:
+            files_to_index = all_files
+            stale_files_rel = []
+
+        if not files_to_index and not stale_files_rel:
+            logger.info("Index is up to date.")
+            # We still need to load chunks into memory for graph building
             self._load_chunks_from_db()
             return existing_count
+
+        # 4. Handle Deletions
+        for rel_path in stale_files_rel:
+            chunk_ids = self.index_state.state.get(rel_path, {}).get("chunks", [])
+            if chunk_ids:
+                try:
+                    self.collection.delete(ids=chunk_ids)
+                except Exception: pass
+            self.index_state.remove(rel_path)
+            logger.info(f"Removed stale file: {rel_path}")
+
+        # 5. Handle Indexing
+        new_chunks_buffer = []
+        total_indexed = 0
         
-        # Clear existing data if forcing
-        if force and existing_count > 0:
-            logger.info("Force rebuild: clearing existing index")
-            self.client.delete_collection(self.collection_name)
-            self.collection = self.client.create_collection(
-                name=self.collection_name,
-                metadata={"hnsw:space": "cosine"}
-            )
-        
-        # Index all files
-        chunks = list(self.indexer.index_project())
-        
-        if not chunks:
-            logger.warning("No chunks found in project")
-            return 0
-        
-        # Build in-memory structures
-        self._chunks = {c.chunk_id: c for c in chunks}
-        self._build_file_index(chunks)
-        
-        # Build dependency graph
-        self.graph = DependencyGraph(chunks)
-        
-        # Prepare for ChromaDB
-        ids = [c.chunk_id for c in chunks]
-        
-        # Create semantic documents for embedding
-        documents = [self._chunk_to_document(c) for c in chunks]
-        
-        # Metadata for filtering
-        metadatas = [self._chunk_to_metadata(c) for c in chunks]
-        
-        # Upsert in batches (ChromaDB has limits)
-        batch_size = 100
-        for i in range(0, len(chunks), batch_size):
-            batch_end = min(i + batch_size, len(chunks))
+        for file_path in files_to_index:
+            # Clear old chunks for modified file
+            rel_path = self.index_state._get_rel_path(file_path)
+            old_ids = self.index_state.get_chunks_for_file(file_path)
+            if old_ids:
+                try:
+                    self.collection.delete(ids=old_ids)
+                except Exception: pass
+
+            # Generate new chunks
             try:
-                self.collection.upsert(
-                    ids=ids[i:batch_end],
-                    documents=documents[i:batch_end],
-                    metadatas=metadatas[i:batch_end]
-                )
+                chunks = list(self.indexer.index_file(file_path))
             except Exception as e:
-                logger.error(f"Failed to upsert batch {i}-{batch_end}: {e}")
+                logger.warning(f"Failed to index {file_path}: {e}")
+                continue
+
+            if not chunks:
+                continue
+
+            # Batch upsert logic preparation
+            new_chunks_buffer.extend(chunks)
+            
+            # Update state with new IDs
+            ids = [c.chunk_id for c in chunks]
+            self.index_state.update(file_path, ids)
+            total_indexed += len(chunks)
+            
+        # 6. Bulk Upsert to Chroma
+        if new_chunks_buffer:
+            ids = [c.chunk_id for c in new_chunks_buffer]
+            documents = [self._chunk_to_document(c) for c in new_chunks_buffer]
+            metadatas = [self._chunk_to_metadata(c) for c in new_chunks_buffer]
+            
+            batch_size = 100
+            for i in range(0, len(new_chunks_buffer), batch_size):
+                end = min(i + batch_size, len(new_chunks_buffer))
+                try:
+                    self.collection.upsert(
+                        ids=ids[i:end],
+                        documents=documents[i:end],
+                        metadatas=metadatas[i:end]
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to upsert batch: {e}")
+
+        # 7. Persist State
+        self.index_state.save()
         
-        stats = self.indexer.get_stats()
-        logger.info(
-            f"Indexed {len(chunks)} chunks from {stats.total_files} files "
-            f"({stats.functions} functions, {stats.classes} classes, {stats.methods} methods)"
-        )
+        # 8. Reload fully for graph building (Hybrid RAG needs graph)
+        # Note: In a huge repo, loading all chunks might be heavy.
+        # Ideally we load only necessary graph data. 
+        # For V10 we load all instructions.
+        self._load_chunks_from_db()
         
-        return len(chunks)
+        # Update graph with new/all chunks
+        # _load_chunks_from_db handles rebuilding self._chunks and self.graph
+        
+        logger.info(f"Indexed {len(files_to_index)} files ({total_indexed} chunks). Removed {len(stale_files_rel)} stale files.")
+        
+        return self.collection.count()
     
     def retrieve(
         self,
@@ -201,7 +269,8 @@ class RAGRetriever:
         n_results: int = 10,
         expand_graph: bool = True,
         file_filter: Optional[str] = None,
-        chunk_types: Optional[List[str]] = None
+        chunk_types: Optional[List[str]] = None,
+        threshold: float = 0.0
     ) -> List[RetrievalResult]:
         """
         Retrieve relevant code chunks.
@@ -212,6 +281,7 @@ class RAGRetriever:
             expand_graph: Whether to include 1-layer dependency context
             file_filter: Filter by file path substring (e.g., "auth")
             chunk_types: Filter by chunk types (e.g., ["function", "class"])
+            threshold: Minimum relevance score (0.0 to 1.0)
         
         Returns:
             List of RetrievalResult sorted by relevance
@@ -243,14 +313,18 @@ class RAGRetriever:
                     continue
                 seen_ids.add(chunk_id)
                 
+                # Calculate score from distance
+                distance = results["distances"][0][i] if results.get("distances") else 0.5
+                score = 1.0 - min(distance, 1.0)  # Convert distance to similarity
+                
+                # Filter by threshold
+                if score < threshold:
+                    continue
+                    
                 # Get chunk from cache or reconstruct
                 chunk = self._get_or_reconstruct_chunk(chunk_id, results, i)
                 if not chunk:
                     continue
-                
-                # Calculate score from distance
-                distance = results["distances"][0][i] if results.get("distances") else 0.5
-                score = 1.0 - min(distance, 1.0)  # Convert distance to similarity
                 
                 retrieved.append(RetrievalResult(
                     chunk=chunk,

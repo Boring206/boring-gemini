@@ -86,6 +86,7 @@ def register_rag_tools(mcp, helpers: dict):
         max_results: Annotated[int, Field(description="Maximum number of results (default 10)")] = 10,
         expand_graph: Annotated[bool, Field(description="Include related code via dependency graph (default True)")] = True,
         file_filter: Annotated[str, Field(description="Filter by file path substring (e.g., 'auth' or 'src/api')")] = None,
+        threshold: Annotated[float, Field(description="Minimum relevance score (0.0 to 1.0)")] = 0.0,
         project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
@@ -99,6 +100,7 @@ def register_rag_tools(mcp, helpers: dict):
             max_results: Maximum number of results (default 10)
             expand_graph: Include related code via dependency graph (default True)
             file_filter: Filter by file path substring (e.g., "auth" or "src/api")
+            threshold: Minimum relevance score (0.0 to 1.0)
             project_path: Optional explicit path to project root
         
         Returns:
@@ -144,7 +146,8 @@ def register_rag_tools(mcp, helpers: dict):
             query=query,
             n_results=max_results,
             expand_graph=expand_graph,
-            file_filter=file_filter
+            file_filter=file_filter,
+            threshold=threshold
         )
         
         if not results:

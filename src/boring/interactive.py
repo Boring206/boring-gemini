@@ -314,3 +314,155 @@ def enter_interactive_mode(
         if on_abort:
             on_abort()
         return False
+
+
+class MainMenu:
+    """
+    V10.15: Enhanced interactive main menu for Boring CLI.
+    
+    Provides a rich menu-based interface for common operations:
+    - Start development loop
+    - Run verification
+    - Search code (RAG)
+    - Evaluate code quality
+    - View project status
+    
+    Usage:
+        menu = MainMenu()
+        menu.show()
+    """
+    
+    MENU_OPTIONS = [
+        ("1", "🚀 Start Development Loop", "start"),
+        ("2", "✅ Verify Project", "verify"),
+        ("3", "🔍 Search Code (RAG)", "search"),
+        ("4", "📊 Evaluate Code", "evaluate"),
+        ("5", "📈 View Status", "status"),
+        ("6", "🔧 Auto-Fix", "autofix"),
+        ("7", "⚙️  Settings", "settings"),
+        ("q", "❌ Quit", "quit"),
+    ]
+    
+    def __init__(self, project_root: Optional[Path] = None):
+        self.project_root = project_root or settings.PROJECT_ROOT
+        self._running = True
+    
+    def show(self) -> None:
+        """Display and run the main menu loop."""
+        console.print(Panel(
+            "[bold blue]Boring for Gemini[/bold blue]\n"
+            "[dim]Enterprise-grade Autonomous AI Development Agent[/dim]",
+            border_style="blue"
+        ))
+        
+        while self._running:
+            self._display_menu()
+            choice = self._get_choice()
+            self._handle_choice(choice)
+    
+    def _display_menu(self) -> None:
+        """Display menu options."""
+        table = Table(show_header=False, box=None, padding=(0, 2))
+        table.add_column("Key", style="bold cyan", width=3)
+        table.add_column("Option")
+        
+        for key, label, _ in self.MENU_OPTIONS:
+            table.add_row(key, label)
+        
+        console.print()
+        console.print(table)
+        console.print()
+    
+    def _get_choice(self) -> str:
+        """Get user's menu choice."""
+        valid = [opt[0] for opt in self.MENU_OPTIONS]
+        return Prompt.ask(
+            "[bold]Select[/bold]",
+            choices=valid,
+            default="1"
+        )
+    
+    def _handle_choice(self, choice: str) -> None:
+        """Handle the selected menu option."""
+        for key, _, action in self.MENU_OPTIONS:
+            if key == choice:
+                handler = getattr(self, f"_action_{action}", None)
+                if handler:
+                    handler()
+                return
+    
+    def _action_start(self) -> None:
+        """Start development loop."""
+        console.print("[bold green]Starting development loop...[/bold green]")
+        console.print("[dim]Run 'boring start' for full options[/dim]")
+        # Import and run would happen here in full implementation
+    
+    def _action_verify(self) -> None:
+        """Run verification."""
+        from .verification import CodeVerifier
+        level = Prompt.ask("Verification level", choices=["BASIC", "STANDARD", "FULL"], default="STANDARD")
+        console.print(f"[bold blue]Running {level} verification...[/bold blue]")
+        verifier = CodeVerifier(self.project_root)
+        passed, msg = verifier.verify_project(level)
+        if passed:
+            console.print(f"[green]✅ Verification passed[/green]")
+        else:
+            console.print(f"[red]❌ Verification failed: {msg}[/red]")
+    
+    def _action_search(self) -> None:
+        """Search code via RAG."""
+        query = Prompt.ask("[bold]Search query[/bold]")
+        if query:
+            console.print(f"[dim]Searching for: {query}[/dim]")
+            # RAG search would be called here
+            console.print("[yellow]RAG search requires 'boring rag index' first[/yellow]")
+    
+    def _action_evaluate(self) -> None:
+        """Evaluate code quality."""
+        filepath = Prompt.ask("[bold]File to evaluate[/bold]")
+        if filepath:
+            console.print(f"[dim]Evaluating: {filepath}[/dim]")
+            console.print("[yellow]Run 'boring evaluate {filepath}' for full analysis[/yellow]")
+    
+    def _action_status(self) -> None:
+        """Show project status."""
+        from .memory import MemoryManager
+        try:
+            memory = MemoryManager(self.project_root)
+            state = memory.get_project_state()
+            console.print(Panel(
+                f"[bold]Project:[/bold] {state.get('project_name', 'Unknown')}\n"
+                f"[bold]Loops:[/bold] {state.get('total_loops', 0)}\n"
+                f"[bold]Success:[/bold] {state.get('successful_loops', 0)}",
+                title="📊 Project Status",
+                border_style="green"
+            ))
+        except Exception as e:
+            console.print(f"[red]Error loading status: {e}[/red]")
+    
+    def _action_autofix(self) -> None:
+        """Run auto-fix."""
+        console.print("[bold yellow]Auto-Fix Mode[/bold yellow]")
+        console.print("[dim]Run 'boring auto-fix <file>' for targeted fixes[/dim]")
+    
+    def _action_settings(self) -> None:
+        """Show settings."""
+        console.print(Panel(
+            f"[bold]Project Root:[/bold] {settings.PROJECT_ROOT}\n"
+            f"[bold]Model:[/bold] {settings.DEFAULT_MODEL}\n"
+            f"[bold]Provider:[/bold] {settings.LLM_PROVIDER}",
+            title="⚙️ Settings",
+            border_style="cyan"
+        ))
+    
+    def _action_quit(self) -> None:
+        """Quit the menu."""
+        self._running = False
+        console.print("[dim]Goodbye![/dim]")
+
+
+def run_interactive_menu():
+    """Entry point for interactive menu."""
+    menu = MainMenu()
+    menu.show()
+

@@ -1,81 +1,82 @@
-# Contributing to Boring-Gemini
+# 貢獻指南 (Contributing to Boring-Gemini)
 
-Thank you for your interest in contributing to Boring-Gemini! 🎉
+感謝您有興趣為 Boring-Gemini 做出貢獻！ 🎉
 
-## ❤️ How to Contribute
+## ❤️ 如何貢獻 (How to Contribute)
 
-We welcome contributions of all kinds:
-- 🐛 **Bug Reports**: Use GitHub Issues with the `bug` label
-- 💡 **Feature Requests**: Use GitHub Issues with the `enhancement` label
-- 📖 **Documentation**: Improve docs, README, or add examples
-- 🔌 **Plugins**: Create and share custom plugins (see below)
+我們歡迎各種形式的貢獻：
 
-## Development Setup
+- 🐛 **回報錯誤 (Bug Reports)**：使用 GitHub Issues 並標記為 `bug`。
+- 💡 **功能請求 (Feature Requests)**：使用 GitHub Issues 並標記為 `enhancement`。
+- 📖 **文獻改進 (Documentation)**：改進文件、README 或增加範例。
+- 🔌 **插件開發 (Plugins)**：建立並分享自訂插件 (見下文)。
+
+## 開發環境設置 (Development Setup)
 
 ```bash
-# Clone the repository
+# 複製專案
 git clone https://github.com/Boring206/boring-gemini.git
 cd boring-gemini
 
-# Install with development dependencies
+# 安裝開發依賴
 pip install -e ".[dev]"
 
-# Run tests with coverage
+# 執行測試 (含覆蓋率)
 pytest
 
-# Run linter
+# 執行 Linter
 ruff check src/
 ```
 
-## Code Standards
+## 程式碼規範 (Code Standards)
 
-- **Type Hints**: All public functions must have type hints
-- **Docstrings**: Use Google-style docstrings
-- **Testing**: Maintain 80%+ coverage
-- **Linting**: Code must pass ruff without errors
+- **型別提示 (Type Hints)**：所有公開函數必須包含型別提示。
+- **文件字串 (Docstrings)**：使用 Google 風格的文件字串。
+- **測試 (Testing)**：維持 80%+ 的測試覆蓋率。
+- **Linting**：程式碼必須通過 ruff 檢查且無錯誤。
 
-## Pull Request Process
+## Pull Request 流程
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes with tests
-4. Run `pytest` and `ruff check`
-5. Commit with conventional commits (`feat:`, `fix:`, `docs:`)
-6. Push and create a Pull Request
+1. Fork 此儲存庫
+2. 建立功能分支 (`git checkout -b feature/amazing-feature`)
+3. 進行修改並撰寫測試
+4. 執行 `pytest` 和 `ruff check` 確保通過
+5. 使用 Conventional Commits 提交 (`feat:`, `fix:`, `docs:`)
+6. 推送並建立 Pull Request
 
-## Project Structure (V10.5 - Pure CLI Mode)
+## 專案結構 (V10.13 - Pure CLI Mode)
 
-> **Important**: V10.5 introduced "Pure CLI Mode" - MCP tools like `run_boring`, `speckit_*`, and `boring_multi_agent` 
-> now return workflow templates with CLI commands instead of executing AI internally.
+> **重要**：V10.5 引入了 "Pure CLI Mode" - MCP 工具如 `run_boring`、`speckit_*` 和 `boring_multi_agent` 
+> 現在回傳的是包含 CLI 指令的工作流模板 (Workflow Templates)，而非在內部直接執行 AI。
 
 ```
 boring-gemini/
 ├── src/boring/
-│   ├── mcp/                  # MCP Server Package
-│   │   ├── server.py         # FastMCP entry point
-│   │   ├── tools/            # Modular tool packages
+│   ├── mcp/                  # MCP Server 套件
+│   │   ├── server.py         # FastMCP 進入點
+│   │   ├── tools/            # 模組化工具包
 │   │   │   ├── core.py       # run_boring, health_check (Pure CLI Mode)
-│   │   │   ├── speckit.py    # SpecKit tools (Returns templates)
-│   │   │   ├── agents.py     # Multi-agent tools (Returns templates)
+│   │   │   ├── speckit.py    # SpecKit 工具 (回傳模板)
+│   │   │   ├── agents.py     # 多 Agent 工具 (回傳模板)
 │   │   │   └── ...
-│   │   └── v9_tools.py       # V9 features (auto_fix, workspace)
-│   ├── plugins/              # Plugin system
-│   ├── rag/                  # RAG System (Vector + Graph)
-│   │   ├── parser.py         # Tree-sitter AST Parser (V10.10)
-│   │   ├── code_indexer.py   # Code chunking logic
+│   │   └── v9_tools.py       # V9 功能 (auto_fix, workspace)
+│   ├── plugins/              # 插件系統
+│   ├── rag/                  # RAG 系統 (Vector + Graph)
+│   │   ├── parser.py         # Tree-sitter AST 解析器 (V10.10)
+│   │   ├── code_indexer.py   # 程式碼分塊邏輯
 │   │   └── ...
-│   ├── verification.py       # CodeVerifier (Generic Dispatcher)
-│   ├── judge.py              # LLM-as-a-Judge (Confidence & Bias Mitigation)
+│   ├── verification.py       # CodeVerifier (通用驗證調度器)
+│   ├── judge.py              # LLM-as-a-Judge (信心度與偏差緩解)
 │   └── ...
-├── .agent/workflows/         # SpecKit workflows (evolvable)
-│   └── _base/                # Base templates for rollback
-├── .boring_brain/            # Knowledge base
-└── tests/                    # Test suite (pytest)
+├── .agent/workflows/         # SpecKit 工作流 (可演進)
+│   └── _base/                # 回滾用的基礎模板
+├── .boring_brain/            # 知識庫
+└── tests/                    # 測試套件 (pytest)
 ```
 
-## 🔌 Creating Plugins
+## 🔌 建立插件 (Creating Plugins)
 
-Plugins extend Boring without modifying core code. Create a file in `~/.boring/plugins/` or `.boring_plugins/`:
+插件可在不修改核心程式碼的情況下擴展 Boring 功能。在 `~/.boring/plugins/` 或 `.boring_plugins/` 建立檔案：
 
 ```python
 # my_plugin.py
@@ -90,9 +91,8 @@ def my_custom_tool(arg1: str) -> dict:
     return {"status": "SUCCESS", "result": arg1.upper()}
 ```
 
-Reload with `boring_reload_plugins` and use with `boring_run_plugin`.
+使用 `boring_reload_plugins`重新載入，並透過 `boring_run_plugin` 執行。
 
-## Questions?
+## 有問題嗎？
 
-Open an issue or start a discussion!
-
+歡迎開啟 Issue 或發起 Discussion！

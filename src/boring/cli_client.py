@@ -20,7 +20,7 @@ from dataclasses import dataclass
 
 from .logger import log_status
 
-from .interfaces import LLMClient, LLMResponse
+from .llm.provider import LLMProvider, LLMResponse
 
 
 @dataclass
@@ -31,9 +31,9 @@ class CLIResponse:
     error: Optional[str] = None
 
 
-class GeminiCLIAdapter(LLMClient):
+class GeminiCLIAdapter(LLMProvider):
     """
-    Adapter that implements LLMClient interface using Gemini CLI.
+    Adapter that implements LLMProvider interface using Gemini CLI.
     
     Usage:
         adapter = GeminiCLIAdapter()
@@ -62,6 +62,14 @@ class GeminiCLIAdapter(LLMClient):
             log_status(self.log_dir, "INFO", f"Gemini CLI Adapter initialized: {self.cli_path} (cwd: {self.cwd})")
         else:
              log_status(self.log_dir, "WARN", "Gemini CLI not found. CLI-based features will be unavailable.")
+
+    @property
+    def provider_name(self) -> str:
+        return "gemini_cli"
+        
+    @property
+    def base_url(self) -> Optional[str]:
+        return None  # CLI doesn't use a base URL in the same way
 
     @property
     def model_name(self) -> str:
