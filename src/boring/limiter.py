@@ -13,11 +13,7 @@ from typing import Optional
 from .logger import console, log_status
 
 
-def init_call_tracking(
-    call_count_file: Path,
-    timestamp_file: Path,
-    exit_signals_file: Path
-):
+def init_call_tracking(call_count_file: Path, timestamp_file: Path, exit_signals_file: Path):
     """
     Initializes call counter and exit signals tracking.
 
@@ -26,7 +22,7 @@ def init_call_tracking(
         timestamp_file: File to track last reset timestamp
         exit_signals_file: File to track exit signals
     """
-    current_hour = datetime.now().strftime('%Y%m%d%H')
+    current_hour = datetime.now().strftime("%Y%m%d%H")
     last_reset_hour = None
 
     if timestamp_file.exists():
@@ -38,11 +34,11 @@ def init_call_tracking(
         log_status(Path("logs"), "INFO", f"Call counter reset for new hour: {current_hour}")
 
     if not exit_signals_file.exists():
-        exit_signals_file.write_text(json.dumps({
-            "test_only_loops": [],
-            "done_signals": [],
-            "completion_indicators": []
-        }, indent=4))
+        exit_signals_file.write_text(
+            json.dumps(
+                {"test_only_loops": [], "done_signals": [], "completion_indicators": []}, indent=4
+            )
+        )
 
 
 def get_calls_made(call_count_file: Path) -> int:
@@ -92,11 +88,7 @@ def can_make_call(call_count_file: Path, max_calls_per_hour: int) -> bool:
     return get_calls_made(call_count_file) < max_calls_per_hour
 
 
-def wait_for_reset(
-    call_count_file: Path,
-    timestamp_file: Path,
-    max_calls_per_hour: int
-):
+def wait_for_reset(call_count_file: Path, timestamp_file: Path, max_calls_per_hour: int):
     """
     Waits for the rate limit to reset with a countdown.
 
@@ -109,7 +101,7 @@ def wait_for_reset(
     log_status(
         Path("logs"),
         "WARN",
-        f"Rate limit reached ({calls_made}/{max_calls_per_hour}). Waiting for reset..."
+        f"Rate limit reached ({calls_made}/{max_calls_per_hour}). Waiting for reset...",
     )
 
     now = datetime.now()
@@ -122,7 +114,9 @@ def wait_for_reset(
         while wait_seconds > 0:
             hours, remainder = divmod(wait_seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
-            status.update(f"[yellow]Time until reset: {hours:02d}:{minutes:02d}:{seconds:02d}[/yellow]")
+            status.update(
+                f"[yellow]Time until reset: {hours:02d}:{minutes:02d}:{seconds:02d}[/yellow]"
+            )
             time.sleep(1)
             wait_seconds -= 1
 
@@ -159,7 +153,7 @@ def should_exit_gracefully(exit_signals_file: Path) -> Optional[str]:
         log_status(
             Path("logs"),
             "WARN",
-            f"Exit condition: Too many test-focused loops ({len(test_only_loops)} >= {MAX_CONSECUTIVE_TEST_LOOPS})"
+            f"Exit condition: Too many test-focused loops ({len(test_only_loops)} >= {MAX_CONSECUTIVE_TEST_LOOPS})",
         )
         return "test_saturation"
 
@@ -167,7 +161,7 @@ def should_exit_gracefully(exit_signals_file: Path) -> Optional[str]:
         log_status(
             Path("logs"),
             "WARN",
-            f"Exit condition: Multiple completion signals ({len(done_signals)} >= {MAX_CONSECUTIVE_DONE_SIGNALS})"
+            f"Exit condition: Multiple completion signals ({len(done_signals)} >= {MAX_CONSECUTIVE_DONE_SIGNALS})",
         )
         return "completion_signals"
 
@@ -175,7 +169,7 @@ def should_exit_gracefully(exit_signals_file: Path) -> Optional[str]:
         log_status(
             Path("logs"),
             "WARN",
-            f"Exit condition: Strong completion indicators ({len(completion_indicators)})"
+            f"Exit condition: Strong completion indicators ({len(completion_indicators)})",
         )
         return "project_complete"
 
@@ -190,7 +184,7 @@ def should_exit_gracefully(exit_signals_file: Path) -> Optional[str]:
             log_status(
                 Path("logs"),
                 "WARN",
-                f"Exit condition: All fix_plan.md items completed ({completed_items}/{total_items})"
+                f"Exit condition: All fix_plan.md items completed ({completed_items}/{total_items})",
             )
             return "plan_complete"
 

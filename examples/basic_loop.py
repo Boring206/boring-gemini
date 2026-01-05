@@ -3,9 +3,9 @@ Example: Basic Boring Loop
 
 This example shows how to programmatically control the Boring development loop.
 """
+
 from pathlib import Path
 
-from boring.config import settings
 from boring.loop import AgentLoop
 
 
@@ -14,9 +14,7 @@ def main():
 
     # Option 1: Use defaults (reads PROMPT.md from current directory)
     loop = AgentLoop(
-        model_name="models/gemini-2.0-flash-exp",
-        verification_level="STANDARD",
-        verbose=True
+        model_name="models/gemini-2.0-flash-exp", verification_level="STANDARD", verbose=True
     )
 
     # Run the loop

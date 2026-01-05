@@ -8,7 +8,7 @@ if MCP_AVAILABLE and mcp is not None:
         """Get the current status of the autonomous loop (JSON)."""
         root = detect_project_root()
         if not root:
-             return '{"status": "error", "message": "No project detected"}'
+            return '{"status": "error", "message": "No project detected"}'
 
         from ..memory import MemoryManager
 
@@ -24,11 +24,11 @@ if MCP_AVAILABLE and mcp is not None:
         """Read the current PROMPT.md file."""
         root = detect_project_root()
         if not root:
-             return "No project detected."
+            return "No project detected."
 
         prompt_file = root / "PROMPT.md"
         if prompt_file.exists():
-             return prompt_file.read_text(encoding="utf-8")
+            return prompt_file.read_text(encoding="utf-8")
         return "PROMPT.md not found."
 
     @mcp.resource("boring://workflows/list")
@@ -36,11 +36,11 @@ if MCP_AVAILABLE and mcp is not None:
         """List available workflows (JSON)."""
         root = detect_project_root()
         if not root:
-             return '[]'
+            return "[]"
 
         workflows_dir = root / ".agent" / "workflows"
         if not workflows_dir.exists():
-             return '[]'
+            return "[]"
 
         workflows = [f.stem for f in workflows_dir.glob("*.md")]
         return str(workflows)

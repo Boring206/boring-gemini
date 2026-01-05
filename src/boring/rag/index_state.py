@@ -19,6 +19,7 @@ class IndexState:
         "chunks": ["chunk_id_1", "chunk_id_2", ...]
     }
     """
+
     CACHE_FILENAME = "rag_index_state.json"
 
     def __init__(self, project_root: Optional[Path] = None):
@@ -75,10 +76,7 @@ class IndexState:
         rel_path = self._get_rel_path(file_path)
         file_hash = self._compute_hash(file_path)
 
-        self.state[rel_path] = {
-            "hash": file_hash,
-            "chunks": chunk_ids
-        }
+        self.state[rel_path] = {"hash": file_hash, "chunks": chunk_ids}
 
     def remove(self, rel_path: str):
         """Remove file from state."""

@@ -24,32 +24,24 @@ def extract_verdict(review: str) -> str:
 
     return "NEEDS_WORK"  # Default to cautious
 
+
 def extract_issues(review: str) -> dict[str, list[str]]:
     """Extract categorized issues from review text."""
-    issues = {
-        "critical": [],
-        "major": [],
-        "minor": [],
-        "security": []
-    }
+    issues = {"critical": [], "major": [], "minor": [], "security": []}
 
     # Extract by markers
-    critical_pattern = r'\[🔴 CRITICAL\]\s*(.+?)(?:\n|$)'
-    major_pattern = r'\[🟠 MAJOR\]\s*(.+?)(?:\n|$)'
-    minor_pattern = r'\[🟡 MINOR\]\s*(.+?)(?:\n|$)'
+    critical_pattern = r"\[🔴 CRITICAL\]\s*(.+?)(?:\n|$)"
+    major_pattern = r"\[🟠 MAJOR\]\s*(.+?)(?:\n|$)"
+    minor_pattern = r"\[🟡 MINOR\]\s*(.+?)(?:\n|$)"
 
     issues["critical"] = re.findall(critical_pattern, review)
     issues["major"] = re.findall(major_pattern, review)
     issues["minor"] = re.findall(minor_pattern, review)
 
     # Security section
-    security_section = re.search(
-        r'### Security Concerns\n(.*?)(?:###|$)',
-        review,
-        re.DOTALL
-    )
+    security_section = re.search(r"### Security Concerns\n(.*?)(?:###|$)", review, re.DOTALL)
     if security_section:
-        security_items = re.findall(r'-\s*(.+?)(?:\n|$)', security_section.group(1))
+        security_items = re.findall(r"-\s*(.+?)(?:\n|$)", security_section.group(1))
         issues["security"] = security_items
 
     return issues

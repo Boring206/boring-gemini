@@ -1,4 +1,3 @@
-import os
 import sys
 from pathlib import Path
 
@@ -30,7 +29,7 @@ try:
         file_path="main.py",
         search_text='print("Hello from Boring Test!")',
         replace_text='print("Hello from Boring Test! [Verified via Internal Script]")',
-        project_path=str(project_test_path)
+        project_path=str(project_test_path),
     )
     print(f"Result: {res_patch}")
 
@@ -45,7 +44,7 @@ try:
         res_eval = boring_evaluate(
             target="main.py",
             project_path=str(project_test_path),
-            interactive=True  # Use interactive to skip actual CLI call if not needed
+            interactive=True,  # Use interactive to skip actual CLI call if not needed
         )
         print(f"Result (Interactive): {res_eval[:100]}...")
     except Exception as e:
@@ -54,5 +53,5 @@ try:
 except Exception as e:
     print(f"\n❌ FATAL: Verification script failed with error: {e}")
     import traceback
-    traceback.print_exc()
 
+    traceback.print_exc()

@@ -35,6 +35,7 @@ console = Console()
 
 class InteractiveAction(Enum):
     """Actions available in interactive mode."""
+
     RESUME = "resume"
     ABORT = "abort"
     EDIT_PROMPT = "edit_prompt"
@@ -62,7 +63,7 @@ class InteractiveSession:
         reason: str = "Manual intervention requested",
         project_root: Optional[Path] = None,
         log_dir: Optional[Path] = None,
-        recent_errors: Optional[list] = None
+        recent_errors: Optional[list] = None,
     ):
         self.reason = reason
         self.project_root = project_root or settings.PROJECT_ROOT
@@ -105,14 +106,16 @@ class InteractiveSession:
     def _show_header(self):
         """Show the interactive mode header."""
         console.print()
-        console.print(Panel(
-            f"[bold red]⚠️ Interactive Mode[/bold red]\n\n"
-            f"[yellow]Reason:[/yellow] {self.reason}\n\n"
-            f"Boring has paused and is waiting for your input.\n"
-            f"You can view errors, edit the prompt, or run commands.",
-            title="🤝 Human-in-the-Loop",
-            border_style="red"
-        ))
+        console.print(
+            Panel(
+                f"[bold red]⚠️ Interactive Mode[/bold red]\n\n"
+                f"[yellow]Reason:[/yellow] {self.reason}\n\n"
+                f"Boring has paused and is waiting for your input.\n"
+                f"You can view errors, edit the prompt, or run commands.",
+                title="🤝 Human-in-the-Loop",
+                border_style="red",
+            )
+        )
         console.print()
 
     def _prompt_action(self) -> InteractiveAction:
@@ -133,9 +136,7 @@ class InteractiveSession:
         console.print()
 
         choice = Prompt.ask(
-            "[bold]Select action[/bold]",
-            choices=["1", "2", "3", "4", "5", "6", "7"],
-            default="1"
+            "[bold]Select action[/bold]", choices=["1", "2", "3", "4", "5", "6", "7"], default="1"
         )
 
         action_map = {
@@ -152,17 +153,11 @@ class InteractiveSession:
 
     def _confirm_resume(self) -> bool:
         """Confirm resuming the loop."""
-        return Confirm.ask(
-            "[bold green]Resume the development loop?[/bold green]",
-            default=True
-        )
+        return Confirm.ask("[bold green]Resume the development loop?[/bold green]", default=True)
 
     def _confirm_abort(self) -> bool:
         """Confirm aborting the loop."""
-        return Confirm.ask(
-            "[bold red]Are you sure you want to abort?[/bold red]",
-            default=False
-        )
+        return Confirm.ask("[bold red]Are you sure you want to abort?[/bold red]", default=False)
 
     def _edit_prompt(self):
         """Open PROMPT.md in editor."""
@@ -173,18 +168,16 @@ class InteractiveSession:
             return
 
         # Show current content
-        console.print(Panel(
-            Syntax(prompt_file.read_text()[:1000], "markdown", theme="monokai"),
-            title=f"📝 {settings.PROMPT_FILE}",
-            border_style="cyan"
-        ))
+        console.print(
+            Panel(
+                Syntax(prompt_file.read_text()[:1000], "markdown", theme="monokai"),
+                title=f"📝 {settings.PROMPT_FILE}",
+                border_style="cyan",
+            )
+        )
 
         # Offer editing options
-        choice = Prompt.ask(
-            "Edit mode",
-            choices=["editor", "append", "cancel"],
-            default="editor"
-        )
+        choice = Prompt.ask("Edit mode", choices=["editor", "append", "cancel"], default="editor")
 
         if choice == "editor":
             # Try to open in default editor
@@ -222,7 +215,7 @@ class InteractiveSession:
                 cwd=self.project_root,
                 capture_output=True,
                 text=True,
-                timeout=60
+                timeout=60,
             )
 
             if result.stdout:
@@ -244,11 +237,7 @@ class InteractiveSession:
             return
 
         for i, error in enumerate(self.recent_errors[-5:], 1):
-            console.print(Panel(
-                str(error)[:500],
-                title=f"Error {i}",
-                border_style="red"
-            ))
+            console.print(Panel(str(error)[:500], title=f"Error {i}", border_style="red"))
 
     def _view_logs(self):
         """View recent log files."""
@@ -261,11 +250,7 @@ class InteractiveSession:
         for log_file in log_files:
             try:
                 content = log_file.read_text()[-1500:]
-                console.print(Panel(
-                    content,
-                    title=str(log_file.name),
-                    border_style="yellow"
-                ))
+                console.print(Panel(content, title=str(log_file.name), border_style="yellow"))
             except Exception as e:
                 console.print(f"[red]Error reading {log_file}: {e}[/red]")
 
@@ -282,7 +267,7 @@ def enter_interactive_mode(
     project_root: Optional[Path] = None,
     recent_errors: Optional[list] = None,
     on_resume: Optional[Callable] = None,
-    on_abort: Optional[Callable] = None
+    on_abort: Optional[Callable] = None,
 ) -> bool:
     """
     Enter interactive mode and return True if should resume.
@@ -298,9 +283,7 @@ def enter_interactive_mode(
         True if should resume loop, False if should abort
     """
     session = InteractiveSession(
-        reason=reason,
-        project_root=project_root,
-        recent_errors=recent_errors
+        reason=reason, project_root=project_root, recent_errors=recent_errors
     )
 
     action = session.run()
@@ -348,11 +331,13 @@ class MainMenu:
 
     def show(self) -> None:
         """Display and run the main menu loop."""
-        console.print(Panel(
-            "[bold blue]Boring for Gemini[/bold blue]\n"
-            "[dim]Enterprise-grade Autonomous AI Development Agent[/dim]",
-            border_style="blue"
-        ))
+        console.print(
+            Panel(
+                "[bold blue]Boring for Gemini[/bold blue]\n"
+                "[dim]Enterprise-grade Autonomous AI Development Agent[/dim]",
+                border_style="blue",
+            )
+        )
 
         while self._running:
             self._display_menu()
@@ -375,11 +360,7 @@ class MainMenu:
     def _get_choice(self) -> str:
         """Get user's menu choice."""
         valid = [opt[0] for opt in self.MENU_OPTIONS]
-        return Prompt.ask(
-            "[bold]Select[/bold]",
-            choices=valid,
-            default="1"
-        )
+        return Prompt.ask("[bold]Select[/bold]", choices=valid, default="1")
 
     def _handle_choice(self, choice: str) -> None:
         """Handle the selected menu option."""
@@ -399,7 +380,10 @@ class MainMenu:
     def _action_verify(self) -> None:
         """Run verification."""
         from .verification import CodeVerifier
-        level = Prompt.ask("Verification level", choices=["BASIC", "STANDARD", "FULL"], default="STANDARD")
+
+        level = Prompt.ask(
+            "Verification level", choices=["BASIC", "STANDARD", "FULL"], default="STANDARD"
+        )
         console.print(f"[bold blue]Running {level} verification...[/bold blue]")
         verifier = CodeVerifier(self.project_root)
         passed, msg = verifier.verify_project(level)
@@ -426,16 +410,19 @@ class MainMenu:
     def _action_status(self) -> None:
         """Show project status."""
         from .memory import MemoryManager
+
         try:
             memory = MemoryManager(self.project_root)
             state = memory.get_project_state()
-            console.print(Panel(
-                f"[bold]Project:[/bold] {state.get('project_name', 'Unknown')}\n"
-                f"[bold]Loops:[/bold] {state.get('total_loops', 0)}\n"
-                f"[bold]Success:[/bold] {state.get('successful_loops', 0)}",
-                title="📊 Project Status",
-                border_style="green"
-            ))
+            console.print(
+                Panel(
+                    f"[bold]Project:[/bold] {state.get('project_name', 'Unknown')}\n"
+                    f"[bold]Loops:[/bold] {state.get('total_loops', 0)}\n"
+                    f"[bold]Success:[/bold] {state.get('successful_loops', 0)}",
+                    title="📊 Project Status",
+                    border_style="green",
+                )
+            )
         except Exception as e:
             console.print(f"[red]Error loading status: {e}[/red]")
 
@@ -446,13 +433,15 @@ class MainMenu:
 
     def _action_settings(self) -> None:
         """Show settings."""
-        console.print(Panel(
-            f"[bold]Project Root:[/bold] {settings.PROJECT_ROOT}\n"
-            f"[bold]Model:[/bold] {settings.DEFAULT_MODEL}\n"
-            f"[bold]Provider:[/bold] {settings.LLM_PROVIDER}",
-            title="⚙️ Settings",
-            border_style="cyan"
-        ))
+        console.print(
+            Panel(
+                f"[bold]Project Root:[/bold] {settings.PROJECT_ROOT}\n"
+                f"[bold]Model:[/bold] {settings.DEFAULT_MODEL}\n"
+                f"[bold]Provider:[/bold] {settings.LLM_PROVIDER}",
+                title="⚙️ Settings",
+                border_style="cyan",
+            )
+        )
 
     def _action_quit(self) -> None:
         """Quit the menu."""
@@ -464,4 +453,3 @@ def run_interactive_menu():
     """Entry point for interactive menu."""
     menu = MainMenu()
     menu.show()
-

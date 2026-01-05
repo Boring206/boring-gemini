@@ -65,7 +65,7 @@ def __getattr__(name: str):
         "Please import directly from the appropriate module "
         "(.circuit, .logger, or .limiter) instead.",
         DeprecationWarning,
-        stacklevel=2
+        stacklevel=2,
     )
     raise AttributeError(f"module 'boring.core' has no attribute '{name}'")
 

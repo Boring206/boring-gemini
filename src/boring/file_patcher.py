@@ -34,33 +34,24 @@ from .security import sanitize_content, validate_file_path
 # =============================================================================
 
 # Format 1: ```lang FILE:path/to/file
-FILE_BLOCK_PATTERN = re.compile(
-    r"```(\w+)?\s*FILE:([^\n]+)\n(.*?)```",
-    re.DOTALL | re.IGNORECASE
-)
+FILE_BLOCK_PATTERN = re.compile(r"```(\w+)?\s*FILE:([^\n]+)\n(.*?)```", re.DOTALL | re.IGNORECASE)
 
 # Format 2: ```lang:path/to/file (common LLM format like ```python:src/main.py)
-LANG_PATH_PATTERN = re.compile(
-    r"```(\w+):([^\n`]+)\n(.*?)```",
-    re.DOTALL
-)
+LANG_PATH_PATTERN = re.compile(r"```(\w+):([^\n`]+)\n(.*?)```", re.DOTALL)
 
 # Format 3: # File: path/to/file followed by code block
 HEADER_FILE_PATTERN = re.compile(
-    r"#\s*(?:File|PATH|FILENAME):\s*([^\n]+)\n\s*```(\w+)?\n(.*?)```",
-    re.DOTALL | re.IGNORECASE
+    r"#\s*(?:File|PATH|FILENAME):\s*([^\n]+)\n\s*```(\w+)?\n(.*?)```", re.DOTALL | re.IGNORECASE
 )
 
 # Format 4: === File: path/to/file === style headers
 SECTION_FILE_PATTERN = re.compile(
-    r"={3,}\s*(?:File|PATH):\s*([^\n=]+)\s*={3,}\n\s*```(\w+)?\n(.*?)```",
-    re.DOTALL | re.IGNORECASE
+    r"={3,}\s*(?:File|PATH):\s*([^\n=]+)\s*={3,}\n\s*```(\w+)?\n(.*?)```", re.DOTALL | re.IGNORECASE
 )
 
 # Format 5: XML Style <file path="src/main.py">...</file>
 XML_FILE_PATTERN = re.compile(
-    r'<file\s+path="([^"]+)">\s*(.*?)\s*</file>',
-    re.DOTALL | re.IGNORECASE
+    r'<file\s+path="([^"]+)">\s*(.*?)\s*</file>', re.DOTALL | re.IGNORECASE
 )
 
 
@@ -68,11 +59,12 @@ XML_FILE_PATTERN = re.compile(
 # STRUCTURED FUNCTION CALL PROCESSOR (v4.0+ PREFERRED)
 # =============================================================================
 
+
 def process_structured_calls(
     function_calls: list[dict[str, Any]],
     project_root: Path,
     log_dir: Path = Path("logs"),
-    loop_id: Optional[int] = None
+    loop_id: Optional[int] = None,
 ) -> tuple[int, list[str], list[str]]:
     """
     Process function calls from Gemini response (v4.0+ preferred method).
@@ -152,10 +144,7 @@ def process_structured_calls(
 
 
 def _write_file(
-    file_path: str,
-    content: str,
-    project_root: Path,
-    log_dir: Path
+    file_path: str, content: str, project_root: Path, log_dir: Path
 ) -> tuple[bool, str, str]:
     """Write file with security validation. Returns (success, action, error)."""
     validation = validate_file_path(file_path, project_root, log_dir=log_dir)
@@ -173,18 +162,18 @@ def _write_file(
     try:
         full_path.parent.mkdir(parents=True, exist_ok=True)
         full_path.write_text(content, encoding="utf-8")
-        log_status(log_dir, "SUCCESS", f"{'✨' if action == 'created' else '✏️'} {action.capitalize()}: {file_path}")
+        log_status(
+            log_dir,
+            "SUCCESS",
+            f"{'✨' if action == 'created' else '✏️'} {action.capitalize()}: {file_path}",
+        )
         return True, action, ""
     except Exception as e:
         return False, "", f"Failed to write {file_path}: {e}"
 
 
 def _search_replace(
-    file_path: str,
-    search: str,
-    replace: str,
-    project_root: Path,
-    log_dir: Path
+    file_path: str, search: str, replace: str, project_root: Path, log_dir: Path
 ) -> tuple[bool, str]:
     """Search and replace in file. Returns (success, error)."""
     validation = validate_file_path(file_path, project_root, log_dir=log_dir)
@@ -216,6 +205,7 @@ def _search_replace(
 # LEGACY REGEX FUNCTIONS (DEPRECATED - Use process_structured_calls instead)
 # =============================================================================
 
+
 def extract_file_blocks(output: str) -> dict[str, str]:
     """
     Parse Gemini output and extract file content blocks.
@@ -229,16 +219,18 @@ def extract_file_blocks(output: str) -> dict[str, str]:
     warnings.warn(
         "extract_file_blocks() is deprecated. Use process_structured_calls() instead.",
         DeprecationWarning,
-        stacklevel=2
+        stacklevel=2,
     )
 
     file_blocks: dict[str, str] = {}
 
     # Try all patterns
     patterns = [
-        FILE_BLOCK_PATTERN, LANG_PATH_PATTERN,
-        HEADER_FILE_PATTERN, SECTION_FILE_PATTERN,
-        XML_FILE_PATTERN
+        FILE_BLOCK_PATTERN,
+        LANG_PATH_PATTERN,
+        HEADER_FILE_PATTERN,
+        SECTION_FILE_PATTERN,
+        XML_FILE_PATTERN,
     ]
 
     for pattern in patterns:
@@ -276,7 +268,7 @@ def apply_patches(
     project_root: Path,
     log_dir: Path = Path("logs"),
     dry_run: bool = False,
-    loop_id: Optional[int] = None
+    loop_id: Optional[int] = None,
 ) -> list[tuple[str, str]]:
     """
     Write extracted file content to actual files.
@@ -352,7 +344,7 @@ def process_gemini_output(
     project_root: Path,
     log_dir: Path = Path("logs"),
     dry_run: bool = False,
-    loop_id: Optional[int] = None
+    loop_id: Optional[int] = None,
 ) -> int:
     """
     Main entry point: Read Gemini output file and apply all patches.

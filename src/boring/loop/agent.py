@@ -91,8 +91,7 @@ class StatefulAgentLoop:
         if not ctx.interactive:
             if not ctx.use_cli:
                 ctx.gemini_client = create_gemini_client(
-                    log_dir=ctx.log_dir,
-                    model_name=ctx.model_name
+                    log_dir=ctx.log_dir, model_name=ctx.model_name
                 )
                 if not ctx.gemini_client:
                     raise RuntimeError("Failed to initialize Gemini SDK client")
@@ -107,7 +106,9 @@ class StatefulAgentLoop:
         # Log status
         if ctx.verbose:
             console.print(f"[dim]Memory: {ctx.memory.memory_dir}[/dim]")
-            console.print(f"[dim]Verifier: ruff={ctx.verifier.has_ruff}, pytest={ctx.verifier.has_pytest}[/dim]")
+            console.print(
+                f"[dim]Verifier: ruff={ctx.verifier.has_ruff}, pytest={ctx.verifier.has_pytest}[/dim]"
+            )
 
     def run(self) -> None:
         """Execute the main loop using state machine."""
@@ -128,7 +129,7 @@ class StatefulAgentLoop:
         init_call_tracking(
             settings.PROJECT_ROOT / ".call_count",
             settings.PROJECT_ROOT / ".last_reset",
-            settings.PROJECT_ROOT / ".exit_signals"
+            settings.PROJECT_ROOT / ".exit_signals",
         )
 
         # Main loop
@@ -141,7 +142,7 @@ class StatefulAgentLoop:
                 wait_for_reset(
                     settings.PROJECT_ROOT / ".call_count",
                     settings.PROJECT_ROOT / ".last_reset",
-                    settings.MAX_HOURLY_CALLS
+                    settings.MAX_HOURLY_CALLS,
                 )
                 console.print("[yellow]Rate limit reset. Resuming...[/yellow]")
 
@@ -189,19 +190,21 @@ class StatefulAgentLoop:
                 log_status(
                     self.context.log_dir,
                     "INFO",
-                    f"Transition: {state.name} -> {self._current_state.name}"
+                    f"Transition: {state.name} -> {self._current_state.name}",
                 )
 
     def _show_banner(self) -> None:
         """Display startup banner."""
         ctx = self.context
-        console.print(Panel.fit(
-            f"[bold green]Boring Autonomous Agent (v4.0 - State Pattern)[/bold green]\n"
-            f"Mode: {'CLI' if ctx.use_cli else 'SDK'}\n"
-            f"Model: {ctx.model_name}\n"
-            f"Log Dir: {ctx.log_dir}",
-            title="System Initialization"
-        ))
+        console.print(
+            Panel.fit(
+                f"[bold green]Boring Autonomous Agent (v4.0 - State Pattern)[/bold green]\n"
+                f"Mode: {'CLI' if ctx.use_cli else 'SDK'}\n"
+                f"Model: {ctx.model_name}\n"
+                f"Log Dir: {ctx.log_dir}",
+                title="System Initialization",
+            )
+        )
 
     def _handle_circuit_breaker_open(self) -> bool:
         """Handle circuit breaker open state. Returns True if should continue."""
@@ -211,7 +214,7 @@ class StatefulAgentLoop:
             should_resume = enter_interactive_mode(
                 reason="Circuit Breaker OPEN - Too many consecutive failures",
                 project_root=settings.PROJECT_ROOT,
-                recent_errors=self.context.errors_this_loop
+                recent_errors=self.context.errors_this_loop,
             )
 
             if should_resume:

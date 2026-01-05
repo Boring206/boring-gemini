@@ -15,6 +15,7 @@ from .logger import get_logger
 
 logger = get_logger("quality_tracker")
 
+
 @dataclass
 class QualityEntry:
     timestamp: float
@@ -24,8 +25,8 @@ class QualityEntry:
     commit_hash: Optional[str] = None
     context: str = ""  # e.g., "manual_verify", "ci", "judge"
 
-class QualityTracker:
 
+class QualityTracker:
     def __init__(self, project_root: Optional[Path] = None):
         self.project_root = project_root or settings.PROJECT_ROOT
         self.brain_dir = self.project_root / settings.BRAIN_DIR
@@ -42,7 +43,7 @@ class QualityTracker:
             date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             score=round(score, 2),
             issues_count=issues_count,
-            context=context
+            context=context,
         )
 
         history = self._load_history()
@@ -66,7 +67,7 @@ class QualityTracker:
         if not history:
             return "No quality history available."
 
-        scores = [entry['score'] for entry in history]
+        scores = [entry["score"] for entry in history]
 
         # Normalize to chart height
         chart = []
@@ -75,20 +76,21 @@ class QualityTracker:
         chart.append("-" * width)
 
         # Simple Sparkline-like representation
-        canvas = [[' ' for _ in range(width)] for _ in range(height)]
+        canvas = [[" " for _ in range(width)] for _ in range(height)]
 
         for x, score in enumerate(scores):
             # Scale score 0-5 to 0-(height-1)
-            if x >= width: break
+            if x >= width:
+                break
 
             y = int((score / 5.0) * (height - 1))
-            canvas[height - 1 - y][x] = '*'
+            canvas[height - 1 - y][x] = "*"
 
         for row in canvas:
             chart.append("".join(row))
 
         chart.append("-" * width)
-        chart.append(f"0.0 {' ' * (width-8)} 5.0")
+        chart.append(f"0.0 {' ' * (width - 8)} 5.0")
 
         return "\n".join(chart)
 

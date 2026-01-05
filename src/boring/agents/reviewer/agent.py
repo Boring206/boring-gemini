@@ -37,22 +37,26 @@ class ReviewerAgent(Agent):
                 action="review_failed",
                 summary="No code to review",
                 artifacts={"error": "Missing code output"},
-                requires_approval=False
+                requires_approval=False,
             )
 
         # Build context about what we're reviewing
         files_context = ""
         if modified_files:
-            files_context = "\n## Files Being Reviewed\n" + "\n".join(f"- {f}" for f in modified_files) + "\n"
+            files_context = (
+                "\n## Files Being Reviewed\n" + "\n".join(f"- {f}" for f in modified_files) + "\n"
+            )
 
         plan_context = ""
         if plan:
             plan_context = f"\n## Original Plan (for verification)\n{plan[:1500]}...\n"
 
-        prompt = self._build_prompt(context, f"""
+        prompt = self._build_prompt(
+            context,
+            f"""
 ## Code to Review
 
-{code_output[:8000]}{'...[truncated]' if len(code_output) > 8000 else ''}
+{code_output[:8000]}{"...[truncated]" if len(code_output) > 8000 else ""}
 {files_context}
 {plan_context}
 
@@ -69,7 +73,8 @@ Review this code with extreme scrutiny:
 Be the Devil's Advocate. Try to BREAK this code.
 
 End with a clear verdict: PASS, NEEDS_WORK, or REJECT.
-""")
+""",
+        )
 
         response, success = await self._generate(prompt)
 
@@ -80,7 +85,7 @@ End with a clear verdict: PASS, NEEDS_WORK, or REJECT.
                 action="review_failed",
                 summary="Failed to generate review",
                 artifacts={"error": response},
-                requires_approval=False
+                requires_approval=False,
             )
 
         # Parse the verdict and issues
@@ -113,10 +118,10 @@ End with a clear verdict: PASS, NEEDS_WORK, or REJECT.
                 "verdict": verdict,
                 "issues": issues,
                 "review": response,
-                "passed": verdict == "PASS"
+                "passed": verdict == "PASS",
             },
             requires_approval=requires_approval,
-            approval_reason=approval_reason if requires_approval else None
+            approval_reason=approval_reason if requires_approval else None,
         )
 
     def _extract_verdict(self, review: str) -> str:

@@ -1,4 +1,3 @@
-
 from boring.config import discover_tools, settings
 from boring.llm import get_provider
 
@@ -21,8 +20,10 @@ def test_discovery():
     print(f"Provider 2: {type(p2).__name__} (Model: {p2.model_name})")
     print(f"Is Available: {p2.is_available}")
 
+
 if __name__ == "__main__":
     import sys
     from pathlib import Path
+
     sys.path.insert(0, str(Path(__file__).parent / "src"))
     test_discovery()

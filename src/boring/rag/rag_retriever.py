@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 try:
     import chromadb
     from chromadb.config import Settings as ChromaSettings
+
     CHROMA_AVAILABLE = True
 except ImportError:
     CHROMA_AVAILABLE = False
@@ -35,6 +36,7 @@ except ImportError:
 @dataclass
 class RetrievalResult:
     """A retrieved code chunk with relevance info."""
+
     chunk: CodeChunk
     score: float
     retrieval_method: str  # "vector", "graph", "keyword"
@@ -44,6 +46,7 @@ class RetrievalResult:
 @dataclass
 class RAGStats:
     """Combined statistics for RAG system."""
+
     index_stats: Optional[IndexStats] = None
     graph_stats: Optional[GraphStats] = None
     total_chunks_indexed: int = 0
@@ -80,7 +83,7 @@ class RAGRetriever:
         project_root: Path,
         persist_dir: Optional[Path] = None,
         collection_name: Optional[str] = None,
-        additional_roots: Optional[list[Path]] = None
+        additional_roots: Optional[list[Path]] = None,
     ):
         self.project_root = Path(project_root)
         self.persist_dir = persist_dir or (self.project_root / ".boring_memory" / "rag_db")
@@ -109,14 +112,10 @@ class RAGRetriever:
             try:
                 self.client = chromadb.PersistentClient(
                     path=str(self.persist_dir),
-                    settings=ChromaSettings(
-                        anonymized_telemetry=False,
-                        allow_reset=True
-                    )
+                    settings=ChromaSettings(anonymized_telemetry=False, allow_reset=True),
                 )
                 self.collection = self.client.get_or_create_collection(
-                    name=self.collection_name,
-                    metadata={"hnsw:space": "cosine"}
+                    name=self.collection_name, metadata={"hnsw:space": "cosine"}
                 )
                 logger.info(f"ChromaDB initialized at {self.persist_dir}")
             except Exception as e:
@@ -151,10 +150,9 @@ class RAGRetriever:
             try:
                 self.client.delete_collection(self.collection_name)
                 self.collection = self.client.create_collection(
-                    name=self.collection_name,
-                    metadata={"hnsw:space": "cosine"}
+                    name=self.collection_name, metadata={"hnsw:space": "cosine"}
                 )
-                self.index_state = IndexState(self.project_root) # Reset state
+                self.index_state = IndexState(self.project_root)  # Reset state
                 # Clear state file explicitly?
                 # IndexState loads from disk. We should clear it.
                 # But IndexState doesn't have clear method yet beyond remove items.
@@ -194,7 +192,8 @@ class RAGRetriever:
             if chunk_ids:
                 try:
                     self.collection.delete(ids=chunk_ids)
-                except Exception: pass
+                except Exception:
+                    pass
             self.index_state.remove(rel_path)
             logger.info(f"Removed stale file: {rel_path}")
 
@@ -209,7 +208,8 @@ class RAGRetriever:
             if old_ids:
                 try:
                     self.collection.delete(ids=old_ids)
-                except Exception: pass
+                except Exception:
+                    pass
 
             # Generate new chunks
             try:
@@ -240,9 +240,7 @@ class RAGRetriever:
                 end = min(i + batch_size, len(new_chunks_buffer))
                 try:
                     self.collection.upsert(
-                        ids=ids[i:end],
-                        documents=documents[i:end],
-                        metadatas=metadatas[i:end]
+                        ids=ids[i:end], documents=documents[i:end], metadatas=metadatas[i:end]
                     )
                 except Exception as e:
                     logger.error(f"Failed to upsert batch: {e}")
@@ -259,7 +257,9 @@ class RAGRetriever:
         # Update graph with new/all chunks
         # _load_chunks_from_db handles rebuilding self._chunks and self.graph
 
-        logger.info(f"Indexed {len(files_to_index)} files ({total_indexed} chunks). Removed {len(stale_files_rel)} stale files.")
+        logger.info(
+            f"Indexed {len(files_to_index)} files ({total_indexed} chunks). Removed {len(stale_files_rel)} stale files."
+        )
 
         return self.collection.count()
 
@@ -270,7 +270,7 @@ class RAGRetriever:
         expand_graph: bool = True,
         file_filter: Optional[str] = None,
         chunk_types: Optional[list[str]] = None,
-        threshold: float = 0.0
+        threshold: float = 0.0,
     ) -> list[RetrievalResult]:
         """
         Retrieve relevant code chunks.
@@ -297,7 +297,7 @@ class RAGRetriever:
             results = self.collection.query(
                 query_texts=[query],
                 n_results=min(n_results * 2, 50),  # Fetch extra for graph expansion
-                where=where_filter
+                where=where_filter,
             )
         except Exception as e:
             logger.error(f"ChromaDB query failed: {e}")
@@ -326,12 +326,11 @@ class RAGRetriever:
                 if not chunk:
                     continue
 
-                retrieved.append(RetrievalResult(
-                    chunk=chunk,
-                    score=score,
-                    retrieval_method="vector",
-                    distance=distance
-                ))
+                retrieved.append(
+                    RetrievalResult(
+                        chunk=chunk, score=score, retrieval_method="vector", distance=distance
+                    )
+                )
 
         # 1-layer graph expansion (per user decision)
         if expand_graph and self.graph and retrieved:
@@ -342,11 +341,13 @@ class RAGRetriever:
             for chunk in related:
                 if chunk.chunk_id not in seen_ids:
                     seen_ids.add(chunk.chunk_id)
-                    retrieved.append(RetrievalResult(
-                        chunk=chunk,
-                        score=0.5,  # Lower score for graph-expanded
-                        retrieval_method="graph"
-                    ))
+                    retrieved.append(
+                        RetrievalResult(
+                            chunk=chunk,
+                            score=0.5,  # Lower score for graph-expanded
+                            retrieval_method="graph",
+                        )
+                    )
 
         # Sort by score and limit
         retrieved.sort(key=lambda x: x.score, reverse=True)
@@ -358,7 +359,7 @@ class RAGRetriever:
         n_results: int = 10,
         expand_graph: bool = True,
         file_filter: Optional[str] = None,
-        chunk_types: Optional[list[str]] = None
+        chunk_types: Optional[list[str]] = None,
     ) -> list[RetrievalResult]:
         """
         Async version of retrieve for non-blocking operations.
@@ -373,10 +374,7 @@ class RAGRetriever:
         return await asyncio.to_thread(_sync_retrieve)
 
     def get_modification_context(
-        self,
-        file_path: str,
-        function_name: Optional[str] = None,
-        class_name: Optional[str] = None
+        self, file_path: str, function_name: Optional[str] = None, class_name: Optional[str] = None
     ) -> dict[str, list[RetrievalResult]]:
         """
         Get comprehensive context for modifying a specific code location.
@@ -395,12 +393,7 @@ class RAGRetriever:
         Returns:
             Dict with categorized context
         """
-        result = {
-            "target": [],
-            "callers": [],
-            "callees": [],
-            "siblings": []
-        }
+        result = {"target": [], "callers": [], "callees": [], "siblings": []}
 
         if not self.graph:
             return result
@@ -421,35 +414,25 @@ class RAGRetriever:
             return result
 
         target = candidates[0]
-        result["target"] = [RetrievalResult(
-            chunk=target,
-            score=1.0,
-            retrieval_method="direct"
-        )]
+        result["target"] = [RetrievalResult(chunk=target, score=1.0, retrieval_method="direct")]
 
         # Get context from graph
         context = self.graph.get_context_for_modification(target.chunk_id)
 
         for caller in context["callers"]:
-            result["callers"].append(RetrievalResult(
-                chunk=caller,
-                score=0.8,
-                retrieval_method="graph"
-            ))
+            result["callers"].append(
+                RetrievalResult(chunk=caller, score=0.8, retrieval_method="graph")
+            )
 
         for callee in context["callees"]:
-            result["callees"].append(RetrievalResult(
-                chunk=callee,
-                score=0.7,
-                retrieval_method="graph"
-            ))
+            result["callees"].append(
+                RetrievalResult(chunk=callee, score=0.7, retrieval_method="graph")
+            )
 
         for sibling in context["siblings"]:
-            result["siblings"].append(RetrievalResult(
-                chunk=sibling,
-                score=0.6,
-                retrieval_method="graph"
-            ))
+            result["siblings"].append(
+                RetrievalResult(chunk=sibling, score=0.6, retrieval_method="graph")
+            )
 
         return result
 
@@ -480,16 +463,13 @@ class RAGRetriever:
             RetrievalResult(
                 chunk=c,
                 score=0.4,  # Lower score for deep expansion
-                retrieval_method="smart_jump"
+                retrieval_method="smart_jump",
             )
             for c in related
         ]
 
     def generate_context_injection(
-        self,
-        query: str,
-        max_tokens: int = 4000,
-        include_signatures_only: bool = False
+        self, query: str, max_tokens: int = 4000, include_signatures_only: bool = False
     ) -> str:
         """
         Generate context string for AI prompt injection.
@@ -547,7 +527,7 @@ class RAGRetriever:
             graph_stats=self.graph.get_stats() if self.graph else None,
             total_chunks_indexed=len(self._chunks),
             last_index_time=datetime.now().isoformat() if self._chunks else None,
-            chroma_available=CHROMA_AVAILABLE
+            chroma_available=CHROMA_AVAILABLE,
         )
 
     def update_file(self, file_path: Path) -> int:
@@ -601,7 +581,7 @@ class RAGRetriever:
             self.collection.upsert(
                 ids=[c.chunk_id for c in new_chunks],
                 documents=[self._chunk_to_document(c) for c in new_chunks],
-                metadatas=[self._chunk_to_metadata(c) for c in new_chunks]
+                metadatas=[self._chunk_to_metadata(c) for c in new_chunks],
             )
         except Exception as e:
             logger.error(f"Failed to upsert chunks: {e}")
@@ -615,8 +595,7 @@ class RAGRetriever:
             try:
                 self.client.delete_collection(self.collection_name)
                 self.collection = self.client.create_collection(
-                    name=self.collection_name,
-                    metadata={"hnsw:space": "cosine"}
+                    name=self.collection_name, metadata={"hnsw:space": "cosine"}
                 )
             except Exception as e:
                 logger.error(f"Failed to clear collection: {e}")
@@ -652,13 +631,11 @@ class RAGRetriever:
             "start_line": chunk.start_line,
             "end_line": chunk.end_line,
             "parent": chunk.parent or "",
-            "has_docstring": bool(chunk.docstring)
+            "has_docstring": bool(chunk.docstring),
         }
 
     def _build_where_filter(
-        self,
-        file_filter: Optional[str],
-        chunk_types: Optional[list[str]]
+        self, file_filter: Optional[str], chunk_types: Optional[list[str]]
     ) -> Optional[dict]:
         """Build ChromaDB where filter."""
         conditions = []
@@ -681,10 +658,7 @@ class RAGRetriever:
         return {"$and": conditions}
 
     def _get_or_reconstruct_chunk(
-        self,
-        chunk_id: str,
-        results: dict,
-        index: int
+        self, chunk_id: str, results: dict, index: int
     ) -> Optional[CodeChunk]:
         """Get chunk from cache or reconstruct from query results."""
         if chunk_id in self._chunks:
@@ -705,7 +679,7 @@ class RAGRetriever:
             content=doc.split("\n", 2)[-1] if doc else "",  # Skip type::name header
             start_line=meta.get("start_line", 0),
             end_line=meta.get("end_line", 0),
-            parent=meta.get("parent") or None
+            parent=meta.get("parent") or None,
         )
 
     def _load_chunks_from_db(self) -> None:
@@ -749,9 +723,9 @@ class RAGRetriever:
 # Factory function
 # -----------------------------------------------------------------------------
 
+
 def create_rag_retriever(
-    project_root: Optional[Path] = None,
-    persist_dir: Optional[Path] = None
+    project_root: Optional[Path] = None, persist_dir: Optional[Path] = None
 ) -> RAGRetriever:
     """
     Factory function to create RAGRetriever with standard project paths.
@@ -766,7 +740,4 @@ def create_rag_retriever(
     if project_root is None:
         project_root = Path.cwd()
 
-    return RAGRetriever(
-        project_root=project_root,
-        persist_dir=persist_dir
-    )
+    return RAGRetriever(project_root=project_root, persist_dir=persist_dir)

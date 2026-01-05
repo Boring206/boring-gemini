@@ -8,12 +8,21 @@ from ..config import settings
 from ..rubrics import Rubric
 
 
-def build_grade_prompt(filename: str, content: str, rubric: Rubric, adapter_type: str = "GeminiCLIAdapter") -> str:
+def build_grade_prompt(
+    filename: str, content: str, rubric: Rubric, adapter_type: str = "GeminiCLIAdapter"
+) -> str:
     """Build the prompt for grading code quality."""
-    criteria_text = "\n".join([f"- {c.name}: {c.description} (Weight: {c.weight})" for c in rubric.criteria])
+    criteria_text = "\n".join(
+        [f"- {c.name}: {c.description} (Weight: {c.weight})" for c in rubric.criteria]
+    )
 
     # Dimensions for JSON output
-    dimensions_json = ",\n".join([f'                "{c.name.lower().replace(" ", "_")}": {{ "score": <int>, "comment": "..." }}' for c in rubric.criteria])
+    dimensions_json = ",\n".join(
+        [
+            f'                "{c.name.lower().replace(" ", "_")}": {{ "score": <int>, "comment": "..." }}'
+            for c in rubric.criteria
+        ]
+    )
 
     # Optimize Content Size
     is_cli = "GeminiCLIAdapter" in adapter_type
@@ -45,23 +54,25 @@ def build_grade_prompt(filename: str, content: str, rubric: Rubric, adapter_type
         ".ts": "Strict typing, interfaces vs types usage, proper generic constraints.",
         ".rs": "Idiomatic Rust: proper borrowing/ownership, Option/Result handling, no unwrap() in production.",
         ".java": "Standard Java conventions, proper OOP design patterns, Effective Java principles.",
-        ".cpp": "Modern C++ (17/20) standards, RAII, smart pointers over raw pointers."
+        ".cpp": "Modern C++ (17/20) standards, RAII, smart pointers over raw pointers.",
     }
-    specific_guidance = lang_guidelines.get(ext, "Follow standard best practices for this language.")
+    specific_guidance = lang_guidelines.get(
+        ext, "Follow standard best practices for this language."
+    )
 
     # Check for override
     custom_prompt = settings.PROMPTS.get("grade_code")
     if custom_prompt:
-         return custom_prompt.format(
-             persona=persona,
-             lang_guidelines=specific_guidance,
-             criteria_text=criteria_text,
-             filename=filename,
-             content=truncated_content,
-             dimensions_json=dimensions_json
-         )
+        return custom_prompt.format(
+            persona=persona,
+            lang_guidelines=specific_guidance,
+            criteria_text=criteria_text,
+            filename=filename,
+            content=truncated_content,
+            dimensions_json=dimensions_json,
+        )
 
-    return f'''{persona}
+    return f"""{persona}
 
 LANGUAGE GUIDELINES ({ext}):
 {specific_guidance}
@@ -98,21 +109,24 @@ OUTPUT JSON ONLY.
     "suggestions": ["fix 1", "fix 2"],
     "strategic_advice": "<High-level advice for long-term health>",
     "first_step": "<The single most important immediate action>"
-}}'''
+}}"""
 
-def build_comparison_prompt(first_plan: str, second_plan: str, first_label: str, second_label: str, context: str) -> str:
+
+def build_comparison_prompt(
+    first_plan: str, second_plan: str, first_label: str, second_label: str, context: str
+) -> str:
     """Build the prompt for pairwise plan comparison."""
     # Check for override
     custom_prompt = settings.PROMPTS.get("compare_plans")
     if custom_prompt:
-         # Simple formatting with keywords
-         return custom_prompt.format(
-             context=context,
-             first_plan=first_plan,
-             second_plan=second_plan,
-             first_label=first_label,
-             second_label=second_label
-         )
+        # Simple formatting with keywords
+        return custom_prompt.format(
+            context=context,
+            first_plan=first_plan,
+            second_plan=second_plan,
+            first_label=first_label,
+            second_label=second_label,
+        )
 
     return f'''You are an expert Software Architect Judge comparing two implementation plans.
 
@@ -155,18 +169,21 @@ def build_comparison_prompt(first_plan: str, second_plan: str, first_label: str,
     "overall_reasoning": "..."
 }}'''
 
-def build_code_comparison_prompt(first_code: str, second_code: str, first_label: str, second_label: str, context: str = None) -> str:
+
+def build_code_comparison_prompt(
+    first_code: str, second_code: str, first_label: str, second_label: str, context: str = None
+) -> str:
     """Build the prompt for pairwise code comparison."""
     # Check for override
     custom_prompt = settings.PROMPTS.get("compare_code")
     if custom_prompt:
-         return custom_prompt.format(
-             context=context or "Compare these two implementations.",
-             first_code=first_code,
-             second_code=second_code,
-             first_label=first_label,
-             second_label=second_label
-         )
+        return custom_prompt.format(
+            context=context or "Compare these two implementations.",
+            first_code=first_code,
+            second_code=second_code,
+            first_label=first_label,
+            second_label=second_label,
+        )
 
     return f'''You are a Senior Principal Engineer performing a Code Review A/B Test.
 

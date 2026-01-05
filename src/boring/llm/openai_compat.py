@@ -21,7 +21,7 @@ class OpenAICompatProvider(LLMProvider):
         model_name: str,
         base_url: str = "http://localhost:1234/v1",
         api_key: str = "lm-studio",
-        log_dir: Optional[Path] = None
+        log_dir: Optional[Path] = None,
     ):
         self._model_name = model_name
         self._base_url = base_url.rstrip("/")
@@ -55,16 +55,10 @@ class OpenAICompatProvider(LLMProvider):
             return False
 
     def generate(
-        self,
-        prompt: str,
-        context: str = "",
-        timeout_seconds: int = 300
+        self, prompt: str, context: str = "", timeout_seconds: int = 300
     ) -> tuple[str, bool]:
         """Generate text."""
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.api_key}"
-        }
+        headers = {"Content-Type": "application/json", "Authorization": f"Bearer {self.api_key}"}
 
         messages = []
         if context:
@@ -75,7 +69,7 @@ class OpenAICompatProvider(LLMProvider):
             "model": self.model_name,
             "messages": messages,
             "temperature": 0.7,
-            "max_tokens": 4096
+            "max_tokens": 4096,
         }
 
         try:
@@ -83,15 +77,12 @@ class OpenAICompatProvider(LLMProvider):
             if "/v1" not in self.base_url:
                 url = f"{self.base_url}/v1/chat/completions"
 
-            response = requests.post(
-                url,
-                headers=headers,
-                json=payload,
-                timeout=timeout_seconds
-            )
+            response = requests.post(url, headers=headers, json=payload, timeout=timeout_seconds)
 
             if response.status_code != 200:
-                log_status(self.log_dir, "ERROR", f"API error {response.status_code}: {response.text}")
+                log_status(
+                    self.log_dir, "ERROR", f"API error {response.status_code}: {response.text}"
+                )
                 return f"Error: {response.text}", False
 
             data = response.json()
@@ -103,10 +94,7 @@ class OpenAICompatProvider(LLMProvider):
             return str(e), False
 
     def generate_with_tools(
-        self,
-        prompt: str,
-        context: str = "",
-        timeout_seconds: int = 300
+        self, prompt: str, context: str = "", timeout_seconds: int = 300
     ) -> LLMResponse:
         """
         Generate with tools using OpenAI format.
@@ -119,5 +107,5 @@ class OpenAICompatProvider(LLMProvider):
             function_calls=[],
             success=success,
             error=None if success else text,
-            metadata={"provider": "openai_compat"}
+            metadata={"provider": "openai_compat"},
         )

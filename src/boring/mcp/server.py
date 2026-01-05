@@ -21,25 +21,22 @@ from .v10_tools import register_v10_tools
 # Try to import Smithery decorator for HTTP deployment
 try:
     from smithery.decorators import smithery
+
     SMITHERY_AVAILABLE = True
 except ImportError:
     SMITHERY_AVAILABLE = False
     smithery = None
 
+
 @contextmanager
 def _configure_logging():
     """Configure logging to avoid polluting stdout."""
     # Force generic logs to stderr
-    logging.basicConfig(
-        level=logging.INFO,
-        stream=sys.stderr,
-        format='[%(levelname)s] %(message)s'
-    )
+    logging.basicConfig(level=logging.INFO, stream=sys.stderr, format="[%(levelname)s] %(message)s")
     # Silence specific noisy loggers
     logging.getLogger("httpx").setLevel(logging.WARNING)
     logging.getLogger("httpcore").setLevel(logging.WARNING)
     yield
-
 
 
 def get_server_instance():
@@ -61,7 +58,7 @@ def get_server_instance():
     # Register V9 Tools
     helpers = {
         "get_project_root_or_error": get_project_root_or_error,
-        "detect_project_root": detect_project_root
+        "detect_project_root": detect_project_root,
     }
     register_v9_tools(instance.mcp, audited, helpers)
 
@@ -72,7 +69,6 @@ def get_server_instance():
     register_prompts(instance.mcp)
 
     return instance.mcp
-
 
 
 def create_server():
@@ -117,7 +113,7 @@ def run_server():
     # 2. Register V9 Tools
     helpers = {
         "get_project_root_or_error": get_project_root_or_error,
-        "detect_project_root": detect_project_root
+        "detect_project_root": detect_project_root,
     }
     register_v9_tools(instance.mcp, audited, helpers)
 
@@ -135,17 +131,17 @@ def run_server():
             sys.stderr.write(f"[boring-mcp] Registered tools: {len(instance.mcp._tools)}\n")
 
         # 3. Mark MCP as started (allows JSON-RPC traffic)
-        if hasattr(sys.stdout, 'mark_mcp_started'):
+        if hasattr(sys.stdout, "mark_mcp_started"):
             sys.stdout.mark_mcp_started()
 
         # 4. Run the server
         # Explicitly use stdio transport
         try:
-             instance.mcp.run(transport="stdio")
+            instance.mcp.run(transport="stdio")
         except Exception as e:
-             sys.stderr.write(f"[boring-mcp] Critical Error: {e}\n")
-             sys.exit(1)
+            sys.stderr.write(f"[boring-mcp] Critical Error: {e}\n")
+            sys.exit(1)
+
 
 if __name__ == "__main__":
     run_server()
-

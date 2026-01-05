@@ -80,5 +80,5 @@ ASPECT_PROMPTS = {
     "security": "Focus ONLY on security vulnerabilities: SQL injection, XSS, path traversal, command injection, hardcoded secrets.",
     "performance": "Focus ONLY on performance issues: O(n²) loops, unnecessary allocations, memory leaks, blocking calls.",
     "correctness": "Focus ONLY on correctness: logic bugs, off-by-one errors, null handling, edge cases.",
-    "api_breakage": "Focus ONLY on API changes: backward compatibility, signature changes, behavior changes."
+    "api_breakage": "Focus ONLY on API changes: backward compatibility, signature changes, behavior changes.",
 }

@@ -26,6 +26,7 @@ console = Console(stderr=True, quiet=_is_mcp_mode)
 @dataclass
 class Extension:
     """Represents a Gemini CLI extension."""
+
     name: str
     repo_url: str
     description: str
@@ -39,26 +40,26 @@ RECOMMENDED_EXTENSIONS = [
         name="context7",
         repo_url="https://github.com/upstash/context7",
         description="Provides up-to-date library documentation for accurate code generation",
-        auto_use=True
+        auto_use=True,
     ),
     Extension(
         name="slash-criticalthink",
         repo_url="https://github.com/abagames/slash-criticalthink",
         description="Enables critical analysis of AI outputs to catch errors",
-        auto_use=False  # Manual invocation with /criticalthink
+        auto_use=False,  # Manual invocation with /criticalthink
     ),
     Extension(
         name="chrome-devtools-mcp",
         repo_url="https://github.com/ChromeDevTools/chrome-devtools-mcp",
         description="Browser automation and debugging capabilities",
-        auto_use=False
+        auto_use=False,
     ),
     Extension(
         name="notebooklm-mcp",
         repo_url="https://github.com/PleasePrompto/notebooklm-mcp.git",  # Not used for custom command
         description="NotebookLM integration for knowledge-based AI responses",
         auto_use=False,
-        install_command=["mcp", "add", "notebooklm", "npx", "-y", "notebooklm-mcp@latest"]
+        install_command=["mcp", "add", "notebooklm", "npx", "-y", "notebooklm-mcp@latest"],
     ),
 ]
 
@@ -93,7 +94,7 @@ class ExtensionsManager:
                 stdin=subprocess.DEVNULL,
                 capture_output=True,
                 text=True,
-                timeout=10
+                timeout=10,
             )
             if result.returncode == 0:
                 # Parse output - format may vary
@@ -113,7 +114,7 @@ class ExtensionsManager:
 
         # Check for installation (name based)
         if any(extension.name in ext for ext in installed):
-             return True, f"Already installed: {extension.name}"
+            return True, f"Already installed: {extension.name}"
 
         try:
             if extension.install_command:
@@ -130,7 +131,7 @@ class ExtensionsManager:
                 stdin=subprocess.DEVNULL,
                 capture_output=True,
                 text=True,
-                timeout=300 # Increased timeout
+                timeout=300,  # Increased timeout
             )
 
             if result.returncode == 0:
@@ -139,7 +140,7 @@ class ExtensionsManager:
                 # Check for "already installed" or "already exists"
                 error_msg = result.stderr or result.stdout
                 if "already" in error_msg.lower():
-                     return True, f"Already installed: {extension.name}"
+                    return True, f"Already installed: {extension.name}"
                 return False, f"Installation failed: {error_msg}"
         except subprocess.TimeoutExpired:
             return False, "Installation timed out"
@@ -177,7 +178,7 @@ class ExtensionsManager:
         return f"""
 ## Active Extensions
 The following extensions are available and should be used when relevant:
-{chr(10).join(f'- `{line}`' for line in auto_invoke_lines)}
+{chr(10).join(f"- `{line}`" for line in auto_invoke_lines)}
 
 When working with external libraries, invoke: `use context7`
 """
@@ -196,8 +197,13 @@ When working with external libraries, invoke: `use context7`
         if has_context7:
             # Detect if prompt involves libraries
             library_keywords = [
-                "import", "library", "package", "module",
-                "install", "dependency", "requirements"
+                "import",
+                "library",
+                "package",
+                "module",
+                "install",
+                "dependency",
+                "requirements",
             ]
             needs_context = any(kw in prompt.lower() for kw in library_keywords)
 
@@ -244,16 +250,14 @@ When working with external libraries, invoke: `use context7`
         if not boring_mcp_cmd:
             # Fallback to python -m if the script isn't in PATH
             import sys
+
             boring_mcp_cmd = f'"{sys.executable}" -m boring.mcp.server'
         else:
             boring_mcp_cmd = f'"{boring_mcp_cmd}"'
 
         try:
             # We use 'boring' as the name in Gemini CLI
-            cmd = [
-                self.gemini_cmd, "mcp", "add", "boring",
-                "command", boring_mcp_cmd
-            ]
+            cmd = [self.gemini_cmd, "mcp", "add", "boring", "command", boring_mcp_cmd]
 
             # Note: We use shell=True on Windows if command has spaces and quotes
             process = subprocess.run(
@@ -261,7 +265,7 @@ When working with external libraries, invoke: `use context7`
                 stdin=subprocess.DEVNULL,
                 capture_output=True,
                 text=True,
-                shell=(os.name == "nt")
+                shell=(os.name == "nt"),
             )
 
             if process.returncode == 0:

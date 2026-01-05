@@ -82,14 +82,12 @@ class VerifyingState(LoopState):
         files_changed = len(context.files_modified) + len(context.files_created)
         has_errors = result == StateResult.FAILURE
         record_loop_result(
-            context.loop_count,
-            files_changed,
-            has_errors,
-            len(context.output_content)
+            context.loop_count, files_changed, has_errors, len(context.output_content)
         )
 
         if result == StateResult.FAILURE:
             from .recovery import RecoveryState
+
             return RecoveryState()
 
         # SUCCESS - check if we should exit or continue
@@ -114,13 +112,13 @@ class VerifyingState(LoopState):
         try:
             loop_memory = LoopMemory(
                 loop_id=context.loop_count,
-                timestamp=__import__("time").strftime('%Y-%m-%d %H:%M:%S'),
+                timestamp=__import__("time").strftime("%Y-%m-%d %H:%M:%S"),
                 status="SUCCESS",
                 files_modified=context.files_modified + context.files_created,
                 tasks_completed=context.tasks_completed,
                 errors=[],
                 ai_output_summary=context.output_content[:500] if context.output_content else "",
-                duration_seconds=context.get_loop_duration()
+                duration_seconds=context.get_loop_duration(),
             )
             context.memory.record_loop(loop_memory)
         except Exception as e:
@@ -150,8 +148,8 @@ class VerifyingState(LoopState):
                         "loop": context.loop_count,
                         "result": result.value,
                         "verification_level": context.verification_level,
-                        "passed": context.verification_passed
-                    }
+                        "passed": context.verification_passed,
+                    },
                 )
             except Exception:
                 pass

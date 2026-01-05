@@ -31,7 +31,7 @@ class LLMProvider(LLMClient):
         prompt: str,
         context: str = "",
         system_instruction: str = "",
-        timeout_seconds: int = 600
+        timeout_seconds: int = 600,
     ) -> tuple[str, bool]:
         """Generate text from prompt and context."""
         pass
@@ -42,7 +42,7 @@ class LLMProvider(LLMClient):
         prompt: str,
         context: str = "",
         system_instruction: str = "",
-        timeout_seconds: int = 600
+        timeout_seconds: int = 600,
     ) -> LLMResponse:
         """Generate text and/or function calls."""
         pass

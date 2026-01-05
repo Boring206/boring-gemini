@@ -28,10 +28,12 @@ def run_in_thread(func: Callable) -> Callable:
         def long_running_task(...):
             ...
     """
+
     @wraps(func)
     async def wrapper(*args, **kwargs):
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(_executor, lambda: func(*args, **kwargs))
+
     return wrapper
 
 
@@ -70,7 +72,7 @@ class AsyncTaskRunner:
         func: Callable,
         args: tuple = (),
         kwargs: dict = None,
-        on_progress: Callable[[str, float], None] = None
+        on_progress: Callable[[str, float], None] = None,
     ) -> Any:
         """
         Run a task asynchronously with tracking.
@@ -105,9 +107,7 @@ class AsyncTaskRunner:
             raise
         finally:
             # Cleanup after a delay
-            asyncio.get_event_loop().call_later(
-                60, lambda: self._active_tasks.pop(task_id, None)
-            )
+            asyncio.get_event_loop().call_later(60, lambda: self._active_tasks.pop(task_id, None))
 
     def get_task_status(self, task_id: str) -> dict:
         """Get the current status of a task."""

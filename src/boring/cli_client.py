@@ -25,6 +25,7 @@ from .logger import log_status
 @dataclass
 class CLIResponse:
     """Response from Gemini CLI."""
+
     text: str
     success: bool
     error: Optional[str] = None
@@ -48,7 +49,7 @@ class GeminiCLIAdapter(LLMProvider):
         model_name: str = "gemini-2.0-flash-exp",
         log_dir: Optional[Path] = None,
         timeout_seconds: int = 300,
-        cwd: Optional[Path] = None
+        cwd: Optional[Path] = None,
     ):
         self._model_name = model_name
         self.log_dir = log_dir or Path("logs")
@@ -58,9 +59,17 @@ class GeminiCLIAdapter(LLMProvider):
         # Verify CLI is available (shutil.which returns None if not found)
         self.cli_path = shutil.which("gemini")
         if self.cli_path:
-            log_status(self.log_dir, "INFO", f"Gemini CLI Adapter initialized: {self.cli_path} (cwd: {self.cwd})")
+            log_status(
+                self.log_dir,
+                "INFO",
+                f"Gemini CLI Adapter initialized: {self.cli_path} (cwd: {self.cwd})",
+            )
         else:
-             log_status(self.log_dir, "WARN", "Gemini CLI not found. CLI-based features will be unavailable.")
+            log_status(
+                self.log_dir,
+                "WARN",
+                "Gemini CLI not found. CLI-based features will be unavailable.",
+            )
 
     @property
     def provider_name(self) -> str:
@@ -86,14 +95,22 @@ class GeminiCLIAdapter(LLMProvider):
         context: str = "",
         tools: Optional[list] = None,
         timeout_seconds: int = 900,
-        **kwargs
+        **kwargs,
     ) -> LLMResponse:
         """
         Generate a response that includes text and potential tool calls.
         Since CLI doesn't natively support tool binding, we use Prompt Engineering + JSON Parsing.
         """
         # 1. Construct System Prompt for Tools
-        tool_definitions = json.dumps([t for t in tools if hasattr(t, 'to_json') or isinstance(t, dict)], default=str, indent=2) if tools else "[]"
+        tool_definitions = (
+            json.dumps(
+                [t for t in tools if hasattr(t, "to_json") or isinstance(t, dict)],
+                default=str,
+                indent=2,
+            )
+            if tools
+            else "[]"
+        )
 
         system_instruction = f"""
 SYSTEM INSTRUCTION: You are an AI assistant with access to the following tools:
@@ -118,7 +135,9 @@ If no tool is needed, just respond with normal text.
         text, success = self.generate(prompt, full_context)
 
         if not success:
-            return LLMResponse(text=text, function_calls=[], success=False, error="CLI generation failed")
+            return LLMResponse(
+                text=text, function_calls=[], success=False, error="CLI generation failed"
+            )
 
         # 3. Parse Output for Tool Calls
         function_calls = []
@@ -127,6 +146,7 @@ If no tool is needed, just respond with normal text.
         try:
             # Look for JSON block
             import re
+
             json_match = re.search(r"```json\s*(\{.*?\})\s*```", text, re.DOTALL)
             if json_match:
                 json_str = json_match.group(1)
@@ -134,10 +154,7 @@ If no tool is needed, just respond with normal text.
 
                 if "tool_calls" in data:
                     for tc in data["tool_calls"]:
-                        function_calls.append({
-                            "name": tc["name"],
-                            "args": tc["arguments"]
-                        })
+                        function_calls.append({"name": tc["name"], "args": tc["arguments"]})
                     # Remove the tool call JSON from the visible text to keep UI clean
                     clean_text = text.replace(json_match.group(0), "").strip()
 
@@ -148,7 +165,7 @@ If no tool is needed, just respond with normal text.
             text=clean_text,
             function_calls=function_calls,
             success=True,
-            metadata={"source": "gemini-cli-adapter"}
+            metadata={"source": "gemini-cli-adapter"},
         )
 
     def generate(self, prompt: str, context: str = "", **kwargs) -> tuple[str, bool]:
@@ -176,11 +193,7 @@ If no tool is needed, just respond with normal text.
             return str(e), False
 
     def generate_with_retry(
-        self,
-        prompt: str,
-        context: str = "",
-        max_retries: int = 3,
-        **kwargs
+        self, prompt: str, context: str = "", max_retries: int = 3, **kwargs
     ) -> tuple[str, bool]:
         """Generate with automatic retry on transient errors."""
         for attempt in range(max_retries):
@@ -221,7 +234,7 @@ If no tool is needed, just respond with normal text.
 
         # Only add model flag if not using default
         if self.model_name != "default":
-             cmd.extend(["-m", self.model_name])
+            cmd.extend(["-m", self.model_name])
 
         # CRITICAL: Use non-interactive flags to prevent hangs in MCP/headless mode
         # -p - : Read prompt from stdin
@@ -237,40 +250,28 @@ If no tool is needed, just respond with normal text.
                 timeout=self.timeout_seconds,
                 encoding="utf-8",
                 cwd=self.cwd,
-                stdin=None # subprocess.run with input=... handles stdin
+                stdin=None,  # subprocess.run with input=... handles stdin
             )
 
             # Check for authentication errors
             stderr = result.stderr.lower() if result.stderr else ""
             if "login" in stderr or "unauthenticated" in stderr or "not authenticated" in stderr:
                 raise PermissionError(
-                    "Gemini CLI is not authenticated.\n"
-                    "Please run: gemini login\n"
-                    "Then try again."
+                    "Gemini CLI is not authenticated.\nPlease run: gemini login\nThen try again."
                 )
 
             if result.returncode != 0:
                 return CLIResponse(
-                    text=result.stderr or "CLI returned error",
-                    success=False,
-                    error=result.stderr
+                    text=result.stderr or "CLI returned error", success=False, error=result.stderr
                 )
 
-            return CLIResponse(
-                text=result.stdout,
-                success=True
-            )
+            return CLIResponse(text=result.stdout, success=True)
 
         except subprocess.TimeoutExpired:
-            return CLIResponse(
-                text="CLI execution timed out",
-                success=False,
-                error="Timeout"
-            )
+            return CLIResponse(text="CLI execution timed out", success=False, error="Timeout")
         except FileNotFoundError:
             raise FileNotFoundError(
-                "Gemini CLI not found. Install with:\n"
-                "  npm install -g @google/gemini-cli"
+                "Gemini CLI not found. Install with:\n  npm install -g @google/gemini-cli"
             )
 
     def _execute_cli_json(self, prompt: str) -> CLIResponse:
@@ -291,39 +292,26 @@ If no tool is needed, just respond with normal text.
                 text=True,
                 timeout=self.timeout_seconds,
                 encoding="utf-8",
-                cwd=self.cwd
+                cwd=self.cwd,
             )
 
             if result.returncode != 0:
                 return CLIResponse(
-                    text=result.stderr or "CLI error",
-                    success=False,
-                    error=result.stderr
+                    text=result.stderr or "CLI error", success=False, error=result.stderr
                 )
 
             try:
                 data = json.loads(result.stdout)
-                return CLIResponse(
-                    text=data.get("text", result.stdout),
-                    success=True
-                )
+                return CLIResponse(text=data.get("text", result.stdout), success=True)
             except json.JSONDecodeError:
-                return CLIResponse(
-                    text=result.stdout,
-                    success=True
-                )
+                return CLIResponse(text=result.stdout, success=True)
 
         except subprocess.TimeoutExpired:
-            return CLIResponse(
-                text="CLI execution timed out",
-                success=False,
-                error="Timeout"
-            )
+            return CLIResponse(text="CLI execution timed out", success=False, error="Timeout")
 
 
 def create_cli_adapter(
-    model_name: str = "gemini-2.0-flash-exp",
-    log_dir: Optional[Path] = None
+    model_name: str = "gemini-2.0-flash-exp", log_dir: Optional[Path] = None
 ) -> Optional[GeminiCLIAdapter]:
     """
     Factory function to create a CLI adapter.
@@ -362,7 +350,7 @@ def check_cli_authenticated() -> tuple[bool, str]:
             stdin=subprocess.DEVNULL,  # CRITICAL: Prevent inheriting MCP's stdin
             capture_output=True,
             text=True,
-            timeout=5  # Short timeout to avoid hangs
+            timeout=5,  # Short timeout to avoid hangs
         )
 
         stderr = result.stderr.lower() if result.stderr else ""

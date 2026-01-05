@@ -22,7 +22,7 @@ class ParallelReviewOrchestrator:
         "security": "Focus ONLY on security vulnerabilities: SQL injection, XSS, path traversal, command injection, hardcoded secrets.",
         "performance": "Focus ONLY on performance issues: O(n²) loops, unnecessary allocations, memory leaks, blocking calls.",
         "correctness": "Focus ONLY on correctness: logic bugs, off-by-one errors, null handling, edge cases.",
-        "api_breakage": "Focus ONLY on API changes: backward compatibility, signature changes, behavior changes."
+        "api_breakage": "Focus ONLY on API changes: backward compatibility, signature changes, behavior changes.",
     }
 
     def __init__(self, llm_client, project_root: Path = None):
@@ -45,11 +45,7 @@ class ParallelReviewOrchestrator:
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
         # Combine results
-        combined = {
-            "aspects": {},
-            "all_issues": [],
-            "combined_verdict": "PASS"
-        }
+        combined = {"aspects": {}, "all_issues": [], "combined_verdict": "PASS"}
 
         for aspect, result in zip(aspects, results):
             if isinstance(result, Exception):
@@ -61,7 +57,9 @@ class ParallelReviewOrchestrator:
                 # Downgrade verdict if any aspect fails
                 if result.get("verdict") == "REJECT":
                     combined["combined_verdict"] = "REJECT"
-                elif result.get("verdict") == "NEEDS_WORK" and combined["combined_verdict"] == "PASS":
+                elif (
+                    result.get("verdict") == "NEEDS_WORK" and combined["combined_verdict"] == "PASS"
+                ):
                     combined["combined_verdict"] = "NEEDS_WORK"
 
         return combined
@@ -89,9 +87,10 @@ Respond in JSON format:
             response, success = await self.llm_client.generate_async(prompt)
             if success:
                 import json
+
                 # Extract JSON from response
-                start = response.find('{')
-                end = response.rfind('}') + 1
+                start = response.find("{")
+                end = response.rfind("}") + 1
                 if start >= 0 and end > start:
                     return json.loads(response[start:end])
             return {"verdict": "PASS", "issues": [], "summary": "Review completed"}

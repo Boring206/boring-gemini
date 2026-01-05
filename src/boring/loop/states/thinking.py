@@ -66,7 +66,9 @@ class ThinkingState(LoopState):
             context.errors_this_loop.append(str(e))
             return StateResult.FAILURE
 
-    def _execute_delegated(self, context: LoopContext, prompt: str, context_str: str) -> StateResult:
+    def _execute_delegated(
+        self, context: LoopContext, prompt: str, context_str: str
+    ) -> StateResult:
         """Delegate execution to the host environment (IDE/User)."""
         log_status(context.log_dir, "INFO", "Delegating execution to host environment")
 
@@ -113,17 +115,20 @@ class ThinkingState(LoopState):
 
         if result == StateResult.FAILURE:
             from .recovery import RecoveryState
+
             return RecoveryState()
 
         # SUCCESS - check if we have function calls
         if context.function_calls:
             from .patching import PatchingState
+
             return PatchingState()
         else:
             # No function calls but output exists - might need format guidance
             if len(context.output_content) > 100:
                 context.errors_this_loop.append("No function calls in response")
                 from .recovery import RecoveryState
+
                 return RecoveryState()
             else:
                 # Empty output - continue to next loop
@@ -182,15 +187,14 @@ class ThinkingState(LoopState):
             return StateResult.FAILURE
 
         # Create output file
-        timestamp = time.strftime('%Y-%m-%d_%H-%M-%S')
+        timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
         context.output_file = context.log_dir / f"gemini_output_{timestamp}.log"
 
         # Show progress (only if not in quiet/mcp mode)
         if not context.verbose and console.quiet:
-             # Fast path: just call without Live UI
-             text_response, function_calls, success = context.gemini_client.generate_with_tools(
-                prompt=prompt,
-                context=context_str
+            # Fast path: just call without Live UI
+            text_response, function_calls, success = context.gemini_client.generate_with_tools(
+                prompt=prompt, context=context_str
             )
         else:
             with Live(console=console, screen=False, auto_refresh=True) as live:
@@ -198,15 +202,14 @@ class ThinkingState(LoopState):
                     SpinnerColumn(),
                     TextColumn("[progress.description]{task.description}"),
                     TimeElapsedColumn(),
-                    console=console
+                    console=console,
                 )
                 progress.add_task("[cyan]Gemini Thinking...", total=None)
                 live.update(Panel(progress, title="[bold blue]SDK Generation[/bold blue]"))
 
                 # Call API with function calling
                 text_response, function_calls, success = context.gemini_client.generate_with_tools(
-                    prompt=prompt,
-                    context=context_str
+                    prompt=prompt, context=context_str
                 )
 
         # Store results
@@ -229,7 +232,11 @@ class ThinkingState(LoopState):
             pass
 
         if success:
-            log_status(context.log_dir, "SUCCESS", f"Generated {len(context.function_calls)} function calls")
+            log_status(
+                context.log_dir,
+                "SUCCESS",
+                f"Generated {len(context.function_calls)} function calls",
+            )
             return StateResult.SUCCESS
         else:
             return StateResult.FAILURE
@@ -244,10 +251,10 @@ class ThinkingState(LoopState):
             model_name=context.model_name,
             log_dir=context.log_dir,
             timeout_seconds=settings.TIMEOUT_MINUTES * 60,
-            cwd=context.project_root
+            cwd=context.project_root,
         )
 
-        timestamp = time.strftime('%Y-%m-%d_%H-%M-%S')
+        timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
         context.output_file = context.log_dir / f"gemini_output_{timestamp}.log"
 
         # Inject instruction for Text-based Tools if likely needed
@@ -257,7 +264,7 @@ class ThinkingState(LoopState):
             "# File: path/to/file\n"
             "```code\ncontent\n```\n\n"
             "To edit, use SEARCH/REPLACE blocks.\n"
-            "To finish, say: boring_done(message=\"...\")"
+            'To finish, say: boring_done(message="...")'
         )
         cli_prompt = prompt + text_tools_instruction
 
@@ -270,36 +277,39 @@ class ThinkingState(LoopState):
         # 1. File Blocks
         file_blocks = extract_file_blocks(response_text)
         for path, content in file_blocks.items():
-            context.function_calls.append({
-                "name": "write_file",
-                "args": {"file_path": path, "content": content}
-            })
+            context.function_calls.append(
+                {"name": "write_file", "args": {"file_path": path, "content": content}}
+            )
 
         # 2. Search/Replace Blocks
         sr_blocks = extract_search_replace_blocks(response_text)
         for block in sr_blocks:
-            context.function_calls.append({
-                "name": "search_replace",
-                "args": {
-                    "file_path": block.get("file_path"),
-                    "search": block.get("search"),
-                    "replace": block.get("replace")
+            context.function_calls.append(
+                {
+                    "name": "search_replace",
+                    "args": {
+                        "file_path": block.get("file_path"),
+                        "search": block.get("search"),
+                        "replace": block.get("replace"),
+                    },
                 }
-            })
+            )
 
         # 3. Done Signal
         if "boring_done" in response_text or "Task completed" in response_text:
-             # Extract message if possible or use default
-             msg = "Completed via CLI"
-             if 'boring_done(message="' in response_text:
-                 try:
-                     msg = response_text.split('boring_done(message="')[1].split('"')[0]
-                 except:
-                     pass
-             context.function_calls.append({
-                 "name": "report_status",
-                 "args": {"status": "COMPLETE", "exit_signal": True, "message": msg}
-             })
+            # Extract message if possible or use default
+            msg = "Completed via CLI"
+            if 'boring_done(message="' in response_text:
+                try:
+                    msg = response_text.split('boring_done(message="')[1].split('"')[0]
+                except:
+                    pass
+            context.function_calls.append(
+                {
+                    "name": "report_status",
+                    "args": {"status": "COMPLETE", "exit_signal": True, "message": msg},
+                }
+            )
 
         try:
             context.output_file.write_text(response_text, encoding="utf-8")
@@ -307,7 +317,11 @@ class ThinkingState(LoopState):
             pass
 
         if context.function_calls:
-            log_status(context.log_dir, "INFO", f"Extracted {len(context.function_calls)} tool calls from text")
+            log_status(
+                context.log_dir,
+                "INFO",
+                f"Extracted {len(context.function_calls)} tool calls from text",
+            )
 
         return StateResult.SUCCESS if success else StateResult.FAILURE
 
@@ -322,8 +336,8 @@ class ThinkingState(LoopState):
                         "loop": context.loop_count,
                         "result": result.value,
                         "function_calls": len(context.function_calls),
-                        "output_length": len(context.output_content)
-                    }
+                        "output_length": len(context.output_content),
+                    },
                 )
             except Exception:
                 pass  # Don't fail on metrics

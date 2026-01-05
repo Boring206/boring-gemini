@@ -17,12 +17,13 @@ from typing import Any, Optional
 @dataclass
 class Pattern:
     """A learned development pattern."""
+
     id: str
     name: str
     description: str
     trigger_conditions: list[str]  # Conditions when this pattern applies
-    suggested_actions: list[str]   # What to do when pattern matches
-    success_rate: float            # How often this pattern led to success
+    suggested_actions: list[str]  # What to do when pattern matches
+    success_rate: float  # How often this pattern led to success
     usage_count: int
     last_used: Optional[datetime] = None
 
@@ -48,10 +49,10 @@ class PatternMiner:
             suggested_actions=[
                 "Run speckit_clarify to understand requirements",
                 "Run speckit_constitution to establish principles",
-                "Run speckit_plan to create implementation plan"
+                "Run speckit_plan to create implementation plan",
             ],
             success_rate=0.95,
-            usage_count=0
+            usage_count=0,
         ),
         Pattern(
             id="verification_failed",
@@ -61,10 +62,10 @@ class PatternMiner:
             suggested_actions=[
                 "Run boring_auto_fix for automated repair",
                 "Or run run_boring with specific fix task",
-                "Then run boring_verify to confirm fixes"
+                "Then run boring_verify to confirm fixes",
             ],
             success_rate=0.88,
-            usage_count=0
+            usage_count=0,
         ),
         Pattern(
             id="feature_complete",
@@ -74,10 +75,10 @@ class PatternMiner:
             suggested_actions=[
                 "Run boring_verify level=FULL for thorough check",
                 "Run boring_learn to extract successful patterns",
-                "Commit changes with descriptive message"
+                "Commit changes with descriptive message",
             ],
             success_rate=0.92,
-            usage_count=0
+            usage_count=0,
         ),
         Pattern(
             id="stuck_debugging",
@@ -87,10 +88,10 @@ class PatternMiner:
             suggested_actions=[
                 "Run speckit_analyze for consistency check",
                 "Run boring_evaluate for code quality review",
-                "Consider speckit_clarify to revisit requirements"
+                "Consider speckit_clarify to revisit requirements",
             ],
             success_rate=0.75,
-            usage_count=0
+            usage_count=0,
         ),
         Pattern(
             id="code_review",
@@ -100,11 +101,11 @@ class PatternMiner:
             suggested_actions=[
                 "Run boring_verify level=SEMANTIC for AI review",
                 "Check speckit_checklist for feature completeness",
-                "Run boring_hooks_install to prevent future issues"
+                "Run boring_hooks_install to prevent future issues",
             ],
             success_rate=0.90,
-            usage_count=0
-        )
+            usage_count=0,
+        ),
     ]
 
     def __init__(self, brain_dir: Path):
@@ -131,7 +132,9 @@ class PatternMiner:
                         suggested_actions=data.get("suggested_actions", []),
                         success_rate=data.get("success_rate", 0.5),
                         usage_count=data.get("usage_count", 0),
-                        last_used=datetime.fromisoformat(data["last_used"]) if data.get("last_used") else None
+                        last_used=datetime.fromisoformat(data["last_used"])
+                        if data.get("last_used")
+                        else None,
                     )
                     self.patterns.append(pattern)
                 except Exception:
@@ -149,7 +152,7 @@ class PatternMiner:
             "test_count": 0,
             "has_spec": False,
             "has_plan": False,
-            "has_git": False
+            "has_git": False,
         }
 
         # Check for code in multiple locations
@@ -166,8 +169,11 @@ class PatternMiner:
             py_files.extend(list(lib_dir.glob("**/*.py")))
 
         # Check root-level .py files (excluding __pycache__)
-        root_py_files = [f for f in project_root.glob("*.py")
-                         if f.is_file() and not str(f.parent).endswith("__pycache__")]
+        root_py_files = [
+            f
+            for f in project_root.glob("*.py")
+            if f.is_file() and not str(f.parent).endswith("__pycache__")
+        ]
         py_files.extend(root_py_files)
 
         # Also check for common app files
@@ -193,8 +199,12 @@ class PatternMiner:
         state["test_count"] = len(test_files)
 
         # Check for spec/plan files
-        state["has_spec"] = (project_root / "spec.md").exists() or (project_root / "PRD.md").exists()
-        state["has_plan"] = (project_root / "implementation_plan.md").exists() or (project_root / "IMPLEMENTATION_PLAN.md").exists()
+        state["has_spec"] = (project_root / "spec.md").exists() or (
+            project_root / "PRD.md"
+        ).exists()
+        state["has_plan"] = (project_root / "implementation_plan.md").exists() or (
+            project_root / "IMPLEMENTATION_PLAN.md"
+        ).exists()
 
         # Check for git repo
         state["has_git"] = (project_root / ".git").exists()
@@ -225,12 +235,13 @@ class PatternMiner:
         if state["has_git"]:
             try:
                 import subprocess
+
                 result = subprocess.run(
                     ["git", "log", "-1", "--format=%ar"],
                     cwd=project_root,
                     capture_output=True,
                     text=True,
-                    stdin=subprocess.DEVNULL
+                    stdin=subprocess.DEVNULL,
                 )
                 if result.returncode == 0 and result.stdout.strip():
                     state["recent_activity"] = result.stdout.strip()
@@ -316,30 +327,34 @@ class PatternMiner:
 
         suggestions = []
         for pattern in matched:
-            suggestions.append({
-                "pattern": pattern.name,
-                "description": pattern.description,
-                "suggested_actions": pattern.suggested_actions,
-                "confidence": pattern.success_rate,
-                "context": {
-                    "task_completion": f"{state['task_completion']*100:.0f}%",
-                    "has_code": state["has_code"],
-                    "has_errors": state["has_errors"]
+            suggestions.append(
+                {
+                    "pattern": pattern.name,
+                    "description": pattern.description,
+                    "suggested_actions": pattern.suggested_actions,
+                    "confidence": pattern.success_rate,
+                    "context": {
+                        "task_completion": f"{state['task_completion'] * 100:.0f}%",
+                        "has_code": state["has_code"],
+                        "has_errors": state["has_errors"],
+                    },
                 }
-            })
+            )
 
         if not suggestions:
             # Fallback suggestion
-            suggestions.append({
-                "pattern": "Getting Started",
-                "description": "No specific pattern matched",
-                "suggested_actions": [
-                    "Run boring_quickstart for available tools",
-                    "Run boring_status to check project state"
-                ],
-                "confidence": 0.5,
-                "context": state
-            })
+            suggestions.append(
+                {
+                    "pattern": "Getting Started",
+                    "description": "No specific pattern matched",
+                    "suggested_actions": [
+                        "Run boring_quickstart for available tools",
+                        "Run boring_status to check project state",
+                    ],
+                    "confidence": 0.5,
+                    "context": state,
+                }
+            )
 
         return suggestions
 

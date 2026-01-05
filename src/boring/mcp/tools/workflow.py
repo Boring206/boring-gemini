@@ -10,12 +10,19 @@ from ..utils import configure_runtime_for_project, detect_project_root, get_proj
 # WORKFLOW TOOLS
 # ==============================================================================
 
+
 @audited
 def speckit_evolve_workflow(
-    workflow_name: Annotated[str, Field(description="Workflow to modify (without .md extension, e.g. 'speckit-plan')")],
-    new_content: Annotated[str, Field(description="Complete new workflow content (markdown) with frontmatter")],
+    workflow_name: Annotated[
+        str, Field(description="Workflow to modify (without .md extension, e.g. 'speckit-plan')")
+    ],
+    new_content: Annotated[
+        str, Field(description="Complete new workflow content (markdown) with frontmatter")
+    ],
     reason: Annotated[str, Field(description="Why this evolution is needed")],
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Evolve a SpecKit workflow with new content for project-specific customization.
@@ -71,10 +78,13 @@ def speckit_evolve_workflow(
     except Exception as e:
         return {"status": "ERROR", "error": str(e), "workflow": workflow_name}
 
+
 @audited
 def speckit_reset_workflow(
     workflow_name: Annotated[str, Field(description="Workflow to reset (e.g., 'speckit-plan')")],
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Reset a workflow to its original base template.
@@ -104,9 +114,12 @@ def speckit_reset_workflow(
     except Exception as e:
         return {"status": "ERROR", "error": str(e)}
 
+
 @audited
 def speckit_backup_workflows(
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Backup all SpecKit workflows to _base/ directory.
@@ -136,16 +149,19 @@ def speckit_backup_workflows(
         return {
             "status": "SUCCESS",
             "backed_up": [k for k, v in results.items() if v],
-            "failed": [k for k, v in results.items() if not v]
+            "failed": [k for k, v in results.items() if not v],
         }
 
     except Exception as e:
         return {"status": "ERROR", "error": str(e)}
 
+
 @audited
 def speckit_workflow_status(
     workflow_name: Annotated[str, Field(description="Workflow to check")],
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Get evolution status of a workflow.
@@ -175,10 +191,13 @@ def speckit_workflow_status(
     except Exception as e:
         return {"status": "ERROR", "error": str(e)}
 
+
 @audited
 def boring_install_workflow(
     source: Annotated[str, Field(description="Local .bwf.json file path OR a URL (http/https)")],
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> str:
     """
     Install a Boring Workflow from a file path or URL.
@@ -193,19 +212,25 @@ def boring_install_workflow(
     """
     root = detect_project_root(project_path)
     if not root:
-            return "Error: Could not detect project root."
+        return "Error: Could not detect project root."
 
     from ...workflow_manager import WorkflowManager
+
     manager = WorkflowManager(root)
 
     success, msg = manager.install_workflow(source)
     return f"{'✅' if success else '❌'} {msg}"
 
+
 @audited
 def boring_export_workflow(
-    name: Annotated[str, Field(description="Workflow name (e.g., 'speckit-plan' without extension)")],
+    name: Annotated[
+        str, Field(description="Workflow name (e.g., 'speckit-plan' without extension)")
+    ],
     author: Annotated[str, Field(description="Name of the creator")] = "Anonymous",
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> str:
     """
     Export a local workflow to a sharable .bwf.json package.
@@ -220,21 +245,24 @@ def boring_export_workflow(
     """
     root = detect_project_root(project_path)
     if not root:
-            return "Error: Could not detect project root."
+        return "Error: Could not detect project root."
 
     from ...workflow_manager import WorkflowManager
+
     manager = WorkflowManager(root)
 
     path, msg = manager.export_workflow(name, author)
 
     if path:
-            return f"✅ Exported to: {path}\n{msg}"
+        return f"✅ Exported to: {path}\n{msg}"
     return f"❌ Error: {msg}"
+
 
 @audited
 def boring_list_workflows(
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
-
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     List all available .agent/workflows in the project.
@@ -258,7 +286,7 @@ def boring_list_workflows(
             return {
                 "status": "NOT_FOUND",
                 "message": f"Workflows directory not found: {workflows_dir}",
-                "project_root": str(project_root)
+                "project_root": str(project_root),
             }
 
         workflows = []
@@ -278,30 +306,45 @@ def boring_list_workflows(
                 except ValueError:
                     pass
 
-            workflows.append({
-                "name": workflow_file.stem,
-                "file": workflow_file.name,
-                "description": description,
-                "path": str(workflow_file)
-            })
+            workflows.append(
+                {
+                    "name": workflow_file.stem,
+                    "file": workflow_file.name,
+                    "description": description,
+                    "path": str(workflow_file),
+                }
+            )
 
         return {
             "status": "SUCCESS",
             "project_root": str(project_root),
             "count": len(workflows),
-            "workflows": workflows
+            "workflows": workflows,
         }
     except Exception as e:
-        return {
-            "status": "ERROR",
-            "error": str(e)
-        }
+        return {"status": "ERROR", "error": str(e)}
+
 
 if MCP_AVAILABLE and mcp is not None:
-    mcp.tool(description="Evolve a workflow template", annotations={"readOnlyHint": False})(speckit_evolve_workflow)
-    mcp.tool(description="Reset workflow to default", annotations={"readOnlyHint": False})(speckit_reset_workflow)
-    mcp.tool(description="Backup all workflows", annotations={"readOnlyHint": False, "idempotentHint": True})(speckit_backup_workflows)
-    mcp.tool(description="Check workflow status", annotations={"readOnlyHint": True})(speckit_workflow_status)
-    mcp.tool(description="Install workflow from file/URL", annotations={"readOnlyHint": False})(boring_install_workflow)
-    mcp.tool(description="Export workflow to file", annotations={"readOnlyHint": False})(boring_export_workflow)
-    mcp.tool(description="List available workflows", annotations={"readOnlyHint": True})(boring_list_workflows)
+    mcp.tool(description="Evolve a workflow template", annotations={"readOnlyHint": False})(
+        speckit_evolve_workflow
+    )
+    mcp.tool(description="Reset workflow to default", annotations={"readOnlyHint": False})(
+        speckit_reset_workflow
+    )
+    mcp.tool(
+        description="Backup all workflows",
+        annotations={"readOnlyHint": False, "idempotentHint": True},
+    )(speckit_backup_workflows)
+    mcp.tool(description="Check workflow status", annotations={"readOnlyHint": True})(
+        speckit_workflow_status
+    )
+    mcp.tool(description="Install workflow from file/URL", annotations={"readOnlyHint": False})(
+        boring_install_workflow
+    )
+    mcp.tool(description="Export workflow to file", annotations={"readOnlyHint": False})(
+        boring_export_workflow
+    )
+    mcp.tool(description="List available workflows", annotations={"readOnlyHint": True})(
+        boring_list_workflows
+    )

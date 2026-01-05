@@ -22,18 +22,53 @@ from .logger import log_status
 # Allowed file extensions for AI-generated content
 ALLOWED_EXTENSIONS: set[str] = {
     # Code
-    ".py", ".js", ".ts", ".jsx", ".tsx", ".java", ".go", ".rs", ".rb", ".php",
-    ".c", ".cpp", ".h", ".hpp", ".cs", ".swift", ".kt", ".scala",
+    ".py",
+    ".js",
+    ".ts",
+    ".jsx",
+    ".tsx",
+    ".java",
+    ".go",
+    ".rs",
+    ".rb",
+    ".php",
+    ".c",
+    ".cpp",
+    ".h",
+    ".hpp",
+    ".cs",
+    ".swift",
+    ".kt",
+    ".scala",
     # Config
-    ".json", ".yaml", ".yml", ".toml", ".ini", ".cfg", ".conf", ".env.example",
+    ".json",
+    ".yaml",
+    ".yml",
+    ".toml",
+    ".ini",
+    ".cfg",
+    ".conf",
+    ".env.example",
     # Documentation
-    ".md", ".txt", ".rst", ".adoc",
+    ".md",
+    ".txt",
+    ".rst",
+    ".adoc",
     # Web
-    ".html", ".css", ".scss", ".less",
+    ".html",
+    ".css",
+    ".scss",
+    ".less",
     # Data
-    ".csv", ".xml",
+    ".csv",
+    ".xml",
     # Shell
-    ".sh", ".bash", ".zsh", ".ps1", ".bat", ".cmd",
+    ".sh",
+    ".bash",
+    ".zsh",
+    ".ps1",
+    ".bat",
+    ".cmd",
 }
 
 # Directories that should never be written to
@@ -61,16 +96,14 @@ BLOCKED_FILENAMES: set[str] = {
 @dataclass
 class PathValidationResult:
     """Result of path validation."""
+
     is_valid: bool
     reason: Optional[str] = None
     normalized_path: Optional[str] = None
 
 
 def validate_file_path(
-    path: str,
-    project_root: Path,
-    allowed_extensions: set[str] = None,
-    log_dir: Path = Path("logs")
+    path: str, project_root: Path, allowed_extensions: set[str] = None, log_dir: Path = Path("logs")
 ) -> PathValidationResult:
     """
     Validate a file path for security concerns.
@@ -114,7 +147,8 @@ def validate_file_path(
 
         # Ensure path is within project root (case-insensitive on Windows)
         import os
-        if os.name == 'nt':  # Windows
+
+        if os.name == "nt":  # Windows
             # Use case-insensitive string comparison
             full_str = str(full_path).lower()
             root_str = str(project_root_resolved).lower()
@@ -133,7 +167,7 @@ def validate_file_path(
     if full_path.suffix.lower() not in extensions:
         return PathValidationResult(
             False,
-            f"Extension '{full_path.suffix}' not allowed. Allowed: {', '.join(sorted(extensions)[:10])}..."
+            f"Extension '{full_path.suffix}' not allowed. Allowed: {', '.join(sorted(extensions)[:10])}...",
         )
 
     # Check blocked directories
@@ -150,13 +184,13 @@ def validate_file_path(
 
     # Get normalized relative path (Windows-compatible)
     try:
-        if os.name == 'nt':  # Windows
+        if os.name == "nt":  # Windows
             # Manual relative path calculation for case differences
             full_str = str(full_path)
             root_str = str(project_root_resolved)
             if full_str.lower().startswith(root_str.lower()):
                 # Strip root and any leading separator
-                normalized = full_str[len(root_str):].lstrip('\\').lstrip('/')
+                normalized = full_str[len(root_str) :].lstrip("\\").lstrip("/")
             else:
                 normalized = path
         else:
@@ -180,15 +214,18 @@ def is_safe_path(path: str, project_root: Path) -> bool:
 # Patterns for sensitive data
 SENSITIVE_PATTERNS = [
     # Google API keys
-    (r'AIza[A-Za-z0-9_-]{35}', '[GOOGLE_API_KEY]'),
+    (r"AIza[A-Za-z0-9_-]{35}", "[GOOGLE_API_KEY]"),
     # Generic API keys
-    (r'(?i)(api[_-]?key|apikey|secret[_-]?key)\s*[=:]\s*["\']?([A-Za-z0-9_-]{20,})["\']?', r'\1=[REDACTED]'),
+    (
+        r'(?i)(api[_-]?key|apikey|secret[_-]?key)\s*[=:]\s*["\']?([A-Za-z0-9_-]{20,})["\']?',
+        r"\1=[REDACTED]",
+    ),
     # Bearer tokens
-    (r'(?i)bearer\s+[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+', 'Bearer [JWT_TOKEN]'),
+    (r"(?i)bearer\s+[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+", "Bearer [JWT_TOKEN]"),
     # AWS keys
-    (r'AKIA[A-Z0-9]{16}', '[AWS_ACCESS_KEY]'),
+    (r"AKIA[A-Z0-9]{16}", "[AWS_ACCESS_KEY]"),
     # Generic secrets
-    (r'(?i)(password|passwd|pwd)\s*[=:]\s*["\']?[^\s"\']+["\']?', r'\1=[REDACTED]'),
+    (r'(?i)(password|passwd|pwd)\s*[=:]\s*["\']?[^\s"\']+["\']?', r"\1=[REDACTED]"),
 ]
 
 
@@ -215,6 +252,7 @@ def mask_sensitive_data(text: str) -> str:
 def safe_log(log_dir: Path, level: str, message: str):
     """Log message with sensitive data masked."""
     from .logger import log_status
+
     masked_message = mask_sensitive_data(message)
     log_status(log_dir, level, masked_message)
 
@@ -222,6 +260,7 @@ def safe_log(log_dir: Path, level: str, message: str):
 # =============================================================================
 # INPUT SANITIZATION
 # =============================================================================
+
 
 def sanitize_filename(filename: str) -> str:
     """
@@ -237,7 +276,7 @@ def sanitize_filename(filename: str) -> str:
     filename = filename.replace("/", "_").replace("\\", "_")
 
     # Remove null bytes and other control characters
-    filename = re.sub(r'[\x00-\x1f\x7f]', '', filename)
+    filename = re.sub(r"[\x00-\x1f\x7f]", "", filename)
 
     # Remove leading/trailing dots and spaces
     filename = filename.strip(". ")

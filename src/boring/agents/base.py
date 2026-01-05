@@ -19,6 +19,7 @@ from typing import Any, Callable, Optional
 
 class AgentRole(Enum):
     """Specialized agent roles."""
+
     ARCHITECT = "architect"
     CODER = "coder"
     REVIEWER = "reviewer"
@@ -39,6 +40,7 @@ class SharedResource:
     - Verification results
     - Confirmed specifications
     """
+
     name: str
     content: Any
     version: int = 1
@@ -49,7 +51,7 @@ class SharedResource:
             "name": self.name,
             "content": self.content,
             "version": self.version,
-            "last_updated_by": self.last_updated_by.value if self.last_updated_by else None
+            "last_updated_by": self.last_updated_by.value if self.last_updated_by else None,
         }
 
     @classmethod
@@ -61,7 +63,7 @@ class SharedResource:
             name=data["name"],
             content=data["content"],
             version=data.get("version", 1),
-            last_updated_by=role
+            last_updated_by=role,
         )
 
 
@@ -73,6 +75,7 @@ class AgentMessage:
     This is NOT the full LLM conversation - just the result summary.
     Agents maintain independent contexts.
     """
+
     sender: AgentRole
     receiver: AgentRole
     action: str  # What was done: "plan_created", "code_written", "review_completed"
@@ -90,6 +93,7 @@ class AgentContext:
     This is NOT the LLM context - agents have independent LLM contexts.
     This is shared DATA that agents can read/write.
     """
+
     project_root: Path
     task_description: str
 
@@ -120,10 +124,7 @@ class AgentContext:
             self.resources[name].last_updated_by = updated_by
         else:
             self.resources[name] = SharedResource(
-                name=name,
-                content=content,
-                version=1,
-                last_updated_by=updated_by
+                name=name, content=content, version=1, last_updated_by=updated_by
             )
 
     def add_message(self, message: AgentMessage) -> None:
@@ -274,14 +275,13 @@ Remember: You are the {self.role.value.upper()} agent. Stay focused on your spec
         Returns:
             Tuple of (response_text, success_flag)
         """
-        if hasattr(self.client, 'generate_async'):
+        if hasattr(self.client, "generate_async"):
             return await self.client.generate_async(prompt)
-        elif hasattr(self.client, 'generate'):
+        elif hasattr(self.client, "generate"):
             # Sync fallback - run in executor
             loop = asyncio.get_event_loop()
             return await loop.run_in_executor(
-                None,
-                lambda: self.client.generate(prompt, context="")
+                None, lambda: self.client.generate(prompt, context="")
             )
         else:
             return ("Error: No compatible generate method found", False)

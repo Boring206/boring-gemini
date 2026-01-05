@@ -50,11 +50,9 @@ class Settings(BaseSettings):
     Centralized configuration for Boring V4.0.
     Loads from environment variables (BORING_*) or .env file.
     """
+
     model_config = ConfigDict(
-        env_prefix="BORING_",
-        env_file=".env",
-        env_file_encoding="utf-8",
-        extra="ignore"
+        env_prefix="BORING_", env_file=".env", env_file_encoding="utf-8", extra="ignore"
     )
 
     PROJECT_ROOT: Path = Field(default_factory=_find_project_root)
@@ -70,7 +68,9 @@ class Settings(BaseSettings):
     TIMEOUT_MINUTES: int = 15
 
     # LLM Settings (V10.13 Modular)
-    LLM_PROVIDER: str = Field(default="gemini-cli", description="gemini-cli, claude-code, mcp-gateway, sdk, ollama")
+    LLM_PROVIDER: str = Field(
+        default="gemini-cli", description="gemini-cli, claude-code, mcp-gateway, sdk, ollama"
+    )
     LLM_BASE_URL: Optional[str] = Field(default=None)
     LLM_MODEL: Optional[str] = Field(default=None)
 
@@ -80,9 +80,9 @@ class Settings(BaseSettings):
 
     # V4.0 Feature Flags
     USE_FUNCTION_CALLING: bool = True  # Use structured function calls
-    USE_VECTOR_MEMORY: bool = False    # Use ChromaDB for semantic memory (requires extra deps)
-    USE_INTERACTIONS_API: bool = False # Use new stateful Interactions API (experimental)
-    USE_DIFF_PATCHING: bool = True     # Prefer search/replace over full file rewrites
+    USE_VECTOR_MEMORY: bool = False  # Use ChromaDB for semantic memory (requires extra deps)
+    USE_INTERACTIONS_API: bool = False  # Use new stateful Interactions API (experimental)
+    USE_DIFF_PATCHING: bool = True  # Prefer search/replace over full file rewrites
 
     # Loop Settings
     MAX_LOOPS: int = 100
@@ -96,21 +96,38 @@ class Settings(BaseSettings):
     STATUS_FILE: str = "status.json"
 
     # DX Verification Settings (V10.13)
-    VERIFICATION_EXCLUDES: list[str] = Field(default_factory=lambda: [
-        ".git", ".github", ".vscode", ".idea", "venv", ".venv", "node_modules", "build", "dist", "__pycache__"
-    ])
+    VERIFICATION_EXCLUDES: list[str] = Field(
+        default_factory=lambda: [
+            ".git",
+            ".github",
+            ".vscode",
+            ".idea",
+            "venv",
+            ".venv",
+            "node_modules",
+            "build",
+            "dist",
+            "__pycache__",
+        ]
+    )
     LINTER_CONFIGS: dict = Field(default_factory=dict)  # Map tool name -> list of args
-    PROMPTS: dict = Field(default_factory=dict)         # Map prompt name -> template string
+    PROMPTS: dict = Field(default_factory=dict)  # Map prompt name -> template string
+
 
 settings = Settings()
+
 
 # Ensure critical directories exist
 def init_directories():
     # Ensure they are Path objects (Pydantic might leave them as strings if loaded from env improperly)
-    if isinstance(settings.LOG_DIR, str): settings.LOG_DIR = Path(settings.LOG_DIR)
-    if isinstance(settings.BRAIN_DIR, str): settings.BRAIN_DIR = Path(settings.BRAIN_DIR)
-    if isinstance(settings.BACKUP_DIR, str): settings.BACKUP_DIR = Path(settings.BACKUP_DIR)
-    if isinstance(settings.MEMORY_DIR, str): settings.MEMORY_DIR = Path(settings.MEMORY_DIR)
+    if isinstance(settings.LOG_DIR, str):
+        settings.LOG_DIR = Path(settings.LOG_DIR)
+    if isinstance(settings.BRAIN_DIR, str):
+        settings.BRAIN_DIR = Path(settings.BRAIN_DIR)
+    if isinstance(settings.BACKUP_DIR, str):
+        settings.BACKUP_DIR = Path(settings.BACKUP_DIR)
+    if isinstance(settings.MEMORY_DIR, str):
+        settings.MEMORY_DIR = Path(settings.MEMORY_DIR)
 
     # Ensure they are absolute (relative to PROJECT_ROOT if not)
     if not settings.LOG_DIR.is_absolute():
@@ -129,6 +146,7 @@ def init_directories():
     settings.BACKUP_DIR.mkdir(parents=True, exist_ok=True)
     settings.MEMORY_DIR.mkdir(parents=True, exist_ok=True)
     settings.CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
 
 def load_toml_config():
     """Load configuration from .boring.toml if present."""
@@ -172,6 +190,7 @@ def load_toml_config():
         # Fail silently during config load to avoid breaking startup
         pass
 
+
 def discover_tools():
     """Discover available local CLI tools."""
     import shutil
@@ -186,7 +205,7 @@ def discover_tools():
     if gemini_path:
         settings.GEMINI_CLI_PATH = gemini_path
 
+
 # Auto-load configuration overrides
 load_toml_config()
 discover_tools()
-

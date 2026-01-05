@@ -44,7 +44,7 @@ class AgentOrchestrator:
         project_root: Path,
         human_callback: Optional[HumanApprovalCallback] = None,
         auto_approve_plans: bool = False,
-        shadow_guard = None
+        shadow_guard=None,
     ):
         """
         Initialize the orchestrator.
@@ -74,9 +74,7 @@ class AgentOrchestrator:
         }
 
     async def execute(
-        self,
-        task_description: str,
-        initial_resources: Optional[dict[str, Any]] = None
+        self, task_description: str, initial_resources: Optional[dict[str, Any]] = None
     ) -> dict[str, Any]:
         """
         Execute the full multi-agent workflow.
@@ -98,7 +96,7 @@ class AgentOrchestrator:
         context = AgentContext(
             project_root=self.project_root,
             task_description=task_description,
-            max_iterations=self.MAX_ITERATIONS
+            max_iterations=self.MAX_ITERATIONS,
         )
 
         # Pre-populate initial resources if provided
@@ -126,7 +124,9 @@ class AgentOrchestrator:
 
             if not approved:
                 if feedback == "REJECT":
-                    return self._build_result(context, success=False, reason="Plan rejected by user")
+                    return self._build_result(
+                        context, success=False, reason="Plan rejected by user"
+                    )
 
                 # User provided feedback - re-plan
                 context.human_feedback = feedback
@@ -162,11 +162,7 @@ class AgentOrchestrator:
 
             if verdict == "PASS":
                 logger.info("Review passed! Workflow complete.")
-                return self._build_result(
-                    context,
-                    success=True,
-                    iterations=iteration + 1
-                )
+                return self._build_result(context, success=True, iterations=iteration + 1)
 
             if verdict == "REJECT":
                 logger.warning("Review rejected - needs architectural changes")
@@ -179,7 +175,7 @@ class AgentOrchestrator:
                             context,
                             success=True,
                             iterations=iteration + 1,
-                            note="Force approved by user despite rejection"
+                            note="Force approved by user despite rejection",
                         )
                     context.human_feedback = feedback
 
@@ -200,7 +196,7 @@ class AgentOrchestrator:
                         context,
                         success=True,
                         iterations=iteration + 1,
-                        note="Force approved by user"
+                        note="Force approved by user",
                     )
                 context.human_feedback = feedback
 
@@ -211,13 +207,10 @@ class AgentOrchestrator:
             context,
             success=False,
             reason=f"Max iterations ({self.MAX_ITERATIONS}) reached",
-            iterations=self.MAX_ITERATIONS
+            iterations=self.MAX_ITERATIONS,
         )
 
-    async def _request_human_approval(
-        self,
-        message: AgentMessage
-    ) -> tuple:
+    async def _request_human_approval(self, message: AgentMessage) -> tuple:
         """
         Request human approval for a message.
 
@@ -257,7 +250,7 @@ class AgentOrchestrator:
         success: bool,
         reason: str = None,
         iterations: int = 0,
-        note: str = None
+        note: str = None,
     ) -> dict[str, Any]:
         """Build the final result dictionary."""
         return {
@@ -273,11 +266,11 @@ class AgentOrchestrator:
                     "sender": m.sender.value,
                     "receiver": m.receiver.value,
                     "action": m.action,
-                    "summary": m.summary
+                    "summary": m.summary,
                 }
                 for m in context.messages
             ],
-            "note": note
+            "note": note,
         }
 
     def _scan_project_files(self) -> list[str]:
@@ -285,8 +278,13 @@ class AgentOrchestrator:
         files = []
 
         ignore_dirs = {
-            ".git", "__pycache__", "node_modules", ".venv",
-            "venv", "htmlcov", ".pytest_cache"
+            ".git",
+            "__pycache__",
+            "node_modules",
+            ".venv",
+            "venv",
+            "htmlcov",
+            ".pytest_cache",
         }
 
         try:
@@ -315,10 +313,7 @@ class AgentOrchestrator:
 
 # Convenience function for simple usage
 async def run_multi_agent(
-    task: str,
-    project_root: Path,
-    llm_client=None,
-    auto_approve: bool = False
+    task: str, project_root: Path, llm_client=None, auto_approve: bool = False
 ) -> dict[str, Any]:
     """
     Run the multi-agent workflow on a task.
@@ -334,15 +329,14 @@ async def run_multi_agent(
     """
     if llm_client is None:
         from ..gemini_client import create_gemini_client
+
         llm_client = create_gemini_client()
 
     if llm_client is None:
         return {"success": False, "reason": "Could not create LLM client"}
 
     orchestrator = AgentOrchestrator(
-        llm_client=llm_client,
-        project_root=project_root,
-        auto_approve_plans=auto_approve
+        llm_client=llm_client, project_root=project_root, auto_approve_plans=auto_approve
     )
 
     return await orchestrator.execute(task)

@@ -58,9 +58,13 @@ app = typer.Typer(
     rich_markup_mode="rich",
     add_completion=False,
 )
+
+
 @app.callback()
 def main(
-    provider: str = typer.Option(None, "--provider", "-P", help="LLM Provider: gemini, ollama, openai_compat"),
+    provider: str = typer.Option(
+        None, "--provider", "-P", help="LLM Provider: gemini, ollama, openai_compat"
+    ),
     base_url: str = typer.Option(None, "--base-url", help="Base URL for local LLM provider"),
     llm_model: str = typer.Option(None, "--llm-model", help="Override default model name"),
 ):
@@ -75,21 +79,35 @@ def main(
     if llm_model:
         settings.LLM_MODEL = llm_model
 
+
 console = Console()
+
 
 @app.command()
 def start(
-    backend: str = typer.Option("api", "--backend", "-b", help="Backend: 'api' (SDK) or 'cli' (local CLI)"),
+    backend: str = typer.Option(
+        "api", "--backend", "-b", help="Backend: 'api' (SDK) or 'cli' (local CLI)"
+    ),
     model: str = typer.Option(settings.DEFAULT_MODEL, "--model", "-m", help="Gemini model to use"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Enable verbose output"),
-    verification: str = typer.Option("STANDARD", "--verify", help="Verification level: BASIC, STANDARD, FULL"),
-    calls: int = typer.Option(settings.MAX_HOURLY_CALLS, "--calls", "-c", help="Max hourly API calls"),
+    verification: str = typer.Option(
+        "STANDARD", "--verify", help="Verification level: BASIC, STANDARD, FULL"
+    ),
+    calls: int = typer.Option(
+        settings.MAX_HOURLY_CALLS, "--calls", "-c", help="Max hourly API calls"
+    ),
     prompt: Optional[str] = typer.Option(None, "--prompt", "-p", help="Custom prompt file path"),
-    timeout: int = typer.Option(settings.TIMEOUT_MINUTES, "--timeout", "-t", help="Timeout in minutes per loop"),
-    experimental: bool = typer.Option(False, "--experimental", "-x", help="Use new State Pattern architecture (v4.0)"),
+    timeout: int = typer.Option(
+        settings.TIMEOUT_MINUTES, "--timeout", "-t", help="Timeout in minutes per loop"
+    ),
+    experimental: bool = typer.Option(
+        False, "--experimental", "-x", help="Use new State Pattern architecture (v4.0)"
+    ),
     # Debugger / Self-Healing
     debug: bool = typer.Option(False, "--debug", "-d", help="Enable verbose debugger tracing"),
-    self_heal: bool = typer.Option(False, "--self-heal", "-H", help="Enable crash auto-repair (Self-Healing 2.0)"),
+    self_heal: bool = typer.Option(
+        False, "--self-heal", "-H", help="Enable crash auto-repair (Self-Healing 2.0)"
+    ),
 ):
     """
     Start the autonomous development loop.
@@ -118,7 +136,7 @@ def start(
             settings.PROMPT_FILE = prompt
 
         # Use CLI backend (privacy mode - no API key needed)
-        use_cli = (backend == "cli")
+        use_cli = backend == "cli"
 
         if use_cli:
             console.print("[bold cyan]🔒 Privacy Mode: Using local Gemini CLI[/bold cyan]")
@@ -128,18 +146,24 @@ def start(
 
         # Debugger Setup
         from .debugger import BoringDebugger
-        debugger = BoringDebugger(model_name=model if use_cli else "default", enable_healing=self_heal, verbose=debug)
+
+        debugger = BoringDebugger(
+            model_name=model if use_cli else "default", enable_healing=self_heal, verbose=debug
+        )
 
         # Choose loop implementation
         if experimental:
-            console.print("[bold magenta]🧪 Experimental: Using State Pattern Architecture[/bold magenta]")
+            console.print(
+                "[bold magenta]🧪 Experimental: Using State Pattern Architecture[/bold magenta]"
+            )
             from .loop import StatefulAgentLoop
+
             loop = StatefulAgentLoop(
                 model_name=model,
                 use_cli=use_cli,
                 verbose=verbose,
                 verification_level=verification.upper(),
-                prompt_file=Path(prompt) if prompt else None
+                prompt_file=Path(prompt) if prompt else None,
             )
         else:
             loop = AgentLoop(
@@ -147,25 +171,31 @@ def start(
                 use_cli=use_cli,
                 verbose=verbose,
                 verification_level=verification.upper(),
-                prompt_file=Path(prompt) if prompt else None
+                prompt_file=Path(prompt) if prompt else None,
             )
-            console.print(f"[bold green]Starting Boring Loop (Timeout: {settings.TIMEOUT_MINUTES}m)[/bold green]")
+            console.print(
+                f"[bold green]Starting Boring Loop (Timeout: {settings.TIMEOUT_MINUTES}m)[/bold green]"
+            )
 
         if self_heal:
-            console.print("[bold yellow]🚑 Self-Healing Enabled: I will attempt to fix crashes automatically.[/bold yellow]")
+            console.print(
+                "[bold yellow]🚑 Self-Healing Enabled: I will attempt to fix crashes automatically.[/bold yellow]"
+            )
 
         # Execute with Debugger Wrapper
         debugger.run_with_healing(loop.run)
 
     except Exception as e:
         import traceback
+
         traceback.print_exc()
         console.print(f"[bold red]Fatal Error:[/bold red] {e}")
         if self_heal:
-             console.print("[dim]Debugger failed to heal this crash.[/dim]")
+            console.print("[dim]Debugger failed to heal this crash.[/dim]")
         else:
-             console.print("[dim]Tip: Run with --self-heal to attempt auto-repair.[/dim]")
+            console.print("[dim]Tip: Run with --self-heal to attempt auto-repair.[/dim]")
         raise typer.Exit(code=1)
+
 
 @app.command()
 def status():
@@ -180,7 +210,9 @@ def status():
     console.print("[bold blue]Boring Project Status[/bold blue]")
     console.print(f"  Project: {state.get('project_name', 'Unknown')}")
     console.print(f"  Total Loops: {state.get('total_loops', 0)}")
-    console.print(f"  Success: {state.get('successful_loops', 0)} | Failed: {state.get('failed_loops', 0)}")
+    console.print(
+        f"  Success: {state.get('successful_loops', 0)} | Failed: {state.get('failed_loops', 0)}"
+    )
     console.print(f"  Last Activity: {state.get('last_activity', 'Never')}")
 
     # Show recent history
@@ -189,7 +221,10 @@ def status():
         console.print("\n[bold]Recent Loops:[/bold]")
         for h in history:
             status_icon = "✓" if h.get("status") == "SUCCESS" else "✗"
-            console.print(f"  {status_icon} Loop #{h.get('loop_id', '?')}: {h.get('status', 'UNKNOWN')}")
+            console.print(
+                f"  {status_icon} Loop #{h.get('loop_id', '?')}: {h.get('status', 'UNKNOWN')}"
+            )
+
 
 @app.command()
 def circuit_status():
@@ -198,6 +233,7 @@ def circuit_status():
     """
     show_circuit_status()
 
+
 @app.command()
 def reset_circuit():
     """
@@ -205,6 +241,7 @@ def reset_circuit():
     """
     reset_circuit_breaker("Manual reset via CLI")
     console.print("[green]Circuit breaker reset.[/green]")
+
 
 @app.command()
 def setup_extensions():
@@ -232,6 +269,7 @@ def setup_extensions():
 
     console.print("[green]Extensions setup complete.[/green]")
 
+
 @app.command("mcp-register")
 def mcp_register():
     """
@@ -239,6 +277,7 @@ def mcp_register():
     This allows the 'gemini' command to use Boring's specialized tools.
     """
     from .extensions import ExtensionsManager
+
     manager = ExtensionsManager(settings.PROJECT_ROOT)
 
     with console.status("[bold green]Registering Boring MCP with Gemini CLI...[/bold green]"):
@@ -246,7 +285,9 @@ def mcp_register():
 
     if success:
         console.print(f"[green]✅ {msg}[/green]")
-        console.print("[dim]You can now use Boring tools in the Gemini CLI (e.g. gemini --mcp boring ...)[/dim]")
+        console.print(
+            "[dim]You can now use Boring tools in the Gemini CLI (e.g. gemini --mcp boring ...)[/dim]"
+        )
     else:
         console.print(f"[red]Registration failed: {msg}[/red]")
         raise typer.Exit(1)
@@ -258,6 +299,7 @@ def memory_clear():
     Clear the memory/history files (fresh start).
     """
     import shutil
+
     memory_dir = settings.PROJECT_ROOT / ".boring_memory"
     if memory_dir.exists():
         shutil.rmtree(memory_dir)
@@ -268,7 +310,9 @@ def memory_clear():
 
 @app.command()
 def health(
-    backend: str = typer.Option("api", "--backend", "-b", help="Backend: 'api' (SDK) or 'cli' (local CLI)")
+    backend: str = typer.Option(
+        "api", "--backend", "-b", help="Backend: 'api' (SDK) or 'cli' (local CLI)"
+    ),
 ):
     """
     Run system health checks.
@@ -306,14 +350,17 @@ def version():
     console.print(f"  Model: {settings.DEFAULT_MODEL}")
     console.print(f"  Project: {settings.PROJECT_ROOT}")
 
+
 # --- Workflow Hub CLI ---
 workflow_app = typer.Typer(help="Manage Boring Workflows (Hub)")
 app.add_typer(workflow_app, name="workflow")
+
 
 @workflow_app.command("list")
 def workflow_list():
     """List local workflows."""
     from .workflow_manager import WorkflowManager
+
     manager = WorkflowManager()
     flows = manager.list_local_workflows()
 
@@ -325,13 +372,15 @@ def workflow_list():
     for f in flows:
         console.print(f"  - {f}")
 
+
 @workflow_app.command("export")
 def workflow_export(
     name: str = typer.Argument(..., help="Workflow name (e.g. 'speckit-plan')"),
-    author: str = typer.Option("Anonymous", "--author", "-a", help="Author name")
+    author: str = typer.Option("Anonymous", "--author", "-a", help="Author name"),
 ):
     """Export a workflow to .bwf.json package."""
     from .workflow_manager import WorkflowManager
+
     manager = WorkflowManager()
     path, msg = manager.export_workflow(name, author)
 
@@ -341,11 +390,14 @@ def workflow_export(
         console.print(f"[red]Error: {msg}[/red]")
         raise typer.Exit(1)
 
+
 @workflow_app.command("publish")
 def workflow_publish(
     name: str = typer.Argument(..., help="Workflow name to publish"),
-    token: str = typer.Option(None, "--token", "-t", help="GitHub Personal Access Token (or set GITHUB_TOKEN env var)"),
-    public: bool = typer.Option(True, "--public/--private", help="Make Gist public or secret")
+    token: str = typer.Option(
+        None, "--token", "-t", help="GitHub Personal Access Token (or set GITHUB_TOKEN env var)"
+    ),
+    public: bool = typer.Option(True, "--public/--private", help="Make Gist public or secret"),
 ):
     """Publish a workflow to GitHub Gist registry."""
     import os
@@ -354,11 +406,14 @@ def workflow_publish(
     gh_token = token or os.environ.get("GITHUB_TOKEN")
     if not gh_token:
         console.print("[red]Error: GitHub Token required.[/red]")
-        console.print("Please set [bold]GITHUB_TOKEN[/bold] env var or use [bold]--token[/bold] option.")
+        console.print(
+            "Please set [bold]GITHUB_TOKEN[/bold] env var or use [bold]--token[/bold] option."
+        )
         console.print("Create one at: https://github.com/settings/tokens (Scpoe: gist)")
         raise typer.Exit(1)
 
     from .workflow_manager import WorkflowManager
+
     manager = WorkflowManager()
 
     with console.status(f"[bold green]Publishing {name} to GitHub Gist...[/bold green]"):
@@ -371,15 +426,24 @@ def workflow_publish(
         console.print(f"[red]Publish Failed: {msg}[/red]")
         raise typer.Exit(1)
 
+
 @app.command()
 def evaluate(
-    target: str = typer.Argument(..., help="File path(s) to evaluate. For PAIRWISE, use comma-separated paths."),
-    level: str = typer.Option("DIRECT", "--level", "-l", help="Evaluation level: DIRECT (1-5) or PAIRWISE (A/B)"),
+    target: str = typer.Argument(
+        ..., help="File path(s) to evaluate. For PAIRWISE, use comma-separated paths."
+    ),
+    level: str = typer.Option(
+        "DIRECT", "--level", "-l", help="Evaluation level: DIRECT (1-5) or PAIRWISE (A/B)"
+    ),
     context: str = typer.Option("", "--context", "-c", help="Evaluation context or requirements"),
-    backend: str = typer.Option("cli", "--backend", "-b", help="Backend: 'api' (SDK) or 'cli' (local CLI)"),
+    backend: str = typer.Option(
+        "cli", "--backend", "-b", help="Backend: 'api' (SDK) or 'cli' (local CLI)"
+    ),
     model: str = typer.Option("default", "--model", "-m", help="Gemini model to use"),
     mode: str = typer.Option("standard", "--mode", help="Evaluation mode (strictness)"),
-    interactive: bool = typer.Option(False, "--interactive", "-i", help="Interactive mode (returns prompts)")
+    interactive: bool = typer.Option(
+        False, "--interactive", "-i", help="Interactive mode (returns prompts)"
+    ),
 ):
     """
     Evaluate code quality using LLM Judge (Polyglot & Multi-Backend).
@@ -408,7 +472,9 @@ def evaluate(
         else:
             adapter = GeminiClient(model_name=model)
             if not adapter.is_available:
-                console.print("[red]Error: API Key not found. Use --backend cli or set GOOGLE_API_KEY.[/red]")
+                console.print(
+                    "[red]Error: API Key not found. Use --backend cli or set GOOGLE_API_KEY.[/red]"
+                )
                 raise typer.Exit(1)
             console.print("[dim]Using Gemini API Backend[/dim]")
 
@@ -434,7 +500,14 @@ def evaluate(
             content_a = path_a.read_text(encoding="utf-8", errors="replace")
             content_b = path_b.read_text(encoding="utf-8", errors="replace")
 
-            result = judge.compare_code(path_a.name, content_a, path_b.name, content_b, context=context, interactive=interactive)
+            result = judge.compare_code(
+                path_a.name,
+                content_a,
+                path_b.name,
+                content_b,
+                context=context,
+                interactive=interactive,
+            )
 
             if interactive:
                 console.print(json.dumps(result, indent=2))
@@ -455,7 +528,9 @@ def evaluate(
 
             console.print(f"[bold blue]🧐 Evaluating {target_path.name}...[/bold blue]")
             content = target_path.read_text(encoding="utf-8", errors="replace")
-            result = judge.grade_code(target_path.name, content, rubric=rubric, interactive=interactive)
+            result = judge.grade_code(
+                target_path.name, content, rubric=rubric, interactive=interactive
+            )
 
             if interactive:
                 console.print(json.dumps(result, indent=2))
@@ -471,7 +546,9 @@ def evaluate(
                         d_score = details.get("score", 0)
                         d_comment = details.get("comment", "")
                         color = "green" if d_score >= 4 else "yellow" if d_score >= 3 else "red"
-                        console.print(f"  [{color}]{dim:<25} : {d_score}/5[/] - [dim]{d_comment}[/dim]")
+                        console.print(
+                            f"  [{color}]{dim:<25} : {d_score}/5[/] - [dim]{d_comment}[/dim]"
+                        )
 
                 emoji = "🟢" if score >= 4 else "🟡" if score >= 3 else "🔴"
                 console.print(f"\n[bold]{emoji} Overall Score: {score}/5.0[/bold]")
@@ -486,6 +563,7 @@ def evaluate(
         console.print(f"[red]Evaluation failed: {e}[/red]")
         raise typer.Exit(1)
 
+
 def _get_rubric_for_level(level: str):
     """Map verification level/string to Rubric object"""
     from .rubrics import RUBRIC_REGISTRY, get_rubric
@@ -499,21 +577,21 @@ def _get_rubric_for_level(level: str):
         "production": "production",
         "arch": "architecture",
         "security": "security",
-        "perf": "performance"
+        "perf": "performance",
     }
 
     mapped = level_map.get(level.lower())
     if mapped:
         return get_rubric(mapped)
 
-    return get_rubric("code_quality") # Default
+    return get_rubric("code_quality")  # Default
+
 
 @workflow_app.command("install")
-def workflow_install(
-    source: str = typer.Argument(..., help="File path or URL to .bwf.json")
-):
+def workflow_install(source: str = typer.Argument(..., help="File path or URL to .bwf.json")):
     """Install a workflow from file or URL."""
     from .workflow_manager import WorkflowManager
+
     manager = WorkflowManager()
     success, msg = manager.install_workflow(source)
 
@@ -534,23 +612,19 @@ def dashboard():
 
     dashboard_path = Path(__file__).parent / "dashboard.py"
 
-    # Check if streamlit is installed
-    try:
-        import streamlit
-    except ImportError:
+    import importlib.util
+
+    if importlib.util.find_spec("streamlit") is None:
         console.print("[bold red]❌ Dashboard dependencies not found.[/bold red]")
         console.print("\nPlease install the GUI extras:")
-        console.print("  [cyan]pip install -e \".\\[gui\\]\"[/cyan]")
+        console.print('  [cyan]pip install -e ".\\[gui\\]"[/cyan]')
         raise typer.Exit(1)
 
     console.print("🚀 Launching Dashboard at [bold green]http://localhost:8501[/bold green]")
     console.print("Press Ctrl+C to stop.")
 
     try:
-        subprocess.run(
-            [sys.executable, "-m", "streamlit", "run", str(dashboard_path)],
-            check=True
-        )
+        subprocess.run([sys.executable, "-m", "streamlit", "run", str(dashboard_path)], check=True)
     except KeyboardInterrupt:
         console.print("\n[yellow]Dashboard stopped.[/yellow]")
     except Exception as e:
@@ -558,10 +632,11 @@ def dashboard():
         raise typer.Exit(1)
 
 
-
 @app.command()
 def verify(
-    level: str = typer.Option("STANDARD", "--level", "-l", help="Verification level: BASIC, STANDARD, FULL, SEMANTIC"),
+    level: str = typer.Option(
+        "STANDARD", "--level", "-l", help="Verification level: BASIC, STANDARD, FULL, SEMANTIC"
+    ),
     force: bool = typer.Option(False, "--force", "-f", help="Force verification (bypass cache)"),
 ):
     """
@@ -582,14 +657,16 @@ def verify(
         console.print(msg)
         raise typer.Exit(code=1)
 
-@app.command("auto-fix")
 
+@app.command("auto-fix")
 def auto_fix(
     target: str = typer.Argument(..., help="File path to fix"),
     max_attempts: int = typer.Option(3, "--max-attempts", "-n", help="Max fix attempts per cycle"),
-    backend: str = typer.Option("cli", "--backend", "-b", help="Backend: 'api' (SDK) or 'cli' (local CLI)"),
+    backend: str = typer.Option(
+        "cli", "--backend", "-b", help="Backend: 'api' (SDK) or 'cli' (local CLI)"
+    ),
     model: str = typer.Option("default", "--model", "-m", help="Gemini model to use"),
-    verification_level: str = typer.Option("STANDARD", "--verify", help="Verification level")
+    verification_level: str = typer.Option("STANDARD", "--verify", help="Verification level"),
 ):
     """
     Auto-fix syntax and linting errors in a file.
@@ -622,11 +699,7 @@ def auto_fix(
         # We need structured issues if possible, but verifier returns (bool, str)
         # AutoFixPipeline expects dict with 'issues' list if failed.
         # We'll try to parse the msg or just treat it as one issue.
-        return {
-            "passed": passed,
-            "message": msg,
-            "issues": [msg] if not passed else []
-        }
+        return {"passed": passed, "message": msg, "issues": [msg] if not passed else []}
 
     # Wrapper for Agent Loop
     def run_boring_wrapper(task_description, verification_level, max_loops, project_path):
@@ -647,7 +720,7 @@ def auto_fix(
                 use_cli=(backend.lower() == "cli"),
                 verification_level=verification_level,
                 prompt_file=prompt_file,
-                verbose=False # Keep it cleaner
+                verbose=False,  # Keep it cleaner
             )
 
             # Run loop
@@ -657,7 +730,7 @@ def auto_fix(
             memory = MemoryManager(project_path_obj)
             history = memory.get_loop_history(last_n=1)
 
-            if history and history[0].get('status') == 'SUCCESS':
+            if history and history[0].get("status") == "SUCCESS":
                 return {"status": "SUCCESS", "message": "Fix applied successfully"}
             else:
                 return {"status": "FAILED", "message": "Agent failed to fix issues."}
@@ -674,20 +747,23 @@ def auto_fix(
     try:
         pipeline = AutoFixPipeline(
             project_root=project_root,
-            max_iterations=max_attempts, # Pipeline uses this for overall cycles
-            verification_level=verification_level
+            max_iterations=max_attempts,  # Pipeline uses this for overall cycles
+            verification_level=verification_level,
         )
 
         result = pipeline.run(run_boring_wrapper, verify_wrapper)
 
         if result["status"] == "SUCCESS":
-            console.print(f"[green]✅ Optimized successfully after {result['iterations']} iterations.[/green]")
+            console.print(
+                f"[green]✅ Optimized successfully after {result['iterations']} iterations.[/green]"
+            )
         else:
             console.print(f"[red]❌ {result['message']}[/red]")
 
     except Exception as e:
         console.print(f"[red]Auto-fix failed: {e}[/red]")
         raise typer.Exit(1)
+
 
 # evaluate_code removed (merged into evaluate)
 
@@ -696,6 +772,7 @@ def auto_fix(
 # ========================================
 hooks_app = typer.Typer(help="Git hooks for local code quality enforcement.")
 app.add_typer(hooks_app, name="hooks")
+
 
 @hooks_app.command("install")
 def hooks_install():
@@ -713,6 +790,7 @@ def hooks_install():
         console.print(f"[red]Error: {msg}[/red]")
         raise typer.Exit(1)
 
+
 @hooks_app.command("uninstall")
 def hooks_uninstall():
     """Remove Boring Git hooks."""
@@ -727,6 +805,7 @@ def hooks_uninstall():
     else:
         console.print(f"[red]Error: {msg}[/red]")
         raise typer.Exit(1)
+
 
 @hooks_app.command("status")
 def hooks_status():
@@ -749,6 +828,7 @@ def hooks_status():
                 console.print(f"  ⚠️ {hook_name}: [yellow]Custom hook (not Boring)[/yellow]")
         else:
             console.print(f"  ❌ {hook_name}: [dim]Not installed[/dim]")
+
 
 @app.command()
 def learn():
@@ -793,12 +873,15 @@ def learn():
 rag_app = typer.Typer(help="Manage RAG (Retrieval-Augmented Generation) system.")
 app.add_typer(rag_app, name="rag")
 
+
 @rag_app.command("index")
 @app.command("rag-index", hidden=True)
 def rag_index(
     force: bool = typer.Option(False, "--force", "-f", help="Force full rebuild of index"),
-    incremental: bool = typer.Option(True, "--incremental/--full", "-i/-F", help="Incremental indexing (default)"),
-    project: str = typer.Option(None, "--project", "-p", help="Explicit project root path")
+    incremental: bool = typer.Option(
+        True, "--incremental/--full", "-i/-F", help="Incremental indexing (default)"
+    ),
+    project: str = typer.Option(None, "--project", "-p", help="Explicit project root path"),
 ):
     """Index the codebase for RAG retrieval."""
     from .rag import create_rag_retriever
@@ -829,13 +912,16 @@ def rag_index(
     else:
         console.print(f"[green]✅ Index built with {count} chunks.[/green]")
 
+
 @rag_app.command("search")
 @app.command("rag-search", hidden=True)
 def rag_search(
     query: str = typer.Argument(..., help="Search query"),
     limit: int = typer.Option(5, "--limit", "-l", help="Max results"),
-    threshold: float = typer.Option(0.0, "--threshold", "-t", help="Minimum relevance score (0.0-1.0)"),
-    project: str = typer.Option(None, "--project", "-p", help="Explicit project root path")
+    threshold: float = typer.Option(
+        0.0, "--threshold", "-t", help="Minimum relevance score (0.0-1.0)"
+    ),
+    project: str = typer.Option(None, "--project", "-p", help="Explicit project root path"),
 ):
     """Search the codebase semanticly."""
     from .rag import create_rag_retriever
@@ -856,11 +942,12 @@ def rag_search(
     console.print(f"[bold blue]🔍 Results for '{query}':[/bold blue]\n")
     for i, res in enumerate(results, 1):
         chunk = res.chunk
-        console.print(f"{i}. [bold]{chunk.file_path}[/bold] -> {chunk.name} [dim](score: {res.score:.2f})[/dim]")
+        console.print(
+            f"{i}. [bold]{chunk.file_path}[/bold] -> {chunk.name} [dim](score: {res.score:.2f})[/dim]"
+        )
         # Show a snippet
         snippet = chunk.content[:200].replace("\n", " ")
         console.print(f"   [italic]{snippet}...[/italic]\n")
-
 
 
 # ========================================
@@ -868,6 +955,7 @@ def rag_search(
 # ========================================
 workspace_app = typer.Typer(help="Manage multi-project workspace.")
 app.add_typer(workspace_app, name="workspace")
+
 
 @workspace_app.command("list")
 def workspace_list(tag: Optional[str] = typer.Option(None, "--tag", "-t", help="Filter by tag")):
@@ -884,15 +972,16 @@ def workspace_list(tag: Optional[str] = typer.Option(None, "--tag", "-t", help="
     console.print(f"[bold blue]Workspace Projects ({len(projects)}):[/bold blue]")
 
     for p in projects:
-        name = p['name']
-        path = p['path']
-        is_active = p.get('is_active', False)
+        name = p["name"]
+        path = p["path"]
+        is_active = p.get("is_active", False)
         marker = "🟢" if is_active else "⚪"
         style = "bold green" if is_active else "white"
 
         console.print(f"  {marker} [{style}]{name}[/{style}] [dim]({path})[/dim]")
-        if p.get('description'):
+        if p.get("description"):
             console.print(f"     [dim]└─ {p['description']}[/dim]")
+
 
 @workspace_app.command("add")
 def workspace_add(
@@ -912,6 +1001,7 @@ def workspace_add(
         console.print(f"[red]Error: {result['message']}[/red]")
         raise typer.Exit(1)
 
+
 @workspace_app.command("remove")
 def workspace_remove(name: str = typer.Argument(..., help="Project name to remove")):
     """Remove a project from the workspace."""
@@ -925,6 +1015,7 @@ def workspace_remove(name: str = typer.Argument(..., help="Project name to remov
     else:
         console.print(f"[red]Error: {result['message']}[/red]")
         raise typer.Exit(1)
+
 
 @workspace_app.command("switch")
 def workspace_switch(name: str = typer.Argument(..., help="Project name to switch to")):
@@ -940,6 +1031,7 @@ def workspace_switch(name: str = typer.Argument(..., help="Project name to switc
     else:
         console.print(f"[red]Error: {result['message']}[/red]")
         raise typer.Exit(1)
+
 
 if __name__ == "__main__":
     app()

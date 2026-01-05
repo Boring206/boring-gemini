@@ -1,4 +1,3 @@
-
 import json
 import re
 import shutil
@@ -18,6 +17,7 @@ from .logger import log_status
 @dataclass
 class WorkflowMetadata:
     """Metadata for a workflow package."""
+
     name: str
     version: str
     description: str
@@ -31,22 +31,24 @@ class WorkflowMetadata:
         if self.created_at == 0.0:
             self.created_at = time.time()
 
+
 @dataclass
 class WorkflowPackage:
     """
     Represents a portable workflow package (.bwf.json).
     Include metadata and the actual markdown content.
     """
+
     metadata: WorkflowMetadata
     content: str  # The markdown content
-    config: Optional[dict[str, Any]] = None # Optional extra config
+    config: Optional[dict[str, Any]] = None  # Optional extra config
 
     def to_json(self) -> str:
         """Serialize to JSON string."""
         return json.dumps(asdict(self), indent=2, ensure_ascii=False)
 
     @classmethod
-    def from_json(cls, json_str: str) -> 'WorkflowPackage':
+    def from_json(cls, json_str: str) -> "WorkflowPackage":
         """Deserialize from JSON string with validation."""
         try:
             data = json.loads(json_str)
@@ -64,7 +66,7 @@ class WorkflowPackage:
 
         meta_data = data.get("metadata", {})
         if not isinstance(meta_data, dict):
-             raise ValueError("Metadata must be an object")
+            raise ValueError("Metadata must be an object")
 
         # Filter valid fields for Metadata to avoid crashes on extra keys
         valid_keys = {"name", "version", "description", "author", "created_at", "tags"}
@@ -72,18 +74,17 @@ class WorkflowPackage:
 
         # Ensure name exists (required by dataclass)
         if "name" not in filtered_meta:
-             raise ValueError("Metadata missing 'name'")
+            raise ValueError("Metadata missing 'name'")
 
         # Provide defaults for others if missing in filtered (dataclass has defaults for some)
-        if "version" not in filtered_meta: filtered_meta["version"] = "0.0.0"
-        if "description" not in filtered_meta: filtered_meta["description"] = "No description"
+        if "version" not in filtered_meta:
+            filtered_meta["version"] = "0.0.0"
+        if "description" not in filtered_meta:
+            filtered_meta["description"] = "No description"
 
         metadata = WorkflowMetadata(**filtered_meta)
-        return cls(
-            metadata=metadata,
-            content=data.get("content", ""),
-            config=data.get("config")
-        )
+        return cls(metadata=metadata, content=data.get("content", ""), config=data.get("config"))
+
 
 class WorkflowManager:
     """
@@ -106,13 +107,13 @@ class WorkflowManager:
         """Robustly parse YAML frontmatter from markdown."""
         metadata = {}
         # Regex to find frontmatter block
-        match = re.search(r'^---\s*\n(.*?)\n---\s*\n', content, re.DOTALL)
+        match = re.search(r"^---\s*\n(.*?)\n---\s*\n", content, re.DOTALL)
         if match:
             yaml_block = match.group(1)
             # Simple line-based YAML parser (dependency-free)
-            for line in yaml_block.split('\n'):
-                if ':' in line:
-                    key, value = line.split(':', 1)
+            for line in yaml_block.split("\n"):
+                if ":" in line:
+                    key, value = line.split(":", 1)
                     metadata[key.strip()] = value.strip()
         return metadata
 
@@ -154,11 +155,7 @@ class WorkflowManager:
 
             # Create package
             metadata = WorkflowMetadata(
-                name=name,
-                version="1.0.0",
-                description=description,
-                author=author,
-                tags=tags
+                name=name, version="1.0.0", description=description, author=author, tags=tags
             )
 
             package = WorkflowPackage(metadata=metadata, content=content)
@@ -193,10 +190,10 @@ class WorkflowManager:
                 # Local file
                 path = Path(source)
                 if not path.is_absolute():
-                     path = self.project_root / path
+                    path = self.project_root / path
 
                 if not path.exists():
-                     return False, f"Source file not found: {source}"
+                    return False, f"Source file not found: {source}"
 
                 pkg_json = path.read_text(encoding="utf-8")
 
@@ -216,12 +213,19 @@ class WorkflowManager:
             if target_file.exists():
                 backup_path = self.base_dir / f"{target_name}.md.bak"
                 shutil.copy2(target_file, backup_path)
-                log_status(self.project_root / "logs", "INFO", f"Backed up existing workflow to {backup_path.name}")
+                log_status(
+                    self.project_root / "logs",
+                    "INFO",
+                    f"Backed up existing workflow to {backup_path.name}",
+                )
 
             # Write new content
             target_file.write_text(package.content, encoding="utf-8")
 
-            return True, f"Successfully installed workflow '{target_name}' (v{package.metadata.version}) by {package.metadata.author}"
+            return (
+                True,
+                f"Successfully installed workflow '{target_name}' (v{package.metadata.version}) by {package.metadata.author}",
+            )
 
         except urllib.error.URLError as e:
             return False, f"Network error: {e}"
@@ -259,11 +263,7 @@ class WorkflowManager:
             payload = {
                 "description": f"Boring Workflow: {name}",
                 "public": public,
-                "files": {
-                    filename: {
-                        "content": content
-                    }
-                }
+                "files": {filename: {"content": content}},
             }
 
             req = urllib.request.Request(
@@ -272,9 +272,9 @@ class WorkflowManager:
                 headers={
                     "Authorization": f"token {token}",
                     "Accept": "application/vnd.github.v3+json",
-                    "User-Agent": "Boring-Agent"
+                    "User-Agent": "Boring-Agent",
                 },
-                method="POST"
+                method="POST",
             )
 
             with urllib.request.urlopen(req) as response:

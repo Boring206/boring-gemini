@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 class StateResult(Enum):
     """Result of state execution, determining next transition."""
+
     SUCCESS = "success"
     FAILURE = "failure"
     RETRY = "retry"

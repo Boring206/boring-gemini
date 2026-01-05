@@ -12,13 +12,23 @@ from ..utils import check_rate_limit, detect_project_root
 # EVALUATION TOOLS
 # ==============================================================================
 
+
 @audited
 def boring_evaluate(
     target: Annotated[str, Field(description="File path or content to evaluate")],
     context: Annotated[str, Field(description="Optional context or requirements")] = "",
-    level: Annotated[str, Field(description="Evaluation technique: DIRECT (score 1-5), PAIRWISE (comparison)")] = "DIRECT",
-    interactive: Annotated[bool, Field(description="If True, returns the PROMPT instead of executing it. Useful for IDE AI.")] = None,
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    level: Annotated[
+        str, Field(description="Evaluation technique: DIRECT (score 1-5), PAIRWISE (comparison)")
+    ] = "DIRECT",
+    interactive: Annotated[
+        bool,
+        Field(
+            description="If True, returns the PROMPT instead of executing it. Useful for IDE AI."
+        ),
+    ] = None,
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> str:
     """
     Evaluate code quality using Advanced Evaluation techniques (LLM-as-a-Judge).
@@ -45,6 +55,7 @@ def boring_evaluate(
         return "❌ No valid Boring project found. Run in project root."
     try:
         from ...config import settings
+
         # CRITICAL: Contextually update project root
         settings.PROJECT_ROOT = project_root
 
@@ -63,10 +74,9 @@ def boring_evaluate(
 
         # Check availability
         if not provider.is_available and not interactive:
-             return f"❌ LLM Provider ({provider.provider_name}) not available. Check configuration."
+            return f"❌ LLM Provider ({provider.provider_name}) not available. Check configuration."
 
         judge = LLMJudge(provider)
-
 
         # Handle Pairwise Comparison
         if level.upper() == "PAIRWISE":
@@ -74,8 +84,16 @@ def boring_evaluate(
             if len(targets) != 2:
                 return "❌ PAIRWISE mode requires exactly two comma-separated files in 'target' (e.g., 'src/old.py,src/new.py')"
 
-            path_a = project_root / targets[0] if not Path(targets[0]).is_absolute() else Path(targets[0])
-            path_b = project_root / targets[1] if not Path(targets[1]).is_absolute() else Path(targets[1])
+            path_a = (
+                project_root / targets[0]
+                if not Path(targets[0]).is_absolute()
+                else Path(targets[0])
+            )
+            path_b = (
+                project_root / targets[1]
+                if not Path(targets[1]).is_absolute()
+                else Path(targets[1])
+            )
 
             if not path_a.exists() or not path_b.exists():
                 return f"❌ Files not found: {path_a} or {path_b}"
@@ -84,18 +102,21 @@ def boring_evaluate(
             content_b = path_b.read_text(encoding="utf-8", errors="replace")
 
             result = judge.compare_code(
-                name_a=path_a.name, code_a=content_a,
-                name_b=path_b.name, code_b=content_b,
-                context=context, interactive=interactive
+                name_a=path_a.name,
+                code_a=content_a,
+                name_b=path_b.name,
+                code_b=content_b,
+                context=context,
+                interactive=interactive,
             )
 
             if interactive:
-                 prompts = result.get("prompts", {})
-                 return (
-                     f"### ⚖️ Pairwise Comparison Prompts\n\n"
-                     f"**Pass 1 (A vs B):**\n```markdown\n{prompts.get('pass1', '')}\n```\n\n"
-                     f"**Pass 2 (B vs A):**\n```markdown\n{prompts.get('pass2', '')}\n```"
-                 )
+                prompts = result.get("prompts", {})
+                return (
+                    f"### ⚖️ Pairwise Comparison Prompts\n\n"
+                    f"**Pass 1 (A vs B):**\n```markdown\n{prompts.get('pass1', '')}\n```\n\n"
+                    f"**Pass 2 (B vs A):**\n```markdown\n{prompts.get('pass2', '')}\n```"
+                )
 
             winner = result.get("winner", "TIE")
             confidence = result.get("confidence", 0.0)
@@ -132,7 +153,7 @@ def boring_evaluate(
             result = judge.grade_code(target_path.name, content, interactive=interactive)
 
             if interactive:
-                prompt_content = result.get('prompt', 'Error generating prompt')
+                prompt_content = result.get("prompt", "Error generating prompt")
                 return f"### 📋 Evaluation Prompt (Copy to Chat)\n\nUse this prompt to evaluate `{target_path.name}` using your current AI context:\n\n```markdown\n{prompt_content}\n```"
 
             score = result.get("score", 0)
@@ -154,10 +175,12 @@ def boring_evaluate(
                     error_report += f"## Error Details:\n{reasoning}\n\n"
 
                 if raw_response:
-                    error_report += f"## Raw Response (first 500 chars):\n```\n{raw_response[:500]}...\n```\n\n"
+                    error_report += (
+                        f"## Raw Response (first 500 chars):\n```\n{raw_response[:500]}...\n```\n\n"
+                    )
 
                 error_report += "## 💡 Try Interactive Mode:\n"
-                error_report += f"```\nboring_evaluate(target=\"{target}\", interactive=True)\n```\n"
+                error_report += f'```\nboring_evaluate(target="{target}", interactive=True)\n```\n'
                 error_report += "This returns the evaluation prompt for you to execute manually."
 
                 return error_report
@@ -173,8 +196,11 @@ def boring_evaluate(
             # Record metrics in QualityTracker
             try:
                 from ...quality_tracker import QualityTracker
+
                 tracker = QualityTracker()
-                tracker.record(score=float(score), issues_count=len(suggestions), context="boring_evaluate")
+                tracker.record(
+                    score=float(score), issues_count=len(suggestions), context="boring_evaluate"
+                )
             except Exception as e:
                 report += f"\n[Warning: Failed to record quality stats: {e}]\n"
 
@@ -187,7 +213,9 @@ def boring_evaluate(
                     dim_score = dim_data.get("score", 0)
                     dim_comment = dim_data.get("comment", "N/A")[:60]
                     dim_emoji = "🟢" if dim_score >= 4 else "🟡" if dim_score >= 3 else "🔴"
-                    report += f"| {dim_emoji} **{dim_name.title()}** | {dim_score}/5 | {dim_comment} |\n"
+                    report += (
+                        f"| {dim_emoji} **{dim_name.title()}** | {dim_score}/5 | {dim_comment} |\n"
+                    )
                 report += "\n"
 
             if suggestions:
@@ -221,7 +249,9 @@ def boring_evaluate(
     except Exception as e:
         return f"❌ Error evaluating: {str(e)}"
 
+
 if MCP_AVAILABLE and mcp is not None:
-    mcp.tool(description="Evaluate code quality (LLM Judge)", annotations={"readOnlyHint": True, "openWorldHint": True})(boring_evaluate)
-
-
+    mcp.tool(
+        description="Evaluate code quality (LLM Judge)",
+        annotations={"readOnlyHint": True, "openWorldHint": True},
+    )(boring_evaluate)

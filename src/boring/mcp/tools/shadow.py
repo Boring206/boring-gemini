@@ -37,9 +37,14 @@ def register_shadow_tools(mcp, helpers: dict):
     """
     get_project_root_or_error = helpers.get("get_project_root_or_error")
 
-    @mcp.tool(description="Get Shadow Mode status and pending operations", annotations={"readOnlyHint": True, "openWorldHint": False})
+    @mcp.tool(
+        description="Get Shadow Mode status and pending operations",
+        annotations={"readOnlyHint": True, "openWorldHint": False},
+    )
     def boring_shadow_status(
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+        project_path: Annotated[
+            str, Field(description="Optional explicit path to project root")
+        ] = None,
     ) -> str:
         """
         Get Shadow Mode status and pending approvals.
@@ -67,18 +72,15 @@ def register_shadow_tools(mcp, helpers: dict):
             "",
             f"**Mode:** {guard.mode.value}",
             f"**Pending Operations:** {len(pending)}",
-            ""
+            "",
         ]
 
         if pending:
             output.append("## Pending Approvals")
             for op in pending:
-                severity_icon = {
-                    "critical": "🔴",
-                    "high": "🟠",
-                    "medium": "🟡",
-                    "low": "🟢"
-                }.get(op.severity.value, "⚪")
+                severity_icon = {"critical": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"}.get(
+                    op.severity.value, "⚪"
+                )
 
                 output.append(
                     f"\n### {severity_icon} `{op.operation_id}`\n"
@@ -93,11 +95,18 @@ def register_shadow_tools(mcp, helpers: dict):
 
         return "\n".join(output)
 
-    @mcp.tool(description="Approve a pending Shadow Mode operation", annotations={"readOnlyHint": False, "idempotentHint": True})
+    @mcp.tool(
+        description="Approve a pending Shadow Mode operation",
+        annotations={"readOnlyHint": False, "idempotentHint": True},
+    )
     def boring_shadow_approve(
-        operation_id: Annotated[str, Field(description="ID of the operation to approve (from shadow_status)")],
+        operation_id: Annotated[
+            str, Field(description="ID of the operation to approve (from shadow_status)")
+        ],
         note: Annotated[str, Field(description="Optional note explaining the approval")] = None,
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+        project_path: Annotated[
+            str, Field(description="Optional explicit path to project root")
+        ] = None,
     ) -> str:
         """
         Approve a pending Shadow Mode operation.
@@ -115,15 +124,22 @@ def register_shadow_tools(mcp, helpers: dict):
         guard = get_shadow_guard(project_root)
 
         if guard.approve_operation(operation_id, note):
-            return f"✅ Operation `{operation_id}` approved" + (f" with note: {note}" if note else "")
+            return f"✅ Operation `{operation_id}` approved" + (
+                f" with note: {note}" if note else ""
+            )
         else:
             return f"❌ Operation `{operation_id}` not found"
 
-    @mcp.tool(description="Reject a pending Shadow Mode operation", annotations={"readOnlyHint": False, "idempotentHint": True})
+    @mcp.tool(
+        description="Reject a pending Shadow Mode operation",
+        annotations={"readOnlyHint": False, "idempotentHint": True},
+    )
     def boring_shadow_reject(
         operation_id: Annotated[str, Field(description="ID of the operation to reject")],
         note: Annotated[str, Field(description="Optional note explaining the rejection")] = None,
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+        project_path: Annotated[
+            str, Field(description="Optional explicit path to project root")
+        ] = None,
     ) -> str:
         """
         Reject a pending Shadow Mode operation.
@@ -141,14 +157,21 @@ def register_shadow_tools(mcp, helpers: dict):
         guard = get_shadow_guard(project_root)
 
         if guard.reject_operation(operation_id, note):
-            return f"❌ Operation `{operation_id}` rejected" + (f" with note: {note}" if note else "")
+            return f"❌ Operation `{operation_id}` rejected" + (
+                f" with note: {note}" if note else ""
+            )
         else:
             return f"❓ Operation `{operation_id}` not found"
 
-    @mcp.tool(description="Change Shadow Mode protection level", annotations={"readOnlyHint": False, "idempotentHint": True})
+    @mcp.tool(
+        description="Change Shadow Mode protection level",
+        annotations={"readOnlyHint": False, "idempotentHint": True},
+    )
     def boring_shadow_mode(
         mode: Annotated[str, Field(description="New mode (DISABLED, ENABLED, or STRICT)")],
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+        project_path: Annotated[
+            str, Field(description="Optional explicit path to project root")
+        ] = None,
     ) -> str:
         """
         Change Shadow Mode protection level.
@@ -174,24 +197,22 @@ def register_shadow_tools(mcp, helpers: dict):
         # Update or create guard with new mode
         try:
             level = ShadowModeLevel[mode_upper]
-            _guards[str(project_root)] = ShadowModeGuard(
-                project_root=project_root,
-                mode=level
-            )
+            _guards[str(project_root)] = ShadowModeGuard(project_root=project_root, mode=level)
 
-            mode_icons = {
-                "DISABLED": "⚠️",
-                "ENABLED": "🛡️",
-                "STRICT": "🔒"
-            }
+            mode_icons = {"DISABLED": "⚠️", "ENABLED": "🛡️", "STRICT": "🔒"}
 
             return f"{mode_icons.get(mode_upper, '✅')} Shadow Mode set to **{mode_upper}**"
         except Exception as e:
             return f"❌ Failed to set mode: {e}"
 
-    @mcp.tool(description="Clear all pending Shadow Mode operations", annotations={"readOnlyHint": False, "destructiveHint": True})
+    @mcp.tool(
+        description="Clear all pending Shadow Mode operations",
+        annotations={"readOnlyHint": False, "destructiveHint": True},
+    )
     def boring_shadow_clear(
-        project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+        project_path: Annotated[
+            str, Field(description="Optional explicit path to project root")
+        ] = None,
     ) -> str:
         """
         Clear all pending Shadow Mode operations.

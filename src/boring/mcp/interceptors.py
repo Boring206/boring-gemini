@@ -13,6 +13,7 @@ class _BytesInterceptor:
     This is necessary because some libraries (like Rich) may write directly to buffer
     or use binary mode, bypassing the text-based _StdoutInterceptor.
     """
+
     def __init__(self, original_buffer, parent):
         self._original = original_buffer
         self._parent = parent
@@ -30,26 +31,26 @@ class _BytesInterceptor:
         # AUTO-ALLOW JSON-RPC messages
         stripped = data_bytes.strip()
         if stripped.startswith(b"{") and b'"jsonrpc"' in data_bytes:
-             self._parent._mcp_started = True
-             return self._original.write(data)
+            self._parent._mcp_started = True
+            return self._original.write(data)
 
         if data_bytes in (b"\n", b"\r\n", b"\r"):
             return self._original.write(data)
 
         # If BORING_MCP_MODE is not set, let it through
         if os.environ.get("BORING_MCP_MODE") != "1":
-             return self._original.write(data)
+            return self._original.write(data)
 
         # Log to stderr
         try:
-             # Attempt to decode for cleaner logs, fallback to repr
-             try:
-                 text = data_bytes.decode('utf-8', errors='replace')
-                 sys.stderr.write(f"\n[STDOUT POLLUTION (BYTES)] {text[:200]}\n")
-             except:
-                 sys.stderr.write(f"\n[STDOUT POLLUTION (BYTES)] {repr(data_bytes[:200])}\n")
+            # Attempt to decode for cleaner logs, fallback to repr
+            try:
+                text = data_bytes.decode("utf-8", errors="replace")
+                sys.stderr.write(f"\n[STDOUT POLLUTION (BYTES)] {text[:200]}\n")
+            except:
+                sys.stderr.write(f"\n[STDOUT POLLUTION (BYTES)] {repr(data_bytes[:200])}\n")
         except:
-             pass
+            pass
 
         # Return length to pretend we wrote it
         return len(data)
@@ -100,7 +101,7 @@ class _StdoutInterceptor:
         # Otherwise, log the pollution attempt to stderr
         # If BORING_MCP_MODE is not set, we might be in testing/CLI mode, so let it through if not MCP started
         if os.environ.get("BORING_MCP_MODE") != "1":
-             return self._original.write(data)
+            return self._original.write(data)
 
         sys.stderr.write(f"\n[STDOUT POLLUTION] {repr(data[:200])}\n")
         return
@@ -126,14 +127,14 @@ class _StdoutInterceptor:
 
     @property
     def errors(self):
-        return getattr(self._original, 'errors', None)
+        return getattr(self._original, "errors", None)
 
     @property
     def buffer(self):
         """Return the intercepted binary buffer."""
         if self._buffer_wrapper is None:
             # Check if original has buffer (it should)
-            if hasattr(self._original, 'buffer'):
+            if hasattr(self._original, "buffer"):
                 self._buffer_wrapper = _BytesInterceptor(self._original.buffer, self)
             else:
                 return None
@@ -141,23 +142,23 @@ class _StdoutInterceptor:
 
     @property
     def mode(self):
-        return getattr(self._original, 'mode', 'w')
+        return getattr(self._original, "mode", "w")
 
     @property
     def name(self):
-        return getattr(self._original, 'name', '<stdout>')
+        return getattr(self._original, "name", "<stdout>")
 
     @property
     def newlines(self):
-        return getattr(self._original, 'newlines', None)
+        return getattr(self._original, "newlines", None)
 
     @property
     def line_buffering(self):
-        return getattr(self._original, 'line_buffering', False)
+        return getattr(self._original, "line_buffering", False)
 
     @property
     def write_through(self):
-        return getattr(self._original, 'write_through', False)
+        return getattr(self._original, "write_through", False)
 
     def readable(self):
         return False
@@ -173,6 +174,7 @@ class _StdoutInterceptor:
 
     def detach(self):
         return self._original.detach()
+
 
 def install_interceptors():
     """Install the stdout interceptor."""

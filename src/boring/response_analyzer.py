@@ -18,9 +18,7 @@ EXIT_SIGNALS_FILE = Path(".exit_signals")
 
 
 def analyze_response(
-    output_file: Path,
-    loop_number: int,
-    function_call_results: Optional[dict[str, Any]] = None
+    output_file: Path, loop_number: int, function_call_results: Optional[dict[str, Any]] = None
 ) -> dict[str, Any]:
     """
     Analyzes Gemini output and extracts signals.
@@ -55,13 +53,15 @@ def analyze_response(
             "exit_signal": False,
             "work_summary": "",
             "output_length": 0,
-            "source": "none"  # Track where signal came from
-        }
+            "source": "none",  # Track where signal came from
+        },
     }
 
     # === PRIORITY 1: Function Call Results (Most Reliable) ===
     if function_call_results:
-        status_report = function_call_results.get("report_status") or function_call_results.get("status")
+        status_report = function_call_results.get("report_status") or function_call_results.get(
+            "status"
+        )
         if status_report:
             analysis_results["analysis"]["source"] = "function_call"
 
@@ -79,11 +79,15 @@ def analyze_response(
 
                 if tasks:
                     analysis_results["analysis"]["has_progress"] = True
-                    analysis_results["analysis"]["work_summary"] = f"Completed: {', '.join(tasks[:3])}"
+                    analysis_results["analysis"]["work_summary"] = (
+                        f"Completed: {', '.join(tasks[:3])}"
+                    )
                     analysis_results["analysis"]["confidence_score"] += 20
 
                 if files:
-                    analysis_results["analysis"]["files_modified"] = len(files) if isinstance(files, list) else 1
+                    analysis_results["analysis"]["files_modified"] = (
+                        len(files) if isinstance(files, list) else 1
+                    )
                     analysis_results["analysis"]["has_progress"] = True
 
             # If we got function call data, save and return early (most reliable source)
@@ -106,9 +110,7 @@ def analyze_response(
     # Check for explicit structured output block
     if "---BORING_STATUS---" in output_content:
         status_block_match = re.search(
-            r"---BORING_STATUS---\s*(.*?)\s*---END_BORING_STATUS---",
-            output_content,
-            re.DOTALL
+            r"---BORING_STATUS---\s*(.*?)\s*---END_BORING_STATUS---", output_content, re.DOTALL
         )
         if status_block_match:
             analysis_results["analysis"]["source"] = "status_block"
@@ -122,6 +124,7 @@ def analyze_response(
     # === PRIORITY 3: Git Diff for File Changes (Objective) ===
     try:
         from git import InvalidGitRepositoryError, Repo
+
         try:
             repo = Repo(Path.cwd())
             changed_files = [item.a_path for item in repo.index.diff(None)]
@@ -146,7 +149,9 @@ def analyze_response(
             analysis_results["analysis"]["work_summary"] = "Minimal output detected"
             analysis_results["analysis"]["source"] = "fallback"
         else:
-            analysis_results["analysis"]["work_summary"] = "Output analyzed, awaiting structured signals"
+            analysis_results["analysis"]["work_summary"] = (
+                "Output analyzed, awaiting structured signals"
+            )
             analysis_results["analysis"]["source"] = "fallback"
 
     # Save analysis results
@@ -213,4 +218,3 @@ def log_analysis_summary():
     log_status(Path("logs"), "INFO", f"  Source: {analysis.get('source', 'unknown')}")
     log_status(Path("logs"), "INFO", f"  Files Changed: {analysis['files_modified']}")
     log_status(Path("logs"), "INFO", f"  Summary: {analysis['work_summary']}")
-

@@ -20,6 +20,7 @@ LOG_FILE = Path("logs/boring.log")
 BRAIN_DIR = Path(".boring_brain")
 CIRCUIT_FILE = Path(".circuit_breaker_state")
 
+
 def load_json(path: Path):
     if path.exists():
         try:
@@ -27,6 +28,7 @@ def load_json(path: Path):
         except json.JSONDecodeError:
             return None
     return None
+
 
 def main():
     st.title("🤖 Boring Monitor")
@@ -59,7 +61,9 @@ def main():
         calls = status_data.get("calls_made_this_hour", 0)
 
         col1.metric("Loop Count", loop_count)
-        col2.metric("Status", status.upper(), delta_color="normal" if status == "running" else "off")
+        col2.metric(
+            "Status", status.upper(), delta_color="normal" if status == "running" else "off"
+        )
         col3.metric("API Calls (1h)", calls)
     else:
         col1.metric("Loop Count", "N/A")
@@ -69,7 +73,9 @@ def main():
         state = circuit_data.get("state", "CLOSED")
         failures = circuit_data.get("failures", 0)
         icon = "✅" if state == "CLOSED" else "🛑"
-        col4.metric("Circuit Breaker", f"{icon} {state}", f"{failures} Failures", delta_color="inverse")
+        col4.metric(
+            "Circuit Breaker", f"{icon} {state}", f"{failures} Failures", delta_color="inverse"
+        )
     else:
         col4.metric("Circuit Breaker", "Unknown")
 
@@ -103,10 +109,10 @@ def main():
             with col_tree:
                 st.markdown("#### Structure")
                 for root, _dirs, files in os.walk(BRAIN_DIR):
-                    level = root.replace(str(BRAIN_DIR), '').count(os.sep)
-                    indent = '&nbsp;' * 4 * level
+                    level = root.replace(str(BRAIN_DIR), "").count(os.sep)
+                    indent = "&nbsp;" * 4 * level
                     st.markdown(f"{indent}📁 **{os.path.basename(root)}/**", unsafe_allow_html=True)
-                    subindent = '&nbsp;' * 4 * (level + 1)
+                    subindent = "&nbsp;" * 4 * (level + 1)
                     for f in files:
                         st.markdown(f"{subindent}📄 {f}", unsafe_allow_html=True)
 
@@ -119,7 +125,9 @@ def main():
                         if file.endswith(".md") or file.endswith(".json"):
                             all_files.append(Path(root) / file)
 
-                selected_file = st.selectbox("Select file to view", all_files, format_func=lambda x: x.name)
+                selected_file = st.selectbox(
+                    "Select file to view", all_files, format_func=lambda x: x.name
+                )
 
                 if selected_file:
                     content = selected_file.read_text(encoding="utf-8")
@@ -132,12 +140,14 @@ def main():
 
     with tab3:
         st.subheader("System Configuration")
-        st.json({
-            "Project Root": os.getcwd(),
-            "Streamlit Version": st.__version__,
-            "Log File": str(LOG_FILE.absolute()),
-            "Status File": str(STATUS_FILE.absolute())
-        })
+        st.json(
+            {
+                "Project Root": os.getcwd(),
+                "Streamlit Version": st.__version__,
+                "Log File": str(LOG_FILE.absolute()),
+                "Status File": str(STATUS_FILE.absolute()),
+            }
+        )
 
     # Auto-refresh using session_state (non-blocking pattern)
     if "last_refresh" not in st.session_state:
@@ -148,6 +158,7 @@ def main():
         if elapsed >= refresh_rate:
             st.session_state.last_refresh = time.time()
             st.rerun()
+
 
 def run_app():
     """Entry point for the boring-dashboard CLI command."""
@@ -163,6 +174,7 @@ def run_app():
         subprocess.run([sys.executable, "-m", "streamlit", "run", str(script_path)] + sys.argv[1:])
     except KeyboardInterrupt:
         pass
+
 
 if __name__ == "__main__":
     main()

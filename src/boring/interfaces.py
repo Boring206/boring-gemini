@@ -13,9 +13,11 @@ from typing import Any, Optional
 # LLM CLIENT INTERFACE
 # =============================================================================
 
+
 @dataclass
 class LLMResponse:
     """Standard response format from any LLM client."""
+
     text: str
     function_calls: list[dict[str, Any]]
     success: bool
@@ -46,10 +48,7 @@ class LLMClient(ABC):
 
     @abstractmethod
     def generate(
-        self,
-        prompt: str,
-        context: str = "",
-        timeout_seconds: int = 900
+        self, prompt: str, context: str = "", timeout_seconds: int = 900
     ) -> tuple[str, bool]:
         """
         Generate a text response.
@@ -66,10 +65,7 @@ class LLMClient(ABC):
 
     @abstractmethod
     def generate_with_tools(
-        self,
-        prompt: str,
-        context: str = "",
-        timeout_seconds: int = 900
+        self, prompt: str, context: str = "", timeout_seconds: int = 900
     ) -> LLMResponse:
         """
         Generate a response that may include function calls.
@@ -85,11 +81,7 @@ class LLMClient(ABC):
         pass
 
     def generate_with_retry(
-        self,
-        prompt: str,
-        context: str = "",
-        max_retries: int = 3,
-        base_delay: float = 2.0
+        self, prompt: str, context: str = "", max_retries: int = 3, base_delay: float = 2.0
     ) -> tuple[str, bool]:
         """
         Generate with exponential backoff retry.
@@ -107,7 +99,7 @@ class LLMClient(ABC):
 
             # Check for retryable errors
             if any(err in str(response) for err in ["RATE_LIMIT", "503", "overloaded"]):
-                delay = base_delay * (2 ** attempt)
+                delay = base_delay * (2**attempt)
                 time.sleep(delay)
                 continue
 
@@ -121,26 +113,19 @@ class LLMClient(ABC):
 # MEMORY INTERFACE
 # =============================================================================
 
+
 class MemoryProvider(ABC):
     """Abstract base class for memory providers."""
 
     @abstractmethod
     def add_experience(
-        self,
-        error_type: str,
-        error_message: str,
-        solution: str,
-        context: str = ""
+        self, error_type: str, error_message: str, solution: str, context: str = ""
     ) -> bool:
         """Store a learning experience."""
         pass
 
     @abstractmethod
-    def retrieve_similar(
-        self,
-        query: str,
-        n_results: int = 3
-    ) -> list[dict[str, Any]]:
+    def retrieve_similar(self, query: str, n_results: int = 3) -> list[dict[str, Any]]:
         """Retrieve similar past experiences."""
         pass
 
@@ -154,9 +139,11 @@ class MemoryProvider(ABC):
 # VERIFIER INTERFACE
 # =============================================================================
 
+
 @dataclass
 class VerificationResultBase:
     """Base class for verification results."""
+
     passed: bool
     check_type: str
     message: str
@@ -187,9 +174,11 @@ class CodeVerifierBase(ABC):
 # PATCHER INTERFACE
 # =============================================================================
 
+
 @dataclass
 class PatchResult:
     """Result of a patch operation."""
+
     file_path: str
     action: str  # 'created', 'modified', 'search_replace'
     success: bool
@@ -200,20 +189,11 @@ class FilePatcherBase(ABC):
     """Abstract base class for file patchers."""
 
     @abstractmethod
-    def apply_patches(
-        self,
-        file_blocks: dict[str, str],
-        project_root: Path
-    ) -> list[PatchResult]:
+    def apply_patches(self, file_blocks: dict[str, str], project_root: Path) -> list[PatchResult]:
         """Apply file content patches."""
         pass
 
     @abstractmethod
-    def apply_search_replace(
-        self,
-        file_path: Path,
-        search: str,
-        replace: str
-    ) -> PatchResult:
+    def apply_search_replace(self, file_path: Path, search: str, replace: str) -> PatchResult:
         """Apply a search/replace patch."""
         pass

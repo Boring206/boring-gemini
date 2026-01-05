@@ -21,10 +21,15 @@ LOG_FILE = Path("logs/boring.log")
 PROGRESS_FILE = Path(".progress.json")
 REFRESH_INTERVAL = 2  # seconds
 
+
 def get_status_panel() -> Panel:
     """Creates a Rich Panel for the main status information."""
     if not STATUS_FILE.exists():
-        return Panel(Text("Status file not found. Boring may not be running.", style="bold red"), title="[bold cyan]Current Status[/bold cyan]", border_style="red")
+        return Panel(
+            Text("Status file not found. Boring may not be running.", style="bold red"),
+            title="[bold cyan]Current Status[/bold cyan]",
+            border_style="red",
+        )
 
     try:
         status_data = json.loads(STATUS_FILE.read_text())
@@ -57,7 +62,11 @@ def get_status_panel() -> Panel:
 
         return Panel(table, title="[bold cyan]Current Status[/bold cyan]", border_style="cyan")
     except json.JSONDecodeError:
-        return Panel(Text("Status file is corrupted.", style="bold red"), title="[bold cyan]Current Status[/bold cyan]", border_style="red")
+        return Panel(
+            Text("Status file is corrupted.", style="bold red"),
+            title="[bold cyan]Current Status[/bold cyan]",
+            border_style="red",
+        )
 
 
 def get_progress_panel() -> Panel | None:
@@ -80,9 +89,17 @@ def get_progress_panel() -> Panel | None:
 
             table.add_row("Status:", f"{indicator} Working ({elapsed}s elapsed)")
             if last_output:
-                table.add_row("Output:", Text(last_output[:70] + "..." if len(last_output) > 70 else last_output, style="dim"))
+                table.add_row(
+                    "Output:",
+                    Text(
+                        last_output[:70] + "..." if len(last_output) > 70 else last_output,
+                        style="dim",
+                    ),
+                )
 
-            return Panel(table, title="[bold yellow]Gemini Progress[/bold yellow]", border_style="yellow")
+            return Panel(
+                table, title="[bold yellow]Gemini Progress[/bold yellow]", border_style="yellow"
+            )
         return None
     except (json.JSONDecodeError, FileNotFoundError):
         return None
@@ -92,7 +109,11 @@ def get_circuit_panel() -> Panel:
     """Creates a Rich Panel for circuit breaker status."""
     cb_file = Path(".circuit_breaker_state")
     if not cb_file.exists():
-        return Panel(Text("Circuit Breaker: CLOSED", style="green"), title="[bold green]🔌 Circuit Status[/bold green]", border_style="green")
+        return Panel(
+            Text("Circuit Breaker: CLOSED", style="green"),
+            title="[bold green]🔌 Circuit Status[/bold green]",
+            border_style="green",
+        )
 
     try:
         data = json.loads(cb_file.read_text())
@@ -116,7 +137,9 @@ def get_circuit_panel() -> Panel:
         table.add_row("State:", Text(f"{icon} {state}", style=style))
         table.add_row("Failures:", str(failures))
 
-        return Panel(table, title=f"[{style}]🔌 Circuit Breaker[/{style}]", border_style=style.split()[-1])
+        return Panel(
+            table, title=f"[{style}]🔌 Circuit Breaker[/{style}]", border_style=style.split()[-1]
+        )
     except Exception:
         return Panel(Text("Cannot read circuit state", style="dim"), title="🔌 Circuit Breaker")
 
@@ -142,7 +165,12 @@ def get_logs_panel() -> Panel:
     else:
         log_content.append(Text("No log file found.", style="dim"))
 
-    return Panel(Text("\n").join(log_content), title="[bold blue]Recent Activity[/bold blue]", border_style="blue", height=10)
+    return Panel(
+        Text("\n").join(log_content),
+        title="[bold blue]Recent Activity[/bold blue]",
+        border_style="blue",
+        height=10,
+    )
 
 
 def generate_layout() -> Layout:
@@ -150,9 +178,7 @@ def generate_layout() -> Layout:
     layout = Layout(name="root")
 
     layout.split(
-        Layout(name="header", size=3),
-        Layout(ratio=1, name="main"),
-        Layout(size=3, name="footer")
+        Layout(name="header", size=3), Layout(ratio=1, name="main"), Layout(size=3, name="footer")
     )
 
     layout["main"].split_row(Layout(name="left", ratio=2), Layout(name="right", ratio=1))
@@ -162,15 +188,27 @@ def generate_layout() -> Layout:
     if progress_panel:
         layout["right"].update(progress_panel)
     else:
-        layout["right"].update(Panel(Text("Gemini is idle.", style="dim"), title="[bold yellow]Gemini Progress[/bold yellow]", border_style="yellow"))
+        layout["right"].update(
+            Panel(
+                Text("Gemini is idle.", style="dim"),
+                title="[bold yellow]Gemini Progress[/bold yellow]",
+                border_style="yellow",
+            )
+        )
 
-    header = Text("🤖 BORING MONITOR - Live Status Dashboard", style="bold white on blue", justify="center")
-    footer = Text(f"Controls: Ctrl+C to exit | Refreshes every {REFRESH_INTERVAL}s | {datetime.now().strftime('%H:%M:%S')}", style="bold yellow")
+    header = Text(
+        "🤖 BORING MONITOR - Live Status Dashboard", style="bold white on blue", justify="center"
+    )
+    footer = Text(
+        f"Controls: Ctrl+C to exit | Refreshes every {REFRESH_INTERVAL}s | {datetime.now().strftime('%H:%M:%S')}",
+        style="bold yellow",
+    )
 
     layout["header"].update(header)
     layout["footer"].update(footer)
 
     return layout
+
 
 @app.command()
 def main():
@@ -191,6 +229,7 @@ def main():
             except Exception as e:
                 console.print(f"[bold red]An error occurred: {e}[/bold red]")
                 break
+
 
 if __name__ == "__main__":
     main()

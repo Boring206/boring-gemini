@@ -2,7 +2,6 @@
 LLM Module - Modular Client Architecture
 """
 
-from pathlib import Path
 from typing import Optional
 
 from ..config import settings
@@ -12,7 +11,9 @@ from .ollama import OllamaProvider
 from .provider import LLMProvider, LLMResponse
 
 
-def get_provider(provider_name: Optional[str] = None, model_name: Optional[str] = None) -> LLMProvider:
+def get_provider(
+    provider_name: Optional[str] = None, model_name: Optional[str] = None
+) -> LLMProvider:
     """
     Factory function to get the appropriate LLM provider.
 
@@ -32,6 +33,7 @@ def get_provider(provider_name: Optional[str] = None, model_name: Optional[str] 
     # Default to Gemini (handles both SDK and CLI internally)
     return GeminiProvider(model_name=model_name)
 
+
 # For backward compatibility
 from .executor import ToolExecutor
 from .sdk import GeminiClient, create_gemini_client
@@ -44,4 +46,5 @@ __all__ = [
     "get_boring_tools",
     "SYSTEM_INSTRUCTION_OPTIMIZED",
     "ToolExecutor",
+    "LLMResponse",
 ]

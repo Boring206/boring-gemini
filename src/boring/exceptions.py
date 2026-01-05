@@ -25,8 +25,10 @@ class BoringError(Exception):
 # API ERRORS
 # =============================================================================
 
+
 class APIError(BoringError):
     """Base class for API-related errors."""
+
     pass
 
 
@@ -65,8 +67,10 @@ class ModelNotFoundError(APIError):
 # FILE ERRORS
 # =============================================================================
 
+
 class FileError(BoringError):
     """Base class for file-related errors."""
+
     pass
 
 
@@ -101,8 +105,10 @@ class FileSizeError(FileError):
 # VERIFICATION ERRORS
 # =============================================================================
 
+
 class VerificationError(BoringError):
     """Base class for verification-related errors."""
+
     pass
 
 
@@ -136,8 +142,10 @@ class TestError(VerificationError):
 # LOOP ERRORS
 # =============================================================================
 
+
 class LoopError(BoringError):
     """Base class for loop-related errors."""
+
     pass
 
 
@@ -167,6 +175,7 @@ class ExitSignalError(LoopError):
 # =============================================================================
 # CONFIGURATION ERRORS
 # =============================================================================
+
 
 class ConfigurationError(BoringError):
     """Raised when configuration is invalid."""

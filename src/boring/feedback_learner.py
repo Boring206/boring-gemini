@@ -21,6 +21,7 @@ logger = get_logger("feedback_learner")
 @dataclass
 class FeedbackEntry:
     """A single feedback record."""
+
     timestamp: float
     date: str
     review_id: str
@@ -66,7 +67,7 @@ class FeedbackLearner:
         issues: list[str],
         code_hash: str = "",
         pattern_type: str = "general",
-        context: str = ""
+        context: str = "",
     ) -> None:
         """Record a review outcome."""
         entry = FeedbackEntry(
@@ -79,7 +80,7 @@ class FeedbackLearner:
             fix_successful=False,
             code_hash=code_hash,
             pattern_type=pattern_type,
-            context=context
+            context=context,
         )
 
         history = self._load_history()
@@ -119,10 +120,7 @@ class FeedbackLearner:
         # Sort by frequency
         sorted_issues = sorted(issue_counts.items(), key=lambda x: x[1], reverse=True)
 
-        return [
-            {"issue": issue, "frequency": count}
-            for issue, count in sorted_issues[:limit]
-        ]
+        return [{"issue": issue, "frequency": count} for issue, count in sorted_issues[:limit]]
 
     def get_fix_success_rate(self, pattern_type: str = None) -> dict[str, float]:
         """Get fix success rate by pattern type."""
@@ -162,7 +160,7 @@ class FeedbackLearner:
                         "issue": issue,
                         "count": 0,
                         "pattern_types": set(),
-                        "last_seen": entry.get("date", "")
+                        "last_seen": entry.get("date", ""),
                     }
                 issue_details[key]["count"] += 1
                 issue_details[key]["pattern_types"].add(entry.get("pattern_type", "general"))
@@ -173,7 +171,7 @@ class FeedbackLearner:
                 "issue": d["issue"],
                 "count": d["count"],
                 "pattern_types": list(d["pattern_types"]),
-                "last_seen": d["last_seen"]
+                "last_seen": d["last_seen"],
             }
             for d in issue_details.values()
             if d["count"] >= min_occurrences

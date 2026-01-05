@@ -10,13 +10,16 @@ from .logger import log_status
 
 console = Console()
 
+
 class BoringDebugger:
     """
     Runtime debugger with self-healing capabilities.
     Wraps execution to catch crashes, analyze them with Gemini, and auto-apply fixes.
     """
 
-    def __init__(self, model_name: str = "default", enable_healing: bool = False, verbose: bool = False):
+    def __init__(
+        self, model_name: str = "default", enable_healing: bool = False, verbose: bool = False
+    ):
         self.model_name = model_name
         self.enable_healing = enable_healing
         self.verbose = verbose
@@ -108,7 +111,7 @@ A Python application crashed with the following error. Analyze the traceback and
         if self._apply_fix(file_path, response_text):
             console.print("[bold green]✅ Fix applied successfully![/bold green]")
             console.print("[bold]🔄 Please restart the application to run the fixed code.[/bold]")
-            return None # Cannot resume execution of crashed frame easily in Python
+            return None  # Cannot resume execution of crashed frame easily in Python
         else:
             console.print("[red]❌ Could not apply fix automatically.[/red]")
             console.print(f"[dim]AI Response:\n{response_text}[/dim]")
@@ -146,7 +149,9 @@ A Python application crashed with the following error. Analyze the traceback and
                 file_path.write_text(new_content, encoding="utf-8")
                 return True
             else:
-                console.print(f"[red]Search block not found in {file_path.name}. Exact match failed.[/red]")
+                console.print(
+                    f"[red]Search block not found in {file_path.name}. Exact match failed.[/red]"
+                )
                 return False
 
         return False

@@ -15,6 +15,7 @@ from .provider import LLMProvider, LLMResponse
 
 _logger = get_logger("claude_adapter")
 
+
 class ClaudeCLIAdapter(LLMProvider):
     """
     Adapter that communicates with Anthropic's Claude Code CLI.
@@ -28,7 +29,7 @@ class ClaudeCLIAdapter(LLMProvider):
         self,
         model_name: Optional[str] = None,
         log_dir: Optional[Path] = None,
-        timeout_seconds: int = 600
+        timeout_seconds: int = 600,
     ):
         self._model_name = model_name or "claude-3-5-sonnet"
         self.log_dir = log_dir or settings.LOG_DIR
@@ -54,7 +55,7 @@ class ClaudeCLIAdapter(LLMProvider):
         prompt: str,
         context: str = "",
         system_instruction: str = "",
-        timeout_seconds: int = 600
+        timeout_seconds: int = 600,
     ) -> tuple[str, bool]:
         """Generate response using Claude CLI."""
         res = self.generate_with_tools(prompt, context, system_instruction, timeout_seconds)
@@ -65,7 +66,7 @@ class ClaudeCLIAdapter(LLMProvider):
         prompt: str,
         context: str = "",
         system_instruction: str = "",
-        timeout_seconds: int = 600
+        timeout_seconds: int = 600,
     ) -> LLMResponse:
         """
         Invoke Claude CLI.
@@ -73,7 +74,9 @@ class ClaudeCLIAdapter(LLMProvider):
         or similar non-interactive flags if available, or simulate a session.
         """
         if not self.is_available:
-            return LLMResponse(text="", function_calls=[], success=False, error="Claude CLI not found")
+            return LLMResponse(
+                text="", function_calls=[], success=False, error="Claude CLI not found"
+            )
 
         # Claude Code 'print' mode or direct prompt
         # Based on early docs/help, using 'claude "prompt"' often works for single shot.
@@ -88,11 +91,7 @@ class ClaudeCLIAdapter(LLMProvider):
             # cmd.extend(["--no-color", "--json"]) # If supported
 
             result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=timeout_seconds,
-                encoding="utf-8"
+                cmd, capture_output=True, text=True, timeout=timeout_seconds, encoding="utf-8"
             )
 
             if result.returncode != 0:
@@ -100,7 +99,7 @@ class ClaudeCLIAdapter(LLMProvider):
                     text="",
                     function_calls=[],
                     success=False,
-                    error=result.stderr or "CLI execution failed"
+                    error=result.stderr or "CLI execution failed",
                 )
 
             text = result.stdout
@@ -112,7 +111,7 @@ class ClaudeCLIAdapter(LLMProvider):
                 text=text,
                 function_calls=function_calls,
                 success=True,
-                metadata={"provider": "claude-code"}
+                metadata={"provider": "claude-code"},
             )
 
         except Exception as e:

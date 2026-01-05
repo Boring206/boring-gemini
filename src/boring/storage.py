@@ -26,6 +26,7 @@ from .logger import log_status
 @dataclass
 class LoopRecord:
     """Record of a loop execution."""
+
     loop_id: int
     timestamp: str
     status: str  # SUCCESS, FAILED
@@ -39,6 +40,7 @@ class LoopRecord:
 @dataclass
 class ErrorPattern:
     """Record of an error pattern."""
+
     error_type: str
     error_message: str
     solution: Optional[str]
@@ -144,30 +146,36 @@ class SQLiteStorage:
     def record_loop(self, record: LoopRecord) -> int:
         """Record a loop execution."""
         with self._get_connection() as conn:
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 INSERT INTO loops
                 (loop_id, timestamp, status, files_modified, tasks_completed, errors, duration_seconds, output_summary)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                record.loop_id,
-                record.timestamp,
-                record.status,
-                json.dumps(record.files_modified),
-                json.dumps(record.tasks_completed),
-                json.dumps(record.errors),
-                record.duration_seconds,
-                record.output_summary
-            ))
+            """,
+                (
+                    record.loop_id,
+                    record.timestamp,
+                    record.status,
+                    json.dumps(record.files_modified),
+                    json.dumps(record.tasks_completed),
+                    json.dumps(record.errors),
+                    record.duration_seconds,
+                    record.output_summary,
+                ),
+            )
             return cursor.lastrowid
 
     def get_recent_loops(self, limit: int = 10) -> list[dict[str, Any]]:
         """Get recent loop history."""
         with self._get_connection() as conn:
-            rows = conn.execute("""
+            rows = conn.execute(
+                """
                 SELECT * FROM loops
                 ORDER BY id DESC
                 LIMIT ?
-            """, (limit,)).fetchall()
+            """,
+                (limit,),
+            ).fetchall()
 
             return [self._row_to_dict(row) for row in rows]
 
@@ -192,55 +200,70 @@ class SQLiteStorage:
         """Record an error occurrence (upsert)."""
         with self._get_connection() as conn:
             # Try to update existing
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 UPDATE error_patterns
                 SET occurrence_count = occurrence_count + 1,
                     last_seen = ?,
                     context = ?
                 WHERE error_type = ? AND error_message = ?
-            """, (datetime.now().isoformat(), context, error_type, error_message[:500]))
+            """,
+                (datetime.now().isoformat(), context, error_type, error_message[:500]),
+            )
 
             if cursor.rowcount == 0:
                 # Insert new
-                cursor = conn.execute("""
+                cursor = conn.execute(
+                    """
                     INSERT INTO error_patterns
                     (error_type, error_message, last_seen, context)
                     VALUES (?, ?, ?, ?)
-                """, (error_type, error_message[:500], datetime.now().isoformat(), context))
+                """,
+                    (error_type, error_message[:500], datetime.now().isoformat(), context),
+                )
 
             return cursor.lastrowid
 
     def add_solution(self, error_type: str, error_message: str, solution: str):
         """Add a solution for an error pattern."""
         with self._get_connection() as conn:
-            conn.execute("""
+            conn.execute(
+                """
                 UPDATE error_patterns
                 SET solution = ?
                 WHERE error_type = ? AND error_message = ?
-            """, (solution, error_type, error_message[:500]))
+            """,
+                (solution, error_type, error_message[:500]),
+            )
 
     def get_solution_for_error(self, error_message: str) -> Optional[str]:
         """Find a solution for an error message."""
         with self._get_connection() as conn:
             # Fuzzy match using LIKE
-            row = conn.execute("""
+            row = conn.execute(
+                """
                 SELECT solution FROM error_patterns
                 WHERE error_message LIKE ? AND solution IS NOT NULL
                 ORDER BY occurrence_count DESC
                 LIMIT 1
-            """, (f"%{error_message[:100]}%",)).fetchone()
+            """,
+                (f"%{error_message[:100]}%",),
+            ).fetchone()
 
-            return row['solution'] if row else None
+            return row["solution"] if row else None
 
     def get_top_errors(self, limit: int = 10) -> list[dict[str, Any]]:
         """Get most frequent errors."""
         with self._get_connection() as conn:
-            rows = conn.execute("""
+            rows = conn.execute(
+                """
                 SELECT error_type, error_message, occurrence_count, solution, last_seen
                 FROM error_patterns
                 ORDER BY occurrence_count DESC
                 LIMIT ?
-            """, (limit,)).fetchall()
+            """,
+                (limit,),
+            ).fetchall()
 
             return [dict(row) for row in rows]
 
@@ -265,21 +288,27 @@ class SQLiteStorage:
     def record_metric(self, name: str, value: float, metadata: Optional[dict] = None):
         """Record a performance metric."""
         with self._get_connection() as conn:
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT INTO metrics (metric_name, metric_value, timestamp, metadata)
                 VALUES (?, ?, ?, ?)
-            """, (name, value, datetime.now().isoformat(), json.dumps(metadata or {})))
+            """,
+                (name, value, datetime.now().isoformat(), json.dumps(metadata or {})),
+            )
 
     def get_metrics(self, name: str, limit: int = 100) -> list[dict[str, Any]]:
         """Get metrics by name."""
         with self._get_connection() as conn:
-            rows = conn.execute("""
+            rows = conn.execute(
+                """
                 SELECT metric_value, timestamp, metadata
                 FROM metrics
                 WHERE metric_name = ?
                 ORDER BY timestamp DESC
                 LIMIT ?
-            """, (name, limit)).fetchall()
+            """,
+                (name, limit),
+            ).fetchall()
 
             return [dict(row) for row in rows]
 
@@ -293,7 +322,7 @@ class SQLiteStorage:
             if row:
                 result = dict(row)
                 # Parse JSON fields
-                for key in ['completed_milestones', 'pending_issues']:
+                for key in ["completed_milestones", "pending_issues"]:
                     if key in result and result[key]:
                         try:
                             result[key] = json.loads(result[key])
@@ -310,7 +339,7 @@ class SQLiteStorage:
                 "last_activity": "",
                 "current_focus": "",
                 "completed_milestones": [],
-                "pending_issues": []
+                "pending_issues": [],
             }
 
     def update_project_state(self, updates: dict[str, Any], project_name: str = "unknown"):
@@ -326,48 +355,57 @@ class SQLiteStorage:
             issues = json.dumps(current.get("pending_issues", []))
 
             # Upsert using INSERT OR REPLACE
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT OR REPLACE INTO project_state
                 (id, project_name, total_loops, successful_loops, failed_loops,
                  last_activity, current_focus, completed_milestones, pending_issues)
                 VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                current.get("project_name", project_name),
-                current.get("total_loops", 0),
-                current.get("successful_loops", 0),
-                current.get("failed_loops", 0),
-                current.get("last_activity", ""),
-                current.get("current_focus", ""),
-                milestones,
-                issues
-            ))
+            """,
+                (
+                    current.get("project_name", project_name),
+                    current.get("total_loops", 0),
+                    current.get("successful_loops", 0),
+                    current.get("failed_loops", 0),
+                    current.get("last_activity", ""),
+                    current.get("current_focus", ""),
+                    milestones,
+                    issues,
+                ),
+            )
 
     def increment_loop_stats(self, success: bool):
         """Increment loop statistics atomically."""
         with self._get_connection() as conn:
             if success:
-                conn.execute("""
+                conn.execute(
+                    """
                     UPDATE project_state
                     SET total_loops = total_loops + 1,
                         successful_loops = successful_loops + 1,
                         last_activity = ?
                     WHERE id = 1
-                """, (datetime.now().isoformat(),))
+                """,
+                    (datetime.now().isoformat(),),
+                )
             else:
-                conn.execute("""
+                conn.execute(
+                    """
                     UPDATE project_state
                     SET total_loops = total_loops + 1,
                         failed_loops = failed_loops + 1,
                         last_activity = ?
                     WHERE id = 1
-                """, (datetime.now().isoformat(),))
+                """,
+                    (datetime.now().isoformat(),),
+                )
 
     # --- Utilities ---
 
     def _row_to_dict(self, row: sqlite3.Row) -> dict[str, Any]:
         """Convert SQLite row to dict, parsing JSON fields."""
         d = dict(row)
-        for key in ['files_modified', 'tasks_completed', 'errors', 'metadata']:
+        for key in ["files_modified", "tasks_completed", "errors", "metadata"]:
             if key in d and d[key]:
                 try:
                     d[key] = json.loads(d[key])
@@ -387,7 +425,7 @@ class SQLiteStorage:
                 "loops": self.get_recent_loops(1000),
                 "errors": self.get_top_errors(1000),
                 "stats": self.get_loop_stats(),
-                "exported_at": datetime.now().isoformat()
+                "exported_at": datetime.now().isoformat(),
             }
             output_path.write_text(json.dumps(data, indent=2))
             return True

@@ -7,14 +7,12 @@ def check_tool(tool: str, version_arg: str = "--version") -> bool:
     """Check if a CLI tool is available."""
     try:
         result = subprocess.run(
-            [tool, version_arg],
-            stdin=subprocess.DEVNULL,
-            capture_output=True,
-            timeout=5
+            [tool, version_arg], stdin=subprocess.DEVNULL, capture_output=True, timeout=5
         )
         return result.returncode == 0
     except Exception:
         return False
+
 
 class ToolManager:
     def __init__(self):
@@ -64,7 +62,7 @@ class ToolManager:
         # But generic dispatcher logic was mixing them.
         # Ideally we return just the tool command or full args?
         # The logic in original verification.py mixed map with config.
-        return [] # Logic handled in dispatcher typically
+        return []  # Logic handled in dispatcher typically
 
     def __getitem__(self, key: str) -> bool:
         return self.available_tools.get(key, False)
@@ -74,4 +72,3 @@ class ToolManager:
 
     def get(self, key: str, default=False) -> bool:
         return self.available_tools.get(key, default)
-

@@ -61,7 +61,7 @@ class AuditLogger:
         args: dict[str, Any],
         result: dict[str, Any],
         duration_ms: int,
-        project_root: Optional[str] = None
+        project_root: Optional[str] = None,
     ):
         """
         Log a tool invocation.
@@ -80,9 +80,11 @@ class AuditLogger:
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "tool": tool_name,
             "args": self._sanitize_args(args),
-            "result_status": result.get("status", "UNKNOWN") if isinstance(result, dict) else "UNKNOWN",
+            "result_status": result.get("status", "UNKNOWN")
+            if isinstance(result, dict)
+            else "UNKNOWN",
             "duration_ms": duration_ms,
-            "project_root": project_root
+            "project_root": project_root,
         }
 
         try:
@@ -133,6 +135,7 @@ def audited(func: Callable) -> Callable:
         def my_tool(arg1: str) -> dict:
             ...
     """
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         start_time = time.time()
@@ -145,7 +148,7 @@ def audited(func: Callable) -> Callable:
                 tool_name=func.__name__,
                 args=kwargs,
                 result={"status": "EXCEPTION", "error": str(e)},
-                duration_ms=duration_ms
+                duration_ms=duration_ms,
             )
             raise
 
@@ -153,8 +156,10 @@ def audited(func: Callable) -> Callable:
         AuditLogger.get_instance().log(
             tool_name=func.__name__,
             args=kwargs,
-            result=result if isinstance(result, dict) else {"status": "OK", "value": str(result)[:200]},
-            duration_ms=duration_ms
+            result=result
+            if isinstance(result, dict)
+            else {"status": "OK", "value": str(result)[:200]},
+            duration_ms=duration_ms,
         )
 
         return result

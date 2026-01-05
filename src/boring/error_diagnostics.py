@@ -19,6 +19,7 @@ logger = get_logger("error_diagnostics")
 @dataclass
 class DiagnosticResult:
     """A diagnostic result with error details and fix suggestions."""
+
     error_type: str
     message: str
     file_path: Optional[str] = None
@@ -39,7 +40,7 @@ class DiagnosticResult:
             "severity": self.severity,
             "suggestions": self.suggestions,
             "autoFixable": self.auto_fixable,
-            "fixCommand": self.fix_command
+            "fixCommand": self.fix_command,
         }
 
 
@@ -71,8 +72,8 @@ class ErrorDiagnostics:
             "suggestions": [
                 "Check for missing colons (:) after if/for/def/class statements",
                 "Ensure all parentheses/brackets are properly closed",
-                "Verify string quotes are matched"
-            ]
+                "Verify string quotes are matched",
+            ],
         },
         r"IndentationError": {
             "type": "indentation_error",
@@ -80,9 +81,9 @@ class ErrorDiagnostics:
             "suggestions": [
                 "Use consistent indentation (4 spaces recommended)",
                 "Don't mix tabs and spaces",
-                "Check indentation after control structures"
+                "Check indentation after control structures",
             ],
-            "auto_fix": "ruff check --fix --select=I"
+            "auto_fix": "ruff check --fix --select=I",
         },
         r"NameError: name '(.+)' is not defined": {
             "type": "name_error",
@@ -90,8 +91,8 @@ class ErrorDiagnostics:
             "suggestions": [
                 "Add missing import statement",
                 "Check for typos in variable/function names",
-                "Ensure variable is defined before use"
-            ]
+                "Ensure variable is defined before use",
+            ],
         },
         r"ImportError: cannot import name '(.+)'": {
             "type": "import_error",
@@ -99,8 +100,8 @@ class ErrorDiagnostics:
             "suggestions": [
                 "Verify the module is installed: pip install <package>",
                 "Check for circular imports",
-                "Ensure the name exists in the target module"
-            ]
+                "Ensure the name exists in the target module",
+            ],
         },
         r"ModuleNotFoundError: No module named '(.+)'": {
             "type": "module_not_found",
@@ -108,18 +109,15 @@ class ErrorDiagnostics:
             "suggestions": [
                 "Install the missing module: pip install {match}",
                 "Check if running in correct virtual environment",
-                "Verify PYTHONPATH includes the module location"
-            ]
+                "Verify PYTHONPATH includes the module location",
+            ],
         },
         # Ruff/Lint Errors
         r"F401 \[.*\] `(.+)` imported but unused": {
             "type": "unused_import",
             "message": "Unused import detected",
-            "suggestions": [
-                "Remove the unused import",
-                "Use the imported module in your code"
-            ],
-            "auto_fix": "ruff check --fix --select=F401"
+            "suggestions": ["Remove the unused import", "Use the imported module in your code"],
+            "auto_fix": "ruff check --fix --select=F401",
         },
         r"E501 \[.*\] Line too long \((\d+) > (\d+)\)": {
             "type": "line_too_long",
@@ -127,8 +125,8 @@ class ErrorDiagnostics:
             "suggestions": [
                 "Break line into multiple lines",
                 "Use parentheses for implicit line continuation",
-                "Extract long expressions into variables"
-            ]
+                "Extract long expressions into variables",
+            ],
         },
         # TypeScript/JavaScript Errors
         r"Cannot find module '(.+)'": {
@@ -137,8 +135,8 @@ class ErrorDiagnostics:
             "suggestions": [
                 "Install the missing module: npm install {match}",
                 "Check if node_modules directory exists",
-                "Run npm install to restore dependencies"
-            ]
+                "Run npm install to restore dependencies",
+            ],
         },
         r"Property '(.+)' does not exist on type '(.+)'": {
             "type": "type_error",
@@ -146,8 +144,8 @@ class ErrorDiagnostics:
             "suggestions": [
                 "Add the missing property to the type definition",
                 "Use type assertion if you're sure the property exists",
-                "Check the type definition for typos"
-            ]
+                "Check the type definition for typos",
+            ],
         },
         # Test Failures
         r"FAILED (.+)::(.+) - (.+)": {
@@ -156,8 +154,8 @@ class ErrorDiagnostics:
             "suggestions": [
                 "Check the assertion message for expected vs actual values",
                 "Review the test logic for correctness",
-                "Run the test in isolation with -vvs for more details"
-            ]
+                "Run the test in isolation with -vvs for more details",
+            ],
         },
         r"AssertionError: (.+)": {
             "type": "assertion_error",
@@ -165,8 +163,8 @@ class ErrorDiagnostics:
             "suggestions": [
                 "Compare expected vs actual values",
                 "Check if test fixtures are set up correctly",
-                "Add print statements or breakpoints to debug"
-            ]
+                "Add print statements or breakpoints to debug",
+            ],
         },
         # Git Errors
         r"fatal: not a git repository": {
@@ -174,8 +172,8 @@ class ErrorDiagnostics:
             "message": "Not in a Git repository",
             "suggestions": [
                 "Initialize a Git repository: git init",
-                "Navigate to the correct project directory"
-            ]
+                "Navigate to the correct project directory",
+            ],
         },
         # General Errors
         r"TypeError: (.+)": {
@@ -184,8 +182,8 @@ class ErrorDiagnostics:
             "suggestions": [
                 "Check function argument types",
                 "Verify object types before operations",
-                "Add type checking or validation"
-            ]
+                "Add type checking or validation",
+            ],
         },
         r"ValueError: (.+)": {
             "type": "value_error",
@@ -193,8 +191,8 @@ class ErrorDiagnostics:
             "suggestions": [
                 "Validate input values before processing",
                 "Add bounds checking for numeric values",
-                "Handle edge cases explicitly"
-            ]
+                "Handle edge cases explicitly",
+            ],
         },
     }
 
@@ -231,13 +229,13 @@ class ErrorDiagnostics:
                     message=info["message"],
                     suggestions=suggestions,
                     auto_fixable="auto_fix" in info,
-                    fix_command=info.get("auto_fix")
+                    fix_command=info.get("auto_fix"),
                 )
 
                 # Try to extract file/line info
                 file_line_match = re.search(
                     r'(?:File "([^"]+)", line (\d+))|(?:(\S+\.py):(\d+))',
-                    error_output[max(0, match.start()-200):match.end()+50]
+                    error_output[max(0, match.start() - 200) : match.end() + 50],
                 )
                 if file_line_match:
                     groups = file_line_match.groups()
@@ -248,15 +246,17 @@ class ErrorDiagnostics:
 
         # If no patterns matched, provide generic diagnostic
         if not results and error_output.strip():
-            results.append(DiagnosticResult(
-                error_type="unknown_error",
-                message="Unrecognized error",
-                suggestions=[
-                    "Check the full error output for details",
-                    "Search for the error message online",
-                    "Try running with verbose mode for more info"
-                ]
-            ))
+            results.append(
+                DiagnosticResult(
+                    error_type="unknown_error",
+                    message="Unrecognized error",
+                    suggestions=[
+                        "Check the full error output for details",
+                        "Search for the error message online",
+                        "Try running with verbose mode for more info",
+                    ],
+                )
+            )
 
         return results
 
@@ -279,7 +279,11 @@ class ErrorDiagnostics:
         lines = []
 
         # Header
-        icon = "❌" if diagnostic.severity == "error" else ("⚠️" if diagnostic.severity == "warning" else "ℹ️")
+        icon = (
+            "❌"
+            if diagnostic.severity == "error"
+            else ("⚠️" if diagnostic.severity == "warning" else "ℹ️")
+        )
         location = ""
         if diagnostic.file_path:
             location = f" in {diagnostic.file_path}"

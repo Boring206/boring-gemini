@@ -14,19 +14,23 @@ logger = logging.getLogger(__name__)
 
 try:
     from tree_sitter_languages import get_language, get_parser
+
     HAS_TREE_SITTER = True
 except ImportError:
     HAS_TREE_SITTER = False
     logger.warning("tree-sitter-languages not installed. Advanced parsing disabled.")
 
+
 @dataclass
 class ParsedChunk:
     """A semantic chunk of code."""
+
     type: str  # 'function', 'class', 'method'
     name: str
     start_line: int  # 1-indexed
-    end_line: int    # 1-indexed
+    end_line: int  # 1-indexed
     content: str
+
 
 class TreeSitterParser:
     """Wrapper for tree-sitter parsing."""
@@ -131,7 +135,7 @@ class TreeSitterParser:
                 name: (name) @name) @method
             (interface_declaration
                 name: (name) @name) @class
-        """
+        """,
     }
 
     def __init__(self):
@@ -202,11 +206,7 @@ class TreeSitterParser:
 
             for node, name in captures:
                 if name in ["function", "class", "method"]:
-                     pending_nodes[node.id] = {
-                         "node": node,
-                         "type": name,
-                         "name": "anonymous"
-                     }
+                    pending_nodes[node.id] = {"node": node, "type": name, "name": "anonymous"}
                 elif name == "name":
                     # The name usually belongs to the immediate parent or grandparent
                     # dependent on the grammar structure.
@@ -214,7 +214,7 @@ class TreeSitterParser:
                     curr = node.parent
                     while curr:
                         if curr.id in pending_nodes:
-                            pending_nodes[curr.id]["name"] = code[node.start_byte:node.end_byte]
+                            pending_nodes[curr.id]["name"] = code[node.start_byte : node.end_byte]
                             break
                         curr = curr.parent
 
@@ -228,15 +228,17 @@ class TreeSitterParser:
 
                 # Extract text
                 # We can index into 'lines' or use byte offsets if we have the bytes
-                chunk_content = node.text.decode('utf8')
+                chunk_content = node.text.decode("utf8")
 
-                chunks.append(ParsedChunk(
-                    type=item["type"],
-                    name=item["name"],
-                    start_line=start_line,
-                    end_line=end_line,
-                    content=chunk_content
-                ))
+                chunks.append(
+                    ParsedChunk(
+                        type=item["type"],
+                        name=item["name"],
+                        start_line=start_line,
+                        end_line=end_line,
+                        content=chunk_content,
+                    )
+                )
 
             return sorted(chunks, key=lambda x: x.start_line)
 
