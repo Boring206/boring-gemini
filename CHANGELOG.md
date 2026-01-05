@@ -1,36 +1,29 @@
 # Changelog
 
-## [10.16.0] - 2026-01-05 - Software Engineering Enforcement
+## [10.16.0] - 2026-01-05 - Vibe Coding & Enterprise Architecture
 ### Added
+- **Dynamic Tool Discovery**: Implemented `boring://capabilities` and `boring://tools/{category}` resources. AI can now discover capabilities on-demand, solving context window limits.
+- **Consolidated MCP Toolset**: Refactored 50+ granular tools into 14 high-level categories (Security, Git, Agent, Context...) for a cleaner AI interface.
+- **Advanced Core Modules**:
+  - `boring.security`: SAST (Bandit), Secret Detection, Dependency Scanning.
+  - `boring.transactions`: Git-based atomic operations (Start/Commit/Rollback).
+  - `boring.background_agent`: Thread-based async task runner for long-running ops.
+  - `boring.context_sync`: Cross-session memory persistence.
+- **Quality Gates**:
+  - **100% Unit Test Coverage** for all new advanced modules.
+  - **Smithery Compliance**: Fully validated `smithery.yaml` and entry points.
 - **Web Dashboard**: New `boring-dashboard` command for a rich Streamlit-based visualization.
 - **Monitoring Split**: Distinguished between `boring-monitor` (TUI) and `boring-dashboard` (Web) in documentation.
 - **LSP & IDE Portability**: New `boring lsp start` command for JetBrains, Vim, and other LSP clients.
-- **Windows Stability**: Implemented robust exception handling for `ConnectionResetError` (WinError 10054) in the LSP server, ensuring graceful disconnects.
-- **CI/CD Quality Gates**: New `.github/workflows/quality-gates.yml` with 4-tier pipeline:
-  - Tier 1: Lint & Format (ruff check, ruff format)
-  - Tier 2: Security Scan (bandit, safety)
-  - Tier 3: Unit Tests with Coverage (pytest --cov-fail-under=39)
-  - Tier 4: Integration Tests (main branch only)
-- **Project Configuration**: New `.boring.toml` template with polyglot quality policies:
-  - `[boring.verification]`: Verification levels and excludes
-  - `[boring.quality_gates]`: Coverage, complexity, file size thresholds
-  - `[boring.linter_configs]`: Per-language linter settings (Python, JS, Go, Rust, Java)
-  - `[boring.polyglot]`: Multi-language support configuration
-- **Evaluation Rubrics**: New `.boring_brain/rubrics/code_quality.json`:
-  - 5 criteria: Readability, Correctness, Security, Maintainability, Testability
-  - 5-level scoring with detailed characteristics
-  - Language-specific evaluation notes
-  - Pass threshold: 3.5/5
-- **ADR Template**: New `.agent/templates/adr-template.md` for Architecture Decision Records
-- **Quick Check Hook**: New `QUICK_CHECK_HOOK` in `hooks.py`:
-  - Fast polyglot pre-commit verification (<5 seconds)
-  - Supports Python (ruff), JavaScript/TypeScript (eslint), Go (gofmt), Rust (cargo)
-- **Module Refactoring**: Refactored `judge`, `verification`, `agents/reviewer` into modular packages
-- **Test Coverage**: Increased from 15.82% to 39.82% (410 tests passing)
+- **Windows Stability**: Optimized for Windows environment (path handling, connection resets).
+
+### Security
+- Integrated `bandit` and `pip-audit` for automated security scanning.
+- Enhanced secret detection patterns in `SecurityScanner`.
 
 ### Changed
-- Updated `pyproject.toml` coverage threshold to 39%
-- Enhanced `hooks.py` with polyglot support
+- **Tool Registration**: `server.py` now uses module-level imports and dynamic registration.
+- **Architecture**: Moved to a "Discovery-First" architecture for MCP interaction.
 
 ## [10.15.0] - 2026-01-05
 ### Added
