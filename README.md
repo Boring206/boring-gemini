@@ -1,5 +1,5 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-10.15.0-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-10.16.0-green.svg)](https://github.com/Boring206/boring-gemini)
 [![Evaluation](https://img.shields.io/badge/Smithery-58%2F58-brightgreen.svg)](https://smithery.ai/server/boring/boring)
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 
@@ -19,6 +19,7 @@
 | 🧠 **RAG Memory** | 向量搜索 + 依賴圖即時檢索相關程式碼 |
 | 🛡️ **Shadow Mode** | 高風險操作需人工批准，確保安全 |
 | 📐 **Spec-Driven** | 從 PRD 到 Code 實現 100% 規格一致性 |
+| 🔒 **Quality Gates** | CI/CD 多層品質門檻 + 多語言 Linting + 安全掃描 |
 
 ---
 

@@ -1,5 +1,33 @@
 # Changelog
 
+## [10.16.0] - 2026-01-05 - Software Engineering Enforcement
+### Added
+- **CI/CD Quality Gates**: New `.github/workflows/quality-gates.yml` with 4-tier pipeline:
+  - Tier 1: Lint & Format (ruff check, ruff format)
+  - Tier 2: Security Scan (bandit, safety)
+  - Tier 3: Unit Tests with Coverage (pytest --cov-fail-under=39)
+  - Tier 4: Integration Tests (main branch only)
+- **Project Configuration**: New `.boring.toml` template with polyglot quality policies:
+  - `[boring.verification]`: Verification levels and excludes
+  - `[boring.quality_gates]`: Coverage, complexity, file size thresholds
+  - `[boring.linter_configs]`: Per-language linter settings (Python, JS, Go, Rust, Java)
+  - `[boring.polyglot]`: Multi-language support configuration
+- **Evaluation Rubrics**: New `.boring_brain/rubrics/code_quality.json`:
+  - 5 criteria: Readability, Correctness, Security, Maintainability, Testability
+  - 5-level scoring with detailed characteristics
+  - Language-specific evaluation notes
+  - Pass threshold: 3.5/5
+- **ADR Template**: New `.agent/templates/adr-template.md` for Architecture Decision Records
+- **Quick Check Hook**: New `QUICK_CHECK_HOOK` in `hooks.py`:
+  - Fast polyglot pre-commit verification (<5 seconds)
+  - Supports Python (ruff), JavaScript/TypeScript (eslint), Go (gofmt), Rust (cargo)
+- **Module Refactoring**: Refactored `judge`, `verification`, `agents/reviewer` into modular packages
+- **Test Coverage**: Increased from 15.82% to 39.82% (410 tests passing)
+
+### Changed
+- Updated `pyproject.toml` coverage threshold to 39%
+- Enhanced `hooks.py` with polyglot support
+
 ## [10.15.0] - 2026-01-05
 ### Added
 - **Incremental Verification (Git)**: New `--incremental` flag for `verify_project()` to only verify files changed in Git (staged + unstaged). Uses `_get_git_changed_files()` method.

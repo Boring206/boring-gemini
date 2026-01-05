@@ -3,12 +3,12 @@
 
 runtime: "container"
 displayName: "Boring Gemini Agent"
-description: "Enterprise-grade autonomous AI development agent for Python (CLI/FastMCP). V10.15 Polyglot Architect: Native Gemini CLI & Claude Code integration, Tree-sitter Parsing, and Parallel Verification. Runs LOCALLY."
+description: "Enterprise-grade autonomous AI development agent (CLI/FastMCP). V10.16: Quality Gates, Polyglot Verification, RAG Memory, Multi-Agent Orchestration. Runs LOCALLY."
 repository: "https://github.com/Boring206/boring-gemini"
 homepage: "https://github.com/Boring206/boring-gemini"
 documentation: "https://github.com/Boring206/boring-gemini/blob/main/README.md"
 icon: "https://avatars.githubusercontent.com/u/156481716?s=200&v=4"
-tags: ["ai", "agent", "gemini", "autonomous", "devops", "local"]
+tags: ["ai", "agent", "gemini", "autonomous", "devops", "local", "quality-gates", "polyglot"]
 
 build:
   dockerfile: "Dockerfile"
