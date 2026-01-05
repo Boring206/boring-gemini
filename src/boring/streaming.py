@@ -18,6 +18,7 @@ from typing import Callable, Optional
 
 class ProgressStage(Enum):
     """Stages of a Boring task execution."""
+
     INITIALIZING = "initializing"
     PLANNING = "planning"
     EXECUTING = "executing"
@@ -29,6 +30,7 @@ class ProgressStage(Enum):
 @dataclass
 class ProgressEvent:
     """A single progress update event."""
+
     stage: ProgressStage
     message: str
     percentage: float  # 0.0 to 100.0
@@ -51,7 +53,7 @@ class ProgressReporter:
         task_id: str,
         total_stages: int = 4,
         output_file: Optional[Path] = None,
-        callback: Optional[Callable[[ProgressEvent], None]] = None
+        callback: Optional[Callable[[ProgressEvent], None]] = None,
     ):
         self.task_id = task_id
         self.total_stages = total_stages
@@ -67,7 +69,7 @@ class ProgressReporter:
         stage: ProgressStage,
         message: str,
         sub_percentage: float = 0.0,
-        metadata: Optional[dict] = None
+        metadata: Optional[dict] = None,
     ):
         """
         Report a progress update.
@@ -85,10 +87,7 @@ class ProgressReporter:
         overall_percentage = min(base_percentage + stage_contribution, 100.0)
 
         event = ProgressEvent(
-            stage=stage,
-            message=message,
-            percentage=overall_percentage,
-            metadata=metadata or {}
+            stage=stage, message=message, percentage=overall_percentage, metadata=metadata or {}
         )
 
         self.events.append(event)
@@ -113,7 +112,7 @@ class ProgressReporter:
             "percentage": event.percentage,
             "timestamp": event.timestamp.isoformat(),
             "elapsed_seconds": time.time() - self.start_time,
-            "metadata": event.metadata
+            "metadata": event.metadata,
         }
 
         try:
@@ -133,7 +132,7 @@ class ProgressReporter:
                 "stage": e.stage.value,
                 "message": e.message,
                 "percentage": e.percentage,
-                "timestamp": e.timestamp.isoformat()
+                "timestamp": e.timestamp.isoformat(),
             }
             for e in self.events
         ]
@@ -159,10 +158,7 @@ class StreamingTaskManager:
         self._reporters: dict[str, ProgressReporter] = {}
 
     def create_reporter(
-        self,
-        task_id: str,
-        output_dir: Optional[Path] = None,
-        callback: Optional[Callable] = None
+        self, task_id: str, output_dir: Optional[Path] = None, callback: Optional[Callable] = None
     ) -> ProgressReporter:
         """Create a new progress reporter for a task."""
         output_file = None
@@ -170,11 +166,7 @@ class StreamingTaskManager:
             output_dir.mkdir(parents=True, exist_ok=True)
             output_file = output_dir / f"{task_id}.progress.json"
 
-        reporter = ProgressReporter(
-            task_id=task_id,
-            output_file=output_file,
-            callback=callback
-        )
+        reporter = ProgressReporter(task_id=task_id, output_file=output_file, callback=callback)
 
         self._reporters[task_id] = reporter
         return reporter
@@ -189,7 +181,7 @@ class StreamingTaskManager:
             {
                 "task_id": task_id,
                 "latest": reporter.get_latest().__dict__ if reporter.get_latest() else None,
-                "duration": reporter.get_duration()
+                "duration": reporter.get_duration(),
             }
             for task_id, reporter in self._reporters.items()
         ]
@@ -199,8 +191,8 @@ class StreamingTaskManager:
         to_remove = [
             task_id
             for task_id, reporter in self._reporters.items()
-            if reporter.get_latest() and reporter.get_latest().stage in
-               [ProgressStage.COMPLETED, ProgressStage.FAILED]
+            if reporter.get_latest()
+            and reporter.get_latest().stage in [ProgressStage.COMPLETED, ProgressStage.FAILED]
         ]
         for task_id in to_remove:
             del self._reporters[task_id]

@@ -76,10 +76,7 @@ class VerificationCache:
         rel_path = self._get_rel_path(file_path)
         current_hash = self._file_hash(file_path)
 
-        self.cache[rel_path] = {
-            "hash": current_hash,
-            "result": asdict(result)
-        }
+        self.cache[rel_path] = {"hash": current_hash, "result": asdict(result)}
         self._save()
 
     def bulk_update(self, updates: dict[Path, VerificationResult]):
@@ -89,10 +86,7 @@ class VerificationCache:
             rel_path = self._get_rel_path(file_path)
             current_hash = self._file_hash(file_path)
 
-            self.cache[rel_path] = {
-                "hash": current_hash,
-                "result": asdict(result)
-            }
+            self.cache[rel_path] = {"hash": current_hash, "result": asdict(result)}
             modified = True
 
         if modified:

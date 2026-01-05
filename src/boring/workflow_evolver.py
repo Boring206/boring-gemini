@@ -23,6 +23,7 @@ from .logger import log_status
 @dataclass
 class WorkflowEvolution:
     """Record of a workflow evolution."""
+
     workflow_name: str
     original_hash: str
     new_hash: str
@@ -72,11 +73,7 @@ class WorkflowEvolver:
 
     def _ensure_brain_structure(self):
         """Ensure .boring_brain directory structure exists."""
-        subdirs = [
-            "workflow_adaptations",
-            "learned_patterns",
-            "rubrics"
-        ]
+        subdirs = ["workflow_adaptations", "learned_patterns", "rubrics"]
         for subdir in subdirs:
             (self.brain_dir / subdir).mkdir(parents=True, exist_ok=True)
 
@@ -96,8 +93,7 @@ class WorkflowEvolver:
     def _save_evolution_log(self, log: list[dict]):
         """Save evolution history to JSON."""
         self.evolution_log_path.write_text(
-            json.dumps(log, indent=2, ensure_ascii=False),
-            encoding="utf-8"
+            json.dumps(log, indent=2, ensure_ascii=False), encoding="utf-8"
         )
 
     def ensure_base_backup(self, workflow_name: str) -> bool:
@@ -133,12 +129,7 @@ class WorkflowEvolver:
             results[workflow] = self.ensure_base_backup(workflow)
         return results
 
-    def evolve_workflow(
-        self,
-        workflow_name: str,
-        new_content: str,
-        reason: str
-    ) -> dict[str, Any]:
+    def evolve_workflow(self, workflow_name: str, new_content: str, reason: str) -> dict[str, Any]:
         """
         Evolve a workflow with new content.
 
@@ -153,16 +144,13 @@ class WorkflowEvolver:
         if workflow_name not in self.EVOLVABLE_WORKFLOWS:
             return {
                 "status": "ERROR",
-                "error": f"Workflow '{workflow_name}' is not evolvable. Valid: {self.EVOLVABLE_WORKFLOWS}"
+                "error": f"Workflow '{workflow_name}' is not evolvable. Valid: {self.EVOLVABLE_WORKFLOWS}",
             }
 
         workflow_path = self.workflows_dir / f"{workflow_name}.md"
 
         if not workflow_path.exists():
-            return {
-                "status": "ERROR",
-                "error": f"Workflow not found: {workflow_path}"
-            }
+            return {"status": "ERROR", "error": f"Workflow not found: {workflow_path}"}
 
         # Ensure base backup exists
         self.ensure_base_backup(workflow_name)
@@ -173,10 +161,7 @@ class WorkflowEvolver:
         new_hash = self._compute_hash(new_content)
 
         if current_hash == new_hash:
-            return {
-                "status": "NO_CHANGE",
-                "message": "Content unchanged, no evolution needed"
-            }
+            return {"status": "NO_CHANGE", "message": "Content unchanged, no evolution needed"}
 
         # Write new content
         workflow_path.write_text(new_content, encoding="utf-8")
@@ -188,7 +173,7 @@ class WorkflowEvolver:
             new_hash=new_hash,
             reason=reason,
             timestamp=datetime.now().isoformat(),
-            changes_summary=f"Evolved {workflow_name}: {reason[:100]}"
+            changes_summary=f"Evolved {workflow_name}: {reason[:100]}",
         )
 
         log = self._load_evolution_log()
@@ -196,8 +181,9 @@ class WorkflowEvolver:
         self._save_evolution_log(log)
 
         log_status(
-            self.log_dir, "INFO",
-            f"Evolved workflow: {workflow_name} ({current_hash} -> {new_hash})"
+            self.log_dir,
+            "INFO",
+            f"Evolved workflow: {workflow_name} ({current_hash} -> {new_hash})",
         )
 
         return {
@@ -205,7 +191,7 @@ class WorkflowEvolver:
             "workflow": workflow_name,
             "old_hash": current_hash,
             "new_hash": new_hash,
-            "reason": reason
+            "reason": reason,
         }
 
     def reset_workflow(self, workflow_name: str) -> dict[str, Any]:
@@ -219,19 +205,13 @@ class WorkflowEvolver:
             Result dict with status
         """
         if workflow_name not in self.EVOLVABLE_WORKFLOWS:
-            return {
-                "status": "ERROR",
-                "error": f"Workflow '{workflow_name}' is not evolvable"
-            }
+            return {"status": "ERROR", "error": f"Workflow '{workflow_name}' is not evolvable"}
 
         workflow_path = self.workflows_dir / f"{workflow_name}.md"
         base_path = self.base_dir / f"{workflow_name}.base.md"
 
         if not base_path.exists():
-            return {
-                "status": "ERROR",
-                "error": f"Base template not found: {base_path}"
-            }
+            return {"status": "ERROR", "error": f"Base template not found: {base_path}"}
 
         # Restore from base
         base_content = base_path.read_text(encoding="utf-8")
@@ -239,21 +219,19 @@ class WorkflowEvolver:
 
         # Record the reset
         log = self._load_evolution_log()
-        log.append({
-            "workflow_name": workflow_name,
-            "action": "RESET",
-            "timestamp": datetime.now().isoformat(),
-            "reason": "Reset to base template"
-        })
+        log.append(
+            {
+                "workflow_name": workflow_name,
+                "action": "RESET",
+                "timestamp": datetime.now().isoformat(),
+                "reason": "Reset to base template",
+            }
+        )
         self._save_evolution_log(log)
 
         log_status(self.log_dir, "INFO", f"Reset workflow to base: {workflow_name}")
 
-        return {
-            "status": "SUCCESS",
-            "workflow": workflow_name,
-            "message": "Reset to base template"
-        }
+        return {"status": "SUCCESS", "workflow": workflow_name, "message": "Reset to base template"}
 
     def get_workflow_status(self, workflow_name: str) -> dict[str, Any]:
         """Get current status of a workflow."""
@@ -270,7 +248,7 @@ class WorkflowEvolver:
             "workflow": workflow_name,
             "current_hash": current_hash,
             "has_base": base_path.exists(),
-            "is_evolvable": workflow_name in self.EVOLVABLE_WORKFLOWS
+            "is_evolvable": workflow_name in self.EVOLVABLE_WORKFLOWS,
         }
 
         # Check if evolved from base

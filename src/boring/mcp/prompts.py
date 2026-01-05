@@ -12,12 +12,11 @@ from pydantic import Field
 def register_prompts(mcp):
     """Register prompts with the MCP server."""
 
-    @mcp.prompt(
-        name="plan_feature",
-        description="Generate a plan for implementing a new feature"
-    )
+    @mcp.prompt(name="plan_feature", description="Generate a plan for implementing a new feature")
     def plan_feature(
-        feature: str = Field(default="New Feature", description="Description of the feature to implement")
+        feature: str = Field(
+            default="New Feature", description="Description of the feature to implement"
+        ),
     ) -> str:
         """Generate a feature implementation plan."""
         return f"""Please create a detailed implementation plan for the following feature:
@@ -30,12 +29,9 @@ Include:
 3. Testing strategy
 4. Potential edge cases"""
 
-    @mcp.prompt(
-        name="review_code",
-        description="Request a code review for specific files"
-    )
+    @mcp.prompt(name="review_code", description="Request a code review for specific files")
     def review_code(
-        file_path: str = Field(default="src/", description="Path to the file to review")
+        file_path: str = Field(default="src/", description="Path to the file to review"),
     ) -> str:
         """Generate a code review request."""
         return f"""Please review the code in `{file_path}` for:
@@ -46,12 +42,9 @@ Include:
 4. **Readability**: Naming, structure, documentation
 5. **Best practices**: SOLID, DRY, testing"""
 
-    @mcp.prompt(
-        name="debug_error",
-        description="Help debug an error message"
-    )
+    @mcp.prompt(name="debug_error", description="Help debug an error message")
     def debug_error(
-        error_message: str = Field(default="Error: ...", description="The error message to debug")
+        error_message: str = Field(default="Error: ...", description="The error message to debug"),
     ) -> str:
         """Generate a debugging request."""
         return f"""Please help debug the following error:
@@ -66,12 +59,9 @@ Analyze:
 3. Suggested fixes
 4. Prevention strategies"""
 
-    @mcp.prompt(
-        name="refactor_code",
-        description="Request refactoring suggestions"
-    )
+    @mcp.prompt(name="refactor_code", description="Request refactoring suggestions")
     def refactor_code(
-        target: str = Field(default="src/", description="What to refactor (file, function, class)")
+        target: str = Field(default="src/", description="What to refactor (file, function, class)"),
     ) -> str:
         """Generate a refactoring request."""
         return f"""Please suggest refactoring improvements for: {target}
@@ -82,12 +72,11 @@ Focus on:
 3. Performance
 4. Testability"""
 
-    @mcp.prompt(
-        name="explain_code",
-        description="Request code explanation"
-    )
+    @mcp.prompt(name="explain_code", description="Request code explanation")
     def explain_code(
-        code_path: str = Field(default="src/main.py", description="Path or name of code to explain")
+        code_path: str = Field(
+            default="src/main.py", description="Path or name of code to explain"
+        ),
     ) -> str:
         """Generate a code explanation request."""
         return f"""Please explain how `{code_path}` works:
@@ -99,10 +88,7 @@ Focus on:
 
     # --- Workflow Prompts (Grouping Tools) ---
 
-    @mcp.prompt(
-        name="setup_project",
-        description="Initialize and configure a new Boring project"
-    )
+    @mcp.prompt(name="setup_project", description="Initialize and configure a new Boring project")
     def setup_project() -> str:
         """Guide the user through project setup."""
         return """Please help me initialize a new Boring project.
@@ -114,12 +100,11 @@ Steps to execute:
 4. Run `boring_health_check` to verify everything is ready.
 """
 
-    @mcp.prompt(
-        name="verify_work",
-        description="Run comprehensive project verification"
-    )
+    @mcp.prompt(name="verify_work", description="Run comprehensive project verification")
     def verify_work(
-        level: str = Field(default="STANDARD", description="Verification level (BASIC, STANDARD, FULL)")
+        level: str = Field(
+            default="STANDARD", description="Verification level (BASIC, STANDARD, FULL)"
+        ),
     ) -> str:
         """Run verify workflow."""
         return f"""Please verify the current project state (Level: {level}).
@@ -130,10 +115,7 @@ Steps:
 3. If errors are found, use `boring_search_tool` to find relevant docs/code to fix them.
 """
 
-    @mcp.prompt(
-        name="manage_memory",
-        description="Manage project knowledge and rubrics"
-    )
+    @mcp.prompt(name="manage_memory", description="Manage project knowledge and rubrics")
     def manage_memory() -> str:
         """Run memory management workflow."""
         return """Please reorganize the project's knowledge base.
@@ -145,11 +127,10 @@ Steps:
 """
 
     @mcp.prompt(
-        name="evaluate_architecture",
-        description="Run Hostile Architect review (Production Level)"
+        name="evaluate_architecture", description="Run Hostile Architect review (Production Level)"
     )
     def evaluate_architecture(
-        target: str = Field(default="src/core", description="Code path to evaluate")
+        target: str = Field(default="src/core", description="Code path to evaluate"),
     ) -> str:
         """Run Hostile Architect review."""
         return f"""You are a Principal Software Architect (Hostile/Critical Persona).
@@ -165,12 +146,9 @@ Your feedback must be "Eye-opening" and focus on architectural flaws, ignoring m
 Provide specific, technical patterns to fix the issues (e.g. "Use Circuit Breaker", "N+1 Query detected").
 """
 
-    @mcp.prompt(
-        name="run_agent",
-        description="Execute a multi-agent development task"
-    )
+    @mcp.prompt(name="run_agent", description="Execute a multi-agent development task")
     def run_agent(
-        task: str = Field(default="Implement feature X", description="Task description")
+        task: str = Field(default="Implement feature X", description="Task description"),
     ) -> str:
         """Run agent orchestration workflow."""
         return f"""Please execute the following development task using the Multi-Agent System:
@@ -182,4 +160,3 @@ Steps:
 2. Review the plan with me.
 3. Once approved, use `boring_multi_agent` with the task to execute it.
 """
-

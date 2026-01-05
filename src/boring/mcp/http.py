@@ -15,11 +15,7 @@ import os
 import sys
 
 # Configure logging to stderr
-logging.basicConfig(
-    level=logging.INFO,
-    stream=sys.stderr,
-    format='[%(levelname)s] %(message)s'
-)
+logging.basicConfig(level=logging.INFO, stream=sys.stderr, format="[%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
 # MCP Server Card - metadata for Smithery discovery
@@ -27,18 +23,10 @@ MCP_SERVER_CARD = {
     "name": "boring-gemini",
     "version": "10.7.0",
     "description": "Boring MCP Server - Autonomous AI development loop with SpecKit workflows",
-    "vendor": {
-        "name": "Boring for Gemini"
-    },
-    "capabilities": {
-        "tools": True,
-        "resources": True,
-        "prompts": False
-    },
-    "authentication": {
-        "type": "none"
-    },
-    "documentation": "https://github.com/user/boring-gemini#readme"
+    "vendor": {"name": "Boring for Gemini"},
+    "capabilities": {"tools": True, "resources": True, "prompts": False},
+    "authentication": {"type": "none"},
+    "documentation": "https://github.com/user/boring-gemini#readme",
 }
 
 # Configuration schema (matches smithery.yaml)
@@ -48,7 +36,7 @@ MCP_CONFIG_SCHEMA = {
     "x-query-style": "dot+bracket",
     "type": "object",
     "properties": {},
-    "additionalProperties": False
+    "additionalProperties": False,
 }
 
 
@@ -64,10 +52,11 @@ def create_app():
 
     # Import MCP server
     from boring.mcp.server import get_server_instance
+
     mcp = get_server_instance()
 
     # Safe tool count
-    tool_count = len(getattr(mcp, '_tools', getattr(mcp, 'tools', {})))
+    tool_count = len(getattr(mcp, "_tools", getattr(mcp, "tools", {})))
     logger.info(f"Registered tools: {tool_count}")
 
     # .well-known endpoints
@@ -105,7 +94,7 @@ def create_app():
     ]
 
     # Use mcp_http's lifespan if available
-    lifespan = getattr(mcp_http, 'lifespan', None)
+    lifespan = getattr(mcp_http, "lifespan", None)
 
     return Starlette(routes=routes, lifespan=lifespan)
 
@@ -127,18 +116,21 @@ def main():
         if app is not None:
             # Run with Uvicorn
             import uvicorn
+
             uvicorn.run(app, host=host, port=port, log_level="info")
         else:
             # Fallback: Use FastMCP's built-in HTTP run
             from boring.mcp.server import get_server_instance
+
             mcp = get_server_instance()
-            tool_count = len(getattr(mcp, '_tools', getattr(mcp, 'tools', {})))
+            tool_count = len(getattr(mcp, "_tools", getattr(mcp, "tools", {})))
             logger.info(f"Registered tools: {tool_count}")
             mcp.run(transport="http", host=host, port=port)
 
     except Exception as e:
         logger.error(f"Failed to start HTTP server: {e}")
         import traceback
+
         traceback.print_exc(file=sys.stderr)
         sys.exit(1)
 

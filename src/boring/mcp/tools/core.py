@@ -14,14 +14,34 @@ from ..utils import configure_runtime_for_project, get_project_root_or_error
 # Defined at top-level for testability.
 # Registration happens conditionally at the end of the file.
 
+
 @audited
 def run_boring(
-    task_description: Annotated[str, Field(description="Description of the development task to complete (e.g., 'Fix login validation bug')")],
-    verification_level: Annotated[str, Field(description="Verification level: BASIC (syntax), STANDARD (lint), FULL (tests), SEMANTIC (judge)")] = "STANDARD",
+    task_description: Annotated[
+        str,
+        Field(
+            description="Description of the development task to complete (e.g., 'Fix login validation bug')"
+        ),
+    ],
+    verification_level: Annotated[
+        str,
+        Field(
+            description="Verification level: BASIC (syntax), STANDARD (lint), FULL (tests), SEMANTIC (judge)"
+        ),
+    ] = "STANDARD",
     max_loops: Annotated[int, Field(description="Maximum number of loop iterations (1-20)")] = 5,
-    use_cli: Annotated[bool, Field(description="Whether to use Gemini CLI (supports extensions). Defaults to auto-detect.")] = None,
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None,
-    interactive: Annotated[bool, Field(description="Whether to run in interactive mode (auto-detected usually)")] = None
+    use_cli: Annotated[
+        bool,
+        Field(
+            description="Whether to use Gemini CLI (supports extensions). Defaults to auto-detect."
+        ),
+    ] = None,
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
+    interactive: Annotated[
+        bool, Field(description="Whether to run in interactive mode (auto-detected usually)")
+    ] = None,
 ) -> dict:
     """
     Return CLI commands for autonomous development (Pure CLI Mode).
@@ -51,7 +71,7 @@ def run_boring(
         return {
             "status": "ERROR",
             "message": "task_description cannot be empty.",
-            "suggestion": "Provide a clear description of the task, e.g., 'Fix login validation bug'."
+            "suggestion": "Provide a clear description of the task, e.g., 'Fix login validation bug'.",
         }
 
     valid_levels = ("BASIC", "STANDARD", "FULL", "SEMANTIC")
@@ -59,7 +79,7 @@ def run_boring(
         return {
             "status": "ERROR",
             "message": f"Invalid verification_level: '{verification_level}'.",
-            "suggestion": f"Use one of: {', '.join(valid_levels)}"
+            "suggestion": f"Use one of: {', '.join(valid_levels)}",
         }
     verification_level = verification_level.upper()
 
@@ -67,7 +87,7 @@ def run_boring(
         return {
             "status": "ERROR",
             "message": f"max_loops must be between 1 and 20, got {max_loops}.",
-            "suggestion": "Use a reasonable value like 5 (default) or 10 for complex tasks."
+            "suggestion": "Use a reasonable value like 5 (default) or 10 for complex tasks.",
         }
 
     # Resolve project root
@@ -132,14 +152,17 @@ def run_boring(
             "1. Create PROMPT.md in the project with your task description",
             f"2. Run: {cli_command}",
             "3. Monitor the terminal for the agent's progress",
-            "4. Use boring_verify to check results after execution"
+            "4. Use boring_verify to check results after execution",
         ],
-        "note": "The boring agent runs OUTSIDE MCP to avoid timeouts and communication conflicts."
+        "note": "The boring agent runs OUTSIDE MCP to avoid timeouts and communication conflicts.",
     }
+
 
 @audited
 def boring_health_check(
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Check Boring system health.
@@ -158,11 +181,11 @@ def boring_health_check(
 
         # Load env if project path provided
         if project_path:
-             try:
-                 root = Path(project_path)
-                 configure_runtime_for_project(root)
-             except:
-                 pass
+            try:
+                root = Path(project_path)
+                configure_runtime_for_project(root)
+            except:
+                pass
 
         # Detection logic is now centralized in GeminiClient, but for health report:
         has_key = "GOOGLE_API_KEY" in os.environ and os.environ["GOOGLE_API_KEY"]
@@ -178,12 +201,14 @@ def boring_health_check(
 
         checks = []
         for check in report.checks:
-            checks.append({
-                "name": check.name,
-                "status": check.status.name,
-                "message": check.message,
-                "suggestion": check.suggestion
-            })
+            checks.append(
+                {
+                    "name": check.name,
+                    "status": check.status.name,
+                    "message": check.message,
+                    "suggestion": check.suggestion,
+                }
+            )
 
         return {
             "healthy": report.is_healthy,
@@ -191,25 +216,24 @@ def boring_health_check(
             "warnings": report.warnings,
             "failed": report.failed,
             "checks": checks,
-            "backend": backend
+            "backend": backend,
         }
 
     except ImportError as e:
         return {
             "healthy": False,
             "error": f"Missing dependency: {e}",
-            "suggestion": "Run: pip install boring-gemini[health]"
+            "suggestion": "Run: pip install boring-gemini[health]",
         }
     except Exception as e:
-        return {
-            "healthy": False,
-            "error": str(e),
-            "error_type": type(e).__name__
-        }
+        return {"healthy": False, "error": str(e), "error_type": type(e).__name__}
+
 
 @audited
 def boring_quickstart(
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Get a comprehensive quick start guide for new users.
@@ -245,22 +269,22 @@ def boring_quickstart(
                 "spec_driven": [
                     "speckit_plan - Create implementation plan from requirements",
                     "speckit_tasks - Break plan into actionable tasks",
-                    "speckit_analyze - Check code vs spec consistency"
+                    "speckit_analyze - Check code vs spec consistency",
                 ],
                 "evolution": [
                     "speckit_evolve_workflow - Adapt workflows to project needs",
-                    "speckit_reset_workflow - Rollback to base template"
+                    "speckit_reset_workflow - Rollback to base template",
                 ],
                 "verification": [
                     "boring_verify - Run lint, tests, and import checks",
-                    "boring_verify_file - Quick single-file validation"
-                ]
+                    "boring_verify_file - Quick single-file validation",
+                ],
             },
             "tips": [
                 "💡 Use speckit_clarify when requirements are unclear",
                 "💡 Check boring_health_check before starting",
-                "💡 Workflows are dynamic - evolve them for your project!"
-            ]
+                "💡 Workflows are dynamic - evolve them for your project!",
+            ],
         }
 
         if has_project:
@@ -268,13 +292,13 @@ def boring_quickstart(
                 "1. boring_health_check - Verify system is ready",
                 "2. speckit_plan - Create implementation plan",
                 "3. speckit_tasks - Generate task checklist",
-                "4. run_boring - Start autonomous development"
+                "4. run_boring - Start autonomous development",
             ]
         else:
             guide["recommended_first_steps"] = [
                 "1. Create a project directory with PROMPT.md",
                 "2. Run boring-setup <project-name> to initialize",
-                "3. boring_health_check - Verify system is ready"
+                "3. boring_health_check - Verify system is ready",
             ]
 
         return guide
@@ -282,9 +306,12 @@ def boring_quickstart(
     except Exception as e:
         return {"status": "ERROR", "error": str(e)}
 
+
 @audited
 def boring_status(
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Get current Boring project status.
@@ -314,17 +341,16 @@ def boring_status(
             "total_loops": state.get("total_loops", 0),
             "successful_loops": state.get("successful_loops", 0),
             "failed_loops": state.get("failed_loops", 0),
-            "last_activity": state.get("last_activity", "Never")
+            "last_activity": state.get("last_activity", "Never"),
         }
 
     except Exception as e:
-        return {
-            "error": str(e)
-        }
+        return {"error": str(e)}
+
 
 @audited
 def boring_done(
-    message: Annotated[str, Field(description="The completion message to display to the user")]
+    message: Annotated[str, Field(description="The completion message to display to the user")],
 ) -> str:
     """
     Report task completion to the user with desktop notification.
@@ -336,23 +362,21 @@ def boring_done(
     try:
         # Try win10toast first (most reliable on Windows)
         from win10toast import ToastNotifier
+
         toaster = ToastNotifier()
         toaster.show_toast(
             "🤖 Boring Agent",
             message[:200],  # Truncate long messages
             duration=5,
-            threaded=True
+            threaded=True,
         )
         notification_sent = True
     except ImportError:
         try:
             # Fallback to plyer (cross-platform)
             from plyer import notification
-            notification.notify(
-                title="🤖 Boring Agent",
-                message=message[:200],
-                timeout=5
-            )
+
+            notification.notify(title="🤖 Boring Agent", message=message[:200], timeout=5)
             notification_sent = True
         except ImportError:
             pass  # No notification library available
@@ -365,9 +389,12 @@ def boring_done(
 
     return f"{status}. Message: {message}"
 
+
 @audited
 def boring_forget_all(
-    keep_current_task: Annotated[bool, Field(description="Whether to keep the current task definition in context")] = True
+    keep_current_task: Annotated[
+        bool, Field(description="Whether to keep the current task definition in context")
+    ] = True,
 ) -> dict:
     """
     Signal to clear the LLM context (Context Hygiene).
@@ -379,7 +406,9 @@ def boring_forget_all(
         keep_current_task: Whether to keep the current task definition in context.
     """
     message = "🧹 **Context Cleanup Signal**\n\n"
-    message += "I have requested a context cleanup to maintain accuracy and reduce hallucinations.\n"
+    message += (
+        "I have requested a context cleanup to maintain accuracy and reduce hallucinations.\n"
+    )
 
     if keep_current_task:
         message += "✅ **Preserving:** Current task definition and critical context.\n"
@@ -394,7 +423,7 @@ def boring_forget_all(
         "status": "CONTEXT_CLEAR_SIGNAL",
         "action": "forget_all",
         "keep_current_task": keep_current_task,
-        "message": message
+        "message": message,
     }
 
 
@@ -404,9 +433,20 @@ def boring_forget_all(
 
 if MCP_AVAILABLE and mcp is not None:
     # Register all core tools
-    mcp.tool(description="Run autonomous development loop", annotations={"readOnlyHint": False, "openWorldHint": True})(run_boring)
-    mcp.tool(description="Check system health", annotations={"readOnlyHint": True})(boring_health_check)
-    mcp.tool(description="Get quick start guide", annotations={"readOnlyHint": True})(boring_quickstart)
+    mcp.tool(
+        description="Run autonomous development loop",
+        annotations={"readOnlyHint": False, "openWorldHint": True},
+    )(run_boring)
+    mcp.tool(description="Check system health", annotations={"readOnlyHint": True})(
+        boring_health_check
+    )
+    mcp.tool(description="Get quick start guide", annotations={"readOnlyHint": True})(
+        boring_quickstart
+    )
     mcp.tool(description="Get project status", annotations={"readOnlyHint": True})(boring_status)
-    mcp.tool(description="Report completion with notification", annotations={"readOnlyHint": False})(boring_done)
-    mcp.tool(description="Signal to clear LLM context", annotations={"readOnlyHint": True})(boring_forget_all)
+    mcp.tool(
+        description="Report completion with notification", annotations={"readOnlyHint": False}
+    )(boring_done)
+    mcp.tool(description="Signal to clear LLM context", annotations={"readOnlyHint": True})(
+        boring_forget_all
+    )

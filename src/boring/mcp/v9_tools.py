@@ -27,10 +27,15 @@ def register_v9_tools(mcp, audited, helpers):
     # Plugin Tools
     # =========================================================================
 
-    @mcp.tool(description="List all available plugins locally and globally", annotations={"readOnlyHint": True, "openWorldHint": False})
+    @mcp.tool(
+        description="List all available plugins locally and globally",
+        annotations={"readOnlyHint": True, "openWorldHint": False},
+    )
     @audited
     def boring_list_plugins(
-        project_path: Annotated[str, Field(description="Path to project root (default: current directory)")] = None
+        project_path: Annotated[
+            str, Field(description="Path to project root (default: current directory)")
+        ] = None,
     ) -> dict:
         """
         List all registered plugins.
@@ -48,15 +53,20 @@ def register_v9_tools(mcp, audited, helpers):
         return {
             "status": "SUCCESS",
             "plugins": loader.list_plugins(),
-            "plugin_directories": [str(d) for d in loader.plugin_dirs]
+            "plugin_directories": [str(d) for d in loader.plugin_dirs],
         }
 
-    @mcp.tool(description="Execute a specific plugin by name", annotations={"readOnlyHint": False, "openWorldHint": True})
+    @mcp.tool(
+        description="Execute a specific plugin by name",
+        annotations={"readOnlyHint": False, "openWorldHint": True},
+    )
     @audited
     def boring_run_plugin(
         name: Annotated[str, Field(description="Plugin name to execute")],
-        project_path: Annotated[str, Field(description="Path to project root (default: current directory)")] = None,
-        args: Annotated[dict, Field(description="Arguments to pass to the plugin")] = None
+        project_path: Annotated[
+            str, Field(description="Path to project root (default: current directory)")
+        ] = None,
+        args: Annotated[dict, Field(description="Arguments to pass to the plugin")] = None,
     ) -> dict:
         """
         Execute a registered plugin by name.
@@ -71,10 +81,15 @@ def register_v9_tools(mcp, audited, helpers):
         plugin_kwargs = args if args else {}
         return loader.execute_plugin(name, **plugin_kwargs)
 
-    @mcp.tool(description="Reload all plugins from disk", annotations={"readOnlyHint": False, "idempotentHint": True})
+    @mcp.tool(
+        description="Reload all plugins from disk",
+        annotations={"readOnlyHint": False, "idempotentHint": True},
+    )
     @audited
     def boring_reload_plugins(
-        project_path: Annotated[str, Field(description="Path to project root (default: current directory)")] = None
+        project_path: Annotated[
+            str, Field(description="Path to project root (default: current directory)")
+        ] = None,
     ) -> dict:
         """
         Reload plugins that have changed on disk.
@@ -91,20 +106,23 @@ def register_v9_tools(mcp, audited, helpers):
         return {
             "status": "SUCCESS",
             "reloaded": updated,
-            "message": f"Reloaded {len(updated)} plugins" if updated else "No updates"
+            "message": f"Reloaded {len(updated)} plugins" if updated else "No updates",
         }
 
     # =========================================================================
     # Workspace Tools
     # =========================================================================
 
-    @mcp.tool(description="Register a new project in the workspace", annotations={"readOnlyHint": False, "idempotentHint": False})
+    @mcp.tool(
+        description="Register a new project in the workspace",
+        annotations={"readOnlyHint": False, "idempotentHint": False},
+    )
     @audited
     def boring_workspace_add(
         name: Annotated[str, Field(description="Unique project name")],
         path: Annotated[str, Field(description="Path to project root")],
         description: Annotated[str, Field(description="Optional description")] = "",
-        tags: Annotated[list[str], Field(description="Optional tags for filtering")] = None
+        tags: Annotated[list[str], Field(description="Optional tags for filtering")] = None,
     ) -> dict:
         """
         Add a project to the workspace.
@@ -114,10 +132,13 @@ def register_v9_tools(mcp, audited, helpers):
         manager = get_workspace_manager()
         return manager.add_project(name, path, description, tags)
 
-    @mcp.tool(description="Unregister a project from the workspace", annotations={"readOnlyHint": False, "destructiveHint": True})
+    @mcp.tool(
+        description="Unregister a project from the workspace",
+        annotations={"readOnlyHint": False, "destructiveHint": True},
+    )
     @audited
     def boring_workspace_remove(
-        name: Annotated[str, Field(description="Name of project to remove")]
+        name: Annotated[str, Field(description="Name of project to remove")],
     ) -> dict:
         """
         Remove a project from the workspace.
@@ -129,10 +150,13 @@ def register_v9_tools(mcp, audited, helpers):
         manager = get_workspace_manager()
         return manager.remove_project(name)
 
-    @mcp.tool(description="List all registered projects", annotations={"readOnlyHint": True, "openWorldHint": False})
+    @mcp.tool(
+        description="List all registered projects",
+        annotations={"readOnlyHint": True, "openWorldHint": False},
+    )
     @audited
     def boring_workspace_list(
-        tag: Annotated[str, Field(description="Optional filter by tag")] = None
+        tag: Annotated[str, Field(description="Optional filter by tag")] = None,
     ) -> dict:
         """
         List all projects in the workspace.
@@ -142,16 +166,15 @@ def register_v9_tools(mcp, audited, helpers):
         manager = get_workspace_manager()
         projects = manager.list_projects(tag)
 
-        return {
-            "status": "SUCCESS",
-            "projects": projects,
-            "active_project": manager.active_project
-        }
+        return {"status": "SUCCESS", "projects": projects, "active_project": manager.active_project}
 
-    @mcp.tool(description="Switch active project context", annotations={"readOnlyHint": False, "idempotentHint": True})
+    @mcp.tool(
+        description="Switch active project context",
+        annotations={"readOnlyHint": False, "idempotentHint": True},
+    )
     @audited
     def boring_workspace_switch(
-        name: Annotated[str, Field(description="Name of the project to switch context to")]
+        name: Annotated[str, Field(description="Name of the project to switch context to")],
     ) -> dict:
         """
         Switch the active project context.
@@ -167,12 +190,17 @@ def register_v9_tools(mcp, audited, helpers):
     # Auto-Fix Tool (Pure CLI Mode)
     # =========================================================================
 
-    @mcp.tool(description="Run automated fix loop", annotations={"readOnlyHint": True, "destructiveHint": False})
+    @mcp.tool(
+        description="Run automated fix loop",
+        annotations={"readOnlyHint": True, "destructiveHint": False},
+    )
     @audited
     def boring_auto_fix(
         max_iterations: Annotated[int, Field(description="Maximum fix attempts (default: 3)")] = 3,
-        verification_level: Annotated[str, Field(description="BASIC, STANDARD, or FULL")] = "STANDARD",
-        project_path: Annotated[str, Field(description="Optional project root path")] = None
+        verification_level: Annotated[
+            str, Field(description="BASIC, STANDARD, or FULL")
+        ] = "STANDARD",
+        project_path: Annotated[str, Field(description="Optional project root path")] = None,
     ) -> dict:
         """
         Automated verify-and-fix workflow (Pure CLI Mode).
@@ -206,7 +234,7 @@ def register_v9_tools(mcp, audited, helpers):
             return {
                 "status": "ERROR",
                 "message": f"Verification failed: {e}",
-                "suggestion": "Check if the project has valid Python files and ruff is installed."
+                "suggestion": "Check if the project has valid Python files and ruff is installed.",
             }
 
         if passed:
@@ -214,7 +242,7 @@ def register_v9_tools(mcp, audited, helpers):
                 "status": "SUCCESS",
                 "message": "All verification checks passed. No fixes needed.",
                 "verification_level": verification_level,
-                "project_root": str(project_root)
+                "project_root": str(project_root),
             }
 
         # Generate fix task for CLI execution
@@ -247,19 +275,22 @@ Requirements:
                 "1. Review the detected issues above",
                 "2. Run the suggested fix command in your IDE or Gemini CLI",
                 "3. Run boring_verify to check results",
-                "4. Repeat if needed"
-            ]
+                "4. Repeat if needed",
+            ],
         }
 
     # =========================================================================
     # Pattern Mining Tools
     # =========================================================================
 
-    @mcp.tool(description="Get AI suggestions for next steps", annotations={"readOnlyHint": True, "openWorldHint": False})
+    @mcp.tool(
+        description="Get AI suggestions for next steps",
+        annotations={"readOnlyHint": True, "openWorldHint": False},
+    )
     @audited
     def boring_suggest_next(
         limit: Annotated[int, Field(description="Maximum suggestions to return")] = 3,
-        project_path: Annotated[str, Field(description="Optional project root path")] = None
+        project_path: Annotated[str, Field(description="Optional project root path")] = None,
     ) -> dict:
         """
         Suggest next actions based on project state and learned patterns.
@@ -286,13 +317,16 @@ Requirements:
         return {
             "status": "SUCCESS",
             "suggestions": suggestions,
-            "project_state": miner.analyze_project_state(project_root)
+            "project_state": miner.analyze_project_state(project_root),
         }
 
-    @mcp.tool(description="Check status of long-running task", annotations={"readOnlyHint": True, "openWorldHint": False})
+    @mcp.tool(
+        description="Check status of long-running task",
+        annotations={"readOnlyHint": True, "openWorldHint": False},
+    )
     @audited
     def boring_get_progress(
-        task_id: Annotated[str, Field(description="ID of the task to check")]
+        task_id: Annotated[str, Field(description="ID of the task to check")],
     ) -> dict:
         """
         Get progress of a running task.
@@ -318,10 +352,10 @@ Requirements:
             "progress": {
                 "stage": latest.stage.value if latest else "unknown",
                 "message": latest.message if latest else "",
-                "percentage": latest.percentage if latest else 0
+                "percentage": latest.percentage if latest else 0,
             },
             "duration_seconds": reporter.get_duration(),
-            "events": reporter.get_all_events()
+            "events": reporter.get_all_events(),
         }
 
     return {
@@ -334,5 +368,5 @@ Requirements:
         "boring_workspace_switch": boring_workspace_switch,
         "boring_auto_fix": boring_auto_fix,
         "boring_suggest_next": boring_suggest_next,
-        "boring_get_progress": boring_get_progress
+        "boring_get_progress": boring_get_progress,
     }

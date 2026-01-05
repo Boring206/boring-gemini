@@ -29,7 +29,7 @@ class CoderAgent(Agent):
     Output includes the modified files list.
     """
 
-    def __init__(self, llm_client, project_root: Path = None, shadow_guard = None):
+    def __init__(self, llm_client, project_root: Path = None, shadow_guard=None):
         super().__init__(llm_client, AgentRole.CODER)
         self.project_root = project_root or Path.cwd()
         self.shadow_guard = shadow_guard
@@ -96,7 +96,7 @@ new code
                 action="code_failed",
                 summary="No implementation plan found",
                 artifacts={"error": "Missing plan"},
-                requires_approval=False
+                requires_approval=False,
             )
 
         # Check for reviewer feedback to address
@@ -107,7 +107,7 @@ new code
 
 ## Code Review Feedback (MUST ADDRESS)
 The Reviewer found these issues:
-{reviewer_msg.artifacts.get('issues', 'See review comments')}
+{reviewer_msg.artifacts.get("issues", "See review comments")}
 
 Fix ALL issues before proceeding.
 """
@@ -115,12 +115,14 @@ Fix ALL issues before proceeding.
         # Get planned files
         planned_files = context.get_resource("planned_files") or []
 
-        prompt = self._build_prompt(context, f"""
+        prompt = self._build_prompt(
+            context,
+            f"""
 ## Implementation Plan to Follow
 {plan}
 
 ## Files to Modify/Create
-{chr(10).join(f'- {f}' for f in planned_files) if planned_files else 'See plan above'}
+{chr(10).join(f"- {f}" for f in planned_files) if planned_files else "See plan above"}
 {feedback_instruction}
 
 ## Your Task
@@ -133,7 +135,8 @@ For EACH file in the plan:
 4. Add docstrings and type hints
 
 Start with the most foundational files first (e.g., base classes before derived classes).
-""")
+""",
+        )
 
         response, success = await self._generate(prompt)
 
@@ -144,7 +147,7 @@ Start with the most foundational files first (e.g., base classes before derived 
                 action="code_failed",
                 summary="Failed to generate code",
                 artifacts={"error": response},
-                requires_approval=False
+                requires_approval=False,
             )
 
         # Extract file changes from response
@@ -164,7 +167,9 @@ Start with the most foundational files first (e.g., base classes before derived 
                     pending = self.shadow_guard.check_operation(op)
                     if pending:
                         blocked_files.append(rel_path)
-                        print(f"ShadowMode blocked write to {rel_path} (op: {pending.operation_id})")
+                        print(
+                            f"ShadowMode blocked write to {rel_path} (op: {pending.operation_id})"
+                        )
                         continue
 
                 full_path = self.project_root / rel_path
@@ -204,12 +209,8 @@ Start with the most foundational files first (e.g., base classes before derived 
             receiver=AgentRole.REVIEWER,
             action="code_written",
             summary=f"Implemented {len(applied_files)} files: {', '.join(applied_files)}",
-            artifacts={
-                "files": applied_files,
-                "changes": file_changes,
-                "raw_output": response
-            },
-            requires_approval=False  # Goes to reviewer, not human
+            artifacts={"files": applied_files, "changes": file_changes, "raw_output": response},
+            requires_approval=False,  # Goes to reviewer, not human
         )
 
     def _extract_file_changes(self, response: str) -> dict[str, dict[str, Any]]:
@@ -219,8 +220,8 @@ Start with the most foundational files first (e.g., base classes before derived 
         changes = {}
 
         # Pattern: ### File: `path/to/file.ext`
-        file_pattern = r'###\s*(?:File|Modify|Create):\s*`([^`]+)`'
-        code_pattern = r'```[a-z]*\n(.*?)```'
+        file_pattern = r"###\s*(?:File|Modify|Create):\s*`([^`]+)`"
+        code_pattern = r"```[a-z]*\n(.*?)```"
 
         # Split by file markers
         parts = re.split(file_pattern, response)
@@ -235,12 +236,12 @@ Start with the most foundational files first (e.g., base classes before derived 
                 if code_matches:
                     changes[file_path] = {
                         "type": "write" if "Create" in response else "modify",
-                        "content": code_matches[0].strip()
+                        "content": code_matches[0].strip(),
                     }
 
         # Also look for SEARCH/REPLACE blocks with file context
         # Pattern: file marker followed by SEARCH/REPLACE block
-        sr_with_file = r'###\s*(?:Modify):\s*`([^`]+)`.*?<<<<<<< SEARCH\n(.*?)\n=======\n(.*?)\n>>>>>>> REPLACE'
+        sr_with_file = r"###\s*(?:Modify):\s*`([^`]+)`.*?<<<<<<< SEARCH\n(.*?)\n=======\n(.*?)\n>>>>>>> REPLACE"
         sr_file_matches = re.findall(sr_with_file, response, re.DOTALL)
 
         for file_path, search, replace in sr_file_matches:
@@ -248,26 +249,22 @@ Start with the most foundational files first (e.g., base classes before derived 
             if file_path in changes:
                 # Append as patch operation
                 changes[file_path]["patches"] = changes[file_path].get("patches", [])
-                changes[file_path]["patches"].append({
-                    "search": search.strip(),
-                    "replace": replace.strip()
-                })
+                changes[file_path]["patches"].append(
+                    {"search": search.strip(), "replace": replace.strip()}
+                )
             else:
                 changes[file_path] = {
                     "type": "patch",
-                    "patches": [{
-                        "search": search.strip(),
-                        "replace": replace.strip()
-                    }]
+                    "patches": [{"search": search.strip(), "replace": replace.strip()}],
                 }
 
         # Standalone SEARCH/REPLACE blocks (without explicit file marker) - use last known file
-        standalone_sr = r'<<<<<<< SEARCH\n(.*?)\n=======\n(.*?)\n>>>>>>> REPLACE'
+        standalone_sr = r"<<<<<<< SEARCH\n(.*?)\n=======\n(.*?)\n>>>>>>> REPLACE"
         for match in re.finditer(standalone_sr, response, re.DOTALL):
             search, replace = match.groups()
             # Find the nearest preceding file marker
-            text_before = response[:match.start()]
-            file_markers = re.findall(r'###\s*(?:File|Modify|Create):\s*`([^`]+)`', text_before)
+            text_before = response[: match.start()]
+            file_markers = re.findall(r"###\s*(?:File|Modify|Create):\s*`([^`]+)`", text_before)
             if file_markers:
                 target_file = file_markers[-1].strip()
                 if target_file not in changes:

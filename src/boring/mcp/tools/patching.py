@@ -10,12 +10,15 @@ from ..utils import configure_runtime_for_project, get_project_root_or_error
 # PATCHING TOOLS
 # ==============================================================================
 
+
 @audited
 def boring_apply_patch(
     file_path: Annotated[str, Field(description="Relative path to the file (from project root)")],
     search_text: Annotated[str, Field(description="Exact text to search for (must match exactly)")],
     replace_text: Annotated[str, Field(description="Text to replace with")],
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Apply a single search-replace patch to a file.
@@ -40,7 +43,6 @@ def boring_apply_patch(
         )
     """
     try:
-
         # Resolve project root
         project_root, error = get_project_root_or_error(project_path)
         if error:
@@ -75,13 +77,13 @@ def boring_apply_patch(
             return {
                 "status": "ERROR",
                 "error": "Search text not found in file",
-                "details": f"File: {file_path}"
+                "details": f"File: {file_path}",
             }
         if count > 1:
             return {
                 "status": "ERROR",
                 "error": f"Ambiguous match: search text found {count} times",
-                "details": "Please provide more context to make the search string unique"
+                "details": "Please provide more context to make the search string unique",
             }
 
         # Apply replacement
@@ -92,17 +94,22 @@ def boring_apply_patch(
             "status": "SUCCESS",
             "message": f"Applied patch to {file_path}",
             "original_length": len(content),
-            "new_length": len(new_content)
+            "new_length": len(new_content),
         }
 
     except Exception as e:
         return {"status": "ERROR", "error": str(e)}
 
+
 @audited
 def boring_extract_patches(
     ai_output: Annotated[str, Field(description="The raw AI output containing patches")],
-    dry_run: Annotated[bool, Field(description="If True, only parse and report patches without applying")] = False,
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    dry_run: Annotated[
+        bool, Field(description="If True, only parse and report patches without applying")
+    ] = False,
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Extract and optionally apply patches from AI-generated output.
@@ -136,23 +143,25 @@ def boring_extract_patches(
         if not patches:
             return {
                 "status": "NO_PATCHES_FOUND",
-                "message": "No valid SEARCH_REPLACE or file blocks found in output"
+                "message": "No valid SEARCH_REPLACE or file blocks found in output",
             }
 
         if dry_run:
             # Return preview
             preview = []
             for p in patches:
-                preview.append({
-                    "file": p.get("file_path", "unknown"),
-                    "search_snippet": p.get("search", "")[:50],
-                    "replace_snippet": p.get("replace", "")[:50]
-                })
+                preview.append(
+                    {
+                        "file": p.get("file_path", "unknown"),
+                        "search_snippet": p.get("search", "")[:50],
+                        "replace_snippet": p.get("replace", "")[:50],
+                    }
+                )
             return {
                 "status": "SUCCESS",
                 "dry_run": True,
                 "patches_found": len(patches),
-                "preview": preview
+                "preview": preview,
             }
 
         # 2. Apply patches
@@ -164,23 +173,30 @@ def boring_extract_patches(
 
         details = []
         for r in results:
-            details.append({
-                "file": r.file_path,
-                "success": r.success,
-                "message": r.error if not r.success else "Applied"
-            })
+            details.append(
+                {
+                    "file": r.file_path,
+                    "success": r.success,
+                    "message": r.error if not r.success else "Applied",
+                }
+            )
 
         return {
             "status": "SUCCESS" if failed_count == 0 else "PARTIAL_FAILURE",
             "total_patches": len(patches),
             "applied": applied_count,
             "failed": failed_count,
-            "details": details
+            "details": details,
         }
 
     except Exception as e:
         return {"status": "ERROR", "error": str(e)}
 
+
 if MCP_AVAILABLE and mcp is not None:
-    mcp.tool(description="Apply text patch to file", annotations={"readOnlyHint": False})(boring_apply_patch)
-    mcp.tool(description="Extract patches from AI output", annotations={"readOnlyHint": False})(boring_extract_patches)
+    mcp.tool(description="Apply text patch to file", annotations={"readOnlyHint": False})(
+        boring_apply_patch
+    )
+    mcp.tool(description="Extract patches from AI output", annotations={"readOnlyHint": False})(
+        boring_extract_patches
+    )

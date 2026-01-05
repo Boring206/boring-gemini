@@ -13,11 +13,12 @@ from typing import Optional
 
 _TOOL_CALL_COUNTS: dict = defaultdict(list)  # tool_name -> list of timestamps
 _RATE_LIMITS = {
-    "run_boring": 10,       # Max 10 runs per hour
-    "boring_verify": 30,    # Max 30 verifications per hour
-    "speckit_plan": 20,     # Max 20 plans per hour
-    "default": 60           # Default: 60 calls per hour
+    "run_boring": 10,  # Max 10 runs per hour
+    "boring_verify": 30,  # Max 30 verifications per hour
+    "speckit_plan": 20,  # Max 20 plans per hour
+    "default": 60,  # Default: 60 calls per hour
 }
+
 
 def check_rate_limit(tool_name: str) -> tuple[bool, str]:
     """Check if tool is within rate limit. Returns (allowed, message)."""
@@ -35,6 +36,7 @@ def check_rate_limit(tool_name: str) -> tuple[bool, str]:
     _TOOL_CALL_COUNTS[tool_name].append(now)
     return True, ""
 
+
 # ==============================================================================
 # DYNAMIC PROJECT ROOT DETECTION for MCP mode
 # ==============================================================================
@@ -46,6 +48,7 @@ def check_rate_limit(tool_name: str) -> tuple[bool, str]:
 # 4. Return None and let caller handle the error
 
 _ANCHOR_FILES = [".git", ".boring_brain", ".boring_memory", ".agent", "PROMPT.md", "@fix_plan.md"]
+
 
 def detect_project_root(explicit_path: Optional[str] = None) -> Optional[Path]:
     """
@@ -101,7 +104,6 @@ def ensure_project_initialized(project_root: Path) -> None:
     try:
         import shutil
 
-
         # 1. Workflows
         workflows_dir = project_root / ".agent" / "workflows"
         if not workflows_dir.exists():
@@ -113,7 +115,9 @@ def ensure_project_initialized(project_root: Path) -> None:
                 for item in template_path.glob("*.md"):
                     shutil.copy2(item, workflows_dir / item.name)
             else:
-                sys.stderr.write(f"[boring-mcp] Warning: Workflow templates not found at {template_path}\n")
+                sys.stderr.write(
+                    f"[boring-mcp] Warning: Workflow templates not found at {template_path}\n"
+                )
 
         # 2. Critical Dirs
         (project_root / ".boring_memory").mkdir(parents=True, exist_ok=True)
@@ -127,7 +131,9 @@ def ensure_project_initialized(project_root: Path) -> None:
             if template_prompt.exists():
                 shutil.copy2(template_prompt, prompt_file)
             else:
-                prompt_file.write_text("# Boring Project\n\nTask: [Describe your task here]", encoding="utf-8")
+                prompt_file.write_text(
+                    "# Boring Project\n\nTask: [Describe your task here]", encoding="utf-8"
+                )
 
     except Exception as e:
         sys.stderr.write(f"[boring-mcp] Auto-init failed: {e}\n")
@@ -140,19 +146,22 @@ def configure_runtime_for_project(project_root: Path) -> None:
     """
     try:
         from ... import config
+
         # Force override settings (bypass Pydantic frozen/validation)
-        object.__setattr__(config.settings, 'PROJECT_ROOT', project_root)
+        object.__setattr__(config.settings, "PROJECT_ROOT", project_root)
 
         # Also redirect LOG_DIR to project logs
         log_dir = project_root / "logs"
-        object.__setattr__(config.settings, 'LOG_DIR', log_dir)
+        object.__setattr__(config.settings, "LOG_DIR", log_dir)
         log_dir.mkdir(parents=True, exist_ok=True)
 
     except Exception as e:
         sys.stderr.write(f"[boring-mcp] Failed to configure runtime settings: {e}\n")
 
 
-def get_project_root_or_error(project_path: Optional[str] = None, auto_init: bool = True) -> tuple[Optional[Path], Optional[dict]]:
+def get_project_root_or_error(
+    project_path: Optional[str] = None, auto_init: bool = True
+) -> tuple[Optional[Path], Optional[dict]]:
     """
     Get project root or return an error dict for MCP response.
 
@@ -179,12 +188,14 @@ def get_project_root_or_error(project_path: Optional[str] = None, auto_init: boo
             "3. Set project_path parameter explicitly\n\n"
             f"Looking for anchor files: {', '.join(_ANCHOR_FILES)}\n"
             f"Current CWD: {Path.cwd()}"
-        )
+        ),
     }
+
 
 @dataclass
 class TaskResult:
     """Result of a Boring task execution."""
+
     status: str
     files_modified: int
     message: str

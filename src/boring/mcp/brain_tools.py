@@ -92,5 +92,5 @@ def register_brain_tools(mcp, audited, helpers):
     return {
         "boring_learn": boring_learn,
         "boring_create_rubrics": boring_create_rubrics,
-        "boring_brain_summary": boring_brain_summary
+        "boring_brain_summary": boring_brain_summary,
     }

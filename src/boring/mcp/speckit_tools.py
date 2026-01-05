@@ -60,7 +60,9 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
 
     @mcp.tool()
     @audited
-    def speckit_constitution(context: Optional[str] = None, project_path: Optional[str] = None) -> dict:
+    def speckit_constitution(
+        context: Optional[str] = None, project_path: Optional[str] = None
+    ) -> dict:
         """
         Execute SpecKit Constitution workflow - Create project guiding principles.
         """
@@ -68,7 +70,9 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
 
     @mcp.tool()
     @audited
-    def speckit_checklist(context: Optional[str] = None, project_path: Optional[str] = None) -> dict:
+    def speckit_checklist(
+        context: Optional[str] = None, project_path: Optional[str] = None
+    ) -> dict:
         """
         Execute SpecKit Checklist workflow - Generate quality validation checklist.
         """
@@ -80,5 +84,5 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
         "speckit_analyze": speckit_analyze,
         "speckit_clarify": speckit_clarify,
         "speckit_constitution": speckit_constitution,
-        "speckit_checklist": speckit_checklist
+        "speckit_checklist": speckit_checklist,
     }

@@ -62,7 +62,7 @@ def log_status(log_dir: Any, level: str, message: str, **kwargs: Any):
         message: Message to log
         **kwargs: Additional structured fields
     """
-    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     if log_dir:
         if isinstance(log_dir, str):
@@ -93,12 +93,7 @@ def log_status(log_dir: Any, level: str, message: str, **kwargs: Any):
 
     # File output in JSON Lines format for analysis
     if log_file:
-        log_entry = {
-            "timestamp": timestamp,
-            "level": level.upper(),
-            "message": message,
-            **kwargs
-        }
+        log_entry = {"timestamp": timestamp, "level": level.upper(), "message": message, **kwargs}
 
         with open(log_file, "a", encoding="utf-8") as f:
             f.write(json.dumps(log_entry) + "\n")
@@ -115,7 +110,7 @@ def update_status(
     last_action: str,
     status: str,
     exit_reason: str = "",
-    calls_made: Optional[int] = None
+    calls_made: Optional[int] = None,
 ):
     """
     Updates the status.json file for external monitoring.
@@ -130,10 +125,11 @@ def update_status(
         calls_made: Number of API calls made
     """
     status_file.parent.mkdir(parents=True, exist_ok=True)
-    next_reset_time = (datetime.now() + timedelta(hours=1)).strftime('%H:%M:%S')
+    next_reset_time = (datetime.now() + timedelta(hours=1)).strftime("%H:%M:%S")
 
     if calls_made is None:
         from .limiter import get_calls_made
+
         calls_made = get_calls_made(Path(".call_count"))
 
     status_data = {

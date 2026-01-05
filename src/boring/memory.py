@@ -17,6 +17,7 @@ from .storage import LoopRecord, SQLiteStorage
 @dataclass
 class LoopMemory:
     """Memory entry for a single loop iteration."""
+
     loop_id: int
     timestamp: str
     status: str  # SUCCESS, FAILED, PARTIAL
@@ -30,6 +31,7 @@ class LoopMemory:
 @dataclass
 class ProjectMemory:
     """Overall project memory state."""
+
     project_name: str
     total_loops: int
     successful_loops: int
@@ -83,7 +85,7 @@ class MemoryManager:
             tasks_completed=memory.tasks_completed,
             errors=memory.errors,
             duration_seconds=memory.duration_seconds,
-            output_summary=memory.ai_output_summary
+            output_summary=memory.ai_output_summary,
         )
         self._storage.record_loop(record)
 
@@ -102,33 +104,33 @@ class MemoryManager:
             return "No previous loop recorded."
 
         last = history[0]
-        files_modified = last.get('files_modified', [])
+        files_modified = last.get("files_modified", [])
         if isinstance(files_modified, str):
             try:
                 files_modified = json.loads(files_modified)
             except (json.JSONDecodeError, TypeError):
                 files_modified = []
 
-        tasks_completed = last.get('tasks_completed', [])
+        tasks_completed = last.get("tasks_completed", [])
         if isinstance(tasks_completed, str):
             try:
                 tasks_completed = json.loads(tasks_completed)
             except (json.JSONDecodeError, TypeError):
                 tasks_completed = []
 
-        errors = last.get('errors', [])
+        errors = last.get("errors", [])
         if isinstance(errors, str):
             try:
                 errors = json.loads(errors)
             except (json.JSONDecodeError, TypeError):
                 errors = []
 
-        return f"""## Previous Loop Summary (#{last.get('loop_id', '?')})
-- **Status:** {last.get('status', 'UNKNOWN')}
+        return f"""## Previous Loop Summary (#{last.get("loop_id", "?")})
+- **Status:** {last.get("status", "UNKNOWN")}
 - **Files Modified:** {len(files_modified)}
-- **Tasks Completed:** {', '.join(tasks_completed) if tasks_completed else 'None'}
-- **Errors:** {', '.join(errors) if errors else 'None'}
-- **Summary:** {str(last.get('output_summary', 'N/A'))[:200]}
+- **Tasks Completed:** {", ".join(tasks_completed) if tasks_completed else "None"}
+- **Errors:** {", ".join(errors) if errors else "None"}
+- **Summary:** {str(last.get("output_summary", "N/A"))[:200]}
 """
 
     def record_error_pattern(self, error_type: str, error_message: str, solution: str = ""):
@@ -169,9 +171,9 @@ class MemoryManager:
         # 1. Project State
         state = self.get_project_state()
         parts.append(f"""## Project State
-- **Name:** {state.get('project_name', 'Unknown')}
-- **Total Loops:** {state.get('total_loops', 0)} ({state.get('successful_loops', 0)} success, {state.get('failed_loops', 0)} failed)
-- **Current Focus:** {state.get('current_focus', 'Not set')}
+- **Name:** {state.get("project_name", "Unknown")}
+- **Total Loops:** {state.get("total_loops", 0)} ({state.get("successful_loops", 0)} success, {state.get("failed_loops", 0)} failed)
+- **Current Focus:** {state.get("current_focus", "Not set")}
 """)
 
         # 2. Last Loop Summary
@@ -185,4 +187,3 @@ class MemoryManager:
             parts.append(error_warning)
 
         return "\n".join(parts)
-

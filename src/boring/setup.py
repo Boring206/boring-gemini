@@ -14,22 +14,25 @@ templates_dir = Path(__file__).parent / "templates"
 setup_app = typer.Typer(help="Boring project setup commands.")
 import_app = typer.Typer(help="Boring PRD import commands.")
 
+
 @setup_app.command("new")
 def setup_new_project(
-    project_name: str = typer.Argument(..., help="Name for the new Boring project.")
+    project_name: str = typer.Argument(..., help="Name for the new Boring project."),
 ):
     project_path = Path(project_name)
     if not project_path.is_absolute():
         project_path = Path.cwd() / project_name
 
     if project_path.exists():
-        console.print(f"[bold red]Error:[/bold red] Project directory '{project_name}' already exists.")
+        console.print(
+            f"[bold red]Error:[/bold red] Project directory '{project_name}' already exists."
+        )
         raise typer.Exit(1)
 
     console.print(f"🚀 Setting up Boring project: [bold green]{project_name}[/bold green]")
 
     project_path.mkdir(parents=True, exist_ok=False)
-    os.chdir(project_path) # Change to new project directory
+    os.chdir(project_path)  # Change to new project directory
 
     # Create structure
     (project_path / "specs/stdlib").mkdir(parents=True, exist_ok=True)
@@ -51,8 +54,7 @@ def setup_new_project(
     else:
         # Create a minimal default GEMINI.md if template doesn't exist
         (project_path / "GEMINI.md").write_text(
-            "# Boring Context\n\nRole: Autonomous AI developer\n",
-            encoding="utf-8"
+            "# Boring Context\n\nRole: Autonomous AI developer\n", encoding="utf-8"
         )
 
     # Create CONTEXT.md for AI agent guidance
@@ -68,7 +70,7 @@ def setup_new_project(
         "1. Follow PROMPT.md instructions\n"
         "2. Update @fix_plan.md as tasks complete\n"
         "3. Signal completion when all tasks are done\n",
-        encoding="utf-8"
+        encoding="utf-8",
     )
 
     # Create openspec/project.md
@@ -80,7 +82,7 @@ def setup_new_project(
         "## Conventions\n"
         "- Type hints required\n"
         "- Google-style docstrings\n",
-        encoding="utf-8"
+        encoding="utf-8",
     )
 
     # Copy specs templates
@@ -91,49 +93,66 @@ def setup_new_project(
     subprocess.run(["git", "init"], stdin=subprocess.DEVNULL, check=True, capture_output=True)
     (project_path / "README.md").write_text(f"# {project_name}\n")
     subprocess.run(["git", "add", "."], stdin=subprocess.DEVNULL, check=True, capture_output=True)
-    subprocess.run(["git", "commit", "-m", "Initial Boring project setup"], stdin=subprocess.DEVNULL, check=True, capture_output=True)
+    subprocess.run(
+        ["git", "commit", "-m", "Initial Boring project setup"],
+        stdin=subprocess.DEVNULL,
+        check=True,
+        capture_output=True,
+    )
 
     console.print(f"✅ Project [bold green]{project_name}[/bold green] created at {project_path}!")
     console.print("\nNext steps:")
-    console.print(Markdown(f"""
+    console.print(
+        Markdown(f"""
   1. `cd {project_name}`
   2. Edit `PROMPT.md` with your project requirements.
   3. Update `specs/` with your project specifications.
   4. Run: `boring start --monitor`
-    """))
+    """)
+    )
 
 
 @import_app.command("prd")
 def import_prd_to_project(
-    source_file: Path = typer.Argument(..., exists=True, readable=True, help="Path to your PRD/specification file (any format)."),
-    project_name: str = typer.Argument(None, help="Name for the new Boring project (optional, defaults to filename).")
+    source_file: Path = typer.Argument(
+        ..., exists=True, readable=True, help="Path to your PRD/specification file (any format)."
+    ),
+    project_name: str = typer.Argument(
+        None, help="Name for the new Boring project (optional, defaults to filename)."
+    ),
 ):
     """
     Converts a PRD/specification file into a Boring project using Gemini.
     """
     if not project_name:
-        project_name = source_file.stem # Use filename as project name
+        project_name = source_file.stem  # Use filename as project name
 
     if not source_file.is_file():
-        console.print(f"[bold red]Error:[/bold red] Source path '{source_file}' is a directory. Please provide a file path.")
+        console.print(
+            f"[bold red]Error:[/bold red] Source path '{source_file}' is a directory. Please provide a file path."
+        )
         raise typer.Exit(1)
 
     project_path = Path.cwd() / project_name
 
     if project_path.exists():
-        console.print(f"[bold red]Error:[/bold red] Project directory '{project_name}' already exists.")
+        console.print(
+            f"[bold red]Error:[/bold red] Project directory '{project_name}' already exists."
+        )
         raise typer.Exit(1)
 
-    console.print(f"🚀 Importing PRD '[bold green]{source_file.name}[/bold green]' into project: [bold green]{project_name}[/bold green]")
+    console.print(
+        f"🚀 Importing PRD '[bold green]{source_file.name}[/bold green]' into project: [bold green]{project_name}[/bold green]"
+    )
 
     # Create new project first using the setup_new_project logic
     # Temporarily change directory to create project in correct location
     original_cwd = Path.cwd()
     try:
-        os.chdir(original_cwd) # Ensure we are in the correct CWD before calling setup_new_project
+        os.chdir(original_cwd)  # Ensure we are in the correct CWD before calling setup_new_project
         setup_new_project(project_name)
     finally:
-        os.chdir(original_cwd) # Change back if needed, though setup_new_project changes it
+        os.chdir(original_cwd)  # Change back if needed, though setup_new_project changes it
 
     # Now, change into the newly created project directory
     os.chdir(project_path)
@@ -207,7 +226,9 @@ Extract detailed technical specifications from the PRD into this file. Preserve 
 
     gemini_exec = shutil.which("gemini")
     if not gemini_exec:
-        console.print("[bold red]Error:[/bold red] Gemini CLI command 'gemini' not found. Is it installed and in PATH?")
+        console.print(
+            "[bold red]Error:[/bold red] Gemini CLI command 'gemini' not found. Is it installed and in PATH?"
+        )
         raise typer.Exit(1)
 
     # Use stdin to pipe the prompt - more reliable for long prompts
@@ -223,13 +244,15 @@ Extract detailed technical specifications from the PRD into this file. Preserve 
             text=True,
             encoding="utf-8",
             check=False,
-            timeout=300 # 5 minutes timeout for conversion
+            timeout=300,  # 5 minutes timeout for conversion
         )
         gemini_response = process.stdout + process.stderr
         gemini_output_file.write_text(gemini_response)
 
         if process.returncode != 0:
-            console.print(f"[bold red]Error:[/bold red] Gemini conversion failed with code {process.returncode}.")
+            console.print(
+                f"[bold red]Error:[/bold red] Gemini conversion failed with code {process.returncode}."
+            )
             console.print(f"[red]Gemini output: {gemini_response[:500]}[/red]")
             raise typer.Exit(1)
 
@@ -256,14 +279,18 @@ Extract detailed technical specifications from the PRD into this file. Preserve 
             elif current_file_name is not None:
                 current_file_content.append(line)
 
-        if current_file_name and current_file_content: # Catch last file if no closing ```
+        if current_file_name and current_file_content:  # Catch last file if no closing ```
             extracted_files[current_file_name] = "\n".join(current_file_content).strip()
 
         if not extracted_files:
-            console.print("[bold orange]Warning:[/bold orange] No files were extracted from Gemini's response. Please check .gemini_conversion_output.md for raw output.")
+            console.print(
+                "[bold orange]Warning:[/bold orange] No files were extracted from Gemini's response. Please check .gemini_conversion_output.md for raw output."
+            )
             console.print("[bold yellow]DEBUG - Raw output (first 1000 chars):[/bold yellow]")
             console.print(gemini_response[:1000] if gemini_response else "[Empty response]")
-            console.print("[bold red]Error:[/bold red] PRD conversion failed to generate required files.")
+            console.print(
+                "[bold red]Error:[/bold red] PRD conversion failed to generate required files."
+            )
             raise typer.Exit(1)
 
         # Write out extracted files
@@ -273,13 +300,17 @@ Extract detailed technical specifications from the PRD into this file. Preserve 
             file_path.write_text(content, encoding="utf-8")
             console.print(f"Created: [green]{file_path.relative_to(project_path)}[/green]")
 
-        console.print(f"✅ PRD imported successfully into project [bold green]{project_name}[/bold green]!")
+        console.print(
+            f"✅ PRD imported successfully into project [bold green]{project_name}[/bold green]!"
+        )
         console.print("\nNext steps:")
-        console.print(Markdown(f"""
+        console.print(
+            Markdown(f"""
   1. `cd {project_name}`
   2. Review and edit the generated files (`PROMPT.md`, `@fix_plan.md`, `specs/requirements.md`).
   3. Start autonomous development: `boring start --monitor`
-    """))
+    """)
+        )
 
     except subprocess.TimeoutExpired:
         console.print("[bold red]Error:[/bold red] Gemini conversion timed out after 300 seconds.")
@@ -287,4 +318,3 @@ Extract detailed technical specifications from the PRD into this file. Preserve 
     except Exception as e:
         console.print(f"[bold red]An unexpected error occurred during PRD import: {e}[/bold red]")
         raise typer.Exit(1)
-

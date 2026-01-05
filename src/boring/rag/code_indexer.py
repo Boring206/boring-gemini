@@ -33,6 +33,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class CodeChunk:
     """A semantic chunk of code for embedding."""
+
     chunk_id: str
     file_path: str
     chunk_type: str  # "function", "class", "imports", "module_doc"
@@ -49,6 +50,7 @@ class CodeChunk:
 @dataclass
 class IndexStats:
     """Statistics about the indexed codebase."""
+
     total_files: int = 0
     total_chunks: int = 0
     functions: int = 0
@@ -69,20 +71,39 @@ class CodeIndexer:
     """
 
     SUPPORTED_EXTENSIONS: set[str] = {
-        ".py", ".js", ".jsx", ".ts", ".tsx", ".go", ".rs", ".c", ".cpp", ".h", ".hpp", ".java", ".md"
+        ".py",
+        ".js",
+        ".jsx",
+        ".ts",
+        ".tsx",
+        ".go",
+        ".rs",
+        ".c",
+        ".cpp",
+        ".h",
+        ".hpp",
+        ".java",
+        ".md",
     }
 
     IGNORED_DIRS: set[str] = {
-        ".git", "__pycache__", "node_modules", ".venv", "venv",
-        "htmlcov", ".pytest_cache", ".mypy_cache", ".ruff_cache",
-        "dist", "build", "*.egg-info", ".boring_memory"
+        ".git",
+        "__pycache__",
+        "node_modules",
+        ".venv",
+        "venv",
+        "htmlcov",
+        ".pytest_cache",
+        ".mypy_cache",
+        ".ruff_cache",
+        "dist",
+        "build",
+        "*.egg-info",
+        ".boring_memory",
     }
 
     def __init__(
-        self,
-        project_root: Path,
-        max_chunk_tokens: int = 500,
-        include_init_files: bool = False
+        self, project_root: Path, max_chunk_tokens: int = 500, include_init_files: bool = False
     ):
         self.project_root = Path(project_root)
         self.max_chunk_tokens = max_chunk_tokens
@@ -137,7 +158,9 @@ class CodeIndexer:
 
     def _should_skip_dir(self, dir_name: str) -> bool:
         """Helper to check if a directory should be skipped during walk."""
-        return dir_name in self.IGNORED_DIRS or any(dir_name.endswith(ex[1:]) for ex in self.IGNORED_DIRS if ex.startswith("*"))
+        return dir_name in self.IGNORED_DIRS or any(
+            dir_name.endswith(ex[1:]) for ex in self.IGNORED_DIRS if ex.startswith("*")
+        )
 
     def _get_rel_path(self, file_path: Path) -> str:
         """Get relative path from project root."""
@@ -153,8 +176,10 @@ class CodeIndexer:
         Supports C-style languages (JS, TS, Java, C++, Go, Rust) and Markdown.
         """
         import re
+
         try:
             from .parser import TreeSitterParser
+
             ts_parser = TreeSitterParser()
         except ImportError:
             ts_parser = None
@@ -172,14 +197,14 @@ class CodeIndexer:
             ts_chunks = ts_parser.parse_file(file_path)
             if ts_chunks:
                 for chunk in ts_chunks:
-                     yield CodeChunk(
+                    yield CodeChunk(
                         chunk_id=self._make_id(rel_path, f"{chunk.type}_{chunk.name}"),
                         file_path=rel_path,
                         chunk_type=f"code_{chunk.type}",
                         name=chunk.name,
                         content=chunk.content,
                         start_line=chunk.start_line,
-                        end_line=chunk.end_line
+                        end_line=chunk.end_line,
                     )
                 # If we got chunks, assume we handled the file well enough (for now).
                 # Optionally we could index the gaps as well, but definitions are key.
@@ -190,9 +215,11 @@ class CodeIndexer:
 
         # Regex patterns for common block starts
         # C/C++/Java/JS/TS/Go/Rust function/class definitions
-        block_start = re.compile(r'^\s*(?:export\s+)?(?:public\s+|private\s+|protected\s+)?(?:async\s+)?(?:func|function|class|interface|struct|impl|const|let|var|type|def)\s+([a-zA-Z0-9_]+)')
+        block_start = re.compile(
+            r"^\s*(?:export\s+)?(?:public\s+|private\s+|protected\s+)?(?:async\s+)?(?:func|function|class|interface|struct|impl|const|let|var|type|def)\s+([a-zA-Z0-9_]+)"
+        )
         # Markdown headers
-        md_header = re.compile(r'^#{1,3}\s+(.+)')
+        md_header = re.compile(r"^#{1,3}\s+(.+)")
 
         current_chunk_lines = []
         current_start_line = 1
@@ -209,23 +236,23 @@ class CodeIndexer:
             # 1. New block detected AND current chunk is substantial (>5 lines)
             # 2. Current chunk is too big (>50 lines)
             if (is_start and len(current_chunk_lines) > 5) or len(current_chunk_lines) >= 50:
-                 if current_chunk_lines:
-                     # Yield previous chunk
-                     chunk_content = "\n".join(current_chunk_lines)
-                     yield CodeChunk(
-                         chunk_id=self._make_id(rel_path, f"chunk_{current_start_line}"),
-                         file_path=rel_path,
-                         chunk_type="code_block",
-                         name=current_name,
-                         content=chunk_content,
-                         start_line=current_start_line,
-                         end_line=line_num - 1
-                     )
-                     current_chunk_lines = []
-                     current_start_line = line_num
+                if current_chunk_lines:
+                    # Yield previous chunk
+                    chunk_content = "\n".join(current_chunk_lines)
+                    yield CodeChunk(
+                        chunk_id=self._make_id(rel_path, f"chunk_{current_start_line}"),
+                        file_path=rel_path,
+                        chunk_type="code_block",
+                        name=current_name,
+                        content=chunk_content,
+                        start_line=current_start_line,
+                        end_line=line_num - 1,
+                    )
+                    current_chunk_lines = []
+                    current_start_line = line_num
 
-                     if is_start:
-                         current_name = is_start.group(1)
+                    if is_start:
+                        current_name = is_start.group(1)
 
             current_chunk_lines.append(line)
 
@@ -242,7 +269,7 @@ class CodeIndexer:
                 name=current_name,
                 content="\n".join(current_chunk_lines),
                 start_line=current_start_line,
-                end_line=len(lines)
+                end_line=len(lines),
             )
 
     def _index_python_file(self, file_path: Path) -> Iterator[CodeChunk]:
@@ -268,7 +295,7 @@ class CodeIndexer:
                 content=module_doc,
                 start_line=1,
                 end_line=self._get_docstring_end_line(tree),
-                docstring=module_doc
+                docstring=module_doc,
             )
 
         # 2. Top-level imports (as a single chunk)
@@ -282,7 +309,7 @@ class CodeIndexer:
                 content=imports["content"],
                 start_line=imports["start"],
                 end_line=imports["end"],
-                dependencies=imports["modules"]
+                dependencies=imports["modules"],
             )
 
         # 3. Top-level functions and classes
@@ -324,11 +351,7 @@ class CodeIndexer:
             yield chunk
 
     def _chunk_from_function(
-        self,
-        node: ast.FunctionDef,
-        file_path: str,
-        lines: list[str],
-        parent: Optional[str] = None
+        self, node: ast.FunctionDef, file_path: str, lines: list[str], parent: Optional[str] = None
     ) -> CodeChunk:
         """Create chunk from function definition."""
         start = node.lineno - 1
@@ -341,7 +364,7 @@ class CodeIndexer:
             if ":" in line and not line.strip().startswith("#"):
                 sig_end = start + i
                 break
-        signature = "\n".join(lines[start:sig_end + 1])
+        signature = "\n".join(lines[start : sig_end + 1])
 
         # Extract docstring
         docstring = ast.get_docstring(node)
@@ -363,7 +386,7 @@ class CodeIndexer:
             dependencies=deps,
             parent=parent,
             signature=signature.strip(),
-            docstring=docstring
+            docstring=docstring,
         )
 
     def _chunk_from_class(self, node: ast.ClassDef, file_path: str, lines: list[str]) -> CodeChunk:
@@ -405,7 +428,7 @@ class CodeIndexer:
             start_line=node.lineno,
             end_line=class_header_end,
             dependencies=bases,  # Base classes as dependencies
-            docstring=ast.get_docstring(node)
+            docstring=ast.get_docstring(node),
         )
 
     def _extract_dependencies(self, node: ast.AST) -> list[str]:
@@ -422,9 +445,28 @@ class CodeIndexer:
                     deps.add(child.func.attr)
 
         # Filter out builtins and common functions
-        builtins = {"print", "len", "str", "int", "float", "list", "dict", "set",
-                    "tuple", "range", "enumerate", "zip", "map", "filter", "open",
-                    "isinstance", "issubclass", "hasattr", "getattr", "setattr"}
+        builtins = {
+            "print",
+            "len",
+            "str",
+            "int",
+            "float",
+            "list",
+            "dict",
+            "set",
+            "tuple",
+            "range",
+            "enumerate",
+            "zip",
+            "map",
+            "filter",
+            "open",
+            "isinstance",
+            "issubclass",
+            "hasattr",
+            "getattr",
+            "setattr",
+        }
 
         return sorted(deps - builtins)
 
@@ -450,18 +492,14 @@ class CodeIndexer:
         end = max(n.end_lineno or n.lineno for n in import_nodes)
 
         return {
-            "content": "\n".join(lines[start - 1:end]),
+            "content": "\n".join(lines[start - 1 : end]),
             "start": start,
             "end": end,
-            "modules": sorted(set(modules))
+            "modules": sorted(set(modules)),
         }
 
     def _extract_script_chunks(
-        self,
-        tree: ast.Module,
-        lines: list[str],
-        covered_lines: set[int],
-        rel_path: str
+        self, tree: ast.Module, lines: list[str], covered_lines: set[int], rel_path: str
     ) -> list[CodeChunk]:
         """Extract remaining top-level code as script chunks."""
         script_chunks = []
@@ -469,8 +507,10 @@ class CodeIndexer:
         # Collect all line ranges for non-indexed top-level nodes
         nodes_to_index = []
         for node in ast.iter_child_nodes(tree):
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef,
-                                ast.Import, ast.ImportFrom)):
+            if isinstance(
+                node,
+                (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Import, ast.ImportFrom),
+            ):
                 continue
             if isinstance(node, ast.Expr) and isinstance(node.value, ast.Constant):
                 continue
@@ -499,32 +539,30 @@ class CodeIndexer:
             # If the gap between nodes contains any covered lines, we must split
             has_gap_covered = any(l in covered_lines for l in range(current_chunk_end + 1, n_start))
 
-            if not has_gap_covered and n_start <= current_chunk_end + 5: # Small gap allowed
+            if not has_gap_covered and n_start <= current_chunk_end + 5:  # Small gap allowed
                 current_chunk_end = n_end
             else:
                 # Split
-                script_chunks.append(self._create_script_chunk(
-                    current_chunk_start, current_chunk_end, rel_path, lines
-                ))
+                script_chunks.append(
+                    self._create_script_chunk(
+                        current_chunk_start, current_chunk_end, rel_path, lines
+                    )
+                )
                 current_chunk_start = n_start
                 current_chunk_end = n_end
 
         # Last one
-        script_chunks.append(self._create_script_chunk(
-            current_chunk_start, current_chunk_end, rel_path, lines
-        ))
+        script_chunks.append(
+            self._create_script_chunk(current_chunk_start, current_chunk_end, rel_path, lines)
+        )
 
         return script_chunks
 
     def _create_script_chunk(
-        self,
-        start: int,
-        end: int,
-        rel_path: str,
-        lines: list[str]
+        self, start: int, end: int, rel_path: str, lines: list[str]
     ) -> CodeChunk:
         """Helper to create a script chunk."""
-        content = "\n".join(lines[start - 1:end])
+        content = "\n".join(lines[start - 1 : end])
         return CodeChunk(
             chunk_id=self._make_id(rel_path, f"script_{start}"),
             file_path=rel_path,
@@ -533,7 +571,7 @@ class CodeIndexer:
             content=content,
             start_line=start,
             end_line=end,
-            dependencies=[] # Could extract deps here too if needed
+            dependencies=[],  # Could extract deps here too if needed
         )
 
     def _get_docstring_end_line(self, tree: ast.Module) -> int:

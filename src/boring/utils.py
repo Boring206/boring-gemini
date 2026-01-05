@@ -11,6 +11,7 @@ from rich.console import Console
 _is_mcp_mode = os.environ.get("BORING_MCP_MODE") == "1"
 console = Console(stderr=True, quiet=_is_mcp_mode)  # Always stderr, optionally quiet
 
+
 def check_syntax(file_path: Path) -> tuple[bool, str]:
     """
     Checks if a Python file has valid syntax.
@@ -25,6 +26,7 @@ def check_syntax(file_path: Path) -> tuple[bool, str]:
         return False, f"SyntaxError in {file_path.name} line {e.lineno}: {e.msg}"
     except Exception as e:
         return False, f"Error checking syntax for {file_path.name}: {str(e)}"
+
 
 def check_and_install_dependencies(code_content: str):
     """
@@ -41,10 +43,10 @@ def check_and_install_dependencies(code_content: str):
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 for alias in node.names:
-                    imports.add(alias.name.split('.')[0])
+                    imports.add(alias.name.split(".")[0])
             elif isinstance(node, ast.ImportFrom):
                 if node.module:
-                    imports.add(node.module.split('.')[0])
+                    imports.add(node.module.split(".")[0])
     except:
         # If code is not parseable, we can't detect imports reliably
         return
@@ -55,12 +57,15 @@ def check_and_install_dependencies(code_content: str):
 
     # Just try to import. If fails, try install.
     for module_name in imports:
-        if not module_name: continue
+        if not module_name:
+            continue
 
         try:
             __import__(module_name)
         except ImportError:
-            console.print(f"[yellow]Module '{module_name}' missing. Attempting to install...[/yellow]")
+            console.print(
+                f"[yellow]Module '{module_name}' missing. Attempting to install...[/yellow]"
+            )
             try:
                 # Map module name to package name (basic common ones)
                 package_name = _map_module_to_package(module_name)
@@ -68,6 +73,7 @@ def check_and_install_dependencies(code_content: str):
                 console.print(f"[green]Successfully installed {package_name}[/green]")
             except subprocess.CalledProcessError:
                 console.print(f"[red]Failed to install {package_name}. Ignoring.[/red]")
+
 
 def _map_module_to_package(module_name: str) -> str:
     """Manual mapping for common packages where module name != package name"""
@@ -78,6 +84,6 @@ def _map_module_to_package(module_name: str) -> str:
         "yaml": "PyYAML",
         "cv2": "opencv-python",
         "dotenv": "python-dotenv",
-        "google.generativeai": "google-generativeai"
+        "google.generativeai": "google-generativeai",
     }
     return mapping.get(module_name, module_name)

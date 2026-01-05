@@ -10,11 +10,21 @@ from ..utils import check_rate_limit, configure_runtime_for_project, get_project
 # VERIFICATION TOOLS
 # ==============================================================================
 
+
 @audited
 def boring_verify(
-    level: Annotated[str, Field(description="Verification level: BASIC (syntax), STANDARD (lint), FULL (tests), SEMANTIC (judge)")] = "STANDARD",
-    auto_fix: Annotated[bool, Field(description="If True, auto-fix lint issues with ruff --fix before checking")] = False,
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    level: Annotated[
+        str,
+        Field(
+            description="Verification level: BASIC (syntax), STANDARD (lint), FULL (tests), SEMANTIC (judge)"
+        ),
+    ] = "STANDARD",
+    auto_fix: Annotated[
+        bool, Field(description="If True, auto-fix lint issues with ruff --fix before checking")
+    ] = False,
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Run code verification on the project.
@@ -35,7 +45,7 @@ def boring_verify(
                 "status": "ERROR",
                 "passed": False,
                 "message": f"Invalid level: '{level}'.",
-                "suggestion": f"Use one of: {', '.join(valid_levels)}"
+                "suggestion": f"Use one of: {', '.join(valid_levels)}",
             }
 
         # --- Special Handling for DOCS level (Pure CLI Mode) ---
@@ -60,7 +70,7 @@ def boring_verify(
                     "- Return type annotations vs Docstring returns"
                 ),
                 "cli_command": "boring evaluate --level DOCS",
-                "suggestion": "Run `boring evaluate --level DOCS` in your terminal."
+                "suggestion": "Run `boring evaluate --level DOCS` in your terminal.",
             }
         # --- End Validation ---
 
@@ -93,11 +103,7 @@ def boring_verify(
         verifier = CodeVerifier(project_root, settings.LOG_DIR, judge=judge)
         passed, message = verifier.verify_project(level.upper(), auto_fix=auto_fix)
 
-        result = {
-            "passed": passed,
-            "level": level.upper(),
-            "message": message
-        }
+        result = {"passed": passed, "level": level.upper(), "message": message}
 
         if auto_fix:
             result["auto_fix"] = True
@@ -106,16 +112,20 @@ def boring_verify(
         return result
 
     except Exception as e:
-        return {
-            "passed": False,
-            "error": str(e)
-        }
+        return {"passed": False, "error": str(e)}
+
 
 @audited
 def boring_verify_file(
-    file_path: Annotated[str, Field(description="Relative path to the file to verify (from project root)")],
-    level: Annotated[str, Field(description="Verification level: BASIC, STANDARD, FULL")] = "STANDARD",
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    file_path: Annotated[
+        str, Field(description="Relative path to the file to verify (from project root)")
+    ],
+    level: Annotated[
+        str, Field(description="Verification level: BASIC, STANDARD, FULL")
+    ] = "STANDARD",
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Verify a single file for syntax errors, linting issues, and import problems.
@@ -154,7 +164,7 @@ def boring_verify_file(
                 "status": "ERROR",
                 "passed": False,
                 "error": f"File not found: {file_path}",
-                "resolved_path": str(full_path)
+                "resolved_path": str(full_path),
             }
 
         # Only support Python files for now
@@ -163,7 +173,7 @@ def boring_verify_file(
                 "status": "SKIPPED",
                 "passed": True,
                 "message": f"Verification skipped for non-Python file: {full_path.suffix}",
-                "file": str(full_path.relative_to(project_root))
+                "file": str(full_path.relative_to(project_root)),
             }
 
         # Run verification
@@ -177,11 +187,13 @@ def boring_verify_file(
 
         for r in results:
             if not r.passed:
-                issues.append({
-                    "check": r.check_type,
-                    "message": r.message,
-                    "details": r.details[:5] if r.details else []  # Limit details
-                })
+                issues.append(
+                    {
+                        "check": r.check_type,
+                        "message": r.message,
+                        "details": r.details[:5] if r.details else [],  # Limit details
+                    }
+                )
             if r.suggestions:
                 suggestions.extend(r.suggestions[:3])  # Limit suggestions
 
@@ -192,15 +204,12 @@ def boring_verify_file(
             "level": level.upper(),
             "checks_run": len(results),
             "issues": issues if issues else None,
-            "suggestions": suggestions[:5] if suggestions else None
+            "suggestions": suggestions[:5] if suggestions else None,
         }
 
     except Exception as e:
-        return {
-            "status": "ERROR",
-            "passed": False,
-            "error": str(e)
-        }
+        return {"status": "ERROR", "passed": False, "error": str(e)}
+
 
 # ==============================================================================
 # TOOL REGISTRATION
@@ -208,4 +217,6 @@ def boring_verify_file(
 
 if MCP_AVAILABLE and mcp is not None:
     mcp.tool(description="Verify project code", annotations={"readOnlyHint": True})(boring_verify)
-    mcp.tool(description="Verify single file", annotations={"readOnlyHint": True})(boring_verify_file)
+    mcp.tool(description="Verify single file", annotations={"readOnlyHint": True})(
+        boring_verify_file
+    )

@@ -22,6 +22,7 @@ from .logger import log_status
 @dataclass
 class FileScore:
     """Relevance score for a file."""
+
     path: Path
     score: float
     reasons: list[str]
@@ -30,6 +31,7 @@ class FileScore:
 @dataclass
 class ContextSelection:
     """Selected context for AI prompt."""
+
     files: list[Path]
     total_tokens: int
     content: str
@@ -37,18 +39,107 @@ class ContextSelection:
 
 # Common stop words to ignore
 STOP_WORDS = {
-    "the", "a", "an", "is", "are", "was", "were", "be", "been", "being",
-    "have", "has", "had", "do", "does", "did", "will", "would", "could",
-    "should", "may", "might", "must", "shall", "can", "need", "dare",
-    "to", "of", "in", "for", "on", "with", "at", "by", "from", "as",
-    "into", "through", "during", "before", "after", "above", "below",
-    "this", "that", "these", "those", "it", "its", "and", "or", "but",
-    "not", "no", "yes", "if", "then", "else", "when", "where", "how",
-    "all", "each", "every", "both", "few", "more", "most", "other",
-    "some", "such", "only", "own", "same", "so", "than", "too", "very",
-    "just", "also", "now", "here", "there", "any", "new", "old",
-    "file", "code", "function", "class", "method", "variable", "import",
-    "return", "def", "self", "none", "true", "false", "print",
+    "the",
+    "a",
+    "an",
+    "is",
+    "are",
+    "was",
+    "were",
+    "be",
+    "been",
+    "being",
+    "have",
+    "has",
+    "had",
+    "do",
+    "does",
+    "did",
+    "will",
+    "would",
+    "could",
+    "should",
+    "may",
+    "might",
+    "must",
+    "shall",
+    "can",
+    "need",
+    "dare",
+    "to",
+    "of",
+    "in",
+    "for",
+    "on",
+    "with",
+    "at",
+    "by",
+    "from",
+    "as",
+    "into",
+    "through",
+    "during",
+    "before",
+    "after",
+    "above",
+    "below",
+    "this",
+    "that",
+    "these",
+    "those",
+    "it",
+    "its",
+    "and",
+    "or",
+    "but",
+    "not",
+    "no",
+    "yes",
+    "if",
+    "then",
+    "else",
+    "when",
+    "where",
+    "how",
+    "all",
+    "each",
+    "every",
+    "both",
+    "few",
+    "more",
+    "most",
+    "other",
+    "some",
+    "such",
+    "only",
+    "own",
+    "same",
+    "so",
+    "than",
+    "too",
+    "very",
+    "just",
+    "also",
+    "now",
+    "here",
+    "there",
+    "any",
+    "new",
+    "old",
+    "file",
+    "code",
+    "function",
+    "class",
+    "method",
+    "variable",
+    "import",
+    "return",
+    "def",
+    "self",
+    "none",
+    "true",
+    "false",
+    "print",
 }
 
 
@@ -65,7 +156,7 @@ class ContextSelector:
         self,
         project_root: Path,
         log_dir: Optional[Path] = None,
-        max_file_size: int = 50000  # 50KB max per file
+        max_file_size: int = 50000,  # 50KB max per file
     ):
         self.project_root = Path(project_root)
         self.log_dir = log_dir or Path("logs")
@@ -73,18 +164,40 @@ class ContextSelector:
 
         # File extensions to consider
         self.include_extensions = {
-            ".py", ".js", ".ts", ".jsx", ".tsx",
-            ".json", ".yaml", ".yml", ".toml",
-            ".md", ".txt", ".rst",
-            ".html", ".css", ".scss",
-            ".sql", ".sh", ".bash"
+            ".py",
+            ".js",
+            ".ts",
+            ".jsx",
+            ".tsx",
+            ".json",
+            ".yaml",
+            ".yml",
+            ".toml",
+            ".md",
+            ".txt",
+            ".rst",
+            ".html",
+            ".css",
+            ".scss",
+            ".sql",
+            ".sh",
+            ".bash",
         }
 
         # Directories to exclude
         self.exclude_dirs = {
-            ".git", ".venv", "venv", "__pycache__", "node_modules",
-            ".pytest_cache", ".mypy_cache", "dist", "build",
-            ".boring_memory", "logs", ".boring_extensions"
+            ".git",
+            ".venv",
+            "venv",
+            "__pycache__",
+            "node_modules",
+            ".pytest_cache",
+            ".mypy_cache",
+            "dist",
+            "build",
+            ".boring_memory",
+            "logs",
+            ".boring_extensions",
         }
 
     def extract_keywords(self, text: str) -> set[str]:
@@ -98,22 +211,19 @@ class ContextSelector:
             Set of keywords
         """
         # Tokenize: split on non-word characters
-        words = re.findall(r'\b[a-zA-Z_][a-zA-Z0-9_]*\b', text.lower())
+        words = re.findall(r"\b[a-zA-Z_][a-zA-Z0-9_]*\b", text.lower())
 
         # Filter: remove stop words and short words
-        keywords = {
-            word for word in words
-            if word not in STOP_WORDS and len(word) > 2
-        }
+        keywords = {word for word in words if word not in STOP_WORDS and len(word) > 2}
 
         # Add camelCase/snake_case splits
         expanded = set()
         for word in keywords:
             # Split camelCase
-            parts = re.findall(r'[A-Z]?[a-z]+|[A-Z]+(?=[A-Z]|$)', word)
+            parts = re.findall(r"[A-Z]?[a-z]+|[A-Z]+(?=[A-Z]|$)", word)
             expanded.update(p.lower() for p in parts if len(p) > 2)
             # Split snake_case
-            parts = word.split('_')
+            parts = word.split("_")
             expanded.update(p for p in parts if len(p) > 2 and p not in STOP_WORDS)
 
         keywords.update(expanded)
@@ -135,7 +245,7 @@ class ContextSelector:
 
         # Filename match
         filename = file_path.stem.lower()
-        filename_keywords = set(re.findall(r'[a-zA-Z]+', filename))
+        filename_keywords = set(re.findall(r"[a-zA-Z]+", filename))
         filename_matches = keywords & filename_keywords
         if filename_matches:
             score += len(filename_matches) * 2.0
@@ -157,7 +267,7 @@ class ContextSelector:
             content_lower = content.lower()
 
             # Count keyword occurrences
-            word_counts = Counter(re.findall(r'\b[a-zA-Z_][a-zA-Z0-9_]*\b', content_lower))
+            word_counts = Counter(re.findall(r"\b[a-zA-Z_][a-zA-Z0-9_]*\b", content_lower))
 
             for keyword in keywords:
                 count = word_counts.get(keyword, 0)
@@ -201,10 +311,7 @@ class ContextSelector:
         return files
 
     def select_files(
-        self,
-        prompt_text: str,
-        max_files: int = 10,
-        min_score: float = 0.5
+        self, prompt_text: str, max_files: int = 10, min_score: float = 0.5
     ) -> list[FileScore]:
         """
         Select most relevant files for given prompt.
@@ -221,10 +328,7 @@ class ContextSelector:
         if not keywords:
             return []
 
-        log_status(
-            self.log_dir, "INFO",
-            f"Context selector: {len(keywords)} keywords extracted"
-        )
+        log_status(self.log_dir, "INFO", f"Context selector: {len(keywords)} keywords extracted")
 
         files = self.get_project_files()
         scores = [self.score_file(f, keywords) for f in files]
@@ -237,17 +341,15 @@ class ContextSelector:
 
         if selected:
             log_status(
-                self.log_dir, "INFO",
-                f"Context selector: {len(selected)} files selected (top: {selected[0].path.name})"
+                self.log_dir,
+                "INFO",
+                f"Context selector: {len(selected)} files selected (top: {selected[0].path.name})",
             )
 
         return selected
 
     def select_context(
-        self,
-        prompt_text: str,
-        max_tokens: int = 8000,
-        max_files: int = 15
+        self, prompt_text: str, max_tokens: int = 8000, max_files: int = 15
     ) -> ContextSelection:
         """
         Select context content within token budget.
@@ -297,9 +399,7 @@ class ContextSelector:
         estimated_tokens = len(full_content) // 4
 
         return ContextSelection(
-            files=included_files,
-            total_tokens=estimated_tokens,
-            content=full_content
+            files=included_files, total_tokens=estimated_tokens, content=full_content
         )
 
     def generate_context_injection(self, prompt_text: str) -> str:

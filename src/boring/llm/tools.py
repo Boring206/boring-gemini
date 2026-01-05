@@ -9,6 +9,7 @@ from typing import Any
 # Try to import Google GenAI SDK
 try:
     from google.genai import types
+
     GENAI_AVAILABLE = True
 except ImportError:
     GENAI_AVAILABLE = False
@@ -83,15 +84,15 @@ def get_boring_tools() -> list[Any]:
                         properties={
                             "file_path": types.Schema(
                                 type=types.Type.STRING,
-                                description="Relative path to the file, e.g., src/main.py"
+                                description="Relative path to the file, e.g., src/main.py",
                             ),
                             "content": types.Schema(
                                 type=types.Type.STRING,
-                                description="The complete code content to write."
-                            )
+                                description="The complete code content to write.",
+                            ),
                         },
-                        required=["file_path", "content"]
-                    )
+                        required=["file_path", "content"],
+                    ),
                 ),
                 types.FunctionDeclaration(
                     name="search_replace",
@@ -101,19 +102,19 @@ def get_boring_tools() -> list[Any]:
                         properties={
                             "file_path": types.Schema(
                                 type=types.Type.STRING,
-                                description="Relative path to the file to modify"
+                                description="Relative path to the file to modify",
                             ),
                             "search": types.Schema(
                                 type=types.Type.STRING,
-                                description="The exact text to search for (must match exactly)"
+                                description="The exact text to search for (must match exactly)",
                             ),
                             "replace": types.Schema(
                                 type=types.Type.STRING,
-                                description="The text to replace the search text with"
-                            )
+                                description="The text to replace the search text with",
+                            ),
                         },
-                        required=["file_path", "search", "replace"]
-                    )
+                        required=["file_path", "search", "replace"],
+                    ),
                 ),
                 types.FunctionDeclaration(
                     name="report_status",
@@ -123,24 +124,23 @@ def get_boring_tools() -> list[Any]:
                         properties={
                             "status": types.Schema(
                                 type=types.Type.STRING,
-                                description="Current status of the task (IN_PROGRESS or COMPLETE)"
+                                description="Current status of the task (IN_PROGRESS or COMPLETE)",
                             ),
                             "tasks_completed": types.Schema(
                                 type=types.Type.INTEGER,
-                                description="Number of tasks completed in this loop"
+                                description="Number of tasks completed in this loop",
                             ),
                             "files_modified": types.Schema(
-                                type=types.Type.INTEGER,
-                                description="Number of files modified"
+                                type=types.Type.INTEGER, description="Number of files modified"
                             ),
                             "exit_signal": types.Schema(
                                 type=types.Type.BOOLEAN,
-                                description="True only if ALL tasks in @fix_plan.md are marked [x]"
-                            )
+                                description="True only if ALL tasks in @fix_plan.md are marked [x]",
+                            ),
                         },
-                        required=["status", "tasks_completed", "files_modified", "exit_signal"]
-                    )
-                )
+                        required=["status", "tasks_completed", "files_modified", "exit_signal"],
+                    ),
+                ),
             ]
         )
     ]

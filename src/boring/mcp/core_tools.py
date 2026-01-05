@@ -19,6 +19,7 @@ from typing import Optional
 @dataclass
 class TaskResult:
     """Result of a Boring task execution."""
+
     status: str
     files_modified: int
     message: str
@@ -58,17 +59,17 @@ def register_core_tools(mcp, audited, helpers):
                 "1. Run speckit_clarify to understand requirements",
                 "2. Run speckit_plan to create implementation plan",
                 "3. Run speckit_tasks to break into actionable items",
-                "4. Run run_boring to start autonomous development"
+                "4. Run run_boring to start autonomous development",
             ],
             "available_workflows": {
                 "spec_driven": ["speckit_plan", "speckit_tasks", "speckit_analyze"],
                 "verification": ["boring_verify", "boring_evaluate"],
-                "evolution": ["speckit_evolve_workflow", "boring_learn"]
+                "evolution": ["speckit_evolve_workflow", "boring_learn"],
             },
             "tips": [
                 "Use boring_verify with level=SEMANTIC for AI-powered code review",
-                "Run boring_learn after completing a project to extract patterns"
-            ]
+                "Run boring_learn after completing a project to extract patterns",
+            ],
         }
 
     @mcp.tool()
@@ -76,6 +77,7 @@ def register_core_tools(mcp, audited, helpers):
     def boring_health_check() -> dict:
         """Check Boring system health."""
         from ..health import HealthChecker
+
         checker = HealthChecker()
         return checker.full_check()
 
@@ -99,11 +101,11 @@ def register_core_tools(mcp, audited, helpers):
             "project_root": str(project_root),
             "loop_count": state.get("loop_count", 0),
             "last_run": state.get("last_run"),
-            "files_modified": state.get("files_modified", 0)
+            "files_modified": state.get("files_modified", 0),
         }
 
     return {
         "boring_quickstart": boring_quickstart,
         "boring_health_check": boring_health_check,
-        "boring_status": boring_status
+        "boring_status": boring_status,
     }

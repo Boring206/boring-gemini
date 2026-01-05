@@ -33,6 +33,7 @@ def _process_function_calls(self, function_calls, project_root=None):
     executor = ToolExecutor(root, self.log_dir)
     return executor.process_function_calls(function_calls)
 
+
 GeminiClient.process_function_calls = _process_function_calls
 
 # Backwards compatibility: process_function_calls as method

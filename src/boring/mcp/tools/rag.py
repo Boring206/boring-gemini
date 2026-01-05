@@ -33,10 +33,17 @@ def register_rag_tools(mcp, helpers: dict):
     """
     get_project_root_or_error = helpers.get("get_project_root_or_error")
 
-    @mcp.tool(description="Index codebase for RAG", annotations={"readOnlyHint": False, "idempotentHint": True})
+    @mcp.tool(
+        description="Index codebase for RAG",
+        annotations={"readOnlyHint": False, "idempotentHint": True},
+    )
     def boring_rag_index(
-        force: Annotated[bool, Field(description="If True, rebuild index even if it exists")] = False,
-        project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+        force: Annotated[
+            bool, Field(description="If True, rebuild index even if it exists")
+        ] = False,
+        project_path: Annotated[
+            str, Field(description="Optional explicit path to project root")
+        ] = None,
     ) -> str:
         """
         Index the codebase for RAG retrieval.
@@ -81,14 +88,30 @@ def register_rag_tools(mcp, helpers: dict):
 
         return f"✅ RAG Index ready with {count} chunks"
 
-    @mcp.tool(description="Semantic code search", annotations={"readOnlyHint": True, "openWorldHint": False})
+    @mcp.tool(
+        description="Semantic code search",
+        annotations={"readOnlyHint": True, "openWorldHint": False},
+    )
     def boring_rag_search(
-        query: Annotated[str, Field(description="What you're looking for (e.g., 'authentication error handling')")],
-        max_results: Annotated[int, Field(description="Maximum number of results (default 10)")] = 10,
-        expand_graph: Annotated[bool, Field(description="Include related code via dependency graph (default True)")] = True,
-        file_filter: Annotated[str, Field(description="Filter by file path substring (e.g., 'auth' or 'src/api')")] = None,
-        threshold: Annotated[float, Field(description="Minimum relevance score (0.0 to 1.0)")] = 0.0,
-        project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+        query: Annotated[
+            str,
+            Field(description="What you're looking for (e.g., 'authentication error handling')"),
+        ],
+        max_results: Annotated[
+            int, Field(description="Maximum number of results (default 10)")
+        ] = 10,
+        expand_graph: Annotated[
+            bool, Field(description="Include related code via dependency graph (default True)")
+        ] = True,
+        file_filter: Annotated[
+            str, Field(description="Filter by file path substring (e.g., 'auth' or 'src/api')")
+        ] = None,
+        threshold: Annotated[
+            float, Field(description="Minimum relevance score (0.0 to 1.0)")
+        ] = 0.0,
+        project_path: Annotated[
+            str, Field(description="Optional explicit path to project root")
+        ] = None,
     ) -> str:
         """
         Search the codebase using semantic RAG retrieval.
@@ -148,7 +171,7 @@ def register_rag_tools(mcp, helpers: dict):
             n_results=max_results,
             expand_graph=expand_graph,
             file_filter=file_filter,
-            threshold=threshold
+            threshold=threshold,
         )
 
         if not results:
@@ -175,9 +198,14 @@ def register_rag_tools(mcp, helpers: dict):
 
         return "\n".join(parts)
 
-    @mcp.tool(description="Check RAG index health and statistics", annotations={"readOnlyHint": True, "openWorldHint": False})
+    @mcp.tool(
+        description="Check RAG index health and statistics",
+        annotations={"readOnlyHint": True, "openWorldHint": False},
+    )
     def boring_rag_status(
-        project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+        project_path: Annotated[
+            str, Field(description="Optional explicit path to project root")
+        ] = None,
     ) -> str:
         """
         Check RAG index health and provide diagnostic information.
@@ -200,7 +228,9 @@ def register_rag_tools(mcp, helpers: dict):
         # Check ChromaDB availability
         if not retriever.is_available:
             report.append("## ❌ ChromaDB Not Available\n")
-            report.append("Install dependencies:\n```bash\npip install chromadb sentence-transformers\n```\n")
+            report.append(
+                "Install dependencies:\n```bash\npip install chromadb sentence-transformers\n```\n"
+            )
             return "\n".join(report)
 
         report.append("## ✅ ChromaDB Available\n")
@@ -241,12 +271,21 @@ def register_rag_tools(mcp, helpers: dict):
 
         return "\n".join(report)
 
-    @mcp.tool(description="Get code context (callers/callees)", annotations={"readOnlyHint": True, "openWorldHint": False})
+    @mcp.tool(
+        description="Get code context (callers/callees)",
+        annotations={"readOnlyHint": True, "openWorldHint": False},
+    )
     def boring_rag_context(
         file_path: Annotated[str, Field(description="Path to the file (relative to project root)")],
-        function_name: Annotated[str, Field(description="Name of the function to get context for")] = None,
-        class_name: Annotated[str, Field(description="Name of the class (if getting class context)")] = None,
-        project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+        function_name: Annotated[
+            str, Field(description="Name of the function to get context for")
+        ] = None,
+        class_name: Annotated[
+            str, Field(description="Name of the class (if getting class context)")
+        ] = None,
+        project_path: Annotated[
+            str, Field(description="Optional explicit path to project root")
+        ] = None,
     ) -> str:
         """
         Get comprehensive context for modifying a specific code location.
@@ -274,9 +313,7 @@ def register_rag_tools(mcp, helpers: dict):
             return "❌ RAG not available. Run boring_rag_index first."
 
         context = retriever.get_modification_context(
-            file_path=file_path,
-            function_name=function_name,
-            class_name=class_name
+            file_path=file_path, function_name=function_name, class_name=class_name
         )
 
         parts = [f"📍 Context for `{function_name or class_name}` in `{file_path}`\n"]
@@ -284,23 +321,24 @@ def register_rag_tools(mcp, helpers: dict):
         # Target
         if context["target"]:
             chunk = context["target"][0].chunk
-            parts.append(
-                f"## 🎯 Target\n"
-                f"```python\n{chunk.content}\n```\n"
-            )
+            parts.append(f"## 🎯 Target\n```python\n{chunk.content}\n```\n")
         else:
             return f"❌ Could not find `{function_name or class_name}` in `{file_path}`"
 
         # Callers (might break)
         if context["callers"]:
-            parts.append(f"## ⚠️ Callers ({len(context['callers'])} - might break if you change the interface)\n")
+            parts.append(
+                f"## ⚠️ Callers ({len(context['callers'])} - might break if you change the interface)\n"
+            )
             for r in context["callers"][:5]:
                 c = r.chunk
                 parts.append(f"- `{c.file_path}` → `{c.name}` (L{c.start_line})\n")
 
         # Callees (dependencies)
         if context["callees"]:
-            parts.append(f"## 📦 Dependencies ({len(context['callees'])} - understand these interfaces)\n")
+            parts.append(
+                f"## 📦 Dependencies ({len(context['callees'])} - understand these interfaces)\n"
+            )
             for r in context["callees"][:5]:
                 c = r.chunk
                 sig = c.signature or c.content[:100]
@@ -315,11 +353,18 @@ def register_rag_tools(mcp, helpers: dict):
 
         return "\n".join(parts)
 
-    @mcp.tool(description="Recursively expand code dependencies", annotations={"readOnlyHint": True, "openWorldHint": False})
+    @mcp.tool(
+        description="Recursively expand code dependencies",
+        annotations={"readOnlyHint": True, "openWorldHint": False},
+    )
     def boring_rag_expand(
-        chunk_id: Annotated[str, Field(description="The chunk ID to expand from (from search results)")],
+        chunk_id: Annotated[
+            str, Field(description="The chunk ID to expand from (from search results)")
+        ],
         depth: Annotated[int, Field(description="How many layers to expand (default 2)")] = 2,
-        project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+        project_path: Annotated[
+            str, Field(description="Optional explicit path to project root")
+        ] = None,
     ) -> str:
         """
         Smart expand: Get deeper dependency context for a specific chunk.

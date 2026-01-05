@@ -29,6 +29,7 @@ console = Console(stderr=True, quiet=_is_mcp_mode)
 
 class HealthStatus(Enum):
     """Health check status levels."""
+
     PASS = "✅ PASS"
     WARN = "⚠️ WARN"
     FAIL = "❌ FAIL"
@@ -38,6 +39,7 @@ class HealthStatus(Enum):
 @dataclass
 class HealthCheckResult:
     """Result of a single health check."""
+
     name: str
     status: HealthStatus
     message: str
@@ -47,6 +49,7 @@ class HealthCheckResult:
 @dataclass
 class HealthReport:
     """Complete health report."""
+
     checks: list[HealthCheckResult] = field(default_factory=list)
 
     @property
@@ -75,22 +78,20 @@ def check_api_key() -> HealthCheckResult:
             name="API Key",
             status=HealthStatus.FAIL,
             message="GOOGLE_API_KEY not set",
-            suggestion="Set environment variable: export GOOGLE_API_KEY='your-key'"
+            suggestion="Set environment variable: export GOOGLE_API_KEY='your-key'",
         )
 
     # Basic format validation (Google API keys start with AIza)
     if api_key.startswith("AIza") and len(api_key) >= 39:
         return HealthCheckResult(
-            name="API Key",
-            status=HealthStatus.PASS,
-            message="API key configured"
+            name="API Key", status=HealthStatus.PASS, message="API key configured"
         )
     else:
         return HealthCheckResult(
             name="API Key",
             status=HealthStatus.WARN,
             message="API key format may be invalid",
-            suggestion="Verify your API key at https://console.cloud.google.com"
+            suggestion="Verify your API key at https://console.cloud.google.com",
         )
 
 
@@ -103,7 +104,7 @@ def check_git_repo(project_root: Path) -> HealthCheckResult:
             name="Git Repository",
             status=HealthStatus.WARN,
             message="Not a Git repository",
-            suggestion="Initialize with: git init"
+            suggestion="Initialize with: git init",
         )
 
     try:
@@ -114,7 +115,7 @@ def check_git_repo(project_root: Path) -> HealthCheckResult:
             capture_output=True,
             text=True,
             cwd=project_root,
-            timeout=10
+            timeout=10,
         )
 
         if result.returncode != 0:
@@ -122,48 +123,45 @@ def check_git_repo(project_root: Path) -> HealthCheckResult:
                 name="Git Repository",
                 status=HealthStatus.WARN,
                 message="Git command failed",
-                suggestion="Check Git installation"
+                suggestion="Check Git installation",
             )
 
         if result.stdout.strip():
-            lines = len(result.stdout.strip().split('\n'))
+            lines = len(result.stdout.strip().split("\n"))
             return HealthCheckResult(
                 name="Git Repository",
                 status=HealthStatus.WARN,
                 message=f"{lines} uncommitted change(s)",
-                suggestion="Consider committing before running Boring"
+                suggestion="Consider committing before running Boring",
             )
 
         return HealthCheckResult(
-            name="Git Repository",
-            status=HealthStatus.PASS,
-            message="Clean working directory"
+            name="Git Repository", status=HealthStatus.PASS, message="Clean working directory"
         )
     except Exception as e:
         return HealthCheckResult(
-            name="Git Repository",
-            status=HealthStatus.SKIP,
-            message=f"Check failed: {e}"
+            name="Git Repository", status=HealthStatus.SKIP, message=f"Check failed: {e}"
         )
 
 
 def check_python_version() -> HealthCheckResult:
     """Check Python version compatibility."""
     import sys
+
     version = sys.version_info
 
     if version >= (3, 9):
         return HealthCheckResult(
             name="Python Version",
             status=HealthStatus.PASS,
-            message=f"Python {version.major}.{version.minor}.{version.micro}"
+            message=f"Python {version.major}.{version.minor}.{version.micro}",
         )
     else:
         return HealthCheckResult(
             name="Python Version",
             status=HealthStatus.FAIL,
             message=f"Python {version.major}.{version.minor} (requires 3.9+)",
-            suggestion="Upgrade Python to 3.9 or later"
+            suggestion="Upgrade Python to 3.9 or later",
         )
 
 
@@ -195,13 +193,11 @@ def check_required_dependencies() -> HealthCheckResult:
             name="Dependencies",
             status=HealthStatus.FAIL,
             message=f"Missing: {', '.join(missing)}",
-            suggestion="Run: pip install -e ."
+            suggestion="Run: pip install -e .",
         )
 
     return HealthCheckResult(
-        name="Dependencies",
-        status=HealthStatus.PASS,
-        message="All required packages installed"
+        name="Dependencies", status=HealthStatus.PASS, message="All required packages installed"
     )
 
 
@@ -230,13 +226,13 @@ def check_optional_dependencies() -> HealthCheckResult:
             name="Optional Features",
             status=HealthStatus.WARN,
             message="No optional features installed",
-            suggestion="pip install boring-gemini[vector] for Vector Memory"
+            suggestion="pip install boring-gemini[vector] for Vector Memory",
         )
 
     return HealthCheckResult(
         name="Optional Features",
         status=HealthStatus.PASS,
-        message=f"Available: {', '.join(available)}"
+        message=f"Available: {', '.join(available)}",
     )
 
 
@@ -249,7 +245,7 @@ def check_prompt_file(project_root: Path) -> HealthCheckResult:
             name="PROMPT.md",
             status=HealthStatus.FAIL,
             message="PROMPT.md not found",
-            suggestion="Create PROMPT.md with your development instructions"
+            suggestion="Create PROMPT.md with your development instructions",
         )
 
     content = prompt_file.read_text(encoding="utf-8")
@@ -258,13 +254,11 @@ def check_prompt_file(project_root: Path) -> HealthCheckResult:
             name="PROMPT.md",
             status=HealthStatus.WARN,
             message="PROMPT.md seems too short",
-            suggestion="Add detailed instructions for Boring"
+            suggestion="Add detailed instructions for Boring",
         )
 
     return HealthCheckResult(
-        name="PROMPT.md",
-        status=HealthStatus.PASS,
-        message=f"Found ({len(content)} chars)"
+        name="PROMPT.md", status=HealthStatus.PASS, message=f"Found ({len(content)} chars)"
     )
 
 
@@ -274,16 +268,14 @@ def check_gemini_cli() -> HealthCheckResult:
 
     if gemini_cmd:
         return HealthCheckResult(
-            name="Gemini CLI",
-            status=HealthStatus.PASS,
-            message=f"Found at {gemini_cmd}"
+            name="Gemini CLI", status=HealthStatus.PASS, message=f"Found at {gemini_cmd}"
         )
 
     return HealthCheckResult(
         name="Gemini CLI",
         status=HealthStatus.WARN,
         message="Not found (optional)",
-        suggestion="npm install -g @google/gemini-cli"
+        suggestion="npm install -g @google/gemini-cli",
     )
 
 
@@ -292,17 +284,13 @@ def check_ruff() -> HealthCheckResult:
     ruff_cmd = shutil.which("ruff")
 
     if ruff_cmd:
-        return HealthCheckResult(
-            name="Ruff Linter",
-            status=HealthStatus.PASS,
-            message="Available"
-        )
+        return HealthCheckResult(name="Ruff Linter", status=HealthStatus.PASS, message="Available")
 
     return HealthCheckResult(
         name="Ruff Linter",
         status=HealthStatus.WARN,
         message="Not found (optional)",
-        suggestion="pip install ruff"
+        suggestion="pip install ruff",
     )
 
 
@@ -319,12 +307,14 @@ def run_health_check(project_root: Optional[Path] = None, backend: str = "api") 
 
     # Core checks - API key only required for API backend
     if backend.lower() == "cli":
-        report.checks.append(HealthCheckResult(
-            name="API Key",
-            status=HealthStatus.SKIP,
-            message="Using CLI OAuth (no API key needed)",
-            suggestion="Run 'gemini login' if not authenticated"
-        ))
+        report.checks.append(
+            HealthCheckResult(
+                name="API Key",
+                status=HealthStatus.SKIP,
+                message="Using CLI OAuth (no API key needed)",
+                suggestion="Run 'gemini login' if not authenticated",
+            )
+        )
     else:
         report.checks.append(check_api_key())
 
@@ -363,18 +353,22 @@ def print_health_report(report: HealthReport):
 
     # Summary
     if report.is_healthy:
-        console.print(Panel(
-            f"[green]✓ System Healthy[/green]\n"
-            f"Passed: {report.passed} | Warnings: {report.warnings}",
-            title="Summary",
-            border_style="green"
-        ))
+        console.print(
+            Panel(
+                f"[green]✓ System Healthy[/green]\n"
+                f"Passed: {report.passed} | Warnings: {report.warnings}",
+                title="Summary",
+                border_style="green",
+            )
+        )
     else:
-        console.print(Panel(
-            f"[red]✗ Issues Found[/red]\n"
-            f"Passed: {report.passed} | Warnings: {report.warnings} | Failed: {report.failed}",
-            title="Summary",
-            border_style="red"
-        ))
+        console.print(
+            Panel(
+                f"[red]✗ Issues Found[/red]\n"
+                f"Passed: {report.passed} | Warnings: {report.warnings} | Failed: {report.failed}",
+                title="Summary",
+                border_style="red",
+            )
+        )
 
     return report.is_healthy

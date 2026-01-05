@@ -15,7 +15,7 @@ def load_custom_rules(project_root: Path) -> dict:
     rules = {
         "custom_commands": [],
         "excludes": list(settings.VERIFICATION_EXCLUDES),
-        "linter_configs": dict(settings.LINTER_CONFIGS)
+        "linter_configs": dict(settings.LINTER_CONFIGS),
     }
 
     config_file = project_root / ".boring.toml"

@@ -104,7 +104,9 @@ Please revise your plan to address this feedback.
 {existing_plan[:2000]}...
 """
 
-        prompt = self._build_prompt(context, f"""
+        prompt = self._build_prompt(
+            context,
+            f"""
 Create a detailed implementation plan for the task described above.
 {existing_plan_context}
 {feedback_instruction}
@@ -116,7 +118,8 @@ Focus on:
 4. Defining clear success criteria
 
 Remember: You are ONLY planning. Do not write code.
-""")
+""",
+        )
 
         response, success = await self._generate(prompt)
 
@@ -127,7 +130,7 @@ Remember: You are ONLY planning. Do not write code.
                 action="plan_failed",
                 summary="Failed to generate implementation plan",
                 artifacts={"error": response},
-                requires_approval=False
+                requires_approval=False,
             )
 
         # Store plan in shared resources
@@ -143,12 +146,9 @@ Remember: You are ONLY planning. Do not write code.
             receiver=AgentRole.CODER,
             action="plan_created",
             summary=f"Created implementation plan with {len(files_to_modify)} files to modify",
-            artifacts={
-                "plan": response,
-                "files": files_to_modify
-            },
+            artifacts={"plan": response, "files": files_to_modify},
             requires_approval=True,  # Human should approve plan
-            approval_reason="Implementation plan requires review before coding begins"
+            approval_reason="Implementation plan requires review before coding begins",
         )
 
     def _extract_file_list(self, plan: str) -> list:
@@ -158,8 +158,8 @@ Remember: You are ONLY planning. Do not write code.
         files = []
         # Match patterns like `path/to/file.py` or - `file.py`:
         patterns = [
-            r'`([^`]+\.[a-z0-9]+)`',
-            r'- `([^`]+)`.*(?:NEW|MODIFY|DELETE)',
+            r"`([^`]+\.[a-z0-9]+)`",
+            r"- `([^`]+)`.*(?:NEW|MODIFY|DELETE)",
         ]
 
         for pattern in patterns:

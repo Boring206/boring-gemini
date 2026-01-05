@@ -11,9 +11,12 @@ from ..utils import configure_runtime_for_project, get_project_root_or_error
 # GIT HOOKS TOOLS
 # ==============================================================================
 
+
 @audited
 def boring_hooks_install(
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Install Boring Git hooks (pre-commit, pre-push) for local code quality enforcement.
@@ -35,6 +38,7 @@ def boring_hooks_install(
         configure_runtime_for_project(root)
 
         from ...hooks import HooksManager
+
         manager = HooksManager(root)
 
         # --- Idempotency Check ---
@@ -51,7 +55,7 @@ def boring_hooks_install(
                 return {
                     "status": "SKIPPED",
                     "message": "Hooks already installed.",
-                    "hooks": hooks_info
+                    "hooks": hooks_info,
                 }
         # --- End Idempotency Check ---
 
@@ -61,18 +65,18 @@ def boring_hooks_install(
                 "status": "SUCCESS",
                 "message": "Hooks installed successfully!",
                 "details": msg,
-                "tip": "Your commits and pushes will now be verified automatically."
+                "tip": "Your commits and pushes will now be verified automatically.",
             }
-        return {
-            "status": "ERROR",
-            "message": msg
-        }
+        return {"status": "ERROR", "message": msg}
     except Exception as e:
         return {"status": "ERROR", "error": str(e)}
 
+
 @audited
 def boring_hooks_uninstall(
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Remove Boring Git hooks.
@@ -91,19 +95,20 @@ def boring_hooks_uninstall(
         configure_runtime_for_project(root)
 
         from ...hooks import HooksManager
+
         manager = HooksManager(root)
 
         success, msg = manager.uninstall_all()
-        return {
-            "status": "SUCCESS" if success else "ERROR",
-            "message": msg
-        }
+        return {"status": "SUCCESS" if success else "ERROR", "message": msg}
     except Exception as e:
         return {"status": "ERROR", "error": str(e)}
 
+
 @audited
 def boring_hooks_status(
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Get status of installed Git hooks.
@@ -122,6 +127,7 @@ def boring_hooks_status(
         configure_runtime_for_project(root)
 
         from ...hooks import HooksManager
+
         manager = HooksManager(root)
 
         return manager.status()
@@ -133,12 +139,21 @@ def boring_hooks_status(
 # SEMANTIC GIT TOOLS
 # ==============================================================================
 
+
 @audited
 def boring_commit(
-    task_file: Annotated[str, Field(description="Path to task.md file (default: task.md)")] = "task.md",
-    commit_type: Annotated[str, Field(description="Commit type: auto, feat, fix, refactor, docs, chore")] = "auto",
-    scope: Annotated[str, Field(description="Optional scope for commit message (e.g., 'rag', 'auth')")] = None,
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    task_file: Annotated[
+        str, Field(description="Path to task.md file (default: task.md)")
+    ] = "task.md",
+    commit_type: Annotated[
+        str, Field(description="Commit type: auto, feat, fix, refactor, docs, chore")
+    ] = "auto",
+    scope: Annotated[
+        str, Field(description="Optional scope for commit message (e.g., 'rag', 'auth')")
+    ] = None,
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Generate a semantic Git commit message from completed tasks in task.md.
@@ -166,7 +181,7 @@ def boring_commit(
         for alt_path in [
             project_root / ".gemini" / "task.md",
             project_root / "openspec" / "task.md",
-            project_root / ".agent" / "task.md"
+            project_root / ".agent" / "task.md",
         ]:
             if alt_path.exists():
                 task_path = alt_path
@@ -176,7 +191,7 @@ def boring_commit(
         return {
             "status": "NOT_FOUND",
             "message": f"Task file not found: {task_file}",
-            "searched": [str(project_root / task_file)]
+            "searched": [str(project_root / task_file)],
         }
 
     try:
@@ -192,7 +207,7 @@ def boring_commit(
         return {
             "status": "NO_COMPLETED_TASKS",
             "message": "No completed tasks found in task.md",
-            "hint": "Mark tasks as complete with [x] before generating commit"
+            "hint": "Mark tasks as complete with [x] before generating commit",
         }
 
     # Detect commit type from tasks if auto
@@ -216,7 +231,7 @@ def boring_commit(
         scope_keywords = {
             "rag": ["rag", "index", "search", "retrieve"],
             "mcp": ["mcp", "tool", "server"],
-            "verify": ["verify", "lint", "test"]
+            "verify": ["verify", "lint", "test"],
         }
         task_text = " ".join(completed_tasks).lower()
         for scope_name, keywords in scope_keywords.items():
@@ -242,15 +257,19 @@ def boring_commit(
         "scope": detected_scope,
         "message": commit_line,
         "completed_tasks": len(completed_tasks),
-        "command": f'git commit -m "{escaped_message}"'
+        "command": f'git commit -m "{escaped_message}"',
     }
 
 
 @audited
 def boring_visualize(
-    scope: Annotated[str, Field(description="Visualization scope: module, class, or full")] = "module",
+    scope: Annotated[
+        str, Field(description="Visualization scope: module, class, or full")
+    ] = "module",
     output_format: Annotated[str, Field(description="Output format: mermaid, json")] = "mermaid",
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Generate architecture visualization from codebase structure.
@@ -324,7 +343,7 @@ def boring_visualize(
         "status": "SUCCESS",
         "format": "mermaid",
         "diagram": "\n".join(mermaid_lines),
-        "total_modules": len(modules)
+        "total_modules": len(modules),
     }
 
 
@@ -333,9 +352,20 @@ def boring_visualize(
 # ==============================================================================
 
 if MCP_AVAILABLE and mcp is not None:
-    mcp.tool(description="Install Git hooks", annotations={"readOnlyHint": False, "idempotentHint": True})(boring_hooks_install)
-    mcp.tool(description="Uninstall Git hooks", annotations={"readOnlyHint": False, "idempotentHint": True})(boring_hooks_uninstall)
-    mcp.tool(description="Check Git hooks status", annotations={"readOnlyHint": True})(boring_hooks_status)
-    mcp.tool(description="Generate semantic Git commit from task.md", annotations={"readOnlyHint": True})(boring_commit)
-    mcp.tool(description="Generate architecture diagram from codebase", annotations={"readOnlyHint": True})(boring_visualize)
-
+    mcp.tool(
+        description="Install Git hooks", annotations={"readOnlyHint": False, "idempotentHint": True}
+    )(boring_hooks_install)
+    mcp.tool(
+        description="Uninstall Git hooks",
+        annotations={"readOnlyHint": False, "idempotentHint": True},
+    )(boring_hooks_uninstall)
+    mcp.tool(description="Check Git hooks status", annotations={"readOnlyHint": True})(
+        boring_hooks_status
+    )
+    mcp.tool(
+        description="Generate semantic Git commit from task.md", annotations={"readOnlyHint": True}
+    )(boring_commit)
+    mcp.tool(
+        description="Generate architecture diagram from codebase",
+        annotations={"readOnlyHint": True},
+    )(boring_visualize)

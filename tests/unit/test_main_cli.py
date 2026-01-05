@@ -524,8 +524,9 @@ def test_evaluate_exception(mock_dependencies, tmp_path):
 # --- Dashboard Command ---
 def test_dashboard_success(mock_dependencies, mocker):
     mocks = mock_dependencies
-    # Enable streamlit in sys.modules
+    # Enable streamlit in sys.modules and mock find_spec
     mocker.patch.dict("sys.modules", {"streamlit": mocker.MagicMock()})
+    mocker.patch("importlib.util.find_spec", return_value=mocker.MagicMock())
 
     result = runner.invoke(app, ["dashboard"])
     assert result.exit_code == 0
@@ -536,7 +537,9 @@ def test_dashboard_subprocess_error(mock_dependencies, mocker):
     mocks = mock_dependencies
     mocks["subprocess"].side_effect = Exception("Subprocess failure")
 
+    # Mock streamlit and find_spec
     mocker.patch.dict("sys.modules", {"streamlit": mocker.MagicMock()})
+    mocker.patch("importlib.util.find_spec", return_value=mocker.MagicMock())
 
     result = runner.invoke(app, ["dashboard"])
     assert result.exit_code == 1

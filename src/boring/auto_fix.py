@@ -16,6 +16,7 @@ from typing import Optional
 @dataclass
 class FixAttempt:
     """Record of a fix attempt."""
+
     iteration: int
     issues_before: int
     issues_after: int
@@ -35,10 +36,7 @@ class AutoFixPipeline:
     """
 
     def __init__(
-        self,
-        project_root: Path,
-        max_iterations: int = 3,
-        verification_level: str = "STANDARD"
+        self, project_root: Path, max_iterations: int = 3, verification_level: str = "STANDARD"
     ):
         self.project_root = project_root
         self.max_iterations = max_iterations
@@ -56,15 +54,14 @@ class AutoFixPipeline:
         Returns:
             Pipeline result with status and attempt history
         """
-        previous_issue_count = float('inf')
+        previous_issue_count = float("inf")
 
         for iteration in range(1, self.max_iterations + 1):
             start_time = time.time()
 
             # Step 1: Verify
             verify_result = verify_func(
-                level=self.verification_level,
-                project_path=str(self.project_root)
+                level=self.verification_level, project_path=str(self.project_root)
             )
 
             if verify_result.get("passed", False):
@@ -72,12 +69,14 @@ class AutoFixPipeline:
                     "status": "SUCCESS",
                     "message": f"All issues resolved after {iteration - 1} fix attempts",
                     "iterations": iteration - 1,
-                    "attempts": [a.__dict__ for a in self.attempts]
+                    "attempts": [a.__dict__ for a in self.attempts],
                 }
 
             # Count issues
             issues = verify_result.get("issues", [])
-            issue_count = len(issues) if isinstance(issues, list) else verify_result.get("error_count", 1)
+            issue_count = (
+                len(issues) if isinstance(issues, list) else verify_result.get("error_count", 1)
+            )
 
             # Check for progress
             if issue_count >= previous_issue_count:
@@ -86,7 +85,7 @@ class AutoFixPipeline:
                     "message": f"No progress made. Issues: {issue_count}",
                     "iterations": iteration,
                     "attempts": [a.__dict__ for a in self.attempts],
-                    "remaining_issues": issues
+                    "remaining_issues": issues,
                 }
 
             # Step 2: Generate fix task
@@ -97,7 +96,7 @@ class AutoFixPipeline:
                 task_description=fix_task,
                 verification_level=self.verification_level,
                 max_loops=2,
-                project_path=str(self.project_root)
+                project_path=str(self.project_root),
             )
 
             duration = time.time() - start_time
@@ -109,7 +108,7 @@ class AutoFixPipeline:
                 issues_after=0,  # Will be updated next iteration
                 fix_description=fix_task[:200],
                 success=fix_result.get("status") == "SUCCESS",
-                duration_seconds=duration
+                duration_seconds=duration,
             )
             self.attempts.append(attempt)
 
@@ -117,8 +116,7 @@ class AutoFixPipeline:
 
         # Final verification
         final_result = verify_func(
-            level=self.verification_level,
-            project_path=str(self.project_root)
+            level=self.verification_level, project_path=str(self.project_root)
         )
 
         if final_result.get("passed", False):
@@ -126,7 +124,7 @@ class AutoFixPipeline:
                 "status": "SUCCESS",
                 "message": f"All issues resolved after {self.max_iterations} iterations",
                 "iterations": self.max_iterations,
-                "attempts": [a.__dict__ for a in self.attempts]
+                "attempts": [a.__dict__ for a in self.attempts],
             }
 
         return {
@@ -134,7 +132,7 @@ class AutoFixPipeline:
             "message": f"Reached max iterations ({self.max_iterations}). Some issues remain.",
             "iterations": self.max_iterations,
             "attempts": [a.__dict__ for a in self.attempts],
-            "remaining_issues": final_result.get("issues", [])
+            "remaining_issues": final_result.get("issues", []),
         }
 
     def _generate_fix_task(self, verify_result: dict) -> str:
@@ -160,13 +158,7 @@ Requirements:
 """
 
 
-def create_auto_fix_tool(
-    mcp,
-    audited,
-    run_boring_func,
-    verify_func,
-    get_project_root_func
-):
+def create_auto_fix_tool(mcp, audited, run_boring_func, verify_func, get_project_root_func):
     """
     Create and register the boring_auto_fix MCP tool.
 
@@ -183,7 +175,7 @@ def create_auto_fix_tool(
     def boring_auto_fix(
         max_iterations: int = 3,
         verification_level: str = "STANDARD",
-        project_path: Optional[str] = None
+        project_path: Optional[str] = None,
     ) -> dict:
         """
         Automated verify-and-fix loop.
@@ -206,7 +198,7 @@ def create_auto_fix_tool(
         pipeline = AutoFixPipeline(
             project_root=project_root,
             max_iterations=max_iterations,
-            verification_level=verification_level
+            verification_level=verification_level,
         )
 
         return pipeline.run(run_boring_func, verify_func)

@@ -20,7 +20,7 @@ class OllamaProvider(LLMProvider):
         self,
         model_name: str,
         base_url: str = "http://localhost:11434",
-        log_dir: Optional[Path] = None
+        log_dir: Optional[Path] = None,
     ):
         self._model_name = model_name
         self._base_url = base_url.rstrip("/")
@@ -48,10 +48,7 @@ class OllamaProvider(LLMProvider):
             return False
 
     def generate(
-        self,
-        prompt: str,
-        context: str = "",
-        timeout_seconds: int = 300
+        self, prompt: str, context: str = "", timeout_seconds: int = 300
     ) -> tuple[str, bool]:
         """Generate text using Ollama."""
         full_prompt = f"{context}\n\n{prompt}" if context else prompt
@@ -63,20 +60,17 @@ class OllamaProvider(LLMProvider):
                 "model": self.model_name,
                 "prompt": full_prompt,
                 "stream": False,
-                "options": {
-                    "temperature": 0.7,
-                    "num_ctx": 4096
-                }
+                "options": {"temperature": 0.7, "num_ctx": 4096},
             }
 
             response = requests.post(
-                f"{self.base_url}/api/generate",
-                json=payload,
-                timeout=timeout_seconds
+                f"{self.base_url}/api/generate", json=payload, timeout=timeout_seconds
             )
 
             if response.status_code != 200:
-                log_status(self.log_dir, "ERROR", f"Ollama error {response.status_code}: {response.text}")
+                log_status(
+                    self.log_dir, "ERROR", f"Ollama error {response.status_code}: {response.text}"
+                )
                 return f"Error: {response.text}", False
 
             data = response.json()
@@ -87,10 +81,7 @@ class OllamaProvider(LLMProvider):
             return str(e), False
 
     def generate_with_tools(
-        self,
-        prompt: str,
-        context: str = "",
-        timeout_seconds: int = 300
+        self, prompt: str, context: str = "", timeout_seconds: int = 300
     ) -> LLMResponse:
         """
         Generate with tools.
@@ -108,5 +99,5 @@ class OllamaProvider(LLMProvider):
             function_calls=[],
             success=success,
             error=None if success else text,
-            metadata={"provider": "ollama"}
+            metadata={"provider": "ollama"},
         )

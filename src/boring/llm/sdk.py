@@ -18,6 +18,7 @@ from typing import Any, Optional
 try:
     from google import genai
     from google.genai import types
+
     GENAI_AVAILABLE = True
 except ImportError:
     GENAI_AVAILABLE = False
@@ -55,7 +56,7 @@ class GeminiClient:
         self,
         api_key: Optional[str] = None,
         model_name: str = DEFAULT_MODEL,
-        log_dir: Path = Path("logs")
+        log_dir: Path = Path("logs"),
     ):
         """
         Initialize the Gemini client.
@@ -70,8 +71,7 @@ class GeminiClient:
 
         if not GENAI_AVAILABLE:
             raise ImportError(
-                "google-genai package not installed. "
-                "Install with: pip install google-genai"
+                "google-genai package not installed. Install with: pip install google-genai"
             )
 
         # Get API key (Prioritize arg -> settings -> env)
@@ -83,10 +83,13 @@ class GeminiClient:
         if not self.api_key:
             # Fallback to CLI if possible
             from ..cli_client import GeminiCLIAdapter, check_cli_available
+
             if check_cli_available():
                 _logger.info("No API key found. Falling back to Gemini CLI backend.")
                 self.backend = "cli"
-                self.cli_adapter = GeminiCLIAdapter(model_name=self.model_name, log_dir=self.log_dir)
+                self.cli_adapter = GeminiCLIAdapter(
+                    model_name=self.model_name, log_dir=self.log_dir
+                )
             else:
                 raise ValueError(
                     "GOOGLE_API_KEY not set and Gemini CLI not found. "
@@ -112,7 +115,7 @@ class GeminiClient:
         prompt: str,
         context: str = "",
         system_instruction: str = "",
-        timeout_seconds: int = settings.TIMEOUT_MINUTES * 60
+        timeout_seconds: int = settings.TIMEOUT_MINUTES * 60,
     ) -> tuple[str, bool]:
         """
         Generate content using Gemini.
@@ -137,10 +140,7 @@ class GeminiClient:
         full_prompt = "\n\n---\n\n".join(full_prompt_parts)
 
         # Build contents with proper Part objects
-        contents = [types.Content(
-            role="user",
-            parts=[types.Part(text=full_prompt)]
-        )]
+        contents = [types.Content(role="user", parts=[types.Part(text=full_prompt)])]
 
         try:
             if self.backend == "cli":
@@ -155,22 +155,25 @@ class GeminiClient:
                         system_instruction=system_instruction or SYSTEM_INSTRUCTION_OPTIMIZED,
                         temperature=0.7,
                         max_output_tokens=8192,
-                    )
+                    ),
                 )
             except Exception as e:
                 # Handle Model Not Found (404) with fallback
                 if "404" in str(e) or "not found" in str(e).lower():
                     fallback_model = "gemini-1.5-flash"
                     if self.model_name != fallback_model:
-                        _logger.warning(f"Model {self.model_name} not found. Falling back to {fallback_model}")
+                        _logger.warning(
+                            f"Model {self.model_name} not found. Falling back to {fallback_model}"
+                        )
                         response = self.client.models.generate_content(
                             model=fallback_model,
                             contents=contents,
                             config=types.GenerateContentConfig(
-                                system_instruction=system_instruction or SYSTEM_INSTRUCTION_OPTIMIZED,
+                                system_instruction=system_instruction
+                                or SYSTEM_INSTRUCTION_OPTIMIZED,
                                 temperature=0.7,
                                 max_output_tokens=8192,
-                            )
+                            ),
                         )
                     else:
                         raise e
@@ -202,7 +205,7 @@ class GeminiClient:
         context: str = "",
         system_instruction: str = "",
         max_retries: int = 3,
-        base_delay: float = 2.0
+        base_delay: float = 2.0,
     ) -> tuple[str, bool]:
         """
         Generate content with exponential backoff retry.
@@ -214,11 +217,16 @@ class GeminiClient:
                 return response, True
 
             # Check if it's a rate limit error or server overloaded
-            if "RATE_LIMIT_ERROR" in response or "503" in response or "overloaded" in str(response).lower():
-                delay = base_delay * (2 ** attempt)
+            if (
+                "RATE_LIMIT_ERROR" in response
+                or "503" in response
+                or "overloaded" in str(response).lower()
+            ):
+                delay = base_delay * (2**attempt)
                 log_status(
-                    self.log_dir, "WARN",
-                    f"Rate limited/Overloaded, retrying in {delay:.1f}s (attempt {attempt + 1}/{max_retries})"
+                    self.log_dir,
+                    "WARN",
+                    f"Rate limited/Overloaded, retrying in {delay:.1f}s (attempt {attempt + 1}/{max_retries})",
                 )
                 time.sleep(delay)
                 continue
@@ -229,10 +237,7 @@ class GeminiClient:
         return response, False
 
     def generate_with_tools(
-        self,
-        prompt: str,
-        context: str = "",
-        timeout_seconds: int = settings.TIMEOUT_MINUTES * 60
+        self, prompt: str, context: str = "", timeout_seconds: int = settings.TIMEOUT_MINUTES * 60
     ) -> tuple[str, list[dict[str, Any]], bool]:
         """
         Generate content using Gemini with Function Calling.
@@ -250,10 +255,7 @@ class GeminiClient:
         full_prompt = "\n\n---\n\n".join(full_prompt_parts)
 
         # Build contents
-        contents = [types.Content(
-            role="user",
-            parts=[types.Part(text=full_prompt)]
-        )]
+        contents = [types.Content(role="user", parts=[types.Part(text=full_prompt)])]
 
         try:
             if self.backend == "cli":
@@ -269,14 +271,16 @@ class GeminiClient:
                         temperature=0.7,
                         max_output_tokens=8192,
                         tools=self.tools if self.use_function_calling else None,
-                    )
+                    ),
                 )
             except Exception as e:
                 # Handle Model Not Found (404) with fallback
                 if "404" in str(e) or "not found" in str(e).lower():
                     fallback_model = "gemini-1.5-flash"
                     if self.model_name != fallback_model:
-                        _logger.warning(f"Model {self.model_name} not found in tools call. Falling back to {fallback_model}")
+                        _logger.warning(
+                            f"Model {self.model_name} not found in tools call. Falling back to {fallback_model}"
+                        )
                         response = self.client.models.generate_content(
                             model=fallback_model,
                             contents=contents,
@@ -285,7 +289,7 @@ class GeminiClient:
                                 temperature=0.7,
                                 max_output_tokens=8192,
                                 tools=self.tools if self.use_function_calling else None,
-                            )
+                            ),
                         )
                     else:
                         raise e
@@ -298,27 +302,25 @@ class GeminiClient:
 
             if response.candidates:
                 for candidate in response.candidates:
-                    if hasattr(candidate, 'content') and candidate.content:
+                    if hasattr(candidate, "content") and candidate.content:
                         for part in candidate.content.parts:
                             # Check for function call
-                            if hasattr(part, 'function_call') and part.function_call:
+                            if hasattr(part, "function_call") and part.function_call:
                                 fc = part.function_call
                                 # Use model_dump() for Pydantic models
-                                args = dict(fc.args) if hasattr(fc.args, '__iter__') else {}
-                                function_calls.append({
-                                    "name": fc.name,
-                                    "args": args
-                                })
+                                args = dict(fc.args) if hasattr(fc.args, "__iter__") else {}
+                                function_calls.append({"name": fc.name, "args": args})
                             # Check for text
-                            elif hasattr(part, 'text') and part.text:
+                            elif hasattr(part, "text") and part.text:
                                 text_parts.append(part.text)
 
             text_response = "\n".join(text_parts)
 
             if function_calls:
                 log_status(
-                    self.log_dir, "INFO",
-                    f"Received {len(function_calls)} function call(s): {[fc['name'] for fc in function_calls]}"
+                    self.log_dir,
+                    "INFO",
+                    f"Received {len(function_calls)} function call(s): {[fc['name'] for fc in function_calls]}",
                 )
 
             return text_response, function_calls, True
@@ -336,7 +338,9 @@ class GeminiClient:
                 return f"UNEXPECTED_ERROR: {e}", [], False
 
 
-def create_gemini_client(log_dir: Path = Path("logs"), model_name: str = DEFAULT_MODEL) -> Optional[GeminiClient]:
+def create_gemini_client(
+    log_dir: Path = Path("logs"), model_name: str = DEFAULT_MODEL
+) -> Optional[GeminiClient]:
     """
     Factory function to create a GeminiClient.
 

@@ -17,6 +17,7 @@ from typing import Optional
 @dataclass
 class Project:
     """Registered project in the workspace."""
+
     name: str
     path: Path
     description: str = ""
@@ -31,7 +32,7 @@ class Project:
             "description": self.description,
             "added_at": self.added_at.isoformat(),
             "last_accessed": self.last_accessed.isoformat() if self.last_accessed else None,
-            "tags": self.tags
+            "tags": self.tags,
         }
 
     @classmethod
@@ -40,9 +41,13 @@ class Project:
             name=data["name"],
             path=Path(data["path"]),
             description=data.get("description", ""),
-            added_at=datetime.fromisoformat(data["added_at"]) if data.get("added_at") else datetime.now(),
-            last_accessed=datetime.fromisoformat(data["last_accessed"]) if data.get("last_accessed") else None,
-            tags=data.get("tags", [])
+            added_at=datetime.fromisoformat(data["added_at"])
+            if data.get("added_at")
+            else datetime.now(),
+            last_accessed=datetime.fromisoformat(data["last_accessed"])
+            if data.get("last_accessed")
+            else None,
+            tags=data.get("tags", []),
         )
 
 
@@ -67,8 +72,7 @@ class WorkspaceManager:
             try:
                 data = json.loads(self.config_file.read_text(encoding="utf-8"))
                 self.projects = {
-                    name: Project.from_dict(proj)
-                    for name, proj in data.get("projects", {}).items()
+                    name: Project.from_dict(proj) for name, proj in data.get("projects", {}).items()
                 }
                 self.active_project = data.get("active_project")
             except Exception:
@@ -80,21 +84,14 @@ class WorkspaceManager:
         self.config_dir.mkdir(parents=True, exist_ok=True)
 
         data = {
-            "projects": {
-                name: proj.to_dict()
-                for name, proj in self.projects.items()
-            },
-            "active_project": self.active_project
+            "projects": {name: proj.to_dict() for name, proj in self.projects.items()},
+            "active_project": self.active_project,
         }
 
         self.config_file.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
     def add_project(
-        self,
-        name: str,
-        path: str,
-        description: str = "",
-        tags: Optional[list[str]] = None
+        self, name: str, path: str, description: str = "", tags: Optional[list[str]] = None
     ) -> dict:
         """
         Add a project to the workspace.
@@ -113,12 +110,7 @@ class WorkspaceManager:
         if name in self.projects:
             return {"status": "ERROR", "message": f"Project '{name}' already exists"}
 
-        project = Project(
-            name=name,
-            path=project_path,
-            description=description,
-            tags=tags or []
-        )
+        project = Project(name=name, path=project_path, description=description, tags=tags or [])
 
         self.projects[name] = project
         self._save()
@@ -126,7 +118,7 @@ class WorkspaceManager:
         return {
             "status": "SUCCESS",
             "message": f"Added project '{name}'",
-            "project": project.to_dict()
+            "project": project.to_dict(),
         }
 
     def remove_project(self, name: str) -> dict:
@@ -155,7 +147,7 @@ class WorkspaceManager:
         return {
             "status": "SUCCESS",
             "message": f"Switched to project '{name}'",
-            "path": str(self.projects[name].path)
+            "path": str(self.projects[name].path),
         }
 
     def get_active(self) -> Optional[Project]:
@@ -177,10 +169,7 @@ class WorkspaceManager:
             projects = [p for p in projects if tag in p.tags]
 
         return [
-            {
-                **p.to_dict(),
-                "is_active": p.name == self.active_project
-            }
+            {**p.to_dict(), "is_active": p.name == self.active_project}
             for p in sorted(projects, key=lambda x: x.last_accessed or x.added_at, reverse=True)
         ]
 

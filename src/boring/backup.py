@@ -9,11 +9,15 @@ from .config import settings
 
 console = Console()
 
+
 class BackupManager:
     """
     Manages file snapshots before modification.
     """
-    def __init__(self, loop_id: int, project_root: Optional[Path] = None, backup_dir: Optional[Path] = None):
+
+    def __init__(
+        self, loop_id: int, project_root: Optional[Path] = None, backup_dir: Optional[Path] = None
+    ):
         self.loop_id = loop_id
         self.project_root = project_root or settings.PROJECT_ROOT
         self.timestamp = time.strftime("%Y%m%d_%H%M%S")
@@ -35,7 +39,11 @@ class BackupManager:
             if file_path.exists() and file_path.is_file():
                 # Create directory structure in snapshot (with Windows-safe relative_to)
                 try:
-                    rel_path = file_path.relative_to(self.project_root) if file_path.is_absolute() else file_path
+                    rel_path = (
+                        file_path.relative_to(self.project_root)
+                        if file_path.is_absolute()
+                        else file_path
+                    )
                 except ValueError:
                     # Windows path case mismatch - use just the filename
                     rel_path = Path(file_path.name)
@@ -46,7 +54,9 @@ class BackupManager:
                 backed_up_count += 1
 
         if backed_up_count > 0:
-            console.print(f"[dim]Saved backup of {backed_up_count} files to {self.snapshot_dir}[/dim]")
+            console.print(
+                f"[dim]Saved backup of {backed_up_count} files to {self.snapshot_dir}[/dim]"
+            )
             return self.snapshot_dir
         else:
             # Cleanup empty dir if nothing backed up
@@ -85,7 +95,7 @@ class BackupManager:
         # Get all backup directories sorted by modification time (oldest first)
         backup_dirs = sorted(
             [d for d in settings.BACKUP_DIR.iterdir() if d.is_dir()],
-            key=lambda x: x.stat().st_mtime
+            key=lambda x: x.stat().st_mtime,
         )
 
         # Remove old backups if we have more than keep_last

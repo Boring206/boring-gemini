@@ -16,6 +16,7 @@ from .code_indexer import CodeChunk
 @dataclass
 class GraphStats:
     """Statistics about the dependency graph."""
+
     total_nodes: int = 0
     total_edges: int = 0
     avg_connections: float = 0.0
@@ -117,10 +118,7 @@ class DependencyGraph:
         return [self._chunks[cid] for cid in callee_ids if cid in self._chunks]
 
     def get_related_chunks(
-        self,
-        seed_chunks: list[CodeChunk],
-        depth: int = 1,
-        direction: str = "both"
+        self, seed_chunks: list[CodeChunk], depth: int = 1, direction: str = "both"
     ) -> list[CodeChunk]:
         """
         Get related chunks via BFS on the dependency graph.
@@ -183,10 +181,7 @@ class DependencyGraph:
         seed = [self._chunks[modified_chunk_id]]
         return self.get_related_chunks(seed, depth=depth, direction="callers")
 
-    def get_context_for_modification(
-        self,
-        modified_chunk_id: str
-    ) -> dict[str, list[CodeChunk]]:
+    def get_context_for_modification(self, modified_chunk_id: str) -> dict[str, list[CodeChunk]]:
         """
         Get comprehensive context for modifying a chunk.
 
@@ -198,7 +193,7 @@ class DependencyGraph:
         result = {
             "callers": self.get_callers(modified_chunk_id),
             "callees": self.get_callees(modified_chunk_id),
-            "siblings": []
+            "siblings": [],
         }
 
         chunk = self._chunks.get(modified_chunk_id)
@@ -223,7 +218,7 @@ class DependencyGraph:
             total_edges=total_edges,
             avg_connections=total_edges / total_nodes if total_nodes > 0 else 0,
             max_callers=max_callers,
-            max_callees=max_callees
+            max_callees=max_callees,
         )
 
     def find_path(self, from_id: str, to_id: str, max_depth: int = 5) -> Optional[list[str]]:
@@ -276,6 +271,7 @@ class DependencyGraph:
         """
         if format == "json":
             import json
+
             nodes = []
             edges = []
             for cid, chunk in list(self._chunks.items())[:max_nodes]:
@@ -302,4 +298,3 @@ class DependencyGraph:
 
         lines.append("```")
         return "\n".join(lines)
-

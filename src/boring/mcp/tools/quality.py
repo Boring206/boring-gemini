@@ -37,5 +37,6 @@ def boring_quality_trend(
 
     return report
 
+
 if MCP_AVAILABLE and mcp is not None:
     mcp.tool(description="Show code quality trends")(boring_quality_trend)

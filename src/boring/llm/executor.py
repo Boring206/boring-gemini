@@ -25,10 +25,7 @@ class ToolExecutor:
         self.project_root = Path(project_root)
         self.log_dir = log_dir or Path("logs")
 
-    def process_function_calls(
-        self,
-        function_calls: list[dict[str, Any]]
-    ) -> dict[str, Any]:
+    def process_function_calls(self, function_calls: list[dict[str, Any]]) -> dict[str, Any]:
         """
         Process and execute function calls returned by the model.
 
@@ -42,12 +39,7 @@ class ToolExecutor:
             - status: Status report if provided
             - errors: List of any errors encountered
         """
-        result = {
-            "files_written": [],
-            "search_replaces": [],
-            "status": None,
-            "errors": []
-        }
+        result = {"files_written": [], "search_replaces": [], "status": None, "errors": []}
 
         for fc in function_calls:
             name = fc.get("name", "")
@@ -102,10 +94,12 @@ class ToolExecutor:
                 if search in content:
                     new_content = content.replace(search, replace, 1)
                     full_path.write_text(new_content, encoding="utf-8")
-                    result["search_replaces"].append({
-                        "file": file_path,
-                        "search": search[:50] + "..." if len(search) > 50 else search
-                    })
+                    result["search_replaces"].append(
+                        {
+                            "file": file_path,
+                            "search": search[:50] + "..." if len(search) > 50 else search,
+                        }
+                    )
                     log_status(self.log_dir, "SUCCESS", f"🔄 Search/Replace in: {file_path}")
                 else:
                     result["errors"].append(f"Search text not found in {file_path}")
@@ -118,9 +112,10 @@ class ToolExecutor:
             "status": args.get("status", "IN_PROGRESS"),
             "tasks_completed": args.get("tasks_completed", 0),
             "files_modified": args.get("files_modified", 0),
-            "exit_signal": args.get("exit_signal", False)
+            "exit_signal": args.get("exit_signal", False),
         }
         log_status(
-            self.log_dir, "INFO",
-            f"Status: {result['status']['status']}, Exit: {result['status']['exit_signal']}"
+            self.log_dir,
+            "INFO",
+            f"Status: {result['status']['status']}, Exit: {result['status']['exit_signal']}",
         )

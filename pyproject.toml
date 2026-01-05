@@ -108,9 +108,6 @@ lint.ignore = [
     "E722",  # Do not use bare `except`
     "E741",  # Ambiguous variable name
     "B027",  # Empty method in an abstract base class
-    "E701",  # Multiple statements on one line
-    "F401",  # Unused imports
-    "F841",  # Unused variables
     "B008",  # Do not perform function call in argument defaults (common in Typer)
 ]
 

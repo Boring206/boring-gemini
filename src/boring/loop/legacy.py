@@ -27,6 +27,7 @@ from ..verification import CodeVerifier
 
 console = Console()
 
+
 class AgentLoop:
     """
     The main autonomous agent loop.
@@ -76,7 +77,9 @@ class AgentLoop:
         if self.use_cli:
             self.gemini_cli_cmd = shutil.which("gemini")
             if not self.gemini_cli_cmd:
-                raise RuntimeError("Gemini CLI not found in PATH. Install with: npm install -g @google/gemini-cli")
+                raise RuntimeError(
+                    "Gemini CLI not found in PATH. Install with: npm install -g @google/gemini-cli"
+                )
             console.print(f"[green]Using Gemini CLI: {self.gemini_cli_cmd}[/green]")
         else:
             self.gemini_client = create_gemini_client(log_dir=self.log_dir, model_name=model_name)
@@ -87,7 +90,9 @@ class AgentLoop:
         # Show subsystem status
         if self.verbose:
             console.print(f"[dim]Memory: {self.memory.memory_dir}[/dim]")
-            console.print(f"[dim]Verifier: ruff={self.verifier.has_ruff}, pytest={self.verifier.has_pytest}[/dim]")
+            console.print(
+                f"[dim]Verifier: ruff={self.verifier.has_ruff}, pytest={self.verifier.has_pytest}[/dim]"
+            )
             ext_report = self.extensions.create_extensions_report()
             console.print(f"[dim]{ext_report}[/dim]")
 
@@ -104,7 +109,9 @@ class AgentLoop:
                 should_resume = enter_interactive_mode(
                     reason="Circuit Breaker OPEN - Too many consecutive failures",
                     project_root=settings.PROJECT_ROOT,
-                    recent_errors=self._errors_this_loop if hasattr(self, '_errors_this_loop') else []
+                    recent_errors=self._errors_this_loop
+                    if hasattr(self, "_errors_this_loop")
+                    else [],
                 )
 
                 if should_resume:
@@ -120,19 +127,21 @@ class AgentLoop:
                 console.print("\n[yellow]Interrupted.[/yellow]")
                 return
 
-        console.print(Panel.fit(
-            f"[bold green]Boring Autonomous Agent (v2.0)[/bold green]\n"
-            f"Mode: {'CLI' if self.use_cli else 'SDK'}\n"
-            f"Model: {self.model_name}\n"
-            f"Log Dir: {self.log_dir}",
-            title="System Initialization"
-        ))
+        console.print(
+            Panel.fit(
+                f"[bold green]Boring Autonomous Agent (v2.0)[/bold green]\n"
+                f"Mode: {'CLI' if self.use_cli else 'SDK'}\n"
+                f"Model: {self.model_name}\n"
+                f"Log Dir: {self.log_dir}",
+                title="System Initialization",
+            )
+        )
 
         # Initialize tracking (ensure files exist)
         init_call_tracking(
             settings.PROJECT_ROOT / ".call_count",
             settings.PROJECT_ROOT / ".last_reset",
-            settings.PROJECT_ROOT / ".exit_signals"
+            settings.PROJECT_ROOT / ".exit_signals",
         )
 
         loop_count = 0
@@ -144,7 +153,7 @@ class AgentLoop:
                 wait_for_reset(
                     settings.PROJECT_ROOT / ".call_count",
                     settings.PROJECT_ROOT / ".last_reset",
-                    settings.MAX_HOURLY_CALLS
+                    settings.MAX_HOURLY_CALLS,
                 )
                 console.print("[yellow]Rate limit reset. Resuming...[/yellow]")
 
@@ -160,11 +169,11 @@ class AgentLoop:
                 break
 
             if not success:
-               # Circuit breaker logic handled in _generate response analysis
-               # If simple fail, we might continue or retry, but usually generate handles retry internally
-               # If it returns False here, it means we hit a hard stop (like Safety or API deny)
-               record_loop_result(loop_count, 0, True, len(output_content))
-               continue
+                # Circuit breaker logic handled in _generate response analysis
+                # If simple fail, we might continue or retry, but usually generate handles retry internally
+                # If it returns False here, it means we hit a hard stop (like Safety or API deny)
+                record_loop_result(loop_count, 0, True, len(output_content))
+                continue
 
             # 2. Patch & Backup
             # The file_patcher now handles backup internally using BackupManager(loop_id)
@@ -173,7 +182,7 @@ class AgentLoop:
                     output_file=output_file,
                     project_root=settings.PROJECT_ROOT,
                     log_dir=self.log_dir,
-                    loop_id=loop_count
+                    loop_id=loop_count,
                 )
             except Exception as e:
                 log_status(self.log_dir, "ERROR", f"Patching failed: {e}")
@@ -186,17 +195,23 @@ class AgentLoop:
                 # === EMPTY OUTPUT FEEDBACK (Fix #2) ===
                 # If AI produced output but we couldn't parse it, tell the AI
                 if len(output_content) > 100:  # AI did output something
-                    console.print("[bold yellow]⚠️ AI output could not be parsed into file changes.[/bold yellow]")
-                    empty_output_count = getattr(self, '_empty_output_count', 0) + 1
+                    console.print(
+                        "[bold yellow]⚠️ AI output could not be parsed into file changes.[/bold yellow]"
+                    )
+                    empty_output_count = getattr(self, "_empty_output_count", 0) + 1
                     self._empty_output_count = empty_output_count
 
                     if empty_output_count < 3:  # Prevent infinite feedback loops
                         feedback_prompt = self._create_format_feedback()
-                        self._save_loop_summary(loop_count, "FAILED", "Output not parseable. Sending format feedback.")
+                        self._save_loop_summary(
+                            loop_count, "FAILED", "Output not parseable. Sending format feedback."
+                        )
                         self._self_correct(feedback_prompt, loop_count)
                         continue
                     else:
-                        log_status(self.log_dir, "ERROR", "Too many unparseable outputs. Breaking loop.")
+                        log_status(
+                            self.log_dir, "ERROR", "Too many unparseable outputs. Breaking loop."
+                        )
                         self._save_loop_summary(loop_count, "FAILED", "Repeated format errors.")
                         break
                 else:
@@ -210,7 +225,9 @@ class AgentLoop:
                 check_and_install_dependencies(output_content)
 
                 # 4. Advanced Verification (using CodeVerifier)
-                verification_passed, error_msg = self.verifier.verify_project(self.verification_level)
+                verification_passed, error_msg = self.verifier.verify_project(
+                    self.verification_level
+                )
 
                 if not verification_passed:
                     log_status(self.log_dir, "ERROR", f"Verification Failed: {error_msg[:200]}")
@@ -218,7 +235,9 @@ class AgentLoop:
 
                     # Record failure and learn from error
                     record_loop_result(loop_count, files_changed, True, len(output_content))
-                    self._save_loop_summary(loop_count, "FAILED", f"Verification: {error_msg[:100]}")
+                    self._save_loop_summary(
+                        loop_count, "FAILED", f"Verification: {error_msg[:100]}"
+                    )
                     self.memory.record_error_pattern("verification_error", error_msg[:200])
                     self._errors_this_loop.append(error_msg[:200])
 
@@ -233,13 +252,13 @@ class AgentLoop:
                 # Record to Memory System
                 loop_memory = LoopMemory(
                     loop_id=loop_count,
-                    timestamp=time.strftime('%Y-%m-%d %H:%M:%S'),
+                    timestamp=time.strftime("%Y-%m-%d %H:%M:%S"),
                     status="SUCCESS",
                     files_modified=self._files_modified_this_loop,
                     tasks_completed=self._tasks_completed_this_loop,
                     errors=[],
                     ai_output_summary=output_content[:500] if output_content else "",
-                    duration_seconds=duration
+                    duration_seconds=duration,
                 )
                 self.memory.record_loop(loop_memory)
                 record_loop_result(loop_count, files_changed, False, len(output_content))
@@ -258,8 +277,12 @@ class AgentLoop:
                     console.print("[bold green]✅ All tasks complete. Agent exiting.[/bold green]")
                     should_exit = True
                 else:
-                    console.print("[yellow]⚠️ AI signaled exit but @fix_plan.md has unchecked items. Continuing.[/yellow]")
-                    log_status(self.log_dir, "WARN", "EXIT_SIGNAL ignored: plan has unchecked items.")
+                    console.print(
+                        "[yellow]⚠️ AI signaled exit but @fix_plan.md has unchecked items. Continuing.[/yellow]"
+                    )
+                    log_status(
+                        self.log_dir, "WARN", "EXIT_SIGNAL ignored: plan has unchecked items."
+                    )
 
             if should_exit:
                 break
@@ -273,7 +296,7 @@ class AgentLoop:
     def _generate_step(self, loop_count: int) -> tuple[bool, str, Path]:
         """Handles the AI generation step (SDK or CLI)."""
 
-        timestamp = time.strftime('%Y-%m-%d_%H-%M-%S')
+        timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
         output_file = self.log_dir / f"gemini_output_{timestamp}.log"
 
         if self.use_cli:
@@ -290,8 +313,14 @@ class AgentLoop:
         self._errors_this_loop = []
 
         # Read prompt/context
-        prompt = self.prompt_file.read_text(encoding="utf-8") if self.prompt_file.exists() else "No prompt found."
-        context = self.context_file.read_text(encoding="utf-8") if self.context_file.exists() else ""
+        prompt = (
+            self.prompt_file.read_text(encoding="utf-8")
+            if self.prompt_file.exists()
+            else "No prompt found."
+        )
+        context = (
+            self.context_file.read_text(encoding="utf-8") if self.context_file.exists() else ""
+        )
 
         # === ENHANCED CONTEXT INJECTION (V3.0) ===
 
@@ -311,8 +340,10 @@ class AgentLoop:
             tree_result = subprocess.run(
                 ["cmd", "/c", "tree", "/F", "/A", "src"],
                 stdin=subprocess.DEVNULL,
-                capture_output=True, text=True, timeout=10,
-                cwd=settings.PROJECT_ROOT
+                capture_output=True,
+                text=True,
+                timeout=10,
+                cwd=settings.PROJECT_ROOT,
             )
             if tree_result.returncode == 0 and tree_result.stdout:
                 tree_output = tree_result.stdout[:2000]
@@ -321,7 +352,9 @@ class AgentLoop:
             try:
                 src_dir = settings.PROJECT_ROOT / "src"
                 if src_dir.exists():
-                    files = [str(f.relative_to(settings.PROJECT_ROOT)) for f in src_dir.rglob("*.py")][:20]
+                    files = [
+                        str(f.relative_to(settings.PROJECT_ROOT)) for f in src_dir.rglob("*.py")
+                    ][:20]
                     context += "\n\n# PROJECT FILES\n```\n" + "\n".join(files) + "\n```\n"
             except Exception:
                 pass
@@ -331,8 +364,10 @@ class AgentLoop:
             git_result = subprocess.run(
                 ["git", "diff", "--stat", "HEAD~1"],
                 stdin=subprocess.DEVNULL,
-                capture_output=True, text=True, timeout=10,
-                cwd=settings.PROJECT_ROOT
+                capture_output=True,
+                text=True,
+                timeout=10,
+                cwd=settings.PROJECT_ROOT,
             )
             if git_result.returncode == 0 and git_result.stdout.strip():
                 context += f"\n\n# RECENT GIT CHANGES\n```\n{git_result.stdout[:1000]}\n```\n"
@@ -358,7 +393,7 @@ class AgentLoop:
                 SpinnerColumn(),
                 TextColumn("[progress.description]{task.description}"),
                 TimeElapsedColumn(),
-                console=console
+                console=console,
             )
             progress.add_task("[cyan]Gemini Thinking...", total=None)
             live.update(Panel(progress, title="[bold blue]Gemini SDK Progress[/bold blue]"))
@@ -366,7 +401,7 @@ class AgentLoop:
             response_text, success = self.gemini_client.generate_with_retry(
                 prompt=prompt,
                 context=context,
-                system_instruction="", # Already in client init
+                system_instruction="",  # Already in client init
             )
 
         # Write output
@@ -392,7 +427,7 @@ class AgentLoop:
         adapter = GeminiCLIAdapter(
             model_name=self.model_name,
             log_dir=self.log_dir,
-            timeout_seconds=settings.TIMEOUT_MINUTES * 60
+            timeout_seconds=settings.TIMEOUT_MINUTES * 60,
         )
 
         prompt = self.prompt_file.read_text(encoding="utf-8") if self.prompt_file.exists() else ""
@@ -404,6 +439,7 @@ class AgentLoop:
         # Try Smart Context
         try:
             from ..context_selector import create_context_selector
+
             selector = create_context_selector(settings.PROJECT_ROOT)
             context_str = selector.generate_context_injection(prompt)
         except ImportError:
@@ -416,32 +452,40 @@ class AgentLoop:
             task_content = task_file.read_text(encoding="utf-8")
             prompt += f"\n\n# CURRENT PLAN STATUS (@fix_plan.md)\n{task_content}\n"
 
-        console.print(f"[blue]Generating with CLI (Privacy Mode)... (Timeout: {settings.TIMEOUT_MINUTES}m)[/blue]")
+        console.print(
+            f"[blue]Generating with CLI (Privacy Mode)... (Timeout: {settings.TIMEOUT_MINUTES}m)[/blue]"
+        )
 
         with Live(console=console, screen=False, auto_refresh=True) as live:
-            progress = Progress(SpinnerColumn(), TextColumn("{task.description}"), TimeElapsedColumn(), console=console)
+            progress = Progress(
+                SpinnerColumn(),
+                TextColumn("{task.description}"),
+                TimeElapsedColumn(),
+                console=console,
+            )
             progress.add_task("[cyan]Gemini CLI Running...", total=None)
             live.update(Panel(progress, title="[bold blue]CLI Progress[/bold blue]"))
 
             # Load Tools for CLI
             from ..mcp.tools.agents import boring_web_search
+
             tools = [boring_web_search]
 
             # Use generate_with_tools if available
-            response = adapter.generate_with_tools(
-                prompt=prompt,
-                context=context_str,
-                tools=tools
-            )
+            response = adapter.generate_with_tools(prompt=prompt, context=context_str, tools=tools)
 
             response_text = response.text
             success = response.success
 
             # TODO: Handle tool calls if any returned (currently just appends text)
-            if hasattr(response, 'function_calls') and response.function_calls:
-                 console.print(f"[bold magenta]🛠️ CLI Tool Call Requested: {response.function_calls}[/bold magenta]")
-            elif isinstance(response, dict) and 'function_calls' in response:
-                 console.print(f"[bold magenta]🛠️ CLI Tool Call Requested (Dict): {response['function_calls']}[/bold magenta]")
+            if hasattr(response, "function_calls") and response.function_calls:
+                console.print(
+                    f"[bold magenta]🛠️ CLI Tool Call Requested: {response.function_calls}[/bold magenta]"
+                )
+            elif isinstance(response, dict) and "function_calls" in response:
+                console.print(
+                    f"[bold magenta]🛠️ CLI Tool Call Requested (Dict): {response['function_calls']}[/bold magenta]"
+                )
 
             pass
 
@@ -453,7 +497,9 @@ class AgentLoop:
 
         return success, response_text, output_file
 
-    def _verify_project_syntax(self, files_to_check: Optional[list[str]] = None) -> tuple[bool, str]:
+    def _verify_project_syntax(
+        self, files_to_check: Optional[list[str]] = None
+    ) -> tuple[bool, str]:
         """
         Checks syntax of Python files.
 
@@ -470,19 +516,22 @@ class AgentLoop:
 
         # Only check modified Python files
         py_files_to_check = [
-            Path(f) for f in files_to_check
-            if f.endswith('.py') and Path(f).exists()
+            Path(f) for f in files_to_check if f.endswith(".py") and Path(f).exists()
         ]
 
         if py_files_to_check:
-            log_status(self.log_dir, "INFO", f"Syntax check: {len(py_files_to_check)} modified file(s)")
+            log_status(
+                self.log_dir, "INFO", f"Syntax check: {len(py_files_to_check)} modified file(s)"
+            )
 
             for py_file in py_files_to_check:
                 valid, error = check_syntax(py_file)
                 if not valid:
                     # If import error, expand check to related files
                     if "import" in error.lower():
-                        log_status(self.log_dir, "WARN", "Import error detected, expanding check...")
+                        log_status(
+                            self.log_dir, "WARN", "Import error detected, expanding check..."
+                        )
                         return self._full_syntax_check()
                     return False, error
             return True, ""
@@ -521,17 +570,20 @@ Output the corrected full file content.
             console.print("[bold yellow]Attempting Self-Correction via SDK...[/bold yellow]")
             response, success = self.gemini_client.generate_with_retry(prompt=correction_prompt)
             if success:
-                 # Backup again? Yes, always backup before write.
-                 process_gemini_output(
-                     output_file=self.log_dir / f"correction_loop_{loop_count}.log", # Write to temp file first?
-                     project_root=settings.PROJECT_ROOT,
-                     log_dir=self.log_dir,
-                     loop_id=loop_count
-                 )
-                 # We manually write the response to a file so process_gemini_output can read it
-                 corr_file = self.log_dir / f"correction_loop_{loop_count}.log"
-                 corr_file.write_text(response, encoding="utf-8")
-                 process_gemini_output(corr_file, settings.PROJECT_ROOT, self.log_dir, loop_id=loop_count)
+                # Backup again? Yes, always backup before write.
+                process_gemini_output(
+                    output_file=self.log_dir
+                    / f"correction_loop_{loop_count}.log",  # Write to temp file first?
+                    project_root=settings.PROJECT_ROOT,
+                    log_dir=self.log_dir,
+                    loop_id=loop_count,
+                )
+                # We manually write the response to a file so process_gemini_output can read it
+                corr_file = self.log_dir / f"correction_loop_{loop_count}.log"
+                corr_file.write_text(response, encoding="utf-8")
+                process_gemini_output(
+                    corr_file, settings.PROJECT_ROOT, self.log_dir, loop_id=loop_count
+                )
 
     def _create_format_feedback(self) -> str:
         """Creates a feedback prompt when AI output cannot be parsed."""
@@ -569,7 +621,7 @@ Please try again with the correct format.
         summary = f"""## Loop #{loop_count} Summary
 - **Status:** {status}
 - **Message:** {message}
-- **Timestamp:** {time.strftime('%Y-%m-%d %H:%M:%S')}
+- **Timestamp:** {time.strftime("%Y-%m-%d %H:%M:%S")}
 """
         try:
             summary_file.write_text(summary, encoding="utf-8")
@@ -593,8 +645,17 @@ Please try again with the correct format.
             if has_unchecked:
                 # Count for logging
                 unchecked_count = content.count("- [ ]") + content.count("* [ ]")
-                checked_count = content.count("- [x]") + content.count("- [X]") + content.count("* [x]") + content.count("* [X]")
-                log_status(self.log_dir, "INFO", f"Plan status: {checked_count} done, {unchecked_count} remaining")
+                checked_count = (
+                    content.count("- [x]")
+                    + content.count("- [X]")
+                    + content.count("* [x]")
+                    + content.count("* [X]")
+                )
+                log_status(
+                    self.log_dir,
+                    "INFO",
+                    f"Plan status: {checked_count} done, {unchecked_count} remaining",
+                )
                 return False
             return True
         except Exception:

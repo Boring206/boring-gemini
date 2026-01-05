@@ -15,11 +15,13 @@ _logger = get_logger("gemini_provider")
 try:
     from google import genai
     from google.genai import types
+
     SDK_AVAILABLE = True
 except ImportError:
     SDK_AVAILABLE = False
     genai = None
     types = None
+
 
 class GeminiProvider(LLMProvider):
     """
@@ -31,7 +33,7 @@ class GeminiProvider(LLMProvider):
         self,
         model_name: Optional[str] = None,
         api_key: Optional[str] = None,
-        log_dir: Optional[Path] = None
+        log_dir: Optional[Path] = None,
     ):
         self._model_name = model_name or settings.DEFAULT_MODEL
         self.log_dir = log_dir or settings.LOG_DIR
@@ -44,12 +46,17 @@ class GeminiProvider(LLMProvider):
         # Determine backend
         if not self.api_key:
             from ..cli_client import GeminiCLIAdapter, check_cli_available
+
             if check_cli_available():
                 _logger.info("No API key. Using Gemini CLI backend.")
                 self.backend = "cli"
-                self.cli_adapter = GeminiCLIAdapter(model_name=self._model_name, log_dir=self.log_dir)
+                self.cli_adapter = GeminiCLIAdapter(
+                    model_name=self._model_name, log_dir=self.log_dir
+                )
             else:
-                _logger.warning("No API key and Gemini CLI not found. SDK will fail if no key provided later.")
+                _logger.warning(
+                    "No API key and Gemini CLI not found. SDK will fail if no key provided later."
+                )
 
         if self.backend == "sdk" and SDK_AVAILABLE and self.api_key:
             self.client = genai.Client(api_key=self.api_key)
@@ -72,7 +79,7 @@ class GeminiProvider(LLMProvider):
         prompt: str,
         context: str = "",
         system_instruction: str = "",
-        timeout_seconds: int = 600
+        timeout_seconds: int = 600,
     ) -> tuple[str, bool]:
         if self.backend == "cli":
             return self.cli_adapter.generate(prompt, context)
@@ -91,7 +98,7 @@ class GeminiProvider(LLMProvider):
                     system_instruction=system_instruction or SYSTEM_INSTRUCTION_OPTIMIZED,
                     temperature=0.7,
                     max_output_tokens=8192,
-                )
+                ),
             )
             return response.text or "", True
         except Exception as e:
@@ -103,7 +110,7 @@ class GeminiProvider(LLMProvider):
         prompt: str,
         context: str = "",
         system_instruction: str = "",
-        timeout_seconds: int = 600
+        timeout_seconds: int = 600,
     ) -> LLMResponse:
         if self.backend == "cli":
             res = self.cli_adapter.generate_with_tools(prompt, context)
@@ -112,11 +119,13 @@ class GeminiProvider(LLMProvider):
                 function_calls=res.function_calls,
                 success=res.success,
                 error=None if res.success else res.text,
-                metadata={"backend": "cli"}
+                metadata={"backend": "cli"},
             )
 
         if not self.client:
-            return LLMResponse(text="", function_calls=[], success=False, error="SDK not initialized")
+            return LLMResponse(
+                text="", function_calls=[], success=False, error="SDK not initialized"
+            )
 
         try:
             full_prompt = f"# Context\n{context}\n\n# Task\n{prompt}" if context else prompt
@@ -130,7 +139,7 @@ class GeminiProvider(LLMProvider):
                     temperature=0.7,
                     max_output_tokens=8192,
                     tools=self.tools if self.use_function_calling else None,
-                )
+                ),
             )
 
             function_calls = []
@@ -140,10 +149,12 @@ class GeminiProvider(LLMProvider):
                     if cand.content:
                         for part in cand.content.parts:
                             if part.function_call:
-                                function_calls.append({
-                                    "name": part.function_call.name,
-                                    "args": dict(part.function_call.args)
-                                })
+                                function_calls.append(
+                                    {
+                                        "name": part.function_call.name,
+                                        "args": dict(part.function_call.args),
+                                    }
+                                )
                             elif part.text:
                                 text_parts.append(part.text)
 
@@ -151,7 +162,7 @@ class GeminiProvider(LLMProvider):
                 text="\n".join(text_parts),
                 function_calls=function_calls,
                 success=True,
-                metadata={"backend": "sdk"}
+                metadata={"backend": "sdk"},
             )
         except Exception as e:
             return LLMResponse(text="", function_calls=[], success=False, error=str(e))

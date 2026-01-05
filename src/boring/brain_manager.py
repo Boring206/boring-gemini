@@ -27,6 +27,7 @@ from .logger import log_status
 @dataclass
 class LearnedPattern:
     """A pattern learned from successful executions."""
+
     pattern_id: str
     pattern_type: str  # error_solution, workflow_optimization, code_fix
     description: str
@@ -40,6 +41,7 @@ class LearnedPattern:
 @dataclass
 class Rubric:
     """Evaluation rubric for quality assessment."""
+
     name: str
     description: str
     criteria: list[dict[str, str]]
@@ -92,8 +94,7 @@ class BrainManager:
         """Save patterns to file."""
         patterns_file = self.patterns_dir / "patterns.json"
         patterns_file.write_text(
-            json.dumps(patterns, indent=2, ensure_ascii=False),
-            encoding="utf-8"
+            json.dumps(patterns, indent=2, ensure_ascii=False), encoding="utf-8"
         )
 
     def learn_from_memory(self, storage) -> dict[str, Any]:
@@ -138,7 +139,7 @@ class BrainManager:
                         solution=err.get("solution", ""),
                         success_count=err.get("occurrence_count", 1),
                         created_at=datetime.now().isoformat(),
-                        last_used=datetime.now().isoformat()
+                        last_used=datetime.now().isoformat(),
                     )
                     patterns.append(asdict(new_pattern))
                     new_count += 1
@@ -146,15 +147,10 @@ class BrainManager:
             self._save_patterns(patterns)
 
             log_status(
-                self.log_dir, "INFO",
-                f"Learned {new_count} new patterns, total: {len(patterns)}"
+                self.log_dir, "INFO", f"Learned {new_count} new patterns, total: {len(patterns)}"
             )
 
-            return {
-                "status": "SUCCESS",
-                "new_patterns": new_count,
-                "total_patterns": len(patterns)
-            }
+            return {"status": "SUCCESS", "new_patterns": new_count, "total_patterns": len(patterns)}
 
         except Exception as e:
             return {"status": "ERROR", "error": str(e)}
@@ -201,13 +197,12 @@ class BrainManager:
             name=name,
             description=description,
             criteria=criteria,
-            created_at=datetime.now().isoformat()
+            created_at=datetime.now().isoformat(),
         )
 
         rubric_file = self.rubrics_dir / f"{name}.json"
         rubric_file.write_text(
-            json.dumps(asdict(rubric), indent=2, ensure_ascii=False),
-            encoding="utf-8"
+            json.dumps(asdict(rubric), indent=2, ensure_ascii=False), encoding="utf-8"
         )
 
         return {"status": "SUCCESS", "rubric": name}
@@ -228,12 +223,20 @@ class BrainManager:
             name="implementation_plan",
             description="Evaluates quality of implementation plans",
             criteria=[
-                {"name": "completeness", "description": "All components have file paths", "weight": 25},
+                {
+                    "name": "completeness",
+                    "description": "All components have file paths",
+                    "weight": 25,
+                },
                 {"name": "dependencies", "description": "Dependencies are explicit", "weight": 20},
-                {"name": "testability", "description": "Verification steps are defined", "weight": 25},
+                {
+                    "name": "testability",
+                    "description": "Verification steps are defined",
+                    "weight": 25,
+                },
                 {"name": "clarity", "description": "Steps are unambiguous", "weight": 15},
-                {"name": "feasibility", "description": "Plan is technically sound", "weight": 15}
-            ]
+                {"name": "feasibility", "description": "Plan is technically sound", "weight": 15},
+            ],
         )
         rubrics_created.append("implementation_plan")
 
@@ -242,11 +245,15 @@ class BrainManager:
             name="task_list",
             description="Evaluates quality of task breakdowns",
             criteria=[
-                {"name": "granularity", "description": "Tasks are appropriately sized", "weight": 30},
+                {
+                    "name": "granularity",
+                    "description": "Tasks are appropriately sized",
+                    "weight": 30,
+                },
                 {"name": "ordering", "description": "Dependencies are respected", "weight": 25},
                 {"name": "testability", "description": "Each task has verification", "weight": 25},
-                {"name": "completeness", "description": "Covers all plan items", "weight": 20}
-            ]
+                {"name": "completeness", "description": "Covers all plan items", "weight": 20},
+            ],
         )
         rubrics_created.append("task_list")
 
@@ -259,8 +266,8 @@ class BrainManager:
                 {"name": "readability", "description": "Code is easy to understand", "weight": 20},
                 {"name": "maintainability", "description": "Code is easy to modify", "weight": 20},
                 {"name": "testing", "description": "Tests are comprehensive", "weight": 20},
-                {"name": "documentation", "description": "Comments and docs exist", "weight": 10}
-            ]
+                {"name": "documentation", "description": "Comments and docs exist", "weight": 10},
+            ],
         )
         rubrics_created.append("code_quality")
 
@@ -269,10 +276,22 @@ class BrainManager:
             name="security",
             description="Evaluates code for security vulnerabilities",
             criteria=[
-                {"name": "secrets", "description": "No hardcoded API keys, passwords, or tokens", "weight": 40},
-                {"name": "input_validation", "description": "External inputs are validated before use", "weight": 30},
-                {"name": "injection_prevention", "description": "No raw SQL/Shell construction from user input", "weight": 30}
-            ]
+                {
+                    "name": "secrets",
+                    "description": "No hardcoded API keys, passwords, or tokens",
+                    "weight": 40,
+                },
+                {
+                    "name": "input_validation",
+                    "description": "External inputs are validated before use",
+                    "weight": 30,
+                },
+                {
+                    "name": "injection_prevention",
+                    "description": "No raw SQL/Shell construction from user input",
+                    "weight": 30,
+                },
+            ],
         )
         rubrics_created.append("security")
 
@@ -281,10 +300,22 @@ class BrainManager:
             name="architecture",
             description="Evaluates high-level design and dependency flow",
             criteria=[
-                {"name": "consistency", "description": "Follows project patterns and directory structure", "weight": 35},
-                {"name": "dependency_flow", "description": "No circular imports; dependencies flow correctly", "weight": 35},
-                {"name": "scalability", "description": "Design supports future growth", "weight": 30}
-            ]
+                {
+                    "name": "consistency",
+                    "description": "Follows project patterns and directory structure",
+                    "weight": 35,
+                },
+                {
+                    "name": "dependency_flow",
+                    "description": "No circular imports; dependencies flow correctly",
+                    "weight": 35,
+                },
+                {
+                    "name": "scalability",
+                    "description": "Design supports future growth",
+                    "weight": 30,
+                },
+            ],
         )
         rubrics_created.append("architecture")
 
@@ -293,12 +324,28 @@ class BrainManager:
             name="api_design",
             description="Evaluates API interface design quality",
             criteria=[
-                {"name": "consistency", "description": "Naming conventions are uniform", "weight": 25},
-                {"name": "intuitiveness", "description": "API is easy to use without docs", "weight": 20},
-                {"name": "versioning", "description": "Supports backward compatibility", "weight": 15},
-                {"name": "error_responses", "description": "Errors are informative with proper codes", "weight": 20},
-                {"name": "idempotency", "description": "Safe methods are idempotent", "weight": 20}
-            ]
+                {
+                    "name": "consistency",
+                    "description": "Naming conventions are uniform",
+                    "weight": 25,
+                },
+                {
+                    "name": "intuitiveness",
+                    "description": "API is easy to use without docs",
+                    "weight": 20,
+                },
+                {
+                    "name": "versioning",
+                    "description": "Supports backward compatibility",
+                    "weight": 15,
+                },
+                {
+                    "name": "error_responses",
+                    "description": "Errors are informative with proper codes",
+                    "weight": 20,
+                },
+                {"name": "idempotency", "description": "Safe methods are idempotent", "weight": 20},
+            ],
         )
         rubrics_created.append("api_design")
 
@@ -307,12 +354,24 @@ class BrainManager:
             name="testing",
             description="Evaluates test coverage and quality",
             criteria=[
-                {"name": "coverage", "description": "Tests cover happy path, edge cases, errors", "weight": 30},
+                {
+                    "name": "coverage",
+                    "description": "Tests cover happy path, edge cases, errors",
+                    "weight": 30,
+                },
                 {"name": "isolation", "description": "Tests are independent", "weight": 25},
-                {"name": "assertions", "description": "Assertions are specific and meaningful", "weight": 20},
-                {"name": "maintainability", "description": "Tests are easy to update", "weight": 15},
-                {"name": "performance", "description": "Tests run quickly", "weight": 10}
-            ]
+                {
+                    "name": "assertions",
+                    "description": "Assertions are specific and meaningful",
+                    "weight": 20,
+                },
+                {
+                    "name": "maintainability",
+                    "description": "Tests are easy to update",
+                    "weight": 15,
+                },
+                {"name": "performance", "description": "Tests run quickly", "weight": 10},
+            ],
         )
         rubrics_created.append("testing")
 
@@ -321,24 +380,34 @@ class BrainManager:
             name="documentation",
             description="Evaluates code and API documentation",
             criteria=[
-                {"name": "completeness", "description": "All public APIs are documented", "weight": 25},
-                {"name": "examples", "description": "Usage examples for complex functionality", "weight": 20},
-                {"name": "accuracy", "description": "Docs match actual implementation", "weight": 30},
-                {"name": "accessibility", "description": "Written for target audience", "weight": 15},
-                {"name": "formatting", "description": "Consistent formatting", "weight": 10}
-            ]
+                {
+                    "name": "completeness",
+                    "description": "All public APIs are documented",
+                    "weight": 25,
+                },
+                {
+                    "name": "examples",
+                    "description": "Usage examples for complex functionality",
+                    "weight": 20,
+                },
+                {
+                    "name": "accuracy",
+                    "description": "Docs match actual implementation",
+                    "weight": 30,
+                },
+                {
+                    "name": "accessibility",
+                    "description": "Written for target audience",
+                    "weight": 15,
+                },
+                {"name": "formatting", "description": "Consistent formatting", "weight": 10},
+            ],
         )
         rubrics_created.append("documentation")
 
-        log_status(
-            self.log_dir, "INFO",
-            f"Created {len(rubrics_created)} default rubrics"
-        )
+        log_status(self.log_dir, "INFO", f"Created {len(rubrics_created)} default rubrics")
 
-        return {
-            "status": "SUCCESS",
-            "rubrics_created": rubrics_created
-        }
+        return {"status": "SUCCESS", "rubrics_created": rubrics_created}
 
     def get_brain_summary(self) -> dict[str, Any]:
         """Get summary of brain contents."""
@@ -356,7 +425,7 @@ class BrainManager:
             "patterns_count": len(patterns),
             "rubrics": rubrics,
             "adaptations": adaptations,
-            "brain_dir": str(self.brain_dir)
+            "brain_dir": str(self.brain_dir),
         }
 
 

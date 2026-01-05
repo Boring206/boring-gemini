@@ -15,7 +15,7 @@ from rich.console import Console
 console = Console()
 
 # Hook Templates
-PRE_COMMIT_HOOK = '''#!/bin/sh
+PRE_COMMIT_HOOK = """#!/bin/sh
 # Boring Pre-Commit Hook
 # Runs STANDARD verification before each commit
 
@@ -33,9 +33,9 @@ fi
 
 echo "✅ Boring: Verification passed."
 exit 0
-'''
+"""
 
-PRE_PUSH_HOOK = '''#!/bin/sh
+PRE_PUSH_HOOK = """#!/bin/sh
 # Boring Pre-Push Hook
 # Runs FULL verification (including tests) before each push
 
@@ -53,9 +53,9 @@ fi
 
 echo "✅ Boring: Full verification passed. Pushing..."
 exit 0
-'''
+"""
 
-SPEC_GUARD_HOOK = '''#!/bin/sh
+SPEC_GUARD_HOOK = """#!/bin/sh
 # Boring Spec Guard Hook
 # Ensures code consistency with spec.md before commit
 
@@ -76,10 +76,10 @@ fi
 
 echo "✅ Boring: Spec Guard passed."
 exit 0
-'''
+"""
 
 # Polyglot Quick Check Hook - runs language-specific linters on staged files
-QUICK_CHECK_HOOK = r'''#!/bin/sh
+QUICK_CHECK_HOOK = r"""#!/bin/sh
 # Boring Quick Check Hook (Polyglot)
 # Fast verification for staged files only (<5 seconds target)
 
@@ -142,7 +142,7 @@ fi
 
 echo "✅ Boring: Quick check passed."
 exit 0
-'''
+"""
 
 
 class HooksManager:
@@ -232,10 +232,7 @@ class HooksManager:
 
     def status(self) -> dict:
         """Get status of installed hooks."""
-        status = {
-            "is_git_repo": self.is_git_repo(),
-            "hooks": {}
-        }
+        status = {"is_git_repo": self.is_git_repo(), "hooks": {}}
 
         if not self.is_git_repo():
             return status
@@ -245,14 +242,8 @@ class HooksManager:
             if hook_path.exists():
                 content = hook_path.read_text(encoding="utf-8", errors="ignore")
                 is_boring = "Boring" in content
-                status["hooks"][hook_name] = {
-                    "installed": True,
-                    "is_boring_hook": is_boring
-                }
+                status["hooks"][hook_name] = {"installed": True, "is_boring_hook": is_boring}
             else:
-                status["hooks"][hook_name] = {
-                    "installed": False,
-                    "is_boring_hook": False
-                }
+                status["hooks"][hook_name] = {"installed": False, "is_boring_hook": False}
 
         return status

@@ -35,6 +35,7 @@ CB_HISTORY_FILE = Path(".circuit_breaker_history")
 
 class CircuitState(Enum):
     """Circuit breaker states."""
+
     CLOSED = "CLOSED"
     OPEN = "OPEN"
     HALF_OPEN = "HALF_OPEN"
@@ -43,6 +44,7 @@ class CircuitState(Enum):
 @dataclass
 class LoopInfo:
     """Information about the last loop."""
+
     loop: int
     files_changed: int
     has_errors: bool
@@ -56,7 +58,12 @@ def init_circuit_breaker():
             "state": CircuitState.CLOSED.value,
             "failures": 0,
             "last_failure_time": 0,
-            "last_loop_info": {"loop": 0, "files_changed": 0, "has_errors": False, "output_length": 0}
+            "last_loop_info": {
+                "loop": 0,
+                "files_changed": 0,
+                "has_errors": False,
+                "output_length": 0,
+            },
         }
         CB_STATE_FILE.write_text(json.dumps(state, indent=4))
     if not CB_HISTORY_FILE.exists():
@@ -69,11 +76,7 @@ def _log_circuit_state_change(new_state: str, reason: str):
         CB_HISTORY_FILE.write_text(json.dumps([], indent=4))
 
     history = json.loads(CB_HISTORY_FILE.read_text())
-    history.append({
-        "timestamp": datetime.now().isoformat(),
-        "state": new_state,
-        "reason": reason
-    })
+    history.append({"timestamp": datetime.now().isoformat(), "state": new_state, "reason": reason})
     # Keep only last 50 entries
     history = history[-50:]
     CB_HISTORY_FILE.write_text(json.dumps(history, indent=4))
@@ -85,7 +88,9 @@ def get_circuit_state() -> dict[str, Any]:
     return json.loads(CB_STATE_FILE.read_text())
 
 
-def record_loop_result(loop_num: int, files_changed: int, has_errors: bool, output_length: int) -> int:
+def record_loop_result(
+    loop_num: int, files_changed: int, has_errors: bool, output_length: int
+) -> int:
     """
     Records the result of a loop and updates circuit breaker state.
 
@@ -114,7 +119,9 @@ def record_loop_result(loop_num: int, files_changed: int, has_errors: bool, outp
     # State transitions
     if current_state == CircuitState.CLOSED.value and failures >= CIRCUIT_BREAKER_MAX_FAILURES:
         new_state = CircuitState.OPEN.value
-        _log_circuit_state_change(CircuitState.OPEN.value, "Too many consecutive failures/no progress")
+        _log_circuit_state_change(
+            CircuitState.OPEN.value, "Too many consecutive failures/no progress"
+        )
     elif current_state == CircuitState.OPEN.value:
         if (int(time.time()) - state_data["last_failure_time"]) > CIRCUIT_BREAKER_RESET_TIMEOUT:
             new_state = CircuitState.HALF_OPEN.value
@@ -133,7 +140,7 @@ def record_loop_result(loop_num: int, files_changed: int, has_errors: bool, outp
         "loop": loop_num,
         "files_changed": files_changed,
         "has_errors": has_errors,
-        "output_length": output_length
+        "output_length": output_length,
     }
     CB_STATE_FILE.write_text(json.dumps(state_data, indent=4))
 
@@ -152,7 +159,7 @@ def reset_circuit_breaker(reason: str = "Manual reset"):
         "state": CircuitState.CLOSED.value,
         "failures": 0,
         "last_failure_time": 0,
-        "last_loop_info": {"loop": 0, "files_changed": 0, "has_errors": False, "output_length": 0}
+        "last_loop_info": {"loop": 0, "files_changed": 0, "has_errors": False, "output_length": 0},
     }
     CB_STATE_FILE.write_text(json.dumps(state, indent=4))
     _log_circuit_state_change(CircuitState.CLOSED.value, reason)
@@ -161,15 +168,19 @@ def reset_circuit_breaker(reason: str = "Manual reset"):
 def show_circuit_status():
     """Displays the current circuit breaker status."""
     state_data = get_circuit_state()
-    console.print(Panel(
-        JSON(json.dumps(state_data, indent=4)),
-        title="[bold blue]Circuit Breaker Status[/bold blue]",
-        border_style="blue"
-    ))
+    console.print(
+        Panel(
+            JSON(json.dumps(state_data, indent=4)),
+            title="[bold blue]Circuit Breaker Status[/bold blue]",
+            border_style="blue",
+        )
+    )
     if CB_HISTORY_FILE.exists():
         history_data = json.loads(CB_HISTORY_FILE.read_text())
-        console.print(Panel(
-            JSON(json.dumps(history_data[-10:], indent=4)),  # Show last 10
-            title="[bold blue]Circuit Breaker History[/bold blue]",
-            border_style="blue"
-        ))
+        console.print(
+            Panel(
+                JSON(json.dumps(history_data[-10:], indent=4)),  # Show last 10
+                title="[bold blue]Circuit Breaker History[/bold blue]",
+                border_style="blue",
+            )
+        )

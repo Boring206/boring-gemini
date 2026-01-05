@@ -33,7 +33,11 @@ class PatchingState(LoopState):
     def on_enter(self, context: LoopContext) -> None:
         """Log state entry."""
         context.start_state()
-        log_status(context.log_dir, "INFO", f"[State: {self.name}] Processing {len(context.function_calls)} function calls...")
+        log_status(
+            context.log_dir,
+            "INFO",
+            f"[State: {self.name}] Processing {len(context.function_calls)} function calls...",
+        )
         console.print(f"[yellow]🔧 Patching ({len(context.function_calls)} calls)...[/yellow]")
 
     def handle(self, context: LoopContext) -> StateResult:
@@ -61,7 +65,7 @@ class PatchingState(LoopState):
             backup_mgr = BackupManager(
                 context.loop_count,
                 project_root=context.project_root,
-                backup_dir=context.project_root / ".boring_backups"
+                backup_dir=context.project_root / ".boring_backups",
             )
             snapshot = backup_mgr.create_snapshot(files_to_backup)
             if snapshot:
@@ -80,8 +84,9 @@ class PatchingState(LoopState):
 
         if total_modified > 0:
             log_status(
-                context.log_dir, "SUCCESS",
-                f"Modified {len(context.files_modified)}, Created {len(context.files_created)} files"
+                context.log_dir,
+                "SUCCESS",
+                f"Modified {len(context.files_modified)}, Created {len(context.files_created)} files",
             )
             return StateResult.SUCCESS
         else:
@@ -98,16 +103,15 @@ class PatchingState(LoopState):
 
         if result == StateResult.SUCCESS:
             from .verifying import VerifyingState
+
             return VerifyingState()
         else:
             from .recovery import RecoveryState
+
             return RecoveryState()
 
     def _get_files_to_modify(
-        self,
-        context: LoopContext,
-        write_calls: list[dict],
-        replace_calls: list[dict]
+        self, context: LoopContext, write_calls: list[dict], replace_calls: list[dict]
     ) -> list[Path]:
         """Get list of existing files that will be modified."""
         files = []
@@ -229,8 +233,8 @@ class PatchingState(LoopState):
                         "result": result.value,
                         "files_modified": len(context.files_modified),
                         "files_created": len(context.files_created),
-                        "errors": len(context.patch_errors)
-                    }
+                        "errors": len(context.patch_errors),
+                    },
                 )
             except Exception:
                 pass

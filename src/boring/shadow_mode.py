@@ -22,22 +22,25 @@ logger = logging.getLogger(__name__)
 
 class ShadowModeLevel(Enum):
     """Shadow mode protection levels."""
+
     DISABLED = "DISABLED"  # All operations auto-approved
-    ENABLED = "ENABLED"    # Block HIGH/CRITICAL only (DEFAULT)
-    STRICT = "STRICT"      # Block ALL write operations
+    ENABLED = "ENABLED"  # Block HIGH/CRITICAL only (DEFAULT)
+    STRICT = "STRICT"  # Block ALL write operations
 
 
 class OperationSeverity(Enum):
     """Severity levels for operations."""
-    LOW = "low"        # Read operations, non-destructive queries
+
+    LOW = "low"  # Read operations, non-destructive queries
     MEDIUM = "medium"  # Large edits, batch operations
-    HIGH = "high"      # File deletion, config changes
+    HIGH = "high"  # File deletion, config changes
     CRITICAL = "critical"  # Secrets, system files, mass deletion
 
 
 @dataclass
 class PendingOperation:
     """An operation awaiting human approval."""
+
     operation_id: str
     operation_type: str
     file_path: str
@@ -58,7 +61,7 @@ class PendingOperation:
             "preview": self.preview[:500],
             "timestamp": self.timestamp,
             "approved": self.approved,
-            "approver_note": self.approver_note
+            "approver_note": self.approver_note,
         }
 
 
@@ -83,27 +86,40 @@ class ShadowModeGuard:
 
     # Patterns for sensitive files
     SENSITIVE_PATTERNS = {
-        ".env", "secret", "password", "credential", "key",
-        "token", "auth", "private", "api_key", ".pem", ".key"
+        ".env",
+        "secret",
+        "password",
+        "credential",
+        "key",
+        "token",
+        "auth",
+        "private",
+        "api_key",
+        ".pem",
+        ".key",
     }
 
     # Config files that warrant extra caution
     CONFIG_PATTERNS = {
-        "config", "settings", "pyproject.toml", "package.json",
-        "docker-compose", "Dockerfile", ".yaml", ".yml"
+        "config",
+        "settings",
+        "pyproject.toml",
+        "package.json",
+        "docker-compose",
+        "Dockerfile",
+        ".yaml",
+        ".yml",
     }
 
     # Files that should NEVER be modified by automation
-    PROTECTED_FILES = {
-        ".git/config", ".git/HEAD", "~/.ssh/", "/etc/"
-    }
+    PROTECTED_FILES = {".git/config", ".git/HEAD", "~/.ssh/", "/etc/"}
 
     def __init__(
         self,
         project_root: Path,
         mode: ShadowModeLevel = ShadowModeLevel.ENABLED,
         approval_callback: Optional[ApprovalCallback] = None,
-        pending_file: Optional[Path] = None
+        pending_file: Optional[Path] = None,
     ):
         """
         Initialize Shadow Mode guard.
@@ -118,9 +134,7 @@ class ShadowModeGuard:
         self.mode = mode
         self.approval_callback = approval_callback
 
-        self.pending_file = pending_file or (
-            self.project_root / ".boring_pending_approval.json"
-        )
+        self.pending_file = pending_file or (self.project_root / ".boring_pending_approval.json")
 
         self.pending_queue: list[PendingOperation] = []
         self._operation_counter = 0
@@ -238,11 +252,7 @@ class ShadowModeGuard:
                 return op.approved
         return None
 
-    def _classify_operation(
-        self,
-        op_name: str,
-        args: dict[str, Any]
-    ) -> Optional[PendingOperation]:
+    def _classify_operation(self, op_name: str, args: dict[str, Any]) -> Optional[PendingOperation]:
         """Classify an operation by severity."""
         file_path = args.get("file_path", "") or args.get("path", "")
 
@@ -260,7 +270,7 @@ class ShadowModeGuard:
                 file_path=file_path,
                 severity=OperationSeverity.HIGH,
                 description=f"Delete file: {file_path}",
-                preview="[File will be permanently deleted]"
+                preview="[File will be permanently deleted]",
             )
 
         # ==================
@@ -275,7 +285,7 @@ class ShadowModeGuard:
                     file_path=file_path,
                     severity=OperationSeverity.CRITICAL,
                     description=f"Modify sensitive file: {file_path}",
-                    preview=self._safe_preview(content)
+                    preview=self._safe_preview(content),
                 )
 
         # ==================
@@ -290,7 +300,7 @@ class ShadowModeGuard:
                     file_path=file_path,
                     severity=OperationSeverity.HIGH,
                     description=f"Modify config file: {file_path}",
-                    preview=self._safe_preview(content)
+                    preview=self._safe_preview(content),
                 )
 
         # ==================
@@ -305,7 +315,7 @@ class ShadowModeGuard:
                     file_path=file_path,
                     severity=OperationSeverity.MEDIUM,
                     description=f"Large edit in {file_path} ({len(search_content)} chars, {search_content.count(chr(10))} lines)",
-                    preview=f"Removing:\n{search_content[:300]}..."
+                    preview=f"Removing:\n{search_content[:300]}...",
                 )
 
         # ==================
@@ -319,7 +329,7 @@ class ShadowModeGuard:
                 file_path="[shell]",
                 severity=OperationSeverity.HIGH,
                 description="Execute shell command",
-                preview=cmd[:200]
+                preview=cmd[:200],
             )
 
         # ==================
@@ -332,7 +342,7 @@ class ShadowModeGuard:
                 file_path=file_path,
                 severity=OperationSeverity.CRITICAL,
                 description=f"Attempt to modify protected path: {file_path}",
-                preview="[BLOCKED - Protected system path]"
+                preview="[BLOCKED - Protected system path]",
             )
 
         return None  # No special handling needed
@@ -358,11 +368,12 @@ class ShadowModeGuard:
 
         # Redact potential secrets
         import re
+
         redacted = re.sub(
             r'(password|secret|key|token|api_key)\s*[=:]\s*["\']?[^"\'\s]+',
-            r'\1=[REDACTED]',
+            r"\1=[REDACTED]",
             content,
-            flags=re.IGNORECASE
+            flags=re.IGNORECASE,
         )
 
         if len(redacted) > max_len:
@@ -385,7 +396,7 @@ class ShadowModeGuard:
                         preview=op["preview"],
                         timestamp=op.get("timestamp", ""),
                         approved=op.get("approved"),
-                        approver_note=op.get("approver_note")
+                        approver_note=op.get("approver_note"),
                     )
                     for op in data
                 ]
@@ -402,16 +413,14 @@ class ShadowModeGuard:
 
     def _remove_pending(self, operation_id: str) -> None:
         """Remove an operation from the queue."""
-        self.pending_queue = [
-            op for op in self.pending_queue
-            if op.operation_id != operation_id
-        ]
+        self.pending_queue = [op for op in self.pending_queue if op.operation_id != operation_id]
         self._save_pending()
 
 
 # ============================================================================
 # Console UI for approval
 # ============================================================================
+
 
 def interactive_approval_ui(pending: PendingOperation) -> bool:
     """
@@ -462,10 +471,9 @@ def interactive_approval_ui(pending: PendingOperation) -> bool:
 # Factory and convenience functions
 # ============================================================================
 
+
 def create_shadow_guard(
-    project_root: Path,
-    mode: str = "ENABLED",
-    interactive: bool = False
+    project_root: Path, mode: str = "ENABLED", interactive: bool = False
 ) -> ShadowModeGuard:
     """
     Create a Shadow Mode guard with sensible defaults.
@@ -487,8 +495,4 @@ def create_shadow_guard(
     # Set callback if interactive
     callback = interactive_approval_ui if interactive else None
 
-    return ShadowModeGuard(
-        project_root=project_root,
-        mode=level,
-        approval_callback=callback
-    )
+    return ShadowModeGuard(project_root=project_root, mode=level, approval_callback=callback)

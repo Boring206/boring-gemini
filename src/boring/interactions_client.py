@@ -19,6 +19,7 @@ from .logger import log_status
 # Try to import the new genai client
 try:
     from google import genai
+
     INTERACTIONS_API_AVAILABLE = True
 except ImportError:
     INTERACTIONS_API_AVAILABLE = False
@@ -40,6 +41,7 @@ SUPPORTED_MODELS = [
 @dataclass
 class InteractionResult:
     """Result from an Interactions API call."""
+
     text: str
     function_calls: list[dict[str, Any]]
     interaction_id: str
@@ -62,7 +64,7 @@ class InteractionsClient:
         self,
         model: str = "gemini-3-flash-preview",
         api_key: Optional[str] = None,
-        log_dir: Path = Path("logs")
+        log_dir: Path = Path("logs"),
     ):
         """
         Initialize the Interactions client.
@@ -79,8 +81,9 @@ class InteractionsClient:
 
         if not INTERACTIONS_API_AVAILABLE:
             log_status(
-                log_dir, "WARN",
-                "Interactions API not available. Install with: pip install google-genai"
+                log_dir,
+                "WARN",
+                "Interactions API not available. Install with: pip install google-genai",
             )
             return
 
@@ -99,7 +102,7 @@ class InteractionsClient:
         prompt: str,
         system_instruction: str = "",
         tools: Optional[list[dict]] = None,
-        continue_conversation: bool = True
+        continue_conversation: bool = True,
     ) -> InteractionResult:
         """
         Create a new interaction.
@@ -119,7 +122,7 @@ class InteractionsClient:
                 function_calls=[],
                 interaction_id="",
                 success=False,
-                error="Interactions API not enabled"
+                error="Interactions API not enabled",
             )
 
         try:
@@ -150,36 +153,37 @@ class InteractionsClient:
             function_calls = []
 
             for output in interaction.outputs:
-                if hasattr(output, 'text') and output.text:
+                if hasattr(output, "text") and output.text:
                     text_parts.append(output.text)
-                if hasattr(output, 'function_call') and output.function_call:
-                    function_calls.append({
-                        "name": output.function_call.name,
-                        "args": dict(output.function_call.args) if output.function_call.args else {}
-                    })
+                if hasattr(output, "function_call") and output.function_call:
+                    function_calls.append(
+                        {
+                            "name": output.function_call.name,
+                            "args": dict(output.function_call.args)
+                            if output.function_call.args
+                            else {},
+                        }
+                    )
 
             text = "\n".join(text_parts)
 
             log_status(
-                self.log_dir, "INFO",
-                f"Interaction {interaction.id[:8]}... completed: {len(text)} chars, {len(function_calls)} calls"
+                self.log_dir,
+                "INFO",
+                f"Interaction {interaction.id[:8]}... completed: {len(text)} chars, {len(function_calls)} calls",
             )
 
             return InteractionResult(
                 text=text,
                 function_calls=function_calls,
                 interaction_id=interaction.id,
-                success=True
+                success=True,
             )
 
         except Exception as e:
             log_status(self.log_dir, "ERROR", f"Interaction failed: {e}")
             return InteractionResult(
-                text="",
-                function_calls=[],
-                interaction_id="",
-                success=False,
-                error=str(e)
+                text="", function_calls=[], interaction_id="", success=False, error=str(e)
             )
 
     def reset_conversation(self):
@@ -187,11 +191,7 @@ class InteractionsClient:
         self.previous_interaction_id = None
         log_status(self.log_dir, "INFO", "Conversation reset")
 
-    def create_mcp_server_tool(
-        self,
-        name: str,
-        url: str
-    ) -> dict[str, Any]:
+    def create_mcp_server_tool(self, name: str, url: str) -> dict[str, Any]:
         """
         Create an MCP server tool definition.
 
@@ -202,16 +202,11 @@ class InteractionsClient:
         Returns:
             Tool definition dict for use in create()
         """
-        return {
-            "type": "mcp_server",
-            "name": name,
-            "url": url
-        }
+        return {"type": "mcp_server", "name": name, "url": url}
 
 
 def create_interactions_client(
-    model: str = "gemini-3-flash-preview",
-    log_dir: Path = Path("logs")
+    model: str = "gemini-3-flash-preview", log_dir: Path = Path("logs")
 ) -> Optional[InteractionsClient]:
     """
     Factory function to create an InteractionsClient.

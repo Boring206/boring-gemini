@@ -20,6 +20,7 @@ logger = get_logger("vscode_server")
 @dataclass
 class RPCRequest:
     """JSON-RPC 2.0 Request."""
+
     jsonrpc: str
     method: str
     params: dict[str, Any]
@@ -29,6 +30,7 @@ class RPCRequest:
 @dataclass
 class RPCResponse:
     """JSON-RPC 2.0 Response."""
+
     jsonrpc: str = "2.0"
     result: Any = None
     error: Optional[dict] = None
@@ -83,29 +85,32 @@ class VSCodeServer:
                 jsonrpc=raw.get("jsonrpc", "2.0"),
                 method=raw.get("method", ""),
                 params=raw.get("params", {}),
-                id=raw.get("id")
+                id=raw.get("id"),
             )
 
             handler = self._handlers.get(req.method)
             if not handler:
-                return json.dumps(RPCResponse(
-                    error={"code": -32601, "message": f"Method not found: {req.method}"},
-                    id=req.id
-                ).to_dict())
+                return json.dumps(
+                    RPCResponse(
+                        error={"code": -32601, "message": f"Method not found: {req.method}"},
+                        id=req.id,
+                    ).to_dict()
+                )
 
             result = await handler(req.params)
             return json.dumps(RPCResponse(result=result, id=req.id).to_dict())
 
         except json.JSONDecodeError:
-            return json.dumps(RPCResponse(
-                error={"code": -32700, "message": "Parse error"},
-                id=None
-            ).to_dict())
+            return json.dumps(
+                RPCResponse(error={"code": -32700, "message": "Parse error"}, id=None).to_dict()
+            )
         except Exception as e:
-            return json.dumps(RPCResponse(
-                error={"code": -32603, "message": str(e)},
-                id=raw.get("id") if 'raw' in dir() else None
-            ).to_dict())
+            return json.dumps(
+                RPCResponse(
+                    error={"code": -32603, "message": str(e)},
+                    id=raw.get("id") if "raw" in dir() else None,
+                ).to_dict()
+            )
 
     async def _handle_verify(self, params: dict) -> dict:
         """Handle verify request."""
@@ -135,6 +140,7 @@ class VSCodeServer:
 
         try:
             from .judge import LLMJudge, create_judge_provider
+
             provider = create_judge_provider()
             judge = LLMJudge(provider)
 
@@ -152,6 +158,7 @@ class VSCodeServer:
 
         try:
             from .rag.rag_retriever import RAGRetriever
+
             retriever = RAGRetriever(self.project_root)
 
             if not retriever.is_available:
@@ -164,7 +171,7 @@ class VSCodeServer:
                         "file": r.file_path,
                         "name": r.name,
                         "score": r.score,
-                        "snippet": r.content[:200]
+                        "snippet": r.content[:200],
                     }
                     for r in results
                 ]
@@ -176,6 +183,7 @@ class VSCodeServer:
         """Handle status request."""
         try:
             from .memory import MemoryManager
+
             memory = MemoryManager(self.project_root)
             state = memory.get_project_state()
             return state
@@ -192,13 +200,14 @@ class VSCodeServer:
         return {
             "command": f"boring auto-fix {filepath}",
             "status": "PENDING",
-            "message": "Run the command to execute auto-fix"
+            "message": "Run the command to execute auto-fix",
         }
 
     async def _handle_version(self, params: dict) -> dict:
         """Handle version request."""
         try:
             from importlib.metadata import version
+
             ver = version("boring")
         except Exception:
             ver = "10.15.0"
@@ -206,8 +215,9 @@ class VSCodeServer:
 
     async def start(self, host: str = "127.0.0.1", port: int = 9876) -> None:
         """Start the JSON-RPC server."""
+
         async def handle_client(reader, writer):
-            addr = writer.get_extra_info('peername')
+            addr = writer.get_extra_info("peername")
             logger.info(f"Connection from {addr}")
 
             try:

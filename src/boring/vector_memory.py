@@ -19,6 +19,7 @@ from .logger import log_status
 try:
     import chromadb
     from chromadb.config import Settings as ChromaSettings
+
     CHROMADB_AVAILABLE = True
 except ImportError:
     CHROMADB_AVAILABLE = False
@@ -29,6 +30,7 @@ except ImportError:
 @dataclass
 class Experience:
     """A single learning experience."""
+
     error_type: str
     error_message: str
     solution: str
@@ -51,7 +53,7 @@ class VectorMemory:
         self,
         persist_dir: Path = None,
         collection_name: str = "boring_knowledge",
-        log_dir: Path = Path("logs")
+        log_dir: Path = Path("logs"),
     ):
         """
         Initialize the vector memory store.
@@ -67,8 +69,9 @@ class VectorMemory:
 
         if not CHROMADB_AVAILABLE:
             log_status(
-                log_dir, "WARN",
-                "ChromaDB not available. Install with: pip install chromadb sentence-transformers"
+                log_dir,
+                "WARN",
+                "ChromaDB not available. Install with: pip install chromadb sentence-transformers",
             )
             return
 
@@ -76,23 +79,22 @@ class VectorMemory:
             if persist_dir:
                 persist_dir.mkdir(parents=True, exist_ok=True)
                 self.client = chromadb.PersistentClient(
-                    path=str(persist_dir),
-                    settings=ChromaSettings(anonymized_telemetry=False)
+                    path=str(persist_dir), settings=ChromaSettings(anonymized_telemetry=False)
                 )
             else:
-                self.client = chromadb.Client(
-                    settings=ChromaSettings(anonymized_telemetry=False)
-                )
+                self.client = chromadb.Client(settings=ChromaSettings(anonymized_telemetry=False))
 
             # Get or create the collection
             # Using default embedding function (sentence-transformers)
             self.collection = self.client.get_or_create_collection(
                 name=collection_name,
-                metadata={"description": "Boring's learned experiences and error solutions"}
+                metadata={"description": "Boring's learned experiences and error solutions"},
             )
 
             self.enabled = True
-            log_status(log_dir, "INFO", f"Vector memory initialized: {self.collection.count()} experiences")
+            log_status(
+                log_dir, "INFO", f"Vector memory initialized: {self.collection.count()} experiences"
+            )
 
         except Exception as e:
             log_status(log_dir, "ERROR", f"Failed to initialize vector memory: {e}")
@@ -104,7 +106,7 @@ class VectorMemory:
         error_message: str,
         solution: str,
         context: str = "",
-        success: bool = True
+        success: bool = True,
     ) -> bool:
         """
         Add a new learning experience to the memory store.
@@ -129,7 +131,7 @@ class VectorMemory:
                 solution=solution[:2000],  # Truncate long solutions
                 context=context,
                 timestamp=datetime.now().isoformat(),
-                success=success
+                success=success,
             )
 
             # Create searchable document from error info
@@ -138,15 +140,12 @@ class VectorMemory:
             # Generate unique ID
             doc_id = f"exp_{int(time.time() * 1000)}"
 
-            self.collection.add(
-                documents=[document],
-                metadatas=[asdict(exp)],
-                ids=[doc_id]
-            )
+            self.collection.add(documents=[document], metadatas=[asdict(exp)], ids=[doc_id])
 
             log_status(
-                self.log_dir, "INFO",
-                f"Added experience: {error_type} ({self.collection.count()} total)"
+                self.log_dir,
+                "INFO",
+                f"Added experience: {error_type} ({self.collection.count()} total)",
             )
             return True
 
@@ -155,10 +154,7 @@ class VectorMemory:
             return False
 
     def retrieve_similar(
-        self,
-        error_message: str,
-        n_results: int = 3,
-        min_similarity: float = 0.5
+        self, error_message: str, n_results: int = 3, min_similarity: float = 0.5
     ) -> list[dict[str, Any]]:
         """
         Retrieve similar past experiences based on error message.
@@ -178,7 +174,7 @@ class VectorMemory:
             results = self.collection.query(
                 query_texts=[error_message],
                 n_results=min(n_results, self.collection.count()),
-                include=["documents", "metadatas", "distances"]
+                include=["documents", "metadatas", "distances"],
             )
 
             experiences = []
@@ -191,16 +187,21 @@ class VectorMemory:
                     similarity = 1.0 / (1.0 + distance)  # Convert distance to similarity
 
                     if similarity >= min_similarity:
-                        experiences.append({
-                            **metadata,
-                            "similarity": round(similarity, 3),
-                            "document": results["documents"][0][i] if results.get("documents") else ""
-                        })
+                        experiences.append(
+                            {
+                                **metadata,
+                                "similarity": round(similarity, 3),
+                                "document": results["documents"][0][i]
+                                if results.get("documents")
+                                else "",
+                            }
+                        )
 
             if experiences:
                 log_status(
-                    self.log_dir, "INFO",
-                    f"Found {len(experiences)} similar experiences (best: {experiences[0]['similarity']:.2f})"
+                    self.log_dir,
+                    "INFO",
+                    f"Found {len(experiences)} similar experiences (best: {experiences[0]['similarity']:.2f})",
                 )
 
             return experiences
@@ -246,10 +247,10 @@ class VectorMemory:
                 parts.append("## 🧠 Relevant Past Experiences:")
                 for exp in experiences:
                     parts.append(f"""
-**Error Type:** {exp.get('error_type', 'Unknown')} (Similarity: {exp.get('similarity', 0):.0%})
+**Error Type:** {exp.get("error_type", "Unknown")} (Similarity: {exp.get("similarity", 0):.0%})
 **Previous Solution:**
 ```
-{exp.get('solution', 'N/A')[:500]}
+{exp.get("solution", "N/A")[:500]}
 ```
 """)
 
@@ -268,7 +269,7 @@ class VectorMemory:
             self.client.delete_collection(self.collection_name)
             self.collection = self.client.get_or_create_collection(
                 name=self.collection_name,
-                metadata={"description": "Boring's learned experiences and error solutions"}
+                metadata={"description": "Boring's learned experiences and error solutions"},
             )
             log_status(self.log_dir, "INFO", "Vector memory cleared")
             return True
@@ -277,14 +278,8 @@ class VectorMemory:
             return False
 
 
-
-
-
 # Convenience function to create vector memory with project defaults
-def create_vector_memory(
-    project_root: Path = None,
-    log_dir: Path = Path("logs")
-) -> VectorMemory:
+def create_vector_memory(project_root: Path = None, log_dir: Path = Path("logs")) -> VectorMemory:
     """
     Factory function to create VectorMemory with standard project paths.
 

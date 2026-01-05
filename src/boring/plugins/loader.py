@@ -21,6 +21,7 @@ from typing import Any, Callable, Optional
 @dataclass
 class BoringPlugin:
     """Metadata for a registered plugin."""
+
     name: str
     description: str
     func: Callable
@@ -36,7 +37,7 @@ def plugin(
     description: str,
     version: str = "1.0.0",
     author: str = "Unknown",
-    tags: Optional[list[str]] = None
+    tags: Optional[list[str]] = None,
 ):
     """
     Decorator to register a function as a Boring plugin.
@@ -52,6 +53,7 @@ def plugin(
             # Your logic here
             return {"passed": True, "issues": []}
     """
+
     def decorator(func: Callable) -> Callable:
         # Store metadata on the function
         func._boring_plugin = BoringPlugin(
@@ -60,7 +62,7 @@ def plugin(
             func=func,
             version=version,
             author=author,
-            tags=tags or []
+            tags=tags or [],
         )
 
         @wraps(func)
@@ -126,8 +128,7 @@ class PluginLoader:
 
             # Create module spec
             spec = importlib.util.spec_from_file_location(
-                f"boring_plugin_{file_path.stem}",
-                file_path
+                f"boring_plugin_{file_path.stem}", file_path
             )
 
             if spec is None or spec.loader is None:
@@ -202,7 +203,7 @@ class PluginLoader:
                 "version": p.version,
                 "author": p.author,
                 "tags": p.tags,
-                "file": str(p.file_path) if p.file_path else None
+                "file": str(p.file_path) if p.file_path else None,
             }
             for p in self.plugins.values()
         ]

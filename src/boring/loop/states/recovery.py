@@ -30,9 +30,13 @@ class RecoveryState(LoopState):
     def on_enter(self, context: LoopContext) -> None:
         """Log state entry."""
         context.start_state()
-        errors = "; ".join(context.errors_this_loop[:3]) if context.errors_this_loop else "Unknown error"
+        errors = (
+            "; ".join(context.errors_this_loop[:3]) if context.errors_this_loop else "Unknown error"
+        )
         log_status(context.log_dir, "WARN", f"[State: {self.name}] Errors: {errors[:200]}")
-        console.print(f"[yellow]🔄 Recovery (retry {context.retry_count + 1}/{context.max_retries})...[/yellow]")
+        console.print(
+            f"[yellow]🔄 Recovery (retry {context.retry_count + 1}/{context.max_retries})...[/yellow]"
+        )
 
     def handle(self, context: LoopContext) -> StateResult:
         """Determine recovery action based on error type."""
@@ -67,6 +71,7 @@ class RecoveryState(LoopState):
 
         # RETRY - go back to thinking
         from .thinking import ThinkingState
+
         return ThinkingState()
 
     def _generate_recovery_prompt(self, context: LoopContext) -> str:
@@ -188,8 +193,8 @@ Instructions:
                         "loop": context.loop_count,
                         "result": result.value,
                         "retry_count": context.retry_count,
-                        "error_count": len(context.errors_this_loop)
-                    }
+                        "error_count": len(context.errors_this_loop),
+                    },
                 )
             except Exception:
                 pass

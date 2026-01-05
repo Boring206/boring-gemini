@@ -4,19 +4,17 @@ Example: Using Vector Memory
 This example demonstrates how to use the vector memory system
 for semantic search over past experiences.
 """
+
 from pathlib import Path
 
-from boring.vector_memory import VectorMemory, create_vector_memory
+from boring.vector_memory import create_vector_memory
 
 
 def main():
     """Demonstrate vector memory usage."""
 
     # Create vector memory (requires chromadb)
-    memory = create_vector_memory(
-        project_root=Path.cwd(),
-        log_dir=Path("logs")
-    )
+    memory = create_vector_memory(project_root=Path.cwd(), log_dir=Path("logs"))
 
     if not memory.enabled:
         print("Vector memory not available. Install with:")
@@ -28,23 +26,20 @@ def main():
         error_type="ImportError",
         error_message="No module named 'requests'",
         solution="pip install requests",
-        context="web_client.py"
+        context="web_client.py",
     )
 
     memory.add_experience(
         error_type="TypeError",
         error_message="'NoneType' object is not subscriptable",
         solution="Check if result is None before accessing: if result: value = result['key']",
-        context="data_parser.py"
+        context="data_parser.py",
     )
 
     # Query for similar errors
     print("\n--- Searching for similar errors ---\n")
 
-    results = memory.retrieve_similar(
-        "module not found error",
-        n_results=2
-    )
+    results = memory.retrieve_similar("module not found error", n_results=2)
 
     for result in results:
         print(f"Error: {result['error_type']}")

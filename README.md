@@ -232,7 +232,7 @@ boring hooks uninstall  # 移除
 
 ---
 
-## 🆕 V10.16 新功能使用指南
+## 🆕 V10.16.0 新功能使用指南
 
 ### 1. Quality Gates (CI/CD 品質門檻)
 
@@ -313,7 +313,12 @@ boring_agent_review --parallel
 
 ### 5. VS Code 整合 (JSON-RPC Server)
 
-**用途**：啟動一個本地服務，讓 VS Code 插件能直接與 Boring 核心通信，無需終端機即可實現「一鍵驗證」、「自動修復」等 IDE 功能。
+**VS Code 整合 (JSON-RPC Server)** 主要是為了在編輯器中實現「原生開發體驗」。它讓 `boring-gemini` 的核心邏輯能直接與 VS Code 插件通訊，並解鎖以下功能：
+
+1.  **即時錯誤提示 (`boring.verify`)**：當您在編輯器中儲存檔案時，插件會透過 Server 呼叫驗證功能。錯誤會直接以 **紅色波浪線** 顯示在代碼下，並出現在 Problems 面板，無需手動執行指令。
+2.  **品質分數標註 (`boring.evaluate`)**：在函數或類別上方顯示 **CodeLens**（浮動文字），例如顯示 `Quality: 4.5/5`。這讓您一眼就能看出各區塊的品質評分，點擊即可獲得優化建議。
+3.  **側邊欄語義搜尋 (`boring.search`)**：您可以直接在 VS Code 側邊欄輸入「處理資料庫連線的代碼在哪？」，插件會透過 Server 調用 RAG 搜尋並列出結果，點擊搜尋結果即可跳轉。
+4.  **一鍵自動修復 (Quick Fix)**：遇到 Lint 或語法錯誤時，點擊 VS Code 的「小燈泡」圖示。Server 會提供 `boring auto-fix` 的執行建議，協助快速完成修正。
 
 ```json
 // .vscode/settings.json
@@ -323,7 +328,19 @@ boring_agent_review --parallel
 }
 ```
 
-### 6. 錯誤診斷 (CLI 核心功能)
+---
+
+### 6. 其他 IDE 支援 (LSP & CLI)
+
+**如果您使用其他 IDE（如 Cursor, IntelliJ, PyCharm, Vim 等）：**
+
+*   **Cursor / VS Code 衍生產品**：支援大部分功能。如果您使用的是 Cursor，可以將 `boring-gemini` 作為 MCP Server 添加，我（AI 助手）就能幫您調用所有工具。
+*   **IntelliJ / PyCharm**：可以透過內置的終端機使用 `boring` CLI 命令。對於即時提示，我們正計畫開發 LSP (Language Server Protocol) 支援，屆時將支援所有兼容 LSP 的編輯器。
+*   **Vim / Emacs**：建議配合 `boring` CLI 的 `--watch` 模式使用，或透過 MCP 插件（如 `none-ls` 整合）來獲得部分智慧功能。
+
+---
+
+### 7. 錯誤診斷 (CLI 核心功能)
 
 自動分析錯誤並建議修復命令（目前整合在 `CodeVerifier` 流程中，自動在驗證失敗時觸發）。
 

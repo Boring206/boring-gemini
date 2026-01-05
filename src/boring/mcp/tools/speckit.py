@@ -33,7 +33,6 @@ def _parse_workflow(workflow_name: str, content: str) -> Workflow:
     lines = content.split("\n")
     step_pattern = re.compile(r"^(\d+)\.\s+(.*)")
 
-
     for line in lines:
         match = step_pattern.match(line.strip())
         if match:
@@ -41,12 +40,7 @@ def _parse_workflow(workflow_name: str, content: str) -> Workflow:
             text = match.group(2)
             steps.append(WorkflowStep(index=idx, content=text))
 
-    return Workflow(
-        name=workflow_name,
-        description=description,
-        steps=steps,
-        raw_content=content
-    )
+    return Workflow(name=workflow_name, description=description, steps=steps, raw_content=content)
 
 
 def _read_workflow(workflow_name: str, project_root: Path) -> str:
@@ -63,7 +57,7 @@ def _execute_workflow(
     context: Optional[str] = None,
     project_path: Optional[str] = None,
     expected_artifact: Optional[str] = None,
-    auto_execute: bool = False
+    auto_execute: bool = False,
 ) -> dict:
     """
     Return a SpecKit workflow template for external execution.
@@ -91,18 +85,18 @@ def _execute_workflow(
             "status": "ERROR",
             "workflow": workflow_name,
             "message": f"Workflow '{workflow_name}' not found at .agent/workflows/",
-            "suggestion": f"Create the workflow file at: .agent/workflows/{workflow_name}.md"
+            "suggestion": f"Create the workflow file at: .agent/workflows/{workflow_name}.md",
         }
 
     # Validate with Pydantic Parsing (Robustness Check)
     try:
         workflow_model = _parse_workflow(workflow_name, raw_content)
     except Exception as e:
-         return {
+        return {
             "status": "ERROR",
             "workflow": workflow_name,
             "message": f"Failed to parse workflow file: {e}",
-            "suggestion": "Ensure the workflow file has valid YAML frontmatter and markdown structure."
+            "suggestion": "Ensure the workflow file has valid YAML frontmatter and markdown structure.",
         }
 
     # Build suggested prompt for external execution
@@ -115,25 +109,31 @@ def _execute_workflow(
     ]
 
     if context:
-        prompt_parts.extend([
-            "",
-            "## Additional Context",
-            context,
-        ])
+        prompt_parts.extend(
+            [
+                "",
+                "## Additional Context",
+                context,
+            ]
+        )
 
-    prompt_parts.extend([
-        "",
-        "## Task",
-        f"Please execute the {workflow_name} workflow following the instructions above.",
-        "Analyze the current project state and generate the appropriate output.",
-    ])
+    prompt_parts.extend(
+        [
+            "",
+            "## Task",
+            f"Please execute the {workflow_name} workflow following the instructions above.",
+            "Analyze the current project state and generate the appropriate output.",
+        ]
+    )
 
     if expected_artifact:
-        prompt_parts.extend([
-            "",
-            "## Expected Output",
-            f"Create the file: `{expected_artifact}`",
-        ])
+        prompt_parts.extend(
+            [
+                "",
+                "## Expected Output",
+                f"Create the file: `{expected_artifact}`",
+            ]
+        )
 
     suggested_prompt = "\n".join(prompt_parts)
 
@@ -147,36 +147,49 @@ def _execute_workflow(
     response = {
         "status": "WORKFLOW_TEMPLATE",
         "workflow": workflow_name,
-        "description": workflow_model.description, # Added from model
+        "description": workflow_model.description,  # Added from model
         "project_root": str(project_root),
         "workflow_instructions": workflow_model.raw_content,
         "suggested_prompt": suggested_prompt,
         "expected_artifact": expected_artifact,
         "artifact_exists": artifact_exists,
         "auto_execute": auto_execute,
-        "steps_count": len(workflow_model.steps), # Telemetry/Info
+        "steps_count": len(workflow_model.steps),  # Telemetry/Info
         "message": (
             f"Workflow '{workflow_name}' loaded ({len(workflow_model.steps)} steps).\n"
             "This is a workflow template. Execute it using your IDE AI or Gemini CLI.\n"
             f"Example CLI command: gemini --prompt @.agent/workflows/{workflow_name}.md"
         ),
-        "cli_command": f"gemini --prompt @.agent/workflows/{workflow_name}.md"
+        "cli_command": f"gemini --prompt @.agent/workflows/{workflow_name}.md",
     }
 
     if auto_execute:
-        response["message"] += "\n\n⚠️ **Auto-Execute Requested**: Please run the command immediately."
+        response["message"] += (
+            "\n\n⚠️ **Auto-Execute Requested**: Please run the command immediately."
+        )
 
     return response
+
 
 # ==============================================================================
 # SPECKIT TOOLS
 # ==============================================================================
 
+
 @audited
 def speckit_plan(
-    context: Annotated[str, Field(description="Optional additional context about requirements or constraints")] = None,
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None,
-    auto_execute: Annotated[bool, Field(description="If True, indicates the workflow should be executed immediately without further prompt")] = False
+    context: Annotated[
+        str, Field(description="Optional additional context about requirements or constraints")
+    ] = None,
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
+    auto_execute: Annotated[
+        bool,
+        Field(
+            description="If True, indicates the workflow should be executed immediately without further prompt"
+        ),
+    ] = False,
 ) -> dict:
     """
     Execute SpecKit Plan workflow - Create technical implementation plan from requirements.
@@ -188,13 +201,26 @@ def speckit_plan(
     Returns:
         Workflow execution result with implementation plan guidance
     """
-    return _execute_workflow("speckit-plan", context, project_path, expected_artifact="implementation_plan.md", auto_execute=auto_execute)
+    return _execute_workflow(
+        "speckit-plan",
+        context,
+        project_path,
+        expected_artifact="implementation_plan.md",
+        auto_execute=auto_execute,
+    )
+
 
 @audited
 def speckit_tasks(
-    context: Annotated[str, Field(description="Optional context about the implementation plan")] = None,
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None,
-    auto_execute: Annotated[bool, Field(description="If True, indicates the workflow should be executed immediately")] = False
+    context: Annotated[
+        str, Field(description="Optional context about the implementation plan")
+    ] = None,
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
+    auto_execute: Annotated[
+        bool, Field(description="If True, indicates the workflow should be executed immediately")
+    ] = False,
 ) -> dict:
     """
     Execute SpecKit Tasks workflow - Break implementation plan into actionable tasks.
@@ -206,13 +232,26 @@ def speckit_tasks(
     Returns:
         Workflow execution result with task breakdown
     """
-    return _execute_workflow("speckit-tasks", context, project_path, expected_artifact="@fix_plan.md", auto_execute=auto_execute)
+    return _execute_workflow(
+        "speckit-tasks",
+        context,
+        project_path,
+        expected_artifact="@fix_plan.md",
+        auto_execute=auto_execute,
+    )
+
 
 @audited
 def speckit_analyze(
-    context: Annotated[str, Field(description="Optional focus areas or specific files to analyze")] = None,
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None,
-    auto_execute: Annotated[bool, Field(description="If True, indicates immediate execution")] = False
+    context: Annotated[
+        str, Field(description="Optional focus areas or specific files to analyze")
+    ] = None,
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
+    auto_execute: Annotated[
+        bool, Field(description="If True, indicates immediate execution")
+    ] = False,
 ) -> dict:
     """
     Execute SpecKit Analyze workflow - Analyze consistency between specs and code.
@@ -231,10 +270,15 @@ def speckit_analyze(
     """
     return _execute_workflow("speckit-analyze", context, project_path, auto_execute=auto_execute)
 
+
 @audited
 def speckit_clarify(
-    context: Annotated[str, Field(description="Optional specific areas that need clarification")] = None,
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    context: Annotated[
+        str, Field(description="Optional specific areas that need clarification")
+    ] = None,
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Execute SpecKit Clarify workflow - Identify and clarify ambiguous requirements.
@@ -254,10 +298,13 @@ def speckit_clarify(
     """
     return _execute_workflow("speckit-clarify", context, project_path)
 
+
 @audited
 def speckit_constitution(
     context: Annotated[str, Field(description="Optional project vision or constraints")] = None,
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Execute SpecKit Constitution workflow - Create project guiding principles.
@@ -277,10 +324,15 @@ def speckit_constitution(
     """
     return _execute_workflow("speckit-constitution", context, project_path)
 
+
 @audited
 def speckit_checklist(
-    context: Annotated[str, Field(description="Optional specific feature or requirement to check")] = None,
-    project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
+    context: Annotated[
+        str, Field(description="Optional specific feature or requirement to check")
+    ] = None,
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
 ) -> dict:
     """
     Execute SpecKit Checklist workflow - Generate quality validation checklist.
@@ -299,10 +351,29 @@ def speckit_checklist(
     """
     return _execute_workflow("speckit-checklist", context, project_path)
 
+
 if MCP_AVAILABLE and mcp is not None:
-    mcp.tool(description="Create implementation plan", annotations={"readOnlyHint": True, "openWorldHint": True})(speckit_plan)
-    mcp.tool(description="Create task checklist", annotations={"readOnlyHint": True, "openWorldHint": True})(speckit_tasks)
-    mcp.tool(description="Analyze spec consistency", annotations={"readOnlyHint": True, "openWorldHint": True})(speckit_analyze)
-    mcp.tool(description="Clarify requirements", annotations={"readOnlyHint": True, "openWorldHint": True})(speckit_clarify)
-    mcp.tool(description="Create project constitution", annotations={"readOnlyHint": True, "openWorldHint": True})(speckit_constitution)
-    mcp.tool(description="Create quality checklist", annotations={"readOnlyHint": True, "openWorldHint": True})(speckit_checklist)
+    mcp.tool(
+        description="Create implementation plan",
+        annotations={"readOnlyHint": True, "openWorldHint": True},
+    )(speckit_plan)
+    mcp.tool(
+        description="Create task checklist",
+        annotations={"readOnlyHint": True, "openWorldHint": True},
+    )(speckit_tasks)
+    mcp.tool(
+        description="Analyze spec consistency",
+        annotations={"readOnlyHint": True, "openWorldHint": True},
+    )(speckit_analyze)
+    mcp.tool(
+        description="Clarify requirements",
+        annotations={"readOnlyHint": True, "openWorldHint": True},
+    )(speckit_clarify)
+    mcp.tool(
+        description="Create project constitution",
+        annotations={"readOnlyHint": True, "openWorldHint": True},
+    )(speckit_constitution)
+    mcp.tool(
+        description="Create quality checklist",
+        annotations={"readOnlyHint": True, "openWorldHint": True},
+    )(speckit_checklist)
