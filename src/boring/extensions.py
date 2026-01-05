@@ -7,16 +7,16 @@ Manages Gemini CLI extensions for enhanced AI capabilities:
 - chrome-devtools-mcp: Browser automation
 """
 
-import subprocess
+import os
 import shutil
-from pathlib import Path
-from typing import List, Dict, Optional, Tuple
+import subprocess
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Optional
+
 from rich.console import Console
 
-import os
 from .config import settings
-from .logger import log_status
 
 # MCP-compatible Rich Console (stderr, quiet in MCP mode)
 _is_mcp_mode = os.environ.get("BORING_MCP_MODE") == "1"
@@ -30,7 +30,7 @@ class Extension:
     repo_url: str
     description: str
     auto_use: bool = False  # Whether to automatically invoke in prompts
-    install_command: Optional[List[str]] = None  # Custom command to install/add the extension
+    install_command: Optional[list[str]] = None  # Custom command to install/add the extension
 
 
 # Recommended extensions
@@ -66,27 +66,27 @@ RECOMMENDED_EXTENSIONS = [
 class ExtensionsManager:
     """
     Manages Gemini CLI extensions for Boring.
-    
+
     Provides:
     - Extension installation/removal
     - Status checking
     - Prompt enhancement with extension invocations
     """
-    
+
     def __init__(self, project_root: Path = None):
         self.project_root = project_root or settings.PROJECT_ROOT
         self.gemini_cmd = shutil.which("gemini")
         self.extensions_config_file = self.project_root / ".boring_extensions.json"
-    
+
     def is_gemini_available(self) -> bool:
         """Check if Gemini CLI is available."""
         return self.gemini_cmd is not None
-    
-    def get_installed_extensions(self) -> List[str]:
+
+    def get_installed_extensions(self) -> list[str]:
         """Get list of installed extensions."""
         if not self.is_gemini_available():
             return []
-        
+
         try:
             result = subprocess.run(
                 [self.gemini_cmd, "extensions", "list"],
@@ -102,15 +102,15 @@ class ExtensionsManager:
             return []
         except Exception:
             return []
-    
-    def install_extension(self, extension: Extension) -> Tuple[bool, str]:
+
+    def install_extension(self, extension: Extension) -> tuple[bool, str]:
         """Install a Gemini CLI extension."""
         if not self.is_gemini_available():
             return False, "Gemini CLI not found"
-        
+
         # Check if already installed
         installed = self.get_installed_extensions()
-        
+
         # Check for installation (name based)
         if any(extension.name in ext for ext in installed):
              return True, f"Already installed: {extension.name}"
@@ -132,7 +132,7 @@ class ExtensionsManager:
                 text=True,
                 timeout=300 # Increased timeout
             )
-            
+
             if result.returncode == 0:
                 return True, f"Successfully installed: {extension.name}"
             else:
@@ -145,8 +145,8 @@ class ExtensionsManager:
             return False, "Installation timed out"
         except Exception as e:
             return False, f"Error: {e}"
-    
-    def install_recommended_extensions(self) -> Dict[str, Tuple[bool, str]]:
+
+    def install_recommended_extensions(self) -> dict[str, tuple[bool, str]]:
         """Install all recommended extensions."""
         results = {}
         for ext in RECOMMENDED_EXTENSIONS:
@@ -157,23 +157,23 @@ class ExtensionsManager:
             else:
                 console.print(f"[red]✗ {ext.name}: {message}[/red]")
         return results
-    
+
     def setup_auto_extensions(self) -> str:
         """
         Create a GEMINI.md section that automatically invokes extensions.
         Returns the content to add to the context.
         """
         installed = self.get_installed_extensions()
-        
+
         auto_invoke_lines = []
-        
+
         # Check for context7
         if any("context7" in ext.lower() for ext in installed):
             auto_invoke_lines.append("use context7")
-        
+
         if not auto_invoke_lines:
             return ""
-        
+
         return f"""
 ## Active Extensions
 The following extensions are available and should be used when relevant:
@@ -181,18 +181,18 @@ The following extensions are available and should be used when relevant:
 
 When working with external libraries, invoke: `use context7`
 """
-    
+
     def enhance_prompt_with_extensions(self, prompt: str) -> str:
         """
         Enhance a prompt with extension invocations.
-        
+
         Automatically adds 'use context7' when library usage is detected.
         """
         installed = self.get_installed_extensions()
-        
+
         # Check if context7 is installed
         has_context7 = any("context7" in ext.lower() for ext in installed)
-        
+
         if has_context7:
             # Detect if prompt involves libraries
             library_keywords = [
@@ -200,41 +200,41 @@ When working with external libraries, invoke: `use context7`
                 "install", "dependency", "requirements"
             ]
             needs_context = any(kw in prompt.lower() for kw in library_keywords)
-            
+
             if needs_context and "use context7" not in prompt.lower():
                 prompt = f"{prompt}\n\nuse context7"
-        
+
         return prompt
-    
+
     def get_criticalthink_command(self) -> Optional[str]:
         """Get the criticalthink command if available."""
         installed = self.get_installed_extensions()
         if any("criticalthink" in ext.lower() for ext in installed):
             return "/criticalthink"
         return None
-    
+
     def create_extensions_report(self) -> str:
         """Create a status report of extensions."""
         lines = ["## Gemini CLI Extensions Status"]
-        
+
         if not self.is_gemini_available():
             lines.append("⚠️ Gemini CLI not found")
             return "\n".join(lines)
-        
+
         installed = self.get_installed_extensions()
-        
+
         lines.append(f"\n**Installed:** {len(installed)}")
         for ext in installed:
             lines.append(f"  - {ext}")
-        
+
         lines.append("\n**Recommended:**")
         for ext in RECOMMENDED_EXTENSIONS:
             status = "✓" if any(ext.name.lower() in i.lower() for i in installed) else "○"
             lines.append(f"  {status} {ext.name}: {ext.description}")
-        
+
         return "\n".join(lines)
 
-    def register_boring_mcp(self) -> Tuple[bool, str]:
+    def register_boring_mcp(self) -> tuple[bool, str]:
         """Register Boring as an MCP server for the Gemini CLI."""
         if not self.is_gemini_available():
             return False, "Gemini CLI not found"
@@ -251,10 +251,10 @@ When working with external libraries, invoke: `use context7`
         try:
             # We use 'boring' as the name in Gemini CLI
             cmd = [
-                self.gemini_cmd, "mcp", "add", "boring", 
+                self.gemini_cmd, "mcp", "add", "boring",
                 "command", boring_mcp_cmd
             ]
-            
+
             # Note: We use shell=True on Windows if command has spaces and quotes
             process = subprocess.run(
                 " ".join(cmd) if os.name == "nt" else cmd,
@@ -263,7 +263,7 @@ When working with external libraries, invoke: `use context7`
                 text=True,
                 shell=(os.name == "nt")
             )
-            
+
             if process.returncode == 0:
                 return True, "Successfully registered Boring MCP with Gemini CLI"
             else:
@@ -278,16 +278,16 @@ def setup_project_extensions(project_root: Path = None):
     Call this during 'boring-setup' or first run.
     """
     manager = ExtensionsManager(project_root)
-    
+
     console.print("\n[bold blue]Setting up Gemini CLI Extensions...[/bold blue]")
-    
+
     if not manager.is_gemini_available():
         console.print("[yellow]Gemini CLI not found. Extensions will be skipped.[/yellow]")
         console.print("[dim]Install with: npm install -g @google/gemini-cli[/dim]")
         return
-    
+
     results = manager.install_recommended_extensions()
-    
+
     successful = sum(1 for s, _ in results.values() if s)
     console.print(f"\n[green]Installed {successful}/{len(results)} extensions[/green]")
 
@@ -299,9 +299,9 @@ def create_criticalthink_command(project_root: Path = None):
     project_root = project_root or settings.PROJECT_ROOT
     commands_dir = project_root / ".gemini" / "commands"
     commands_dir.mkdir(parents=True, exist_ok=True)
-    
+
     criticalthink_toml = commands_dir / "criticalthink.toml"
-    
+
     content = '''# Critical Thinking Command for Boring
 # Invokes critical analysis of AI's previous response
 
@@ -321,7 +321,7 @@ If you find issues, provide corrected information.
 If the response was sound, confirm the key points.
 """
 '''
-    
+
     criticalthink_toml.write_text(content, encoding="utf-8")
     return criticalthink_toml
 
@@ -334,9 +334,9 @@ def create_speckit_command(project_root: Path = None):
     project_root = project_root or settings.PROJECT_ROOT
     commands_dir = project_root / ".gemini" / "commands"
     commands_dir.mkdir(parents=True, exist_ok=True)
-    
+
     speckit_toml = commands_dir / "speckit.toml"
-    
+
     # Define commands that map to Boring's .agent/workflows/
     content = '''# Spec-Kit Integration for Gemini CLI
 # Maps standard Spec-Driven Development workflows to CLI commands
@@ -417,6 +417,6 @@ Please use the 'speckit_reset_workflow' tool to rollback a workflow to its base 
 You should ask me which workflow to reset if I haven't specified.
 """
 '''
-    
+
     speckit_toml.write_text(content, encoding="utf-8")
     return speckit_toml

@@ -1,8 +1,10 @@
 import shutil
 import time
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
+
 from rich.console import Console
+
 from .config import settings
 
 console = Console()
@@ -18,7 +20,7 @@ class BackupManager:
         backup_base = backup_dir or settings.BACKUP_DIR
         self.snapshot_dir = backup_base / f"loop_{loop_id}_{self.timestamp}"
 
-    def create_snapshot(self, file_paths: List[Path]) -> Optional[Path]:
+    def create_snapshot(self, file_paths: list[Path]) -> Optional[Path]:
         """
         Copies the specified files to the snapshot directory.
         Returns the path to the snapshot directory if successful, None if no files needed backup.
@@ -39,10 +41,10 @@ class BackupManager:
                     rel_path = Path(file_path.name)
                 dest_path = self.snapshot_dir / rel_path
                 dest_path.parent.mkdir(parents=True, exist_ok=True)
-                
+
                 shutil.copy2(file_path, dest_path)
                 backed_up_count += 1
-        
+
         if backed_up_count > 0:
             console.print(f"[dim]Saved backup of {backed_up_count} files to {self.snapshot_dir}[/dim]")
             return self.snapshot_dir
@@ -61,12 +63,12 @@ class BackupManager:
             return
 
         console.print(f"[bold red]Restoring backup from {self.snapshot_dir}...[/bold red]")
-        
+
         for file_path in self.snapshot_dir.rglob("*"):
             if file_path.is_file():
                 rel_path = file_path.relative_to(self.snapshot_dir)
                 original_path = settings.PROJECT_ROOT / rel_path
-                
+
                 # Ensure parent dir exists
                 original_path.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(file_path, original_path)
@@ -79,13 +81,13 @@ class BackupManager:
         """
         if not settings.BACKUP_DIR.exists():
             return
-        
+
         # Get all backup directories sorted by modification time (oldest first)
         backup_dirs = sorted(
             [d for d in settings.BACKUP_DIR.iterdir() if d.is_dir()],
             key=lambda x: x.stat().st_mtime
         )
-        
+
         # Remove old backups if we have more than keep_last
         if len(backup_dirs) > keep_last:
             dirs_to_remove = backup_dirs[:-keep_last]

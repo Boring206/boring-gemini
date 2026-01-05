@@ -3,13 +3,15 @@ Prompt Templates and Building Logic for Judge
 """
 
 import os
+
 from ..config import settings
 from ..rubrics import Rubric
+
 
 def build_grade_prompt(filename: str, content: str, rubric: Rubric, adapter_type: str = "GeminiCLIAdapter") -> str:
     """Build the prompt for grading code quality."""
     criteria_text = "\n".join([f"- {c.name}: {c.description} (Weight: {c.weight})" for c in rubric.criteria])
-    
+
     # Dimensions for JSON output
     dimensions_json = ",\n".join([f'                "{c.name.lower().replace(" ", "_")}": {{ "score": <int>, "comment": "..." }}' for c in rubric.criteria])
 
@@ -27,7 +29,7 @@ def build_grade_prompt(filename: str, content: str, rubric: Rubric, adapter_type
         2. Scalability & Performance Bottlenecks
         3. Error Handling & System Resilience
         4. Security Vulnerabilities
-        
+
         Be brutal. Identify deep architectural flaws that standard linters miss."""
     elif rubric.strictness == "strict":
         persona = "You are a Senior Security and Performance Engineer. Be rigorous and demanding."
@@ -46,7 +48,7 @@ def build_grade_prompt(filename: str, content: str, rubric: Rubric, adapter_type
         ".cpp": "Modern C++ (17/20) standards, RAII, smart pointers over raw pointers."
     }
     specific_guidance = lang_guidelines.get(ext, "Follow standard best practices for this language.")
-    
+
     # Check for override
     custom_prompt = settings.PROMPTS.get("grade_code")
     if custom_prompt:
@@ -61,7 +63,7 @@ def build_grade_prompt(filename: str, content: str, rubric: Rubric, adapter_type
 
     return f'''{persona}
 
-LANGUAGE GUIDELINES ({ext}): 
+LANGUAGE GUIDELINES ({ext}):
 {specific_guidance}
 
 RUBRIC:
@@ -69,7 +71,7 @@ RUBRIC:
 
 CODE ({filename}):
 ```
-{truncated_content} 
+{truncated_content}
 ```
 
 INSTRUCTIONS:

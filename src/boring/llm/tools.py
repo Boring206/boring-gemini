@@ -4,7 +4,7 @@ LLM Tools - Function Calling Definitions
 Defines the tool schemas for Gemini function calling.
 """
 
-from typing import List, Any
+from typing import Any
 
 # Try to import Google GenAI SDK
 try:
@@ -67,11 +67,11 @@ Before writing code, verify:
 """
 
 
-def get_boring_tools() -> List[Any]:
+def get_boring_tools() -> list[Any]:
     """Return tool definitions compatible with google-genai SDK."""
     if not GENAI_AVAILABLE:
         return []
-    
+
     return [
         types.Tool(
             function_declarations=[

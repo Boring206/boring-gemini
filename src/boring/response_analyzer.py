@@ -6,13 +6,12 @@ Prioritizes structured function call results over text-based heuristics.
 """
 
 import json
-from pathlib import Path
-from datetime import datetime
 import re
-from typing import Dict, Any, Optional
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Optional
 
 from .logger import log_status
-
 
 ANALYSIS_RESULT_FILE = Path(".response_analysis")
 EXIT_SIGNALS_FILE = Path(".exit_signals")
@@ -21,28 +20,28 @@ EXIT_SIGNALS_FILE = Path(".exit_signals")
 def analyze_response(
     output_file: Path,
     loop_number: int,
-    function_call_results: Optional[Dict[str, Any]] = None
-) -> Dict[str, Any]:
+    function_call_results: Optional[dict[str, Any]] = None
+) -> dict[str, Any]:
     """
     Analyzes Gemini output and extracts signals.
-    
+
     Priority order for exit detection:
     1. Function call results (report_status tool) - Most reliable
     2. Structured status block (---BORING_STATUS---) - Reliable
     3. Git diff for file changes - Objective measure of progress
-    
+
     Removed: Natural language keyword guessing (unreliable)
-    
+
     Args:
         output_file: Path to the Gemini output log file
         loop_number: Current loop iteration number
         function_call_results: Optional dict containing processed function call data,
             particularly 'report_status' tool results from gemini_client
-    
+
     Returns:
         Analysis results dict with exit signals and confidence scores
     """
-    analysis_results: Dict[str, Any] = {
+    analysis_results: dict[str, Any] = {
         "loop_number": loop_number,
         "timestamp": datetime.now().isoformat(),
         "output_file": str(output_file),
@@ -65,28 +64,28 @@ def analyze_response(
         status_report = function_call_results.get("report_status") or function_call_results.get("status")
         if status_report:
             analysis_results["analysis"]["source"] = "function_call"
-            
+
             # Extract structured data from report_status tool
             if isinstance(status_report, dict):
                 exit_signal = status_report.get("exit_signal", False)
                 status = status_report.get("status", "")
                 tasks = status_report.get("tasks_completed", [])
                 files = status_report.get("files_modified", [])
-                
+
                 if exit_signal or status in ("COMPLETE", "DONE", "FINISHED"):
                     analysis_results["analysis"]["has_completion_signal"] = True
                     analysis_results["analysis"]["exit_signal"] = True
                     analysis_results["analysis"]["confidence_score"] = 100
-                
+
                 if tasks:
                     analysis_results["analysis"]["has_progress"] = True
                     analysis_results["analysis"]["work_summary"] = f"Completed: {', '.join(tasks[:3])}"
                     analysis_results["analysis"]["confidence_score"] += 20
-                
+
                 if files:
                     analysis_results["analysis"]["files_modified"] = len(files) if isinstance(files, list) else 1
                     analysis_results["analysis"]["has_progress"] = True
-            
+
             # If we got function call data, save and return early (most reliable source)
             if analysis_results["analysis"]["confidence_score"] > 0:
                 ANALYSIS_RESULT_FILE.write_text(json.dumps(analysis_results, indent=4))
@@ -114,7 +113,7 @@ def analyze_response(
         if status_block_match:
             analysis_results["analysis"]["source"] = "status_block"
             status_block = status_block_match.group(1)
-            
+
             if "STATUS: COMPLETE" in status_block or "EXIT_SIGNAL: true" in status_block:
                 analysis_results["analysis"]["has_completion_signal"] = True
                 analysis_results["analysis"]["exit_signal"] = True
@@ -122,12 +121,12 @@ def analyze_response(
 
     # === PRIORITY 3: Git Diff for File Changes (Objective) ===
     try:
-        from git import Repo, InvalidGitRepositoryError
+        from git import InvalidGitRepositoryError, Repo
         try:
             repo = Repo(Path.cwd())
             changed_files = [item.a_path for item in repo.index.diff(None)]
             unstaged_new_files = repo.untracked_files
-            
+
             total_modified_files = len(changed_files) + len(unstaged_new_files)
             if total_modified_files > 0:
                 analysis_results["analysis"]["has_progress"] = True
@@ -161,7 +160,7 @@ def update_exit_signals(exit_signals_file: Path):
         return
 
     analysis_data = json.loads(ANALYSIS_RESULT_FILE.read_text())
-    
+
     is_test_only = analysis_data["analysis"].get("is_test_only", False)
     has_completion_signal = analysis_data["analysis"].get("has_completion_signal", False)
     loop_number = analysis_data["loop_number"]
@@ -174,7 +173,7 @@ def update_exit_signals(exit_signals_file: Path):
             signals_data = json.loads(exit_signals_file.read_text())
         except (json.JSONDecodeError, Exception):
             signals_data = {}
-    
+
     if not signals_data:
         signals_data = {"test_only_loops": [], "done_signals": [], "completion_indicators": []}
 
@@ -183,7 +182,7 @@ def update_exit_signals(exit_signals_file: Path):
         signals_data["test_only_loops"].append(loop_number)
     elif has_progress:
         signals_data["test_only_loops"] = []
-    
+
     # Update done_signals
     if has_completion_signal:
         signals_data["done_signals"].append(loop_number)

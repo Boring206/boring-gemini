@@ -1,8 +1,10 @@
-from typing import Optional, Annotated
+from typing import Annotated
+
 from pydantic import Field
-from ..instance import mcp, MCP_AVAILABLE
-from ..utils import get_project_root_or_error
+
 from ...audit import audited
+from ..instance import MCP_AVAILABLE, mcp
+from ..utils import get_project_root_or_error
 
 # ==============================================================================
 # INTEGRATION TOOLS
@@ -14,13 +16,13 @@ def boring_setup_extensions(
 ) -> dict:
     """
     Install recommended Gemini CLI extensions for enhanced capabilities.
-    
+
     Installs:
     - context7: Up-to-date library documentation
     - slash-criticalthink: Critical analysis of AI outputs
     - chrome-devtools-mcp: Browser automation
     - notebooklm-mcp: Knowledge-based AI responses
-    
+
     Args:
         project_path: Optional explicit path to project root
 
@@ -28,27 +30,27 @@ def boring_setup_extensions(
         Installation results for each extension
     """
     try:
-        from ...extensions import ExtensionsManager
         from ...config import settings
-        
+        from ...extensions import ExtensionsManager
+
         # Resolve project root (don't force auto-init for setup, but good to have)
         project_root, error = get_project_root_or_error(project_path)
         if error:
             return error
-            
+
         # CRITICAL: Update global settings for dependencies
         object.__setattr__(settings, 'PROJECT_ROOT', project_root)
-        
+
         manager = ExtensionsManager(project_root)
-        
+
         if not manager.is_gemini_available():
             return {
                 "status": "SKIPPED",
                 "message": "Gemini CLI not found. Install with: npm install -g @google/gemini-cli"
             }
-        
+
         results = manager.install_recommended_extensions()
-        
+
         return {
             "status": "SUCCESS",
             "installed": [name for name, (success, _) in results.items() if success],
@@ -67,7 +69,7 @@ def boring_notebooklm_guide(
 ) -> str:
     """
     Get instructions for integrating NotebookLM (and fixing auth issues).
-    
+
     Returns:
         Step-by-step guide for setting up NotebookLM auth and integration with Boring.
     """

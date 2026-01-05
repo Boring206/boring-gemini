@@ -16,10 +16,10 @@ Directory Structure:
 """
 
 import json
-from pathlib import Path
+from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Optional, Dict, List, Any
-from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Any, Optional
 
 from .logger import log_status
 
@@ -42,86 +42,86 @@ class Rubric:
     """Evaluation rubric for quality assessment."""
     name: str
     description: str
-    criteria: List[Dict[str, str]]
+    criteria: list[dict[str, str]]
     created_at: str
 
 
 class BrainManager:
     """
     Manages .boring_brain knowledge base.
-    
+
     Usage:
         brain = BrainManager(project_root)
-        
+
         # Learn from successful loop
         brain.learn_from_success(loop_record)
-        
+
         # Get patterns for context
         patterns = brain.get_relevant_patterns("authentication error")
     """
-    
+
     def __init__(self, project_root: Path, log_dir: Optional[Path] = None):
         self.project_root = Path(project_root)
         self.brain_dir = self.project_root / ".boring_brain"
         self.log_dir = log_dir or self.project_root / "logs"
-        
+
         # Subdirectories
         self.adaptations_dir = self.brain_dir / "workflow_adaptations"
         self.patterns_dir = self.brain_dir / "learned_patterns"
         self.rubrics_dir = self.brain_dir / "rubrics"
-        
+
         # Ensure structure exists
         self._ensure_structure()
-    
+
     def _ensure_structure(self):
         """Create directory structure if not exists."""
         for d in [self.adaptations_dir, self.patterns_dir, self.rubrics_dir]:
             d.mkdir(parents=True, exist_ok=True)
-    
-    def _load_patterns(self) -> List[Dict]:
+
+    def _load_patterns(self) -> list[dict]:
         """Load all learned patterns."""
         patterns_file = self.patterns_dir / "patterns.json"
         if patterns_file.exists():
             try:
                 return json.loads(patterns_file.read_text(encoding="utf-8"))
-            except (json.JSONDecodeError, IOError):
+            except (OSError, json.JSONDecodeError):
                 return []
         return []
-    
-    def _save_patterns(self, patterns: List[Dict]):
+
+    def _save_patterns(self, patterns: list[dict]):
         """Save patterns to file."""
         patterns_file = self.patterns_dir / "patterns.json"
         patterns_file.write_text(
             json.dumps(patterns, indent=2, ensure_ascii=False),
             encoding="utf-8"
         )
-    
-    def learn_from_memory(self, storage) -> Dict[str, Any]:
+
+    def learn_from_memory(self, storage) -> dict[str, Any]:
         """
         Extract successful patterns from .boring_memory SQLite storage.
-        
+
         Args:
             storage: SQLiteStorage instance
-            
+
         Returns:
             Learning result with patterns extracted
         """
         try:
             # Get successful loops
             recent_loops = storage.get_recent_loops(limit=50)
-            success_loops = [l for l in recent_loops if l.get("status") == "SUCCESS"]
-            
+            [l for l in recent_loops if l.get("status") == "SUCCESS"]
+
             # Get error patterns with solutions
             error_patterns = storage.get_top_errors(limit=20)
             solved_patterns = [e for e in error_patterns if e.get("solution")]
-            
+
             # Extract patterns
             patterns = self._load_patterns()
             new_count = 0
-            
+
             for err in solved_patterns:
                 pattern_id = f"ERR_{err['error_type'][:20]}"
-                
+
                 # Check if pattern already exists
                 existing = [p for p in patterns if p.get("pattern_id") == pattern_id]
                 if existing:
@@ -142,35 +142,35 @@ class BrainManager:
                     )
                     patterns.append(asdict(new_pattern))
                     new_count += 1
-            
+
             self._save_patterns(patterns)
-            
+
             log_status(
                 self.log_dir, "INFO",
                 f"Learned {new_count} new patterns, total: {len(patterns)}"
             )
-            
+
             return {
                 "status": "SUCCESS",
                 "new_patterns": new_count,
                 "total_patterns": len(patterns)
             }
-            
+
         except Exception as e:
             return {"status": "ERROR", "error": str(e)}
-    
-    def get_relevant_patterns(self, context: str, limit: int = 5) -> List[Dict]:
+
+    def get_relevant_patterns(self, context: str, limit: int = 5) -> list[dict]:
         """
         Get patterns relevant to given context.
-        
+
         Simple keyword matching for now.
         Could be enhanced with vector similarity search.
         """
         patterns = self._load_patterns()
-        
+
         if not context:
             return patterns[:limit]
-        
+
         # Simple relevance scoring
         context_lower = context.lower()
         scored = []
@@ -184,14 +184,14 @@ class BrainManager:
                 score += 1
             if score > 0:
                 scored.append((score, p))
-        
+
         scored.sort(key=lambda x: x[0], reverse=True)
         return [p for _, p in scored[:limit]]
-    
-    def create_rubric(self, name: str, description: str, criteria: List[Dict]) -> Dict[str, Any]:
+
+    def create_rubric(self, name: str, description: str, criteria: list[dict]) -> dict[str, Any]:
         """
         Create an evaluation rubric.
-        
+
         Args:
             name: Rubric name (e.g., "implementation_plan")
             description: What this rubric evaluates
@@ -203,26 +203,26 @@ class BrainManager:
             criteria=criteria,
             created_at=datetime.now().isoformat()
         )
-        
+
         rubric_file = self.rubrics_dir / f"{name}.json"
         rubric_file.write_text(
             json.dumps(asdict(rubric), indent=2, ensure_ascii=False),
             encoding="utf-8"
         )
-        
+
         return {"status": "SUCCESS", "rubric": name}
-    
-    def get_rubric(self, name: str) -> Optional[Dict]:
+
+    def get_rubric(self, name: str) -> Optional[dict]:
         """Load a rubric by name."""
         rubric_file = self.rubrics_dir / f"{name}.json"
         if rubric_file.exists():
             return json.loads(rubric_file.read_text(encoding="utf-8"))
         return None
-    
-    def create_default_rubrics(self) -> Dict[str, Any]:
+
+    def create_default_rubrics(self) -> dict[str, Any]:
         """Create default evaluation rubrics for LLM-as-Judge evaluation."""
         rubrics_created = []
-        
+
         # Implementation Plan Rubric
         self.create_rubric(
             name="implementation_plan",
@@ -236,7 +236,7 @@ class BrainManager:
             ]
         )
         rubrics_created.append("implementation_plan")
-        
+
         # Task List Rubric
         self.create_rubric(
             name="task_list",
@@ -249,7 +249,7 @@ class BrainManager:
             ]
         )
         rubrics_created.append("task_list")
-        
+
         # Code Quality Rubric
         self.create_rubric(
             name="code_quality",
@@ -263,7 +263,7 @@ class BrainManager:
             ]
         )
         rubrics_created.append("code_quality")
-        
+
         # Security Rubric
         self.create_rubric(
             name="security",
@@ -275,7 +275,7 @@ class BrainManager:
             ]
         )
         rubrics_created.append("security")
-        
+
         # Architecture Rubric
         self.create_rubric(
             name="architecture",
@@ -287,7 +287,7 @@ class BrainManager:
             ]
         )
         rubrics_created.append("architecture")
-        
+
         # API Design Rubric
         self.create_rubric(
             name="api_design",
@@ -301,7 +301,7 @@ class BrainManager:
             ]
         )
         rubrics_created.append("api_design")
-        
+
         # Testing Rubric
         self.create_rubric(
             name="testing",
@@ -315,7 +315,7 @@ class BrainManager:
             ]
         )
         rubrics_created.append("testing")
-        
+
         # Documentation Rubric
         self.create_rubric(
             name="documentation",
@@ -329,29 +329,29 @@ class BrainManager:
             ]
         )
         rubrics_created.append("documentation")
-        
+
         log_status(
             self.log_dir, "INFO",
             f"Created {len(rubrics_created)} default rubrics"
         )
-        
+
         return {
             "status": "SUCCESS",
             "rubrics_created": rubrics_created
         }
-    
-    def get_brain_summary(self) -> Dict[str, Any]:
+
+    def get_brain_summary(self) -> dict[str, Any]:
         """Get summary of brain contents."""
         patterns = self._load_patterns()
-        
+
         rubrics = []
         for f in self.rubrics_dir.glob("*.json"):
             rubrics.append(f.stem)
-        
+
         adaptations = []
         for f in self.adaptations_dir.glob("*.json"):
             adaptations.append(f.stem)
-        
+
         return {
             "patterns_count": len(patterns),
             "rubrics": rubrics,

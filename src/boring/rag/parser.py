@@ -6,9 +6,9 @@ using tree-sitter-languages.
 """
 
 import logging
-from typing import List, Dict, Optional, Any
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -145,7 +145,7 @@ class TreeSitterParser:
         """Determine language from file extension."""
         return self.EXT_TO_LANG.get(file_path.suffix.lower())
 
-    def parse_file(self, file_path: Path) -> List[ParsedChunk]:
+    def parse_file(self, file_path: Path) -> list[ParsedChunk]:
         """
         Parse a file and extract semantic chunks.
         Returns empty list if language not supported or parser fails.
@@ -165,41 +165,41 @@ class TreeSitterParser:
 
         return self.extract_chunks(content, lang_name)
 
-    def extract_chunks(self, code: str, language: str) -> List[ParsedChunk]:
+    def extract_chunks(self, code: str, language: str) -> list[ParsedChunk]:
         """Extract chunks from code string using tree-sitter."""
         if not HAS_TREE_SITTER:
             return []
-            
+
         try:
             # Lazy load parser
             if language not in self.parsers:
                 self.parsers[language] = get_parser(language)
-            
+
             parser = self.parsers[language]
             tree = parser.parse(bytes(code, "utf8"))
-            
+
             query_str = self.QUERIES.get(language)
             if not query_str:
                 return []
-                
+
             ts_language = get_language(language)
             query = ts_language.query(query_str)
-            
+
             chunks = []
             captures = query.captures(tree.root_node)
-            
+
             # captures is a list of (Node, str_capture_name)
             # We need to pair @function/@class with its inner @name
             # This is tricky because captures are flattened.
             # Simplified approach: Iterate nodes, check type.
-            
+
             # Better approach: Iterate matches if query.matches returns them?
             # tree-sitter-languages bindings vary.
             # Let's try standard capture iteration processing.
-            
+
             # We will store potential chunks keyed by node id to merge name + body
-            pending_nodes = {} 
-            
+            pending_nodes = {}
+
             for node, name in captures:
                 if name in ["function", "class", "method"]:
                      pending_nodes[node.id] = {
@@ -219,17 +219,17 @@ class TreeSitterParser:
                         curr = curr.parent
 
             # Convert to ParsedChunk objects
-            lines = code.splitlines()
-            
+            code.splitlines()
+
             for item in pending_nodes.values():
                 node = item["node"]
                 start_line = node.start_point[0] + 1
                 end_line = node.end_point[0] + 1
-                
+
                 # Extract text
                 # We can index into 'lines' or use byte offsets if we have the bytes
                 chunk_content = node.text.decode('utf8')
-                
+
                 chunks.append(ParsedChunk(
                     type=item["type"],
                     name=item["name"],
@@ -237,7 +237,7 @@ class TreeSitterParser:
                     end_line=end_line,
                     content=chunk_content
                 ))
-                
+
             return sorted(chunks, key=lambda x: x.start_line)
 
         except Exception as e:

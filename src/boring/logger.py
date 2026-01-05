@@ -6,12 +6,11 @@ Supports both console and JSON file output for observability.
 """
 
 import json
-import sys
 import logging
 import os
-from pathlib import Path
 from datetime import datetime, timedelta
-from typing import Optional, Any
+from pathlib import Path
+from typing import Any, Optional
 
 import structlog
 from rich.console import Console
@@ -56,7 +55,7 @@ logger = _logger
 def log_status(log_dir: Any, level: str, message: str, **kwargs: Any):
     """
     Logs status messages using structlog with console and file output.
-    
+
     Args:
         log_dir: Directory for log files (Path or str). If None/False, only logs to console.
         level: Log level (INFO, WARN, ERROR, SUCCESS, LOOP)
@@ -64,7 +63,7 @@ def log_status(log_dir: Any, level: str, message: str, **kwargs: Any):
         **kwargs: Additional structured fields
     """
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    
+
     if log_dir:
         if isinstance(log_dir, str):
             log_dir = Path(log_dir)
@@ -84,14 +83,14 @@ def log_status(log_dir: Any, level: str, message: str, **kwargs: Any):
         "CRITICAL": "bold red",
     }
     style = color_map.get(level.upper(), "default")
-    
+
     # Format extra fields for display
     extra_str = ""
     if kwargs:
         extra_str = " " + " ".join(f"{k}={v}" for k, v in kwargs.items())
-    
+
     console.print(f"[{timestamp}] [[{level.upper()}]] {message}{extra_str}", style=style)
-    
+
     # File output in JSON Lines format for analysis
     if log_file:
         log_entry = {
@@ -100,10 +99,10 @@ def log_status(log_dir: Any, level: str, message: str, **kwargs: Any):
             "message": message,
             **kwargs
         }
-        
+
         with open(log_file, "a", encoding="utf-8") as f:
             f.write(json.dumps(log_entry) + "\n")
-    
+
     # Also log via structlog for consistent observability
     log_method = getattr(_logger, level.lower(), _logger.info)
     log_method(message, **kwargs)
@@ -120,7 +119,7 @@ def update_status(
 ):
     """
     Updates the status.json file for external monitoring.
-    
+
     Args:
         status_file: Path to status.json
         loop_count: Current loop number
@@ -136,7 +135,7 @@ def update_status(
     if calls_made is None:
         from .limiter import get_calls_made
         calls_made = get_calls_made(Path(".call_count"))
-    
+
     status_data = {
         "timestamp": datetime.now().isoformat(),
         "loop_count": loop_count,
@@ -150,7 +149,7 @@ def update_status(
 
     with open(status_file, "w", encoding="utf-8") as f:
         json.dump(status_data, f, indent=4)
-    
+
     # Log status update structurally
     _logger.debug("status_updated", loop=loop_count, status=status, calls=calls_made)
 
@@ -158,20 +157,20 @@ def update_status(
 def get_log_tail(log_dir: Path, lines: int = 10) -> list[str]:
     """
     Get the last N lines from the log file.
-    
+
     Args:
         log_dir: Directory containing boring.log
         lines: Number of lines to return
-        
+
     Returns:
         List of log lines
     """
     log_file = log_dir / "boring.log"
     if not log_file.exists():
         return []
-    
+
     try:
-        with open(log_file, "r", encoding="utf-8") as f:
+        with open(log_file, encoding="utf-8") as f:
             all_lines = f.readlines()
             return [line.strip() for line in all_lines[-lines:]]
     except Exception:

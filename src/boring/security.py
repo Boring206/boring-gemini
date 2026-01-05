@@ -9,19 +9,18 @@ Provides security utilities including:
 """
 
 import re
-from pathlib import Path
-from typing import Set, Optional
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Optional
 
 from .logger import log_status
-
 
 # =============================================================================
 # FILE PATH SECURITY
 # =============================================================================
 
 # Allowed file extensions for AI-generated content
-ALLOWED_EXTENSIONS: Set[str] = {
+ALLOWED_EXTENSIONS: set[str] = {
     # Code
     ".py", ".js", ".ts", ".jsx", ".tsx", ".java", ".go", ".rs", ".rb", ".php",
     ".c", ".cpp", ".h", ".hpp", ".cs", ".swift", ".kt", ".scala",
@@ -38,7 +37,7 @@ ALLOWED_EXTENSIONS: Set[str] = {
 }
 
 # Directories that should never be written to
-BLOCKED_DIRECTORIES: Set[str] = {
+BLOCKED_DIRECTORIES: set[str] = {
     ".git",
     ".github/workflows",  # Prevent CI tampering
     "node_modules",
@@ -49,7 +48,7 @@ BLOCKED_DIRECTORIES: Set[str] = {
 }
 
 # Filenames that should never be modified
-BLOCKED_FILENAMES: Set[str] = {
+BLOCKED_FILENAMES: set[str] = {
     ".env",
     ".gitignore",  # Only block in certain contexts
     "secrets.json",
@@ -70,49 +69,49 @@ class PathValidationResult:
 def validate_file_path(
     path: str,
     project_root: Path,
-    allowed_extensions: Set[str] = None,
+    allowed_extensions: set[str] = None,
     log_dir: Path = Path("logs")
 ) -> PathValidationResult:
     """
     Validate a file path for security concerns.
-    
+
     Checks:
     1. No path traversal (../)
     2. Path is within project root
     3. Extension is in whitelist
     4. Not in blocked directories
     5. Not a blocked filename
-    
+
     Args:
         path: Relative path to validate
         project_root: Project root directory
         allowed_extensions: Custom allowed extensions (defaults to ALLOWED_EXTENSIONS)
         log_dir: Directory for logging
-        
+
     Returns:
         PathValidationResult with validation status and details
     """
     if not path or not path.strip():
         return PathValidationResult(False, "Empty path")
-    
+
     # Normalize path
     path = path.strip().strip('"').strip("'")
-    
+
     # Check for obvious path traversal
     if ".." in path:
         log_status(log_dir, "WARN", f"Path traversal attempt blocked: {path}")
         return PathValidationResult(False, "Path traversal not allowed")
-    
+
     # Check for absolute paths
     if path.startswith("/") or path.startswith("\\") or (len(path) > 1 and path[1] == ":"):
         log_status(log_dir, "WARN", f"Absolute path blocked: {path}")
         return PathValidationResult(False, "Absolute paths not allowed")
-    
+
     # Resolve to absolute and check containment
     try:
         full_path = (project_root / path).resolve()
         project_root_resolved = project_root.resolve()
-        
+
         # Ensure path is within project root (case-insensitive on Windows)
         import os
         if os.name == 'nt':  # Windows
@@ -128,27 +127,27 @@ def validate_file_path(
                 return PathValidationResult(False, "Path must be within project root")
     except Exception as e:
         return PathValidationResult(False, f"Invalid path: {e}")
-    
+
     # Check extension
     extensions = allowed_extensions or ALLOWED_EXTENSIONS
     if full_path.suffix.lower() not in extensions:
         return PathValidationResult(
-            False, 
+            False,
             f"Extension '{full_path.suffix}' not allowed. Allowed: {', '.join(sorted(extensions)[:10])}..."
         )
-    
+
     # Check blocked directories
     path_parts = Path(path).parts
     for blocked in BLOCKED_DIRECTORIES:
         if blocked in path_parts:
             log_status(log_dir, "WARN", f"Blocked directory access: {path}")
             return PathValidationResult(False, f"Cannot write to {blocked}/")
-    
+
     # Check blocked filenames
     if full_path.name in BLOCKED_FILENAMES:
         log_status(log_dir, "WARN", f"Blocked filename: {path}")
         return PathValidationResult(False, f"Cannot modify {full_path.name}")
-    
+
     # Get normalized relative path (Windows-compatible)
     try:
         if os.name == 'nt':  # Windows
@@ -164,7 +163,7 @@ def validate_file_path(
             normalized = str(full_path.relative_to(project_root_resolved))
     except ValueError:
         normalized = path
-    
+
     return PathValidationResult(True, None, normalized)
 
 
@@ -196,20 +195,20 @@ SENSITIVE_PATTERNS = [
 def mask_sensitive_data(text: str) -> str:
     """
     Mask sensitive data in text before logging.
-    
+
     Args:
         text: Text that may contain sensitive data
-        
+
     Returns:
         Text with sensitive data masked
     """
     if not text:
         return text
-    
+
     masked = text
     for pattern, replacement in SENSITIVE_PATTERNS:
         masked = re.sub(pattern, replacement, masked)
-    
+
     return masked
 
 
@@ -227,46 +226,46 @@ def safe_log(log_dir: Path, level: str, message: str):
 def sanitize_filename(filename: str) -> str:
     """
     Sanitize a filename by removing potentially dangerous characters.
-    
+
     Args:
         filename: Raw filename
-        
+
     Returns:
         Sanitized filename
     """
     # Remove path separators
     filename = filename.replace("/", "_").replace("\\", "_")
-    
+
     # Remove null bytes and other control characters
     filename = re.sub(r'[\x00-\x1f\x7f]', '', filename)
-    
+
     # Remove leading/trailing dots and spaces
     filename = filename.strip(". ")
-    
+
     # Limit length
     if len(filename) > 255:
         name, ext = filename.rsplit(".", 1) if "." in filename else (filename, "")
         filename = name[:250] + ("." + ext if ext else "")
-    
+
     return filename or "unnamed"
 
 
 def sanitize_content(content: str, max_length: int = 1_000_000) -> str:
     """
     Sanitize content before writing to files.
-    
+
     Args:
         content: Raw content
         max_length: Maximum allowed length
-        
+
     Returns:
         Sanitized content
     """
     if not content:
         return ""
-    
+
     # Truncate if too long
     if len(content) > max_length:
         content = content[:max_length] + "\n# ... content truncated ...\n"
-    
+
     return content

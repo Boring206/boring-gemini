@@ -11,19 +11,20 @@ The actual implementation is in:
 """
 
 # Re-export everything from new modular structure
+from .config import settings
+from .llm.executor import ToolExecutor
 from .llm.sdk import (
-    GeminiClient,
-    create_gemini_client,
     DEFAULT_MODEL,
     GENAI_AVAILABLE,
+    GeminiClient,
+    create_gemini_client,
     genai,
 )
 from .llm.tools import (
-    get_boring_tools,
     SYSTEM_INSTRUCTION_OPTIMIZED,
+    get_boring_tools,
 )
-from .llm.executor import ToolExecutor
-from .config import settings
+
 
 # Monkeypatch process_function_calls onto GeminiClient for backward compatibility
 def _process_function_calls(self, function_calls, project_root=None):

@@ -1,15 +1,17 @@
 import os
-import shutil
-from typing import Optional, Annotated
+from pathlib import Path
+from typing import Annotated
+
 from pydantic import Field
-from ..instance import mcp, MCP_AVAILABLE
-from ..utils import check_rate_limit, get_project_root_or_error, configure_runtime_for_project
+
 from ...audit import audited
+from ..instance import MCP_AVAILABLE, mcp
+from ..utils import configure_runtime_for_project, get_project_root_or_error
 
 # ==============================================================================
 # CORE TOOLS
 # ==============================================================================
-# Defined at top-level for testability. 
+# Defined at top-level for testability.
 # Registration happens conditionally at the end of the file.
 
 @audited
@@ -23,24 +25,24 @@ def run_boring(
 ) -> dict:
     """
     Return CLI commands for autonomous development (Pure CLI Mode).
-    
+
     In MCP mode, this tool CANNOT execute the StatefulAgentLoop directly because
     it requires external AI (SDK or CLI) which conflicts with the MCP environment.
-    
+
     Instead, it returns a structured workflow template with:
     1. The suggested CLI command to run the Boring agent
     2. A step-by-step guide for manual execution
     3. Project and task information
-    
+
     For TRUE autonomous execution, use the `boring start` CLI command directly.
-    
+
     Args:
         task_description: Description of the development task to complete
         verification_level: Verification level (BASIC, STANDARD, FULL)
         max_loops: Maximum number of loop iterations
         use_cli: Whether to use Gemini CLI
         project_path: Optional explicit path to project root
-        
+
     Returns:
         Workflow template with CLI commands for external execution
     """
@@ -51,7 +53,7 @@ def run_boring(
             "message": "task_description cannot be empty.",
             "suggestion": "Provide a clear description of the task, e.g., 'Fix login validation bug'."
         }
-    
+
     valid_levels = ("BASIC", "STANDARD", "FULL", "SEMANTIC")
     if verification_level.upper() not in valid_levels:
         return {
@@ -60,22 +62,22 @@ def run_boring(
             "suggestion": f"Use one of: {', '.join(valid_levels)}"
         }
     verification_level = verification_level.upper()
-    
+
     if not (1 <= max_loops <= 20):
         return {
             "status": "ERROR",
             "message": f"max_loops must be between 1 and 20, got {max_loops}.",
             "suggestion": "Use a reasonable value like 5 (default) or 10 for complex tasks."
         }
-    
+
     # Resolve project root
     project_root, error = get_project_root_or_error(project_path)
     if error:
         return error
-    
+
     # Check if we're in MCP mode - if so, return template
     is_mcp = os.environ.get("BORING_MCP_MODE") == "1"
-    
+
     # Build the CLI command
     cli_parts = ["boring", "start"]
     if max_loops != 5:
@@ -84,22 +86,22 @@ def run_boring(
         cli_parts.append(f"--verification {verification_level.lower()}")
     if use_cli:
         cli_parts.append("--cli")
-    
+
     cli_command = " ".join(cli_parts)
-    
+
     # Create PROMPT.md content
     prompt_content = f"# Task\n\n{task_description}\n"
-    
+
     # Alternative: Gemini CLI direct execution
     gemini_command = f'gemini --prompt "{task_description[:200]}..."'
-    
+
     # Build suggested prompt for the AI to guide the user
     suggested_prompt = (
         f"I have prepared the autonomous development workflow for: '{task_description}'. "
         f"To proceed, please execute the following command in your terminal: `{cli_command}`. "
         "I will wait for you to run it and then we can verify the results."
     )
-    
+
     return {
         "status": "WORKFLOW_TEMPLATE",
         "workflow": "run_boring",
@@ -127,7 +129,7 @@ def run_boring(
             "2. Run `boring start`"
         ),
         "manual_steps": [
-            f"1. Create PROMPT.md in the project with your task description",
+            "1. Create PROMPT.md in the project with your task description",
             f"2. Run: {cli_command}",
             "3. Monitor the terminal for the agent's progress",
             "4. Use boring_verify to check results after execution"
@@ -141,7 +143,7 @@ def boring_health_check(
 ) -> dict:
     """
     Check Boring system health.
-    
+
     Args:
         project_path: Optional explicit path to project root (to load .env)
 
@@ -149,10 +151,11 @@ def boring_health_check(
         Health check results including API key status, dependencies, etc.
     """
     try:
-        from ...health import run_health_check
         import os
         import shutil
-        
+
+        from ...health import run_health_check
+
         # Load env if project path provided
         if project_path:
              try:
@@ -160,19 +163,19 @@ def boring_health_check(
                  configure_runtime_for_project(root)
              except:
                  pass
-        
+
         # Detection logic is now centralized in GeminiClient, but for health report:
         has_key = "GOOGLE_API_KEY" in os.environ and os.environ["GOOGLE_API_KEY"]
         has_cli = shutil.which("gemini") is not None
-        
+
         backend = "api"
         if not has_key and has_cli:
             backend = "cli"
         elif not has_key and not has_cli:
             backend = "none"
-        
+
         report = run_health_check(backend=backend if backend != "none" else "api")
-        
+
         checks = []
         for check in report.checks:
             checks.append({
@@ -181,7 +184,7 @@ def boring_health_check(
                 "message": check.message,
                 "suggestion": check.suggestion
             })
-        
+
         return {
             "healthy": report.is_healthy,
             "passed": report.passed,
@@ -190,7 +193,7 @@ def boring_health_check(
             "checks": checks,
             "backend": backend
         }
-        
+
     except ImportError as e:
         return {
             "healthy": False,
@@ -210,14 +213,14 @@ def boring_quickstart(
 ) -> dict:
     """
     Get a comprehensive quick start guide for new users.
-    
+
     Returns recommended first steps, available tools, and common workflows.
     Perfect for onboarding and exploring Boring capabilities.
-    
+
     Args:
         project_path: Optional explicit path to project root.
                       If not provided, auto-detects from CWD.
-        
+
     Returns:
         Dict containing:
         - welcome: Welcome message with version
@@ -225,7 +228,7 @@ def boring_quickstart(
         - recommended_first_steps: Ordered list of getting started steps
         - available_workflows: Categorized tools (spec_driven, evolution, verification)
         - tips: Helpful usage tips
-        
+
     Example:
         boring_quickstart()
         # Returns: {"welcome": "...", "project_detected": true, ...}
@@ -233,7 +236,7 @@ def boring_quickstart(
     try:
         project_root, error = get_project_root_or_error(project_path)
         has_project = project_root is not None
-        
+
         guide = {
             "welcome": "👋 Welcome to Boring for Gemini V5.2!",
             "project_detected": has_project,
@@ -259,7 +262,7 @@ def boring_quickstart(
                 "💡 Workflows are dynamic - evolve them for your project!"
             ]
         }
-        
+
         if has_project:
             guide["recommended_first_steps"] = [
                 "1. boring_health_check - Verify system is ready",
@@ -273,9 +276,9 @@ def boring_quickstart(
                 "2. Run boring-setup <project-name> to initialize",
                 "3. boring_health_check - Verify system is ready"
             ]
-        
+
         return guide
-        
+
     except Exception as e:
         return {"status": "ERROR", "error": str(e)}
 
@@ -285,7 +288,7 @@ def boring_status(
 ) -> dict:
     """
     Get current Boring project status.
-    
+
     Args:
         project_path: Optional explicit path to project root
 
@@ -294,19 +297,18 @@ def boring_status(
     """
     try:
         from ...memory import MemoryManager
-        from ...config import settings
-        
+
         # Resolve project root
         project_root, error = get_project_root_or_error(project_path)
         if error:
             return error
-        
+
         # CRITICAL: Update global settings for dependencies
         configure_runtime_for_project(project_root)
-        
+
         memory = MemoryManager(project_root)
         state = memory.get_project_state()
-        
+
         return {
             "project_name": state.get("project_name", "Unknown"),
             "total_loops": state.get("total_loops", 0),
@@ -314,7 +316,7 @@ def boring_status(
             "failed_loops": state.get("failed_loops", 0),
             "last_activity": state.get("last_activity", "Never")
         }
-        
+
     except Exception as e:
         return {
             "error": str(e)
@@ -326,7 +328,7 @@ def boring_done(
 ) -> str:
     """
     Report task completion to the user with desktop notification.
-    
+
     Use this tool when you have finished your work and want to show a final message.
     """
     # Send Windows desktop notification
@@ -356,11 +358,11 @@ def boring_done(
             pass  # No notification library available
     except Exception:
         pass  # Notification failed, continue anyway
-    
+
     status = "✅ Task done"
     if notification_sent:
         status += " (Desktop notification sent)"
-    
+
     return f"{status}. Message: {message}"
 
 @audited
@@ -369,25 +371,25 @@ def boring_forget_all(
 ) -> dict:
     """
     Signal to clear the LLM context (Context Hygiene).
-    
+
     This tool doesn't modify files but sends a strong signal to the IDE or Agent
     to clear previous conversation history to reduce hallucinations.
-    
+
     Args:
         keep_current_task: Whether to keep the current task definition in context.
     """
     message = "🧹 **Context Cleanup Signal**\n\n"
     message += "I have requested a context cleanup to maintain accuracy and reduce hallucinations.\n"
-    
+
     if keep_current_task:
         message += "✅ **Preserving:** Current task definition and critical context.\n"
     else:
         message += "⚠️ **Wiping:** Full context reset.\n"
-        
+
     message += "\n**For IDE Users (Cursor/VS Code):**\n"
     message += "- Please click 'New Chat' or 'Clear Context' if available.\n"
     message += "- This ensures I don't get confused by old code snippets."
-    
+
     return {
         "status": "CONTEXT_CLEAR_SIGNAL",
         "action": "forget_all",

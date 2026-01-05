@@ -1,5 +1,5 @@
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Calculate paths relative to this script's location
@@ -18,18 +18,18 @@ if not project_test_path.exists():
     project_test_path = Path.cwd()  # Fallback to current directory
 
 try:
-    from boring.mcp.tools.patching import boring_apply_patch
-    from boring.mcp.tools.knowledge import boring_learn
     from boring.mcp.tools.evaluation import boring_evaluate
-    
+    from boring.mcp.tools.knowledge import boring_learn
+    from boring.mcp.tools.patching import boring_apply_patch
+
     print(f"DEBUG: Using test project at {project_test_path}")
-    
+
     print("\n--- 1. Testing boring_apply_patch ---")
     # This should no longer raise ImportError for DiffPatcher
     res_patch = boring_apply_patch(
-        file_path="main.py", 
-        search_text='print("Hello from Boring Test!")', 
-        replace_text='print("Hello from Boring Test! [Verified via Internal Script]")', 
+        file_path="main.py",
+        search_text='print("Hello from Boring Test!")',
+        replace_text='print("Hello from Boring Test! [Verified via Internal Script]")',
         project_path=str(project_test_path)
     )
     print(f"Result: {res_patch}")
@@ -38,12 +38,12 @@ try:
     # This should no longer raise AttributeError for get_common_errors
     res_learn = boring_learn(project_path=str(project_test_path))
     print(f"Result: {res_learn}")
-    
+
     print("\n--- 3. Testing boring_evaluate Signature ---")
     # Just checking if it can be called with project_path without Pydantic/Signature error
     try:
         res_eval = boring_evaluate(
-            target="main.py", 
+            target="main.py",
             project_path=str(project_test_path),
             interactive=True  # Use interactive to skip actual CLI call if not needed
         )

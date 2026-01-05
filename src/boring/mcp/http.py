@@ -10,10 +10,9 @@ Includes .well-known endpoints for Smithery server discovery:
 - /.well-known/mcp-config - Configuration schema
 """
 
+import logging
 import os
 import sys
-import json
-import logging
 
 # Configure logging to stderr
 logging.basicConfig(
@@ -58,32 +57,32 @@ def create_app():
     try:
         from starlette.applications import Starlette
         from starlette.responses import JSONResponse
-        from starlette.routing import Route, Mount
+        from starlette.routing import Mount, Route
     except ImportError:
         logger.error("Starlette not found. Install with: pip install starlette")
         return None
-    
+
     # Import MCP server
     from boring.mcp.server import get_server_instance
     mcp = get_server_instance()
-    
+
     # Safe tool count
     tool_count = len(getattr(mcp, '_tools', getattr(mcp, 'tools', {})))
     logger.info(f"Registered tools: {tool_count}")
-    
+
     # .well-known endpoints
     async def mcp_server_card(request):
         """Return MCP Server Card for Smithery discovery."""
         return JSONResponse(MCP_SERVER_CARD)
-    
+
     async def mcp_config(request):
         """Return MCP configuration schema."""
         return JSONResponse(MCP_CONFIG_SCHEMA)
-    
+
     async def health(request):
         """Health check endpoint."""
         return JSONResponse({"status": "ok", "tools": tool_count})
-    
+
     # Get HTTP app from FastMCP (correct method is http_app, not sse_app)
     try:
         # FastMCP 2.0+ uses http_app() for Streamable HTTP transport
@@ -97,17 +96,17 @@ def create_app():
         except AttributeError:
             logger.warning("FastMCP http_app() and sse_app() not available")
             return None
-    
+
     routes = [
         Route("/.well-known/mcp.json", mcp_server_card),
         Route("/.well-known/mcp-config", mcp_config),
         Route("/health", health),
         Mount("/", app=mcp_http),  # Mount MCP HTTP at root
     ]
-    
+
     # Use mcp_http's lifespan if available
     lifespan = getattr(mcp_http, 'lifespan', None)
-    
+
     return Starlette(routes=routes, lifespan=lifespan)
 
 
@@ -115,16 +114,16 @@ def main():
     """Run the MCP server with HTTP/SSE transport for Smithery."""
     # Set environment
     os.environ["BORING_MCP_MODE"] = "1"
-    
+
     # Get port from environment (Smithery sets this)
     port = int(os.environ.get("PORT", 8000))
     host = os.environ.get("HOST", "0.0.0.0")
-    
+
     logger.info(f"Starting Boring MCP HTTP server on {host}:{port}")
-    
+
     try:
         app = create_app()
-        
+
         if app is not None:
             # Run with Uvicorn
             import uvicorn
@@ -136,7 +135,7 @@ def main():
             tool_count = len(getattr(mcp, '_tools', getattr(mcp, 'tools', {})))
             logger.info(f"Registered tools: {tool_count}")
             mcp.run(transport="http", host=host, port=port)
-        
+
     except Exception as e:
         logger.error(f"Failed to start HTTP server: {e}")
         import traceback

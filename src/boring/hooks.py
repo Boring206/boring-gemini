@@ -9,7 +9,7 @@ before allowing commits/pushes. This implements a local version of
 import os
 import stat
 from pathlib import Path
-from typing import Tuple
+
 from rich.console import Console
 
 console = Console()
@@ -79,7 +79,7 @@ exit 0
 '''
 
 # Polyglot Quick Check Hook - runs language-specific linters on staged files
-QUICK_CHECK_HOOK = '''#!/bin/sh
+QUICK_CHECK_HOOK = r'''#!/bin/sh
 # Boring Quick Check Hook (Polyglot)
 # Fast verification for staged files only (<5 seconds target)
 
@@ -147,99 +147,99 @@ exit 0
 
 class HooksManager:
     """Manages Git hooks installation and removal."""
-    
+
     def __init__(self, project_root: Path = None):
         self.project_root = project_root or Path.cwd()
         self.git_dir = self.project_root / ".git"
         self.hooks_dir = self.git_dir / "hooks"
-        
+
     def is_git_repo(self) -> bool:
         """Check if current directory is a Git repository."""
         return self.git_dir.exists() and self.git_dir.is_dir()
-    
-    def install_hook(self, hook_name: str, content: str) -> Tuple[bool, str]:
+
+    def install_hook(self, hook_name: str, content: str) -> tuple[bool, str]:
         """Install a single Git hook."""
         if not self.is_git_repo():
             return False, "Not a Git repository. Run 'git init' first."
-        
+
         # Ensure hooks directory exists
         self.hooks_dir.mkdir(exist_ok=True)
-        
+
         hook_path = self.hooks_dir / hook_name
-        
+
         # Check for existing hook
         if hook_path.exists():
             # Backup existing hook
             backup_path = hook_path.with_suffix(".backup")
             hook_path.rename(backup_path)
             console.print(f"[yellow]Backed up existing {hook_name} to {hook_name}.backup[/yellow]")
-        
+
         # Write new hook
         hook_path.write_text(content, encoding="utf-8")
-        
+
         # Make executable (Unix systems)
         try:
             current_mode = os.stat(hook_path).st_mode
             os.chmod(hook_path, current_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
         except Exception:
             pass  # Windows doesn't need this
-            
+
         return True, f"Installed {hook_name} hook."
-    
-    def install_all(self) -> Tuple[bool, str]:
+
+    def install_all(self) -> tuple[bool, str]:
         """Install all Boring hooks."""
         if not self.is_git_repo():
             return False, "Not a Git repository. Run 'git init' first."
-        
+
         results = []
-        
+
         # Install pre-commit
         success, msg = self.install_hook("pre-commit", PRE_COMMIT_HOOK)
         results.append(msg)
-        
+
         # Install pre-push
         success, msg = self.install_hook("pre-push", PRE_PUSH_HOOK)
         results.append(msg)
-        
+
         return True, "\n".join(results)
-    
-    def uninstall_hook(self, hook_name: str) -> Tuple[bool, str]:
+
+    def uninstall_hook(self, hook_name: str) -> tuple[bool, str]:
         """Remove a Boring hook (restores backup if exists)."""
         hook_path = self.hooks_dir / hook_name
         backup_path = hook_path.with_suffix(".backup")
-        
+
         if not hook_path.exists():
             return False, f"No {hook_name} hook found."
-        
+
         hook_path.unlink()
-        
+
         # Restore backup if exists
         if backup_path.exists():
             backup_path.rename(hook_path)
             return True, f"Removed Boring {hook_name} and restored backup."
-        
+
         return True, f"Removed Boring {hook_name} hook."
-    
-    def uninstall_all(self) -> Tuple[bool, str]:
+
+    def uninstall_all(self) -> tuple[bool, str]:
         """Remove all Boring hooks."""
         results = []
-        
+
         for hook_name in ["pre-commit", "pre-push"]:
             success, msg = self.uninstall_hook(hook_name)
             results.append(msg)
-        
+
         return True, "\n".join(results)
-    
+
     def status(self) -> dict:
         """Get status of installed hooks."""
         status = {
             "is_git_repo": self.is_git_repo(),
             "hooks": {}
         }
-        
+
         if not self.is_git_repo():
             return status
-        
+
         for hook_name in ["pre-commit", "pre-push"]:
             hook_path = self.hooks_dir / hook_name
             if hook_path.exists():
@@ -254,5 +254,5 @@ class HooksManager:
                     "installed": False,
                     "is_boring_hook": False
                 }
-        
+
         return status

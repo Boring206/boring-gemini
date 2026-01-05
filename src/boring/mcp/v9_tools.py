@@ -6,7 +6,7 @@ V9 MCP Tools - Plugin, Workspace, Auto-Fix, Pattern Mining tools.
 This module registers all V9 local features as MCP tools.
 """
 
-from typing import Annotated, List
+from typing import Annotated
 
 from pydantic import Field
 
@@ -14,7 +14,7 @@ from pydantic import Field
 def register_v9_tools(mcp, audited, helpers):
     """
     Register V9 feature tools with the MCP server.
-    
+
     Args:
         mcp: FastMCP server instance
         audited: Audit decorator
@@ -34,7 +34,7 @@ def register_v9_tools(mcp, audited, helpers):
     ) -> dict:
         """
         List all registered plugins.
-        
+
         Shows plugins from:
         1. Project-local: {project}/.boring_plugins/
         2. User-global: ~/.boring/plugins/
@@ -78,7 +78,7 @@ def register_v9_tools(mcp, audited, helpers):
     ) -> dict:
         """
         Reload plugins that have changed on disk.
-        
+
         Enables hot-reloading of plugin code without restarting.
         """
         from ..plugins import PluginLoader
@@ -104,7 +104,7 @@ def register_v9_tools(mcp, audited, helpers):
         name: Annotated[str, Field(description="Unique project name")],
         path: Annotated[str, Field(description="Path to project root")],
         description: Annotated[str, Field(description="Optional description")] = "",
-        tags: Annotated[List[str], Field(description="Optional tags for filtering")] = None
+        tags: Annotated[list[str], Field(description="Optional tags for filtering")] = None
     ) -> dict:
         """
         Add a project to the workspace.
@@ -121,7 +121,7 @@ def register_v9_tools(mcp, audited, helpers):
     ) -> dict:
         """
         Remove a project from the workspace.
-        
+
         Note: This only removes from tracking, does not delete files.
         """
         from ..workspace import get_workspace_manager
@@ -155,7 +155,7 @@ def register_v9_tools(mcp, audited, helpers):
     ) -> dict:
         """
         Switch the active project context.
-        
+
         All subsequent operations will use this project.
         """
         from ..workspace import get_workspace_manager
@@ -176,19 +176,19 @@ def register_v9_tools(mcp, audited, helpers):
     ) -> dict:
         """
         Automated verify-and-fix workflow (Pure CLI Mode).
-        
+
         This tool:
         1. Runs actual code verification to detect issues
         2. Returns CLI commands to fix the detected issues
-        
+
         The IDE or Gemini CLI should execute the fix commands.
         This is NOT a fully automated loop - human review is required.
-        
+
         Args:
             max_iterations: Maximum fix attempts (for reference only)
             verification_level: BASIC, STANDARD, or FULL
             project_path: Optional project root path
-        
+
         Returns:
             Verification results and CLI fix commands
         """
@@ -224,7 +224,7 @@ def register_v9_tools(mcp, audited, helpers):
 
 Requirements:
 1. Fix each issue without breaking existing functionality
-2. Maintain code style consistency  
+2. Maintain code style consistency
 3. Add comments explaining non-obvious fixes
 """
 
@@ -263,14 +263,14 @@ Requirements:
     ) -> dict:
         """
         Suggest next actions based on project state and learned patterns.
-        
+
         Analyzes current project state and matches against known
         successful patterns to recommend what to do next.
-        
+
         Args:
             limit: Maximum suggestions to return
             project_path: Optional project root path
-        
+
         Returns:
             List of suggested actions with confidence scores
         """
@@ -296,10 +296,10 @@ Requirements:
     ) -> dict:
         """
         Get progress of a running task.
-        
+
         Args:
             task_id: ID of the task to check
-        
+
         Returns:
             Current progress status
         """

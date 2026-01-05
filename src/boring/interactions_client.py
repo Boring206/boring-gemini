@@ -10,13 +10,11 @@ Implements support for Gemini's new Interactions API which provides:
 Note: This is experimental and requires google-genai package.
 """
 
-import time
-from pathlib import Path
-from typing import Optional, List, Dict, Any, Tuple
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Optional
 
 from .logger import log_status
-from .config import settings
 
 # Try to import the new genai client
 try:
@@ -43,7 +41,7 @@ SUPPORTED_MODELS = [
 class InteractionResult:
     """Result from an Interactions API call."""
     text: str
-    function_calls: List[Dict[str, Any]]
+    function_calls: list[dict[str, Any]]
     interaction_id: str
     success: bool
     error: Optional[str] = None
@@ -52,14 +50,14 @@ class InteractionResult:
 class InteractionsClient:
     """
     Client for Gemini's new Interactions API.
-    
+
     Features:
     - Stateful: Server remembers conversation history
     - Efficient: Only send new content, not full history
     - Native tools: Built-in function calling support
     - MCP ready: Can integrate with MCP servers
     """
-    
+
     def __init__(
         self,
         model: str = "gemini-3-flash-preview",
@@ -68,7 +66,7 @@ class InteractionsClient:
     ):
         """
         Initialize the Interactions client.
-        
+
         Args:
             model: Model to use (see SUPPORTED_MODELS)
             api_key: Google API key (or uses GOOGLE_API_KEY env var)
@@ -78,40 +76,40 @@ class InteractionsClient:
         self.model = model
         self.previous_interaction_id: Optional[str] = None
         self.enabled = False
-        
+
         if not INTERACTIONS_API_AVAILABLE:
             log_status(
                 log_dir, "WARN",
                 "Interactions API not available. Install with: pip install google-genai"
             )
             return
-        
+
         try:
             # Initialize the new client
             self.client = genai.Client(api_key=api_key)
             self.enabled = True
             log_status(log_dir, "INFO", f"Interactions API initialized with model: {model}")
-            
+
         except Exception as e:
             log_status(log_dir, "ERROR", f"Failed to initialize Interactions client: {e}")
             self.enabled = False
-    
+
     def create(
         self,
         prompt: str,
         system_instruction: str = "",
-        tools: Optional[List[Dict]] = None,
+        tools: Optional[list[dict]] = None,
         continue_conversation: bool = True
     ) -> InteractionResult:
         """
         Create a new interaction.
-        
+
         Args:
             prompt: The user prompt/input
             system_instruction: System-level instructions
             tools: Optional tool definitions (function declarations or MCP servers)
             continue_conversation: Whether to continue from previous interaction
-            
+
         Returns:
             InteractionResult with text, function calls, and interaction ID
         """
@@ -123,34 +121,34 @@ class InteractionsClient:
                 success=False,
                 error="Interactions API not enabled"
             )
-        
+
         try:
             # Prepare request kwargs
             request_kwargs = {
                 "model": self.model,
                 "input": prompt,
             }
-            
+
             if system_instruction:
                 request_kwargs["system_instruction"] = system_instruction
-            
+
             if tools:
                 request_kwargs["tools"] = tools
-            
+
             # Continue from previous interaction if available and requested
             if continue_conversation and self.previous_interaction_id:
                 request_kwargs["previous_interaction_id"] = self.previous_interaction_id
-            
+
             # Create the interaction
             interaction = self.client.interactions.create(**request_kwargs)
-            
+
             # Store interaction ID for continuation
             self.previous_interaction_id = interaction.id
-            
+
             # Extract text and function calls from outputs
             text_parts = []
             function_calls = []
-            
+
             for output in interaction.outputs:
                 if hasattr(output, 'text') and output.text:
                     text_parts.append(output.text)
@@ -159,21 +157,21 @@ class InteractionsClient:
                         "name": output.function_call.name,
                         "args": dict(output.function_call.args) if output.function_call.args else {}
                     })
-            
+
             text = "\n".join(text_parts)
-            
+
             log_status(
                 self.log_dir, "INFO",
                 f"Interaction {interaction.id[:8]}... completed: {len(text)} chars, {len(function_calls)} calls"
             )
-            
+
             return InteractionResult(
                 text=text,
                 function_calls=function_calls,
                 interaction_id=interaction.id,
                 success=True
             )
-            
+
         except Exception as e:
             log_status(self.log_dir, "ERROR", f"Interaction failed: {e}")
             return InteractionResult(
@@ -183,24 +181,24 @@ class InteractionsClient:
                 success=False,
                 error=str(e)
             )
-    
+
     def reset_conversation(self):
         """Start a new conversation (clear previous interaction ID)."""
         self.previous_interaction_id = None
         log_status(self.log_dir, "INFO", "Conversation reset")
-    
+
     def create_mcp_server_tool(
         self,
         name: str,
         url: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Create an MCP server tool definition.
-        
+
         Args:
             name: Name for the MCP server
             url: URL of the MCP server endpoint
-            
+
         Returns:
             Tool definition dict for use in create()
         """
@@ -217,15 +215,15 @@ def create_interactions_client(
 ) -> Optional[InteractionsClient]:
     """
     Factory function to create an InteractionsClient.
-    
+
     Returns:
         InteractionsClient instance, or None if not available
     """
     client = InteractionsClient(model=model, log_dir=log_dir)
-    
+
     if not client.enabled:
         return None
-    
+
     return client
 
 

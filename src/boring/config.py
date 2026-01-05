@@ -1,13 +1,14 @@
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
+
+from pydantic import ConfigDict, Field
 from pydantic_settings import BaseSettings
-from pydantic import Field, ConfigDict
 
 # V4.0 Supported Models
 SUPPORTED_MODELS = [
     "models/gemini-2.0-flash-exp",
     "models/gemini-2.5-flash",
-    "models/gemini-2.5-flash-lite", 
+    "models/gemini-2.5-flash-lite",
     "models/gemini-2.5-pro",
     "gemini-3-flash-preview",
     "gemini-3-pro-preview",
@@ -17,21 +18,21 @@ SUPPORTED_MODELS = [
 
 def _find_project_root() -> Path:
     """Find project root by looking for anchor files.
-    
+
     Search strategy:
     1. First try CWD and its parents (for boring start command)
     2. Then try __file__ location and its parents (for MCP server)
     3. Fall back to CWD if nothing found
     """
     anchor_files = [".git", ".boring_brain", ".agent"]
-    
+
     # Strategy 1: Search from CWD
     current = Path.cwd()
     for parent in [current] + list(current.parents):
         for anchor in anchor_files:
             if (parent / anchor).exists():
                 return parent
-    
+
     # Strategy 2: Search from this file's location (for MCP mode)
     # This file is at src/boring/config.py, so project root is 3 levels up
     file_location = Path(__file__).resolve().parent.parent.parent
@@ -39,7 +40,7 @@ def _find_project_root() -> Path:
         for anchor in anchor_files:
             if (parent / anchor).exists():
                 return parent
-    
+
     # Strategy 3: Fallback to CWD
     return current
 
@@ -55,7 +56,7 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore"
     )
-    
+
     PROJECT_ROOT: Path = Field(default_factory=_find_project_root)
     LOG_DIR: Path = Field(default=Path("logs"))
     BRAIN_DIR: Path = Field(default=Path(".boring_brain"))
@@ -72,17 +73,17 @@ class Settings(BaseSettings):
     LLM_PROVIDER: str = Field(default="gemini-cli", description="gemini-cli, claude-code, mcp-gateway, sdk, ollama")
     LLM_BASE_URL: Optional[str] = Field(default=None)
     LLM_MODEL: Optional[str] = Field(default=None)
-    
+
     # Tool Discovery
     CLAUDE_CLI_PATH: Optional[str] = None
     GEMINI_CLI_PATH: Optional[str] = None
-    
+
     # V4.0 Feature Flags
     USE_FUNCTION_CALLING: bool = True  # Use structured function calls
     USE_VECTOR_MEMORY: bool = False    # Use ChromaDB for semantic memory (requires extra deps)
     USE_INTERACTIONS_API: bool = False # Use new stateful Interactions API (experimental)
     USE_DIFF_PATCHING: bool = True     # Prefer search/replace over full file rewrites
-    
+
     # Loop Settings
     MAX_LOOPS: int = 100
     MAX_HOURLY_CALLS: int = 50
@@ -95,7 +96,7 @@ class Settings(BaseSettings):
     STATUS_FILE: str = "status.json"
 
     # DX Verification Settings (V10.13)
-    VERIFICATION_EXCLUDES: List[str] = Field(default_factory=lambda: [
+    VERIFICATION_EXCLUDES: list[str] = Field(default_factory=lambda: [
         ".git", ".github", ".vscode", ".idea", "venv", ".venv", "node_modules", "build", "dist", "__pycache__"
     ])
     LINTER_CONFIGS: dict = Field(default_factory=dict)  # Map tool name -> list of args
@@ -144,10 +145,10 @@ def load_toml_config():
             except ImportError:
                 # No TOML parser available
                 return
-                
+
         with open(config_file, "rb") as f:
             data = toml.load(f)
-            
+
         # Support [boring] or top-level keys
         # If [boring] section exists, prioritize it
         overrides = data.get("boring", {})
@@ -160,13 +161,13 @@ def load_toml_config():
                 known_keys = {"llm_provider", "default_model", "timeout_minutes"}
                 if any(k.lower() in known_keys for k in data.keys()):
                     overrides = data
-        
+
         for key, value in overrides.items():
             key_upper = key.upper()
             # Security: Only update existing settings
             if hasattr(settings, key_upper):
                 setattr(settings, key_upper, value)
-                
+
     except Exception:
         # Fail silently during config load to avoid breaking startup
         pass
@@ -174,12 +175,12 @@ def load_toml_config():
 def discover_tools():
     """Discover available local CLI tools."""
     import shutil
-    
+
     # Discover Claude Code
     claude_path = shutil.which("claude")
     if claude_path:
         settings.CLAUDE_CLI_PATH = claude_path
-        
+
     # Discover Gemini CLI
     gemini_path = shutil.which("gemini")
     if gemini_path:

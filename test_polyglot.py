@@ -1,6 +1,7 @@
 
-from boring.config import settings, discover_tools
+from boring.config import discover_tools, settings
 from boring.llm import get_provider
+
 
 def test_discovery():
     print("=== Boring Tool Discovery Test ===")

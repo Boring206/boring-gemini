@@ -23,11 +23,11 @@ Preferred format (v4.0+):
 import re
 import warnings
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Any
-from .logger import log_status
-from .config import settings
+from typing import Any, Optional
+
 from .backup import BackupManager
-from .security import validate_file_path, sanitize_content
+from .logger import log_status
+from .security import sanitize_content, validate_file_path
 
 # =============================================================================
 # LEGACY REGEX PATTERNS (DEPRECATED)
@@ -69,33 +69,33 @@ XML_FILE_PATTERN = re.compile(
 # =============================================================================
 
 def process_structured_calls(
-    function_calls: List[Dict[str, Any]],
+    function_calls: list[dict[str, Any]],
     project_root: Path,
     log_dir: Path = Path("logs"),
     loop_id: Optional[int] = None
-) -> Tuple[int, List[str], List[str]]:
+) -> tuple[int, list[str], list[str]]:
     """
     Process function calls from Gemini response (v4.0+ preferred method).
-    
+
     This replaces regex-based parsing with structured function call handling.
-    
+
     Args:
         function_calls: List of function call dicts from Gemini API
         project_root: Root directory of the project
         log_dir: Directory for logs
         loop_id: Current loop ID for backups
-    
+
     Returns:
         Tuple of (files_modified_count, modified_paths, errors)
     """
-    modified_paths: List[str] = []
-    created_paths: List[str] = []
-    errors: List[str] = []
-    
+    modified_paths: list[str] = []
+    created_paths: list[str] = []
+    errors: list[str] = []
+
     # Separate by type
     write_calls = [c for c in function_calls if c.get("name") == "write_file"]
     replace_calls = [c for c in function_calls if c.get("name") == "search_replace"]
-    
+
     # Backup files before modification
     files_to_backup = []
     for call in write_calls + replace_calls:
@@ -104,23 +104,23 @@ def process_structured_calls(
             full_path = project_root / path_arg
             if full_path.exists():
                 files_to_backup.append(full_path)
-    
+
     if loop_id is not None and files_to_backup:
         backup_mgr = BackupManager(loop_id)
         snapshot = backup_mgr.create_snapshot(list(set(files_to_backup)))
         if snapshot:
             log_status(log_dir, "INFO", f"Created backup: {snapshot}")
-    
+
     # Process write_file calls
     for call in write_calls:
         args = call.get("args", {})
         file_path = args.get("file_path", "").strip()
         content = args.get("content", "")
-        
+
         if not file_path:
             errors.append("write_file: missing file_path")
             continue
-        
+
         result = _write_file(file_path, content, project_root, log_dir)
         if result[0]:  # success
             if result[1] == "created":
@@ -129,47 +129,47 @@ def process_structured_calls(
                 modified_paths.append(file_path)
         else:
             errors.append(result[2])
-    
+
     # Process search_replace calls
     for call in replace_calls:
         args = call.get("args", {})
         file_path = args.get("file_path", "").strip()
         search = args.get("search", "")
         replace = args.get("replace", "")
-        
+
         if not file_path or not search:
             errors.append("search_replace: missing file_path or search")
             continue
-        
+
         result = _search_replace(file_path, search, replace, project_root, log_dir)
         if result[0]:
             modified_paths.append(file_path)
         else:
             errors.append(result[1])
-    
+
     total = len(modified_paths) + len(created_paths)
     return total, modified_paths + created_paths, errors
 
 
 def _write_file(
-    file_path: str, 
-    content: str, 
-    project_root: Path, 
+    file_path: str,
+    content: str,
+    project_root: Path,
     log_dir: Path
-) -> Tuple[bool, str, str]:
+) -> tuple[bool, str, str]:
     """Write file with security validation. Returns (success, action, error)."""
     validation = validate_file_path(file_path, project_root, log_dir=log_dir)
     if not validation.is_valid:
         return False, "", f"Blocked: {file_path} - {validation.reason}"
-    
+
     if validation.normalized_path:
         file_path = validation.normalized_path
-    
+
     full_path = project_root / file_path
     action = "created" if not full_path.exists() else "modified"
-    
+
     content = sanitize_content(content)
-    
+
     try:
         full_path.parent.mkdir(parents=True, exist_ok=True)
         full_path.write_text(content, encoding="utf-8")
@@ -185,25 +185,25 @@ def _search_replace(
     replace: str,
     project_root: Path,
     log_dir: Path
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """Search and replace in file. Returns (success, error)."""
     validation = validate_file_path(file_path, project_root, log_dir=log_dir)
     if not validation.is_valid:
         return False, f"Blocked: {file_path} - {validation.reason}"
-    
+
     if validation.normalized_path:
         file_path = validation.normalized_path
-    
+
     full_path = project_root / file_path
-    
+
     if not full_path.exists():
         return False, f"File not found: {file_path}"
-    
+
     try:
         content = full_path.read_text(encoding="utf-8")
         if search not in content:
             return False, f"Search text not found in {file_path}"
-        
+
         new_content = content.replace(search, replace, 1)
         full_path.write_text(new_content, encoding="utf-8")
         log_status(log_dir, "SUCCESS", f"🔄 Replaced in: {file_path}")
@@ -213,16 +213,16 @@ def _search_replace(
 
 
 # =============================================================================
-# LEGACY REGEX FUNCTIONS (DEPRECATED - Use process_structured_calls instead)  
+# LEGACY REGEX FUNCTIONS (DEPRECATED - Use process_structured_calls instead)
 # =============================================================================
 
-def extract_file_blocks(output: str) -> Dict[str, str]:
+def extract_file_blocks(output: str) -> dict[str, str]:
     """
     Parse Gemini output and extract file content blocks.
-    
+
     ⚠️ DEPRECATED: Use process_structured_calls() with function call data instead.
     This function will be removed in v5.0.
-    
+
     Returns:
         Dict mapping file paths to their content
     """
@@ -231,12 +231,12 @@ def extract_file_blocks(output: str) -> Dict[str, str]:
         DeprecationWarning,
         stacklevel=2
     )
-    
-    file_blocks: Dict[str, str] = {}
-    
+
+    file_blocks: dict[str, str] = {}
+
     # Try all patterns
     patterns = [
-        FILE_BLOCK_PATTERN, LANG_PATH_PATTERN, 
+        FILE_BLOCK_PATTERN, LANG_PATH_PATTERN,
         HEADER_FILE_PATTERN, SECTION_FILE_PATTERN,
         XML_FILE_PATTERN
     ]
@@ -246,7 +246,7 @@ def extract_file_blocks(output: str) -> Dict[str, str]:
             # Regex groups vary slightly by pattern
             # For XML: group(1)=path, group(2)=content
             # For others: usually path is group 1 or 2, content is last group
-            
+
             if pattern == XML_FILE_PATTERN:
                 file_path = match.group(1).strip()
                 content = match.group(2)
@@ -267,32 +267,32 @@ def extract_file_blocks(output: str) -> Dict[str, str]:
 
             if file_path and content:
                 file_blocks[file_path] = content.rstrip()
-    
+
     return file_blocks
 
 
 def apply_patches(
-    file_blocks: Dict[str, str],
+    file_blocks: dict[str, str],
     project_root: Path,
     log_dir: Path = Path("logs"),
     dry_run: bool = False,
     loop_id: Optional[int] = None
-) -> List[Tuple[str, str]]:
+) -> list[tuple[str, str]]:
     """
     Write extracted file content to actual files.
-    
+
     Args:
         file_blocks: Dict mapping relative paths to file content
         project_root: Root directory of the project
         log_dir: Directory for logs
         dry_run: If True, only log what would be done without writing
         loop_id: The current loop ID (for backups)
-    
+
     Returns:
         List of (file_path, action) tuples where action is 'created' or 'modified'
     """
-    results: List[Tuple[str, str]] = []
-    
+    results: list[tuple[str, str]] = []
+
     # Identify files to modify for backup
     files_to_backup = []
     for rel_path in file_blocks.keys():
@@ -300,7 +300,7 @@ def apply_patches(
         full_path = project_root / rel_path
         if full_path.exists() and full_path.is_file():
             files_to_backup.append(full_path)
-    
+
     # Create backup if not dry run and loop_id provided
     if not dry_run and loop_id is not None and files_to_backup:
         backup_mgr = BackupManager(loop_id)
@@ -311,31 +311,31 @@ def apply_patches(
     for rel_path, content in file_blocks.items():
         # Normalize path
         rel_path = rel_path.strip().strip('"').strip("'")
-        
+
         # Security: Use whitelist validation
         validation = validate_file_path(rel_path, project_root, log_dir=log_dir)
         if not validation.is_valid:
             log_status(log_dir, "WARN", f"Blocked path '{rel_path}': {validation.reason}")
             continue
-        
+
         # Use normalized path from validation
         if validation.normalized_path:
             rel_path = validation.normalized_path
-        
+
         full_path = project_root / rel_path
-        
+
         # Sanitize content
         content = sanitize_content(content)
-        
+
         # Determine action
         action = "modified" if full_path.exists() else "created"
-        
+
         if dry_run:
             log_status(log_dir, "INFO", f"[DRY RUN] Would {action}: {rel_path}")
         else:
             # Create parent directories if needed
             full_path.parent.mkdir(parents=True, exist_ok=True)
-            
+
             # Write content
             try:
                 full_path.write_text(content, encoding="utf-8")
@@ -343,7 +343,7 @@ def apply_patches(
                 results.append((rel_path, action))
             except Exception as e:
                 log_status(log_dir, "ERROR", f"Failed to write {rel_path}: {e}")
-    
+
     return results
 
 
@@ -356,24 +356,24 @@ def process_gemini_output(
 ) -> int:
     """
     Main entry point: Read Gemini output file and apply all patches.
-    
+
     Returns:
         Number of files modified/created
     """
     if not output_file.exists():
         log_status(log_dir, "WARN", f"Output file not found: {output_file}")
         return 0
-    
+
     output_content = output_file.read_text(encoding="utf-8")
-    
+
     file_blocks = extract_file_blocks(output_content)
-    
+
     if not file_blocks:
         log_status(log_dir, "INFO", "No file blocks found in Gemini output")
         return 0
-    
+
     log_status(log_dir, "INFO", f"Found {len(file_blocks)} file(s) to patch")
-    
+
     results = apply_patches(file_blocks, project_root, log_dir, dry_run, loop_id)
-    
+
     return len(results)

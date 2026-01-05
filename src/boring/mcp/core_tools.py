@@ -12,9 +12,8 @@ This module contains the most frequently used tools:
 - boring_quickstart: Onboarding guide
 """
 
-from pathlib import Path
-from typing import Optional
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -29,7 +28,7 @@ class TaskResult:
 def register_core_tools(mcp, audited, helpers):
     """
     Register core tools with the MCP server.
-    
+
     Args:
         mcp: FastMCP server instance
         audited: Audit decorator function
@@ -39,18 +38,18 @@ def register_core_tools(mcp, audited, helpers):
     _get_project_root_or_error = helpers["get_project_root_or_error"]
     _configure_runtime_for_project = helpers["configure_runtime"]
     _check_rate_limit = helpers["check_rate_limit"]
-    check_project_root = helpers["check_project_root"]
-    
+    helpers["check_project_root"]
+
     @mcp.tool()
     @audited
     def boring_quickstart(project_path: Optional[str] = None) -> dict:
         """
         Get a comprehensive quick start guide for new users.
-        
+
         Returns recommended first steps, available tools, and common workflows.
         """
         root = _detect_project_root(project_path)
-        
+
         return {
             "welcome": "Welcome to Boring for Gemini!",
             "project_detected": root is not None,
@@ -85,17 +84,16 @@ def register_core_tools(mcp, audited, helpers):
     def boring_status(project_path: Optional[str] = None) -> dict:
         """Get current Boring project status."""
         from ..memory import MemoryManager
-        from ..config import settings
-        
+
         project_root, error = _get_project_root_or_error(project_path)
         if error:
             return error
-        
+
         _configure_runtime_for_project(project_root)
-        
+
         memory = MemoryManager(project_root)
         state = memory.get_project_state()
-        
+
         return {
             "status": "SUCCESS",
             "project_root": str(project_root),
@@ -103,7 +101,7 @@ def register_core_tools(mcp, audited, helpers):
             "last_run": state.get("last_run"),
             "files_modified": state.get("files_modified", 0)
         }
-    
+
     return {
         "boring_quickstart": boring_quickstart,
         "boring_health_check": boring_health_check,

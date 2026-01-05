@@ -7,10 +7,11 @@ This module provides type-safe data models for:
 - Loop status reporting
 """
 
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
-from dataclasses import dataclass
+from typing import Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -48,15 +49,15 @@ class CircuitBreakerState(BaseModel):
 
 class ExitSignals(BaseModel):
     """Signals used for graceful exit detection."""
-    test_only_loops: List[int] = Field(
+    test_only_loops: list[int] = Field(
         default_factory=list,
         description="Loop numbers that were test-only"
     )
-    done_signals: List[int] = Field(
+    done_signals: list[int] = Field(
         default_factory=list,
         description="Loop numbers that signaled completion"
     )
-    completion_indicators: List[str] = Field(
+    completion_indicators: list[str] = Field(
         default_factory=list,
         description="Strong completion indicator messages"
     )
@@ -108,9 +109,9 @@ class Workflow(BaseModel):
     name: str = Field(..., description="Workflow filename without extension")
     description: str = Field(..., description="Description from frontmatter")
     version: Optional[str] = Field(None, description="Workflow version")
-    steps: List[WorkflowStep] = Field(default_factory=list, description="Extracted steps")
+    steps: list[WorkflowStep] = Field(default_factory=list, description="Extracted steps")
     raw_content: str = Field(..., description="Full original markdown content")
-    
+
     class Config:
         extra = "ignore"
 
@@ -121,5 +122,5 @@ class VerificationResult:
     passed: bool
     check_type: str  # syntax, lint, test, import
     message: str
-    details: List[str]
-    suggestions: List[str]
+    details: list[str]
+    suggestions: list[str]

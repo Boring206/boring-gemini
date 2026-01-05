@@ -1,32 +1,22 @@
-import sys
 import logging
 import os
+import sys
 from contextlib import contextmanager
 
 from . import interceptors
+
 # Install interceptors immediately BEFORE any other imports to catch early stdout pollution
 interceptors.install_interceptors()
 
 # Import all modules to register tools with FastMCP
+from ..audit import audited  # Moved to top-level to avoid import issues in tests
 from . import instance
-from . import resources
+from .prompts import register_prompts
+
 # Import tools packages to trigger decorators
-from .tools import (
-    core,
-    verification,
-    speckit,
-    workflow,
-    knowledge,
-    patching,
-    git,
-    integration,
-    evaluation
-)
+from .utils import detect_project_root, get_project_root_or_error
 from .v9_tools import register_v9_tools
 from .v10_tools import register_v10_tools
-from .prompts import register_prompts
-from .utils import get_project_root_or_error, detect_project_root
-from ..audit import audited  # Moved to top-level to avoid import issues in tests
 
 # Try to import Smithery decorator for HTTP deployment
 try:
@@ -58,10 +48,10 @@ def get_server_instance():
     Use this for direct access without Smithery decorators (e.g. for http.py).
     """
     os.environ["BORING_MCP_MODE"] = "1"
-    
+
     if not instance.MCP_AVAILABLE:
         raise RuntimeError("'fastmcp' not found. Install with: pip install fastmcp")
-    
+
     # Register Resources
     @instance.mcp.resource("boring://logs")
     def get_logs() -> str:
@@ -74,13 +64,13 @@ def get_server_instance():
         "detect_project_root": detect_project_root
     }
     register_v9_tools(instance.mcp, audited, helpers)
-    
+
     # Register V10 Tools (RAG, Multi-Agent, Shadow Mode)
     register_v10_tools(instance.mcp, audited, helpers)
-    
+
     # Register Prompts
     register_prompts(instance.mcp)
-    
+
     return instance.mcp
 
 
@@ -88,18 +78,18 @@ def get_server_instance():
 def create_server():
     """
     Create and return a FastMCP server instance for Smithery deployment.
-    
+
     This function is called by Smithery to get the server instance.
     It must be decorated with @smithery.server() and return a FastMCP instance.
-    
+
     Note: Smithery uses HTTP transport, not stdio.
     """
     mcp_instance = get_server_instance()
-    
+
     if os.environ.get("BORING_MCP_DEBUG") == "1":
         sys.stderr.write("[boring-mcp] Creating server for Smithery...\n")
         sys.stderr.write(f"[boring-mcp] Registered tools: {len(mcp_instance._tools)}\n")
-    
+
     return mcp_instance
 
 
@@ -123,31 +113,31 @@ def run_server():
     # 1. Install stdout interceptor immediately
     # This prevents any print() statement from corrupting the JSON-RPC stream
     interceptors.install_interceptors()
-    
+
     # 2. Register V9 Tools
     helpers = {
         "get_project_root_or_error": get_project_root_or_error,
         "detect_project_root": detect_project_root
     }
     register_v9_tools(instance.mcp, audited, helpers)
-    
+
     # 3. Register V10 Tools (RAG, Multi-Agent, Shadow Mode)
     register_v10_tools(instance.mcp, audited, helpers)
-    
+
     # Register Prompts
     register_prompts(instance.mcp)
-    
+
     # 4. Configured logging
     with _configure_logging():
         if os.environ.get("BORING_MCP_DEBUG") == "1":
             sys.stderr.write("[boring-mcp] Server starting...\n")
             sys.stderr.write(f"[boring-mcp] Python: {sys.executable}\n")
             sys.stderr.write(f"[boring-mcp] Registered tools: {len(instance.mcp._tools)}\n")
-            
+
         # 3. Mark MCP as started (allows JSON-RPC traffic)
         if hasattr(sys.stdout, 'mark_mcp_started'):
             sys.stdout.mark_mcp_started()
-            
+
         # 4. Run the server
         # Explicitly use stdio transport
         try:

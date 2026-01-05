@@ -7,6 +7,6 @@ Allows users to create custom MCP tools and register them
 with the Boring server at runtime.
 """
 
-from .loader import PluginLoader, BoringPlugin, plugin
+from .loader import BoringPlugin, PluginLoader, plugin
 
 __all__ = ["PluginLoader", "BoringPlugin", "plugin"]

@@ -7,10 +7,10 @@ When verification fails, automatically attempts to fix issues
 using the Boring agent, creating a self-healing development loop.
 """
 
+import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, List, Dict, Any
-import time
+from typing import Optional
 
 
 @dataclass
@@ -27,13 +27,13 @@ class FixAttempt:
 class AutoFixPipeline:
     """
     Implements an automated verify -> fix -> verify cycle.
-    
+
     Continues until:
     - All issues are resolved
     - Max iterations reached
     - No progress is made (issues not decreasing)
     """
-    
+
     def __init__(
         self,
         project_root: Path,
@@ -43,30 +43,30 @@ class AutoFixPipeline:
         self.project_root = project_root
         self.max_iterations = max_iterations
         self.verification_level = verification_level
-        self.attempts: List[FixAttempt] = []
-    
+        self.attempts: list[FixAttempt] = []
+
     def run(self, run_boring_func, verify_func) -> dict:
         """
         Execute the auto-fix pipeline.
-        
+
         Args:
             run_boring_func: Function to run Boring agent (takes task_description)
             verify_func: Function to verify code (returns dict with 'passed', 'issues')
-        
+
         Returns:
             Pipeline result with status and attempt history
         """
         previous_issue_count = float('inf')
-        
+
         for iteration in range(1, self.max_iterations + 1):
             start_time = time.time()
-            
+
             # Step 1: Verify
             verify_result = verify_func(
                 level=self.verification_level,
                 project_path=str(self.project_root)
             )
-            
+
             if verify_result.get("passed", False):
                 return {
                     "status": "SUCCESS",
@@ -74,11 +74,11 @@ class AutoFixPipeline:
                     "iterations": iteration - 1,
                     "attempts": [a.__dict__ for a in self.attempts]
                 }
-            
+
             # Count issues
             issues = verify_result.get("issues", [])
             issue_count = len(issues) if isinstance(issues, list) else verify_result.get("error_count", 1)
-            
+
             # Check for progress
             if issue_count >= previous_issue_count:
                 return {
@@ -88,10 +88,10 @@ class AutoFixPipeline:
                     "attempts": [a.__dict__ for a in self.attempts],
                     "remaining_issues": issues
                 }
-            
+
             # Step 2: Generate fix task
             fix_task = self._generate_fix_task(verify_result)
-            
+
             # Step 3: Run Boring to fix
             fix_result = run_boring_func(
                 task_description=fix_task,
@@ -99,9 +99,9 @@ class AutoFixPipeline:
                 max_loops=2,
                 project_path=str(self.project_root)
             )
-            
+
             duration = time.time() - start_time
-            
+
             # Record attempt
             attempt = FixAttempt(
                 iteration=iteration,
@@ -112,15 +112,15 @@ class AutoFixPipeline:
                 duration_seconds=duration
             )
             self.attempts.append(attempt)
-            
+
             previous_issue_count = issue_count
-        
+
         # Final verification
         final_result = verify_func(
             level=self.verification_level,
             project_path=str(self.project_root)
         )
-        
+
         if final_result.get("passed", False):
             return {
                 "status": "SUCCESS",
@@ -128,7 +128,7 @@ class AutoFixPipeline:
                 "iterations": self.max_iterations,
                 "attempts": [a.__dict__ for a in self.attempts]
             }
-        
+
         return {
             "status": "MAX_ITERATIONS",
             "message": f"Reached max iterations ({self.max_iterations}). Some issues remain.",
@@ -136,19 +136,19 @@ class AutoFixPipeline:
             "attempts": [a.__dict__ for a in self.attempts],
             "remaining_issues": final_result.get("issues", [])
         }
-    
+
     def _generate_fix_task(self, verify_result: dict) -> str:
         """Generate a task description from verification failures."""
         issues = verify_result.get("issues", [])
         errors = verify_result.get("errors", [])
-        
+
         if isinstance(issues, list) and issues:
             issue_summary = "\n".join(f"- {i}" for i in issues[:10])
         elif isinstance(errors, list) and errors:
             issue_summary = "\n".join(f"- {e}" for e in errors[:10])
         else:
             issue_summary = verify_result.get("message", "Unknown verification errors")
-        
+
         return f"""Fix the following code verification issues:
 
 {issue_summary}
@@ -169,7 +169,7 @@ def create_auto_fix_tool(
 ):
     """
     Create and register the boring_auto_fix MCP tool.
-    
+
     Args:
         mcp: FastMCP server instance
         audited: Audit decorator
@@ -177,7 +177,7 @@ def create_auto_fix_tool(
         verify_func: Reference to boring_verify tool function
         get_project_root_func: Helper to get project root
     """
-    
+
     @mcp.tool()
     @audited
     def boring_auto_fix(
@@ -187,28 +187,28 @@ def create_auto_fix_tool(
     ) -> dict:
         """
         Automated verify-and-fix loop.
-        
+
         Repeatedly runs verification and attempts to fix issues until
         all problems are resolved or max iterations reached.
-        
+
         Args:
             max_iterations: Maximum fix attempts (default: 3)
             verification_level: BASIC, STANDARD, or FULL
             project_path: Optional project root path
-        
+
         Returns:
             Pipeline result with status and attempt history
         """
         project_root, error = get_project_root_func(project_path)
         if error:
             return error
-        
+
         pipeline = AutoFixPipeline(
             project_root=project_root,
             max_iterations=max_iterations,
             verification_level=verification_level
         )
-        
+
         return pipeline.run(run_boring_func, verify_func)
-    
+
     return boring_auto_fix

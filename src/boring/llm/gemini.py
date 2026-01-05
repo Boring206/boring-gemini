@@ -2,15 +2,13 @@
 Gemini Provider Implementation (SDK & CLI fallback)
 """
 
-import os
-import time
 from pathlib import Path
-from typing import Optional, Tuple, List, Dict, Any
+from typing import Optional
 
-from .provider import LLMProvider, LLMResponse
-from ..logger import log_status, get_logger
 from ..config import settings
-from .tools import get_boring_tools, SYSTEM_INSTRUCTION_OPTIMIZED
+from ..logger import get_logger
+from .provider import LLMProvider, LLMResponse
+from .tools import SYSTEM_INSTRUCTION_OPTIMIZED, get_boring_tools
 
 _logger = get_logger("gemini_provider")
 
@@ -28,7 +26,7 @@ class GeminiProvider(LLMProvider):
     Standardized provider for Google Gemini.
     Supports SDK (API Key) and CLI (gcloud/google-auth) backends.
     """
-    
+
     def __init__(
         self,
         model_name: Optional[str] = None,
@@ -38,24 +36,24 @@ class GeminiProvider(LLMProvider):
         self._model_name = model_name or settings.DEFAULT_MODEL
         self.log_dir = log_dir or settings.LOG_DIR
         self.api_key = api_key or settings.GOOGLE_API_KEY
-        
+
         self.backend = "sdk"
         self.cli_adapter = None
         self.client = None
-        
+
         # Determine backend
         if not self.api_key:
-            from ..cli_client import check_cli_available, GeminiCLIAdapter
+            from ..cli_client import GeminiCLIAdapter, check_cli_available
             if check_cli_available():
                 _logger.info("No API key. Using Gemini CLI backend.")
                 self.backend = "cli"
                 self.cli_adapter = GeminiCLIAdapter(model_name=self._model_name, log_dir=self.log_dir)
             else:
                 _logger.warning("No API key and Gemini CLI not found. SDK will fail if no key provided later.")
-        
+
         if self.backend == "sdk" and SDK_AVAILABLE and self.api_key:
             self.client = genai.Client(api_key=self.api_key)
-            
+
         self.tools = get_boring_tools()
         self.use_function_calling = settings.USE_FUNCTION_CALLING and len(self.tools) > 0
 
@@ -75,17 +73,17 @@ class GeminiProvider(LLMProvider):
         context: str = "",
         system_instruction: str = "",
         timeout_seconds: int = 600
-    ) -> Tuple[str, bool]:
+    ) -> tuple[str, bool]:
         if self.backend == "cli":
             return self.cli_adapter.generate(prompt, context)
-            
+
         if not self.client:
             return "Error: Gemini SDK not initialized (missing API key)", False
-            
+
         try:
             full_prompt = f"# Context\n{context}\n\n# Task\n{prompt}" if context else prompt
             contents = [types.Content(role="user", parts=[types.Part(text=full_prompt)])]
-            
+
             response = self.client.models.generate_content(
                 model=self._model_name,
                 contents=contents,
@@ -123,7 +121,7 @@ class GeminiProvider(LLMProvider):
         try:
             full_prompt = f"# Context\n{context}\n\n# Task\n{prompt}" if context else prompt
             contents = [types.Content(role="user", parts=[types.Part(text=full_prompt)])]
-            
+
             response = self.client.models.generate_content(
                 model=self._model_name,
                 contents=contents,
@@ -134,7 +132,7 @@ class GeminiProvider(LLMProvider):
                     tools=self.tools if self.use_function_calling else None,
                 )
             )
-            
+
             function_calls = []
             text_parts = []
             if response.candidates:
@@ -148,7 +146,7 @@ class GeminiProvider(LLMProvider):
                                 })
                             elif part.text:
                                 text_parts.append(part.text)
-                                
+
             return LLMResponse(
                 text="\n".join(text_parts),
                 function_calls=function_calls,

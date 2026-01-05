@@ -9,19 +9,18 @@ Provides system health verification including:
 """
 
 import os
-import subprocess
 import shutil
-from pathlib import Path
-from typing import Dict, List, Tuple, Optional
+import subprocess
 from dataclasses import dataclass, field
 from enum import Enum
+from pathlib import Path
+from typing import Optional
 
 from rich.console import Console
-from rich.table import Table
 from rich.panel import Panel
+from rich.table import Table
 
 from .config import settings
-from .logger import log_status
 
 # MCP-compatible Rich Console (stderr, quiet in MCP mode)
 _is_mcp_mode = os.environ.get("BORING_MCP_MODE") == "1"
@@ -48,20 +47,20 @@ class HealthCheckResult:
 @dataclass
 class HealthReport:
     """Complete health report."""
-    checks: List[HealthCheckResult] = field(default_factory=list)
-    
+    checks: list[HealthCheckResult] = field(default_factory=list)
+
     @property
     def passed(self) -> int:
         return sum(1 for c in self.checks if c.status == HealthStatus.PASS)
-    
+
     @property
     def warnings(self) -> int:
         return sum(1 for c in self.checks if c.status == HealthStatus.WARN)
-    
+
     @property
     def failed(self) -> int:
         return sum(1 for c in self.checks if c.status == HealthStatus.FAIL)
-    
+
     @property
     def is_healthy(self) -> bool:
         return self.failed == 0
@@ -70,7 +69,7 @@ class HealthReport:
 def check_api_key() -> HealthCheckResult:
     """Check if GOOGLE_API_KEY is set and valid format."""
     api_key = os.environ.get("GOOGLE_API_KEY", "")
-    
+
     if not api_key:
         return HealthCheckResult(
             name="API Key",
@@ -78,7 +77,7 @@ def check_api_key() -> HealthCheckResult:
             message="GOOGLE_API_KEY not set",
             suggestion="Set environment variable: export GOOGLE_API_KEY='your-key'"
         )
-    
+
     # Basic format validation (Google API keys start with AIza)
     if api_key.startswith("AIza") and len(api_key) >= 39:
         return HealthCheckResult(
@@ -98,7 +97,7 @@ def check_api_key() -> HealthCheckResult:
 def check_git_repo(project_root: Path) -> HealthCheckResult:
     """Check if current directory is a clean Git repository."""
     git_dir = project_root / ".git"
-    
+
     if not git_dir.exists():
         return HealthCheckResult(
             name="Git Repository",
@@ -106,7 +105,7 @@ def check_git_repo(project_root: Path) -> HealthCheckResult:
             message="Not a Git repository",
             suggestion="Initialize with: git init"
         )
-    
+
     try:
         # Check for uncommitted changes
         result = subprocess.run(
@@ -117,7 +116,7 @@ def check_git_repo(project_root: Path) -> HealthCheckResult:
             cwd=project_root,
             timeout=10
         )
-        
+
         if result.returncode != 0:
             return HealthCheckResult(
                 name="Git Repository",
@@ -125,7 +124,7 @@ def check_git_repo(project_root: Path) -> HealthCheckResult:
                 message="Git command failed",
                 suggestion="Check Git installation"
             )
-        
+
         if result.stdout.strip():
             lines = len(result.stdout.strip().split('\n'))
             return HealthCheckResult(
@@ -134,7 +133,7 @@ def check_git_repo(project_root: Path) -> HealthCheckResult:
                 message=f"{lines} uncommitted change(s)",
                 suggestion="Consider committing before running Boring"
             )
-        
+
         return HealthCheckResult(
             name="Git Repository",
             status=HealthStatus.PASS,
@@ -152,7 +151,7 @@ def check_python_version() -> HealthCheckResult:
     """Check Python version compatibility."""
     import sys
     version = sys.version_info
-    
+
     if version >= (3, 9):
         return HealthCheckResult(
             name="Python Version",
@@ -172,7 +171,7 @@ def check_required_dependencies() -> HealthCheckResult:
     """Check required Python packages."""
     required = ["google.generativeai", "rich", "typer", "tenacity"]
     missing = []
-    
+
     for package in required:
         try:
             # 1. Try importing exactly as specified (handles 'google.generativeai')
@@ -190,7 +189,7 @@ def check_required_dependencies() -> HealthCheckResult:
                 except ImportError:
                     # 4. If all fail, append to missing
                     missing.append(package)
-    
+
     if missing:
         return HealthCheckResult(
             name="Dependencies",
@@ -198,7 +197,7 @@ def check_required_dependencies() -> HealthCheckResult:
             message=f"Missing: {', '.join(missing)}",
             suggestion="Run: pip install -e ."
         )
-    
+
     return HealthCheckResult(
         name="Dependencies",
         status=HealthStatus.PASS,
@@ -209,14 +208,14 @@ def check_required_dependencies() -> HealthCheckResult:
 def check_optional_dependencies() -> HealthCheckResult:
     """Check optional dependencies without importing (to avoid slow TensorFlow/PyTorch load)."""
     import importlib.util
-    
+
     optional = {
         "chromadb": "Vector Memory",
         "sentence_transformers": "Embeddings",
     }
     available = []
     missing = []
-    
+
     for package, feature in optional.items():
         # Use find_spec to check if package is installed WITHOUT importing it
         # This is MUCH faster than __import__ for heavy packages like sentence_transformers
@@ -225,7 +224,7 @@ def check_optional_dependencies() -> HealthCheckResult:
             available.append(feature)
         else:
             missing.append(feature)
-    
+
     if not available:
         return HealthCheckResult(
             name="Optional Features",
@@ -233,7 +232,7 @@ def check_optional_dependencies() -> HealthCheckResult:
             message="No optional features installed",
             suggestion="pip install boring-gemini[vector] for Vector Memory"
         )
-    
+
     return HealthCheckResult(
         name="Optional Features",
         status=HealthStatus.PASS,
@@ -244,7 +243,7 @@ def check_optional_dependencies() -> HealthCheckResult:
 def check_prompt_file(project_root: Path) -> HealthCheckResult:
     """Check if PROMPT.md exists."""
     prompt_file = project_root / settings.PROMPT_FILE
-    
+
     if not prompt_file.exists():
         return HealthCheckResult(
             name="PROMPT.md",
@@ -252,7 +251,7 @@ def check_prompt_file(project_root: Path) -> HealthCheckResult:
             message="PROMPT.md not found",
             suggestion="Create PROMPT.md with your development instructions"
         )
-    
+
     content = prompt_file.read_text(encoding="utf-8")
     if len(content) < 50:
         return HealthCheckResult(
@@ -261,7 +260,7 @@ def check_prompt_file(project_root: Path) -> HealthCheckResult:
             message="PROMPT.md seems too short",
             suggestion="Add detailed instructions for Boring"
         )
-    
+
     return HealthCheckResult(
         name="PROMPT.md",
         status=HealthStatus.PASS,
@@ -272,14 +271,14 @@ def check_prompt_file(project_root: Path) -> HealthCheckResult:
 def check_gemini_cli() -> HealthCheckResult:
     """Check if Gemini CLI is available."""
     gemini_cmd = shutil.which("gemini")
-    
+
     if gemini_cmd:
         return HealthCheckResult(
             name="Gemini CLI",
             status=HealthStatus.PASS,
             message=f"Found at {gemini_cmd}"
         )
-    
+
     return HealthCheckResult(
         name="Gemini CLI",
         status=HealthStatus.WARN,
@@ -291,14 +290,14 @@ def check_gemini_cli() -> HealthCheckResult:
 def check_ruff() -> HealthCheckResult:
     """Check if ruff linter is available."""
     ruff_cmd = shutil.which("ruff")
-    
+
     if ruff_cmd:
         return HealthCheckResult(
             name="Ruff Linter",
             status=HealthStatus.PASS,
             message="Available"
         )
-    
+
     return HealthCheckResult(
         name="Ruff Linter",
         status=HealthStatus.WARN,
@@ -309,15 +308,15 @@ def check_ruff() -> HealthCheckResult:
 
 def run_health_check(project_root: Optional[Path] = None, backend: str = "api") -> HealthReport:
     """Run all health checks and return report.
-    
+
     Args:
         project_root: Project directory path.
         backend: Backend mode ('api' or 'cli'). CLI mode skips API key check.
     """
     project_root = project_root or settings.PROJECT_ROOT
-    
+
     report = HealthReport()
-    
+
     # Core checks - API key only required for API backend
     if backend.lower() == "cli":
         report.checks.append(HealthCheckResult(
@@ -328,19 +327,19 @@ def run_health_check(project_root: Optional[Path] = None, backend: str = "api") 
         ))
     else:
         report.checks.append(check_api_key())
-    
+
     report.checks.append(check_python_version())
     report.checks.append(check_required_dependencies())
-    
+
     # Project checks
     report.checks.append(check_prompt_file(project_root))
     report.checks.append(check_git_repo(project_root))
-    
+
     # Optional checks
     report.checks.append(check_optional_dependencies())
     report.checks.append(check_gemini_cli())
     report.checks.append(check_ruff())
-    
+
     return report
 
 
@@ -350,18 +349,18 @@ def print_health_report(report: HealthReport):
     table.add_column("Check", style="cyan")
     table.add_column("Status", justify="center")
     table.add_column("Details")
-    
+
     for check in report.checks:
         status_text = check.status.value
         details = check.message
         if check.suggestion:
             details += f"\n[dim]→ {check.suggestion}[/dim]"
-        
+
         table.add_row(check.name, status_text, details)
-    
+
     console.print(table)
     console.print()
-    
+
     # Summary
     if report.is_healthy:
         console.print(Panel(
@@ -377,5 +376,5 @@ def print_health_report(report: HealthReport):
             title="Summary",
             border_style="red"
         ))
-    
+
     return report.is_healthy
