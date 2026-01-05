@@ -3,7 +3,7 @@
 
 runtime: "container"
 displayName: "Boring Gemini Agent"
-description: "Enterprise-grade autonomous AI development agent (CLI/FastMCP). V10.16.0: Dynamic Discovery, Consolidated Tools, Quality Gates, Polyglot Verification. Runs LOCALLY."
+description: "Boring Vibecoder Assistant: An AI-powered development support tool handling project planning, logic verification, and knowledge management. Works alongside Cursor, Copilot, and others to ensure rigorous, efficient workflows, letting developers focus on architecture and decision-making."
 repository: "https://github.com/Boring206/boring-gemini"
 homepage: "https://github.com/Boring206/boring-gemini"
 documentation: "https://github.com/Boring206/boring-gemini/blob/main/README.md"
