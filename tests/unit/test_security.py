@@ -1,182 +1,120 @@
-"""
-Tests for security module.
-"""
+# Copyright 2025-2026 Boring for Gemini Authors
+# SPDX-License-Identifier: Apache-2.0
 
-from boring.security import (
-    is_safe_path,
-    mask_sensitive_data,
-    sanitize_content,
-    sanitize_filename,
-    validate_file_path,
-)
+from unittest.mock import patch
+
+import pytest
+
+from boring.security import SecurityScanner
 
 
-class TestValidateFilePath:
-    """Tests for file path validation."""
-
-    def test_valid_python_file(self, tmp_path):
-        """Test validation of valid Python file path."""
-        result = validate_file_path("src/main.py", tmp_path)
-        assert result.is_valid is True
-        assert result.reason is None
-
-    def test_valid_nested_path(self, tmp_path):
-        """Test validation of nested valid path."""
-        result = validate_file_path("src/utils/helpers.py", tmp_path)
-        assert result.is_valid is True
-
-    def test_path_traversal_blocked(self, tmp_path):
-        """Test that path traversal is blocked."""
-        result = validate_file_path("../../../etc/passwd", tmp_path)
-        assert result.is_valid is False
-        assert "traversal" in result.reason.lower()
-
-    def test_absolute_path_blocked(self, tmp_path):
-        """Test that absolute paths are blocked."""
-        result = validate_file_path("/etc/passwd", tmp_path)
-        assert result.is_valid is False
-        assert "Absolute" in result.reason
-
-    def test_windows_absolute_blocked(self, tmp_path):
-        """Test that Windows absolute paths are blocked."""
-        result = validate_file_path("C:\\Windows\\System32", tmp_path)
-        assert result.is_valid is False
-
-    def test_disallowed_extension(self, tmp_path):
-        """Test that disallowed extensions are blocked."""
-        result = validate_file_path("malware.exe", tmp_path)
-        assert result.is_valid is False
-        assert "Extension" in result.reason
-
-    def test_blocked_directory_git(self, tmp_path):
-        """Test that .git directory is blocked."""
-        result = validate_file_path(".git/hooks/pre-commit.py", tmp_path)
-        assert result.is_valid is False
-        # Either blocked by extension or directory check
-        assert ".git" in result.reason or "Extension" in result.reason
-
-    def test_blocked_directory_node_modules(self, tmp_path):
-        """Test that node_modules is blocked."""
-        result = validate_file_path("node_modules/package/index.js", tmp_path)
-        assert result.is_valid is False
-
-    def test_blocked_filename_env(self, tmp_path):
-        """Test that .env file is blocked."""
-        result = validate_file_path(".env", tmp_path)
-        assert result.is_valid is False
-
-    def test_empty_path(self, tmp_path):
-        """Test that empty path is invalid."""
-        result = validate_file_path("", tmp_path)
-        assert result.is_valid is False
-
-    def test_normalized_path_returned(self, tmp_path):
-        """Test that normalized path is returned."""
-        result = validate_file_path("  src/main.py  ", tmp_path)
-        assert result.is_valid is True
-        assert result.normalized_path is not None
+@pytest.fixture
+def temp_project(tmp_path):
+    """Create a temporary project with some files."""
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "main.py").write_text("print('hello')")
+    (tmp_path / ".env").write_text("API_KEY=123456")
+    return tmp_path
 
 
-class TestIsSafePath:
-    """Tests for quick safety check."""
-
-    def test_safe_path(self, tmp_path):
-        """Test that safe path returns True."""
-        assert is_safe_path("src/main.py", tmp_path) is True
-
-    def test_unsafe_path(self, tmp_path):
-        """Test that unsafe path returns False."""
-        assert is_safe_path("../secret.py", tmp_path) is False
+def test_scanner_init(temp_project):
+    scanner = SecurityScanner(temp_project)
+    assert scanner.project_root == temp_project
+    assert scanner.report.scanned_files == 0
 
 
-class TestMaskSensitiveData:
-    """Tests for sensitive data masking."""
+def test_scan_secrets_detection(temp_project):
+    """Test secret detection."""
+    # Create file with secrets
+    secret_file = temp_project / "src" / "secrets.py"
+    secret_file.write_text(
+        'aws_key = "AKIAIOSFODNN7EXAMPLE"\\n'
+        'google_key = "AIzaSyD-1234567890abcdef1234567890abc"\\n',
+        encoding="utf-8"
+    )
 
-    def test_mask_google_api_key(self):
-        """Test masking of Google API key."""
-        # Google API keys are AIza + 35 characters
-        text = "Found key: AIzaSyD-fakekey123456789012345678901234 in config"
-        masked = mask_sensitive_data(text)
-        # The key should be replaced
-        assert "AIzaSyD-fakekey123456789012345678901234" not in masked
+    scanner = SecurityScanner(temp_project)
+    # Ensure ignore patterns don't block it
+    scanner.project_root = temp_project
+    issues = scanner.scan_secrets()
 
-    def test_mask_generic_api_key(self):
-        """Test masking of generic api_key pattern."""
-        text = "api_key = 'DUMMY_STRIPE_KEY_FOR_TESTING'"
-        masked = mask_sensitive_data(text)
-        assert "sk_live" not in masked
+    # Debug info if failed
+    if len(issues) < 2:
+        print(f"Scanned files: {scanner.report.scanned_files}")
+        print(f"Issues found: {issues}")
 
-    def test_mask_password(self):
-        """Test masking of password."""
-        text = "password=mysecretpassword123"
-        masked = mask_sensitive_data(text)
-        assert "mysecretpassword" not in masked
-        assert "[REDACTED]" in masked
+    assert len(issues) >= 2
+    assert scanner.report.secrets_found >= 2
 
-    def test_mask_bearer_token(self):
-        """Test masking of JWT bearer token."""
-        text = "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U"
-        masked = mask_sensitive_data(text)
-        assert "eyJ" not in masked
-        assert "[JWT_TOKEN]" in masked
-
-    def test_no_mask_normal_text(self):
-        """Test that normal text is not masked."""
-        text = "This is normal log output without secrets"
-        masked = mask_sensitive_data(text)
-        assert masked == text
-
-    def test_empty_string(self):
-        """Test masking empty string."""
-        assert mask_sensitive_data("") == ""
-        assert mask_sensitive_data(None) is None
+    # Check issue details
+    descriptions = [i.description for i in issues]
+    assert any("AWS Access Key" in d for d in descriptions)
+    assert any("Google API Key" in d for d in descriptions)
 
 
-class TestSanitizeFilename:
-    """Tests for filename sanitization."""
+def test_scan_secrets_ignore_dirs(temp_project):
+    """Test that ignored directories are skipped."""
+    git_dir = temp_project / ".git"
+    git_dir.mkdir()
+    (git_dir / "config").write_text("password=secret")
 
-    def test_normal_filename(self):
-        """Test that normal filename is unchanged."""
-        assert sanitize_filename("main.py") == "main.py"
+    scanner = SecurityScanner(temp_project)
+    issues = scanner.scan_secrets()
 
-    def test_path_separators_removed(self):
-        """Test that path separators are replaced."""
-        result = sanitize_filename("path/to/file.py")
-        assert "/" not in result
-        assert "_" in result
-
-    def test_leading_dots_removed(self):
-        """Test that leading dots are removed."""
-        result = sanitize_filename("...hidden")
-        assert not result.startswith(".")
-
-    def test_long_filename_truncated(self):
-        """Test that long filenames are truncated."""
-        long_name = "a" * 300 + ".py"
-        result = sanitize_filename(long_name)
-        assert len(result) <= 255
-
-    def test_empty_returns_unnamed(self):
-        """Test that empty filename returns 'unnamed'."""
-        assert sanitize_filename("") == "unnamed"
-        assert sanitize_filename("...") == "unnamed"
+    # Should not find secrets in .git
+    assert not any(i.file_path.startswith(".git") for i in issues)
 
 
-class TestSanitizeContent:
-    """Tests for content sanitization."""
+@patch("subprocess.run")
+def test_scan_vulnerabilities(mock_run, temp_project):
+    """Test SAST scanning via bandit."""
+    # Mock bandit output
+    mock_run.return_value.returncode = 0
+    mock_run.return_value.stdout = """
+    {
+        "results": [
+            {
+                "issue_severity": "HIGH",
+                "filename": "src/main.py",
+                "line_number": 1,
+                "issue_text": "Use of assert detected.",
+                "issue_cwe": {"id": 101}
+            }
+        ]
+    }
+    """
 
-    def test_normal_content(self):
-        """Test that normal content is unchanged."""
-        content = "def hello():\n    print('world')\n"
-        assert sanitize_content(content) == content
+    scanner = SecurityScanner(temp_project)
+    issues = scanner.scan_vulnerabilities()
 
-    def test_empty_content(self):
-        """Test empty content."""
-        assert sanitize_content("") == ""
+    assert len(issues) == 1
+    assert issues[0].severity == "HIGH"
+    assert issues[0].category == "vulnerability"
+    assert "Use of assert" in issues[0].description
 
-    def test_content_truncation(self):
-        """Test that overly long content is truncated."""
-        long_content = "x" * 2_000_000
-        result = sanitize_content(long_content, max_length=1_000_000)
-        assert len(result) <= 1_000_100  # max_length + truncation message
-        assert "truncated" in result
+
+@patch("subprocess.run")
+def test_scan_dependencies(mock_run, temp_project):
+    """Test dependency scanning via pip-audit."""
+    # Mock pip-audit output
+    mock_run.return_value.returncode = 1
+    mock_run.return_value.stdout = """
+    [
+        {
+            "name": "requests",
+            "version": "1.0.0",
+            "vulns": [{"id": "CVE-2020-1234"}],
+            "fix_versions": ["2.0.0"]
+        }
+    ]
+    """
+
+    # Create dummy requirements
+    (temp_project / "requirements.txt").write_text("requests==1.0.0")
+
+    scanner = SecurityScanner(temp_project)
+    issues = scanner.scan_dependencies()
+
+    assert len(issues) == 1
+    assert issues[0].category == "dependency"
+    assert "requests" in issues[0].description
