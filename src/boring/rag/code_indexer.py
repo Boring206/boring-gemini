@@ -88,6 +88,25 @@ class CodeIndexer:
         self.include_init_files = include_init_files
         self.stats = IndexStats()
     
+    def collect_files(self) -> List[Path]:
+        """
+        Collect all files that should be indexed.
+        
+        Returns:
+            List of Path objects for all indexable files in the project.
+        """
+        files = []
+        for root, dirs, filenames in os.walk(self.project_root):
+            # Skip hidden directories and those in ignore list
+            dirs[:] = [d for d in dirs if not self._should_skip_dir(d)]
+            
+            for filename in filenames:
+                file_path = Path(root) / filename
+                if self._should_skip_path(file_path):
+                    continue
+                files.append(file_path)
+        return files
+
     def index_project(self) -> Iterator[CodeChunk]:
         """
         Index all supported files in the project.
@@ -97,30 +116,14 @@ class CodeIndexer:
         """
         self.stats = IndexStats()
         
-        # Walk through all files and filter by extension
-        for root, dirs, files in os.walk(self.project_root):
-            # Prune ignored directories
-            dirs[:] = [d for d in dirs if not self._should_skip_dir(d)]
-            
-            for file in files:
-                file_path = Path(root) / file
-                ext = file_path.suffix.lower()
-                
-                if ext not in self.SUPPORTED_EXTENSIONS:
-                    continue
-                
-                if not self.include_init_files and file == "__init__.py":
-                    continue
-                
-                self.stats.total_files += 1
-                
-                try:
-                    for chunk in self.index_file(file_path):
-                        self.stats.total_chunks += 1
-                        yield chunk
-                except Exception as e:
-                    logger.warning(f"Failed to index {file_path}: {e}")
-                    self.stats.skipped_files += 1
+        for file_path in self.collect_files():
+            try:
+                for chunk in self.index_file(file_path):
+                    self.stats.total_chunks += 1
+                    yield chunk
+            except Exception as e:
+                logger.warning(f"Failed to index {file_path}: {e}")
+                self.stats.skipped_files += 1
 
     def index_file(self, file_path: Path) -> Iterator[CodeChunk]:
         """

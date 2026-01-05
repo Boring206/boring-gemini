@@ -10,6 +10,7 @@ This module provides type-safe data models for:
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional
+from dataclasses import dataclass
 from pydantic import BaseModel, Field
 
 
@@ -112,3 +113,13 @@ class Workflow(BaseModel):
     
     class Config:
         extra = "ignore"
+
+
+@dataclass
+class VerificationResult:
+    """Result of a verification step."""
+    passed: bool
+    check_type: str  # syntax, lint, test, import
+    message: str
+    details: List[str]
+    suggestions: List[str]

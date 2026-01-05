@@ -3,7 +3,7 @@
 
 runtime: "container"
 displayName: "Boring Gemini Agent"
-description: "Enterprise-grade autonomous AI development agent for Python (CLI/FastMCP). V10.10 Polyglot Architect: Tree-sitter Parsing, Universal Verifier, and Language-Aware Evaluation. Runs LOCALLY."
+description: "Enterprise-grade autonomous AI development agent for Python (CLI/FastMCP). V10.15 Polyglot Architect: Native Gemini CLI & Claude Code integration, Tree-sitter Parsing, and Parallel Verification. Runs LOCALLY."
 repository: "https://github.com/Boring206/boring-gemini"
 homepage: "https://github.com/Boring206/boring-gemini"
 documentation: "https://github.com/Boring206/boring-gemini/blob/main/README.md"
@@ -42,4 +42,5 @@ startCommand:
         description: "Allow dangerous operations without prompt (NOT RECOMMENDED)."
         default: false
     additionalProperties: false
+    required: []
 

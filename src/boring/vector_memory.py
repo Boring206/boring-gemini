@@ -14,6 +14,8 @@ from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, asdict
 from datetime import datetime
 
+from datetime import datetime
+
 from .logger import log_status
 
 # Try to import optional dependencies
@@ -276,6 +278,9 @@ class VectorMemory:
         except Exception as e:
             log_status(self.log_dir, "ERROR", f"Failed to clear memory: {e}")
             return False
+
+
+
 
 
 # Convenience function to create vector memory with project defaults

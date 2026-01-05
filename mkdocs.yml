@@ -25,6 +25,9 @@ nav:
     - gemini_client: api/gemini_client.md
     - circuit: api/circuit.md
     - mcp_server: api/mcp_server.md
+    - llm_providers: api/llm_providers.md
+    - verification: api/verification.md
+    - judge: api/judge.md
   - Contributing: contributing.md
 
 markdown_extensions:

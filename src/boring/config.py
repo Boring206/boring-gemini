@@ -61,11 +61,21 @@ class Settings(BaseSettings):
     BRAIN_DIR: Path = Field(default=Path(".boring_brain"))
     BACKUP_DIR: Path = Field(default=Path(".boring_backups"))
     MEMORY_DIR: Path = Field(default=Path(".boring_memory"))
+    CACHE_DIR: Path = Field(default=Path(".boring_cache"))
 
     # Gemini Settings
     GOOGLE_API_KEY: Optional[str] = Field(default=None)
     DEFAULT_MODEL: str = "models/gemini-2.5-flash"
     TIMEOUT_MINUTES: int = 15
+
+    # LLM Settings (V10.13 Modular)
+    LLM_PROVIDER: str = Field(default="gemini-cli", description="gemini-cli, claude-code, mcp-gateway, sdk, ollama")
+    LLM_BASE_URL: Optional[str] = Field(default=None)
+    LLM_MODEL: Optional[str] = Field(default=None)
+    
+    # Tool Discovery
+    CLAUDE_CLI_PATH: Optional[str] = None
+    GEMINI_CLI_PATH: Optional[str] = None
     
     # V4.0 Feature Flags
     USE_FUNCTION_CALLING: bool = True  # Use structured function calls
@@ -83,6 +93,13 @@ class Settings(BaseSettings):
     CONTEXT_FILE: str = "GEMINI.md"
     TASK_FILE: str = "@fix_plan.md"
     STATUS_FILE: str = "status.json"
+
+    # DX Verification Settings (V10.13)
+    VERIFICATION_EXCLUDES: List[str] = Field(default_factory=lambda: [
+        ".git", ".github", ".vscode", ".idea", "venv", ".venv", "node_modules", "build", "dist", "__pycache__"
+    ])
+    LINTER_CONFIGS: dict = Field(default_factory=dict)  # Map tool name -> list of args
+    PROMPTS: dict = Field(default_factory=dict)         # Map prompt name -> template string
 
 settings = Settings()
 
@@ -103,9 +120,72 @@ def init_directories():
         settings.BACKUP_DIR = settings.PROJECT_ROOT / settings.BACKUP_DIR
     if not settings.MEMORY_DIR.is_absolute():
         settings.MEMORY_DIR = settings.PROJECT_ROOT / settings.MEMORY_DIR
+    if not settings.CACHE_DIR.is_absolute():
+        settings.CACHE_DIR = settings.PROJECT_ROOT / settings.CACHE_DIR
 
     settings.LOG_DIR.mkdir(parents=True, exist_ok=True)
     settings.BRAIN_DIR.mkdir(parents=True, exist_ok=True)
     settings.BACKUP_DIR.mkdir(parents=True, exist_ok=True)
     settings.MEMORY_DIR.mkdir(parents=True, exist_ok=True)
+    settings.CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
+def load_toml_config():
+    """Load configuration from .boring.toml if present."""
+    config_file = settings.PROJECT_ROOT / ".boring.toml"
+    if not config_file.exists():
+        return
+
+    try:
+        try:
+            import tomllib as toml
+        except ImportError:
+            try:
+                import tomli as toml
+            except ImportError:
+                # No TOML parser available
+                return
+                
+        with open(config_file, "rb") as f:
+            data = toml.load(f)
+            
+        # Support [boring] or top-level keys
+        # If [boring] section exists, prioritize it
+        overrides = data.get("boring", {})
+        if not overrides:
+            # Fallback to top-level or [global] if users use that style
+            overrides = data.get("global", {})
+            if not overrides:
+                # Treat whole file as flat config if no sections match
+                # Check if known keys exist at top level
+                known_keys = {"llm_provider", "default_model", "timeout_minutes"}
+                if any(k.lower() in known_keys for k in data.keys()):
+                    overrides = data
+        
+        for key, value in overrides.items():
+            key_upper = key.upper()
+            # Security: Only update existing settings
+            if hasattr(settings, key_upper):
+                setattr(settings, key_upper, value)
+                
+    except Exception:
+        # Fail silently during config load to avoid breaking startup
+        pass
+
+def discover_tools():
+    """Discover available local CLI tools."""
+    import shutil
+    
+    # Discover Claude Code
+    claude_path = shutil.which("claude")
+    if claude_path:
+        settings.CLAUDE_CLI_PATH = claude_path
+        
+    # Discover Gemini CLI
+    gemini_path = shutil.which("gemini")
+    if gemini_path:
+        settings.GEMINI_CLI_PATH = gemini_path
+
+# Auto-load configuration overrides
+load_toml_config()
+discover_tools()
 

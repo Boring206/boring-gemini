@@ -41,34 +41,72 @@ def boring_evaluate(
     project_root = detect_project_root(project_path)
     if not project_root:
         return "❌ No valid Boring project found. Run in project root."
-        
     try:
         from ...config import settings
         # CRITICAL: Contextually update project root
         settings.PROJECT_ROOT = project_root
         
-        from ...judge import LLMJudge
-        from ...cli_client import GeminiCLIAdapter
+        from ...judge import LLMJudge, create_judge_provider
         
         # Auto-detect MCP mode: If running as MCP tool, default to interactive
-        # This allows IDE AI (Cursor, Claude Desktop) to execute the evaluation
         is_mcp_mode = os.environ.get("BORING_MCP_MODE", "0") == "1"
         
-        # In MCP mode, default to interactive unless explicitly set to False
         if is_mcp_mode and interactive is None:
             interactive = True
         elif interactive is None:
             interactive = False
         
-        # Initialize Judge
-        adapter = GeminiCLIAdapter(model_name=settings.DEFAULT_MODEL)
+        # Initialize Judge with configured provider
+        provider = create_judge_provider()
         
-        # In interactive mode, we don't strictly need the CLI to be functional
-        if not adapter.is_available and not interactive:
-             return "❌ Gemini CLI not found. Install it or use interactive=True to generate prompts."
+        # Check availability
+        if not provider.is_available and not interactive:
+             return f"❌ LLM Provider ({provider.provider_name}) not available. Check configuration."
 
-        judge = LLMJudge(adapter)
+        judge = LLMJudge(provider)
+
         
+        # Handle Pairwise Comparison
+        if level.upper() == "PAIRWISE":
+            targets = [t.strip() for t in target.split(",")]
+            if len(targets) != 2:
+                return "❌ PAIRWISE mode requires exactly two comma-separated files in 'target' (e.g., 'src/old.py,src/new.py')"
+            
+            path_a = project_root / targets[0] if not Path(targets[0]).is_absolute() else Path(targets[0])
+            path_b = project_root / targets[1] if not Path(targets[1]).is_absolute() else Path(targets[1])
+            
+            if not path_a.exists() or not path_b.exists():
+                return f"❌ Files not found: {path_a} or {path_b}"
+                
+            content_a = path_a.read_text(encoding="utf-8", errors="replace")
+            content_b = path_b.read_text(encoding="utf-8", errors="replace")
+            
+            result = judge.compare_code(
+                name_a=path_a.name, code_a=content_a,
+                name_b=path_b.name, code_b=content_b,
+                context=context, interactive=interactive
+            )
+            
+            if interactive:
+                 prompts = result.get("prompts", {})
+                 return (
+                     f"### ⚖️ Pairwise Comparison Prompts\n\n"
+                     f"**Pass 1 (A vs B):**\n```markdown\n{prompts.get('pass1', '')}\n```\n\n"
+                     f"**Pass 2 (B vs A):**\n```markdown\n{prompts.get('pass2', '')}\n```"
+                 )
+            
+            winner = result.get("winner", "TIE")
+            confidence = result.get("confidence", 0.0)
+            reasoning = result.get("reasoning", "")
+            
+            emoji = "🏆" if winner != "TIE" else "⚖️"
+            
+            return (
+                f"# {emoji} Pairwise Evaluation Result\n\n"
+                f"**Winner**: {winner} (Confidence: {confidence})\n\n"
+                f"**Reasoning**:\n{reasoning}\n"
+            )
+
         # Resolve target
         target_path = Path(target)
         if not target_path.is_absolute():
@@ -129,6 +167,14 @@ def boring_evaluate(
             report = f"# {emoji} Evaluation: {target_path.name}\n"
             report += f"**Overall Score**: {score}/5.0\n\n"
             report += f"**Summary**: {summary}\n\n"
+            
+            # Record metrics in QualityTracker
+            try:
+                from ...quality_tracker import QualityTracker
+                tracker = QualityTracker()
+                tracker.record(score=float(score), issues_count=len(suggestions), context="boring_evaluate")
+            except Exception as e:
+                report += f"\n[Warning: Failed to record quality stats: {e}]\n"
             
             # Display multi-dimensional breakdown
             if dimensions:
