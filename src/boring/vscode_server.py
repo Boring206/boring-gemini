@@ -216,6 +216,18 @@ class VSCodeServer:
     async def start(self, host: str = "127.0.0.1", port: int = 9876) -> None:
         """Start the JSON-RPC server."""
 
+        def _silence_windows_socket_errors(loop, context):
+            """Silence benign WinError 10054/10053 in asyncio Proactor loop."""
+            exception = context.get("exception")
+            if isinstance(
+                exception, (ConnectionResetError, ConnectionAbortedError, BrokenPipeError)
+            ):
+                return  # Ignore these noisy errors on Windows disconnects
+            loop.default_exception_handler(context)
+
+        loop = asyncio.get_running_loop()
+        loop.set_exception_handler(_silence_windows_socket_errors)
+
         async def handle_client(reader, writer):
             addr = writer.get_extra_info("peername")
             logger.info(f"Connection from {addr}")
