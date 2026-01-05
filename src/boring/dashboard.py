@@ -8,11 +8,6 @@ from pathlib import Path
 st = None
 
 # Paths
-
-
-# Paths
-
-# Paths
 STATUS_FILE = Path("status.json")
 LOG_FILE = Path("logs/boring.log")
 BRAIN_DIR = Path(".boring_brain")
