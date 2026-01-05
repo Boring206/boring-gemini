@@ -30,7 +30,7 @@ def test_scan_secrets_detection(temp_project):
     secret_file.write_text(
         'aws_key = "AKIAIOSFODNN7EXAMPLE"\\n'
         'google_key = "AIzaSyD-1234567890abcdef1234567890abc"\\n',
-        encoding="utf-8"
+        encoding="utf-8",
     )
 
     scanner = SecurityScanner(temp_project)

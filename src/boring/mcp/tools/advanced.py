@@ -138,7 +138,9 @@ def boring_task(
     ],
     task_type: Annotated[
         str | None,
-        Field(default=None, description="Task type for 'submit': verify, test, lint, security_scan"),
+        Field(
+            default=None, description="Task type for 'submit': verify, test, lint, security_scan"
+        ),
     ] = None,
     task_id: Annotated[
         str | None,
@@ -264,7 +266,10 @@ def boring_profile(
         return get_user_profile()
     elif action == "learn":
         if not error_pattern or not fix_pattern:
-            return {"status": "error", "message": "error_pattern and fix_pattern required for learn"}
+            return {
+                "status": "error",
+                "message": "error_pattern and fix_pattern required for learn",
+            }
         return learn_fix(error_pattern, fix_pattern, context)
     else:
         return {"status": "error", "message": f"Unknown action: {action}"}

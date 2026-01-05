@@ -23,8 +23,8 @@ def test_transaction_start(mock_git_manager):
 
     # Mock successful stash
     mock_git_manager._run_git.side_effect = [
-        (True, ".git"),      # check git dir
-        (True, "stash output") # stash push
+        (True, ".git"),  # check git dir
+        (True, "stash output"),  # stash push
     ]
 
     result = mock_git_manager.start("Test transaction")
@@ -39,7 +39,7 @@ def test_transaction_commit(mock_git_manager):
     """Test committing a transaction."""
     # Setup active transaction
     mock_git_manager.start("Test")
-    mock_git_manager._run_git.reset_mock() # Clear calls from start()
+    mock_git_manager._run_git.reset_mock()  # Clear calls from start()
 
     result = mock_git_manager.commit()
 
