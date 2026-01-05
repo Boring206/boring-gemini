@@ -228,8 +228,139 @@ boring hooks uninstall  # 移除
 |------|----------|----------|
 | pre-commit | 每次 commit | STANDARD |
 | pre-push | 每次 push | FULL |
+| quick-check | 每次 commit | QUICK (多語言) |
 
 ---
+
+## 🆕 V10.16 新功能使用指南
+
+### 1. Quality Gates (CI/CD 品質門檻)
+
+專案已包含 `.github/workflows/quality-gates.yml`，自動執行：
+
+```yaml
+# 推送至 GitHub 後自動運行
+Tier 1: Lint & Format     # ruff check, ruff format
+Tier 2: Security Scan     # bandit, safety  
+Tier 3: Unit Tests        # pytest --cov-fail-under=39
+Tier 4: Integration Tests # 僅 main 分支
+```
+
+### 2. 專案配置 (.boring.toml)
+
+在專案根目錄創建 `.boring.toml` 自訂品質政策：
+
+```toml
+[boring.quality_gates]
+min_coverage = 40           # 最低覆蓋率
+max_complexity = 15         # 最大複雜度
+max_file_lines = 500        # 最大檔案行數
+
+[boring.linter_configs]
+python = { tool = "ruff", args = ["check", "--select=E,F,W"] }
+go = { tool = "golangci-lint", args = ["run", "--fast"] }
+
+[boring.polyglot]
+supported_languages = ["python", "javascript", "go", "rust"]
+```
+
+### 3. 評估 Rubric (LLM Judge)
+
+使用標準化 Rubric 評估代碼：
+
+```bash
+# MCP 工具調用
+boring_evaluate --target src/main.py --level DIRECT
+
+# 評估維度 (各 1-5 分)
+# - Readability (20%)
+# - Correctness (25%)
+# - Security (20%)
+# - Maintainability (20%)
+# - Testability (15%)
+```
+
+### 4. 快速多語言檢查
+
+```bash
+# 安裝 Quick Check Hook
+boring hooks install
+
+# 手動運行 (檢查已暫存檔案)
+git diff --cached --name-only | xargs ruff check  # Python
+git diff --cached --name-only | xargs eslint      # JS/TS
+```
+
+---
+
+## 🆕 V10.15 新功能使用指南
+
+### 1. 增量驗證 (Git-based)
+
+```bash
+# 僅驗證 Git 變更的檔案
+boring verify --incremental
+
+# 等同於 MCP 調用
+boring_verify --incremental=true
+```
+
+### 2. 多專案 RAG 搜尋
+
+```python
+# 跨專案搜尋
+boring_rag_search(
+    query="authentication middleware",
+    additional_roots=["/path/to/other-project"]
+)
+```
+
+### 3. 依賴圖視覺化
+
+```bash
+# 生成 Mermaid 圖表
+boring_visualize --scope full --output mermaid
+
+# 輸出範例:
+# graph TD
+#   main.py --> auth.py
+#   auth.py --> db.py
+```
+
+### 4. 並行審查 (Multi-Reviewer)
+
+```bash
+# 同時運行多個審查類別
+boring_agent_review --parallel
+
+# 並行審查類別:
+# - Security Review
+# - Performance Review  
+# - Correctness Review
+# - API Breakage Check
+```
+
+### 5. VS Code 整合
+
+```json
+// .vscode/settings.json
+{
+  "boring.enableServer": true,
+  "boring.port": 8765
+}
+```
+
+### 6. 錯誤診斷
+
+```bash
+# 自動分析錯誤並建議修復
+boring_diagnose --error "ModuleNotFoundError: No module named 'foo'"
+
+# 輸出:
+# 診斷: 缺少依賴
+# 建議: pip install foo
+```
+
 
 ## 🎯 未來願景
 
