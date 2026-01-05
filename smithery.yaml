@@ -3,7 +3,7 @@
 
 runtime: "container"
 displayName: "Boring Gemini Agent"
-description: "Enterprise-grade autonomous AI development agent (CLI/FastMCP). V10.16.0: Quality Gates, Polyglot Verification, RAG Memory, Multi-Agent Orchestration. Runs LOCALLY."
+description: "Enterprise-grade autonomous AI development agent (CLI/FastMCP). V10.16.0: Dynamic Discovery, Consolidated Tools, Quality Gates, Polyglot Verification. Runs LOCALLY."
 repository: "https://github.com/Boring206/boring-gemini"
 homepage: "https://github.com/Boring206/boring-gemini"
 documentation: "https://github.com/Boring206/boring-gemini/blob/main/README.md"

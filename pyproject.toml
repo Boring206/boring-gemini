@@ -58,6 +58,8 @@ mcp = [
     "smithery>=0.4.2",
     "uvicorn>=0.30.0",
     "starlette>=0.37.0",
+    "bandit>=1.7.0",
+    "pip-audit>=2.7.0",
     "win10toast>=0.9; platform_system=='Windows'",
 ]
 all = [
