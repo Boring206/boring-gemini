@@ -60,6 +60,12 @@
 | **程式碼查錯** | `/debug_error` | Diagnose + Verify |
 | **安全檢查** | `/security_scan` | Security (SAST/Secrets) |
 | **搜尋代碼** | `/semantic_search` | RAG Search |
+| **全面品質稽核** | `/audit_quality` | Health + Security + Verify |
+| **查看未來路徑** | `/suggest_roadmap` | Suggest Next |
+| **系統狀態監控** | `/system_status` | Status + Progress |
+| **架構視覺化** | `/visualize_architecture` | Git Visualize (Mermaid) |
+| **查看 AI 記憶** | `/project_brain` | Brain Summary |
+| **效能優化分析** | `/optimize_performance` | Arch Evaluation |
 
 ---
 
