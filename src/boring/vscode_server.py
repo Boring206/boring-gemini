@@ -229,11 +229,16 @@ class VSCodeServer:
                     response = await self.handle_request(data.decode())
                     writer.write((response + "\n").encode())
                     await writer.drain()
+            except (ConnectionResetError, BrokenPipeError):
+                logger.info(f"Client {addr} disconnected abruptly")
             except Exception as e:
                 logger.error(f"Client error: {e}")
             finally:
-                writer.close()
-                await writer.wait_closed()
+                try:
+                    writer.close()
+                    await writer.wait_closed()
+                except (ConnectionResetError, BrokenPipeError):
+                    pass  # Already closed by remote
 
         server = await asyncio.start_server(handle_client, host, port)
         logger.info(f"VS Code server started on {host}:{port}")
