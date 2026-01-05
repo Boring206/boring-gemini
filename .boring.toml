@@ -1,0 +1,185 @@
+# ==============================================================================
+# Boring Configuration File
+# ==============================================================================
+# This file defines project-specific quality policies and verification rules.
+# All settings are optional - defaults are used when not specified.
+
+[boring]
+# Project metadata
+version = "10.15.0"
+min_python = "3.9"
+
+# ==============================================================================
+# VERIFICATION POLICIES
+# ==============================================================================
+[boring.verification]
+# Verification levels: BASIC, STANDARD, FULL, SEMANTIC
+default_level = "STANDARD"
+
+# Files/directories to exclude from verification
+excludes = [
+    "__pycache__",
+    ".git",
+    ".venv",
+    "venv",
+    "node_modules",
+    "*.egg-info",
+    "dist",
+    "build",
+    "htmlcov",
+    ".pytest_cache",
+    ".ruff_cache",
+]
+
+# Language-specific excludes
+[boring.verification.language_excludes]
+python = ["migrations/", "conftest.py"]
+javascript = ["dist/", "build/"]
+go = ["vendor/"]
+
+# ==============================================================================
+# QUALITY GATES
+# ==============================================================================
+[boring.quality_gates]
+# Minimum test coverage percentage (fails verification if not met)
+min_coverage = 39
+
+# Maximum cyclomatic complexity per function
+max_complexity = 15
+
+# Maximum lines per file (warning, not blocking)
+max_file_lines = 500
+
+# Maximum lines per function
+max_function_lines = 50
+
+# Require docstrings for public functions
+require_docstrings = true
+
+# Require type hints for function signatures
+require_type_hints = true
+
+# ==============================================================================
+# LINTER CONFIGURATIONS (Per-Language)
+# ==============================================================================
+[boring.linter_configs]
+# Python - ruff configuration
+python = { tool = "ruff", args = ["check", "--select=E,F,W,I"] }
+
+# JavaScript/TypeScript - eslint configuration
+javascript = { tool = "eslint", args = ["--ext", ".js,.jsx,.ts,.tsx"] }
+typescript = { tool = "eslint", args = ["--ext", ".ts,.tsx"] }
+
+# Go - golangci-lint configuration
+go = { tool = "golangci-lint", args = ["run", "--fast"] }
+
+# Rust - clippy configuration
+rust = { tool = "cargo", args = ["clippy", "--", "-D", "warnings"] }
+
+# ==============================================================================
+# CUSTOM RULES
+# ==============================================================================
+[boring.custom_rules]
+# Custom shell commands to run during verification
+# {file} will be replaced with the actual file path
+commands = [
+    # Example: Custom security check
+    # "grep -L 'TODO: security' {file}",
+]
+
+# ==============================================================================
+# REVIEWER AGENT CONFIGURATION
+# ==============================================================================
+[boring.reviewer]
+# Enable parallel review (security, performance, correctness)
+parallel_review = true
+
+# Review categories to run
+categories = ["security", "performance", "correctness", "api_breakage"]
+
+# Minimum severity level to report (info, warning, error, critical)
+min_severity = "warning"
+
+# ==============================================================================
+# JUDGE (LLM EVALUATION) CONFIGURATION
+# ==============================================================================
+[boring.judge]
+# Rubric to use for code evaluation
+default_rubric = "code_quality"
+
+# Minimum passing score (1-5 scale)
+pass_threshold = 3.5
+
+# Evaluation strictness: lenient, balanced, strict
+strictness = "balanced"
+
+# ==============================================================================
+# SHADOW MODE (HIGH-RISK OPERATIONS)
+# ==============================================================================
+[boring.shadow_mode]
+# Mode: DISABLED, ENABLED, STRICT
+mode = "ENABLED"
+
+# Operations requiring approval in ENABLED mode
+require_approval = [
+    "delete_file",
+    "modify_config",
+    "run_dangerous_command",
+]
+
+# Auto-approve low-risk operations
+auto_approve_low_risk = true
+
+# ==============================================================================
+# SPECKIT WORKFLOW CONFIGURATION
+# ==============================================================================
+[boring.speckit]
+# Require spec consistency check before commits
+require_spec_consistency = false
+
+# Auto-generate tasks from implementation plan
+auto_generate_tasks = true
+
+# Workflow evolution settings
+[boring.speckit.evolution]
+# Allow AI to modify workflows
+allow_evolution = true
+
+# Create backups before evolution
+backup_before_evolve = true
+
+# Maximum evolution attempts per workflow
+max_evolution_attempts = 3
+
+# ==============================================================================
+# POLYGLOT SUPPORT (Multi-Language)
+# ==============================================================================
+[boring.polyglot]
+# Supported languages for verification
+supported_languages = [
+    "python",
+    "javascript",
+    "typescript",
+    "go",
+    "rust",
+    "java",
+    "c",
+    "cpp",
+]
+
+# Default test runners per language
+[boring.polyglot.test_runners]
+python = "pytest"
+javascript = "npm test"
+typescript = "npm test"
+go = "go test ./..."
+rust = "cargo test"
+java = "mvn test"
+
+# ==============================================================================
+# PROMPTS (Custom AI Prompts)
+# ==============================================================================
+[boring.prompts]
+# Override default prompts (advanced usage)
+# judge_system = "You are a code quality expert..."
+# reviewer_system = "You are a security-focused code reviewer..."

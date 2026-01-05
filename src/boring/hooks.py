@@ -78,6 +78,72 @@ echo "✅ Boring: Spec Guard passed."
 exit 0
 '''
 
+# Polyglot Quick Check Hook - runs language-specific linters on staged files
+QUICK_CHECK_HOOK = '''#!/bin/sh
+# Boring Quick Check Hook (Polyglot)
+# Fast verification for staged files only (<5 seconds target)
+
+echo "⚡ Boring: Quick check on staged files..."
+
+# Get staged files
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+if [ -z "$STAGED_FILES" ]; then
+    echo "✅ No staged files to check."
+    exit 0
+fi
+
+FAILED=0
+
+# Python files
+PY_FILES=$(echo "$STAGED_FILES" | grep -E '\.py$' || true)
+if [ -n "$PY_FILES" ]; then
+    echo "🐍 Checking Python files..."
+    if command -v ruff &> /dev/null; then
+        echo "$PY_FILES" | xargs ruff check --select=E,F,W 2>/dev/null || FAILED=1
+    fi
+fi
+
+# JavaScript/TypeScript files
+JS_FILES=$(echo "$STAGED_FILES" | grep -E '\.(js|jsx|ts|tsx)$' || true)
+if [ -n "$JS_FILES" ]; then
+    echo "📜 Checking JavaScript/TypeScript files..."
+    if command -v eslint &> /dev/null; then
+        echo "$JS_FILES" | xargs eslint --max-warnings=0 2>/dev/null || FAILED=1
+    fi
+fi
+
+# Go files
+GO_FILES=$(echo "$STAGED_FILES" | grep -E '\.go$' || true)
+if [ -n "$GO_FILES" ]; then
+    echo "🐹 Checking Go files..."
+    if command -v gofmt &> /dev/null; then
+        GOFMT_OUTPUT=$(echo "$GO_FILES" | xargs gofmt -l 2>/dev/null)
+        if [ -n "$GOFMT_OUTPUT" ]; then
+            echo "Go format issues in: $GOFMT_OUTPUT"
+            FAILED=1
+        fi
+    fi
+fi
+
+# Rust files
+RS_FILES=$(echo "$STAGED_FILES" | grep -E '\.rs$' || true)
+if [ -n "$RS_FILES" ]; then
+    echo "🦀 Checking Rust files..."
+    if command -v cargo &> /dev/null; then
+        cargo check --quiet 2>/dev/null || FAILED=1
+    fi
+fi
+
+if [ $FAILED -ne 0 ]; then
+    echo "❌ Boring: Quick check failed. Fix issues and re-stage."
+    exit 1
+fi
+
+echo "✅ Boring: Quick check passed."
+exit 0
+'''
+
 
 class HooksManager:
     """Manages Git hooks installation and removal."""
