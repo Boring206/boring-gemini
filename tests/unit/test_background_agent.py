@@ -26,6 +26,7 @@ def runner():
 
 def test_submit_task(runner):
     """Test submitting a task."""
+
     def dummy_task(x):
         return x * 2
 
@@ -36,6 +37,7 @@ def test_submit_task(runner):
 
 def test_task_execution(runner):
     """Test task runs and returns result."""
+
     def fast_task():
         return "done"
 
@@ -50,6 +52,7 @@ def test_task_execution(runner):
 
 def test_task_failure(runner):
     """Test task failure handling."""
+
     def failing_task():
         raise ValueError("Oops")
 
