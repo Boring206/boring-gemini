@@ -3,7 +3,7 @@
 [![Evaluation](https://img.shields.io/badge/Smithery-58%2F58-brightgreen.svg)](https://smithery.ai/server/boring/boring)
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 
-# Boring for Gemini
+# Boring Your Autonomous Coding Partner for Vibe Development
 
 > **Enterprise-grade Autonomous AI Development Agent**  
 > 專為 Cursor / Claude Desktop / VS Code / Gemini CLI 打造的全語言自動化編碼與驗證引擎。
