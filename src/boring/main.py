@@ -355,6 +355,28 @@ def version():
 workflow_app = typer.Typer(help="Manage Boring Workflows (Hub)")
 app.add_typer(workflow_app, name="workflow")
 
+# --- LSP & IDE Integration CLI ---
+lsp_app = typer.Typer(help="IDE Integration & LSP Server")
+app.add_typer(lsp_app, name="lsp")
+
+
+@lsp_app.command("start")
+def lsp_start(
+    port: int = typer.Option(9876, "--port", "-p", help="LSP Server port"),
+    host: str = typer.Option("127.0.0.1", "--host", "-h", help="LSP Server host"),
+):
+    """
+    Start the Boring LSP/JSON-RPC Server for IDE integration.
+    Connect your VS Code extension or JetBrains LSP client to this server.
+    """
+    from .vscode_server import VSCodeServer
+    import asyncio
+
+    console.print(f"[bold green]🚀 Starting Boring LSP Server on {host}:{port}[/bold green]")
+    server = VSCodeServer()
+    asyncio.run(server.start(host=host, port=port))
+
+
 
 @workflow_app.command("list")
 def workflow_list():
