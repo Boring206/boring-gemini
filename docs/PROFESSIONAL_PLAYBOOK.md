@@ -1,85 +1,82 @@
 # Boring 專業開發實戰指南 (Professional Playbook)
 
-> **目標**：從「寫出會跑的程式碼」晉升為「交付生產等級、高彈性、零債務的系統架構」。
+> **目標**：從「寫出會跑的程式碼」晉換為「交付生產等級、高彈性、零債務的系統架構」。
 
 ---
 
-## 核心哲學：架構驅動開發 (Architecture-Driven Development)
+## 核心哲學：捷徑開發 (Prompt-First Workflow)
 
-在專業開發環境中，Boring 不僅是工具，而是你的 **虛擬架構辦公室 (Virtual Arch-Office)**。以下是推薦的標準專業工作流：
+你要記住的不是 **Tool 名稱**，而是 **工作場景 (Prompts)**。在工作時，你只需輸入 `/` 或 Prompt 名稱，AI 就會自動組合工具執行。
 
 ### 第一階段：需求審度與架構共識
 不要直接寫 Code。專業的第一步是確保 AI 真正理解複雜的業務邏輯。
 
 1. **啟動架構師計畫**：使用 `/vibe_start`。
-2. **強制釐清**：AI 會透過 `speckit_clarify` 提出挑戰性問題（例如：CAP 定理取捨、並發競爭狀態處理）。
-3. **架構評估**：使用 `evaluate_architecture`。這一點至關重要，它能強制 AI 指出你需求中的設計缺陷（例如：缺少 Retry 機制、潛在的 O(N) 操作）。
+   - **底層驅動**：`speckit_clarify` -> `speckit_plan` -> `evaluate_architecture`。
+2. **強制解析架構**：使用 `/evaluate_architecture`。
+   - 這能強制 AI 指出你需求中的設計缺陷（例如：缺少 Retry 機制、潛在的 O(N) 操作）。
 
 ---
 
-### 第二階段：建立原子操作防護網 (Atomic Safety)
+### 第二階段：建立原子操作防護網 (Safety Net)
 在修改核心模組前，先建立一個「逃生艙」。
 
-1. **開啟事務**：`boring_transaction_start(message="Refactor Core Auth")`。
-2. **啟用 Shadow Mode**：`boring_shadow_mode(mode="STRICT")`。
-   - 這確保任何 `rm -rf` 或危險的 `git push` 都必須經過你的手工批准。
+1. **安全重構**：使用 `/safe_refactor`。
+   - **底層驅動**：`boring_transaction_start` -> (修改) -> `boring_verify`。
+   - 如果測試不通過，你可以接著用 `/rollback` 一鍵復原。
+2. **審查影子操作**：使用 `/shadow_review`。
+   - 檢查所有被 `Shadow Mode` 攔截的危險操作。
 
 ---
 
-### 第三階段：專注實作與並行驗證
-利用多代理與背景任務加速開發。
+### 第三階段：快速診斷與修復
+利用自動化循環解決瑣碎問題。
 
-1. **多代理協作**：`boring_multi_agent(task="...")`。
-   - 讓 **Architect** 產出 ADR (架構決策紀錄)。
-   - 讓 **Coder** 實作。
-   - 讓 **Reviewer** 進行針對性的 Code Review。
-2. **背景平行驗證**：如果是大型專案，使用 `boring_background_task` 將全量測試掛載到背景，你不必等待測試跑完即可繼續開發下一個功能。
+1. **自動修復**：使用 `/quick_fix`。
+   - **底層驅動**：`boring_verify` -> `boring_auto_fix` -> `ruff format`。
+2. **背景驗證**：如果是大型專案，使用 `/background_verify`。
+   - 讓 AI 在背景跑測試，你繼續寫下一個功能。
 
 ---
 
-### 第四階段：自主品質門檻 (Autonomous Quality Gates)
+### 第四階段：品質評估與 A/B 對比
 交付前的最終洗禮。
 
-1. **執行安全掃描**：`boring_security_scan(scan_type="all")`。檢查 Secrets 是否外洩，依賴包是否有 CVE 漏洞。
-2. **品質評估**：`boring_evaluate(level="PAIRWISE")`。
-   - 將你的新實作與舊版本進行 A/B 對比，由 LLM Judge 決定哪個版本的維護成本更低。
-3. **自動修復循環**：`quick_fix`。在 commit 前，讓 AI 自動補齊 Docstrings、修復 Trailing Whitespace 並優化 Import 順序。
+1. **執行安全掃描**：使用 `/security_scan`。
+   - 自動檢測 Secrets 是否外洩，依賴包是否有 CVE 漏洞。
+2. **代碼評分**：使用 `/evaluate_code`。
+3. **實作對比**：使用 `/compare_implementations`。
+   - 將你的兩個方案路徑交給「AI 裁判」，讓它選出維護性最佳的版本。
 
 ---
 
-### 第五階段：知識沉澱與持續改進
-這區分了專業開發者與普通使用者。
+## 專業 Prompt 捷徑表
 
-1. **提取模式**：`boring_learn`。讓 Boring 從這次開發中學習「這個專案特定的命名慣例」或「特定的 Bug 修復模式」。
-2. **建立 Rubrics**：`boring_create_rubrics`。將團隊的程式碼規範固化為 AI 可以自動稽核的 YAML 規則檔。
-
----
-
-## 專業命令組合速查表
-
-| 場景 | 命令組合 |
-|------|----------|
-| **安全重構** | `start` → `verify` → `evaluate` → `commit/rollback` |
-| **快速除錯** | `debug_error` → `boring_diagnose` → `quick_fix` |
-| **效能優化** | `evaluate_architecture` → `boring_rag_search` → `boring_evaluate` |
-| **環境遷移** | `boring_workspace_switch` → `boring_health_check` → `boring_rag_index` |
+| 想要做什麼 | 使用這個 Prompt | 對應的 Tool 組合 |
+|------|----------|----------|
+| **新功能開發** | `/vibe_start` | Speckit + Agent Plan |
+| **高風險改動** | `/safe_refactor` | Transactions + Verify |
+| **修 Lint/格式** | `/quick_fix` | Auto-fix + Ruff |
+| **程式碼查錯** | `/debug_error` | Diagnose + Verify |
+| **安全檢查** | `/security_scan` | Security (SAST/Secrets) |
+| **搜尋代碼** | `/semantic_search` | RAG Search |
 
 ---
 
-## 專家案例：重構一個具備高併發需求的 API
+## 專家案例：重構一個 API
 
 ```markdown
-1. 你: "/evaluate_architecture 檢查目前的 User Service"
-2. Boring: "⚠️ 發現 N+1 Query 風險，且在併發下可能出現 Race Condition。建議使用 Redis Lock。"
-3. 你: "/safe_refactor 導入 Redis 鎖機制"
-4. Boring: (開啟 Transaction) -> (修改代碼) -> (跑背景壓力測試)
-5. Boring: "✅ 驗證通過。在高併發模擬下性能提升 300%。是否提交？"
-6. 你: "boring_transaction_commit"
+1. 你: "/safe_refactor 導入 Redis 鎖機制"
+2. Boring: (自動開啟 Transaction) -> (開始修改) -> (自動跑測試)
+3. Boring: "❌ 測試失敗。已自動偵測錯誤，是否執行 `/quick_fix`？"
+4. 你: "執行 /quick_fix"
+5. Boring: (自動修復語法錯誤) -> (驗證通過)
+6. 你: "/smart_commit"
 ```
 
 ---
 
-*“Boring 的專業用法在於：讓 AI 像資深工程師一樣思考，而不僅僅是像初級工程師一樣寫 Code。”*
+*“專業玩家不記 Tool，因為 Prompt 已經幫你準備好了所有戰術組合。”*
 
 ---
 *Last updated: V10.16.0*
