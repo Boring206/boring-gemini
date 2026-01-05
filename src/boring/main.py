@@ -377,7 +377,6 @@ def lsp_start(
     asyncio.run(server.start(host=host, port=port))
 
 
-
 @workflow_app.command("list")
 def workflow_list():
     """List local workflows."""
