@@ -60,6 +60,18 @@ pip install "boring[all]"
 
 ---
 
+## 📚 完整教程與文件
+
+| 文件 | 說明 | 適合對象 |
+|------|------|----------|
+| [**完整教程**](docs/TUTORIAL.md) | 快速入門、核心工作流程、實戰案例 | 所有開發者 |
+| [**進階開發者指南**](docs/ADVANCED_TUTORIAL.md) | 架構深度、Tool 開發、內部機制 | 資深開發者 |
+| [**工具清單 (附錄 A)**](docs/APPENDIX_A_TOOL_REFERENCE.md) | 完整 55 個 MCP 工具參考 | 速查 |
+| [**FAQ (附錄 B)**](docs/APPENDIX_B_FAQ.md) | 安裝、疑難排解、常見問題 | 遇到問題時 |
+| [**Prompt 設計哲學 (附錄 C)**](docs/APPENDIX_C_PROMPT_PHILOSOPHY.md) | 架構師人設設計原則 | Prompt 工程師 |
+
+---
+
 ## ⚡ 效能與架構 (Performance & Architecture)
 
 ### 1. 增量驗證 (Incremental Verification)
