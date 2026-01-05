@@ -101,32 +101,37 @@ pip install "boring[all]"
 
 ---
 
-## 🛠️ 核心工具
+## 🛠️ MCP 工具組 (Consolidated & Dynamic)
 
-### Agent Tools
-| 工具 | 用途 |
-|------|------|
-| `run_boring` | 自主開發循環（CLI 模式） |
-| `boring_verify` | 多語言程式碼驗證（BASIC/STANDARD/FULL/SEMANTIC） |
-| `boring_multi_agent` | 啟動 Architect→Coder→Reviewer 協作 |
-| `boring_evaluate` | LLM-as-Judge 程式碼品質評估 |
+Boring V10.16 採用 **動態發現架構 (Dynamic Discovery)**，解決了工具過多導致的 Context 溢出問題。
 
-### RAG Memory
-| 工具 | 用途 |
-|------|------|
-| `boring_rag_index` | 建立專案程式碼索引 |
-| `boring_rag_search` | 語義搜尋程式碼 |
-| `boring_rag_context` | 獲取函數依賴上下文 |
+### 🔎 動態發現 (AI Only)
+- **`boring://capabilities`**：讀取此資源以發現所有可用能力（Capability Map）。
+- **`boring://tools/{category}`**：讀取特定類別的詳細工具用法。
 
-### SpecKit Workflows
-| 工具 | 用途 |
-|------|------|
-| `speckit_plan` | 根據 PRD 生成實作計畫 |
-| `speckit_tasks` | 拆解計畫為任務清單 |
-| `speckit_analyze` | 檢查 Code-Spec 一致性 |
+### 🧰 核心工具 (Consolidated)
 
-### 🎨 Vibe Coder Prompts (AI Client 專用)
+為了減少 Context 消耗，我們將 50+ 個工具整合為以下 14 個高階入口：
 
+| 類別 | 主要工具 | 功能描述 |
+|------|----------|----------|
+| **Security** | `boring_security_scan` | SAST、秘密檢測、依賴掃描 (Bandit/Safety) |
+| **Transactions** | `boring_transaction` | 原子化 Git 操作 (Start/Commit/Rollback) |
+| **Background** | `boring_task` | 非同步背景任務 (Verify/Test/Lint) |
+| **Context** | `boring_context` | 跨 Session 記憶保存與載入 |
+| **Profile** | `boring_profile` | 用戶偏好與跨專案學習 |
+| **Verification** | `boring_verify` | 多層級程式碼驗證 (Basic/Standard/Full) |
+| **RAG Memory** | `boring_rag_search` | 語義搜尋與依賴上下文檢索 |
+| **Agents** | `boring_multi_agent` | Architect/Coder/Reviewer 多代理協作 |
+| **Shadow** | `boring_shadow_mode` | 高風險操作安全沙箱 |
+| **Git** | `boring_commit` | 自動化 Git Hooks 與語義提交 |
+| **Workspace** | `boring_workspace_switch` | 多專案工作區切換 |
+| **Knowledge** | `boring_learn` | 專案知識提取與存儲 |
+| **Plugins** | `boring_run_plugin` | 外部插件執行 |
+| **Evaluation** | `boring_evaluate` | LLM-as-Judge 程式碼評分 |
+
+### 🚀 Quick Start (CLI)
+專為 Vibe Coder 設計的一鍵啟動入口：
 專為 Claude Desktop / Gemini CLI 用戶設計的一鍵式工作流程：
 
 | Prompt | 用途 | 使用方式 |
