@@ -1,10 +1,10 @@
-import sys
 import os
+import sys
 import time
+from collections import defaultdict
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
-from dataclasses import dataclass
-from collections import defaultdict
 
 # ==============================================================================
 # PER-TOOL RATE LIMITING
@@ -24,14 +24,14 @@ def check_rate_limit(tool_name: str) -> tuple[bool, str]:
     limit = _RATE_LIMITS.get(tool_name, _RATE_LIMITS["default"])
     now = time.time()
     hour_ago = now - 3600
-    
+
     # Clean old entries
     _TOOL_CALL_COUNTS[tool_name] = [t for t in _TOOL_CALL_COUNTS[tool_name] if t > hour_ago]
-    
+
     if len(_TOOL_CALL_COUNTS[tool_name]) >= limit:
         remaining = int(3600 - (now - _TOOL_CALL_COUNTS[tool_name][0]))
         return False, f"Rate limit exceeded for {tool_name}. Try again in {remaining}s."
-    
+
     _TOOL_CALL_COUNTS[tool_name].append(now)
     return True, ""
 
@@ -50,10 +50,10 @@ _ANCHOR_FILES = [".git", ".boring_brain", ".boring_memory", ".agent", "PROMPT.md
 def detect_project_root(explicit_path: Optional[str] = None) -> Optional[Path]:
     """
     Detect project root dynamically.
-    
+
     Args:
         explicit_path: Explicit project path provided by user
-        
+
     Returns:
         Path to project root, or None if not found
     """
@@ -62,28 +62,28 @@ def detect_project_root(explicit_path: Optional[str] = None) -> Optional[Path]:
         path = Path(explicit_path).resolve()
         if path.exists():
             return path
-    
+
     # Priority 2: Environment variable
     env_root = os.environ.get("BORING_PROJECT_ROOT")
     if env_root:
         path = Path(env_root).resolve()
         if path.exists():
             return path
-    
+
     # Priority 3: CWD with anchor files
     cwd = Path.cwd()
     home = Path.home()
-    
+
     for parent in [cwd] + list(cwd.parents):
         # SAFETY: Never auto-detect Home or specific system dirs as project root
         # This prevents scanning C:\Users\User if it happens to have a .git folder
         if parent == home or parent == home.parent or len(parent.parts) <= 1:
             continue
-            
+
         for anchor in _ANCHOR_FILES:
             if (parent / anchor).exists():
                 return parent
-    
+
     # Priority 4: If CWD is "safe" (not home/root), treat it as a new project
     # This enables "boring" to work in any directory
     if cwd != home and cwd != home.parent and len(cwd.parts) > 1:
@@ -100,13 +100,13 @@ def ensure_project_initialized(project_root: Path) -> None:
     """
     try:
         import shutil
-        import pkg_resources
-        
+
+
         # 1. Workflows
         workflows_dir = project_root / ".agent" / "workflows"
         if not workflows_dir.exists():
             workflows_dir.mkdir(parents=True, exist_ok=True)
-            
+
             # Copy from templates
             template_path = Path(__file__).parent.parent / "templates" / "workflows"
             if template_path.exists():
@@ -114,11 +114,11 @@ def ensure_project_initialized(project_root: Path) -> None:
                     shutil.copy2(item, workflows_dir / item.name)
             else:
                 sys.stderr.write(f"[boring-mcp] Warning: Workflow templates not found at {template_path}\n")
-        
+
         # 2. Critical Dirs
         (project_root / ".boring_memory").mkdir(parents=True, exist_ok=True)
         (project_root / ".gemini").mkdir(parents=True, exist_ok=True)
-        
+
         # 3. PROMPT.md (optional, empty if missing)
         prompt_file = project_root / "PROMPT.md"
         if not prompt_file.exists():
@@ -142,12 +142,12 @@ def configure_runtime_for_project(project_root: Path) -> None:
         from ... import config
         # Force override settings (bypass Pydantic frozen/validation)
         object.__setattr__(config.settings, 'PROJECT_ROOT', project_root)
-        
+
         # Also redirect LOG_DIR to project logs
         log_dir = project_root / "logs"
         object.__setattr__(config.settings, 'LOG_DIR', log_dir)
         log_dir.mkdir(parents=True, exist_ok=True)
-        
+
     except Exception as e:
         sys.stderr.write(f"[boring-mcp] Failed to configure runtime settings: {e}\n")
 
@@ -155,11 +155,11 @@ def configure_runtime_for_project(project_root: Path) -> None:
 def get_project_root_or_error(project_path: Optional[str] = None, auto_init: bool = True) -> tuple[Optional[Path], Optional[dict]]:
     """
     Get project root or return an error dict for MCP response.
-    
+
     Args:
         project_path: Explicit path
         auto_init: Whether to ensure project structure exists
-        
+
     Returns:
         (project_root, None) if found
         (None, error_dict) if not found
@@ -169,7 +169,7 @@ def get_project_root_or_error(project_path: Optional[str] = None, auto_init: boo
         if auto_init:
             ensure_project_initialized(root)
         return root, None
-    
+
     return None, {
         "status": "PROJECT_NOT_FOUND",
         "message": (

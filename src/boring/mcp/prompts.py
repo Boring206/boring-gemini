@@ -11,7 +11,7 @@ from pydantic import Field
 
 def register_prompts(mcp):
     """Register prompts with the MCP server."""
-    
+
     @mcp.prompt(
         name="plan_feature",
         description="Generate a plan for implementing a new feature"
@@ -106,7 +106,7 @@ Focus on:
     def setup_project() -> str:
         """Guide the user through project setup."""
         return """Please help me initialize a new Boring project.
-        
+
 Steps to execute:
 1. Run `boring_quickstart` to create the structure.
 2. Run `boring_hooks_install` to set up Git hooks.
@@ -157,7 +157,7 @@ Evaluate the file/module: {target}
 
 Focus EXCLUSIVELY on:
 1. High Concurrency & Thread Safety
-2. System Resilience & Fault Tolerance 
+2. System Resilience & Fault Tolerance
 3. Data Consistency & Scalability
 4. Modern Tech Stack
 

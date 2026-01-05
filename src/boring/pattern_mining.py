@@ -9,9 +9,9 @@ for what to do next based on project state.
 
 import json
 from dataclasses import dataclass
-from pathlib import Path
-from typing import List, Optional, Dict, Any
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Optional
 
 
 @dataclass
@@ -20,8 +20,8 @@ class Pattern:
     id: str
     name: str
     description: str
-    trigger_conditions: List[str]  # Conditions when this pattern applies
-    suggested_actions: List[str]   # What to do when pattern matches
+    trigger_conditions: list[str]  # Conditions when this pattern applies
+    suggested_actions: list[str]   # What to do when pattern matches
     success_rate: float            # How often this pattern led to success
     usage_count: int
     last_used: Optional[datetime] = None
@@ -30,14 +30,14 @@ class Pattern:
 class PatternMiner:
     """
     Extracts patterns from .boring_brain and suggests next actions.
-    
+
     Works by:
     1. Loading learned patterns from brain
     2. Analyzing current project state
     3. Matching patterns to current context
     4. Ranking suggestions by relevance and success rate
     """
-    
+
     # Default patterns when brain is empty
     DEFAULT_PATTERNS = [
         Pattern(
@@ -106,18 +106,18 @@ class PatternMiner:
             usage_count=0
         )
     ]
-    
+
     def __init__(self, brain_dir: Path):
         self.brain_dir = brain_dir
         self.patterns_dir = brain_dir / "learned_patterns"
-        self.patterns: List[Pattern] = []
+        self.patterns: list[Pattern] = []
         self._load_patterns()
-    
+
     def _load_patterns(self):
         """Load patterns from brain directory."""
         # Start with defaults
         self.patterns = list(self.DEFAULT_PATTERNS)
-        
+
         # Load custom patterns
         if self.patterns_dir.exists():
             for pattern_file in self.patterns_dir.glob("*.json"):
@@ -136,8 +136,8 @@ class PatternMiner:
                     self.patterns.append(pattern)
                 except Exception:
                     continue
-    
-    def analyze_project_state(self, project_root: Path) -> Dict[str, Any]:
+
+    def analyze_project_state(self, project_root: Path) -> dict[str, Any]:
         """Analyze current project state to determine context."""
         state = {
             "has_code": False,
@@ -151,54 +151,54 @@ class PatternMiner:
             "has_plan": False,
             "has_git": False
         }
-        
+
         # Check for code in multiple locations
         py_files = []
-        
+
         # Check src/ directory
         src_dir = project_root / "src"
         if src_dir.exists():
             py_files.extend(list(src_dir.glob("**/*.py")))
-        
+
         # Check lib/ directory
         lib_dir = project_root / "lib"
         if lib_dir.exists():
             py_files.extend(list(lib_dir.glob("**/*.py")))
-        
+
         # Check root-level .py files (excluding __pycache__)
-        root_py_files = [f for f in project_root.glob("*.py") 
+        root_py_files = [f for f in project_root.glob("*.py")
                          if f.is_file() and not str(f.parent).endswith("__pycache__")]
         py_files.extend(root_py_files)
-        
+
         # Also check for common app files
         for name in ["main.py", "app.py", "server.py", "cli.py"]:
             app_file = project_root / name
             if app_file.exists() and app_file not in py_files:
                 py_files.append(app_file)
-        
+
         state["has_code"] = len(py_files) > 0
         state["code_count"] = len(py_files)
-        
+
         # Check for tests in multiple locations
         test_files = []
         tests_dir = project_root / "tests"
         if tests_dir.exists():
             test_files.extend(list(tests_dir.glob("**/test_*.py")))
             test_files.extend(list(tests_dir.glob("**/*_test.py")))
-        
+
         # Check for root-level test files
         test_files.extend(list(project_root.glob("test_*.py")))
-        
+
         state["has_tests"] = len(test_files) > 0
         state["test_count"] = len(test_files)
-        
+
         # Check for spec/plan files
         state["has_spec"] = (project_root / "spec.md").exists() or (project_root / "PRD.md").exists()
         state["has_plan"] = (project_root / "implementation_plan.md").exists() or (project_root / "IMPLEMENTATION_PLAN.md").exists()
-        
+
         # Check for git repo
         state["has_git"] = (project_root / ".git").exists()
-        
+
         # Check task.md completion (also check @fix_plan.md)
         task_files = [project_root / "task.md", project_root / "@fix_plan.md"]
         total_completed = 0
@@ -208,10 +208,10 @@ class PatternMiner:
                 content = task_file.read_text(encoding="utf-8")
                 total_completed += content.count("[x]") + content.count("[X]")
                 total_tasks += total_completed + content.count("[ ]") + content.count("[/]")
-        
+
         if total_tasks > 0:
             state["task_completion"] = total_completed / total_tasks
-        
+
         # Check for verification errors
         exit_signals = project_root / ".exit_signals"
         if exit_signals.exists():
@@ -220,7 +220,7 @@ class PatternMiner:
                 state["has_errors"] = signals.get("verification_failed", False)
             except Exception:
                 pass
-        
+
         # Check for recent git activity
         if state["has_git"]:
             try:
@@ -236,43 +236,43 @@ class PatternMiner:
                     state["recent_activity"] = result.stdout.strip()
             except Exception:
                 pass
-        
+
         return state
-    
-    def match_patterns(self, project_state: Dict[str, Any]) -> List[Pattern]:
+
+    def match_patterns(self, project_state: dict[str, Any]) -> list[Pattern]:
         """Find patterns that match current project state."""
         matched = []
-        
+
         for pattern in self.patterns:
             score = self._calculate_match_score(pattern, project_state)
             if score > 0.3:  # Threshold for relevance
                 matched.append((pattern, score))
-        
+
         # Sort by score * success_rate
         matched.sort(key=lambda x: x[1] * x[0].success_rate, reverse=True)
-        
+
         return [p for p, _ in matched]
-    
-    def _calculate_match_score(self, pattern: Pattern, state: Dict[str, Any]) -> float:
+
+    def _calculate_match_score(self, pattern: Pattern, state: dict[str, Any]) -> float:
         """Calculate how well a pattern matches current state."""
         score = 0.0
-        
+
         conditions = " ".join(pattern.trigger_conditions).lower()
-        
+
         # Match based on state - improved logic with new fields
-        
+
         # New project detection - no code OR very few files
         if "new" in conditions or "empty" in conditions:
             if not state.get("has_code", False):
                 score += 0.6
             elif state.get("code_count", 0) < 3:
                 score += 0.3  # Very small project
-        
+
         # Verification failure detection
         if "failed" in conditions or "error" in conditions:
             if state.get("has_errors", False):
                 score += 0.7
-        
+
         # Feature/task completion detection
         if "complete" in conditions or "finished" in conditions:
             completion = state.get("task_completion", 0)
@@ -280,40 +280,40 @@ class PatternMiner:
                 score += 0.6
             elif completion > 0.5:
                 score += 0.3
-        
+
         # Stuck/debugging detection (has errors but also has code)
         if "stuck" in conditions or "debug" in conditions:
             if state.get("has_errors", False) and state.get("has_code", False):
                 score += 0.5
-        
+
         # Code review detection (has code, good completion, has tests)
         if "review" in conditions:
             if state.get("has_code", False) and state.get("task_completion", 0) > 0.5:
                 score += 0.4
             if state.get("has_tests", False):
                 score += 0.2
-        
+
         # Planning detection - has spec but no plan yet
         if "plan" in conditions:
             if state.get("has_spec", False) and not state.get("has_plan", False):
                 score += 0.5
-        
+
         return min(score, 1.0)
-    
-    def suggest_next(self, project_root: Path, limit: int = 3) -> List[Dict[str, Any]]:
+
+    def suggest_next(self, project_root: Path, limit: int = 3) -> list[dict[str, Any]]:
         """
         Suggest next actions based on project state and learned patterns.
-        
+
         Args:
             project_root: Path to project
             limit: Maximum suggestions to return
-        
+
         Returns:
             List of suggested actions with reasoning
         """
         state = self.analyze_project_state(project_root)
         matched = self.match_patterns(state)[:limit]
-        
+
         suggestions = []
         for pattern in matched:
             suggestions.append({
@@ -327,7 +327,7 @@ class PatternMiner:
                     "has_errors": state["has_errors"]
                 }
             })
-        
+
         if not suggestions:
             # Fallback suggestion
             suggestions.append({
@@ -340,7 +340,7 @@ class PatternMiner:
                 "confidence": 0.5,
                 "context": state
             })
-        
+
         return suggestions
 
 

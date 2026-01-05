@@ -2,16 +2,17 @@
 LLM Provider Abstraction
 """
 
-from abc import ABC, abstractmethod
-from typing import Optional, List, Dict, Any, Tuple
+from abc import abstractmethod
+
 from ..interfaces import LLMClient, LLMResponse
+
 
 class LLMProvider(LLMClient):
     """
     Extended LLM Client interface that allows for more flexible configuration
     and swapping of backends (Gemini, Ollama, LMStudio, etc.)
     """
-    
+
     @property
     @abstractmethod
     def model_name(self) -> str:
@@ -31,7 +32,7 @@ class LLMProvider(LLMClient):
         context: str = "",
         system_instruction: str = "",
         timeout_seconds: int = 600
-    ) -> Tuple[str, bool]:
+    ) -> tuple[str, bool]:
         """Generate text from prompt and context."""
         pass
 
@@ -46,6 +47,6 @@ class LLMProvider(LLMClient):
         """Generate text and/or function calls."""
         pass
 
-    def get_token_usage(self) -> Dict[str, int]:
+    def get_token_usage(self) -> dict[str, int]:
         """Return token usage statistics if available"""
         return {}

@@ -2,8 +2,8 @@
 Verification Package
 """
 
-from .verifier import CodeVerifier
 from ..models import VerificationResult
-from . import handlers, tools, config
+from . import config, handlers, tools
+from .verifier import CodeVerifier
 
 __all__ = ["CodeVerifier", "VerificationResult", "handlers", "tools", "config"]

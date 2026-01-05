@@ -1,15 +1,16 @@
-import typer
-from rich.console import Console
-from rich.panel import Panel
-from rich.table import Table
-from rich.live import Live
-from rich.layout import Layout
-from rich.text import Text
-from rich.progress_bar import ProgressBar
 import json
-from pathlib import Path
 import time
 from datetime import datetime
+from pathlib import Path
+
+import typer
+from rich.console import Console
+from rich.layout import Layout
+from rich.live import Live
+from rich.panel import Panel
+from rich.progress_bar import ProgressBar
+from rich.table import Table
+from rich.text import Text
 
 app = typer.Typer(help="Boring live monitoring dashboard.")
 console = Console()
@@ -42,10 +43,10 @@ def get_status_panel() -> Panel:
         table = Table.grid(expand=True)
         table.add_column(style="bold yellow", width=20)
         table.add_column()
-        
+
         table.add_row("Loop Count:", str(loop_count))
         table.add_row("Status:", Text(status, style=status_color))
-        
+
         # API Call Progress Bar
         progress = ProgressBar(total=max_calls, completed=calls_made, width=30)
         table.add_row("API Calls:", progress)
@@ -76,7 +77,7 @@ def get_progress_panel() -> Panel | None:
             table = Table.grid(expand=True)
             table.add_column(style="bold yellow", width=12)
             table.add_column()
-            
+
             table.add_row("Status:", f"{indicator} Working ({elapsed}s elapsed)")
             if last_output:
                 table.add_row("Output:", Text(last_output[:70] + "..." if len(last_output) > 70 else last_output, style="dim"))
@@ -92,12 +93,12 @@ def get_circuit_panel() -> Panel:
     cb_file = Path(".circuit_breaker_state")
     if not cb_file.exists():
         return Panel(Text("Circuit Breaker: CLOSED", style="green"), title="[bold green]🔌 Circuit Status[/bold green]", border_style="green")
-    
+
     try:
         data = json.loads(cb_file.read_text())
         state = data.get("state", "CLOSED")
         failures = data.get("failures", 0)
-        
+
         # Color-coded states
         if state == "CLOSED":
             style = "bold green"
@@ -108,13 +109,13 @@ def get_circuit_panel() -> Panel:
         else:  # OPEN
             style = "bold red"
             icon = "🛑"
-        
+
         table = Table.grid(expand=True)
         table.add_column(style="bold", width=12)
         table.add_column()
         table.add_row("State:", Text(f"{icon} {state}", style=style))
         table.add_row("Failures:", str(failures))
-        
+
         return Panel(table, title=f"[{style}]🔌 Circuit Breaker[/{style}]", border_style=style.split()[-1])
     except Exception:
         return Panel(Text("Cannot read circuit state", style="dim"), title="🔌 Circuit Breaker")
@@ -125,7 +126,7 @@ def get_logs_panel() -> Panel:
     log_content = []
     if LOG_FILE.exists():
         try:
-            with open(LOG_FILE, "r", encoding="utf-8") as f:
+            with open(LOG_FILE, encoding="utf-8") as f:
                 lines = f.readlines()
                 # Get last 8 lines
                 for line in lines[-8:]:
@@ -140,35 +141,35 @@ def get_logs_panel() -> Panel:
             log_content.append(Text("Could not read log file.", style="red"))
     else:
         log_content.append(Text("No log file found.", style="dim"))
-    
+
     return Panel(Text("\n").join(log_content), title="[bold blue]Recent Activity[/bold blue]", border_style="blue", height=10)
 
 
 def generate_layout() -> Layout:
     """Generates the layout for the live dashboard."""
     layout = Layout(name="root")
-    
+
     layout.split(
         Layout(name="header", size=3),
         Layout(ratio=1, name="main"),
         Layout(size=3, name="footer")
     )
-    
+
     layout["main"].split_row(Layout(name="left", ratio=2), Layout(name="right", ratio=1))
     layout["left"].split(get_status_panel(), get_logs_panel())
-    
+
     progress_panel = get_progress_panel()
     if progress_panel:
         layout["right"].update(progress_panel)
     else:
         layout["right"].update(Panel(Text("Gemini is idle.", style="dim"), title="[bold yellow]Gemini Progress[/bold yellow]", border_style="yellow"))
 
-    header = Text(f"🤖 BORING MONITOR - Live Status Dashboard", style="bold white on blue", justify="center")
+    header = Text("🤖 BORING MONITOR - Live Status Dashboard", style="bold white on blue", justify="center")
     footer = Text(f"Controls: Ctrl+C to exit | Refreshes every {REFRESH_INTERVAL}s | {datetime.now().strftime('%H:%M:%S')}", style="bold yellow")
-    
+
     layout["header"].update(header)
     layout["footer"].update(footer)
-    
+
     return layout
 
 @app.command()

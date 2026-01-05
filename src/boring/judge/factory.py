@@ -2,16 +2,17 @@
 LLM Provider Factory for Judge
 """
 
+from ..cli_client import create_cli_adapter
 from ..config import settings
-from ..llm.provider import LLMProvider
 from ..llm.ollama import OllamaProvider
 from ..llm.openai_compat import OpenAICompatProvider
-from ..cli_client import create_cli_adapter
+from ..llm.provider import LLMProvider
+
 
 def create_judge_provider() -> LLMProvider:
     """Factory to create the appropriate LLM provider based on config."""
     provider_type = settings.LLM_PROVIDER.lower()
-    
+
     if provider_type == "ollama":
         return OllamaProvider(
             model_name=settings.LLM_MODEL or "llama3",

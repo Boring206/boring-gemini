@@ -11,11 +11,11 @@ Per user decision:
 
 import json
 import logging
-from pathlib import Path
-from typing import List, Dict, Callable, Optional, Any
 from dataclasses import dataclass, field
-from enum import Enum
 from datetime import datetime
+from enum import Enum
+from pathlib import Path
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -47,8 +47,8 @@ class PendingOperation:
     timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
     approved: Optional[bool] = None
     approver_note: Optional[str] = None
-    
-    def to_dict(self) -> Dict[str, Any]:
+
+    def to_dict(self) -> dict[str, Any]:
         return {
             "operation_id": self.operation_id,
             "operation_type": self.operation_type,
@@ -69,35 +69,35 @@ ApprovalCallback = Callable[[PendingOperation], bool]
 class ShadowModeGuard:
     """
     Intercepts and validates operations before execution.
-    
+
     Modes (per user decision - ENABLED is default):
     - DISABLED: All operations auto-approved
     - ENABLED: Only HIGH/CRITICAL ops require approval
     - STRICT: ALL file modifications require approval
-    
+
     Design principles:
     - Read operations NEVER blocked (avoid alert fatigue)
     - Only side-effect operations need approval
     - Quick approve/reject via callback or queue
     """
-    
+
     # Patterns for sensitive files
     SENSITIVE_PATTERNS = {
-        ".env", "secret", "password", "credential", "key", 
+        ".env", "secret", "password", "credential", "key",
         "token", "auth", "private", "api_key", ".pem", ".key"
     }
-    
+
     # Config files that warrant extra caution
     CONFIG_PATTERNS = {
         "config", "settings", "pyproject.toml", "package.json",
         "docker-compose", "Dockerfile", ".yaml", ".yml"
     }
-    
+
     # Files that should NEVER be modified by automation
     PROTECTED_FILES = {
         ".git/config", ".git/HEAD", "~/.ssh/", "/etc/"
     }
-    
+
     def __init__(
         self,
         project_root: Path,
@@ -107,7 +107,7 @@ class ShadowModeGuard:
     ):
         """
         Initialize Shadow Mode guard.
-        
+
         Args:
             project_root: Project root directory
             mode: Protection level (default ENABLED)
@@ -117,53 +117,53 @@ class ShadowModeGuard:
         self.project_root = Path(project_root)
         self.mode = mode
         self.approval_callback = approval_callback
-        
+
         self.pending_file = pending_file or (
             self.project_root / ".boring_pending_approval.json"
         )
-        
-        self.pending_queue: List[PendingOperation] = []
+
+        self.pending_queue: list[PendingOperation] = []
         self._operation_counter = 0
-        
+
         # Load any existing pending operations
         self._load_pending()
-    
-    def check_operation(self, operation: Dict[str, Any]) -> Optional[PendingOperation]:
+
+    def check_operation(self, operation: dict[str, Any]) -> Optional[PendingOperation]:
         """
         Check if an operation should be blocked for approval.
-        
+
         Args:
             operation: Dict with 'name' and 'args'
-        
+
         Returns:
             PendingOperation if blocked, None if auto-approved
         """
         if self.mode == ShadowModeLevel.DISABLED:
             return None
-        
+
         op_name = operation.get("name", "")
         args = operation.get("args", {})
-        
+
         # Classify operation
         pending = self._classify_operation(op_name, args)
         if not pending:
             return None
-        
+
         # Check protection level
         if self.mode == ShadowModeLevel.STRICT:
             # Block ALL write operations
             return pending
-        
+
         # ENABLED mode: only block HIGH and CRITICAL
         if pending.severity in (OperationSeverity.HIGH, OperationSeverity.CRITICAL):
             return pending
-        
+
         return None  # Auto-approve LOW/MEDIUM
-    
+
     def request_approval(self, pending: PendingOperation) -> bool:
         """
         Request approval for a pending operation.
-        
+
         Returns:
             True if approved, False if rejected/pending
         """
@@ -173,22 +173,22 @@ class ShadowModeGuard:
                 return self.approval_callback(pending)
             except Exception as e:
                 logger.warning(f"Approval callback failed: {e}")
-        
+
         # Fall back to queue
         self.pending_queue.append(pending)
         self._save_pending()
-        
+
         logger.info(
             f"⚠️ Operation queued for approval: {pending.operation_type} "
             f"on {pending.file_path} ({pending.severity.value})"
         )
-        
+
         return False  # Not approved yet
-    
+
     def approve_operation(self, operation_id: str, note: str = None) -> bool:
         """
         Approve a pending operation by ID.
-        
+
         Returns:
             True if found and approved
         """
@@ -199,11 +199,11 @@ class ShadowModeGuard:
                 self._save_pending()
                 return True
         return False
-    
+
     def reject_operation(self, operation_id: str, note: str = None) -> bool:
         """
         Reject a pending operation by ID.
-        
+
         Returns:
             True if found and rejected
         """
@@ -214,22 +214,22 @@ class ShadowModeGuard:
                 self._remove_pending(operation_id)
                 return True
         return False
-    
-    def get_pending_operations(self) -> List[PendingOperation]:
+
+    def get_pending_operations(self) -> list[PendingOperation]:
         """Get all pending operations awaiting approval."""
         return [op for op in self.pending_queue if op.approved is None]
-    
+
     def clear_pending(self) -> int:
         """Clear all pending operations. Returns count cleared."""
         count = len(self.pending_queue)
         self.pending_queue.clear()
         self._save_pending()
         return count
-    
+
     def is_operation_approved(self, operation_id: str) -> Optional[bool]:
         """
         Check if an operation has been approved.
-        
+
         Returns:
             True if approved, False if rejected, None if pending
         """
@@ -237,19 +237,19 @@ class ShadowModeGuard:
             if op.operation_id == operation_id:
                 return op.approved
         return None
-    
+
     def _classify_operation(
-        self, 
-        op_name: str, 
-        args: Dict[str, Any]
+        self,
+        op_name: str,
+        args: dict[str, Any]
     ) -> Optional[PendingOperation]:
         """Classify an operation by severity."""
         file_path = args.get("file_path", "") or args.get("path", "")
-        
+
         # Generate unique ID
         self._operation_counter += 1
         op_id = f"op_{self._operation_counter}_{datetime.now().strftime('%H%M%S')}"
-        
+
         # ==================
         # FILE DELETION - HIGH
         # ==================
@@ -262,7 +262,7 @@ class ShadowModeGuard:
                 description=f"Delete file: {file_path}",
                 preview="[File will be permanently deleted]"
             )
-        
+
         # ==================
         # SECRETS/SENSITIVE - CRITICAL
         # ==================
@@ -277,7 +277,7 @@ class ShadowModeGuard:
                     description=f"Modify sensitive file: {file_path}",
                     preview=self._safe_preview(content)
                 )
-        
+
         # ==================
         # CONFIG FILES - HIGH
         # ==================
@@ -292,7 +292,7 @@ class ShadowModeGuard:
                     description=f"Modify config file: {file_path}",
                     preview=self._safe_preview(content)
                 )
-        
+
         # ==================
         # LARGE DELETIONS - MEDIUM
         # ==================
@@ -307,7 +307,7 @@ class ShadowModeGuard:
                     description=f"Large edit in {file_path} ({len(search_content)} chars, {search_content.count(chr(10))} lines)",
                     preview=f"Removing:\n{search_content[:300]}..."
                 )
-        
+
         # ==================
         # SHELL COMMANDS - HIGH
         # ==================
@@ -318,10 +318,10 @@ class ShadowModeGuard:
                 operation_type="SHELL_COMMAND",
                 file_path="[shell]",
                 severity=OperationSeverity.HIGH,
-                description=f"Execute shell command",
+                description="Execute shell command",
                 preview=cmd[:200]
             )
-        
+
         # ==================
         # PROTECTED PATHS - CRITICAL
         # ==================
@@ -334,28 +334,28 @@ class ShadowModeGuard:
                 description=f"Attempt to modify protected path: {file_path}",
                 preview="[BLOCKED - Protected system path]"
             )
-        
+
         return None  # No special handling needed
-    
+
     def _is_sensitive_file(self, path: str) -> bool:
         """Check if file might contain sensitive data."""
         path_lower = path.lower()
         return any(pattern in path_lower for pattern in self.SENSITIVE_PATTERNS)
-    
+
     def _is_config_file(self, path: str) -> bool:
         """Check if file is a configuration file."""
         path_lower = path.lower()
         return any(pattern in path_lower for pattern in self.CONFIG_PATTERNS)
-    
+
     def _is_protected_path(self, path: str) -> bool:
         """Check if path is in protected list."""
         return any(protected in path for protected in self.PROTECTED_FILES)
-    
+
     def _safe_preview(self, content: str, max_len: int = 300) -> str:
         """Create safe preview of content (redact sensitive data)."""
         if not content:
             return "[empty]"
-        
+
         # Redact potential secrets
         import re
         redacted = re.sub(
@@ -364,12 +364,12 @@ class ShadowModeGuard:
             content,
             flags=re.IGNORECASE
         )
-        
+
         if len(redacted) > max_len:
             return redacted[:max_len] + "..."
-        
+
         return redacted
-    
+
     def _load_pending(self) -> None:
         """Load pending operations from file."""
         if self.pending_file.exists():
@@ -391,7 +391,7 @@ class ShadowModeGuard:
                 ]
             except Exception as e:
                 logger.warning(f"Failed to load pending operations: {e}")
-    
+
     def _save_pending(self) -> None:
         """Save pending operations to file."""
         try:
@@ -399,11 +399,11 @@ class ShadowModeGuard:
             self.pending_file.write_text(json.dumps(data, indent=2))
         except Exception as e:
             logger.warning(f"Failed to save pending operations: {e}")
-    
+
     def _remove_pending(self, operation_id: str) -> None:
         """Remove an operation from the queue."""
         self.pending_queue = [
-            op for op in self.pending_queue 
+            op for op in self.pending_queue
             if op.operation_id != operation_id
         ]
         self._save_pending()
@@ -416,7 +416,7 @@ class ShadowModeGuard:
 def interactive_approval_ui(pending: PendingOperation) -> bool:
     """
     Console-based approval UI for Shadow Mode.
-    
+
     Returns:
         True if approved, False if rejected
     """
@@ -424,36 +424,36 @@ def interactive_approval_ui(pending: PendingOperation) -> bool:
         from rich.console import Console
         from rich.panel import Panel
         from rich.table import Table
-        
+
         console = Console()
-        
+
         # Build display
         table = Table(title="⚠️ Approval Required", show_header=True)
         table.add_column("Field", style="cyan")
         table.add_column("Value")
-        
+
         table.add_row("Type", pending.operation_type)
         table.add_row("File", pending.file_path)
         table.add_row("Severity", f"[red]{pending.severity.value}[/red]")
         table.add_row("Description", pending.description)
-        
+
         console.print(Panel(table, border_style="red"))
-        
+
         if pending.preview:
             console.print(Panel(pending.preview[:500], title="Preview", border_style="yellow"))
-        
+
         # Get input
         response = console.input("[bold yellow]Approve this operation? (y/N): [/]")
         return response.lower() in ("y", "yes")
-        
+
     except ImportError:
         # Fallback without Rich
-        print(f"\n⚠️ APPROVAL REQUIRED")
+        print("\n⚠️ APPROVAL REQUIRED")
         print(f"Type: {pending.operation_type}")
         print(f"File: {pending.file_path}")
         print(f"Severity: {pending.severity.value}")
         print(f"Description: {pending.description}")
-        
+
         response = input("Approve? (y/N): ")
         return response.lower() in ("y", "yes")
 
@@ -469,12 +469,12 @@ def create_shadow_guard(
 ) -> ShadowModeGuard:
     """
     Create a Shadow Mode guard with sensible defaults.
-    
+
     Args:
         project_root: Project root directory
         mode: "DISABLED", "ENABLED", or "STRICT"
         interactive: If True, use console UI for approval
-    
+
     Returns:
         Configured ShadowModeGuard
     """
@@ -483,10 +483,10 @@ def create_shadow_guard(
         level = ShadowModeLevel[mode.upper()]
     except KeyError:
         level = ShadowModeLevel.ENABLED
-    
+
     # Set callback if interactive
     callback = interactive_approval_ui if interactive else None
-    
+
     return ShadowModeGuard(
         project_root=project_root,
         mode=level,

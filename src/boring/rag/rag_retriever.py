@@ -10,14 +10,14 @@ Per user decision: 1-layer graph expansion with smart jump capability.
 """
 
 import logging
-from pathlib import Path
-from typing import List, Dict, Optional, Set, Tuple
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
+from typing import Optional
 
-from .code_indexer import CodeIndexer, CodeChunk, IndexStats
-from .index_state import IndexState
+from .code_indexer import CodeChunk, CodeIndexer, IndexStats
 from .graph_builder import DependencyGraph, GraphStats
+from .index_state import IndexState
 
 logger = logging.getLogger(__name__)
 
@@ -54,57 +54,57 @@ class RAGStats:
 class RAGRetriever:
     """
     Hybrid RAG retriever for code context.
-    
+
     Features:
     - Semantic search via ChromaDB embeddings
     - 1-layer graph expansion (per user decision)
     - Smart jump: Agent can request deeper traversal on-demand
     - Recency boost: recently modified files rank higher
-    
+
     Usage:
         retriever = RAGRetriever(project_root)
         retriever.build_index()
-        
+
         # Basic retrieval
         results = retriever.retrieve("authentication error handling")
-        
+
         # With graph expansion for specific function
         context = retriever.get_modification_context("src/auth.py", "login")
     """
-    
+
     # Default collection name in ChromaDB
     COLLECTION_NAME = "boring_code_rag"
-    
+
     def __init__(
         self,
         project_root: Path,
         persist_dir: Optional[Path] = None,
         collection_name: Optional[str] = None,
-        additional_roots: Optional[List[Path]] = None
+        additional_roots: Optional[list[Path]] = None
     ):
         self.project_root = Path(project_root)
         self.persist_dir = persist_dir or (self.project_root / ".boring_memory" / "rag_db")
         self.collection_name = collection_name or self.COLLECTION_NAME
-        
+
         # Multi-project support: list of all project roots to index
-        self.all_project_roots: List[Path] = [self.project_root]
+        self.all_project_roots: list[Path] = [self.project_root]
         if additional_roots:
             self.all_project_roots.extend([Path(p) for p in additional_roots])
-        
+
         # Ensure persist directory exists
         self.persist_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Components
         self.indexer = CodeIndexer(self.project_root)
         self.index_state = IndexState(self.project_root)
         self.graph: Optional[DependencyGraph] = None
-        self._chunks: Dict[str, CodeChunk] = {}
-        self._file_to_chunks: Dict[str, List[str]] = {}  # file_path -> chunk_ids
-        
+        self._chunks: dict[str, CodeChunk] = {}
+        self._file_to_chunks: dict[str, list[str]] = {}  # file_path -> chunk_ids
+
         # ChromaDB client
         self.client = None
         self.collection = None
-        
+
         if CHROMA_AVAILABLE:
             try:
                 self.client = chromadb.PersistentClient(
@@ -123,27 +123,27 @@ class RAGRetriever:
                 logger.warning(f"Failed to initialize ChromaDB: {e}")
                 self.client = None
                 self.collection = None
-    
+
     @property
     def is_available(self) -> bool:
         """Check if RAG system is available."""
         return CHROMA_AVAILABLE and self.collection is not None
-    
+
     def build_index(self, force: bool = False, incremental: bool = True) -> int:
         """
         Index the entire codebase.
-        
+
         Args:
             force: If True, rebuild even if index exists
             incremental: If True (and not force), only index changed files.
-        
+
         Returns:
             Number of chunks indexed
         """
         if not self.is_available:
             logger.warning("ChromaDB not available, skipping index build")
             return 0
-        
+
         # 1. Handle Force Rebuild
         existing_count = self.collection.count()
         if force:
@@ -163,7 +163,7 @@ class RAGRetriever:
                 # Here we assume starting fresh means empty DB, but IndexState might still have data on disk.
                 # We should probably clear cached state file too.
                 # self.index_state.clear() # user needs to add this method or we assume overwrite updates.
-                pass 
+                pass
             except Exception as e:
                 logger.error(f"Failed to clear collection: {e}")
                 return 0
@@ -173,7 +173,7 @@ class RAGRetriever:
         for root in self.all_project_roots:
             indexer = CodeIndexer(root)
             all_files.extend(indexer.collect_files())
-        
+
         # 3. Determine Changes
         if incremental and not force:
             files_to_index = self.index_state.get_changed_files(all_files)
@@ -201,7 +201,7 @@ class RAGRetriever:
         # 5. Handle Indexing
         new_chunks_buffer = []
         total_indexed = 0
-        
+
         for file_path in files_to_index:
             # Clear old chunks for modified file
             rel_path = self.index_state._get_rel_path(file_path)
@@ -223,18 +223,18 @@ class RAGRetriever:
 
             # Batch upsert logic preparation
             new_chunks_buffer.extend(chunks)
-            
+
             # Update state with new IDs
             ids = [c.chunk_id for c in chunks]
             self.index_state.update(file_path, ids)
             total_indexed += len(chunks)
-            
+
         # 6. Bulk Upsert to Chroma
         if new_chunks_buffer:
             ids = [c.chunk_id for c in new_chunks_buffer]
             documents = [self._chunk_to_document(c) for c in new_chunks_buffer]
             metadatas = [self._chunk_to_metadata(c) for c in new_chunks_buffer]
-            
+
             batch_size = 100
             for i in range(0, len(new_chunks_buffer), batch_size):
                 end = min(i + batch_size, len(new_chunks_buffer))
@@ -249,32 +249,32 @@ class RAGRetriever:
 
         # 7. Persist State
         self.index_state.save()
-        
+
         # 8. Reload fully for graph building (Hybrid RAG needs graph)
         # Note: In a huge repo, loading all chunks might be heavy.
-        # Ideally we load only necessary graph data. 
+        # Ideally we load only necessary graph data.
         # For V10 we load all instructions.
         self._load_chunks_from_db()
-        
+
         # Update graph with new/all chunks
         # _load_chunks_from_db handles rebuilding self._chunks and self.graph
-        
+
         logger.info(f"Indexed {len(files_to_index)} files ({total_indexed} chunks). Removed {len(stale_files_rel)} stale files.")
-        
+
         return self.collection.count()
-    
+
     def retrieve(
         self,
         query: str,
         n_results: int = 10,
         expand_graph: bool = True,
         file_filter: Optional[str] = None,
-        chunk_types: Optional[List[str]] = None,
+        chunk_types: Optional[list[str]] = None,
         threshold: float = 0.0
-    ) -> List[RetrievalResult]:
+    ) -> list[RetrievalResult]:
         """
         Retrieve relevant code chunks.
-        
+
         Args:
             query: Natural language query or error message
             n_results: Maximum results to return
@@ -282,16 +282,16 @@ class RAGRetriever:
             file_filter: Filter by file path substring (e.g., "auth")
             chunk_types: Filter by chunk types (e.g., ["function", "class"])
             threshold: Minimum relevance score (0.0 to 1.0)
-        
+
         Returns:
             List of RetrievalResult sorted by relevance
         """
         if not self.is_available:
             return []
-        
+
         # Build ChromaDB filter
         where_filter = self._build_where_filter(file_filter, chunk_types)
-        
+
         # Vector search
         try:
             results = self.collection.query(
@@ -302,43 +302,43 @@ class RAGRetriever:
         except Exception as e:
             logger.error(f"ChromaDB query failed: {e}")
             return []
-        
-        retrieved: List[RetrievalResult] = []
-        seen_ids: Set[str] = set()
-        
+
+        retrieved: list[RetrievalResult] = []
+        seen_ids: set[str] = set()
+
         # Process vector search results
         if results and results.get("ids"):
             for i, chunk_id in enumerate(results["ids"][0]):
                 if chunk_id in seen_ids:
                     continue
                 seen_ids.add(chunk_id)
-                
+
                 # Calculate score from distance
                 distance = results["distances"][0][i] if results.get("distances") else 0.5
                 score = 1.0 - min(distance, 1.0)  # Convert distance to similarity
-                
+
                 # Filter by threshold
                 if score < threshold:
                     continue
-                    
+
                 # Get chunk from cache or reconstruct
                 chunk = self._get_or_reconstruct_chunk(chunk_id, results, i)
                 if not chunk:
                     continue
-                
+
                 retrieved.append(RetrievalResult(
                     chunk=chunk,
                     score=score,
                     retrieval_method="vector",
                     distance=distance
                 ))
-        
+
         # 1-layer graph expansion (per user decision)
         if expand_graph and self.graph and retrieved:
             # Expand from top 3 results only (to limit context size)
             top_chunks = [r.chunk for r in retrieved[:3]]
             related = self.graph.get_related_chunks(top_chunks, depth=1)
-            
+
             for chunk in related:
                 if chunk.chunk_id not in seen_ids:
                     seen_ids.add(chunk.chunk_id)
@@ -347,51 +347,51 @@ class RAGRetriever:
                         score=0.5,  # Lower score for graph-expanded
                         retrieval_method="graph"
                     ))
-        
+
         # Sort by score and limit
         retrieved.sort(key=lambda x: x.score, reverse=True)
         return retrieved[:n_results]
-    
+
     async def retrieve_async(
         self,
         query: str,
         n_results: int = 10,
         expand_graph: bool = True,
         file_filter: Optional[str] = None,
-        chunk_types: Optional[List[str]] = None
-    ) -> List[RetrievalResult]:
+        chunk_types: Optional[list[str]] = None
+    ) -> list[RetrievalResult]:
         """
         Async version of retrieve for non-blocking operations.
-        
+
         Wraps ChromaDB calls in asyncio.to_thread for async compatibility.
         """
         import asyncio
-        
+
         def _sync_retrieve():
             return self.retrieve(query, n_results, expand_graph, file_filter, chunk_types)
-        
+
         return await asyncio.to_thread(_sync_retrieve)
-    
+
     def get_modification_context(
         self,
         file_path: str,
         function_name: Optional[str] = None,
         class_name: Optional[str] = None
-    ) -> Dict[str, List[RetrievalResult]]:
+    ) -> dict[str, list[RetrievalResult]]:
         """
         Get comprehensive context for modifying a specific code location.
-        
+
         This is the "smart" entry point that returns:
         - The target chunk itself
         - Its callers (might break)
         - Its callees (need to understand interface)
         - Sibling methods (if in a class)
-        
+
         Args:
             file_path: Relative path to the file
             function_name: Name of function (optional)
             class_name: Name of class (optional)
-        
+
         Returns:
             Dict with categorized context
         """
@@ -401,81 +401,81 @@ class RAGRetriever:
             "callees": [],
             "siblings": []
         }
-        
+
         if not self.graph:
             return result
-        
+
         # Find target chunk
         target_name = function_name or class_name
         if not target_name:
             return result
-        
+
         # Look up by name
         candidates = self.graph.get_chunks_by_name(target_name)
-        
+
         # Filter by file path if provided
         if file_path:
             candidates = [c for c in candidates if file_path in c.file_path]
-        
+
         if not candidates:
             return result
-        
+
         target = candidates[0]
         result["target"] = [RetrievalResult(
             chunk=target,
             score=1.0,
             retrieval_method="direct"
         )]
-        
+
         # Get context from graph
         context = self.graph.get_context_for_modification(target.chunk_id)
-        
+
         for caller in context["callers"]:
             result["callers"].append(RetrievalResult(
                 chunk=caller,
                 score=0.8,
                 retrieval_method="graph"
             ))
-        
+
         for callee in context["callees"]:
             result["callees"].append(RetrievalResult(
                 chunk=callee,
                 score=0.7,
                 retrieval_method="graph"
             ))
-        
+
         for sibling in context["siblings"]:
             result["siblings"].append(RetrievalResult(
                 chunk=sibling,
                 score=0.6,
                 retrieval_method="graph"
             ))
-        
+
         return result
-    
-    def smart_expand(self, chunk_id: str, depth: int = 2) -> List[RetrievalResult]:
+
+    def smart_expand(self, chunk_id: str, depth: int = 2) -> list[RetrievalResult]:
         """
         On-demand deeper graph traversal (Agent-triggered "smart jump").
-        
+
         When 1-layer expansion isn't enough, the agent can request
         deeper traversal for specific chunks.
-        
+
         Args:
             chunk_id: The chunk to expand from
             depth: How many layers to expand (default 2)
-        
+
         Returns:
             Additional context chunks
         """
         if not self.graph:
             return []
-        
+
         chunk = self.graph.get_chunk(chunk_id)
         if not chunk:
             return []
-        
+
         related = self.graph.get_related_chunks([chunk], depth=depth)
-        
+
         return [
             RetrievalResult(
                 chunk=c,
@@ -484,7 +484,7 @@ class RAGRetriever:
             )
             for c in related
         ]
-    
+
     def generate_context_injection(
         self,
         query: str,
@@ -493,38 +493,38 @@ class RAGRetriever:
     ) -> str:
         """
         Generate context string for AI prompt injection.
-        
+
         Args:
             query: The current task or error
             max_tokens: Maximum tokens (estimate: 4 chars = 1 token)
             include_signatures_only: If True, only include function signatures
-        
+
         Returns:
             Formatted context string ready for prompt injection
         """
         results = self.retrieve(query, n_results=15, expand_graph=True)
-        
+
         if not results:
             return ""
-        
+
         parts = ["## 📚 Relevant Code Context (RAG)", ""]
         current_chars = 0
         max_chars = max_tokens * 4
-        
+
         for result in results:
             chunk = result.chunk
-            
+
             # Use signature if available and requested
             if include_signatures_only and chunk.signature:
                 content = chunk.signature
             else:
                 content = chunk.content
-            
+
             # Format chunk
             method_tag = f"[{result.retrieval_method.upper()}]"
             location = f"`{chunk.file_path}` → `{chunk.name}`"
             lines = f"L{chunk.start_line}-{chunk.end_line}"
-            
+
             chunk_content = f"""### {method_tag} {location} ({lines})
 ```python
 {content}
@@ -534,12 +534,12 @@ class RAGRetriever:
             chunk_chars = len(chunk_content)
             if current_chars + chunk_chars > max_chars:
                 break
-            
+
             parts.append(chunk_content)
             current_chars += chunk_chars
-        
+
         return "\n".join(parts)
-    
+
     def get_stats(self) -> RAGStats:
         """Get combined RAG statistics."""
         return RAGStats(
@@ -549,27 +549,27 @@ class RAGRetriever:
             last_index_time=datetime.now().isoformat() if self._chunks else None,
             chroma_available=CHROMA_AVAILABLE
         )
-    
+
     def update_file(self, file_path: Path) -> int:
         """
         Incrementally update index for a single changed file.
-        
+
         Args:
             file_path: Path to the modified file
-        
+
         Returns:
             Number of chunks updated
         """
         if not self.is_available:
             return 0
-        
+
         try:
             rel_path = str(file_path.relative_to(self.project_root))
             # Normalize to forward slashes for cross-platform consistency
             rel_path = rel_path.replace("\\", "/")
         except ValueError:
             rel_path = str(file_path).replace("\\", "/")
-        
+
         # Remove old chunks for this file
         old_chunk_ids = self._file_to_chunks.get(rel_path, [])
         if old_chunk_ids:
@@ -577,25 +577,25 @@ class RAGRetriever:
                 self.collection.delete(ids=old_chunk_ids)
             except Exception as e:
                 logger.warning(f"Failed to delete old chunks: {e}")
-        
+
         # Re-index the file
         try:
             new_chunks = list(self.indexer.index_file(file_path))
         except Exception as e:
             logger.warning(f"Failed to index {file_path}: {e}")
             return 0
-        
+
         if not new_chunks:
             return 0
-        
+
         # Update in-memory structures
         for chunk in new_chunks:
             self._chunks[chunk.chunk_id] = chunk
             if self.graph:
                 self.graph.add_chunk(chunk)
-        
+
         self._file_to_chunks[rel_path] = [c.chunk_id for c in new_chunks]
-        
+
         # Upsert to ChromaDB
         try:
             self.collection.upsert(
@@ -606,9 +606,9 @@ class RAGRetriever:
         except Exception as e:
             logger.error(f"Failed to upsert chunks: {e}")
             return 0
-        
+
         return len(new_chunks)
-    
+
     def clear(self) -> None:
         """Clear all indexed data."""
         if self.client and self.collection:
@@ -620,30 +620,30 @@ class RAGRetriever:
                 )
             except Exception as e:
                 logger.error(f"Failed to clear collection: {e}")
-        
+
         self._chunks.clear()
         self._file_to_chunks.clear()
         self.graph = None
-    
+
     # -------------------------------------------------------------------------
     # Private helpers
     # -------------------------------------------------------------------------
-    
+
     def _chunk_to_document(self, chunk: CodeChunk) -> str:
         """Convert chunk to semantic document for embedding."""
         parts = [f"{chunk.chunk_type}::{chunk.name}"]
-        
+
         if chunk.docstring:
             parts.append(chunk.docstring)
-        
+
         if chunk.signature:
             parts.append(chunk.signature)
         else:
             parts.append(chunk.content[:500])  # Limit content size
-        
+
         return "\n".join(parts)
-    
-    def _chunk_to_metadata(self, chunk: CodeChunk) -> Dict:
+
+    def _chunk_to_metadata(self, chunk: CodeChunk) -> dict:
         """Convert chunk to metadata for filtering."""
         return {
             "file_path": chunk.file_path,
@@ -654,49 +654,49 @@ class RAGRetriever:
             "parent": chunk.parent or "",
             "has_docstring": bool(chunk.docstring)
         }
-    
+
     def _build_where_filter(
         self,
         file_filter: Optional[str],
-        chunk_types: Optional[List[str]]
-    ) -> Optional[Dict]:
+        chunk_types: Optional[list[str]]
+    ) -> Optional[dict]:
         """Build ChromaDB where filter."""
         conditions = []
-        
+
         if file_filter:
             conditions.append({"file_path": {"$contains": file_filter}})
-        
+
         if chunk_types:
             if len(chunk_types) == 1:
                 conditions.append({"chunk_type": chunk_types[0]})
             else:
                 conditions.append({"chunk_type": {"$in": chunk_types}})
-        
+
         if not conditions:
             return None
-        
+
         if len(conditions) == 1:
             return conditions[0]
-        
+
         return {"$and": conditions}
-    
+
     def _get_or_reconstruct_chunk(
         self,
         chunk_id: str,
-        results: Dict,
+        results: dict,
         index: int
     ) -> Optional[CodeChunk]:
         """Get chunk from cache or reconstruct from query results."""
         if chunk_id in self._chunks:
             return self._chunks[chunk_id]
-        
+
         # Reconstruct from metadata
         if not results.get("metadatas"):
             return None
-        
+
         meta = results["metadatas"][0][index]
         doc = results["documents"][0][index] if results.get("documents") else ""
-        
+
         return CodeChunk(
             chunk_id=chunk_id,
             file_path=meta.get("file_path", "unknown"),
@@ -707,36 +707,36 @@ class RAGRetriever:
             end_line=meta.get("end_line", 0),
             parent=meta.get("parent") or None
         )
-    
+
     def _load_chunks_from_db(self) -> None:
         """Load chunk metadata from existing ChromaDB collection."""
         if not self.collection:
             return
-        
+
         try:
             # Get all items (limited for memory safety)
             results = self.collection.get(limit=10000, include=["metadatas", "documents"])
-            
+
             if results and results.get("ids"):
                 for i, chunk_id in enumerate(results["ids"]):
                     chunk = self._get_or_reconstruct_chunk(chunk_id, results, i)
                     if chunk:
                         self._chunks[chunk_id] = chunk
-                        
+
                         # Build file index
                         if chunk.file_path not in self._file_to_chunks:
                             self._file_to_chunks[chunk.file_path] = []
                         self._file_to_chunks[chunk.file_path].append(chunk_id)
-                
+
                 # Rebuild graph
                 if self._chunks:
                     self.graph = DependencyGraph(list(self._chunks.values()))
-                    
+
                 logger.info(f"Loaded {len(self._chunks)} chunks from existing index")
         except Exception as e:
             logger.warning(f"Failed to load chunks from DB: {e}")
-    
-    def _build_file_index(self, chunks: List[CodeChunk]) -> None:
+
+    def _build_file_index(self, chunks: list[CodeChunk]) -> None:
         """Build file path to chunk ID mapping."""
         self._file_to_chunks.clear()
         for chunk in chunks:
@@ -755,17 +755,17 @@ def create_rag_retriever(
 ) -> RAGRetriever:
     """
     Factory function to create RAGRetriever with standard project paths.
-    
+
     Args:
         project_root: Project root directory
         persist_dir: Optional custom persist directory
-    
+
     Returns:
         RAGRetriever instance
     """
     if project_root is None:
         project_root = Path.cwd()
-    
+
     return RAGRetriever(
         project_root=project_root,
         persist_dir=persist_dir

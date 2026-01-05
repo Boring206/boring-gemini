@@ -2,28 +2,28 @@
 Claude Code CLI Adapter for Boring
 """
 
-import subprocess
-import shutil
 import json
 import re
+import shutil
+import subprocess
 from pathlib import Path
-from typing import Optional, Tuple, List, Dict, Any
+from typing import Any, Optional
 
-from .provider import LLMProvider, LLMResponse
-from ..logger import log_status, get_logger
 from ..config import settings
+from ..logger import get_logger, log_status
+from .provider import LLMProvider, LLMResponse
 
 _logger = get_logger("claude_adapter")
 
 class ClaudeCLIAdapter(LLMProvider):
     """
     Adapter that communicates with Anthropic's Claude Code CLI.
-    
+
     Usage:
         adapter = ClaudeCLIAdapter()
         res = adapter.generate_with_tools("Fix this bug")
     """
-    
+
     def __init__(
         self,
         model_name: Optional[str] = None,
@@ -33,7 +33,7 @@ class ClaudeCLIAdapter(LLMProvider):
         self._model_name = model_name or "claude-3-5-sonnet"
         self.log_dir = log_dir or settings.LOG_DIR
         self.timeout_seconds = timeout_seconds
-        
+
         # Verify CLI availability
         self.cli_path = settings.CLAUDE_CLI_PATH or shutil.which("claude")
         if self.cli_path:
@@ -55,7 +55,7 @@ class ClaudeCLIAdapter(LLMProvider):
         context: str = "",
         system_instruction: str = "",
         timeout_seconds: int = 600
-    ) -> Tuple[str, bool]:
+    ) -> tuple[str, bool]:
         """Generate response using Claude CLI."""
         res = self.generate_with_tools(prompt, context, system_instruction, timeout_seconds)
         return res.text, res.success
@@ -68,8 +68,8 @@ class ClaudeCLIAdapter(LLMProvider):
         timeout_seconds: int = 600
     ) -> LLMResponse:
         """
-        Invoke Claude CLI. 
-        Note: Claude Code is interactive by default. We use the 'print' mode 
+        Invoke Claude CLI.
+        Note: Claude Code is interactive by default. We use the 'print' mode
         or similar non-interactive flags if available, or simulate a session.
         """
         if not self.is_available:
@@ -79,14 +79,14 @@ class ClaudeCLIAdapter(LLMProvider):
         # Based on early docs/help, using 'claude "prompt"' often works for single shot.
         # We wrap it in a system instruction to ensure logical consistency.
         full_prompt = f"{system_instruction}\n\n{context}\n\n{prompt}"
-        
+
         try:
             # Note: We use --non-interactive if supported, otherwise standard subprocess
             cmd = [self.cli_path, full_prompt]
-            
+
             # Additional flags to ensure clean output for parsing
             # cmd.extend(["--no-color", "--json"]) # If supported
-            
+
             result = subprocess.run(
                 cmd,
                 capture_output=True,
@@ -94,32 +94,32 @@ class ClaudeCLIAdapter(LLMProvider):
                 timeout=timeout_seconds,
                 encoding="utf-8"
             )
-            
+
             if result.returncode != 0:
                 return LLMResponse(
-                    text="", 
-                    function_calls=[], 
-                    success=False, 
+                    text="",
+                    function_calls=[],
+                    success=False,
                     error=result.stderr or "CLI execution failed"
                 )
-            
+
             text = result.stdout
-            
+
             # Post-processing: Extract tool calls if Claude uses them in JSON/XML blocks
             function_calls = self._parse_tool_calls(text)
-            
+
             return LLMResponse(
                 text=text,
                 function_calls=function_calls,
                 success=True,
                 metadata={"provider": "claude-code"}
             )
-            
+
         except Exception as e:
             _logger.error(f"Claude CLI execution failed: {e}")
             return LLMResponse(text="", function_calls=[], success=False, error=str(e))
 
-    def _parse_tool_calls(self, text: str) -> List[Dict[str, Any]]:
+    def _parse_tool_calls(self, text: str) -> list[dict[str, Any]]:
         """Extract tool calls from Claude's text output."""
         # Claude often uses XML-like or JSON blocks for reasoning.
         # For now, we reuse the JSON pattern but add XML support if needed.

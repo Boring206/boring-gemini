@@ -1,6 +1,7 @@
 import subprocess
-from typing import Dict, Tuple, List
+
 from ..config import settings
+
 
 def check_tool(tool: str, version_arg: str = "--version") -> bool:
     """Check if a CLI tool is available."""
@@ -41,10 +42,10 @@ class ToolManager:
             "g++": check_tool("g++", "--version"),
             "clang-tidy": check_tool("clang-tidy", "--version"),
         }
-        
+
         # Generic CLI Tool Dispatcher (Extension -> Linter Command)
         # Format: ext: (tool_key, [cmd_args...])
-        self.cli_tool_map: Dict[str, Tuple[str, List[str]]] = {
+        self.cli_tool_map: dict[str, tuple[str, list[str]]] = {
             ".go": ("golangci-lint", ["golangci-lint", "run"]),
             ".rs": ("cargo", ["cargo", "clippy", "--", "-D", "warnings"]),
             ".c": ("clang-tidy", ["clang-tidy"]),
@@ -56,10 +57,10 @@ class ToolManager:
     def is_available(self, tool_name: str) -> bool:
         return self.available_tools.get(tool_name, False)
 
-    def get_generic_linter_cmd(self, tool_key: str) -> List[str]:
+    def get_generic_linter_cmd(self, tool_key: str) -> list[str]:
         """Get command with overrides from settings."""
-        custom_args = settings.LINTER_CONFIGS.get(tool_key)
-        # We need default args if not custom... 
+        settings.LINTER_CONFIGS.get(tool_key)
+        # We need default args if not custom...
         # But generic dispatcher logic was mixing them.
         # Ideally we return just the tool command or full args?
         # The logic in original verification.py mixed map with config.
@@ -67,7 +68,7 @@ class ToolManager:
 
     def __getitem__(self, key: str) -> bool:
         return self.available_tools.get(key, False)
-    
+
     def __setitem__(self, key: str, value: bool):
         self.available_tools[key] = value
 

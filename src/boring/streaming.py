@@ -7,13 +7,13 @@ Provides real-time progress updates for operations like run_boring,
 enabling better UX in IDE integrations.
 """
 
+import json
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Callable, List, Optional, Any
 from pathlib import Path
-import json
+from typing import Callable, Optional
 
 
 class ProgressStage(Enum):
@@ -39,13 +39,13 @@ class ProgressEvent:
 class ProgressReporter:
     """
     Reports progress for long-running Boring operations.
-    
+
     Supports multiple output modes:
     - Callbacks: Direct function calls for IDE integration
     - File: Write to a JSON file for polling
     - Memory: Store in memory for later retrieval
     """
-    
+
     def __init__(
         self,
         task_id: str,
@@ -57,11 +57,11 @@ class ProgressReporter:
         self.total_stages = total_stages
         self.output_file = output_file
         self.callback = callback
-        
-        self.events: List[ProgressEvent] = []
+
+        self.events: list[ProgressEvent] = []
         self.current_stage = 0
         self.start_time = time.time()
-    
+
     def report(
         self,
         stage: ProgressStage,
@@ -71,7 +71,7 @@ class ProgressReporter:
     ):
         """
         Report a progress update.
-        
+
         Args:
             stage: Current execution stage
             message: Human-readable progress message
@@ -83,27 +83,27 @@ class ProgressReporter:
         base_percentage = (stage_index / self.total_stages) * 100
         stage_contribution = (sub_percentage / 100) * (100 / self.total_stages)
         overall_percentage = min(base_percentage + stage_contribution, 100.0)
-        
+
         event = ProgressEvent(
             stage=stage,
             message=message,
             percentage=overall_percentage,
             metadata=metadata or {}
         )
-        
+
         self.events.append(event)
-        
+
         # Invoke callback if provided
         if self.callback:
             try:
                 self.callback(event)
             except Exception:
                 pass  # Don't let callback errors break execution
-        
+
         # Write to file if configured
         if self.output_file:
             self._write_to_file(event)
-    
+
     def _write_to_file(self, event: ProgressEvent):
         """Write progress to JSON file for polling."""
         data = {
@@ -115,18 +115,18 @@ class ProgressReporter:
             "elapsed_seconds": time.time() - self.start_time,
             "metadata": event.metadata
         }
-        
+
         try:
             with open(self.output_file, "w", encoding="utf-8") as f:
                 json.dump(data, f)
         except Exception:
             pass
-    
+
     def get_latest(self) -> Optional[ProgressEvent]:
         """Get the most recent progress event."""
         return self.events[-1] if self.events else None
-    
-    def get_all_events(self) -> List[dict]:
+
+    def get_all_events(self) -> list[dict]:
         """Get all progress events as dictionaries."""
         return [
             {
@@ -137,12 +137,12 @@ class ProgressReporter:
             }
             for e in self.events
         ]
-    
+
     def complete(self, success: bool = True, message: str = "Task completed"):
         """Mark the task as completed."""
         stage = ProgressStage.COMPLETED if success else ProgressStage.FAILED
         self.report(stage, message, 100.0)
-    
+
     def get_duration(self) -> float:
         """Get elapsed time in seconds."""
         return time.time() - self.start_time
@@ -151,13 +151,13 @@ class ProgressReporter:
 class StreamingTaskManager:
     """
     Manages multiple concurrent streaming tasks.
-    
+
     Enables tracking of multiple run_boring operations simultaneously.
     """
-    
+
     def __init__(self):
         self._reporters: dict[str, ProgressReporter] = {}
-    
+
     def create_reporter(
         self,
         task_id: str,
@@ -169,21 +169,21 @@ class StreamingTaskManager:
         if output_dir:
             output_dir.mkdir(parents=True, exist_ok=True)
             output_file = output_dir / f"{task_id}.progress.json"
-        
+
         reporter = ProgressReporter(
             task_id=task_id,
             output_file=output_file,
             callback=callback
         )
-        
+
         self._reporters[task_id] = reporter
         return reporter
-    
+
     def get_reporter(self, task_id: str) -> Optional[ProgressReporter]:
         """Get an existing reporter by task ID."""
         return self._reporters.get(task_id)
-    
-    def get_all_active(self) -> List[dict]:
+
+    def get_all_active(self) -> list[dict]:
         """Get status of all active tasks."""
         return [
             {
@@ -193,13 +193,13 @@ class StreamingTaskManager:
             }
             for task_id, reporter in self._reporters.items()
         ]
-    
+
     def cleanup_completed(self):
         """Remove completed tasks from tracking."""
         to_remove = [
             task_id
             for task_id, reporter in self._reporters.items()
-            if reporter.get_latest() and reporter.get_latest().stage in 
+            if reporter.get_latest() and reporter.get_latest().stage in
                [ProgressStage.COMPLETED, ProgressStage.FAILED]
         ]
         for task_id in to_remove:

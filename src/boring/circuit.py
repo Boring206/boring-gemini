@@ -12,15 +12,15 @@ States:
 
 import json
 import time
-from pathlib import Path
-from datetime import datetime
-from typing import Optional, Dict, Any
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
+from pathlib import Path
+from typing import Any
 
 from rich.console import Console
-from rich.panel import Panel
 from rich.json import JSON
+from rich.panel import Panel
 
 console = Console()
 
@@ -67,7 +67,7 @@ def _log_circuit_state_change(new_state: str, reason: str):
     """Logs circuit breaker state changes to history."""
     if not CB_HISTORY_FILE.exists():
         CB_HISTORY_FILE.write_text(json.dumps([], indent=4))
-    
+
     history = json.loads(CB_HISTORY_FILE.read_text())
     history.append({
         "timestamp": datetime.now().isoformat(),
@@ -79,7 +79,7 @@ def _log_circuit_state_change(new_state: str, reason: str):
     CB_HISTORY_FILE.write_text(json.dumps(history, indent=4))
 
 
-def get_circuit_state() -> Dict[str, Any]:
+def get_circuit_state() -> dict[str, Any]:
     """Get current circuit breaker state."""
     init_circuit_breaker()
     return json.loads(CB_STATE_FILE.read_text())
@@ -88,7 +88,7 @@ def get_circuit_state() -> Dict[str, Any]:
 def record_loop_result(loop_num: int, files_changed: int, has_errors: bool, output_length: int) -> int:
     """
     Records the result of a loop and updates circuit breaker state.
-    
+
     Returns:
         0 if OK to continue, 1 if should halt
     """
@@ -99,12 +99,12 @@ def record_loop_result(loop_num: int, files_changed: int, has_errors: bool, outp
     last_loop_info = state_data["last_loop_info"]
 
     new_state = current_state
-    
+
     # Heuristic for progress
     progress_made = files_changed > 0 or (
         output_length > 0 and output_length > last_loop_info.get("output_length", 0) * 0.5
     )
-    
+
     if has_errors or not progress_made:
         failures += 1
         state_data["last_failure_time"] = int(time.time())
@@ -126,7 +126,7 @@ def record_loop_result(loop_num: int, files_changed: int, has_errors: bool, outp
         else:
             new_state = CircuitState.CLOSED.value
             _log_circuit_state_change(CircuitState.CLOSED.value, "Recovered in HALF_OPEN state")
-    
+
     state_data["state"] = new_state
     state_data["failures"] = failures
     state_data["last_loop_info"] = {
@@ -136,7 +136,7 @@ def record_loop_result(loop_num: int, files_changed: int, has_errors: bool, outp
         "output_length": output_length
     }
     CB_STATE_FILE.write_text(json.dumps(state_data, indent=4))
-    
+
     return 1 if new_state == CircuitState.OPEN.value else 0
 
 

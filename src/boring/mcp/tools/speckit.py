@@ -32,9 +32,8 @@ def _parse_workflow(workflow_name: str, content: str) -> Workflow:
     steps = []
     lines = content.split("\n")
     step_pattern = re.compile(r"^(\d+)\.\s+(.*)")
-    
-    current_step_idx = 0
-    
+
+
     for line in lines:
         match = step_pattern.match(line.strip())
         if match:
@@ -68,12 +67,12 @@ def _execute_workflow(
 ) -> dict:
     """
     Return a SpecKit workflow template for external execution.
-    
+
     Instead of calling the LLM API internally, this function returns a structured
     response containing the workflow instructions and a suggested prompt. The IDE
     (e.g., Cursor, VS Code with Gemini) or the Gemini CLI should then execute
     this prompt to generate the artifact.
-    
+
     This is the "Pure CLI Mode" approach - no internal API calls.
     """
     # Resolve project root
@@ -166,7 +165,7 @@ def _execute_workflow(
 
     if auto_execute:
         response["message"] += "\n\n⚠️ **Auto-Execute Requested**: Please run the command immediately."
-        
+
     return response
 
 # ==============================================================================
@@ -181,11 +180,11 @@ def speckit_plan(
 ) -> dict:
     """
     Execute SpecKit Plan workflow - Create technical implementation plan from requirements.
-    
+
     Args:
         context: Optional additional context about requirements or constraints
         project_path: Optional explicit path to project root
-        
+
     Returns:
         Workflow execution result with implementation plan guidance
     """
@@ -199,11 +198,11 @@ def speckit_tasks(
 ) -> dict:
     """
     Execute SpecKit Tasks workflow - Break implementation plan into actionable tasks.
-    
+
     Args:
         context: Optional context about the implementation plan
         project_path: Optional explicit path to project root
-        
+
     Returns:
         Workflow execution result with task breakdown
     """
@@ -217,16 +216,16 @@ def speckit_analyze(
 ) -> dict:
     """
     Execute SpecKit Analyze workflow - Analyze consistency between specs and code.
-    
+
     Cross-checks:
     - Spec vs Plan alignment
     - Plan vs Tasks coverage
     - Internal consistency (no contradictions)
-    
+
     Args:
         context: Optional focus areas or specific files to analyze
         project_path: Optional explicit path to project root
-        
+
     Returns:
         Analysis report with aligned items, gaps, and conflicts
     """
@@ -239,17 +238,17 @@ def speckit_clarify(
 ) -> dict:
     """
     Execute SpecKit Clarify workflow - Identify and clarify ambiguous requirements.
-    
+
     Looks for:
     - Undefined terms
     - Unhandled edge cases
     - Incorrect assumptions
     - Contradictions
-    
+
     Args:
         context: Optional specific areas that need clarification
         project_path: Optional explicit path to project root
-        
+
     Returns:
         List of clarifying questions with suggested options
     """
@@ -262,17 +261,17 @@ def speckit_constitution(
 ) -> dict:
     """
     Execute SpecKit Constitution workflow - Create project guiding principles.
-    
+
     Generates:
     - Mission statement
     - Core principles
     - Quality standards
     - Development guidelines
-    
+
     Args:
         context: Optional project vision or constraints
         project_path: Optional explicit path to project root
-        
+
     Returns:
         Project constitution template and guidance
     """
@@ -285,16 +284,16 @@ def speckit_checklist(
 ) -> dict:
     """
     Execute SpecKit Checklist workflow - Generate quality validation checklist.
-    
+
     Creates binary Pass/Fail checklist items covering:
     - Completeness (error states, loading states, empty states)
     - Clarity (unambiguous logic)
     - Testability (can be verified automatically)
-    
+
     Args:
         context: Optional specific feature or requirement to check
         project_path: Optional explicit path to project root
-        
+
     Returns:
         Quality checklist for the given context
     """

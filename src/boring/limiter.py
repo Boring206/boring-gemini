@@ -6,11 +6,11 @@ Provides rate limiting and call tracking functionality.
 
 import json
 import time
-from pathlib import Path
 from datetime import datetime, timedelta
+from pathlib import Path
 from typing import Optional
 
-from .logger import log_status, console
+from .logger import console, log_status
 
 
 def init_call_tracking(
@@ -20,7 +20,7 @@ def init_call_tracking(
 ):
     """
     Initializes call counter and exit signals tracking.
-    
+
     Args:
         call_count_file: File to track API call count
         timestamp_file: File to track last reset timestamp
@@ -36,7 +36,7 @@ def init_call_tracking(
         call_count_file.write_text("0")
         timestamp_file.write_text(current_hour)
         log_status(Path("logs"), "INFO", f"Call counter reset for new hour: {current_hour}")
-    
+
     if not exit_signals_file.exists():
         exit_signals_file.write_text(json.dumps({
             "test_only_loops": [],
@@ -48,10 +48,10 @@ def init_call_tracking(
 def get_calls_made(call_count_file: Path) -> int:
     """
     Reads the current number of API calls made this hour.
-    
+
     Args:
         call_count_file: Path to call count file
-        
+
     Returns:
         Number of calls made
     """
@@ -66,10 +66,10 @@ def get_calls_made(call_count_file: Path) -> int:
 def increment_call_counter(call_count_file: Path) -> int:
     """
     Increments the API call counter.
-    
+
     Args:
         call_count_file: Path to call count file
-        
+
     Returns:
         New call count
     """
@@ -81,11 +81,11 @@ def increment_call_counter(call_count_file: Path) -> int:
 def can_make_call(call_count_file: Path, max_calls_per_hour: int) -> bool:
     """
     Checks if another API call can be made within the rate limit.
-    
+
     Args:
         call_count_file: Path to call count file
         max_calls_per_hour: Maximum allowed calls per hour
-        
+
     Returns:
         True if call can be made
     """
@@ -99,7 +99,7 @@ def wait_for_reset(
 ):
     """
     Waits for the rate limit to reset with a countdown.
-    
+
     Args:
         call_count_file: Path to call count file
         timestamp_file: Path to timestamp file
@@ -117,7 +117,7 @@ def wait_for_reset(
     wait_seconds = int((next_hour - now).total_seconds())
 
     console.print(f"[blue]Sleeping for {wait_seconds} seconds until next hour...[/blue]")
-    
+
     with console.status("[bold green]Waiting for rate limit reset...[/bold green]") as status:
         while wait_seconds > 0:
             hours, remainder = divmod(wait_seconds, 3600)
@@ -125,7 +125,7 @@ def wait_for_reset(
             status.update(f"[yellow]Time until reset: {hours:02d}:{minutes:02d}:{seconds:02d}[/yellow]")
             time.sleep(1)
             wait_seconds -= 1
-    
+
     init_call_tracking(call_count_file, timestamp_file, Path(".exit_signals"))
     log_status(Path("logs"), "SUCCESS", "Rate limit reset! Ready for new calls.")
 
@@ -139,10 +139,10 @@ MAX_CONSECUTIVE_DONE_SIGNALS = 2
 def should_exit_gracefully(exit_signals_file: Path) -> Optional[str]:
     """
     Determines if the loop should exit gracefully based on signals.
-    
+
     Args:
         exit_signals_file: Path to exit signals file
-        
+
     Returns:
         Exit reason string or None if no exit condition met
     """
@@ -150,7 +150,7 @@ def should_exit_gracefully(exit_signals_file: Path) -> Optional[str]:
         return None
 
     signals_data = json.loads(exit_signals_file.read_text())
-    
+
     test_only_loops = signals_data.get("test_only_loops", [])
     done_signals = signals_data.get("done_signals", [])
     completion_indicators = signals_data.get("completion_indicators", [])
@@ -162,7 +162,7 @@ def should_exit_gracefully(exit_signals_file: Path) -> Optional[str]:
             f"Exit condition: Too many test-focused loops ({len(test_only_loops)} >= {MAX_CONSECUTIVE_TEST_LOOPS})"
         )
         return "test_saturation"
-    
+
     if len(done_signals) >= MAX_CONSECUTIVE_DONE_SIGNALS:
         log_status(
             Path("logs"),
@@ -170,7 +170,7 @@ def should_exit_gracefully(exit_signals_file: Path) -> Optional[str]:
             f"Exit condition: Multiple completion signals ({len(done_signals)} >= {MAX_CONSECUTIVE_DONE_SIGNALS})"
         )
         return "completion_signals"
-    
+
     if len(completion_indicators) >= 2:
         log_status(
             Path("logs"),
@@ -193,5 +193,5 @@ def should_exit_gracefully(exit_signals_file: Path) -> Optional[str]:
                 f"Exit condition: All fix_plan.md items completed ({completed_items}/{total_items})"
             )
             return "plan_complete"
-            
+
     return None

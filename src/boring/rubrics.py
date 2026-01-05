@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Optional
+
 
 @dataclass
 class Criterion:
@@ -11,7 +12,7 @@ class Criterion:
 class Rubric:
     name: str
     description: str
-    criteria: List[Criterion]
+    criteria: list[Criterion]
     strictness: str = "balanced"  # lenient, balanced, strict
 
 # --- Predefined Rubrics ---
@@ -145,7 +146,7 @@ def get_rubric(name: str) -> Optional[Rubric]:
     """Get a rubric by name from the registry."""
     return RUBRIC_REGISTRY.get(name.lower().replace(" ", "_"))
 
-def list_rubrics() -> List[str]:
+def list_rubrics() -> list[str]:
     """List all available rubric names."""
     return list(RUBRIC_REGISTRY.keys())
 

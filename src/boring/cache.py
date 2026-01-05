@@ -3,7 +3,7 @@ import json
 import logging
 from dataclasses import asdict
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
 from .config import settings
 from .models import VerificationResult
@@ -20,7 +20,7 @@ class VerificationCache:
         self.project_root = project_root or settings.PROJECT_ROOT
         self.cache_dir = settings.CACHE_DIR
         self.cache_path = self.cache_dir / self.CACHE_FILENAME
-        self.cache: Dict[str, dict] = self._load()
+        self.cache: dict[str, dict] = self._load()
 
     def _file_hash(self, path: Path) -> str:
         """Calculate SHA256 hash of file content."""
@@ -54,7 +54,7 @@ class VerificationCache:
             try:
                 # We need to ensure all fields needed for VerificationResult are present
                 # VerificationResult is a dataclass defined in .verification
-                # But to avoid circular imports if .verification imports caching 
+                # But to avoid circular imports if .verification imports caching
                 # (which it might not if we inject Cache into Verifier),
                 # let's assume valid dict.
                 # However, verification.py imports from here? No, verification imports cache.
@@ -68,37 +68,37 @@ class VerificationCache:
             except Exception as e:
                 logger.warning(f"Failed to deserialize cache for {rel_path}: {e}")
                 return None
-        
+
         return None
 
     def set(self, file_path: Path, result: VerificationResult):
         """Update cache with new result and current file hash."""
         rel_path = self._get_rel_path(file_path)
         current_hash = self._file_hash(file_path)
-        
+
         self.cache[rel_path] = {
             "hash": current_hash,
             "result": asdict(result)
         }
         self._save()
 
-    def bulk_update(self, updates: Dict[Path, VerificationResult]):
+    def bulk_update(self, updates: dict[Path, VerificationResult]):
         """Update cache with multiple results and save once (Thread-safe usage pattern)."""
         modified = False
         for file_path, result in updates.items():
             rel_path = self._get_rel_path(file_path)
             current_hash = self._file_hash(file_path)
-            
+
             self.cache[rel_path] = {
                 "hash": current_hash,
                 "result": asdict(result)
             }
             modified = True
-            
+
         if modified:
             self._save()
 
-    def _load(self) -> Dict[str, dict]:
+    def _load(self) -> dict[str, dict]:
         """Load cache from disk."""
         if not self.cache_path.exists():
             return {}

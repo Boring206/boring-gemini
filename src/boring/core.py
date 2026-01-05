@@ -18,41 +18,38 @@ Modules:
 import warnings
 
 # Re-export from circuit.py (with deprecation)
+# Legacy constants (for backward compatibility)
 from .circuit import (
-    CB_STATE_FILE,
     CB_HISTORY_FILE,
+    CB_STATE_FILE,
+    CIRCUIT_BREAKER_MAX_FAILURES,
+    CIRCUIT_BREAKER_RESET_TIMEOUT,
     CircuitState,
+    get_circuit_state,
     init_circuit_breaker,
     record_loop_result,
-    should_halt_execution,
     reset_circuit_breaker,
+    should_halt_execution,
     show_circuit_status,
-    get_circuit_state,
-)
-
-# Re-export from logger.py (with deprecation)
-from .logger import (
-    log_status,
-    update_status,
-    get_log_tail,
 )
 
 # Re-export from limiter.py (with deprecation)
 from .limiter import (
-    init_call_tracking,
+    MAX_CONSECUTIVE_DONE_SIGNALS,
+    MAX_CONSECUTIVE_TEST_LOOPS,
+    can_make_call,
     get_calls_made,
     increment_call_counter,
-    can_make_call,
-    wait_for_reset,
+    init_call_tracking,
     should_exit_gracefully,
-    MAX_CONSECUTIVE_TEST_LOOPS,
-    MAX_CONSECUTIVE_DONE_SIGNALS,
+    wait_for_reset,
 )
 
-# Legacy constants (for backward compatibility)
-from .circuit import (
-    CIRCUIT_BREAKER_MAX_FAILURES,
-    CIRCUIT_BREAKER_RESET_TIMEOUT,
+# Re-export from logger.py (with deprecation)
+from .logger import (
+    get_log_tail,
+    log_status,
+    update_status,
 )
 
 # Configuration constants
@@ -64,9 +61,9 @@ def __getattr__(name: str):
     # This is called when an attribute is accessed that doesn't exist directly
     # Since we're re-exporting, this will only catch truly missing attributes
     warnings.warn(
-        f"Importing from 'boring.core' is deprecated. "
-        f"Please import directly from the appropriate module "
-        f"(.circuit, .logger, or .limiter) instead.",
+        "Importing from 'boring.core' is deprecated. "
+        "Please import directly from the appropriate module "
+        "(.circuit, .logger, or .limiter) instead.",
         DeprecationWarning,
         stacklevel=2
     )

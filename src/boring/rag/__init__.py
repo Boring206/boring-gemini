@@ -11,25 +11,25 @@ Components:
 
 Usage:
     from boring.rag import RAGRetriever, create_rag_retriever
-    
+
     retriever = create_rag_retriever(project_root)
     retriever.build_index()
-    
+
     results = retriever.retrieve("authentication error handling")
     context = retriever.generate_context_injection("fix login bug")
 """
 
-from .code_indexer import CodeIndexer, CodeChunk, IndexStats
+from .code_indexer import CodeChunk, CodeIndexer, IndexStats
 from .graph_builder import DependencyGraph, GraphStats
-from .rag_retriever import RAGRetriever, RetrievalResult, RAGStats, create_rag_retriever
 from .parser import TreeSitterParser
+from .rag_retriever import RAGRetriever, RAGStats, RetrievalResult, create_rag_retriever
 
 __all__ = [
     # Parser
     "TreeSitterParser",
     # Indexer
     "CodeIndexer",
-    "CodeChunk", 
+    "CodeChunk",
     "IndexStats",
     # Graph
     "DependencyGraph",

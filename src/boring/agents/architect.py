@@ -10,25 +10,25 @@ Responsibilities:
 This agent NEVER writes code. It only plans.
 """
 
-from .base import Agent, AgentRole, AgentContext, AgentMessage
+from .base import Agent, AgentContext, AgentMessage, AgentRole
 
 
 class ArchitectAgent(Agent):
     """
     The Architect focuses solely on planning.
-    
+
     It receives a high-level task and produces:
     1. A structured implementation plan
     2. File-by-file breakdown
     3. Potential risks and considerations
     4. Testing strategy
-    
+
     Output is stored in the "implementation_plan" shared resource.
     """
-    
+
     def __init__(self, llm_client):
         super().__init__(llm_client, AgentRole.ARCHITECT)
-    
+
     @property
     def system_prompt(self) -> str:
         return """# You are the ARCHITECT Agent
@@ -78,10 +78,10 @@ How will we know this is done correctly?
 - Consider security implications.
 - Do NOT include code snippets - that's the Coder's job.
 """
-    
+
     async def execute(self, context: AgentContext) -> AgentMessage:
         """Generate an implementation plan."""
-        
+
         # Check if we have human feedback to incorporate
         feedback_instruction = ""
         if context.human_feedback:
@@ -93,7 +93,7 @@ The human provided this feedback on the previous plan:
 
 Please revise your plan to address this feedback.
 """
-        
+
         # Check for existing plan to refine
         existing_plan = context.get_current_plan()
         existing_plan_context = ""
@@ -103,7 +103,7 @@ Please revise your plan to address this feedback.
 ## Previous Plan (to refine)
 {existing_plan[:2000]}...
 """
-        
+
         prompt = self._build_prompt(context, f"""
 Create a detailed implementation plan for the task described above.
 {existing_plan_context}
@@ -117,9 +117,9 @@ Focus on:
 
 Remember: You are ONLY planning. Do not write code.
 """)
-        
+
         response, success = await self._generate(prompt)
-        
+
         if not success:
             return AgentMessage(
                 sender=self.role,
@@ -129,15 +129,15 @@ Remember: You are ONLY planning. Do not write code.
                 artifacts={"error": response},
                 requires_approval=False
             )
-        
+
         # Store plan in shared resources
         context.set_resource("implementation_plan", response, self.role)
-        
+
         # Extract file list from plan (simple heuristic)
         files_to_modify = self._extract_file_list(response)
         if files_to_modify:
             context.set_resource("planned_files", files_to_modify, self.role)
-        
+
         return AgentMessage(
             sender=self.role,
             receiver=AgentRole.CODER,
@@ -150,18 +150,18 @@ Remember: You are ONLY planning. Do not write code.
             requires_approval=True,  # Human should approve plan
             approval_reason="Implementation plan requires review before coding begins"
         )
-    
+
     def _extract_file_list(self, plan: str) -> list:
         """Extract file paths from the plan text."""
         import re
-        
+
         files = []
         # Match patterns like `path/to/file.py` or - `file.py`:
         patterns = [
             r'`([^`]+\.[a-z0-9]+)`',
             r'- `([^`]+)`.*(?:NEW|MODIFY|DELETE)',
         ]
-        
+
         for pattern in patterns:
             matches = re.findall(pattern, plan, re.IGNORECASE)
             for match in matches:
@@ -169,5 +169,5 @@ Remember: You are ONLY planning. Do not write code.
                     files.append(match[0])
                 else:
                     files.append(match)
-        
+
         return list(set(files))

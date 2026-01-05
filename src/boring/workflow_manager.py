@@ -1,16 +1,19 @@
 
 import json
+import re
 import shutil
 import time
-from dataclasses import dataclass, asdict
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any
-import urllib.request
 import urllib.error
-import re
+import urllib.request
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any, Optional
+
 from tenacity import retry, stop_after_attempt, wait_exponential
+
 from .config import settings
 from .logger import log_status
+
 
 @dataclass
 class WorkflowMetadata:
@@ -20,7 +23,7 @@ class WorkflowMetadata:
     description: str
     author: str = "Anonymous"
     created_at: float = 0.0
-    tags: List[str] = None
+    tags: list[str] = None
 
     def __post_init__(self):
         if self.tags is None:
@@ -36,7 +39,7 @@ class WorkflowPackage:
     """
     metadata: WorkflowMetadata
     content: str  # The markdown content
-    config: Optional[Dict[str, Any]] = None # Optional extra config
+    config: Optional[dict[str, Any]] = None # Optional extra config
 
     def to_json(self) -> str:
         """Serialize to JSON string."""
@@ -66,11 +69,11 @@ class WorkflowPackage:
         # Filter valid fields for Metadata to avoid crashes on extra keys
         valid_keys = {"name", "version", "description", "author", "created_at", "tags"}
         filtered_meta = {k: v for k, v in meta_data.items() if k in valid_keys}
-        
+
         # Ensure name exists (required by dataclass)
         if "name" not in filtered_meta:
              raise ValueError("Metadata missing 'name'")
-             
+
         # Provide defaults for others if missing in filtered (dataclass has defaults for some)
         if "version" not in filtered_meta: filtered_meta["version"] = "0.0.0"
         if "description" not in filtered_meta: filtered_meta["description"] = "No description"
@@ -94,12 +97,12 @@ class WorkflowManager:
         self.project_root = project_root or settings.PROJECT_ROOT
         self.workflows_dir = self.project_root / ".agent" / "workflows"
         self.base_dir = self.workflows_dir / "_base"
-        
+
         # Ensure directories exist
         self.workflows_dir.mkdir(parents=True, exist_ok=True)
         self.base_dir.mkdir(parents=True, exist_ok=True)
 
-    def _parse_frontmatter(self, content: str) -> Dict[str, str]:
+    def _parse_frontmatter(self, content: str) -> dict[str, str]:
         """Robustly parse YAML frontmatter from markdown."""
         metadata = {}
         # Regex to find frontmatter block
@@ -120,20 +123,20 @@ class WorkflowManager:
         with urllib.request.urlopen(url, timeout=10) as response:
             return response.read().decode("utf-8")
 
-    def list_local_workflows(self) -> List[str]:
+    def list_local_workflows(self) -> list[str]:
         """List all available .md workflows in the project."""
         if not self.workflows_dir.exists():
             return []
         return [f.stem for f in self.workflows_dir.glob("*.md")]
 
-    def export_workflow(self, name: str, author: str = "user") -> Tuple[Optional[Path], str]:
+    def export_workflow(self, name: str, author: str = "user") -> tuple[Optional[Path], str]:
         """
         Package a local workflow into a .bwf.json file.
-        
+
         Args:
             name: Workflow name (without .md or .json)
             author: Author name
-            
+
         Returns:
             (Path to created file, Message)
         """
@@ -143,12 +146,12 @@ class WorkflowManager:
 
         try:
             content = source_file.read_text(encoding="utf-8")
-            
+
             # Use robust parser
             fm_data = self._parse_frontmatter(content)
             description = fm_data.get("description", f"Exported workflow: {name}")
             tags = []
-            
+
             # Create package
             metadata = WorkflowMetadata(
                 name=name,
@@ -157,32 +160,32 @@ class WorkflowManager:
                 author=author,
                 tags=tags
             )
-            
+
             package = WorkflowPackage(metadata=metadata, content=content)
-            
+
             # Write to file
             output_filename = f"{name}.bwf.json"
             output_path = self.project_root / output_filename
             output_path.write_text(package.to_json(), encoding="utf-8")
-            
+
             return output_path, f"Successfully exported to {output_filename}"
-            
+
         except Exception as e:
             return None, f"Export failed: {str(e)}"
 
-    def install_workflow(self, source: str) -> Tuple[bool, str]:
+    def install_workflow(self, source: str) -> tuple[bool, str]:
         """
         Install a workflow from a local file path or a URL.
-        
+
         Args:
             source: File path (e.g., 'my-flow.bwf.json') or URL
-            
+
         Returns:
             (Success boolean, Message)
         """
         try:
             pkg_json = ""
-            
+
             # 1. Fetch content
             if source.startswith(("http://", "https://")):
                 pkg_json = self._fetch_url(source)
@@ -191,10 +194,10 @@ class WorkflowManager:
                 path = Path(source)
                 if not path.is_absolute():
                      path = self.project_root / path
-                
+
                 if not path.exists():
                      return False, f"Source file not found: {source}"
-                
+
                 pkg_json = path.read_text(encoding="utf-8")
 
             # 2. Parse & Validate
@@ -208,7 +211,7 @@ class WorkflowManager:
             # 3. Install
             target_name = package.metadata.name
             target_file = self.workflows_dir / f"{target_name}.md"
-            
+
             # Backup existing if present
             if target_file.exists():
                 backup_path = self.base_dir / f"{target_name}.md.bak"
@@ -217,7 +220,7 @@ class WorkflowManager:
 
             # Write new content
             target_file.write_text(package.content, encoding="utf-8")
-            
+
             return True, f"Successfully installed workflow '{target_name}' (v{package.metadata.version}) by {package.metadata.author}"
 
         except urllib.error.URLError as e:
@@ -225,15 +228,15 @@ class WorkflowManager:
         except Exception as e:
             return False, f"Installation failed: {str(e)}"
 
-    def publish_workflow(self, name: str, token: str, public: bool = True) -> Tuple[bool, str]:
+    def publish_workflow(self, name: str, token: str, public: bool = True) -> tuple[bool, str]:
         """
         Publish a workflow to GitHub Gist (The "Serverless Registry").
-        
+
         Args:
             name: Workflow name
             token: GitHub Personal Access Token
             public: Whether to make the Gist public
-            
+
         Returns:
             (Success, Message/URL)
         """
@@ -246,13 +249,13 @@ class WorkflowManager:
             export_path, _ = self.export_workflow(name, "Anonymous")
             if not export_path:
                 return False, "Failed to package workflow."
-            
+
             content = export_path.read_text(encoding="utf-8")
             filename = f"{name}.bwf.json"
 
             # 2. Upload to GitHub Gist
             log_status(self.project_root / "logs", "INFO", f"Publishing '{name}' to GitHub Gist...")
-            
+
             payload = {
                 "description": f"Boring Workflow: {name}",
                 "public": public,
@@ -262,7 +265,7 @@ class WorkflowManager:
                     }
                 }
             }
-            
+
             req = urllib.request.Request(
                 "https://api.github.com/gists",
                 data=json.dumps(payload).encode("utf-8"),
@@ -273,19 +276,19 @@ class WorkflowManager:
                 },
                 method="POST"
             )
-            
+
             with urllib.request.urlopen(req) as response:
                 result = json.loads(response.read().decode("utf-8"))
-                html_url = result.get("html_url")
+                result.get("html_url")
                 # Get raw url of the file
                 raw_url = result["files"][filename]["raw_url"]
-                
+
                 # Cleanup temporary export file
                 if export_path.exists():
                     export_path.unlink()
-                
+
                 return True, f"Scan this to install:\nboring workflow install {raw_url}"
-                
+
         except urllib.error.HTTPError as e:
             if e.code == 401:
                 return False, "Authentication failed. Check your GITHUB_TOKEN."

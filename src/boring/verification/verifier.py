@@ -1,20 +1,18 @@
-import subprocess
-import sys
 import os
-from pathlib import Path
-from typing import Tuple, List, Dict, Optional
+import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
-import re
+from pathlib import Path
 
-from ..config import settings
-from ..logger import log_status, logger
-from ..models import VerificationResult
+from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn
+
 from ..cache import VerificationCache
+from ..config import settings
+from ..logger import logger
+from ..models import VerificationResult
+from . import handlers, test_runners
 from .config import load_custom_rules
 from .tools import ToolManager
-from . import handlers
-from . import test_runners
+
 
 class CodeVerifier:
     """
@@ -27,10 +25,10 @@ class CodeVerifier:
         self.log_dir = log_dir or settings.LOG_DIR
         self.judge = judge
         self.cache = VerificationCache(self.project_root) if use_cache else None
-        
+
         self.custom_rules = load_custom_rules(self.project_root)
         self.tools = ToolManager()
-        
+
         # Dispatch configuration
         self.handlers = {
             ".py": {"syntax": handlers.verify_syntax_python, "lint": handlers.verify_lint_python, "import": handlers.verify_imports_python},
@@ -80,16 +78,16 @@ class CodeVerifier:
         """Compatibility wrapper for handlers.verify_lint_generic."""
         return handlers.verify_lint_generic(file_path, self.project_root, self.tools)
 
-    def verify_file(self, file_path: Path, level: str = "STANDARD", auto_fix: bool = False) -> List[VerificationResult]:
+    def verify_file(self, file_path: Path, level: str = "STANDARD", auto_fix: bool = False) -> list[VerificationResult]:
         """Run all applicable verifications on a file."""
         results = []
         ext = file_path.suffix.lower()
         if ext not in self.handlers:
             return results
-        
+
         # Always run syntax check
         results.append(self.verify_syntax(file_path))
-        
+
         # Standard level adds linting and imports
         if level in ["STANDARD", "FULL", "SEMANTIC"]:
             results.append(self.verify_lint(file_path, auto_fix=auto_fix))
@@ -97,7 +95,7 @@ class CodeVerifier:
 
         if level == "SEMANTIC" and self.judge:
             results.append(self.verify_semantics(file_path))
-        
+
         return results
 
     def verify_semantics(self, file_path: Path) -> VerificationResult:
@@ -105,7 +103,7 @@ class CodeVerifier:
         try:
             content = file_path.read_text(encoding="utf-8")
             feedback = self.judge.grade_code(file_path.name, content, interactive=True)
-             
+
             if feedback.get("status") == "pending_manual_review":
                 return VerificationResult(
                     passed=False,
@@ -117,18 +115,18 @@ class CodeVerifier:
 
             score = feedback.get("score", 0)
             passed = score >= 4.0
-             
+
             details = []
             dimensions = feedback.get("dimensions") or feedback.get("breakdown")
             if dimensions:
                 for k, v in dimensions.items():
                     details.append(f"{k}: {v.get('score')}/5 - {v.get('comment')}")
-            
+
             strategic = feedback.get("strategic_advice")
             first_step = feedback.get("first_step")
             if strategic: details.append(f"\n🧠 Strategic Advice: {strategic}")
             if first_step: details.append(f"👣 First Step: {first_step}")
-             
+
             return VerificationResult(
                 passed=passed,
                 check_type="semantic",
@@ -154,10 +152,10 @@ class CodeVerifier:
              return test_runners.run_tests_node(self.project_root, self.tools, test_path)
         elif (self.project_root / "go.mod").exists():
              return test_runners.run_tests_go(self.project_root, self.tools, test_path)
-        
+
         return test_runners.run_tests_python(self.project_root, self.tools, test_path)
 
-    def _aggregate_results(self, file_path: Path, results: List[VerificationResult]) -> VerificationResult:
+    def _aggregate_results(self, file_path: Path, results: list[VerificationResult]) -> VerificationResult:
         passed = all(r.passed for r in results)
         details = []
         suggestions = []
@@ -166,7 +164,7 @@ class CodeVerifier:
             if not r.passed: messages.append(f"{r.check_type}: {r.message}")
             details.extend(r.details)
             suggestions.extend(r.suggestions)
-            
+
         return VerificationResult(
             passed=passed,
             check_type="file_comparison",
@@ -175,7 +173,7 @@ class CodeVerifier:
             suggestions=list(set(suggestions))
         )
 
-    def _get_git_changed_files(self) -> List[Path]:
+    def _get_git_changed_files(self) -> list[Path]:
         """Get list of files changed in Git."""
         try:
             staged = subprocess.run(["git", "diff", "--cached", "--name-only"], cwd=self.project_root, capture_output=True, text=True, timeout=10)
@@ -188,14 +186,14 @@ class CodeVerifier:
         except Exception:
             return []
 
-    def verify_project(self, level: str = "STANDARD", auto_fix: bool = False, max_workers: int = 4, force: bool = False, incremental: bool = False) -> Tuple[bool, str]:
+    def verify_project(self, level: str = "STANDARD", auto_fix: bool = False, max_workers: int = 4, force: bool = False, incremental: bool = False) -> tuple[bool, str]:
         target_dir = self.project_root / "src"
         if not target_dir.exists(): target_dir = self.project_root
         if not target_dir.exists(): return True, "Project directory not found"
-        
-        all_results: List[VerificationResult] = []
+
+        all_results: list[VerificationResult] = []
         excludes = set(settings.VERIFICATION_EXCLUDES)
-        
+
         target_files = []
         for root, dirs, files in os.walk(target_dir):
             dirs[:] = [d for d in dirs if d not in excludes]
@@ -240,14 +238,14 @@ class CodeVerifier:
 
         if self.cache and cache_updates:
             self.cache.bulk_update(cache_updates)
-        
+
         if level == "FULL":
             all_results.append(self.run_tests())
-        
+
         failed = [r for r in all_results if not r.passed]
         if not failed:
             return True, f"All {len(all_results)} checks passed"
-        
+
         summary_parts = ["## Verification Failed:"]
         for result in failed[:10]:
             summary_parts.append(f"\n### {result.check_type.upper()}: {result.message}")
@@ -255,10 +253,10 @@ class CodeVerifier:
             if result.suggestions:
                 summary_parts.append("\n💡 **Suggestions:**")
                 for suggestion in result.suggestions: summary_parts.append(f"- {suggestion}")
-        
+
         return False, "\n".join(summary_parts)
 
-    def generate_feedback_prompt(self, results: List[VerificationResult]) -> str:
+    def generate_feedback_prompt(self, results: list[VerificationResult]) -> str:
         failed = [r for r in results if not r.passed]
         if not failed: return ""
         prompt_parts = ["CRITICAL: Your code failed verification. You must fix these issues:\n"]

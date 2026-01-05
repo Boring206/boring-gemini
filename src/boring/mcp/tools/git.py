@@ -1,11 +1,11 @@
-from typing import Optional, Annotated, List
 import re
-import subprocess
-from pathlib import Path
+from typing import Annotated
+
 from pydantic import Field
-from ..instance import mcp, MCP_AVAILABLE
-from ..utils import detect_project_root, check_rate_limit, get_project_root_or_error, configure_runtime_for_project
+
 from ...audit import audited
+from ..instance import MCP_AVAILABLE, mcp
+from ..utils import configure_runtime_for_project, get_project_root_or_error
 
 # ==============================================================================
 # GIT HOOKS TOOLS
@@ -17,12 +17,12 @@ def boring_hooks_install(
 ) -> dict:
     """
     Install Boring Git hooks (pre-commit, pre-push) for local code quality enforcement.
-    
+
     This is the "Local Teams" feature - automatic verification before every commit/push.
-    
+
     Args:
         project_path: Optional explicit path to project root.
-        
+
     Returns:
         Installation result as dict with status, message, and suggestion.
     """
@@ -30,20 +30,20 @@ def boring_hooks_install(
         root, error = get_project_root_or_error(project_path)
         if error:
             return error
-        
+
         # Configure runtime
         configure_runtime_for_project(root)
-        
+
         from ...hooks import HooksManager
         manager = HooksManager(root)
-        
+
         # --- Idempotency Check ---
         status = manager.status()
         if status.get("is_git_repo"):
             hooks_info = status.get("hooks", {})
             all_boring = all(
-                h.get("is_boring_hook", False) 
-                for h in hooks_info.values() 
+                h.get("is_boring_hook", False)
+                for h in hooks_info.values()
                 if h.get("installed", False)
             )
             any_installed = any(h.get("installed", False) for h in hooks_info.values())
@@ -54,7 +54,7 @@ def boring_hooks_install(
                     "hooks": hooks_info
                 }
         # --- End Idempotency Check ---
-        
+
         success, msg = manager.install_all()
         if success:
             return {
@@ -76,10 +76,10 @@ def boring_hooks_uninstall(
 ) -> dict:
     """
     Remove Boring Git hooks.
-    
+
     Args:
         project_path: Optional explicit path to project root.
-        
+
     Returns:
         Uninstallation result as dict with status and message.
     """
@@ -87,12 +87,12 @@ def boring_hooks_uninstall(
         root, error = get_project_root_or_error(project_path)
         if error:
             return error
-            
+
         configure_runtime_for_project(root)
-        
+
         from ...hooks import HooksManager
         manager = HooksManager(root)
-        
+
         success, msg = manager.uninstall_all()
         return {
             "status": "SUCCESS" if success else "ERROR",
@@ -107,10 +107,10 @@ def boring_hooks_status(
 ) -> dict:
     """
     Get status of installed Git hooks.
-    
+
     Args:
         project_path: Optional explicit path to project root.
-        
+
     Returns:
         Dict with hook installation status.
     """
@@ -118,12 +118,12 @@ def boring_hooks_status(
         root, error = get_project_root_or_error(project_path)
         if error:
             return error
-            
+
         configure_runtime_for_project(root)
-        
+
         from ...hooks import HooksManager
         manager = HooksManager(root)
-        
+
         return manager.status()
     except Exception as e:
         return {"status": "ERROR", "error": str(e)}
@@ -142,26 +142,26 @@ def boring_commit(
 ) -> dict:
     """
     Generate a semantic Git commit message from completed tasks in task.md.
-    
+
     Parses task.md for completed items ([x]) and generates a Conventional Commits
     format message. Returns the commit command for you to execute.
-    
+
     Args:
         task_file: Path to task.md file (default: task.md)
         commit_type: Commit type (auto, feat, fix, refactor, docs, chore)
         scope: Optional scope for commit message
         project_path: Optional explicit path to project root
-        
+
     Returns:
         Generated commit message and command
     """
     project_root, error = get_project_root_or_error(project_path)
     if error:
         return error
-    
+
     # Find task file in common locations
     task_path = project_root / task_file
-    
+
     if not task_path.exists():
         for alt_path in [
             project_root / ".gemini" / "task.md",
@@ -171,30 +171,30 @@ def boring_commit(
             if alt_path.exists():
                 task_path = alt_path
                 break
-    
+
     if not task_path.exists():
         return {
             "status": "NOT_FOUND",
             "message": f"Task file not found: {task_file}",
             "searched": [str(project_root / task_file)]
         }
-    
+
     try:
         content = task_path.read_text(encoding="utf-8")
     except Exception as e:
         return {"status": "ERROR", "message": f"Cannot read task file: {e}"}
-    
+
     # Parse completed tasks (lines with [x])
     completed_pattern = r"^\s*-\s*\[x\]\s*(.+)$"
     completed_tasks = re.findall(completed_pattern, content, re.MULTILINE | re.IGNORECASE)
-    
+
     if not completed_tasks:
         return {
             "status": "NO_COMPLETED_TASKS",
             "message": "No completed tasks found in task.md",
             "hint": "Mark tasks as complete with [x] before generating commit"
         }
-    
+
     # Detect commit type from tasks if auto
     detected_type = commit_type
     if commit_type == "auto":
@@ -209,7 +209,7 @@ def boring_commit(
             detected_type = "docs"
         else:
             detected_type = "feat"
-    
+
     # Detect scope from task keywords
     detected_scope = scope
     if not detected_scope:
@@ -223,19 +223,19 @@ def boring_commit(
             if any(kw in task_text for kw in keywords):
                 detected_scope = scope_name
                 break
-    
+
     # Build commit message from first task
     main_task = completed_tasks[0].strip()
     main_task = re.sub(r"`([^`]+)`", r"\1", main_task)  # Remove backticks
     main_task = re.sub(r"\*\*([^*]+)\*\*", r"\1", main_task)  # Remove bold
     main_task = main_task.lower().rstrip(".")
-    
+
     scope_str = f"({detected_scope})" if detected_scope else ""
     commit_line = f"{detected_type}{scope_str}: {main_task}"
-    
+
     # Escape quotes for shell
     escaped_message = commit_line.replace('"', '\\"')
-    
+
     return {
         "status": "SUCCESS",
         "commit_type": detected_type,
@@ -246,7 +246,7 @@ def boring_commit(
     }
 
 
-@audited  
+@audited
 def boring_visualize(
     scope: Annotated[str, Field(description="Visualization scope: module, class, or full")] = "module",
     output_format: Annotated[str, Field(description="Output format: mermaid, json")] = "mermaid",
@@ -254,62 +254,62 @@ def boring_visualize(
 ) -> dict:
     """
     Generate architecture visualization from codebase structure.
-    
+
     Scans Python files and generates a Mermaid.js diagram showing
     module dependencies and relationships.
-    
+
     Args:
         scope: Visualization scope (module, class, full)
         output_format: Output format (mermaid, json)
         project_path: Optional explicit path to project root
-        
+
     Returns:
         Generated diagram or structure data
     """
     project_root, error = get_project_root_or_error(project_path)
     if error:
         return error
-    
+
     # Find Python files
     src_dir = project_root / "src"
     if not src_dir.exists():
         src_dir = project_root
-    
+
     # Build module graph
     modules = {}
     imports = []
-    
+
     for py_file in src_dir.rglob("*.py"):
         if "__pycache__" in str(py_file):
             continue
-        
+
         try:
             rel_path = py_file.relative_to(src_dir)
             module_name = str(rel_path.with_suffix("")).replace("/", ".").replace("\\", ".")
             modules[module_name] = str(rel_path)
-            
+
             content = py_file.read_text(encoding="utf-8", errors="ignore")
             from_imports = re.findall(r"^from\s+([\w.]+)\s+import", content, re.MULTILINE)
-            
+
             for imp in from_imports:
                 if imp.startswith(".") or any(imp.startswith(m.split(".")[0]) for m in modules):
                     imports.append((module_name, imp))
         except Exception:
             continue
-    
+
     if output_format == "json":
         return {"status": "SUCCESS", "modules": modules, "total": len(modules)}
-    
+
     # Generate Mermaid diagram
     mermaid_lines = ["graph TD"]
     node_ids = {}
-    
+
     for i, (mod_name, _) in enumerate(list(modules.items())[:15]):
         node_id = f"M{i}"
         node_ids[mod_name] = node_id
         short_name = mod_name.split(".")[-1]
         mermaid_lines.append(f"    {node_id}[{short_name}]")
-    
+
     for source, target in imports[:20]:
         src_id = node_ids.get(source)
         tgt_id = None
@@ -319,7 +319,7 @@ def boring_visualize(
                 break
         if src_id and tgt_id and src_id != tgt_id:
             mermaid_lines.append(f"    {src_id} --> {tgt_id}")
-    
+
     return {
         "status": "SUCCESS",
         "format": "mermaid",

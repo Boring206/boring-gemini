@@ -5,12 +5,14 @@ Exposes Shadow Mode human-in-the-loop protection as MCP tools.
 """
 
 from pathlib import Path
-from typing import Optional, Annotated
+from typing import Annotated
+
 from pydantic import Field
 
 from boring.shadow_mode import (
-    ShadowModeGuard, ShadowModeLevel, 
-    create_shadow_guard, PendingOperation
+    ShadowModeGuard,
+    ShadowModeLevel,
+    create_shadow_guard,
 )
 
 # Singleton guard instance
@@ -28,28 +30,28 @@ def get_shadow_guard(project_root: Path, mode: str = "ENABLED") -> ShadowModeGua
 def register_shadow_tools(mcp, helpers: dict):
     """
     Register Shadow Mode tools with the MCP server.
-    
+
     Args:
         mcp: FastMCP instance
         helpers: Dict with helper functions
     """
     get_project_root_or_error = helpers.get("get_project_root_or_error")
-    
+
     @mcp.tool(description="Get Shadow Mode status and pending operations", annotations={"readOnlyHint": True, "openWorldHint": False})
     def boring_shadow_status(
     project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Get Shadow Mode status and pending approvals.
-        
+
         Shows:
         - Current protection level
         - Number of pending operations
         - Details of each pending operation
-        
+
         Args:
             project_path: Optional explicit path to project root
-            
+
         Returns:
             Shadow Mode status summary
         """
@@ -57,9 +59,9 @@ def register_shadow_tools(mcp, helpers: dict):
         if error:
             return error.get("message")
         guard = get_shadow_guard(project_root)
-        
+
         pending = guard.get_pending_operations()
-        
+
         output = [
             "# 🛡️ Shadow Mode Status",
             "",
@@ -67,7 +69,7 @@ def register_shadow_tools(mcp, helpers: dict):
             f"**Pending Operations:** {len(pending)}",
             ""
         ]
-        
+
         if pending:
             output.append("## Pending Approvals")
             for op in pending:
@@ -77,7 +79,7 @@ def register_shadow_tools(mcp, helpers: dict):
                     "medium": "🟡",
                     "low": "🟢"
                 }.get(op.severity.value, "⚪")
-                
+
                 output.append(
                     f"\n### {severity_icon} `{op.operation_id}`\n"
                     f"- **Type:** {op.operation_type}\n"
@@ -88,9 +90,9 @@ def register_shadow_tools(mcp, helpers: dict):
                 )
         else:
             output.append("✅ No pending operations")
-        
+
         return "\n".join(output)
-    
+
     @mcp.tool(description="Approve a pending Shadow Mode operation", annotations={"readOnlyHint": False, "idempotentHint": True})
     def boring_shadow_approve(
         operation_id: Annotated[str, Field(description="ID of the operation to approve (from shadow_status)")],
@@ -99,9 +101,9 @@ def register_shadow_tools(mcp, helpers: dict):
     ) -> str:
         """
         Approve a pending Shadow Mode operation.
-        
+
         The operation will be allowed to proceed after approval.
-        
+
         Args:
             operation_id: ID of the operation to approve
             note: Optional note explaining the approval
@@ -111,7 +113,7 @@ def register_shadow_tools(mcp, helpers: dict):
         if error:
             return error.get("message")
         guard = get_shadow_guard(project_root)
-        
+
         if guard.approve_operation(operation_id, note):
             return f"✅ Operation `{operation_id}` approved" + (f" with note: {note}" if note else "")
         else:
@@ -125,9 +127,9 @@ def register_shadow_tools(mcp, helpers: dict):
     ) -> str:
         """
         Reject a pending Shadow Mode operation.
-        
+
         The operation will be blocked and removed from the queue.
-        
+
         Args:
             operation_id: ID of the operation to reject
             note: Optional note explaining the rejection
@@ -137,7 +139,7 @@ def register_shadow_tools(mcp, helpers: dict):
         if error:
             return error.get("message")
         guard = get_shadow_guard(project_root)
-        
+
         if guard.reject_operation(operation_id, note):
             return f"❌ Operation `{operation_id}` rejected" + (f" with note: {note}" if note else "")
         else:
@@ -150,12 +152,12 @@ def register_shadow_tools(mcp, helpers: dict):
     ) -> str:
         """
         Change Shadow Mode protection level.
-        
+
         Modes:
         - **DISABLED**: All operations auto-approved (⚠️ dangerous)
         - **ENABLED**: Only HIGH/CRITICAL ops require approval (default)
         - **STRICT**: ALL write operations require approval
-        
+
         Args:
             mode: New mode (DISABLED, ENABLED, or STRICT)
             project_path: Optional explicit path to project root
@@ -163,12 +165,12 @@ def register_shadow_tools(mcp, helpers: dict):
         project_root, error = get_project_root_or_error(project_path)
         if error:
             return error.get("message")
-        
+
         # Validate mode
         mode_upper = mode.upper()
         if mode_upper not in ("DISABLED", "ENABLED", "STRICT"):
-            return f"❌ Invalid mode. Choose: DISABLED, ENABLED, or STRICT"
-        
+            return "❌ Invalid mode. Choose: DISABLED, ENABLED, or STRICT"
+
         # Update or create guard with new mode
         try:
             level = ShadowModeLevel[mode_upper]
@@ -176,29 +178,29 @@ def register_shadow_tools(mcp, helpers: dict):
                 project_root=project_root,
                 mode=level
             )
-            
+
             mode_icons = {
                 "DISABLED": "⚠️",
                 "ENABLED": "🛡️",
                 "STRICT": "🔒"
             }
-            
+
             return f"{mode_icons.get(mode_upper, '✅')} Shadow Mode set to **{mode_upper}**"
         except Exception as e:
             return f"❌ Failed to set mode: {e}"
-    
+
     @mcp.tool(description="Clear all pending Shadow Mode operations", annotations={"readOnlyHint": False, "destructiveHint": True})
     def boring_shadow_clear(
         project_path: Annotated[str, Field(description="Optional explicit path to project root")] = None
     ) -> str:
         """
         Clear all pending Shadow Mode operations.
-        
+
         Use this to reset the approval queue if operations are stale.
-        
+
         Args:
             project_path: Optional explicit path to project root
-            
+
         Returns:
             Count of cleared operations
         """
@@ -206,6 +208,6 @@ def register_shadow_tools(mcp, helpers: dict):
         if error:
             return error.get("message")
         guard = get_shadow_guard(project_root)
-        
+
         count = guard.clear_pending()
         return f"✅ Cleared {count} pending operations"

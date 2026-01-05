@@ -1,10 +1,12 @@
-from pathlib import Path
 import os
-from typing import Optional, Annotated
+from pathlib import Path
+from typing import Annotated
+
 from pydantic import Field
-from ..instance import mcp, MCP_AVAILABLE
-from ..utils import check_rate_limit, detect_project_root, get_project_root_or_error
+
 from ...audit import audited
+from ..instance import MCP_AVAILABLE, mcp
+from ..utils import check_rate_limit, detect_project_root
 
 # ==============================================================================
 # EVALUATION TOOLS
@@ -20,7 +22,7 @@ def boring_evaluate(
 ) -> str:
     """
     Evaluate code quality using Advanced Evaluation techniques (LLM-as-a-Judge).
-    
+
     Args:
        target: File path or content to evaluate.
        context: Optional context or requirements.
@@ -29,7 +31,7 @@ def boring_evaluate(
               - PAIRWISE: (Coming soon) Compare valid alternatives.
        interactive: If True, returns the PROMPT instead of executing it. Useful for IDE AI.
        project_path: Optional explicit path to project root
-              
+
     Returns:
         Evaluation report (JSON score) or Prompt (if interactive=True).
     """
@@ -37,7 +39,7 @@ def boring_evaluate(
     allowed, msg = check_rate_limit("boring_evaluate")
     if not allowed:
         return f"⏱️ Rate limited: {msg}"
-        
+
     project_root = detect_project_root(project_path)
     if not project_root:
         return "❌ No valid Boring project found. Run in project root."
@@ -45,48 +47,48 @@ def boring_evaluate(
         from ...config import settings
         # CRITICAL: Contextually update project root
         settings.PROJECT_ROOT = project_root
-        
+
         from ...judge import LLMJudge, create_judge_provider
-        
+
         # Auto-detect MCP mode: If running as MCP tool, default to interactive
         is_mcp_mode = os.environ.get("BORING_MCP_MODE", "0") == "1"
-        
+
         if is_mcp_mode and interactive is None:
             interactive = True
         elif interactive is None:
             interactive = False
-        
+
         # Initialize Judge with configured provider
         provider = create_judge_provider()
-        
+
         # Check availability
         if not provider.is_available and not interactive:
              return f"❌ LLM Provider ({provider.provider_name}) not available. Check configuration."
 
         judge = LLMJudge(provider)
 
-        
+
         # Handle Pairwise Comparison
         if level.upper() == "PAIRWISE":
             targets = [t.strip() for t in target.split(",")]
             if len(targets) != 2:
                 return "❌ PAIRWISE mode requires exactly two comma-separated files in 'target' (e.g., 'src/old.py,src/new.py')"
-            
+
             path_a = project_root / targets[0] if not Path(targets[0]).is_absolute() else Path(targets[0])
             path_b = project_root / targets[1] if not Path(targets[1]).is_absolute() else Path(targets[1])
-            
+
             if not path_a.exists() or not path_b.exists():
                 return f"❌ Files not found: {path_a} or {path_b}"
-                
+
             content_a = path_a.read_text(encoding="utf-8", errors="replace")
             content_b = path_b.read_text(encoding="utf-8", errors="replace")
-            
+
             result = judge.compare_code(
                 name_a=path_a.name, code_a=content_a,
                 name_b=path_b.name, code_b=content_b,
                 context=context, interactive=interactive
             )
-            
+
             if interactive:
                  prompts = result.get("prompts", {})
                  return (
@@ -94,13 +96,13 @@ def boring_evaluate(
                      f"**Pass 1 (A vs B):**\n```markdown\n{prompts.get('pass1', '')}\n```\n\n"
                      f"**Pass 2 (B vs A):**\n```markdown\n{prompts.get('pass2', '')}\n```"
                  )
-            
+
             winner = result.get("winner", "TIE")
             confidence = result.get("confidence", 0.0)
             reasoning = result.get("reasoning", "")
-            
+
             emoji = "🏆" if winner != "TIE" else "⚖️"
-            
+
             return (
                 f"# {emoji} Pairwise Evaluation Result\n\n"
                 f"**Winner**: {winner} (Confidence: {confidence})\n\n"
@@ -111,10 +113,10 @@ def boring_evaluate(
         target_path = Path(target)
         if not target_path.is_absolute():
             target_path = project_root / target_path
-            
+
         if not target_path.exists():
             return f"❌ Target not found: {target}"
-            
+
         if target_path.is_file():
             # Safe file reading with encoding fallback
             try:
@@ -126,19 +128,19 @@ def boring_evaluate(
                     return f"❌ Cannot read file (binary or encoding issue): {e}"
             except Exception as e:
                 return f"❌ File read error: {e}"
-            
+
             result = judge.grade_code(target_path.name, content, interactive=interactive)
-            
+
             if interactive:
                 prompt_content = result.get('prompt', 'Error generating prompt')
                 return f"### 📋 Evaluation Prompt (Copy to Chat)\n\nUse this prompt to evaluate `{target_path.name}` using your current AI context:\n\n```markdown\n{prompt_content}\n```"
-            
+
             score = result.get("score", 0)
             summary = result.get("summary", "No summary available")
             suggestions = result.get("suggestions", [])
             raw_response = result.get("raw", "")
             reasoning = result.get("reasoning", "")
-            
+
             # Check for failed evaluation - provide diagnostic info
             if score == 0:
                 error_report = f"# ⚠️ Evaluation Failed: {target_path.name}\n\n"
@@ -147,27 +149,27 @@ def boring_evaluate(
                 error_report += "1. **Gemini CLI unavailable** - Install with: `npm install -g @google/gemini-cli`\n"
                 error_report += "2. **JSON parsing failed** - LLM response was not valid JSON\n"
                 error_report += "3. **File too small** - Very short files may not have enough content to evaluate\n\n"
-                
+
                 if reasoning:
                     error_report += f"## Error Details:\n{reasoning}\n\n"
-                
+
                 if raw_response:
                     error_report += f"## Raw Response (first 500 chars):\n```\n{raw_response[:500]}...\n```\n\n"
-                
+
                 error_report += "## 💡 Try Interactive Mode:\n"
                 error_report += f"```\nboring_evaluate(target=\"{target}\", interactive=True)\n```\n"
                 error_report += "This returns the evaluation prompt for you to execute manually."
-                
+
                 return error_report
             suggestions = result.get("suggestions", [])
             dimensions = result.get("dimensions", {})
-            
+
             # Format report with multi-dimensional scores
             emoji = "🟢" if score >= 4 else "🟡" if score >= 3 else "🔴"
             report = f"# {emoji} Evaluation: {target_path.name}\n"
             report += f"**Overall Score**: {score}/5.0\n\n"
             report += f"**Summary**: {summary}\n\n"
-            
+
             # Record metrics in QualityTracker
             try:
                 from ...quality_tracker import QualityTracker
@@ -175,7 +177,7 @@ def boring_evaluate(
                 tracker.record(score=float(score), issues_count=len(suggestions), context="boring_evaluate")
             except Exception as e:
                 report += f"\n[Warning: Failed to record quality stats: {e}]\n"
-            
+
             # Display multi-dimensional breakdown
             if dimensions:
                 report += "## 📊 Dimension Scores\n\n"
@@ -187,20 +189,20 @@ def boring_evaluate(
                     dim_emoji = "🟢" if dim_score >= 4 else "🟡" if dim_score >= 3 else "🔴"
                     report += f"| {dim_emoji} **{dim_name.title()}** | {dim_score}/5 | {dim_comment} |\n"
                 report += "\n"
-            
+
             if suggestions:
                 report += "## 💡 Suggestions\n"
                 for s in suggestions:
                     report += f"- {s}\n"
-                    
+
             return report
-        
+
         # Directory support: evaluate all Python files
         if target_path.is_dir():
             py_files = list(target_path.glob("*.py"))
             if not py_files:
                 return f"❌ No Python files found in directory: {target}"
-            
+
             reports = []
             for py_file in py_files[:5]:  # Limit to 5 files to avoid overload
                 try:
@@ -211,11 +213,11 @@ def boring_evaluate(
                     reports.append(f"{emoji} **{py_file.name}**: {score}/5.0")
                 except Exception:
                     reports.append(f"⚠️ **{py_file.name}**: Error reading")
-            
+
             return "# Directory Evaluation\n\n" + "\n".join(reports)
-            
+
         return "❌ Invalid target type."
-        
+
     except Exception as e:
         return f"❌ Error evaluating: {str(e)}"
 

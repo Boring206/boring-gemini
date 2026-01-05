@@ -11,12 +11,11 @@ this module selects only the most relevant files.
 """
 
 import re
-from pathlib import Path
-from typing import List, Optional, Set, Dict, Tuple
-from dataclasses import dataclass
 from collections import Counter
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Optional
 
-from .config import settings
 from .logger import log_status
 
 
@@ -25,13 +24,13 @@ class FileScore:
     """Relevance score for a file."""
     path: Path
     score: float
-    reasons: List[str]
+    reasons: list[str]
 
 
 @dataclass
 class ContextSelection:
     """Selected context for AI prompt."""
-    files: List[Path]
+    files: list[Path]
     total_tokens: int
     content: str
 
@@ -56,12 +55,12 @@ STOP_WORDS = {
 class ContextSelector:
     """
     Intelligent context selector using keyword relevance.
-    
+
     Usage:
         selector = ContextSelector(project_root)
         context = selector.select_context(prompt_text, max_tokens=4000)
     """
-    
+
     def __init__(
         self,
         project_root: Path,
@@ -71,7 +70,7 @@ class ContextSelector:
         self.project_root = Path(project_root)
         self.log_dir = log_dir or Path("logs")
         self.max_file_size = max_file_size
-        
+
         # File extensions to consider
         self.include_extensions = {
             ".py", ".js", ".ts", ".jsx", ".tsx",
@@ -80,33 +79,33 @@ class ContextSelector:
             ".html", ".css", ".scss",
             ".sql", ".sh", ".bash"
         }
-        
+
         # Directories to exclude
         self.exclude_dirs = {
             ".git", ".venv", "venv", "__pycache__", "node_modules",
             ".pytest_cache", ".mypy_cache", "dist", "build",
             ".boring_memory", "logs", ".boring_extensions"
         }
-    
-    def extract_keywords(self, text: str) -> Set[str]:
+
+    def extract_keywords(self, text: str) -> set[str]:
         """
         Extract meaningful keywords from text.
-        
+
         Args:
             text: Input text (e.g., PROMPT.md content)
-            
+
         Returns:
             Set of keywords
         """
         # Tokenize: split on non-word characters
         words = re.findall(r'\b[a-zA-Z_][a-zA-Z0-9_]*\b', text.lower())
-        
+
         # Filter: remove stop words and short words
         keywords = {
             word for word in words
             if word not in STOP_WORDS and len(word) > 2
         }
-        
+
         # Add camelCase/snake_case splits
         expanded = set()
         for word in keywords:
@@ -116,24 +115,24 @@ class ContextSelector:
             # Split snake_case
             parts = word.split('_')
             expanded.update(p for p in parts if len(p) > 2 and p not in STOP_WORDS)
-        
+
         keywords.update(expanded)
         return keywords
-    
-    def score_file(self, file_path: Path, keywords: Set[str]) -> FileScore:
+
+    def score_file(self, file_path: Path, keywords: set[str]) -> FileScore:
         """
         Score a file's relevance to keywords.
-        
+
         Args:
             file_path: Path to file
             keywords: Set of keywords to match
-            
+
         Returns:
             FileScore with relevance score
         """
         score = 0.0
         reasons = []
-        
+
         # Filename match
         filename = file_path.stem.lower()
         filename_keywords = set(re.findall(r'[a-zA-Z]+', filename))
@@ -141,25 +140,25 @@ class ContextSelector:
         if filename_matches:
             score += len(filename_matches) * 2.0
             reasons.append(f"filename: {', '.join(filename_matches)}")
-        
+
         # Important files boost
         important_patterns = ["main", "app", "config", "index", "core", "utils"]
         for pattern in important_patterns:
             if pattern in filename:
                 score += 1.0
                 reasons.append(f"important: {pattern}")
-        
+
         # Read file content for deeper matching
         try:
             if file_path.stat().st_size > self.max_file_size:
                 return FileScore(file_path, score, reasons)
-            
+
             content = file_path.read_text(encoding="utf-8", errors="ignore")
             content_lower = content.lower()
-            
+
             # Count keyword occurrences
             word_counts = Counter(re.findall(r'\b[a-zA-Z_][a-zA-Z0-9_]*\b', content_lower))
-            
+
             for keyword in keywords:
                 count = word_counts.get(keyword, 0)
                 if count > 0:
@@ -168,82 +167,82 @@ class ContextSelector:
                     score += keyword_score
                     if count >= 3:
                         reasons.append(f"{keyword}: {count}x")
-            
+
         except Exception:
             pass
-        
+
         return FileScore(file_path, score, reasons)
-    
-    def get_project_files(self) -> List[Path]:
+
+    def get_project_files(self) -> list[Path]:
         """Get all relevant files in project."""
         files = []
-        
+
         for path in self.project_root.rglob("*"):
             if not path.is_file():
                 continue
-            
+
             # Check excluded directories
             if any(excluded in path.parts for excluded in self.exclude_dirs):
                 continue
-            
+
             # Check extension
             if path.suffix.lower() not in self.include_extensions:
                 continue
-            
+
             # Check file size
             try:
                 if path.stat().st_size > self.max_file_size:
                     continue
             except OSError:
                 continue
-            
+
             files.append(path)
-        
+
         return files
-    
+
     def select_files(
         self,
         prompt_text: str,
         max_files: int = 10,
         min_score: float = 0.5
-    ) -> List[FileScore]:
+    ) -> list[FileScore]:
         """
         Select most relevant files for given prompt.
-        
+
         Args:
             prompt_text: The prompt text to analyze
             max_files: Maximum number of files to select
             min_score: Minimum relevance score
-            
+
         Returns:
             List of FileScore, sorted by relevance
         """
         keywords = self.extract_keywords(prompt_text)
         if not keywords:
             return []
-        
+
         log_status(
             self.log_dir, "INFO",
             f"Context selector: {len(keywords)} keywords extracted"
         )
-        
+
         files = self.get_project_files()
         scores = [self.score_file(f, keywords) for f in files]
-        
+
         # Filter and sort
         relevant = [s for s in scores if s.score >= min_score]
         relevant.sort(key=lambda x: x.score, reverse=True)
-        
+
         selected = relevant[:max_files]
-        
+
         if selected:
             log_status(
                 self.log_dir, "INFO",
                 f"Context selector: {len(selected)} files selected (top: {selected[0].path.name})"
             )
-        
+
         return selected
-    
+
     def select_context(
         self,
         prompt_text: str,
@@ -252,31 +251,31 @@ class ContextSelector:
     ) -> ContextSelection:
         """
         Select context content within token budget.
-        
+
         Args:
             prompt_text: The prompt to analyze
             max_tokens: Maximum tokens for context
             max_files: Maximum files to include
-            
+
         Returns:
             ContextSelection with files and content
         """
         selected = self.select_files(prompt_text, max_files=max_files)
-        
+
         if not selected:
             return ContextSelection(files=[], total_tokens=0, content="")
-        
+
         content_parts = []
         total_chars = 0
         included_files = []
-        
+
         # Approximate: 1 token ≈ 4 characters
         max_chars = max_tokens * 4
-        
+
         for file_score in selected:
             try:
                 file_content = file_score.path.read_text(encoding="utf-8", errors="ignore")
-                
+
                 # Check budget
                 if total_chars + len(file_content) > max_chars:
                     # Truncate if still have room
@@ -285,39 +284,39 @@ class ContextSelector:
                         file_content = file_content[:remaining] + "\n... (truncated)"
                     else:
                         continue
-                
+
                 rel_path = file_score.path.relative_to(self.project_root)
                 content_parts.append(f"### {rel_path}\n```\n{file_content}\n```\n")
                 total_chars += len(file_content)
                 included_files.append(file_score.path)
-                
+
             except Exception:
                 continue
-        
+
         full_content = "\n".join(content_parts)
         estimated_tokens = len(full_content) // 4
-        
+
         return ContextSelection(
             files=included_files,
             total_tokens=estimated_tokens,
             content=full_content
         )
-    
+
     def generate_context_injection(self, prompt_text: str) -> str:
         """
         Generate context injection string for AI prompt.
-        
+
         Args:
             prompt_text: The main prompt
-            
+
         Returns:
             Context string to inject
         """
         selection = self.select_context(prompt_text)
-        
+
         if not selection.files:
             return ""
-        
+
         header = f"# RELEVANT PROJECT FILES ({len(selection.files)} files, ~{selection.total_tokens} tokens)\n\n"
         return header + selection.content
 

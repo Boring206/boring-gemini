@@ -4,28 +4,28 @@ V10 Tools Registration
 Registers all V10 tools (RAG, Multi-Agent, Shadow Mode) with FastMCP.
 """
 
-from typing import Dict, Any, Callable
+from typing import Any, Callable
 
 
-def register_v10_tools(mcp, audited: Callable, helpers: Dict[str, Any]) -> int:
+def register_v10_tools(mcp, audited: Callable, helpers: dict[str, Any]) -> int:
     """
     Register all V10 tools with the MCP server.
-    
+
     V10 Features:
     - RAG (Vector Memory + Graph RAG)
     - Multi-Agent Orchestration
     - Shadow Mode (Human-in-the-Loop)
-    
+
     Args:
         mcp: FastMCP instance
         audited: Audit decorator
         helpers: Dict with helper functions
-    
+
     Returns:
         Number of tools registered
     """
     tool_count = 0
-    
+
     # =========================================================================
     # RAG Tools
     # =========================================================================
@@ -39,7 +39,7 @@ def register_v10_tools(mcp, audited: Callable, helpers: Dict[str, Any]) -> int:
     except Exception as e:
         import sys
         sys.stderr.write(f"[boring-mcp] Warning: Failed to register RAG tools: {e}\n")
-    
+
     # =========================================================================
     # Multi-Agent Tools
     # =========================================================================
@@ -53,7 +53,7 @@ def register_v10_tools(mcp, audited: Callable, helpers: Dict[str, Any]) -> int:
     except Exception as e:
         import sys
         sys.stderr.write(f"[boring-mcp] Warning: Failed to register Agent tools: {e}\n")
-    
+
     # =========================================================================
     # Shadow Mode Tools
     # =========================================================================
@@ -67,5 +67,5 @@ def register_v10_tools(mcp, audited: Callable, helpers: Dict[str, Any]) -> int:
     except Exception as e:
         import sys
         sys.stderr.write(f"[boring-mcp] Warning: Failed to register Shadow tools: {e}\n")
-    
+
     return tool_count

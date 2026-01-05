@@ -6,9 +6,11 @@ No internal API calls - the IDE or Gemini CLI executes the commands.
 """
 
 from typing import Annotated
+
 from pydantic import Field
-from ..utils import get_project_root_or_error
+
 from ...audit import audited
+from ..utils import get_project_root_or_error
 
 # ==============================================================================
 # AGENT TOOLS
@@ -22,10 +24,10 @@ def boring_multi_agent(
 ) -> dict:
     """
     Return CLI commands for multi-agent workflow: Architect → Coder → Reviewer.
-    
+
     This tool returns a structured template with CLI commands to execute.
     The actual AI execution happens in your IDE or Gemini CLI, not internally.
-    
+
     Args:
         task: What to build/fix (detailed description)
         auto_approve_plans: Skip human approval for plans (default False)
@@ -90,7 +92,7 @@ def boring_web_search(
         with DDGS() as ddgs:
             ddg_gen = ddgs.text(query, max_results=5)
             if ddg_gen:
-                results = [r for r in ddg_gen]
+                results = list(ddg_gen)
         return {"status": "SUCCESS", "tool": "web_search", "query": query, "results": results}
     except ImportError:
         return {"status": "ERROR", "message": "Module 'duckduckgo-search' not found. Please pip install duckduckgo-search"}
@@ -104,10 +106,10 @@ def boring_agent_plan(
 ) -> dict:
     """
     Return a CLI command to run the Architect agent.
-    
+
     Use this when you want to create an implementation plan.
     The actual AI execution happens in your IDE or Gemini CLI.
-    
+
     Args:
         task: What to build/fix
         project_path: Optional explicit path to project root
@@ -152,9 +154,9 @@ def boring_agent_review(
 ) -> dict:
     """
     Return a CLI command to run the Reviewer agent.
-    
+
     Use this to review code for bugs, security issues, and improvements.
-    
+
     Args:
         file_paths: Comma-separated list of files to review
         project_path: Optional explicit path to project root
@@ -227,10 +229,10 @@ def boring_delegate(
 ) -> dict:
     """
     Delegate a task to a specialized agent or tool.
-    
+
     This functions as a Semantic Router, returning precise instructions on how to use
     external tools or MCP servers to accomplish the task.
-    
+
     Args:
         task: The task description
         tool_type: Type of tool needed (database, web_search, file_system, api, reasoning)
@@ -258,7 +260,7 @@ def boring_delegate(
         "tool_type": tool_type,
         "routing_info": {}
     }
-    
+
     if tool_type == "database":
             template["routing_info"] = {
                 "target": "Database Agent",
@@ -279,7 +281,7 @@ def boring_delegate(
             }
     elif tool_type == "reasoning":
             template["routing_info"] = {
-                "target": "Reasoning Agent", 
+                "target": "Reasoning Agent",
                 "suggestion": "Use a Reasoning MCP tool (e.g., sequential-thinking, criticalthink).",
                 "prompt": f"Analyze this problem step-by-step using Critical Thinking:\n{task}\n\nThinking Process:\n1. Break down the problem\n2. Challenge assumptions\n3. Evaluate evidence\n4. Draw conclusions"
             }
@@ -289,21 +291,21 @@ def boring_delegate(
                 "suggestion": f"Delegate to general purpose tool for '{tool_type}'.",
                 "prompt": f"Execute this task using '{tool_type}': {task}"
             }
-            
+
     template["message"] = (
         f"🚫 Boring cannot directly access external '{tool_type}' tools in MCP mode.\n"
         f"👉 Please route this task to the **{template['routing_info']['target']}**.\n\n"
         f"**Suggested Prompt:**\n"
         f"```\n{template['routing_info']['prompt']}\n```"
     )
-    
+
     return template
 
 
 def register_agent_tools(mcp, helpers: dict):
     """
     Register Multi-Agent tools with the MCP server (Pure CLI Mode).
-    
+
     Args:
         mcp: FastMCP instance
         helpers: Dict with helper functions

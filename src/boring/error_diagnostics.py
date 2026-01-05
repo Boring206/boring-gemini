@@ -5,10 +5,10 @@ Provides detailed error messages and fix suggestions for common issues.
 Analyzes verification failures, test errors, and lint warnings to suggest fixes.
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional, Tuple
-from pathlib import Path
 import re
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Optional
 
 from .config import settings
 from .logger import get_logger
@@ -25,11 +25,11 @@ class DiagnosticResult:
     line_number: Optional[int] = None
     column: Optional[int] = None
     severity: str = "error"  # error, warning, info
-    suggestions: List[str] = field(default_factory=list)
+    suggestions: list[str] = field(default_factory=list)
     auto_fixable: bool = False
     fix_command: Optional[str] = None
-    
-    def to_dict(self) -> Dict:
+
+    def to_dict(self) -> dict:
         return {
             "type": self.error_type,
             "message": self.message,
@@ -46,13 +46,13 @@ class DiagnosticResult:
 class ErrorDiagnostics:
     """
     V10.15: Detailed error diagnostics with fix suggestions.
-    
+
     Features:
     - Parses verification errors and explains them
     - Provides actionable fix suggestions
     - Identifies auto-fixable issues
     - Generates CLI commands for fixes
-    
+
     Usage:
         diagnostics = ErrorDiagnostics()
         results = diagnostics.analyze_error(error_output)
@@ -61,7 +61,7 @@ class ErrorDiagnostics:
             for suggestion in result.suggestions:
                 print(f"  - {suggestion}")
     """
-    
+
     # Common error patterns and their explanations/fixes
     ERROR_PATTERNS = {
         # Python Syntax Errors
@@ -197,22 +197,22 @@ class ErrorDiagnostics:
             ]
         },
     }
-    
+
     def __init__(self, project_root: Optional[Path] = None):
         self.project_root = project_root or settings.PROJECT_ROOT
-    
-    def analyze_error(self, error_output: str) -> List[DiagnosticResult]:
+
+    def analyze_error(self, error_output: str) -> list[DiagnosticResult]:
         """
         Analyze error output and return diagnostic results.
-        
+
         Args:
             error_output: Raw error output from verification/tests
-            
+
         Returns:
             List of DiagnosticResult with explanations and suggestions
         """
         results = []
-        
+
         for pattern, info in self.ERROR_PATTERNS.items():
             matches = re.finditer(pattern, error_output, re.MULTILINE)
             for match in matches:
@@ -225,7 +225,7 @@ class ErrorDiagnostics:
                     except IndexError:
                         pass
                     suggestions.append(suggestion)
-                
+
                 result = DiagnosticResult(
                     error_type=info["type"],
                     message=info["message"],
@@ -233,7 +233,7 @@ class ErrorDiagnostics:
                     auto_fixable="auto_fix" in info,
                     fix_command=info.get("auto_fix")
                 )
-                
+
                 # Try to extract file/line info
                 file_line_match = re.search(
                     r'(?:File "([^"]+)", line (\d+))|(?:(\S+\.py):(\d+))',
@@ -243,9 +243,9 @@ class ErrorDiagnostics:
                     groups = file_line_match.groups()
                     result.file_path = groups[0] or groups[2]
                     result.line_number = int(groups[1] or groups[3] or 0)
-                
+
                 results.append(result)
-        
+
         # If no patterns matched, provide generic diagnostic
         if not results and error_output.strip():
             results.append(DiagnosticResult(
@@ -257,27 +257,27 @@ class ErrorDiagnostics:
                     "Try running with verbose mode for more info"
                 ]
             ))
-        
+
         return results
-    
-    def analyze_verification_result(self, result) -> List[DiagnosticResult]:
+
+    def analyze_verification_result(self, result) -> list[DiagnosticResult]:
         """Analyze a VerificationResult and return diagnostics."""
         diagnostics = []
-        
+
         if not result.passed:
             # Analyze the main message
             diagnostics.extend(self.analyze_error(result.message))
-            
+
             # Analyze each detail
             for detail in result.details:
                 diagnostics.extend(self.analyze_error(detail))
-        
+
         return diagnostics
-    
+
     def format_diagnostic(self, diagnostic: DiagnosticResult) -> str:
         """Format a diagnostic result for display."""
         lines = []
-        
+
         # Header
         icon = "❌" if diagnostic.severity == "error" else ("⚠️" if diagnostic.severity == "warning" else "ℹ️")
         location = ""
@@ -285,41 +285,41 @@ class ErrorDiagnostics:
             location = f" in {diagnostic.file_path}"
             if diagnostic.line_number:
                 location += f":{diagnostic.line_number}"
-        
+
         lines.append(f"{icon} **{diagnostic.error_type}**{location}")
         lines.append(f"   {diagnostic.message}")
-        
+
         # Suggestions
         if diagnostic.suggestions:
             lines.append("   **Suggestions:**")
             for suggestion in diagnostic.suggestions:
                 lines.append(f"   • {suggestion}")
-        
+
         # Auto-fix command
         if diagnostic.auto_fixable and diagnostic.fix_command:
             lines.append(f"   **Auto-fix:** `{diagnostic.fix_command}`")
-        
+
         return "\n".join(lines)
-    
-    def get_quick_fixes(self, error_output: str) -> List[Tuple[str, str]]:
+
+    def get_quick_fixes(self, error_output: str) -> list[tuple[str, str]]:
         """
         Get list of quick-fix commands for auto-fixable issues.
-        
+
         Returns:
             List of (description, command) tuples
         """
         diagnostics = self.analyze_error(error_output)
         fixes = []
-        
+
         for diag in diagnostics:
             if diag.auto_fixable and diag.fix_command:
                 fixes.append((diag.message, diag.fix_command))
-        
+
         # Add common fix commands
         if any(d.error_type == "unused_import" for d in diagnostics):
             fixes.append(("Fix all unused imports", "ruff check --fix --select=F401"))
-        
+
         if any(d.error_type == "line_too_long" for d in diagnostics):
             fixes.append(("Auto-format code", "ruff format"))
-        
+
         return list(set(fixes))  # Remove duplicates

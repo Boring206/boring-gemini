@@ -4,11 +4,11 @@ JSON Extraction and Parsing for Judge
 
 import json
 import logging
-from typing import Dict, Any, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
-def extract_json(response: str) -> Optional[Dict[str, Any]]:
+def extract_json(response: str) -> Optional[dict[str, Any]]:
     """Extract JSON from LLM response with robust parsing."""
     try:
         # Clean up markdown code blocks if present
