@@ -68,6 +68,7 @@ In `mcp_config.json` or IDE settings:
 |----------|-------------|----------|
 | [**Complete Tutorial**](docs/TUTORIAL.md) | Quick start, core workflows, practical examples | All developers |
 | [**Advanced Developer Guide**](docs/ADVANCED_TUTORIAL.md) | Architecture deep dive, tool development, internals | Senior developers |
+| [**Professional Playbook**](docs/PROFESSIONAL_PLAYBOOK.md) | Advanced usage, best practices, and expert workflows | Senior developers |
 | [**Tool Reference (Appendix A)**](docs/APPENDIX_A_TOOL_REFERENCE.md) | Complete 55 MCP tools reference | Quick lookup |
 | [**FAQ (Appendix B)**](docs/APPENDIX_B_FAQ.md) | Installation, troubleshooting, common questions | When encountering issues |
 | [**Prompt Design Philosophy (Appendix C)**](docs/APPENDIX_C_PROMPT_PHILOSOPHY.md) | Architect persona design principles | Prompt engineers |

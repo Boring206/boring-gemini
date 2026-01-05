@@ -68,6 +68,7 @@ pip install "boring[all]"
 |------|------|----------|
 | [**完整教程**](docs/TUTORIAL.md) | 快速入門、核心工作流程、實戰案例 | 所有開發者 |
 | [**進階開發者指南**](docs/ADVANCED_TUTORIAL.md) | 架構深度、Tool 開發、內部機制 | 資深開發者 |
+| [**專業實戰指南**](docs/PROFESSIONAL_PLAYBOOK.md) | 進階用法、最佳實踐與專家工作流 | 資深開發者 |
 | [**工具清單 (附錄 A)**](docs/APPENDIX_A_TOOL_REFERENCE.md) | 完整 55 個 MCP 工具參考 | 速查 |
 | [**FAQ (附錄 B)**](docs/APPENDIX_B_FAQ.md) | 安裝、疑難排解、常見問題 | 遇到問題時 |
 | [**Prompt 設計哲學 (附錄 C)**](docs/APPENDIX_C_PROMPT_PHILOSOPHY.md) | 架構師人設設計原則 | Prompt 工程師 |
