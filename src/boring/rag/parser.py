@@ -111,6 +111,26 @@ class TreeSitterParser:
                 type: (type_identifier) @name) @class
             (struct_item
                 name: (type_identifier) @name) @class
+        """,
+        "ruby": """
+            (method
+                name: (identifier) @name) @function
+            (class
+                name: (constant) @name) @class
+            (module
+                name: (constant) @name) @class
+            (singleton_method
+                name: (identifier) @name) @function
+        """,
+        "php": """
+            (function_definition
+                name: (name) @name) @function
+            (class_declaration
+                name: (name) @name) @class
+            (method_declaration
+                name: (name) @name) @method
+            (interface_declaration
+                name: (name) @name) @class
         """
     }
 
