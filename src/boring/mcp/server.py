@@ -12,7 +12,10 @@ interceptors.install_interceptors()
 from ..audit import audited  # Moved to top-level to avoid import issues in tests
 from . import instance
 from .prompts import register_prompts
+
+# Import legacy tools to trigger @mcp.tool registration
 from .tools.advanced import register_advanced_tools
+from .tools.discovery import register_discovery_resources
 
 # Import tools packages to trigger decorators
 from .utils import detect_project_root, get_project_root_or_error
@@ -68,6 +71,9 @@ def get_server_instance():
 
     # Register Advanced Tools (Security, Transactions, Background, Context)
     register_advanced_tools(instance.mcp)
+
+    # Register Discovery Resources
+    register_discovery_resources(instance.mcp)
 
     # Register Prompts
     register_prompts(instance.mcp)
@@ -126,6 +132,9 @@ def run_server():
 
     # 4. Register Advanced Tools (Security, Transactions, Background, Context)
     register_advanced_tools(instance.mcp)
+
+    # 5. Register Discovery Resources (Capabilities)
+    register_discovery_resources(instance.mcp)
 
     # Register Prompts
     register_prompts(instance.mcp)
