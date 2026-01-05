@@ -239,7 +239,7 @@ boring hooks uninstall  # 移除
 專案已包含 `.github/workflows/quality-gates.yml`，自動執行：
 
 ```yaml
-# 推送至 GitHub 後自動運行
+# 推送至 GitHub 後自動運行 (支援 GitHub Actions)
 Tier 1: Lint & Format     # ruff check, ruff format
 Tier 2: Security Scan     # bandit, safety  
 Tier 3: Unit Tests        # pytest --cov-fail-under=39
@@ -248,99 +248,72 @@ Tier 4: Integration Tests # 僅 main 分支
 
 ### 2. 專案配置 (.boring.toml)
 
-在專案根目錄創建 `.boring.toml` 自訂品質政策：
+在專案根目錄創建 `.boring.toml` 自訂品質政策，所有 MCP 工具都會自動讀取此配置。
 
 ```toml
 [boring.quality_gates]
 min_coverage = 40           # 最低覆蓋率
 max_complexity = 15         # 最大複雜度
 max_file_lines = 500        # 最大檔案行數
-
-[boring.linter_configs]
-python = { tool = "ruff", args = ["check", "--select=E,F,W"] }
-go = { tool = "golangci-lint", args = ["run", "--fast"] }
-
-[boring.polyglot]
-supported_languages = ["python", "javascript", "go", "rust"]
 ```
 
-### 3. 評估 Rubric (LLM Judge)
+### 3. 評估 Rubric (LLM Judge) `[MCP 支援: boring_evaluate]`
 
-使用標準化 Rubric 評估代碼：
+使用標準化 Rubric 評估代碼品質：
 
 ```bash
-# MCP 工具調用
+# MCP 工具調用範例
 boring_evaluate --target src/main.py --level DIRECT
-
-# 評估維度 (各 1-5 分)
-# - Readability (20%)
-# - Correctness (25%)
-# - Security (20%)
-# - Maintainability (20%)
-# - Testability (15%)
 ```
 
-### 4. 快速多語言檢查
+### 4. 快速多語言檢查 `[MCP 支援: boring_hooks_install]`
 
 ```bash
-# 安裝 Quick Check Hook
+# 安裝 Quick Check Hook (本地 Git Hook 強制執行)
 boring hooks install
-
-# 手動運行 (檢查已暫存檔案)
-git diff --cached --name-only | xargs ruff check  # Python
-git diff --cached --name-only | xargs eslint      # JS/TS
 ```
 
 ---
 
 ## 🆕 V10.15 新功能使用指南
 
-### 1. 增量驗證 (Git-based)
+### 1. 增量驗證 (Git-based) `[MCP 支援: boring_verify]`
 
 ```bash
-# 僅驗證 Git 變更的檔案
+# 僅驗證 Git 變更的檔案 (CLI)
 boring verify --incremental
 
-# 等同於 MCP 調用
-boring_verify --incremental=true
+# MCP 調用 (LLM 專用)
+boring_verify(incremental=true)
 ```
 
-### 2. 多專案 RAG 搜尋
+### 2. 多專案 RAG 搜尋 `[MCP 支援: boring_rag_search]`
 
 ```python
-# 跨專案搜尋
+# 跨專案搜尋 (MCP 參數)
 boring_rag_search(
     query="authentication middleware",
     additional_roots=["/path/to/other-project"]
 )
 ```
 
-### 3. 依賴圖視覺化
+### 3. 依賴圖視覺化 `[MCP 支援: boring_visualize]`
 
 ```bash
 # 生成 Mermaid 圖表
 boring_visualize --scope full --output mermaid
-
-# 輸出範例:
-# graph TD
-#   main.py --> auth.py
-#   auth.py --> db.py
 ```
 
-### 4. 並行審查 (Multi-Reviewer)
+### 4. 並行審查 (Multi-Reviewer) `[MCP 支援: boring_agent_review]`
 
 ```bash
 # 同時運行多個審查類別
 boring_agent_review --parallel
-
-# 並行審查類別:
-# - Security Review
-# - Performance Review  
-# - Correctness Review
-# - API Breakage Check
 ```
 
-### 5. VS Code 整合
+### 5. VS Code 整合 (JSON-RPC Server)
+
+**用途**：啟動一個本地服務，讓 VS Code 插件能直接與 Boring 核心通信，無需終端機即可實現「一鍵驗證」、「自動修復」等 IDE 功能。
 
 ```json
 // .vscode/settings.json
@@ -350,15 +323,13 @@ boring_agent_review --parallel
 }
 ```
 
-### 6. 錯誤診斷
+### 6. 錯誤診斷 (CLI 核心功能)
+
+自動分析錯誤並建議修復命令（目前整合在 `CodeVerifier` 流程中，自動在驗證失敗時觸發）。
 
 ```bash
-# 自動分析錯誤並建議修復
+# CLI 手動調用範例
 boring_diagnose --error "ModuleNotFoundError: No module named 'foo'"
-
-# 輸出:
-# 診斷: 缺少依賴
-# 建議: pip install foo
 ```
 
 
