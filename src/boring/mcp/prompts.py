@@ -34,30 +34,43 @@ Include:
         file_path: str = Field(default="src/", description="Path to the file to review"),
     ) -> str:
         """Generate a code review request."""
-        return f"""Please review the code in `{file_path}` for:
+        return f"""You are the Chief Architect reviewing code in `{file_path}`.
 
+**Review Checklist:**
 1. **Bugs**: Logic errors, edge cases, null checks
 2. **Security**: Injection, auth, data exposure
-3. **Performance**: Inefficiencies, memory leaks
-4. **Readability**: Naming, structure, documentation
-5. **Best practices**: SOLID, DRY, testing"""
+3. **Performance**: Inefficiencies, N+1 queries, memory leaks
+4. **🏛️ Architecture Smells**:
+   - God classes? Split them.
+   - Tight coupling? Introduce interfaces.
+   - Missing error handling? Add Circuit Breaker pattern.
+5. **Proactive Guidance**: If you see a naive pattern (e.g., synchronous API call in a loop), say:
+   "⚠️ **Architecture Risk**: This will timeout under load. Use async/batch processing."
+
+Be constructive but firm. Save the developer from future production incidents."""
 
     @mcp.prompt(name="debug_error", description="Help debug an error message")
     def debug_error(
         error_message: str = Field(default="Error: ...", description="The error message to debug"),
     ) -> str:
         """Generate a debugging request."""
-        return f"""Please help debug the following error:
+        return f"""You are a Senior Architect helping debug an issue.
 
+**Error:**
 ```
 {error_message}
 ```
 
-Analyze:
-1. Root cause
-2. Likely culprits
-3. Suggested fixes
-4. Prevention strategies"""
+**Your Analysis Must Include:**
+1. **Root Cause**: What exactly failed?
+2. **Likely Culprits**: Pinpoint the file/function.
+3. **Suggested Fix**: Provide exact code changes.
+4. **🏛️ Architecture Lesson**: 
+   - Why did this happen? (Design flaw? Missing abstraction?)
+   - How to prevent this class of errors permanently?
+   - Example: "This error happens because you're not using Dependency Injection. Refactor to inject the DB connection."
+
+Don't just fix the symptom—fix the root design issue."""
 
     @mcp.prompt(name="refactor_code", description="Request refactoring suggestions")
     def refactor_code(
@@ -175,29 +188,35 @@ Steps:
         idea: str = Field(default="Build a REST API", description="你想要建立什麼？用自然語言描述"),
     ) -> str:
         """One-click full development workflow for Vibe Coders."""
-        return f"""🚀 **Vibe Coding 模式啟動**
+        return f"""🚀 **Vibe Coding 模式啟動** (Architect-First Workflow)
 
 你的想法：{idea}
 
-請按順序執行以下步驟：
+⚠️ **重要**：我是你的「資深架構師導師」，不只是代碼生成器。我會在關鍵步驟提供架構建議。
 
 **Phase 1: 需求釐清**
 1. 使用 `speckit_clarify` 分析需求，產生 3-5 個釐清問題
-2. 等待我回答後繼續
+2. 等待你回答後繼續
 
-**Phase 2: 規劃**
+**Phase 2: 架構規劃 (Architect Checkpoint ✅)**
 3. 使用 `speckit_plan` 根據需求生成實作計畫
-4. 使用 `speckit_tasks` 將計畫拆解為任務清單
-5. 將計畫展示給我確認
+4. 🏛️ **架構審查**：我會檢查計畫中的潛在設計問題（如過度耦合、缺少抽象層）
+5. 使用 `speckit_tasks` 將計畫拆解為任務清單
+6. 將計畫展示給你確認
 
 **Phase 3: 執行**
-6. 確認後，使用 `boring_multi_agent(task='{idea}')` 執行開發
+7. 確認後，使用 `boring_multi_agent(task='{idea}')` 執行開發
+8. 🏛️ **代碼審查**：每個模組完成後，我會以架構師視角提供改進建議
 
-**Phase 4: 驗證**
-7. 開發完成後，使用 `boring_verify(level='FULL')` 驗證程式碼品質
-8. 如有問題，使用 `boring_auto_fix` 自動修復
+**Phase 4: 驗證 & 品質**
+9. 開發完成後，使用 `boring_verify(level='FULL')` 驗證程式碼品質
+10. 使用 `boring_security_scan` 執行安全掃描
+11. 如有問題，使用 `boring_auto_fix` 自動修復
 
-完成後提供摘要報告。
+完成後提供摘要報告，包含：
+- 已實作功能清單
+- 🏛️ 架構決策記錄 (ADR)
+- 潛在改進建議
 """
 
     @mcp.prompt(name="quick_fix", description="自動修復所有程式碼問題：Lint、格式、測試錯誤")
