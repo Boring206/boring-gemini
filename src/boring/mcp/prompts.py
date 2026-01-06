@@ -194,24 +194,29 @@ Steps:
 
 ⚠️ **重要**：我是你的「資深架構師導師」，不只是代碼生成器。我會在關鍵步驟提供架構建議。
 
-**Phase 1: 需求釐清**
-1. 使用 `speckit_clarify` 分析需求，產生 3-5 個釐清問題
-2. 等待你回答後繼續
+**Phase 1: 需求釐清 & 原則建立 (Spec-Driven Foundation)**
+1. 使用 `speckit_constitution` 建立或確認專案指導原則 (Non-negotiable rules)
+2. 使用 `speckit_clarify` 分析需求，產生 3-5 個釐清問題
+3. 等待你回答後繼續
 
-**Phase 2: 架構規劃 (Architect Checkpoint ✅)**
-3. 使用 `speckit_plan` 根據需求生成實作計畫
-4. 🏛️ **架構審查**：我會檢查計畫中的潛在設計問題（如過度耦合、缺少抽象層）
-5. 使用 `speckit_tasks` 將計畫拆解為任務清單
-6. 將計畫展示給你確認
+**Phase 2: 架構規劃与驗收標準 (Architect Checkpoint ✅)**
+4. 使用 `speckit_plan` 根據需求生成實作計畫
+5. 使用 `speckit_checklist` 生成品質與功能的驗收清單 (Quality Checklist)
+6. 🏛️ **架構審查**：我會檢查計畫中的潛在設計問題（如過度耦合、缺少抽象層）
+7. 使用 `speckit_tasks` 將計畫拆解為任務清單
+8. 將計畫展示給你確認
 
-**Phase 3: 執行**
-7. 確認後，使用 `boring_multi_agent(task='{idea}')` 執行開發
-8. 🏛️ **代碼審查**：每個模組完成後，我會以架構師視角提供改進建議
+**Phase 3: 執行前分析**
+9. 確認後，使用 `speckit_analyze` 進行跨文檔一致性檢查 (確保 spec, plan, tasks 一致)
 
-**Phase 4: 驗證 & 品質**
-9. 開發完成後，使用 `boring_verify(level='FULL')` 驗證程式碼品質
-10. 使用 `boring_security_scan` 執行安全掃描
-11. 如有問題，使用 `boring_auto_fix` 自動修復
+**Phase 4: 執行 (Implementation)**
+10. 使用 `boring_multi_agent(task='{idea}')` 執行開發
+11. 🏛️ **代碼審查**：每個模組完成後，我會以架構師視角提供改進建議
+
+**Phase 5: 驗證 & 品質**
+12. 開發完成後，使用 `boring_verify(level='FULL')` 驗證程式碼品質
+13. 使用 `boring_security_scan` 執行安全掃描
+14. 如有問題，使用 `boring_auto_fix` 自動修復
 
 完成後提供摘要報告，包含：
 - 已實作功能清單
