@@ -7,15 +7,16 @@ Tests for:
 - ENABLED mode blocking HIGH/CRITICAL only
 """
 
-import pytest
-from pathlib import Path
-import tempfile
 import shutil
+import tempfile
+from pathlib import Path
+
+import pytest
 
 from boring.shadow_mode import (
+    OperationSeverity,
     ShadowModeGuard,
     ShadowModeLevel,
-    OperationSeverity,
     create_shadow_guard,
 )
 
@@ -35,10 +36,12 @@ class TestStrictModeEnforcement:
         """STRICT mode should block even LOW severity writes."""
         guard = ShadowModeGuard(temp_project, mode=ShadowModeLevel.STRICT)
 
-        pending = guard.check_operation({
-            "name": "write_file",
-            "args": {"file_path": "test.py", "content": "print('hello')"},
-        })
+        pending = guard.check_operation(
+            {
+                "name": "write_file",
+                "args": {"file_path": "test.py", "content": "print('hello')"},
+            }
+        )
 
         assert pending is not None, "STRICT mode should block LOW severity writes"
         assert pending.severity == OperationSeverity.LOW
@@ -47,10 +50,12 @@ class TestStrictModeEnforcement:
         """STRICT mode should block shell commands."""
         guard = ShadowModeGuard(temp_project, mode=ShadowModeLevel.STRICT)
 
-        pending = guard.check_operation({
-            "name": "shell",
-            "args": {"command": "rm -rf test/"},
-        })
+        pending = guard.check_operation(
+            {
+                "name": "shell",
+                "args": {"command": "rm -rf test/"},
+            }
+        )
 
         assert pending is not None, "STRICT mode should block shell commands"
         assert pending.severity == OperationSeverity.HIGH
@@ -59,10 +64,12 @@ class TestStrictModeEnforcement:
         """STRICT mode should block search/replace operations."""
         guard = ShadowModeGuard(temp_project, mode=ShadowModeLevel.STRICT)
 
-        pending = guard.check_operation({
-            "name": "search_replace",
-            "args": {"file_path": "main.py", "search": "old", "replace": "new"},
-        })
+        pending = guard.check_operation(
+            {
+                "name": "search_replace",
+                "args": {"file_path": "main.py", "search": "old", "replace": "new"},
+            }
+        )
 
         assert pending is not None, "STRICT mode should block search/replace"
 
@@ -107,10 +114,12 @@ class TestEnabledModeEnforcement:
         """ENABLED mode should auto-approve LOW severity operations."""
         guard = ShadowModeGuard(temp_project, mode=ShadowModeLevel.ENABLED)
 
-        pending = guard.check_operation({
-            "name": "write_file",
-            "args": {"file_path": "test.py", "content": "print('hello')"},
-        })
+        pending = guard.check_operation(
+            {
+                "name": "write_file",
+                "args": {"file_path": "test.py", "content": "print('hello')"},
+            }
+        )
 
         assert pending is None, "ENABLED mode should auto-approve LOW severity"
 
@@ -118,10 +127,12 @@ class TestEnabledModeEnforcement:
         """ENABLED mode should block HIGH severity operations."""
         guard = ShadowModeGuard(temp_project, mode=ShadowModeLevel.ENABLED)
 
-        pending = guard.check_operation({
-            "name": "delete_file",
-            "args": {"file_path": "important.py"},
-        })
+        pending = guard.check_operation(
+            {
+                "name": "delete_file",
+                "args": {"file_path": "important.py"},
+            }
+        )
 
         assert pending is not None, "ENABLED mode should block file deletion"
         assert pending.severity == OperationSeverity.HIGH
@@ -130,10 +141,12 @@ class TestEnabledModeEnforcement:
         """ENABLED mode should block shell commands (HIGH severity)."""
         guard = ShadowModeGuard(temp_project, mode=ShadowModeLevel.ENABLED)
 
-        pending = guard.check_operation({
-            "name": "run_command",
-            "args": {"command": "rm -rf *"},
-        })
+        pending = guard.check_operation(
+            {
+                "name": "run_command",
+                "args": {"command": "rm -rf *"},
+            }
+        )
 
         assert pending is not None, "ENABLED mode should block shell commands"
 
@@ -146,15 +159,19 @@ class TestDisabledMode:
         guard = ShadowModeGuard(temp_project, mode=ShadowModeLevel.DISABLED)
 
         # Test file deletion
-        pending = guard.check_operation({
-            "name": "delete_file",
-            "args": {"file_path": "critical.py"},
-        })
+        pending = guard.check_operation(
+            {
+                "name": "delete_file",
+                "args": {"file_path": "critical.py"},
+            }
+        )
         assert pending is None, "DISABLED mode should auto-approve deletions"
 
         # Test shell command
-        pending = guard.check_operation({
-            "name": "shell",
-            "args": {"command": "rm -rf /"},
-        })
+        pending = guard.check_operation(
+            {
+                "name": "shell",
+                "args": {"command": "rm -rf /"},
+            }
+        )
         assert pending is None, "DISABLED mode should auto-approve shell commands"
