@@ -1,5 +1,25 @@
 # Changelog
 
+## [10.16.1] - 2026-01-06 - MCP Improvements
+
+### Fixed
+- **RAG Import**: Added import error tracking for better diagnostics when RAG module fails to load
+- **Plugin List**: Shows helpful hints and searched directories when no plugins are found
+
+### Changed
+- **Agent Tool Descriptions**: Updated MCP descriptions to clearly indicate tools are `[PROMPT GENERATOR]` not autonomous agents
+  - `boring_multi_agent`: Returns workflow prompts for manual execution
+  - `boring_agent_plan`: Returns architecture planning prompt
+  - `boring_agent_review`: Returns code review prompt
+  - `boring_delegate`: Labeled as `[SEMANTIC ROUTER]` for task delegation
+
+### Documentation
+- Added "Two Usage Modes" section to README (MCP/Smithery vs `boring start`)
+- Clarified `boring-setup` requirement for `boring start` mode
+- Updated practical demo with mode comparison table
+
+---
+
 ## [10.16.0] - 2026-01-05 - Vibe Coding & Enterprise Architecture
 
 ### Added

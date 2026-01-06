@@ -11,12 +11,17 @@ from pydantic import Field
 
 from boring.rag import RAGRetriever, create_rag_retriever
 
+# Import error tracking for better diagnostics
+_RAG_IMPORT_ERROR = None
+
 # Singleton retriever instance (per project)
 _retrievers: dict = {}
 
 
 def get_retriever(project_root: Path) -> RAGRetriever:
     """Get or create RAG retriever for a project."""
+    if create_rag_retriever is None:
+        raise ImportError(f"RAG module not available: {_RAG_IMPORT_ERROR}")
     key = str(project_root)
     if key not in _retrievers:
         _retrievers[key] = create_rag_retriever(project_root)

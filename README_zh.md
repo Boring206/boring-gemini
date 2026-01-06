@@ -188,7 +188,7 @@ Boring V10.16 採用 **動態發現架構**，解決了工具過多導致的 Con
 | **Profile** | `boring_profile` | 用戶偏好與跨專案學習 |
 | **Verification** | `boring_verify` | 多層級程式碼驗證 (Basic/Standard/Full) |
 | **RAG Memory** | `boring_rag_search` | 語義搜尋與依賴上下文檢索 |
-| **Agents** | `boring_multi_agent` | Architect/Coder/Reviewer 多代理協作 |
+| **Agents** | `boring_multi_agent` | **[提示生成器]** 返回 Architect/Coder/Reviewer 工作流程提示（非自主執行） |
 | **Shadow** | `boring_shadow_mode` | 高風險操作安全沙箱 |
 | **Git** | `boring_commit` | 從 task.md 自動生成語義化 commit 訊息 (供 `smart_commit` 使用) |
 | **Workspace** | `boring_workspace_switch` | 多專案工作區切換 |
