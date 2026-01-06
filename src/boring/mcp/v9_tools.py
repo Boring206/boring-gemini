@@ -55,7 +55,7 @@ def register_v9_tools(mcp, audited, helpers):
 
         # Categorize plugins
 
-        # Plugins are loaded above. 
+        # Plugins are loaded above.
         # Built-in tools are separate from user plugins.
 
         return {
