@@ -404,7 +404,7 @@ jobs:
 ## Next Steps
 
 1. **Explore**: Run `boring://capabilities` to see all available tools
-2. **Experiment**: Try `boring_multi_agent(task="...")` on a sample project
+2. **Experiment**: Try `boring_multi_agent(task="...", execute=True)` to run in background (Use with caution!)
 3. **Extend**: Create a custom plugin in `.boring_plugins/`
 4. **Contribute**: See `CONTRIBUTING.md` for development guidelines
 

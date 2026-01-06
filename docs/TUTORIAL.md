@@ -167,7 +167,7 @@ boring_agent_review(file_paths="src/auth/")
 用自然語言搜尋程式碼:
 
 ```python
-# 建立索引 (第一次執行)
+# 建立索引 (第一次執行，需安裝 chromadb)
 boring_rag_index()
 
 # 搜尋
