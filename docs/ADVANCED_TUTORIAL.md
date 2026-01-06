@@ -303,6 +303,32 @@ boring_delegate(
 
 ---
 
+## 13. Team Knowledge & Portability (Brain)
+### The `.boring_brain/` Directory
+The "Shared Brain" of your project. It contains portable knowledge that can be committed to Git and shared across your team.
+
+| Subdirectory/File | Content | Portable? | Purpose |
+|-------------------|---------|-----------|---------|
+| `patterns.json` | Learned coding styles | ✅ YES | Teaches AI your team's specific coding patterns |
+| `rubrics/*.yaml` | Evaluation standards | ✅ YES | Standardizes code review criteria across team |
+| `quality_history.json` | Quality scores | ⚠️ NO | Project-specific history (don't copy to new repos) |
+
+### Porting Knowledge
+To transfer AI knowledge to a new project:
+1. **Copy** `.boring_brain/patterns.json`
+2. **Copy** `.boring_brain/rubrics/`
+3. **Commit** to the new repo
+4. **Result**: AI immediately adopts your team's coding style and review standards.
+
+### Learning Patterns (`boring_learn`)
+AI learns from *your* modifications.
+1. You fix a bug or refactor code in your preferred style.
+2. Run `/learn_patterns` (or `boring_learn`).
+3. AI compares `HEAD` vs `HEAD~1`, extracts the "diff pattern", and saves it.
+4. **Next time**: AI applies this pattern automatically.
+
+---
+
 ## 11. Smithery Deployment
 
 ### smithery.yaml
@@ -362,6 +388,7 @@ jobs:
 
 | Category | Key Tools |
 |----------|-----------|
+| **Knowledge** | `boring_learn`, `boring_create_rubrics` |
 | **Verification** | `boring_verify`, `boring_auto_fix` |
 | **Security** | `boring_security_scan` |
 | **Transactions** | `boring_transaction_start`, `boring_rollback` |

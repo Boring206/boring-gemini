@@ -75,6 +75,26 @@
 
 ---
 
+## 進階技巧：AI 知識庫管理 (Brain Management)
+
+Boring 的核心大腦位於 `.boring_brain/`，這是你可以「打包帶走」的智慧。
+
+### 1. 教會 AI 你的 Code Style (`/learn_patterns`)
+當 AI 寫出的代碼不符合你的習慣時，**不要只在這次對話中糾正它**。
+1. **手動修改**代碼成你喜歡的樣子。
+2. 執行 `/learn_patterns`。
+3. AI 會分析你的修改，學會「喔！原來這個專案要這樣寫」。
+4. **永久生效**：以後它都會這樣寫。
+
+### 2. 移植大腦到新專案 (Brain Portability)
+想在新專案沿用舊專案的習慣？
+1. 複製 `.boring_brain/patterns.json` (代碼風格)。
+2. 複製 `.boring_brain/rubrics/` (評分標準)。
+3. 貼到新專案的同名資料夾。
+4. **完成**：新專案的 AI 瞬間擁有 5 年資深工程師的經驗。
+
+---
+
 ## 專家案例：重構一個 API
 
 ```markdown
