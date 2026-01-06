@@ -24,6 +24,7 @@
 ### Changed
 - **Tool Registration**: `server.py` now uses module-level imports and dynamic registration.
 - **Architecture**: Moved to a "Discovery-First" architecture for MCP interaction.
+- **Workflow Integration**: `smart_commit` prompt now explicitly uses `boring_commit` tool for auto-generating semantic commit messages from `task.md`.
 
 ## [10.15.0] - 2026-01-05
 ### Added

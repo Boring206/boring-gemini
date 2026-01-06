@@ -152,7 +152,7 @@ To reduce context consumption, we consolidated 50+ tools into 14 high-level entr
 | **RAG Memory** | `boring_rag_search` | Semantic search and dependency context retrieval |
 | **Agents** | `boring_multi_agent` | Architect/Coder/Reviewer multi-agent collaboration |
 | **Shadow** | `boring_shadow_mode` | Safe sandbox for high-risk operations |
-| **Git** | `boring_commit` | Automated Git Hooks and semantic commits |
+| **Git** | `boring_commit` | Semantic commit message generation from task.md (used by `smart_commit` prompt) |
 | **Workspace** | `boring_workspace_switch` | Multi-project workspace switching |
 | **Knowledge** | `boring_learn` | Project knowledge extraction and storage |
 | **Plugins** | `boring_run_plugin` | External plugin execution |
