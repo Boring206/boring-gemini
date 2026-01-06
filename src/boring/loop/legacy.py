@@ -570,19 +570,16 @@ Output the corrected full file content.
             console.print("[bold yellow]Attempting Self-Correction via SDK...[/bold yellow]")
             response, success = self.gemini_client.generate_with_retry(prompt=correction_prompt)
             if success:
-                # Backup again? Yes, always backup before write.
-                process_gemini_output(
-                    output_file=self.log_dir
-                    / f"correction_loop_{loop_count}.log",  # Write to temp file first?
-                    project_root=settings.PROJECT_ROOT,
-                    log_dir=self.log_dir,
-                    loop_id=loop_count,
-                )
                 # We manually write the response to a file so process_gemini_output can read it
                 corr_file = self.log_dir / f"correction_loop_{loop_count}.log"
                 corr_file.write_text(response, encoding="utf-8")
+
+                # Backup again? Yes, always backup before write.
                 process_gemini_output(
-                    corr_file, settings.PROJECT_ROOT, self.log_dir, loop_id=loop_count
+                    output_file=corr_file,
+                    project_root=settings.PROJECT_ROOT,
+                    log_dir=self.log_dir,
+                    loop_id=loop_count,
                 )
 
     def _create_format_feedback(self) -> str:
