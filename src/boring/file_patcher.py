@@ -161,26 +161,19 @@ def _write_file(
     guard = get_shadow_guard(project_root)
     full_path = project_root / file_path
     action = "created" if not full_path.exists() else "modified"
-    
+
     # Register operation with guard
-    op_args = {
-        "file_path": str(file_path),
-        "content_length": len(content),
-        "action": action
-    }
-    
+    op_args = {"file_path": str(file_path), "content_length": len(content), "action": action}
+
     # We use a blocking check. If it requires approval, we fail the operation
     # but provide instructions on how to approve it.
-    pending = guard.check_operation({
-        "name": "write_file",
-        "args": op_args
-    })
+    pending = guard.check_operation({"name": "write_file", "args": op_args})
 
     if pending:
         # If enabled/strict mode caught this, we must block immediate execution
         # unless it was pre-approved (not implemented yet in this flow).
         # For CLI usage, we might output a prompt. For MCP, we return failure.
-        
+
         # Check if we can auto-approve? (Guard handles low severity auto-approval)
         if not guard.request_approval(pending):
             msg = (
@@ -225,14 +218,16 @@ def _search_replace(
 
     # 2. Shadow Mode Enforcement
     guard = get_shadow_guard(project_root)
-    pending = guard.check_operation({
-        "name": "search_replace",
-        "args": {
-            "file_path": str(file_path),
-            "search_snippet": search[:50],
-            "replace_snippet": replace[:50]
+    pending = guard.check_operation(
+        {
+            "name": "search_replace",
+            "args": {
+                "file_path": str(file_path),
+                "search_snippet": search[:50],
+                "replace_snippet": replace[:50],
+            },
         }
-    })
+    )
 
     if pending:
         if not guard.request_approval(pending):
