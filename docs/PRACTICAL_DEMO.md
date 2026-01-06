@@ -397,21 +397,66 @@ Boring:
 
 ## 🚀 馬上開始
 
+### 🎮 方式 1：MCP/Smithery（推薦！最簡單）
+
+直接在 **Gemini CLI** 或 **Cursor** 中使用，無需額外設定：
+
 ```bash
-# 安裝
+# 安裝到 Gemini CLI
+npx -y @smithery/cli@latest install boring/boring --client gemini-cli
+```
+
+然後在 Gemini CLI 中直接對話：
+```
+你: "幫我建立一個 FastAPI 認證服務"
+Boring: 「好的，讓我先問你幾個問題...」
+```
+
+✅ **不需要** `PROMPT.md`  
+✅ **不需要** `boring-setup`  
+✅ 互動式對話，隨時可停
+
+---
+
+### 🤖 方式 2：自主循環模式（進階用戶）
+
+用於 **全自動、長時間** 開發任務，在 CMD/PowerShell 中執行：
+
+```bash
+# Step 1: 安裝 (只需一次)
 pip install boring-aicoding
 
-# 或使用 Smithery (推薦)
-npx -y @smithery/cli@latest install boring/boring --client gemini-cli
-
-# 開始你的第一個專案
+# Step 2: 建立專案結構 (只有這種模式需要 boring-setup！)
 boring-setup my-awesome-app
 cd my-awesome-app
 
-# 讓 AI 帶你飛
-boring start
-> /vibe_start 建立一個...
+# Step 3: 編輯 PROMPT.md，告訴 AI 要做什麼
+# Step 4: 啟動自主循環
+boring start                         # 使用自動偵測的 CLI
+boring start --provider claude-code  # 使用 Claude Code CLI
+boring start --provider gemini-cli   # 使用 Gemini CLI
 ```
+
+**`boring-setup` 做了什麼？**
+```
+my-awesome-app/
+├── PROMPT.md      # ✅ 必要 - 你要寫的任務說明
+├── @fix_plan.md   # 任務清單
+├── GEMINI.md      # 專案說明
+└── .boring_brain/ # AI 知識庫
+```
+
+---
+
+### 📊 兩種方式比較
+
+| | MCP/Smithery | `boring start` |
+|--|--------------|----------------|
+| 需要 `boring-setup` | ❌ 不需要 | ✅ 需要 |
+| 需要 `PROMPT.md` | ❌ 不需要 | ✅ 需要 |
+| 運行方式 | 對話式 | 全自動循環 |
+| 適合場景 | 互動開發 | 長時間自動開發 |
+| 中斷方式 | 隨時 | Ctrl+C |
 
 ---
 

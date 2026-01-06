@@ -62,6 +62,46 @@ In `mcp_config.json` or IDE settings:
 
 ---
 
+## 🎮 Two Usage Modes
+
+### Mode 1: MCP/Smithery (Recommended for most users)
+
+Use Boring tools directly inside **Gemini CLI**, **Cursor**, or **Claude Desktop**:
+
+```
+You (in Gemini CLI): "Help me build a FastAPI auth service"
+                     or
+                     "/vibe_start Build an auth service"
+
+Gemini + Boring: "Sure! Let me ask a few questions first..."
+```
+
+✅ No `PROMPT.md` required  
+✅ Interactive conversation  
+✅ Works with any MCP-compatible client
+
+### Mode 2: Autonomous Loop (`boring start`)
+
+For **long-running, fully automated development** via CLI:
+
+```bash
+# Requires PROMPT.md in project root
+boring start                      # Use auto-detected CLI
+boring start --provider claude-code  # Use Claude Code CLI
+boring start --provider gemini-cli   # Use Gemini CLI
+boring run "Fix all lint errors"     # One-shot command
+```
+
+**Required files for `boring start`:**
+```
+your-project/
+├── PROMPT.md      # ✅ Required - Instructions for AI
+├── @fix_plan.md   # Optional - Task checklist
+└── GEMINI.md      # Optional - Project context
+```
+
+---
+
 ## 📚 Complete Documentation
 
 ### Tutorials & Guides
