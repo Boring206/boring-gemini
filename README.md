@@ -217,13 +217,15 @@ Two monitoring options for terminal lovers and visual dashboards:
 
 ## 💡 Pro Tips
 
-### Tip 1: SpecKit Trilogy
+### Tip 1: SpecKit Workflow (5 Steps)
 
-Before writing code, execute in order:
+Before writing code, Boring guides you through:
 
-1. `speckit_clarify` → Clarify requirements
-2. `speckit_plan` → Create plan
-3. `speckit_checklist` → Build acceptance criteria
+1. `speckit_constitution` → Establish Principles (Constitution)
+2. `speckit_clarify` → Clarify Requirements
+3. `speckit_plan` → Create Implementation Plan
+4. `speckit_checklist` → Build Acceptance Criteria
+5. `speckit_analyze` → Verify Consistency (Spec vs Plan)
 
 > **"Measure Twice, Cut Once"** - AI implementation!
 

@@ -217,13 +217,15 @@ boring templates list
 
 ## 💡 Pro Tips
 
-### Tip 1: SpecKit 三部曲
+### Tip 1: SpecKit 完整流程 (五部曲)
 
-開始寫程式碼前，依序執行：
+開始寫程式碼前，Boring 會帶你走過：
 
-1. `speckit_clarify` → 釐清需求
-2. `speckit_plan` → 制定計畫
-3. `speckit_checklist` → 建立驗收標準
+1. `speckit_constitution` → 確立原則 (憲法)
+2. `speckit_clarify` → 釐清需求
+3. `speckit_plan` → 制定計畫
+4. `speckit_checklist` → 建立驗收標準
+5. `speckit_analyze` → 一致性分析 (Spec vs Plan)
 
 > **"Measure Twice, Cut Once"** 的 AI 實踐！
 
