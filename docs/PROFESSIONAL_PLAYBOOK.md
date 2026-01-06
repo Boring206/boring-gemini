@@ -70,7 +70,7 @@
 | **系統狀態監控** | `/system_status` | Status + Progress |
 | **架構視覺化** | `/visualize` | Mermaid Diagrams |
 | **查看 AI 記憶** | `/project_brain` | Brain Summary |
-| **智能提交** | `/smart_commit` | Git + Conventional Commits |
+| **智能提交** | `/smart_commit` | boring_verify + boring_commit |
 | **專案健檢** | `/vibe_check` | Vibe Score & Health |
 | **效能優化分析** | `/optimize_performance` | Arch Evaluation |
 | **學習專案模式** | `/learn_patterns` | boring_learn |
@@ -94,8 +94,11 @@ Vibe Coding 的精髓在於「Flow」。不要被細節卡住，用高層次指�
 ### 2. 智能提交 (`/smart_commit`)
 寫完功能懶得寫 Commit Message？
 - `boring run "/smart_commit"`
-- AI 會自動分析 `git diff`，寫出符合 Conventional Commits 規範的訊息（如 `feat(auth): add jwt support`）。
+- AI 會先執行 `boring_verify` 驗證品質
+- 若無指定訊息，自動呼叫 `boring_commit` 從 `task.md` 提取已完成任務，生成 Conventional Commits 格式（如 `feat(auth): add jwt support`）
 - **Flow 不中斷**。
+
+💡 **架構說明**：`boring_commit` 是底層 Tool，`smart_commit` 是組合流程 (Verify → Commit → Push)。
 
 ### 3. Vibe Check (`/vibe_check`)
 覺得專案哪裡怪怪的？

@@ -477,24 +477,44 @@ Run test suite without blocking:
 
     # --- Git & Workspace Prompts ---
 
-    @mcp.prompt(name="smart_commit", description="Smart commit with verification and optional push")
+    @mcp.prompt(
+        name="smart_commit",
+        description="Smart commit with verification, auto-message generation, and optional push",
+    )
     def smart_commit(
         message: str = Field(default="", description="Commit message (optional)"),
         push: bool = Field(default=False, description="Push after commit?"),
     ) -> str:
-        """Smart Git Commit."""
-        return f"""🧠 **Smart Commit**
+        """Smart Git Commit with boring_commit integration."""
+        return f"""🧠 **Smart Commit** (Quality-First Git Workflow)
 
-Message: {message if message else "(auto-generate)"}
+Message: {message if message else "(auto-generate from task.md)"}
 Push: {push}
 
-1. Run `boring_verify(level='STANDARD')`
-2. If passed:
-   - Run `git status`
-   - If nothing staged, ask to stage (`git add .`)
-   - If message provided: Use it.
-   - Else: Generate **Conventional Commit** message -> Confirm -> Commit.
+**Workflow:**
+
+1. **Verify First**
+   - Run `boring_verify(level='STANDARD')` to check code quality
+   - If verification fails, stop and report errors
+
+2. **Stage Changes**
+   - Run `git status` to check current state
+   - If nothing staged, ask user: "Stage all changes with `git add .`?"
+
+3. **Generate Commit Message**
+   - If message provided: Use `"{message}"` directly
+   - If no message: Use `boring_commit()` to auto-generate from `task.md`
+     - This extracts completed tasks `[x]` and creates a Conventional Commit message
+   - Show generated message and ask for confirmation
+
+4. **Commit**
+   - Execute `git commit -m "<message>"`
+
+5. **Push (Optional)**
    - If push=True: Run `git push`
+   - Report success or failure
+
+💡 **Tip**: `boring_commit` reads from `task.md`, so keep your tasks updated!
 """
 
     @mcp.prompt(name="switch_project", description="Switch to a different project in the workspace")
