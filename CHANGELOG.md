@@ -1,5 +1,14 @@
 # Changelog
 
+## [10.16.3] - 2026-01-06 - Security & Stability
+### Fixed
+- **Shadow Mode Security**: Enforced Shadow Mode checks on `boring_apply_patch`, `boring_extract_patches`, and `boring_multi_agent`. ALL file writes are now intercepted.
+- **Transaction Hangs**: Fixed git transaction freeze by forcing non-interactive mode (`GIT_TERMINAL_PROMPT=0`).
+
+## [10.16.2] - 2026-01-06 - RAG Hotfix
+### Fixed
+- **RAG Environment**: Auto-inject user site-packages into `sys.path` to fix "module not found" errors for user-installed dependencies (`chromadb`).
+
 ## [10.16.1] - 2026-01-06 - MCP Improvements
 
 ### Fixed
