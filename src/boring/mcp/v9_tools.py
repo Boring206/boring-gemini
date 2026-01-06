@@ -54,8 +54,6 @@ def register_v9_tools(mcp, audited, helpers):
         plugin_dirs = [str(d) for d in loader.plugin_dirs]
 
         # Categorize plugins
-        user_plugins = []
-        builtin_plugins = []
 
         for name, _ in plugins.items():
             # Heuristic: Built-in plugins usually don't have a file path in the simplified list,

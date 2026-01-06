@@ -366,9 +366,16 @@ boring hooks uninstall  # Remove
 ## 🆕 V10.16.3 New Features (Security & Stability)
 
 ### 1. Enhanced Shadow Mode 🛡️
-**Strict Enforcement**: Shadow Mode now intercepts **ALL** file write operations, including patch applications and agent execution.
-- **Default**: Blocks critical/high-risk ops (deletions, secrets).
-- **Strict**: Blocks ALL writes for maximum safety (`boring_shadow_mode("STRICT")`).
+**What is Shadow Mode?**
+Shadow Mode is the security core of Boring, acting as a **mandatory interception layer** between the AI and your file system.
+- **Function**: It intercepts all destructive operations (e.g., file writes, deletions, command execution).
+- **Workflow**: AI requests operation -> Shadow Mode evaluates impact -> Puts in pending queue -> Requires YOUR approval (`boring_shadow_approve`) to execute.
+- **Strict Enforcement**: In v10.16.3, we patched all bypasses. Even background agent patches or minor edits require approval if you are in `STRICT` mode.
+
+**Three Modes:**
+- **DISABLED** (⚠️ Risky): No interception. For isolated containers only.
+- **ENABLED** (🛡️ Default): Auto-approves low-risk ops (reads), blocks high-risk ops.
+- **STRICT** (🔒 Secure): Intercepts **ALL** write operations. Highest security level.
 
 ### 2. Robust Transactions 💾
 **Non-Interactive Git**: `boring_transaction` now automatically bypasses GPG/credential prompts, preventing CI hangs.
