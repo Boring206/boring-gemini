@@ -8,7 +8,7 @@
 
 ### Changed
 - **Agent Tool Descriptions**: Updated MCP descriptions to clearly indicate tools are `[PROMPT GENERATOR]` not autonomous agents
-  - `boring_multi_agent`: Returns workflow prompts for manual execution
+  - `boring_multi_agent`: Added `execute=True` option to run workflow in background (Danger Zone)
   - `boring_agent_plan`: Returns architecture planning prompt
   - `boring_agent_review`: Returns code review prompt
   - `boring_delegate`: Labeled as `[SEMANTIC ROUTER]` for task delegation

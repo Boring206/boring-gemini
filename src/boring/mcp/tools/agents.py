@@ -20,6 +20,9 @@ from ..utils import get_project_root_or_error
 @audited
 def boring_multi_agent(
     task: Annotated[str, Field(description="What to build/fix (detailed description)")],
+    execute: Annotated[
+        bool, Field(description="[DANGEROUS] Execute the workflow immediately in background (default False)")
+    ] = False,
     auto_approve_plans: Annotated[
         bool, Field(description="Skip human approval for plans (default False)")
     ] = False,
@@ -29,18 +32,34 @@ def boring_multi_agent(
 ) -> dict:
     """
     Return CLI commands for multi-agent workflow: Architect → Coder → Reviewer.
-
-    This tool returns a structured template with CLI commands to execute.
-    The actual AI execution happens in your IDE or Gemini CLI, not internally.
-
+    
     Args:
-        task: What to build/fix (detailed description)
-        auto_approve_plans: Skip human approval for plans (default False)
+        task: What to build/fix
+        execute: [DANGEROUS] Execute the workflow immediately in background
+        auto_approve_plans: Skip human approval for plans
         project_path: Optional explicit path to project root
     """
     project_root, error = get_project_root_or_error(project_path)
     if error:
         return error
+
+    if execute:
+        try:
+            import subprocess
+            import sys
+            
+            # Run 'boring run' in background
+            cmd = [sys.executable, "-m", "boring.main", "run", task, "--backend", "cli"]
+            pid = subprocess.Popen(cmd, cwd=str(project_root)).pid
+            
+            return {
+                "status": "EXECUTING",
+                "pid": pid,
+                "message": f"🚀 Background process started (PID: {pid})\nCommand: {' '.join(cmd)}",
+                "warning": "This process is running on the host machine. Monitor output via 'boring-monitor'."
+            }
+        except Exception as e:
+            return {"status": "ERROR", "message": f"Failed to execute: {e}"}
 
     # Build multi-step CLI workflow
     steps = [
