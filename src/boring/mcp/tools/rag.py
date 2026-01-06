@@ -21,7 +21,7 @@ try:
     from boring.rag import RAGRetriever, create_rag_retriever
 
     _RAG_IMPORT_ERROR = None
-except ImportError as e:
+except ImportError:
     # Attempt to bridge isolated environments (e.g. MCP running in embedded Python)
     import site
     import sys
@@ -41,6 +41,7 @@ except ImportError as e:
     try:
         import chromadb  # noqa: F401
         from sentence_transformers import SentenceTransformer  # noqa: F401
+
         from boring.rag import RAGRetriever, create_rag_retriever
 
         _RAG_IMPORT_ERROR = None
