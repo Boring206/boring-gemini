@@ -83,7 +83,9 @@ class VectorMemory:
                 )
             else:
                 # Use modern EphemeralClient for in-memory mode
-                self.client = chromadb.EphemeralClient(settings=ChromaSettings(anonymized_telemetry=False))
+                self.client = chromadb.EphemeralClient(
+                    settings=ChromaSettings(anonymized_telemetry=False)
+                )
 
             # Get or create the collection
             # Using default embedding function (sentence-transformers)
