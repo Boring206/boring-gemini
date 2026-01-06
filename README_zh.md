@@ -165,22 +165,26 @@ Boring V10.16 採用 **動態發現架構**，解決了工具過多導致的 Con
 
 > 💡 **Vibe Coding 模式**：描述你的想法，讓 AI 處理剩下的一切！
 
-### 🚀 Quick Start CLI (一鍵啟動)
+### 🚀 Quick Start (一鍵啟動)
 
-專為 Vibe Coder 設計的 CLI 入口：
+使用 Vibe Coder 專屬的 **Slash Commands** 快速啟動：
 
-```bash
-# 一句話啟動完整開發流程
-boring quick-start "建立一個 FastAPI 認證服務"
+1. **啟動 Boring**：
+   ```bash
+   boring start
+   ```
 
-# 使用內建模板
-boring quick-start --template fastapi-auth
+2. **輸入指令**：
+   ```text
+   /vibe_start 建立一個 FastAPI 認證服務
+   ```
 
-# 自動批准計畫（無需確認）
-boring quick-start "TODO App" --yes
+   或者使用更特定的技術棧：
+   ```text
+   /full_stack_dev my-app "Next.js + Tailwind + Supabase"
+   ```
 
-# 查看可用模板
-boring templates list
+> **Note**: 目前所有模板與捷徑皆已整合至 Slash Commands (Prompts) 中，無需記憶複雜 CLI 參數。
 ```
 
 **內建模板：**

@@ -165,19 +165,25 @@ One-click workflows designed for Claude Desktop / Gemini CLI users:
 
 > 💡 **Vibe Coding Mode**: Describe your idea, let AI handle the rest!
 
-### 🚀 Quick Start CLI
+### 🚀 Quick Start
+Use **Slash Commands** to jumpstart your development:
 
-CLI entry points designed for Vibe Coders:
+1. **Start Boring**:
+   ```bash
+   boring start
+   ```
 
-```bash
-# One-liner to launch complete development flow
-boring quick-start "Build a FastAPI auth service"
+2. **Enter Command**:
+   ```text
+   /vibe_start Build a FastAPI auth service
+   ```
 
-# Use built-in templates
-boring quick-start --template fastapi-auth
+   Or for specific tech stacks:
+   ```text
+   /full_stack_dev my-app "Next.js + Tailwind + Supabase"
+   ```
 
-# Auto-approve plans (no confirmation)
-boring quick-start "TODO App" --yes
+> **Note**: All templates and shortcuts are now consolidated into Slash Commands (Prompts) for a unified experience.
 
 # List available templates
 boring templates list
