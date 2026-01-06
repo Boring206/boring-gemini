@@ -5,6 +5,7 @@ Unit tests for boring.mcp.tools.evaluation module.
 import pytest
 from unittest.mock import MagicMock, patch
 from pathlib import Path
+import os
 
 from boring.mcp.tools import evaluation
 
@@ -43,7 +44,8 @@ class TestEvaluationTools:
         with patch("boring.mcp.tools.evaluation.check_rate_limit", return_value=(True, "")), \
              patch("boring.mcp.tools.evaluation.detect_project_root", return_value=temp_project), \
              patch("boring.mcp.tools.evaluation.create_judge_provider") as mock_provider_class, \
-             patch("boring.mcp.tools.evaluation.LLMJudge") as mock_judge_class:
+             patch("boring.mcp.tools.evaluation.LLMJudge") as mock_judge_class, \
+             patch.dict(os.environ, {"BORING_MCP_MODE": "0"}):
             mock_provider = MagicMock()
             mock_provider.is_available = True
             mock_provider_class.return_value = mock_provider
@@ -65,7 +67,8 @@ class TestEvaluationTools:
         with patch("boring.mcp.tools.evaluation.check_rate_limit", return_value=(True, "")), \
              patch("boring.mcp.tools.evaluation.detect_project_root", return_value=temp_project), \
              patch("boring.mcp.tools.evaluation.create_judge_provider") as mock_provider_class, \
-             patch("boring.mcp.tools.evaluation.LLMJudge") as mock_judge_class:
+             patch("boring.mcp.tools.evaluation.LLMJudge") as mock_judge_class, \
+             patch.dict(os.environ, {"BORING_MCP_MODE": "0"}):
             mock_provider = MagicMock()
             mock_provider.is_available = True
             mock_provider_class.return_value = mock_provider
@@ -89,7 +92,8 @@ class TestEvaluationTools:
         with patch("boring.mcp.tools.evaluation.check_rate_limit", return_value=(True, "")), \
              patch("boring.mcp.tools.evaluation.detect_project_root", return_value=temp_project), \
              patch("boring.mcp.tools.evaluation.create_judge_provider") as mock_provider_class, \
-             patch("boring.mcp.tools.evaluation.LLMJudge") as mock_judge_class:
+             patch("boring.mcp.tools.evaluation.LLMJudge") as mock_judge_class, \
+             patch.dict(os.environ, {"BORING_MCP_MODE": "0"}):
             mock_provider = MagicMock()
             mock_provider.is_available = True
             mock_provider_class.return_value = mock_provider
