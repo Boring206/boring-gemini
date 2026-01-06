@@ -337,19 +337,21 @@ def register_agent_tools(mcp, helpers: dict):
         helpers: Dict with helper functions
     """
     # Tools are now defined at module level
+    # NOTE: These tools are PROMPT GENERATORS, not autonomous agents.
+    # They return structured prompts for humans to execute with AI tools.
     mcp.tool(
-        description="Run full multi-agent workflow (Architect -> Coder -> Reviewer)",
+        description="[PROMPT GENERATOR] Generate multi-agent workflow prompts (Architect → Coder → Reviewer). Returns CLI commands to execute manually.",
         annotations={"readOnlyHint": True, "openWorldHint": True},
     )(boring_multi_agent)
     mcp.tool(
-        description="Run Architect agent to create implementation plan",
+        description="[PROMPT GENERATOR] Generate architecture planning prompt. Returns a prompt to execute with your IDE AI or Gemini CLI.",
         annotations={"readOnlyHint": True, "openWorldHint": True},
     )(boring_agent_plan)
     mcp.tool(
-        description="Run Reviewer agent on existing code",
+        description="[PROMPT GENERATOR] Generate code review prompt. Returns a prompt to execute with your IDE AI or Gemini CLI.",
         annotations={"readOnlyHint": True, "openWorldHint": True},
     )(boring_agent_review)
     mcp.tool(
-        description="Delegate task to a specialized agent/tool",
+        description="[SEMANTIC ROUTER] Route tasks to specialized tools. Returns instructions for delegating to external MCP servers.",
         annotations={"readOnlyHint": True, "openWorldHint": True},
     )(boring_delegate)

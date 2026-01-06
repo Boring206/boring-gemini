@@ -50,10 +50,19 @@ def register_v9_tools(mcp, audited, helpers):
         loader = PluginLoader(project_root)
         loader.load_all()
 
+        plugins = loader.list_plugins()
+        plugin_dirs = [str(d) for d in loader.plugin_dirs]
+
         return {
             "status": "SUCCESS",
-            "plugins": loader.list_plugins(),
-            "plugin_directories": [str(d) for d in loader.plugin_dirs],
+            "plugins": plugins,
+            "plugin_directories": plugin_dirs,
+            "message": f"Found {len(plugins)} plugin(s)" if plugins else "No plugins found",
+            "hint": (
+                "To add plugins, place Python files in:\n"
+                f"  - Project-local: {project_root}/.boring_plugins/\n"
+                "  - User-global: ~/.boring/plugins/"
+            ) if not plugins else None,
         }
 
     @mcp.tool(
