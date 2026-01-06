@@ -57,7 +57,7 @@ def register_v9_tools(mcp, audited, helpers):
         user_plugins = []
         builtin_plugins = []
 
-        for name, meta in plugins.items():
+        for name, _ in plugins.items():
             # Heuristic: Built-in plugins usually don't have a file path in the simplified list,
             # or we can check the path if available in the loader.
             # For this simple view, let's just assume we list them all, but the user wanted
@@ -74,7 +74,9 @@ def register_v9_tools(mcp, audited, helpers):
             "plugins": plugins,
             "plugin_directories": plugin_dirs,
             "note": "These are USER-installable plugins. Built-in MCP tools (boring_*) are not listed here.",
-            "message": f"Found {len(plugins)} user plugin(s)" if plugins else "No user plugins found",
+            "message": f"Found {len(plugins)} user plugin(s)"
+            if plugins
+            else "No user plugins found",
             "hint": (
                 "To add plugins, place Python files in:\n"
                 f"  - Project-local: {project_root}/.boring_plugins/\n"
