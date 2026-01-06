@@ -62,7 +62,9 @@ def register_v9_tools(mcp, audited, helpers):
                 "To add plugins, place Python files in:\n"
                 f"  - Project-local: {project_root}/.boring_plugins/\n"
                 "  - User-global: ~/.boring/plugins/"
-            ) if not plugins else None,
+            )
+            if not plugins
+            else None,
         }
 
     @mcp.tool(
