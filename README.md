@@ -85,8 +85,10 @@ Gemini + Boring: "Sure! Let me ask a few questions first..."
 For **long-running, fully automated development** via CLI:
 
 ```bash
-# Requires PROMPT.md in project root
-boring start                      # Use auto-detected CLI
+# Requires PROMPT.md in project root (created via boring-setup)
+boring-setup my-project              # 1. Initialize project (Required!)
+cd my-project                        # 2. Enter project directory
+boring start                         # 3. Start autonomous loop
 boring start --provider claude-code  # Use Claude Code CLI
 boring start --provider gemini-cli   # Use Gemini CLI
 boring run "Fix all lint errors"     # One-shot command

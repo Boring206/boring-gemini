@@ -43,12 +43,11 @@ boring-monitor
 For new projects:
 
 ```bash
-# Create a new Boring project
-boring-setup my-new-project
-cd my-new-project
+# 2. Setup a new project (Required for boring start!)
+boring-setup my-project
+cd my-project
 
-# Edit PROMPT.md with your task
-# Then run:
+# 3. Start the autonomous loop
 boring start
 ```
 

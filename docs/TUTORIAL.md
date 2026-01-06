@@ -76,7 +76,7 @@ pip install -e ".[mcp]"
 ### 1.4 第一個專案
 
 ```bash
-# 建立新專案
+# 建立新專案 (執行 boring start 前必須此步驟！)
 boring-setup my-app
 cd my-app
 
