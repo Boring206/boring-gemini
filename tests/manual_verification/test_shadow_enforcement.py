@@ -3,7 +3,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 # Adjust path to find src
-project_root = Path(r"d:\User\Desktop\ralphgeminicode\boring-gemini")
+project_root = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(project_root / "src"))
 
 from boring.file_patcher import _write_file
