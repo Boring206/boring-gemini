@@ -66,10 +66,12 @@
 | **安全檢查** | `/security_scan` | Security (SAST/Secrets) |
 | **搜尋代碼** | `/semantic_search` | RAG Search |
 | **全面品質稽核** | `/audit_quality` | Health + Security + Verify |
-| **查看未來路徑** | `/suggest_roadmap` | Suggest Next |
+| **查看未來路徑** | `/roadmap` | Task + Mermaid Gantt |
 | **系統狀態監控** | `/system_status` | Status + Progress |
-| **架構視覺化** | `/visualize_architecture` | Git Visualize (Mermaid) |
+| **架構視覺化** | `/visualize` | Mermaid Diagrams |
 | **查看 AI 記憶** | `/project_brain` | Brain Summary |
+| **智能提交** | `/smart_commit` | Git + Conventional Commits |
+| **專案健檢** | `/vibe_check` | Vibe Score & Health |
 | **效能優化分析** | `/optimize_performance` | Arch Evaluation |
 | **學習專案模式** | `/learn_patterns` | boring_learn |
 | **建立評估標準** | `/create_rubrics` | boring_create_rubrics |
@@ -77,6 +79,34 @@
 | **清除短期記憶** | `/reset_memory` | boring_forget_all |
 | **設定 IDE** | `/setup_ide` | boring_setup_extensions |
 | **標記任務完成** | `/mark_done` | boring_done |
+
+---
+
+## 🔥 Vibe Coding 專屬工作流 (The Karpathy Style)
+
+Vibe Coding 的精髓在於「Flow」。不要被細節卡住，用高層次指令控制 AI。
+
+### 1. 視覺化導向 (`/visualize`)
+不要讀代碼，**看**代碼。
+- `boring run "/visualize"` -> 瞬間生成架構圖。
+- 發現架構太亂？ -> `boring run "/refactor"`。
+
+### 2. 智能提交 (`/smart_commit`)
+寫完功能懶得寫 Commit Message？
+- `boring run "/smart_commit"`
+- AI 會自動分析 `git diff`，寫出符合 Conventional Commits 規範的訊息（如 `feat(auth): add jwt support`）。
+- **Flow 不中斷**。
+
+### 3. Vibe Check (`/vibe_check`)
+覺得專案哪裡怪怪的？
+- 讓 AI 給你的專案打分數。
+- 它會檢查文件完整度、代碼髒亂度、是否符合它學到的 Pattern。
+- 保持 Vibe Score > 90 分。
+
+### 4. 自動導航 (`/roadmap`)
+迷路了嗎？
+- `/roadmap` 會讀取 `task.md` 並生成甘特圖。
+- 告訴你「我們在哪裡」以及「下一步去哪裡」。
 
 ---
 
