@@ -452,11 +452,14 @@ my-awesome-app/
 
 | | MCP/Smithery | `boring start` |
 |--|--------------|----------------|
+| **安裝方式** | `npx @smithery/cli ...` | **`pip install boring-aicoding`** (必須) |
 | 需要 `boring-setup` | ❌ 不需要 | ✅ 需要 |
 | 需要 `PROMPT.md` | ❌ 不需要 | ✅ 需要 |
 | 運行方式 | 對話式 | 全自動循環 |
 | 適合場景 | 互動開發 | 長時間自動開發 |
 | 中斷方式 | 隨時 | Ctrl+C |
+
+> **注意**：如果你只使用 Smithery 安裝，是無法在終端機執行 `boring start` 的！只有 pip 安裝才會提供 `boring` 指令。
 
 ---
 
