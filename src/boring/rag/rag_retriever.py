@@ -366,6 +366,27 @@ class RAGRetriever:
                         )
                     )
 
+        # =================================================================
+        # HYBRID SEARCH: Keyword boosting for better accuracy
+        # =================================================================
+        # Boost scores for chunks where query terms appear in name/content
+        query_terms = set(query.lower().split())
+        for result in retrieved:
+            boost = 0.0
+            chunk_name = result.chunk.name.lower() if result.chunk.name else ""
+
+            # Strong boost for exact name match
+            if any(term in chunk_name for term in query_terms):
+                boost += 0.15
+
+            # Medium boost for content keyword match
+            chunk_content = result.chunk.content.lower()[:500] if result.chunk.content else ""
+            matching_terms = sum(1 for term in query_terms if term in chunk_content)
+            if matching_terms > 0:
+                boost += min(0.1, matching_terms * 0.02)  # Cap at 0.1
+
+            result.score = min(1.0, result.score + boost)  # Cap at 1.0
+
         # Sort by score and limit
         retrieved.sort(key=lambda x: x.score, reverse=True)
         return retrieved[:n_results]

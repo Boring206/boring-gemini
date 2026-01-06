@@ -384,7 +384,37 @@ class SecurityScanner:
     def scan_secrets(self, extensions: list = None) -> list:
         """Scan files for hardcoded secrets and credentials."""
         if extensions is None:
-            extensions = [".py", ".js", ".ts", ".json", ".yaml", ".yml", ".env", ".toml"]
+            # Comprehensive list covering all common text file types
+            extensions = [
+                ".py",
+                ".js",
+                ".ts",
+                ".jsx",
+                ".tsx",  # Code
+                ".json",
+                ".yaml",
+                ".yml",
+                ".toml",
+                ".ini",
+                ".cfg",
+                ".conf",  # Config
+                ".env",
+                ".env.example",
+                ".env.local",  # Environment files
+                ".txt",
+                ".md",
+                ".rst",  # Documentation & Text
+                ".sh",
+                ".bash",
+                ".zsh",
+                ".ps1",
+                ".bat",
+                ".cmd",  # Shell scripts
+                ".xml",
+                ".html",
+                ".properties",  # Other configs
+                ".sql",  # Database files
+            ]
 
         issues = []
         files_scanned = 0
