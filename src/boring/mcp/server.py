@@ -13,6 +13,9 @@ from ..audit import audited  # Moved to top-level to avoid import issues in test
 from . import instance
 from .prompts import register_prompts
 
+# Import git tools to trigger @mcp.tool registration (boring_commit, boring_visualize)
+from .tools import git  # noqa: F401
+
 # Import legacy tools to trigger @mcp.tool registration
 from .tools.advanced import register_advanced_tools
 from .tools.discovery import register_discovery_resources

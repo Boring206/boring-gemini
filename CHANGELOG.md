@@ -1,5 +1,17 @@
 # Changelog
 
+## [10.17.0] - 2026-01-06 - User Feedback Fixes 🎯
+### Fixed
+- **`boring_commit` Tool Registration**: Fixed tool not loading by explicitly importing `git.py` in `server.py`.
+- **Security Scan Scope**: Expanded `boring_security_scan` to cover 20+ file types including `.txt`, `.md`, `.sh`, `.sql`, `.xml`, and more.
+
+### Improved
+- **RAG Hybrid Search**: Implemented keyword boosting for better search accuracy. Scores now increase for:
+  - Name matches (+0.15)
+  - Content keyword matches (+0.02 per term, max +0.1)
+
+---
+
 ## [10.16.7] - 2026-01-06 - Release Permission Fix
 ### Fixed
 - **CI/CD Permissions**: Fixed 403 Forbidden error during GitHub Release by adding `contents: write` permission to `publish.yml`.
