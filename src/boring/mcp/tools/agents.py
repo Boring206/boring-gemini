@@ -21,7 +21,10 @@ from ..utils import get_project_root_or_error
 def boring_multi_agent(
     task: Annotated[str, Field(description="What to build/fix (detailed description)")],
     execute: Annotated[
-        bool, Field(description="[DANGEROUS] Execute the workflow immediately in background (default False)")
+        bool,
+        Field(
+            description="[DANGEROUS] Execute the workflow immediately in background (default False)"
+        ),
     ] = False,
     auto_approve_plans: Annotated[
         bool, Field(description="Skip human approval for plans (default False)")
@@ -32,7 +35,7 @@ def boring_multi_agent(
 ) -> dict:
     """
     Return CLI commands for multi-agent workflow: Architect → Coder → Reviewer.
-    
+
     Args:
         task: What to build/fix
         execute: [DANGEROUS] Execute the workflow immediately in background
@@ -47,16 +50,16 @@ def boring_multi_agent(
         try:
             import subprocess
             import sys
-            
+
             # Run 'boring run' in background
             cmd = [sys.executable, "-m", "boring.main", "run", task, "--backend", "cli"]
             pid = subprocess.Popen(cmd, cwd=str(project_root)).pid
-            
+
             return {
                 "status": "EXECUTING",
                 "pid": pid,
                 "message": f"🚀 Background process started (PID: {pid})\nCommand: {' '.join(cmd)}",
-                "warning": "This process is running on the host machine. Monitor output via 'boring-monitor'."
+                "warning": "This process is running on the host machine. Monitor output via 'boring-monitor'.",
             }
         except Exception as e:
             return {"status": "ERROR", "message": f"Failed to execute: {e}"}
