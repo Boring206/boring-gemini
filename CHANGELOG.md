@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.16.7] - 2026-01-06 - Release Permission Fix
+### Fixed
+- **CI/CD Permissions**: Fixed 403 Forbidden error during GitHub Release by adding `contents: write` permission to `publish.yml`.
+- **PyPI Retry**: Bumped version to ensure a clean publication attempt.
+
+---
+
 ## [10.16.6] - 2026-01-06 - CI/CD Maintenance
 ### Fixed
 - **Integration Tests**: Fixed `test_mcp_startup.py` failure caused by tool renaming (`boring_agent_plan` -> `boring_prompt_plan`).
