@@ -174,7 +174,7 @@ Be direct. Be strict. Save the user from future pain.
 Task: {task}
 
 Steps:
-1. Use `boring_agent_plan` to create an implementation plan (Architect).
+1. Use `boring_prompt_plan` to create an implementation plan (Architect).
 2. Review the plan with me.
 3. Once approved, use `boring_multi_agent` with the task to execute it.
 """
@@ -215,8 +215,8 @@ Steps:
 
 **Phase 5: 驗證 & 品質**
 12. 開發完成後，使用 `boring_verify(level='FULL')` 驗證程式碼品質
-13. 使用 `boring_security_scan` 執行安全掃描
-14. 如有問題，使用 `boring_auto_fix` 自動修復
+13. 使用 `boring_security_scan` 執行安全掃描 (若缺少依賴，依提示安裝後執行 `boring_rag_reload` 刷新環境)
+14. 如有問題，使用 `boring_prompt_fix` 產生修復建議
 
 完成後提供摘要報告，包含：
 - 已實作功能清單
@@ -239,7 +239,7 @@ Steps:
    - 執行 `boring_verify(level='FULL')` 檢查所有問題
 
 2. **修復階段**
-   - 如果有 Lint 錯誤，執行 `boring_auto_fix(max_iterations=3)`
+   - 如果有 Lint 錯誤，執行 `boring_prompt_fix(max_iterations=3)`
    - 如果有測試失敗，分析失敗原因並修復
 
 3. **驗證階段**
@@ -268,7 +268,7 @@ Steps:
 請執行完整的全棧開發流程：
 
 **Phase 1: 架構設計**
-1. 使用 `boring_agent_plan` 設計系統架構
+1. 使用 `boring_prompt_plan` 設計系統架構
 2. 規劃目錄結構、API 端點、資料模型
 
 **Phase 2: 後端開發**
@@ -356,9 +356,10 @@ Query: {query}
 
 Execute search:
 
-1. Ensure index exists: `boring_rag_status`
-2. If not indexed, run: `boring_rag_index`
+1. Check RAG status: `boring_rag_status` (If dependencies are missing, follow the instructions to install and then run `boring_rag_reload`)
+2. If not indexed, run: `boring_rag_index` (force=True if needed)
 3. Search: `boring_rag_search(query='{query}', expand_graph=True)`
+4. If search fails with dependency errors, run `boring_rag_reload` after fixing the environment.
 4. For each result:
    - Show file path and line numbers
    - Display code snippet
