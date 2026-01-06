@@ -427,6 +427,7 @@ Boring: 「好的，讓我先問你幾個問題...」
 pip install boring-aicoding
 
 # Step 2: 建立專案結構 (只有這種模式需要 boring-setup！)
+# 注意：在 CMD 執行 boring start 前，*必須* 先執行 boring-setup 初始化專案！
 boring-setup my-awesome-app
 cd my-awesome-app
 
@@ -471,7 +472,7 @@ my-awesome-app/
 
 ---
 
-*Built with ❤️ by the Boring for Gemini team*
+*Built with ❤️ by the Boring206*
 
 ---
 

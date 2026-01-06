@@ -85,8 +85,10 @@ Gemini + Boring: 「好的，讓我先問你幾個問題...」
 用於 **長時間、全自動化開發**，在 CLI 中執行：
 
 ```bash
-# 需要專案根目錄有 PROMPT.md
-boring start                         # 使用自動偵測的 CLI
+# 需要專案根目錄有 PROMPT.md（透過 boring-setup 建立）
+boring-setup my-project              # 1. 初始化專案（必須！）
+cd my-project                        # 2. 進入專案目錄
+boring start                         # 3. 啟動自主循環
 boring start --provider claude-code  # 使用 Claude Code CLI
 boring start --provider gemini-cli   # 使用 Gemini CLI
 boring run "修復所有 lint 錯誤"      # 單次執行命令
