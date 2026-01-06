@@ -12,7 +12,7 @@ jobs:
     environment: pypi
     permissions:
       id-token: write  # 用於 Trusted Publisher
-      contents: read
+      contents: write # 需要寫入權限來建立 Release
 
     steps:
       - name: Checkout code
