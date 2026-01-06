@@ -14,18 +14,18 @@ _RAG_IMPORT_ERROR = None
 
 # Robust dependency check with improved environment bridging
 try:
-    import chromadb
-    from sentence_transformers import SentenceTransformer
-    
+    import chromadb  # noqa: F401
+    from sentence_transformers import SentenceTransformer  # noqa: F401
+
     # Only import internal RAG module if dependencies exist
     from boring.rag import RAGRetriever, create_rag_retriever
+
     _RAG_IMPORT_ERROR = None
 except ImportError as e:
     # Attempt to bridge isolated environments (e.g. MCP running in embedded Python)
     import site
     import sys
-    import os
-    
+
     # Strategy 1: User site packages
     try:
         user_site = site.getusersitepackages()
@@ -39,9 +39,10 @@ except ImportError as e:
     # We can't easily guess it, but we can try common paths or just rely on user_site.
 
     try:
-        import chromadb
-        from sentence_transformers import SentenceTransformer
+        import chromadb  # noqa: F401
+        from sentence_transformers import SentenceTransformer  # noqa: F401
         from boring.rag import RAGRetriever, create_rag_retriever
+
         _RAG_IMPORT_ERROR = None
     except ImportError as final_error:
         # Capture the specific missing dependency and environment info for debugging

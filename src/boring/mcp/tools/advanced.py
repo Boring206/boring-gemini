@@ -61,7 +61,11 @@ def boring_security_scan(
     report = scanner.report
     return {
         "passed": report.passed,
-        "checked_categories": ["Secrets Detection", "SAST (Code Vulnerabilities)", "Dependency Scan"],
+        "checked_categories": [
+            "Secrets Detection",
+            "SAST (Code Vulnerabilities)",
+            "Dependency Scan",
+        ],
         "total_issues": report.total_issues,
         "secrets_found": report.secrets_found,
         "vulnerabilities_found": report.vulnerabilities_found,
@@ -77,7 +81,9 @@ def boring_security_scan(
             }
             for i in report.issues[:20]
         ],
-        "message": "Scan completed. No issues found." if report.passed else f"Scan failed. Found {report.total_issues} issues."
+        "message": "Scan completed. No issues found."
+        if report.passed
+        else f"Scan failed. Found {report.total_issues} issues.",
     }
 
 

@@ -90,13 +90,13 @@ def register_v9_tools(mcp, audited, helpers):
             response["message"] += f" and {len(builtin_tools)} built-in tools."
 
         if not plugins and not include_builtin:
-             response["hint"] = (
+            response["hint"] = (
                 "To add plugins, place Python files in:\n"
                 f"  - Project-local: {project_root}/.boring_plugins/\n"
                 "  - User-global: ~/.boring/plugins/\n"
                 "Tip: Set include_builtin=True to see core tools."
             )
-        
+
         return response
 
     @mcp.tool(
