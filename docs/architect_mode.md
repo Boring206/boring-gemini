@@ -1,4 +1,4 @@
-# Architect Mode Guide (V10.9)
+# Architect Mode Guide (V10.16)
 
 ## Overview
 Architect Mode is a specialized evaluation mode initiated by the `PRODUCTION_RUBRIC`. It switches the AI persona from a "Helpful Code Reviewer" to a "Hostile Principal Architect".

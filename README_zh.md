@@ -64,16 +64,24 @@ pip install "boring[all]"
 
 ## 📚 完整教程與文件
 
+### 教程與指南
 | 文件 | 說明 | 適合對象 |
 |------|------|----------|
+| [**快速入門**](docs/getting-started/installation.md) | 安裝、首次設定、MCP 配置 | 新手使用者 |
 | [**完整教程**](docs/TUTORIAL.md) | 快速入門、核心工作流程、實戰案例 | 所有開發者 |
 | [**進階開發者指南**](docs/ADVANCED_TUTORIAL.md) | 架構深度、Tool 開發、內部機制 | 資深開發者 |
-| [**專業實戰指南**](docs/PROFESSIONAL_PLAYBOOK.md) | 進階用法、最佳實踐與專家工作流 | 資深開發者 |
-| [**工具清單 (附錄 A)**](docs/APPENDIX_A_TOOL_REFERENCE.md) | 完整 55 個 MCP 工具參考 | 速查 |
-| [**FAQ (附錄 B)**](docs/APPENDIX_B_FAQ.md) | 安裝、疑難排解、常見問題 | 遇到問題時 |
+| [**專業實戰指南**](docs/PROFESSIONAL_PLAYBOOK.md) | 18 個專家工作流，使用 `/slash` 指令 | 資深開發者 |
+
+### 參考與附錄
+| 文件 | 說明 | 適合對象 |
+|------|------|----------|
+| [**工具清單 (附錄 A)**](docs/APPENDIX_A_TOOL_REFERENCE.md) | 完整 55+ 個 MCP 工具參考 | 速查 |
+| [**FAQ (附錄 B)**](docs/APPENDIX_B_FAQ.md) | 安裝、疑難排解、API Key 問題 | 遇到問題時 |
 | [**Prompt 設計哲學 (附錄 C)**](docs/APPENDIX_C_PROMPT_PHILOSOPHY.md) | 架構師人設設計原則 | Prompt 工程師 |
+| [**架構師模式**](docs/architect_mode.md) | 惡魔架構師評估模式 | 生產代碼審查 |
 
 ---
+
 
 ## ⚡ 效能與架構
 
