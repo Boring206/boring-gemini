@@ -62,6 +62,46 @@ pip install "boring[all]"
 
 ---
 
+## 🎮 兩種使用方式
+
+### 方式 1：MCP/Smithery（推薦大多數用戶）
+
+直接在 **Gemini CLI**、**Cursor** 或 **Claude Desktop** 中使用 Boring 工具：
+
+```
+你（在 Gemini CLI 中）: "幫我建立一個 FastAPI 認證服務"
+                        或
+                        "/vibe_start 建立一個認證服務"
+
+Gemini + Boring: 「好的，讓我先問你幾個問題...」
+```
+
+✅ 不需要 `PROMPT.md`  
+✅ 互動式對話  
+✅ 支援任何 MCP 相容的客戶端
+
+### 方式 2：自主循環模式（`boring start`）
+
+用於 **長時間、全自動化開發**，在 CLI 中執行：
+
+```bash
+# 需要專案根目錄有 PROMPT.md
+boring start                         # 使用自動偵測的 CLI
+boring start --provider claude-code  # 使用 Claude Code CLI
+boring start --provider gemini-cli   # 使用 Gemini CLI
+boring run "修復所有 lint 錯誤"      # 單次執行命令
+```
+
+**`boring start` 需要的檔案：**
+```
+your-project/
+├── PROMPT.md      # ✅ 必要 - 告訴 AI 要做什麼
+├── @fix_plan.md   # 可選 - 任務清單
+└── GEMINI.md      # 可選 - 專案說明
+```
+
+---
+
 ## 📚 完整教程與文件
 
 ### 教程與指南
