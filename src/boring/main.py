@@ -429,8 +429,6 @@ def version():
     console.print(f"  Project: {settings.PROJECT_ROOT}")
 
 
-
-
 # --- Workflow Hub CLI ---
 workflow_app = typer.Typer(help="Manage Boring Workflows (Hub)")
 app.add_typer(workflow_app, name="workflow")

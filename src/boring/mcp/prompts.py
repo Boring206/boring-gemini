@@ -479,9 +479,7 @@ Run test suite without blocking:
 
     @mcp.prompt(name="smart_commit", description="Smart commit with verification and optional push")
     def smart_commit(
-        message: str = Field(
-            default="", description="Commit message (optional)"
-        ),
+        message: str = Field(default="", description="Commit message (optional)"),
         push: bool = Field(default=False, description="Push after commit?"),
     ) -> str:
         """Smart Git Commit."""
@@ -624,9 +622,7 @@ B: {path_b}
 4. Provide recommendations for the losing implementation
 """
 
-    @mcp.prompt(
-        name="visualize", description="Generate Mermaid diagrams for project architecture"
-    )
+    @mcp.prompt(name="visualize", description="Generate Mermaid diagrams for project architecture")
     def visualize(
         target: str = Field(default="src/", description="Path to visualize"),
         type: str = Field(default="class", description="Diagram type: class, sequence, flow"),
@@ -655,8 +651,6 @@ Type: {type}
 5. Propose updates to `task.md` if the plan has evolved
 """
 
-
-
     @mcp.prompt(name="vibe_check", description="Project health and style diagnostic")
     def vibe_check() -> str:
         """Run a Vibe Check."""
@@ -668,7 +662,6 @@ Type: {type}
 4. **Style Check**: Does the code 'feel' modern and consistent?
 5. **Score**: Give a 'Vibe Score' (0-100) and 3 top recommendations to improve the vibe.
 """
-
 
     # --- System & Meta Prompts ---
 
