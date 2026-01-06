@@ -77,8 +77,10 @@ def register_shadow_tools(mcp, helpers: dict):
         ]
 
         if guard.mode == ShadowModeLevel.ENABLED:
-            output.insert(3, "> ℹ️ **Note:** In ENABLED mode, low-risk operations (e.g. file reads, minor edits) are **automatically approved**.")
-
+            output.insert(
+                3,
+                "> ℹ️ **Note:** In ENABLED mode, low-risk operations (e.g. file reads, minor edits) are **automatically approved**.",
+            )
 
         if pending:
             output.append("## Pending Approvals")
