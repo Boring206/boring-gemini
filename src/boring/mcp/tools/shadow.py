@@ -195,11 +195,13 @@ def register_shadow_tools(mcp, helpers: dict):
         if mode_upper not in ("DISABLED", "ENABLED", "STRICT"):
             return "❌ Invalid mode. Choose: DISABLED, ENABLED, or STRICT"
 
-        # Update or create guard with new mode
+        # Update existing guard or create new one via singleton accessor
         try:
             level = ShadowModeLevel[mode_upper]
-            _guards[str(project_root)] = ShadowModeGuard(project_root=project_root, mode=level)
-
+            # FIX: Use get_shadow_guard to ensure correct singleton key is used
+            guard = get_shadow_guard(project_root)
+            guard.mode = level
+            
             mode_icons = {"DISABLED": "⚠️", "ENABLED": "🛡️", "STRICT": "🔒"}
 
             return f"{mode_icons.get(mode_upper, '✅')} Shadow Mode set to **{mode_upper}**"
