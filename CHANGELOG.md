@@ -3,6 +3,7 @@
 ## [10.16.3] - 2026-01-06 - Security & Stability
 ### Fixed
 - **Shadow Mode Security**: Enforced Shadow Mode checks on `boring_apply_patch`, `boring_extract_patches`, and `boring_multi_agent`. ALL file writes are now intercepted.
+- **Shadow Mode Control**: Fixed critical bug where `boring_shadow_mode` failed to Persist mode changes due to path normalization mismatch.
 - **Transaction Hangs**: Fixed git transaction freeze by forcing non-interactive mode (`GIT_TERMINAL_PROMPT=0`).
 
 ## [10.16.2] - 2026-01-06 - RAG Hotfix
