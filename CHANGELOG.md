@@ -1,9 +1,13 @@
 # Changelog
 
 ## [10.16.4] - 2026-01-06 - Tool Renaming & Security Fixes
+### Added
+- **`boring_rag_reload`**: Hot-reload RAG dependencies at runtime. Allows picking up newly installed `chromadb`/`sentence-transformers` without MCP server restart.
+
 ### Fixed
 - **Shadow Mode**: Patched `file_patcher.py` to correctly intercept file writes from `AgentLoop`. Now enforcement is comprehensive.
 - **RAG Dependencies**: Fixed `boring_rag_index` failing when dependencies are missing. Added robust import checks and environment bridging for isolated MCP execution.
+- **RAG Diagnostics**: Error messages now include precise `{sys.executable} -m pip install` commands.
 
 ### Changed
 - **Tool Renaming**:
@@ -12,6 +16,7 @@
 - **Transparency**:
     - `boring_list_plugins` now supports `include_builtin=True` to show core tools.
     - `boring_security_scan` explicitly reports checked categories (Secrets, SAST, Dependencies).
+- **Startup Check**: MCP server now logs RAG dependency status at every startup.
 
 ## [10.16.3] - 2026-01-06 - Security & Stability
 ### Fixed

@@ -63,6 +63,62 @@ except ImportError:
 _retrievers: dict = {}
 
 
+def reload_rag_dependencies() -> dict:
+    """
+    Attempt to reload RAG dependencies at runtime.
+
+    This allows the MCP server to pick up newly installed packages
+    without a full process restart.
+
+    Returns:
+        dict with status and message
+    """
+    global _RAG_IMPORT_ERROR, RAGRetriever, create_rag_retriever
+
+    import site
+    import sys
+
+    # Step 1: Refresh user site packages
+    try:
+        user_site = site.getusersitepackages()
+        if isinstance(user_site, str) and user_site not in sys.path:
+            sys.path.insert(0, user_site)
+    except Exception:
+        pass
+
+    # Step 2: Clear any cached import errors
+    for mod_name in ["chromadb", "sentence_transformers", "boring.rag"]:
+        if mod_name in sys.modules:
+            del sys.modules[mod_name]
+
+    # Step 3: Try importing again
+    try:
+        import chromadb  # noqa: F401
+        from sentence_transformers import SentenceTransformer  # noqa: F401
+
+        from boring.rag import RAGRetriever as _RAGRetriever
+        from boring.rag import create_rag_retriever as _create_rag_retriever
+
+        RAGRetriever = _RAGRetriever
+        create_rag_retriever = _create_rag_retriever
+        _RAG_IMPORT_ERROR = None
+        _retrievers.clear()  # Clear cached retrievers
+
+        return {
+            "status": "SUCCESS",
+            "message": "✅ RAG dependencies reloaded successfully! You can now use boring_rag_index and boring_rag_search.",
+        }
+    except ImportError as e:
+        pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
+        _RAG_IMPORT_ERROR = str(e)
+        return {
+            "status": "ERROR",
+            "message": f"❌ Failed to reload RAG dependencies: {e}",
+            "fix_command": pip_cmd,
+            "hint": f"Run this command first, then try boring_rag_reload again:\n    {pip_cmd}",
+        }
+
+
 def get_retriever(project_root: Path) -> RAGRetriever:
     """Get or create RAG retriever for a project."""
     if create_rag_retriever is None:
@@ -82,6 +138,22 @@ def register_rag_tools(mcp, helpers: dict):
         helpers: Dict with helper functions (get_project_root_or_error, etc.)
     """
     get_project_root_or_error = helpers.get("get_project_root_or_error")
+
+    @mcp.tool(
+        description="Reload RAG dependencies after installing packages (hot reload)",
+        annotations={"readOnlyHint": False, "idempotentHint": True},
+    )
+    def boring_rag_reload() -> dict:
+        """
+        Attempt to reload RAG dependencies at runtime.
+
+        Use this after installing chromadb/sentence-transformers to enable
+        RAG features without restarting the MCP server.
+
+        Returns:
+            Status and message indicating success or required actions
+        """
+        return reload_rag_dependencies()
 
     @mcp.tool(
         description="Index codebase for RAG",
