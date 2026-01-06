@@ -61,8 +61,8 @@
 
 | Tool | Description | Key Parameters |
 |------|-------------|----------------|
-| `boring_rag_index` | Index codebase | `force`, `project_path` |
-| `boring_rag_search` | Semantic code search | `query`, `max_results`, `expand_graph` |
+| `boring_rag_index` | Index codebase | `force`, `project_path` (Requires `chromadb`) |
+| `boring_rag_search` | Semantic code search | `query`, `max_results`, `expand_graph` (Requires `chromadb`) |
 | `boring_rag_context` | Get code context | `file_path`, `function_name` |
 | `boring_rag_expand` | Expand dependency graph | `chunk_id`, `depth` |
 | `boring_rag_status` | Check index health | - |
@@ -73,9 +73,9 @@
 
 | Tool | Description | Key Parameters |
 |------|-------------|----------------|
-| `boring_multi_agent` | Run full workflow | `task`, `auto_approve_plans` |
-| `boring_agent_plan` | Architect planning | `task` |
-| `boring_agent_review` | Code review | `file_paths` |
+| `boring_multi_agent` | **[PROMPT GENERATOR / EXECUTOR]** | `task`, `auto_approve_plans`, `execute` |
+| `boring_agent_plan` | **[PROMPT GENERATOR]** Architect | `task` |
+| `boring_agent_review` | **[PROMPT GENERATOR]** Reviewer | `code_change` |
 | `boring_delegate` | Delegate to sub-agent | `task`, `tool_type` |
 
 **Tool Types**: `database`, `web_search`, `file_system`, `api`, `reasoning`
