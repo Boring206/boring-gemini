@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.17.1] - 2026-01-06 - Security Scan Timeout Fix
+### Fixed
+- **Security Scan Hang**: Reduced `bandit` and `pip-audit` timeout from 120s to 30s to prevent MCP hangs.
+- **pip-audit Spinner**: Disabled progress spinner that caused issues in MCP environments.
+
+---
+
 ## [10.17.0] - 2026-01-06 - User Feedback Fixes 🎯
 ### Fixed
 - **`boring_commit` Tool Registration**: Fixed tool not loading by explicitly importing `git.py` in `server.py`.
