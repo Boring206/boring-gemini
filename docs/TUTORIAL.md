@@ -109,10 +109,11 @@ my-app/
 你: "Build a REST API for user management"
 
 Boring:
-1️⃣ 需求釐清 → 問你 3-5 個關鍵問題
-2️⃣ 架構規劃 → 生成實作計畫 + 架構審查
-3️⃣ 執行開發 → Multi-Agent 協作完成
-4️⃣ 驗證品質 → 自動測試 + 安全掃描
+1️⃣ **Foundation** (Constitution & Clarify) → 確立原則與釐清需求
+2️⃣ **Spec & Plan** (Plan, Checklist) → 生成實作計畫與驗收標準
+3️⃣ **Pre-Analysis** (SpecKit Analyze) → 確保計畫一致性
+4️⃣ **Implementation** (Multi-Agent) → 協作開發
+5️⃣ **Verification** (Verify & Fix) → 品質驗證與修復
 ```
 
 **指令**:
