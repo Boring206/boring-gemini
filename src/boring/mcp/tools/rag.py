@@ -206,10 +206,11 @@ def register_rag_tools(mcp, helpers: dict):
                 f"- Classes: {idx.classes}\n"
                 f"- Methods: {idx.methods}\n"
                 f"- Script chunks: {getattr(idx, 'script_chunks', 0)}\n"
-                f"- Skipped: {idx.skipped_files}"
+                f"- Skipped: {idx.skipped_files}\n\n"
+                f"💡 Project root: {project_root}"
             )
 
-        return f"✅ RAG Index ready with {count} chunks"
+        return f"✅ RAG Index ready with {count} chunks for `{project_root}`"
 
     @mcp.tool(
         description="Semantic code search",

@@ -182,12 +182,13 @@ def get_project_root_or_error(
     return None, {
         "status": "PROJECT_NOT_FOUND",
         "message": (
-            "Could not detect project root. Please either:\n"
-            "1. Set cwd to your project directory in MCP config\n"
-            "2. Set BORING_PROJECT_ROOT environment variable\n"
-            "3. Set project_path parameter explicitly\n\n"
-            f"Looking for anchor files: {', '.join(_ANCHOR_FILES)}\n"
-            f"Current CWD: {Path.cwd()}"
+            "❌ Could not detect project root.\n\n"
+            "**Solutions:**\n"
+            "1. Run with explicit path: `boring_rag_index(project_path='/path/to/project')`\n"
+            "2. Set environment variable: `BORING_PROJECT_ROOT=/path/to/project`\n"
+            "3. Ensure current directory contains a `.git` folder or other project markers\n\n"
+            f"Looking for: {', '.join(_ANCHOR_FILES)}\n"
+            f"Current directory: {Path.cwd()}"
         ),
     }
 
