@@ -193,7 +193,7 @@ To reduce context consumption, we consolidated 50+ tools into 14 high-level entr
 | **Profile** | `boring_profile` | User preferences and cross-project learning |
 | **Verification** | `boring_verify` | Multi-level code verification (Basic/Standard/Full) |
 | **RAG Memory** | `boring_rag_search` | Semantic search and dependency context retrieval |
-| **Agents** | `boring_multi_agent` | **[PROMPT GENERATOR / EXECUTOR]** Returns prompts or executes workflow in background (`execute=True`) |
+| **Agents** | `boring_multi_agent` | **[PROMPT GENERATOR / EXECUTOR]** Returns prompts or executes workflow in background (`execute=True`). Helper tools: `boring_prompt_plan`, `boring_prompt_fix` |
 | **Shadow** | `boring_shadow_mode` | Safe sandbox for high-risk operations |
 | **Git** | `boring_commit` | Semantic commit message generation from task.md (used by `smart_commit` prompt) |
 | **Workspace** | `boring_workspace_switch` | Multi-project workspace switching |

@@ -28,7 +28,7 @@ def register_v9_tools(mcp, audited, helpers):
     # =========================================================================
 
     @mcp.tool(
-        description="List all available plugins locally and globally",
+        description="List all available plugins (and optionally built-in tools)",
         annotations={"readOnlyHint": True, "openWorldHint": False},
     )
     @audited
@@ -36,13 +36,16 @@ def register_v9_tools(mcp, audited, helpers):
         project_path: Annotated[
             str, Field(description="Path to project root (default: current directory)")
         ] = None,
+        include_builtin: Annotated[
+            bool, Field(description="Include built-in MCP tools in the list")
+        ] = False,
     ) -> dict:
         """
-        List all registered plugins.
+        List all registered plugins and optional built-in tools.
 
-        Shows plugins from:
-        1. Project-local: {project}/.boring_plugins/
-        2. User-global: ~/.boring/plugins/
+        Shows:
+        1. User plugins: ~/.boring/plugins/ or {project}/.boring_plugins/
+        2. (Optional) Built-in tools: Core Boring capability tools
         """
         from ..plugins import PluginLoader
 
@@ -53,27 +56,48 @@ def register_v9_tools(mcp, audited, helpers):
         plugins = loader.list_plugins()
         plugin_dirs = [str(d) for d in loader.plugin_dirs]
 
-        # Categorize plugins
-
-        # Plugins are loaded above.
-        # Built-in tools are separate from user plugins.
-
-        return {
+        response = {
             "status": "SUCCESS",
             "plugins": plugins,
             "plugin_directories": plugin_dirs,
-            "note": "These are USER-installable plugins. Built-in MCP tools (boring_*) are not listed here.",
             "message": f"Found {len(plugins)} user plugin(s)"
             if plugins
             else "No user plugins found",
-            "hint": (
+        }
+
+        if include_builtin:
+            # Aggregate built-in tools (hardcoded list for transparency)
+            builtin_tools = [
+                "boring_security_scan",
+                "boring_transaction",
+                "boring_task",
+                "boring_context",
+                "boring_profile",
+                "boring_verify",
+                "boring_rag_search",
+                "boring_rag_index",
+                "boring_multi_agent",
+                "boring_prompt_plan",
+                "boring_prompt_fix",
+                "boring_shadow_mode",
+                "boring_commit",
+                "boring_workspace_switch",
+                "boring_learn",
+                "boring_evaluate",
+                "boring_run_plugin",
+            ]
+            response["builtin_tools"] = builtin_tools
+            response["message"] += f" and {len(builtin_tools)} built-in tools."
+
+        if not plugins and not include_builtin:
+             response["hint"] = (
                 "To add plugins, place Python files in:\n"
                 f"  - Project-local: {project_root}/.boring_plugins/\n"
-                "  - User-global: ~/.boring/plugins/"
+                "  - User-global: ~/.boring/plugins/\n"
+                "Tip: Set include_builtin=True to see core tools."
             )
-            if not plugins
-            else None,
-        }
+        
+        return response
 
     @mcp.tool(
         description="Execute a specific plugin by name",
@@ -210,11 +234,11 @@ def register_v9_tools(mcp, audited, helpers):
     # =========================================================================
 
     @mcp.tool(
-        description="Run automated fix loop",
+        description="Generate a prompt to fix verification issues (Not autonomous)",
         annotations={"readOnlyHint": True, "destructiveHint": False},
     )
     @audited
-    def boring_auto_fix(
+    def boring_prompt_fix(
         max_iterations: Annotated[int, Field(description="Maximum fix attempts (default: 3)")] = 3,
         verification_level: Annotated[
             str, Field(description="BASIC, STANDARD, or FULL")
@@ -222,7 +246,8 @@ def register_v9_tools(mcp, audited, helpers):
         project_path: Annotated[str, Field(description="Optional project root path")] = None,
     ) -> dict:
         """
-        Automated verify-and-fix workflow (Pure CLI Mode).
+        Generate a prompt to fix verification issues.
+
 
         This tool:
         1. Runs actual code verification to detect issues
@@ -287,8 +312,8 @@ Requirements:
             "max_iterations": max_iterations,
             "message": (
                 "Verification detected issues. Use the suggested prompt with your IDE AI or Gemini CLI to fix them.\n"
-                "After fixing, run boring_verify to check if issues are resolved.\n"
-                "Repeat until all issues are fixed or max iterations reached."
+                "After fixing, run 'boring verify' (CLI) or 'boring_verify' (MCP) to check results.\n"
+                "Repeat until all issues are fixed."
             ),
             "manual_steps": [
                 "1. Review the detected issues above",
@@ -385,7 +410,7 @@ Requirements:
         "boring_workspace_remove": boring_workspace_remove,
         "boring_workspace_list": boring_workspace_list,
         "boring_workspace_switch": boring_workspace_switch,
-        "boring_auto_fix": boring_auto_fix,
+        "boring_prompt_fix": boring_prompt_fix,
         "boring_suggest_next": boring_suggest_next,
         "boring_get_progress": boring_get_progress,
     }
