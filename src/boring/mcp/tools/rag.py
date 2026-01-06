@@ -9,10 +9,35 @@ from typing import Annotated
 
 from pydantic import Field
 
-from boring.rag import RAGRetriever, create_rag_retriever
-
 # Import error tracking for better diagnostics
 _RAG_IMPORT_ERROR = None
+
+try:
+    from boring.rag import RAGRetriever, create_rag_retriever
+except ImportError as e:
+    # Try adding user site packages to fix environment isolation issues
+    import site
+    import sys
+    try:
+        # Check standard user site packages
+        user_site = site.getusersitepackages()
+        if isinstance(user_site, str) and user_site not in sys.path:
+            sys.path.append(user_site)
+        elif isinstance(user_site, list):
+            for path in user_site:
+                if path not in sys.path:
+                    sys.path.append(path)
+        
+        # Retry import
+        from boring.rag import RAGRetriever, create_rag_retriever
+    except ImportError:
+        # Still failed, set to None
+        RAGRetriever = None
+        create_rag_retriever = None
+        _RAG_IMPORT_ERROR = str(e)
+
+# Import error tracking for better diagnostics
+# _RAG_IMPORT_ERROR is set in the try/except block above
 
 # Singleton retriever instance (per project)
 _retrievers: dict = {}
