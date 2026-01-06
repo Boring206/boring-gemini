@@ -8,6 +8,7 @@
 - **Shadow Mode**: Patched `file_patcher.py` to correctly intercept file writes from `AgentLoop`. Now enforcement is comprehensive.
 - **RAG Dependencies**: Fixed `boring_rag_index` failing when dependencies are missing. Added robust import checks and environment bridging for isolated MCP execution.
 - **RAG Diagnostics**: Error messages now include precise `{sys.executable} -m pip install` commands.
+- **RAG Index Statistics**: Fixed `boring_rag_index` reporting "Files indexed: 0" even when content was indexed. Statistics now correctly reflect indexed files, chunks, functions, and classes.
 
 ### Changed
 - **Tool Renaming**:

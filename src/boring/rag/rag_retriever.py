@@ -201,6 +201,9 @@ class RAGRetriever:
         new_chunks_buffer = []
         total_indexed = 0
 
+        # Reset indexer stats for accurate reporting
+        self.indexer.stats = IndexStats()
+
         for file_path in files_to_index:
             # Clear old chunks for modified file
             rel_path = self.index_state._get_rel_path(file_path)
@@ -216,10 +219,24 @@ class RAGRetriever:
                 chunks = list(self.indexer.index_file(file_path))
             except Exception as e:
                 logger.warning(f"Failed to index {file_path}: {e}")
+                self.indexer.stats.skipped_files += 1
                 continue
 
             if not chunks:
                 continue
+
+            # Track stats per file
+            self.indexer.stats.total_files += 1
+            for chunk in chunks:
+                self.indexer.stats.total_chunks += 1
+                if chunk.chunk_type == "function":
+                    self.indexer.stats.functions += 1
+                elif chunk.chunk_type == "class":
+                    self.indexer.stats.classes += 1
+                elif chunk.chunk_type == "method":
+                    self.indexer.stats.methods += 1
+                elif chunk.chunk_type == "script":
+                    self.indexer.stats.script_chunks += 1
 
             # Batch upsert logic preparation
             new_chunks_buffer.extend(chunks)
