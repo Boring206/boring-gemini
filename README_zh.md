@@ -30,13 +30,13 @@
 ### 方式一：Smithery（推薦）
 
 ```bash
-npx @smithery/cli install boring-gemini
+npx @smithery/cli install boring
 ```
 
 ### 方式二：pip
 
 ```bash
-pip install boring
+pip install boring-aicoding
 # 或完整安裝
 pip install "boring[all]"
 ```
@@ -68,6 +68,7 @@ pip install "boring[all]"
 | 文件 | 說明 | 適合對象 |
 |------|------|----------|
 | [**快速入門**](docs/getting-started/installation.md) | 安裝、首次設定、MCP 配置 | 新手使用者 |
+| [**🔥 實戰展示**](docs/PRACTICAL_DEMO.md) | 10 分鐘見識 Boring 的強大，6 大實戰案例 | 🆕 Vibe Coder |
 | [**完整教程**](docs/TUTORIAL.md) | 快速入門、核心工作流程、實戰案例 | 所有開發者 |
 | [**進階開發者指南**](docs/ADVANCED_TUTORIAL.md) | 架構深度、Tool 開發、內部機制 | 資深開發者 |
 | [**專業實戰指南**](docs/PROFESSIONAL_PLAYBOOK.md) | 18 個專家工作流，使用 `/slash` 指令 | 資深開發者 |
