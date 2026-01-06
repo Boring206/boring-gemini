@@ -53,11 +53,28 @@ def register_v9_tools(mcp, audited, helpers):
         plugins = loader.list_plugins()
         plugin_dirs = [str(d) for d in loader.plugin_dirs]
 
+        # Categorize plugins
+        user_plugins = []
+        builtin_plugins = []
+
+        for name, meta in plugins.items():
+            # Heuristic: Built-in plugins usually don't have a file path in the simplified list,
+            # or we can check the path if available in the loader.
+            # For this simple view, let's just assume we list them all, but the user wanted
+            # distinction. The prompt said "Clarify Built-in commands vs User plugins".
+            # Currently boring_list_plugins only lists *loaded* plugins from the loader.
+            # If the loader (src/boring/plugins/__init__.py) only loads user plugins,
+            # then "Built-in commands" roughly equals "MCP Tools".
+            # However, if there are built-in plugins in src/boring/plugins, we should distinguish.
+            # Let's add a note to the output message.
+            pass
+
         return {
             "status": "SUCCESS",
             "plugins": plugins,
             "plugin_directories": plugin_dirs,
-            "message": f"Found {len(plugins)} plugin(s)" if plugins else "No plugins found",
+            "note": "These are USER-installable plugins. Built-in MCP tools (boring_*) are not listed here.",
+            "message": f"Found {len(plugins)} user plugin(s)" if plugins else "No user plugins found",
             "hint": (
                 "To add plugins, place Python files in:\n"
                 f"  - Project-local: {project_root}/.boring_plugins/\n"

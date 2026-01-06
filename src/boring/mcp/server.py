@@ -146,6 +146,15 @@ def run_server():
             sys.stderr.write(f"[boring-mcp] Python: {sys.executable}\n")
             sys.stderr.write(f"[boring-mcp] Registered tools: {len(instance.mcp._tools)}\n")
 
+            # Check optional dependencies for RAG
+            try:
+                import chromadb
+                import sentence_transformers
+                sys.stderr.write("[boring-mcp] ✅ RAG dependencies found (chromadb, sentence_transformers)\n")
+            except ImportError as e:
+                sys.stderr.write(f"[boring-mcp] ⚠️ RAG features unavailable: Missing dependency {e.name}. Install with `pip install chromadb sentence-transformers`\n")
+
+
         # 3. Mark MCP as started (allows JSON-RPC traffic)
         if hasattr(sys.stdout, "mark_mcp_started"):
             sys.stdout.mark_mcp_started()

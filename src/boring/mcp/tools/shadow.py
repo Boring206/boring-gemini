@@ -76,6 +76,10 @@ def register_shadow_tools(mcp, helpers: dict):
             "",
         ]
 
+        if guard.mode == ShadowModeLevel.ENABLED:
+            output.insert(3, "> ℹ️ **Note:** In ENABLED mode, low-risk operations (e.g. file reads, minor edits) are **automatically approved**.")
+
+
         if pending:
             output.append("## Pending Approvals")
             for op in pending:
@@ -201,7 +205,7 @@ def register_shadow_tools(mcp, helpers: dict):
             # FIX: Use get_shadow_guard to ensure correct singleton key is used
             guard = get_shadow_guard(project_root)
             guard.mode = level
-            
+
             mode_icons = {"DISABLED": "⚠️", "ENABLED": "🛡️", "STRICT": "🔒"}
 
             return f"{mode_icons.get(mode_upper, '✅')} Shadow Mode set to **{mode_upper}**"
