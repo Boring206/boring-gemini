@@ -30,7 +30,7 @@
 ### 方式一：Smithery（推薦）
 
 ```bash
-npx @smithery/cli install boring
+npx @smithery/cli install @boring/boring
 ```
 
 ### 方式二：pip
