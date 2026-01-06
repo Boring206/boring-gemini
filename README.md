@@ -30,7 +30,7 @@
 ### Option 1: Smithery (Recommended)
 
 ```bash
-npx @smithery/cli install @boring/boring
+npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ```
 
 ### Option 2: pip

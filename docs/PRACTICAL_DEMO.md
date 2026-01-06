@@ -402,7 +402,7 @@ Boring:
 pip install boring-aicoding
 
 # 或使用 Smithery (推薦)
-npx @smithery/cli install @boring/boring
+npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 
 # 開始你的第一個專案
 boring-setup my-awesome-app

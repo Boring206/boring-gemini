@@ -30,7 +30,7 @@
 ### 方式一：Smithery（推薦）
 
 ```bash
-npx @smithery/cli install @boring/boring
+npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ```
 
 ### 方式二：pip

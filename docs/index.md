@@ -16,7 +16,7 @@ Welcome to the Boring-Gemini documentation. Boring is an autonomous AI developme
 
 ```bash
 # Install via Smithery (Recommended)
-npx @smithery/cli install @boring/boring
+npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 
 # Or install via pip
 pip install boring-aicoding
