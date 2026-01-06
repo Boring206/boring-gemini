@@ -49,24 +49,21 @@ def boring_multi_agent(
     if execute:
         # Shadow Mode Check
         from .shadow import get_shadow_guard
+
         guard = get_shadow_guard(project_root)
-        
-        cmd_str = f"boring run {task[:50]}..." 
-        pending = guard.check_operation({
-            "name": "shell",
-            "args": {
-                "command": cmd_str,
-                "cmd": cmd_str
-            }
-        })
-        
+
+        cmd_str = f"boring run {task[:50]}..."
+        pending = guard.check_operation(
+            {"name": "shell", "args": {"command": cmd_str, "cmd": cmd_str}}
+        )
+
         if pending:
-             if not guard.request_approval(pending):
-                 return {
-                     "status": "BLOCKED",
-                     "message": f"🛡️ Execution blocked by Shadow Mode ({guard.mode.value})",
-                     "operation_id": pending.operation_id,
-                 }
+            if not guard.request_approval(pending):
+                return {
+                    "status": "BLOCKED",
+                    "message": f"🛡️ Execution blocked by Shadow Mode ({guard.mode.value})",
+                    "operation_id": pending.operation_id,
+                }
 
         try:
             import subprocess

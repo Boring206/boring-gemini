@@ -47,15 +47,15 @@ class TransactionManager:
     def _run_git(self, args: list[str]) -> tuple[bool, str]:
         """Run a git command and return (success, output)."""
         import os
-        
+
         # Prevent git from prompting for credentials or GPG keys
         env = os.environ.copy()
         env["GIT_TERMINAL_PROMPT"] = "0"
-        
+
         try:
             # Add -c commit.gpgsign=false to avoid GPG passphrase prompts
             cmd = ["git", "-c", "commit.gpgsign=false"] + args
-            
+
             result = subprocess.run(
                 cmd,
                 cwd=self.project_root,
