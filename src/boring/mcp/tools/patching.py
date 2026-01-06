@@ -50,26 +50,29 @@ def boring_apply_patch(
 
         # Shadow Mode Check
         from .shadow import get_shadow_guard
+
         guard = get_shadow_guard(project_root)
-        
-        pending = guard.check_operation({
-            "name": "search_replace",
-            "args": {
-                "file_path": str(file_path),
-                "replace": replace_text,
-                "search": search_text
+
+        pending = guard.check_operation(
+            {
+                "name": "search_replace",
+                "args": {
+                    "file_path": str(file_path),
+                    "replace": replace_text,
+                    "search": search_text,
+                },
             }
-        })
-        
+        )
+
         if pending:
-             if not guard.request_approval(pending):
-                 return {
-                     "status": "BLOCKED",
-                     "message": f"🛡️ Operation blocked by Shadow Mode ({guard.mode.value})",
-                     "operation_id": pending.operation_id,
-                     "instruction": f"Run boring_shadow_approve('{pending.operation_id}') to proceed.",
-                     "details": pending.description
-                 }
+            if not guard.request_approval(pending):
+                return {
+                    "status": "BLOCKED",
+                    "message": f"🛡️ Operation blocked by Shadow Mode ({guard.mode.value})",
+                    "operation_id": pending.operation_id,
+                    "instruction": f"Run boring_shadow_approve('{pending.operation_id}') to proceed.",
+                    "details": pending.description,
+                }
 
         # Configure runtime
         configure_runtime_for_project(project_root)
@@ -149,44 +152,47 @@ def boring_extract_patches(
 
         # Shadow Mode Check
         from .shadow import get_shadow_guard
+
         guard = get_shadow_guard(project_root)
-        
+
         # 1. Parse patches
         patches = extract_search_replace_blocks(ai_output)
-        
+
         # Check security for patch application
         if patches and not dry_run:
-             # Create a composite check or check the first critical one
-             # For simplicity, we check a generic "search_replace" on the first file,
-             # or we could iterate. Let's check a generic "BATCH_APPLY" operation.
-             
-             # Better: Construct a description of what will happen
-             files_affected = list({p.get("file_path", "unknown") for p in patches})
-             description = f"Apply {len(patches)} patches to: {', '.join(files_affected[:3])}"
-             if len(files_affected) > 3:
-                 description += "..."
-             
-             pending = guard.check_operation({
-                "name": "search_replace", # Use search_replace to trigger file logic
-                "args": {
-                    "file_path": files_affected[0] if files_affected else "multiple_files",
-                    "search": "BATCH OPERATION", # dummy
-                    "replace": str(patches)[:100] # preview
+            # Create a composite check or check the first critical one
+            # For simplicity, we check a generic "search_replace" on the first file,
+            # or we could iterate. Let's check a generic "BATCH_APPLY" operation.
+
+            # Better: Construct a description of what will happen
+            files_affected = list({p.get("file_path", "unknown") for p in patches})
+            description = f"Apply {len(patches)} patches to: {', '.join(files_affected[:3])}"
+            if len(files_affected) > 3:
+                description += "..."
+
+            pending = guard.check_operation(
+                {
+                    "name": "search_replace",  # Use search_replace to trigger file logic
+                    "args": {
+                        "file_path": files_affected[0] if files_affected else "multiple_files",
+                        "search": "BATCH OPERATION",  # dummy
+                        "replace": str(patches)[:100],  # preview
+                    },
                 }
-             })
-             
-             # Force description update if pending
-             if pending:
-                 pending.description = description
-                 pending.operation_type = "BATCH_PATCH"
-                 
-                 if not guard.request_approval(pending):
-                     return {
-                         "status": "BLOCKED",
-                         "message": f"🛡️ Batch Operation blocked by Shadow Mode ({guard.mode.value})",
-                         "operation_id": pending.operation_id,
-                         "instruction": f"Run boring_shadow_approve('{pending.operation_id}') to proceed."
-                     }
+            )
+
+            # Force description update if pending
+            if pending:
+                pending.description = description
+                pending.operation_type = "BATCH_PATCH"
+
+                if not guard.request_approval(pending):
+                    return {
+                        "status": "BLOCKED",
+                        "message": f"🛡️ Batch Operation blocked by Shadow Mode ({guard.mode.value})",
+                        "operation_id": pending.operation_id,
+                        "instruction": f"Run boring_shadow_approve('{pending.operation_id}') to proceed.",
+                    }
 
         if not patches:
             return {

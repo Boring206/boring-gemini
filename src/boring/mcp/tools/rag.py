@@ -18,6 +18,7 @@ except ImportError as e:
     # Try adding user site packages to fix environment isolation issues
     import site
     import sys
+
     try:
         # Check standard user site packages
         user_site = site.getusersitepackages()
@@ -27,7 +28,7 @@ except ImportError as e:
             for path in user_site:
                 if path not in sys.path:
                     sys.path.append(path)
-        
+
         # Retry import
         from boring.rag import RAGRetriever, create_rag_retriever
     except ImportError:
