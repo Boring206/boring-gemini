@@ -141,23 +141,26 @@ def run_server():
 
     # 4. Configured logging
     with _configure_logging():
+        # Always check for optional RAG dependencies at startup
+        import importlib.util
+
+        rag_ok = importlib.util.find_spec("chromadb") and importlib.util.find_spec(
+            "sentence_transformers"
+        )
+        if not rag_ok:
+            sys.stderr.write(
+                f"[boring-mcp] ⚠️ RAG features unavailable: Missing dependencies.\n"
+                f"[boring-mcp] To enable RAG, run:\n"
+                f"    {sys.executable} -m pip install chromadb sentence-transformers\n"
+            )
+
         if os.environ.get("BORING_MCP_DEBUG") == "1":
             sys.stderr.write("[boring-mcp] Server starting...\n")
             sys.stderr.write(f"[boring-mcp] Python: {sys.executable}\n")
             sys.stderr.write(f"[boring-mcp] Registered tools: {len(instance.mcp._tools)}\n")
-
-            # Check optional dependencies for RAG
-            import importlib.util
-
-            if importlib.util.find_spec("chromadb") and importlib.util.find_spec(
-                "sentence_transformers"
-            ):
+            if rag_ok:
                 sys.stderr.write(
                     "[boring-mcp] ✅ RAG dependencies found (chromadb, sentence_transformers)\n"
-                )
-            else:
-                sys.stderr.write(
-                    "[boring-mcp] ⚠️ RAG features unavailable: Missing dependencies (chromadb, sentence-transformers). Install to enable RAG.\n"
                 )
 
         # 3. Mark MCP as started (allows JSON-RPC traffic)
