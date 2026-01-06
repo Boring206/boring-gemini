@@ -47,8 +47,14 @@ except ImportError:
         _RAG_IMPORT_ERROR = None
     except ImportError as final_error:
         # Capture the specific missing dependency and environment info for debugging
+        pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
         debug_info = f"Python: {sys.executable}\nPaths: {sys.path}"
-        _RAG_IMPORT_ERROR = f"{str(final_error)}\n[Debug Info]\n{debug_info}"
+        _RAG_IMPORT_ERROR = (
+            f"{str(final_error)}\n\n"
+            f"[Recommended Fix]\n"
+            f"Run this command:\n    {pip_cmd}\n\n"
+            f"[Debug Info]\n{debug_info}"
+        )
         RAGRetriever = None
         create_rag_retriever = None
 
