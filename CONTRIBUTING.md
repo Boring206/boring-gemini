@@ -44,7 +44,7 @@ ruff check src/
 5. 使用 Conventional Commits 提交 (`feat:`, `fix:`, `docs:`)
 6. 推送並建立 Pull Request
 
-## 專案結構 (V10.16.3 - Dynamic Discovery Architecture)
+## 專案結構 (V10.17.0 - Hybrid Discovery Architecture)
 
 > **重要**：V10.5 引入了 "Pure CLI Mode" - MCP 工具如 `run_boring`、`speckit_*` 和 `boring_multi_agent` 
 > 現在回傳的是包含 CLI 指令的工作流模板 (Workflow Templates)，而非在內部直接執行 AI。

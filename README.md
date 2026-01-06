@@ -1,5 +1,5 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-10.16.4-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-10.17.0-green.svg)](https://github.com/Boring206/boring-gemini)
 [![Evaluation](https://img.shields.io/badge/Smithery-58%2F58-brightgreen.svg)](https://smithery.ai/server/boring/boring)
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 
@@ -18,10 +18,10 @@
 |---------|-------------|
 | 🌐 **Polyglot & CLI Native** | Seamless switching between Gemini CLI and Claude Code CLI, zero API key required |
 | 🛡️ **Parallel Verification** | Multi-threaded parallel verification, 3-5x performance boost |
-| 🧠 **RAG Memory** | Vector search + dependency graph for real-time code retrieval |
-| 🛡️ **Shadow Mode** | High-risk operations require human approval for safety |
+| 🧠 **RAG Memory** | Hybrid Search (Vector + Keyword) + dependency graph for real-time retrieval |
+| 🛡️ **Shadow Mode** | High-risk operations require human approval, with persistent config |
 | 📐 **Spec-Driven** | 100% specification consistency from PRD to Code |
-| 🔒 **Quality Gates** | CI/CD multi-tier quality gates + multi-language linting + security scanning |
+| 🔒 **Quality Gates** | CI/CD multi-tier gates + multi-language linting + 20+ file type security scanning |
 
 ---
 

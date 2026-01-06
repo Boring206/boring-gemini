@@ -1,5 +1,5 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-10.16.4-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-10.17.0-green.svg)](https://github.com/Boring206/boring-gemini)
 [![Evaluation](https://img.shields.io/badge/Smithery-58%2F58-brightgreen.svg)](https://smithery.ai/server/boring/boring)
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 
@@ -18,10 +18,10 @@
 |------|------|
 | 🌐 **Polyglot & CLI Native** | 支援 Gemini CLI 與 Claude Code CLI 無縫切換，零 API Key 運行 |
 | 🛡️ **Parallel Verification** | 支援多執行緒平行驗證，效能提升 3-5 倍 |
-| 🧠 **RAG Memory** | 向量搜索 + 依賴圖即時檢索相關程式碼 |
-| 🛡️ **Shadow Mode** | 高風險操作需人工批准，確保安全 |
+| 🧠 **RAG Memory** | Hybrid Search (向量 + 關鍵字) + 依賴圖即時檢索相關程式碼 |
+| 🛡️ **Shadow Mode** | 高風險操作需人工批准，跨 Session 持久化配置 |
 | 📐 **Spec-Driven** | 從 PRD 到 Code 實現 100% 規格一致性 |
-| 🔒 **Quality Gates** | CI/CD 多層品質門檻 + 多語言 Linting + 安全掃描 |
+| 🔒 **Quality Gates** | CI/CD 多層門檻 + 全語言 Linting + 20+ 檔案格式安全掃描 |
 
 ---
 
