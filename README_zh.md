@@ -365,9 +365,16 @@ boring hooks uninstall  # 移除
 ## 🆕 V10.16.3 新功能 (安全性與穩定性)
 
 ### 1. 強化版 Shadow Mode 🛡️
-**全面攔截**：Shadow Mode 現在攔截 **所有** 檔案寫入操作，包括 Patch 應用與 Agent 執行。
-- **預設模式**：阻擋高風險操作 (刪除、機密檔案)。
-- **嚴格模式**：阻擋所有寫入，提供最高安全性 (`boring_shadow_mode("STRICT")`)。
+**Shadow Mode 是什麼？**
+Shadow Mode 是 Boring 的安全核心，作為 AI 與您檔案系統之間的**強制攔截層**。
+- **功能**：它會攔截所有具破壞性的操作（如寫入檔案、刪除檔案、執行指令）。
+- **流程**：AI 提出操作請求 -> Shadow Mode 攔截並評估風險 -> 放入待審核佇列 -> 需要您批准 (`boring_shadow_approve`) 才會執行。
+- **全面攔截**：在 v10.16.3 中，我們修復了所有漏洞，確保即使是 `boring_apply_patch` 或 Agent 的背景執行，只要開啟 `STRICT` 模式，所有寫入都必須經過您的同意。
+
+**三種模式：**
+- **DISABLED** (⚠️ 危險): 不進行攔截，適合完全隔離環境。
+- **ENABLED** (🛡️ 預設): 自動放行低風險操作 (如讀取)，攔截高風險操作。
+- **STRICT** (🔒 嚴格): 攔截 **所有** 寫入操作，最高安全級別。
 
 ### 2. 穩健交易 (Transactions) 💾
 **非互動式 Git**：`boring_transaction` 現已自動繞過 GPG/憑證提示，防止 CI 流程卡死。
