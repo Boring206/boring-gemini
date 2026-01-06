@@ -477,21 +477,26 @@ Run test suite without blocking:
 
     # --- Git & Workspace Prompts ---
 
-    @mcp.prompt(name="smart_commit", description="Create semantic commit with verification")
+    @mcp.prompt(name="smart_commit", description="Smart commit with verification and optional push")
     def smart_commit(
         message: str = Field(
-            default="", description="Commit message (optional, will be generated)"
+            default="", description="Commit message (optional)"
         ),
+        push: bool = Field(default=False, description="Push after commit?"),
     ) -> str:
-        """Smart commit workflow."""
-        return f"""📝 **Smart Commit**
+        """Smart Git Commit."""
+        return f"""🧠 **Smart Commit**
 
-Message: {message if message else "(will be auto-generated)"}
+Message: {message if message else "(auto-generate)"}
+Push: {push}
 
-1. Run `boring_verify(level='STANDARD')` to ensure code is clean
-2. If issues found, run `boring_auto_fix`
-3. Generate semantic commit message if not provided
-4. Run `boring_commit(message='{message if message else "<generated>"}')`
+1. Run `boring_verify(level='STANDARD')`
+2. If passed:
+   - Run `git status`
+   - If nothing staged, ask to stage (`git add .`)
+   - If message provided: Use it.
+   - Else: Generate **Conventional Commit** message -> Confirm -> Commit.
+   - If push=True: Run `git push`
 """
 
     @mcp.prompt(name="switch_project", description="Switch to a different project in the workspace")
@@ -618,6 +623,52 @@ B: {path_b}
 3. Declare winner with justification
 4. Provide recommendations for the losing implementation
 """
+
+    @mcp.prompt(
+        name="visualize", description="Generate Mermaid diagrams for project architecture"
+    )
+    def visualize(
+        target: str = Field(default="src/", description="Path to visualize"),
+        type: str = Field(default="class", description="Diagram type: class, sequence, flow"),
+    ) -> str:
+        """Visualize architecture."""
+        return f"""🎨 **Architecture Visualization**
+
+Target: {target}
+Type: {type}
+
+1. Analyze the code structure in `{target}`
+2. Generate a **Mermaid.js** diagram of type `{type}`
+3. enclose it in a `mermaid` code block
+4. Explain the key relationships and potential bottlenecks shown in the diagram
+"""
+
+    @mcp.prompt(name="roadmap", description="Update and visualize project roadmap")
+    def roadmap() -> str:
+        """Manage project roadmap."""
+        return """🗺️ **Project Roadmap**
+
+1. Read `task.md` (or create if missing)
+2. Analyze completed vs pending tasks
+3. Generate a progress summary
+4. Output a **Mermaid Gantt Chart** or **Flowchart** showing the next steps
+5. Propose updates to `task.md` if the plan has evolved
+"""
+
+
+
+    @mcp.prompt(name="vibe_check", description="Project health and style diagnostic")
+    def vibe_check() -> str:
+        """Run a Vibe Check."""
+        return """✨ **Vibe Check** (System Diagnostic)
+
+1. **Structure Check**: Is the directory structure clean and standard?
+2. **Docs Check**: Are README, CONTRIBUTING, and CHANGELOG up to date?
+3. **Bloat Check**: Are there unused files or massive functions?
+4. **Style Check**: Does the code 'feel' modern and consistent?
+5. **Score**: Give a 'Vibe Score' (0-100) and 3 top recommendations to improve the vibe.
+"""
+
 
     # --- System & Meta Prompts ---
 

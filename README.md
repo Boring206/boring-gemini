@@ -99,6 +99,11 @@ In `mcp_config.json` or IDE settings:
 - **Auto-detection**: System automatically detects local command tools at startup.
 - **Configuration**:
   ```bash
+  # Run with custom timeout
+  boring start --timeout 60
+  
+  # One-Shot Command (New!)
+  boring run "Review this code and fix bugs"
   boring start --provider claude-code
   boring verify --provider gemini-cli
   ```

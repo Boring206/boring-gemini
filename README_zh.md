@@ -185,7 +185,13 @@ Boring V10.16 採用 **動態發現架構**，解決了工具過多導致的 Con
    ```
 
 > **Note**: 目前所有模板與捷徑皆已整合至 Slash Commands (Prompts) 中，無需記憶複雜 CLI 參數。
+
+### ⚡ One-Shot Mode (單次執行)
+不需進入互動模式，直接執行單一指令 (適合 Vibe Coder)：
+```bash
+boring run "幫我重構 src/main.py"
 ```
+
 
 **內建模板：**
 | 模板 ID | 說明 |
