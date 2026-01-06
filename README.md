@@ -30,7 +30,7 @@
 ### Option 1: Smithery (Recommended)
 
 ```bash
-npx @smithery/cli install boring
+npx @smithery/cli install @boring/boring
 ```
 
 ### Option 2: pip
