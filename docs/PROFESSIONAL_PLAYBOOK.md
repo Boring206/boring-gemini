@@ -12,9 +12,14 @@
 不要直接寫 Code。專業的第一步是確保 AI 真正理解複雜的業務邏輯。
 
 1. **啟動架構師計畫**：使用 `/vibe_start`。
-   - **底層驅動**：`speckit_clarify` -> `speckit_plan` -> `evaluate_architecture`。
+   - **底層驅動**：(完整 Spec-Driven 流程)
+     `speckit_constitution` (原則) -> `speckit_clarify` (釐清) -> `speckit_plan` (計畫) -> `speckit_checklist` (驗收標準) -> `speckit_analyze` (一致性分析) -> `evaluate_architecture`。
 2. **強制解析架構**：使用 `/evaluate_architecture`。
    - 這能強制 AI 指出你需求中的設計缺陷（例如：缺少 Retry 機制、潛在的 O(N) 操作）。
+
+### 💡 `/vibe_start` vs `/full_stack_dev`
+- **`/vibe_start` (Architect Mode)**: 適合從 0 到 1 的新專案，重視需求釐清、規格制定與架構正確性。會經過完整的 Plan/Spec 流程。
+- **`/full_stack_dev` (Hacker Mode)**: 適合需求明確、技術導向的開發。直接進入技術實作 (如 "用 Next.js 寫個登入頁")，速度快但架構檢查較少。
 
 ---
 
