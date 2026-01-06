@@ -1,30 +1,91 @@
 # Changelog
 
 ## [10.16.0] - 2026-01-05 - Vibe Coding & Enterprise Architecture
+
 ### Added
-- **Dynamic Tool Discovery**: Implemented `boring://capabilities` and `boring://tools/{category}` resources. AI can now discover capabilities on-demand, solving context window limits.
-- **Consolidated MCP Toolset**: Refactored 50+ granular tools into 14 high-level categories (Security, Git, Agent, Context...) for a cleaner AI interface.
-- **Advanced Core Modules**:
-  - `boring.security`: SAST (Bandit), Secret Detection, Dependency Scanning.
-  - `boring.transactions`: Git-based atomic operations (Start/Commit/Rollback).
-  - `boring.background_agent`: Thread-based async task runner for long-running ops.
-  - `boring.context_sync`: Cross-session memory persistence.
-- **Quality Gates**:
-  - **100% Unit Test Coverage** for all new advanced modules.
-  - **Smithery Compliance**: Fully validated `smithery.yaml` and entry points.
-- **Web Dashboard**: New `boring-dashboard` command for a rich Streamlit-based visualization.
-- **Monitoring Split**: Distinguished between `boring-monitor` (TUI) and `boring-dashboard` (Web) in documentation.
-- **LSP & IDE Portability**: New `boring lsp start` command for JetBrains, Vim, and other LSP clients.
-- **Windows Stability**: Optimized for Windows environment (path handling, connection resets).
+
+#### 🚀 Vibe Coding Prompts (35+ MCP Prompts)
+Complete prompt ecosystem for AI-first development workflows:
+
+**Core Workflows:**
+- **`vibe_start`**: One-click full development workflow (Spec → Plan → Code → Verify)
+- **`quick_fix`**: Auto-fix all code issues (Lint, Format, Test errors)
+- **`full_stack_dev`**: Full-stack application development (Frontend + Backend + DB)
+- **`smart_commit`**: Quality-first Git commit with `boring_commit` integration
+- **`safe_refactor`**: Transaction-based refactoring with rollback safety net
+
+**Architecture & Quality:**
+- **`evaluate_architecture`**: Hostile Architect review (Production-level critique)
+- **`evaluate_code`**: LLM-as-Judge code quality scoring
+- **`compare_implementations`**: A/B comparison of two implementations
+- **`vibe_check`**: Project health and style diagnostic (Vibe Score 0-100)
+- **`audit_quality`**: Full system audit (Health + Security + Verification)
+
+**RAG & Memory:**
+- **`semantic_search`**: Natural language code search
+- **`save_session`** / **`load_session`**: Session context persistence
+- **`project_brain`**: View all AI-learned project knowledge
+- **`learn_patterns`**: Learn project-specific patterns from changes
+- **`create_rubrics`**: Create evaluation rubrics for code standards
+
+**Git & Workspace:**
+- **`switch_project`**: Multi-project workspace switching
+- **`add_project`**: Register new projects in workspace
+- **`rollback`**: Rollback to last safe state
+
+**Security & Verification:**
+- **`security_scan`**: Comprehensive security analysis (Secrets, SAST, Dependencies)
+- **`shadow_review`**: Review Shadow Mode pending operations
+- **`background_verify`** / **`background_test`**: Non-blocking verification
+
+**Visualization & Documentation:**
+- **`visualize`**: Generate Mermaid diagrams for architecture
+- **`roadmap`**: Update and visualize project roadmap from task.md
+- **`visualize_architecture`**: Module/Class/Full scope visualization
+
+**Plugin & System:**
+- **`run_plugin`** / **`create_plugin`**: Plugin execution and creation guide
+- **`system_status`**: Current project loop and task progress
+- **`setup_ide`**: IDE extension configuration
+- **`mark_done`**: Task completion signaling
+
+#### 🏛️ Architect Mode (Mentor Persona)
+- AI acts as "Senior Architect Mentor" during `vibe_start` workflow
+- Architecture checkpoints at each phase with proactive guidance
+- ADR (Architecture Decision Records) generation on completion
+
+#### 🔧 Dynamic Tool Discovery
+- **`boring://capabilities`** and **`boring://tools/{category}`** resources
+- AI can discover capabilities on-demand, solving context window limits
+
+#### 📦 Consolidated MCP Toolset
+- Refactored 50+ granular tools into 14 high-level categories
+- Categories: Security, Git, Agent, Context, Profile, Verification, RAG, Agents, Shadow, Workspace, Knowledge, Plugins, Evaluation
+
+#### 🏗️ Advanced Core Modules
+- `boring.security`: SAST (Bandit), Secret Detection, Dependency Scanning
+- `boring.transactions`: Git-based atomic operations (Start/Commit/Rollback)
+- `boring.background_agent`: Thread-based async task runner
+- `boring.context_sync`: Cross-session memory persistence
+
+#### 📊 Quality & Monitoring
+- **100% Unit Test Coverage** for all new advanced modules
+- **Smithery Compliance**: Fully validated `smithery.yaml` and entry points (58/58 score)
+- **Web Dashboard**: `boring-dashboard` command for Streamlit-based visualization
+- **Monitoring Split**: `boring-monitor` (TUI) vs `boring-dashboard` (Web)
+
+#### 🖥️ IDE & Platform
+- **LSP & IDE Portability**: `boring lsp start` for JetBrains, Vim, and other LSP clients
+- **Windows Stability**: Optimized path handling and connection reset handling
 
 ### Security
-- Integrated `bandit` and `pip-audit` for automated security scanning.
-- Enhanced secret detection patterns in `SecurityScanner`.
+- Integrated `bandit` and `pip-audit` for automated security scanning
+- Enhanced secret detection patterns in `SecurityScanner`
 
 ### Changed
-- **Tool Registration**: `server.py` now uses module-level imports and dynamic registration.
-- **Architecture**: Moved to a "Discovery-First" architecture for MCP interaction.
-- **Workflow Integration**: `smart_commit` prompt now explicitly uses `boring_commit` tool for auto-generating semantic commit messages from `task.md`.
+- **Tool Registration**: `server.py` now uses module-level imports and dynamic registration
+- **Architecture**: Moved to "Discovery-First" architecture for MCP interaction
+- **Workflow Integration**: `smart_commit` prompt now explicitly uses `boring_commit` tool
 
 ## [10.15.0] - 2026-01-05
 ### Added
