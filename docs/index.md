@@ -1,6 +1,6 @@
-# Boring for Gemini
+# Boring for Gemini - Documentation
 
-> **Enterprise-Grade Autonomous AI Developer**
+> **Boring Vibecoder Assistant** - AI-powered development support tool
 
 Welcome to the Boring-Gemini documentation. Boring is an autonomous AI development agent powered by Google's Gemini models, designed for seamless integration with modern IDEs.
 
@@ -10,6 +10,7 @@ Welcome to the Boring-Gemini documentation. Boring is an autonomous AI developme
 - 🔌 **Full MCP Support**: Works with Cursor, Claude Desktop, VS Code
 - 🛡️ **Enterprise-Grade Protection**: Circuit breaker, self-healing, 100% test coverage
 - 🧩 **Spec-Driven Development**: SpecKit integration from PRD to Code
+- 🎯 **41 Prompts**: Complete Prompt-First UX for all core workflows
 
 ## Quick Start
 
@@ -23,14 +24,40 @@ pip install boring-gemini
 
 ## Verified Platforms
 
-✅ Gemini CLI • ✅ Antigravity • ✅ Cursor
+✅ Gemini CLI • ✅ Antigravity • ✅ Cursor • ✅ Claude Desktop
 
-## Documentation
+---
 
-- [Installation Guide](getting-started/installation.md)
-- [Quick Start](getting-started/quickstart.md)
-- [API Reference](api/gemini_client.md)
-- [Contributing](contributing.md)
+## 📚 Documentation Index
+
+### Tutorials
+| Document | Description |
+|----------|-------------|
+| [Complete Tutorial](TUTORIAL.md) | Beginner-to-intermediate guide (Parts 1-6) |
+| [Advanced Developer Guide](ADVANCED_TUTORIAL.md) | Architecture deep dive, tool development |
+| [Professional Playbook](PROFESSIONAL_PLAYBOOK.md) | Expert-level workflows and best practices |
+
+### Appendices
+| Document | Description |
+|----------|-------------|
+| [Tool Reference (Appendix A)](APPENDIX_A_TOOL_REFERENCE.md) | Complete 55+ MCP tools reference |
+| [FAQ (Appendix B)](APPENDIX_B_FAQ.md) | Installation, troubleshooting, common questions |
+| [Prompt Philosophy (Appendix C)](APPENDIX_C_PROMPT_PHILOSOPHY.md) | Architect persona design principles |
+
+### Getting Started
+| Document | Description |
+|----------|-------------|
+| [Installation Guide](getting-started/installation.md) | Setup instructions |
+| [Quick Start](getting-started/quickstart.md) | First steps with Boring |
+
+### Reference
+| Document | Description |
+|----------|-------------|
+| [Architect Mode](architect_mode.md) | Hostile Architect evaluation mode |
+| [Contributing](contributing.md) | How to contribute |
+| [API Reference](api/mcp_server.md) | MCP Server API (MkDocs) |
+
+---
 
 ## License
 
