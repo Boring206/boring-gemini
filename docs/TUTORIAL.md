@@ -28,7 +28,7 @@
 
 #### 方法 1: pip 安裝 (推薦)
 ```bash
-pip install boring-gemini
+pip install boring-aicoding
 ```
 
 #### 方法 2: 從原始碼安裝

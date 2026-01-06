@@ -30,13 +30,13 @@
 ### Option 1: Smithery (Recommended)
 
 ```bash
-npx @smithery/cli install boring-gemini
+npx @smithery/cli install boring
 ```
 
 ### Option 2: pip
 
 ```bash
-pip install boring
+pip install boring-aicoding
 # Or full installation
 pip install "boring[all]"
 ```
@@ -68,6 +68,7 @@ In `mcp_config.json` or IDE settings:
 | Document | Description | Audience |
 |----------|-------------|----------|
 | [**Getting Started**](docs/getting-started/installation.md) | Installation, first steps, MCP setup | New users |
+| [**🔥 Practical Demo**](docs/PRACTICAL_DEMO.md) | 10-min hands-on showcase, 6 real-world examples | 🆕 Vibe Coders |
 | [**Complete Tutorial**](docs/TUTORIAL.md) | Quick start, core workflows, practical examples | All developers |
 | [**Advanced Developer Guide**](docs/ADVANCED_TUTORIAL.md) | Architecture deep dive, tool development, internals | Senior developers |
 | [**Professional Playbook**](docs/PROFESSIONAL_PLAYBOOK.md) | 18 expert workflows with `/slash` commands | Senior developers |

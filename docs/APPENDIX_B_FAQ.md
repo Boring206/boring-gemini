@@ -7,7 +7,7 @@
 ### Q: How do I install Boring for Gemini?
 
 ```bash
-pip install boring-gemini
+pip install boring-aicoding
 ```
 
 Or install from source:

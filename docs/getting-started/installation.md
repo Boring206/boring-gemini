@@ -5,7 +5,7 @@
 The easiest way to install Boring for use with Cursor or Claude Desktop:
 
 ```bash
-npx @smithery/cli install boring-gemini
+npx @smithery/cli install boring
 ```
 
 ## Required Configuration
@@ -17,7 +17,7 @@ Boring requires companion MCP servers for full functionality. Add this to your I
   "mcpServers": {
     "boring": {
       "command": "npx",
-      "args": ["-y", "@smithery/cli", "run", "boring-gemini", "--config", "{}"]
+      "args": ["-y", "@smithery/cli", "run", "@boring/boring", "--config", "{}"]
     },
     "context7": {
       "command": "npx",
