@@ -41,9 +41,16 @@ Add to your MCP config (`.cursor/mcp.json` or `mcp_config.json`):
 
 ### Q: Do I need a Google API Key?
 
-**For Smithery**: Yes, required.
-**For local CLI**: Only for LLM-based features (RAG, evaluation).
-**For basic tools**: No, works without API key.
+**Core Tools (No Key Required)**:
+- `boring_verify`, `boring_security_scan`, `boring_commit`, `boring_hooks_install`
+- These work 100% locally without any API key.
+
+**LLM-Enhanced Features (Key Required)**:
+- `boring_evaluate` (LLM-as-Judge)
+- `boring_rag_search` (Semantic search with embeddings)
+- `boring_multi_agent` (Multi-agent orchestration)
+
+**Smithery Deployment**: No API key is required in the config schema. The platform may have its own authentication, but Boring itself does not mandate a key.
 
 ---
 
