@@ -18,6 +18,7 @@
     - `boring_list_plugins` now supports `include_builtin=True` to show core tools.
     - `boring_security_scan` explicitly reports checked categories (Secrets, SAST, Dependencies).
 - **Startup Check**: MCP server now logs RAG dependency status at every startup.
+- **Improved Guidance**: `boring_rag_index` success output now displays the detected project root. Project not found errors now provide clearer solutions.
 
 ## [10.16.3] - 2026-01-06 - Security & Stability
 ### Fixed
