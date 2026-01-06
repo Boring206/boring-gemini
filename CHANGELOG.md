@@ -1,5 +1,15 @@
 # Changelog
 
+## [10.16.5] - 2026-01-06 - Shadow Mode Security Fix
+### Fixed
+- **Critical Security Fix**: Shadow Mode now persists configuration to `.boring_shadow_mode` file. Previously, setting `STRICT` mode was lost on MCP server restart, causing enforcement to silently revert to `ENABLED`.
+- **Mode Persistence**: `boring_shadow_mode('STRICT')` now writes the setting to disk, ensuring it survives across sessions.
+
+### Added
+- **Enforcement Tests**: Added comprehensive unit tests for STRICT, ENABLED, and DISABLED mode enforcement behavior (`tests/unit/test_shadow_mode_enforcement.py`).
+
+---
+
 ## [10.16.4] - 2026-01-06 - Tool Renaming & Security Fixes
 ### Added
 - **`boring_rag_reload`**: Hot-reload RAG dependencies at runtime. Allows picking up newly installed `chromadb`/`sentence-transformers` without MCP server restart.
