@@ -7,14 +7,17 @@ from boring.mcp.tools.evaluation import boring_evaluate
 class TestEvaluationTools:
     @patch("boring.mcp.tools.evaluation.detect_project_root")
     @patch("boring.mcp.tools.evaluation.check_rate_limit")
-    @patch("boring.judge.LLMJudge")
-    @patch("boring.cli_client.GeminiCLIAdapter")
-    def test_boring_evaluate_file(self, mock_cli, mock_judge_cls, mock_limit, mock_root):
+    @patch("boring.mcp.tools.evaluation.create_judge_provider")
+    @patch("boring.mcp.tools.evaluation.LLMJudge")
+    def test_boring_evaluate_file(self, mock_judge_cls, mock_create_provider, mock_limit, mock_root):
         """Test file evaluation."""
         mock_limit.return_value = (True, "")
         mock_root.return_value = Path("/tmp/project")
 
-        mock_cli.return_value.is_available = True
+        # Setup mock provider
+        mock_provider = MagicMock()
+        mock_provider.is_available = True
+        mock_create_provider.return_value = mock_provider
 
         mock_judge = MagicMock()
         mock_judge.grade_code.return_value = {
@@ -38,10 +41,10 @@ class TestEvaluationTools:
     @patch("boring.mcp.tools.evaluation.detect_project_root")
     @patch("boring.mcp.tools.evaluation.check_rate_limit")
     @patch("boring.mcp.tools.evaluation.os.environ.get")
-    @patch("boring.judge.LLMJudge")
-    @patch("boring.judge.create_judge_provider")
+    @patch("boring.mcp.tools.evaluation.create_judge_provider")
+    @patch("boring.mcp.tools.evaluation.LLMJudge")
     def test_boring_evaluate_interactive(
-        self, mock_create_provider, mock_judge_cls, mock_env, mock_limit, mock_root
+        self, mock_judge_cls, mock_create_provider, mock_env, mock_limit, mock_root
     ):
         """Test interactive mode (prompt return)."""
         mock_limit.return_value = (True, "")
