@@ -1,5 +1,5 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-10.16.0-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-10.16.3-green.svg)](https://github.com/Boring206/boring-gemini)
 [![Evaluation](https://img.shields.io/badge/Smithery-58%2F58-brightgreen.svg)](https://smithery.ai/server/boring/boring)
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 
@@ -361,6 +361,19 @@ boring hooks uninstall  # 移除
 | quick-check | 每次 commit | QUICK (多語言) |
 
 ---
+
+## 🆕 V10.16.3 新功能 (安全性與穩定性)
+
+### 1. 強化版 Shadow Mode 🛡️
+**全面攔截**：Shadow Mode 現在攔截 **所有** 檔案寫入操作，包括 Patch 應用與 Agent 執行。
+- **預設模式**：阻擋高風險操作 (刪除、機密檔案)。
+- **嚴格模式**：阻擋所有寫入，提供最高安全性 (`boring_shadow_mode("STRICT")`)。
+
+### 2. 穩健交易 (Transactions) 💾
+**非互動式 Git**：`boring_transaction` 現已自動繞過 GPG/憑證提示，防止 CI 流程卡死。
+
+### 3. 智慧 RAG 環境 🧠
+**自動偵測**：RAG 工具現在能自動尋找使用者安裝的 Python 套件 (`chromadb`)，解決隔離環境下的 "Module not found" 問題。
 
 ## 🆕 V10.16.0 新功能
 

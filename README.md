@@ -1,5 +1,5 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-10.16.0-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-10.16.3-green.svg)](https://github.com/Boring206/boring-gemini)
 [![Evaluation](https://img.shields.io/badge/Smithery-58%2F58-brightgreen.svg)](https://smithery.ai/server/boring/boring)
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 
@@ -362,6 +362,19 @@ boring hooks uninstall  # Remove
 | quick-check | Every commit | QUICK (multi-language) |
 
 ---
+
+## 🆕 V10.16.3 New Features (Security & Stability)
+
+### 1. Enhanced Shadow Mode 🛡️
+**Strict Enforcement**: Shadow Mode now intercepts **ALL** file write operations, including patch applications and agent execution.
+- **Default**: Blocks critical/high-risk ops (deletions, secrets).
+- **Strict**: Blocks ALL writes for maximum safety (`boring_shadow_mode("STRICT")`).
+
+### 2. Robust Transactions 💾
+**Non-Interactive Git**: `boring_transaction` now automatically bypasses GPG/credential prompts, preventing CI hangs.
+
+### 3. Smart RAG Environment 🧠
+**Auto-Discovery**: RAG tools now automatically find user-installed Python packages (`chromadb`), solving "module not found" issues in isolated environments.
 
 ## 🆕 V10.16.0 New Features
 
