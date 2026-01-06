@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.17.2] - 2026-01-06 - ChromaDB API Modernization
+### Fixed
+- **ChromaDB Client**: Replaced deprecated `chromadb.Client()` with `chromadb.EphemeralClient()` for in-memory memory store.
+- **API Optimization**: Ensured all vector database initializations use modern Persistent/Ephemeral patterns.
+
+---
+
 ## [10.17.1] - 2026-01-06 - Security Scan Timeout Fix
 ### Fixed
 - **Security Scan Hang**: Reduced `bandit` and `pip-audit` timeout from 120s to 30s to prevent MCP hangs.

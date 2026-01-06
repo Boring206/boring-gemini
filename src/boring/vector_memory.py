@@ -82,7 +82,8 @@ class VectorMemory:
                     path=str(persist_dir), settings=ChromaSettings(anonymized_telemetry=False)
                 )
             else:
-                self.client = chromadb.Client(settings=ChromaSettings(anonymized_telemetry=False))
+                # Use modern EphemeralClient for in-memory mode
+                self.client = chromadb.EphemeralClient(settings=ChromaSettings(anonymized_telemetry=False))
 
             # Get or create the collection
             # Using default embedding function (sentence-transformers)
