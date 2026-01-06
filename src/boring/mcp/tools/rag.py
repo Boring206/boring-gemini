@@ -188,7 +188,8 @@ def register_rag_tools(mcp, helpers: dict):
         if not retriever.is_available:
             return (
                 "❌ RAG not available. Install optional dependencies:\n"
-                "pip install chromadb sentence-transformers"
+                f"    {sys.executable} -m pip install chromadb sentence-transformers\n\n"
+                "After installation, run `boring_rag_reload` to apply changes without restarting."
             )
 
         count = retriever.build_index(force=force)
@@ -262,8 +263,9 @@ def register_rag_tools(mcp, helpers: dict):
                 "❌ RAG not available.\n\n"
                 "**Install dependencies:**\n"
                 "```bash\n"
-                "pip install chromadb sentence-transformers\n"
-                "```"
+                f"{sys.executable} -m pip install chromadb sentence-transformers\n"
+                "```\n"
+                "After installation, run `boring_rag_reload` to apply changes without restarting."
             )
 
         # Enhanced index health check with diagnostics
