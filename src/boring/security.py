@@ -474,7 +474,7 @@ class SecurityScanner:
                 ["bandit", "-r", str(target_path), "-f", "json", "-q"],
                 capture_output=True,
                 text=True,
-                timeout=120,
+                timeout=30,  # Reduced from 120 to prevent long hangs
             )
 
             if result.stdout:
@@ -512,11 +512,11 @@ class SecurityScanner:
 
         try:
             result = subprocess.run(
-                ["pip-audit", "--format", "json"],
+                ["pip-audit", "--format", "json", "--progress-spinner", "off"],
                 capture_output=True,
                 text=True,
                 cwd=self.project_root,
-                timeout=120,
+                timeout=30,  # Reduced from 120 to prevent long hangs
             )
 
             if result.stdout:
