@@ -1,5 +1,5 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-10.16.3-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-10.16.4-green.svg)](https://github.com/Boring206/boring-gemini)
 [![Evaluation](https://img.shields.io/badge/Smithery-58%2F58-brightgreen.svg)](https://smithery.ai/server/boring/boring)
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 
@@ -192,7 +192,7 @@ To reduce context consumption, we consolidated 50+ tools into 14 high-level entr
 | **Context** | `boring_context` | Cross-session memory save/load |
 | **Profile** | `boring_profile` | User preferences and cross-project learning |
 | **Verification** | `boring_verify` | Multi-level code verification (Basic/Standard/Full) |
-| **RAG Memory** | `boring_rag_search` | Semantic search and dependency context retrieval |
+| **RAG Memory** | `boring_rag_search` | Semantic search and dependency context retrieval. Use `boring_rag_reload` to hot-reload dependencies after installation. |
 | **Agents** | `boring_multi_agent` | **[PROMPT GENERATOR / EXECUTOR]** Returns prompts or executes workflow in background (`execute=True`). Helper tools: `boring_prompt_plan`, `boring_prompt_fix` |
 | **Shadow** | `boring_shadow_mode` | Safe sandbox for high-risk operations |
 | **Git** | `boring_commit` | Semantic commit message generation from task.md (used by `smart_commit` prompt) |

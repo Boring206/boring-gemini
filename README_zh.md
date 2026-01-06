@@ -1,5 +1,5 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-10.16.3-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-10.16.4-green.svg)](https://github.com/Boring206/boring-gemini)
 [![Evaluation](https://img.shields.io/badge/Smithery-58%2F58-brightgreen.svg)](https://smithery.ai/server/boring/boring)
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 
@@ -187,7 +187,7 @@ Boring V10.16 採用 **動態發現架構**，解決了工具過多導致的 Con
 | **Context** | `boring_context` | 跨 Session 記憶保存與載入 |
 | **Profile** | `boring_profile` | 用戶偏好與跨專案學習 |
 | **Verification** | `boring_verify` | 多層級程式碼驗證 (Basic/Standard/Full) |
-| **RAG Memory** | `boring_rag_search` | 語義搜尋與依賴上下文檢索 |
+| **RAG Memory** | `boring_rag_search` | 語義搜尋與依賴上下文檢索。安裝依賴後使用 `boring_rag_reload` 熱載入更新。 |
 | **Agents** | `boring_multi_agent` | **[提示生成/執行器]** 返回提示或在後台執行工作流程 (`execute=True`). 輔助工具: `boring_prompt_plan`, `boring_prompt_fix` |
 | **Shadow** | `boring_shadow_mode` | 高風險操作安全沙箱 |
 | **Git** | `boring_commit` | 從 task.md 自動生成語義化 commit 訊息 (供 `smart_commit` 使用) |
