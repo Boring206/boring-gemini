@@ -274,25 +274,34 @@ use_function_calling = false
 
     def test_load_toml_config_with_global_section(self, tmp_path, monkeypatch):
         """Test load_toml_config with [global] section as fallback."""
+        config_file = tmp_path / ".boring.toml"
+        config_file.write_text("[global]\ndefault_model = 'models/gemini-3-pro'", encoding="utf-8")
+
         with patch("boring.config.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = tmp_path
             mock_settings.DEFAULT_MODEL = "models/gemini-2.5-flash"
 
             with patch("tomllib.load", return_value={"global": {"default_model": "models/gemini-3-pro"}}):
-                load_toml_config()
+                # Need to mock open again because load_toml_config opens the file
+                with patch("builtins.open", mock_open(read_data=b"[global]\ndefault_model = 'models/gemini-3-pro'")):
+                     load_toml_config()
 
-                assert mock_settings.DEFAULT_MODEL == "models/gemini-3-pro"
+            assert mock_settings.DEFAULT_MODEL == "models/gemini-3-pro"
 
     def test_load_toml_config_with_flat_keys(self, tmp_path, monkeypatch):
         """Test load_toml_config with flat top-level keys."""
+        config_file = tmp_path / ".boring.toml"
+        config_file.write_text("default_model = 'models/gemini-3-pro'\ntimeout_minutes = 30", encoding="utf-8")
+
         with patch("boring.config.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = tmp_path
             mock_settings.DEFAULT_MODEL = "models/gemini-2.5-flash"
 
             with patch("tomllib.load", return_value={"default_model": "models/gemini-3-pro", "timeout_minutes": 30}):
-                load_toml_config()
+                 with patch("builtins.open", mock_open(read_data=b"default_model = 'models/gemini-3-pro'\ntimeout_minutes = 30")):
+                    load_toml_config()
 
-                assert mock_settings.DEFAULT_MODEL == "models/gemini-3-pro"
+            assert mock_settings.DEFAULT_MODEL == "models/gemini-3-pro"
 
     def test_load_toml_config_handles_missing_toml_parser(self, tmp_path, monkeypatch):
         """Test load_toml_config handles missing TOML parser gracefully."""
