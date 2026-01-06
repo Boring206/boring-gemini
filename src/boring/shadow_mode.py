@@ -131,16 +131,31 @@ class ShadowModeGuard:
             pending_file: Path to save pending operations queue
         """
         self.project_root = Path(project_root)
-        self.mode = mode
+        self._mode = mode  # Use private attr to avoid triggering setter persistence
         self.approval_callback = approval_callback
 
         self.pending_file = pending_file or (self.project_root / ".boring_pending_approval.json")
+        self._mode_file = self.project_root / ".boring_shadow_mode"
 
         self.pending_queue: list[PendingOperation] = []
         self._operation_counter = 0
 
+        # Load persisted mode (overrides constructor default if file exists)
+        self._load_mode()
+
         # Load any existing pending operations
         self._load_pending()
+
+    @property
+    def mode(self) -> ShadowModeLevel:
+        """Get current protection mode."""
+        return self._mode
+
+    @mode.setter
+    def mode(self, value: ShadowModeLevel) -> None:
+        """Set protection mode and persist to disk."""
+        self._mode = value
+        self._persist_mode()
 
     def check_operation(self, operation: dict[str, Any]) -> Optional[PendingOperation]:
         """
@@ -429,6 +444,25 @@ class ShadowModeGuard:
         """Remove an operation from the queue."""
         self.pending_queue = [op for op in self.pending_queue if op.operation_id != operation_id]
         self._save_pending()
+
+    def _persist_mode(self) -> None:
+        """Persist current mode to disk for cross-session consistency."""
+        try:
+            self._mode_file.write_text(self._mode.value)
+            logger.debug(f"Shadow Mode persisted: {self._mode.value}")
+        except Exception as e:
+            logger.warning(f"Failed to persist Shadow Mode: {e}")
+
+    def _load_mode(self) -> None:
+        """Load persisted mode from disk if available."""
+        if self._mode_file.exists():
+            try:
+                mode_str = self._mode_file.read_text().strip().upper()
+                if mode_str in ("DISABLED", "ENABLED", "STRICT"):
+                    self._mode = ShadowModeLevel[mode_str]
+                    logger.debug(f"Loaded persisted Shadow Mode: {mode_str}")
+            except Exception as e:
+                logger.warning(f"Failed to load persisted Shadow Mode: {e}")
 
 
 # ============================================================================
