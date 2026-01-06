@@ -12,7 +12,8 @@ The system is built entirely in **Python**, using modern CLI frameworks and rich
 - **Safeguards:** Implements rate limiting (to manage API costs), a circuit breaker (to prevent getting stuck in failing loops), and graceful handling of API usage limits.
 - **Live Monitoring:** Provides real-time monitoring of the agent's status, logs, and API call usage via `boring-monitor`.
 - **🆕 Boring Polyglot (V10.15):** Zero-API-Key switching between Gemini CLI and Claude Code CLI with native protocol awareness.
-- **🆕 Dynamic Workflow Evolution (V5.2):** AI can dynamically modify SpecKit workflows based on project needs with rollback support.
+- **🆕 Hybrid RAG (V10.17):** Combined Vector + Keyword search with dependency graph expansion.
+- **🆕 Security Guard (V10.17):** Cross-session persistent Shadow Mode and multi-file-type security scanning.
 - **🆕 Knowledge Base (.boring_brain):** Persistent storage for workflow adaptations, learned patterns, and evaluation rubrics.
 
 **Technology Stack:**
