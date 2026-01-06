@@ -5,7 +5,7 @@
 The easiest way to install Boring for use with Cursor or Claude Desktop:
 
 ```bash
-npx @smithery/cli install @boring/boring
+npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ```
 
 ## Required Configuration
