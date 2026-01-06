@@ -12,33 +12,44 @@ from pydantic import Field
 # Import error tracking for better diagnostics
 _RAG_IMPORT_ERROR = None
 
+# Robust dependency check with improved environment bridging
 try:
+    import chromadb
+    from sentence_transformers import SentenceTransformer
+    
+    # Only import internal RAG module if dependencies exist
     from boring.rag import RAGRetriever, create_rag_retriever
+    _RAG_IMPORT_ERROR = None
 except ImportError as e:
-    # Try adding user site packages to fix environment isolation issues
+    # Attempt to bridge isolated environments (e.g. MCP running in embedded Python)
     import site
     import sys
-
+    import os
+    
+    # Strategy 1: User site packages
     try:
-        # Check standard user site packages
         user_site = site.getusersitepackages()
         if isinstance(user_site, str) and user_site not in sys.path:
             sys.path.append(user_site)
-        elif isinstance(user_site, list):
-            for path in user_site:
-                if path not in sys.path:
-                    sys.path.append(path)
+    except Exception:
+        pass
 
-        # Retry import
+    # Strategy 2: Global python site-packages (if accessible)
+    # This matches where 'pip install' likely went if running basic python
+    # We can't easily guess it, but we can try common paths or just rely on user_site.
+
+    try:
+        import chromadb
+        from sentence_transformers import SentenceTransformer
         from boring.rag import RAGRetriever, create_rag_retriever
-    except ImportError:
-        # Still failed, set to None
+        _RAG_IMPORT_ERROR = None
+    except ImportError as final_error:
+        # Capture the specific missing dependency and environment info for debugging
+        debug_info = f"Python: {sys.executable}\nPaths: {sys.path}"
+        _RAG_IMPORT_ERROR = f"{str(final_error)}\n[Debug Info]\n{debug_info}"
         RAGRetriever = None
         create_rag_retriever = None
-        _RAG_IMPORT_ERROR = str(e)
 
-# Import error tracking for better diagnostics
-# _RAG_IMPORT_ERROR is set in the try/except block above
 
 # Singleton retriever instance (per project)
 _retrievers: dict = {}

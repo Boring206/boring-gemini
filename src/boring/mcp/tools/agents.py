@@ -153,14 +153,14 @@ def boring_web_search(
 
 
 @audited
-def boring_agent_plan(
+def boring_prompt_plan(
     task: Annotated[str, Field(description="What to build/fix")],
     project_path: Annotated[
         str, Field(description="Optional explicit path to project root")
     ] = None,
 ) -> dict:
     """
-    Return a CLI command to run the Architect agent.
+    [PROMPT GENERATOR] Return a CLI command to run the Architect agent.
 
     Use this when you want to create an implementation plan.
     The actual AI execution happens in your IDE or Gemini CLI.
@@ -386,7 +386,7 @@ def register_agent_tools(mcp, helpers: dict):
     mcp.tool(
         description="[PROMPT GENERATOR] Generate architecture planning prompt. Returns a prompt to execute with your IDE AI or Gemini CLI.",
         annotations={"readOnlyHint": True, "openWorldHint": True},
-    )(boring_agent_plan)
+    )(boring_prompt_plan)
     mcp.tool(
         description="[PROMPT GENERATOR] Generate code review prompt. Returns a prompt to execute with your IDE AI or Gemini CLI.",
         annotations={"readOnlyHint": True, "openWorldHint": True},

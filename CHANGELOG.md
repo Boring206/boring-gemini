@@ -1,5 +1,18 @@
 # Changelog
 
+## [10.16.4] - 2026-01-06 - Tool Renaming & Security Fixes
+### Fixed
+- **Shadow Mode**: Patched `file_patcher.py` to correctly intercept file writes from `AgentLoop`. Now enforcement is comprehensive.
+- **RAG Dependencies**: Fixed `boring_rag_index` failing when dependencies are missing. Added robust import checks and environment bridging for isolated MCP execution.
+
+### Changed
+- **Tool Renaming**:
+    - `boring_agent_plan` -> `boring_prompt_plan`: Clarifies it returns a planning prompt.
+    - `boring_auto_fix` -> `boring_prompt_fix`: Clarifies it returns a fix prompt.
+- **Transparency**:
+    - `boring_list_plugins` now supports `include_builtin=True` to show core tools.
+    - `boring_security_scan` explicitly reports checked categories (Secrets, SAST, Dependencies).
+
 ## [10.16.3] - 2026-01-06 - Security & Stability
 ### Fixed
 - **Shadow Mode Security**: Enforced Shadow Mode checks on `boring_apply_patch`, `boring_extract_patches`, and `boring_multi_agent`. ALL file writes are now intercepted.

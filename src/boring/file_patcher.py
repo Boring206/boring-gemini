@@ -27,6 +27,7 @@ from typing import Any, Optional
 
 from .backup import BackupManager
 from .logger import log_status
+from .mcp.tools.shadow import get_shadow_guard
 from .security import sanitize_content, validate_file_path
 
 # =============================================================================
@@ -147,6 +148,7 @@ def _write_file(
     file_path: str, content: str, project_root: Path, log_dir: Path
 ) -> tuple[bool, str, str]:
     """Write file with security validation. Returns (success, action, error)."""
+    # 1. Base Security Validation (Path checks)
     validation = validate_file_path(file_path, project_root, log_dir=log_dir)
     if not validation.is_valid:
         return False, "", f"Blocked: {file_path} - {validation.reason}"
@@ -154,8 +156,40 @@ def _write_file(
     if validation.normalized_path:
         file_path = validation.normalized_path
 
+    # 2. Shadow Mode Enforcement
+    # This detects if we are in STRICT mode or if operation is dangerous
+    guard = get_shadow_guard(project_root)
     full_path = project_root / file_path
     action = "created" if not full_path.exists() else "modified"
+    
+    # Register operation with guard
+    op_args = {
+        "file_path": str(file_path),
+        "content_length": len(content),
+        "action": action
+    }
+    
+    # We use a blocking check. If it requires approval, we fail the operation
+    # but provide instructions on how to approve it.
+    pending = guard.check_operation({
+        "name": "write_file",
+        "args": op_args
+    })
+
+    if pending:
+        # If enabled/strict mode caught this, we must block immediate execution
+        # unless it was pre-approved (not implemented yet in this flow).
+        # For CLI usage, we might output a prompt. For MCP, we return failure.
+        
+        # Check if we can auto-approve? (Guard handles low severity auto-approval)
+        if not guard.request_approval(pending):
+            msg = (
+                f"🛡️ Operation blocked by Shadow Mode ({guard.mode.value}).\n"
+                f"ID: {pending.operation_id}\n"
+                f"Run `boring_shadow_approve('{pending.operation_id}')` to proceed."
+            )
+            log_status(log_dir, "BLOCKED", msg)
+            return False, "", msg
 
     content = sanitize_content(content)
 
@@ -176,6 +210,7 @@ def _search_replace(
     file_path: str, search: str, replace: str, project_root: Path, log_dir: Path
 ) -> tuple[bool, str]:
     """Search and replace in file. Returns (success, error)."""
+    # 1. Base Security Validation
     validation = validate_file_path(file_path, project_root, log_dir=log_dir)
     if not validation.is_valid:
         return False, f"Blocked: {file_path} - {validation.reason}"
@@ -187,6 +222,26 @@ def _search_replace(
 
     if not full_path.exists():
         return False, f"File not found: {file_path}"
+
+    # 2. Shadow Mode Enforcement
+    guard = get_shadow_guard(project_root)
+    pending = guard.check_operation({
+        "name": "search_replace",
+        "args": {
+            "file_path": str(file_path),
+            "search_snippet": search[:50],
+            "replace_snippet": replace[:50]
+        }
+    })
+
+    if pending:
+        if not guard.request_approval(pending):
+            msg = (
+                f"🛡️ Blocked by Shadow Mode ({guard.mode.value}). "
+                f"Run `boring_shadow_approve('{pending.operation_id}')`."
+            )
+            log_status(log_dir, "BLOCKED", msg)
+            return False, msg
 
     try:
         content = full_path.read_text(encoding="utf-8")
