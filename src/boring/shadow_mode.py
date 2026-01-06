@@ -345,6 +345,20 @@ class ShadowModeGuard:
                 preview="[BLOCKED - Protected system path]",
             )
 
+        # ==================
+        # CATCH-ALL WRITES - LOW
+        # ==================
+        if op_name in ("write_file", "create_file", "search_replace", "apply_patch"):
+            content = args.get("content", "") or args.get("replace", "")
+            return PendingOperation(
+                operation_id=op_id,
+                operation_type="WRITE_FILE",
+                file_path=file_path,
+                severity=OperationSeverity.LOW,
+                description=f"Modify file: {file_path}",
+                preview=self._safe_preview(content),
+            )
+
         return None  # No special handling needed
 
     def _is_sensitive_file(self, path: str) -> bool:

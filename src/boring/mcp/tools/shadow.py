@@ -21,7 +21,8 @@ _guards: dict = {}
 
 def get_shadow_guard(project_root: Path, mode: str = "ENABLED") -> ShadowModeGuard:
     """Get or create Shadow Mode guard for a project."""
-    key = str(project_root)
+    # Normalize key to handle case/path variations
+    key = str(project_root.resolve().absolute()).lower()
     if key not in _guards:
         _guards[key] = create_shadow_guard(project_root, mode=mode)
     return _guards[key]
