@@ -1,5 +1,13 @@
 # Changelog
 
+## [10.16.6] - 2026-01-06 - CI/CD Maintenance
+### Fixed
+- **Integration Tests**: Fixed `test_mcp_startup.py` failure caused by tool renaming (`boring_agent_plan` -> `boring_prompt_plan`).
+- **Lint & Format**: Fixed import sorting in the new Shadow Mode enforcement tests.
+- **PyPI Publish**: Bumped version to ensure clean publication after previous failed check.
+
+---
+
 ## [10.16.5] - 2026-01-06 - Shadow Mode Security Fix
 ### Fixed
 - **Critical Security Fix**: Shadow Mode now persists configuration to `.boring_shadow_mode` file. Previously, setting `STRICT` mode was lost on MCP server restart, causing enforcement to silently revert to `ENABLED`.

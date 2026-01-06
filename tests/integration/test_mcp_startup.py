@@ -76,14 +76,19 @@ class TestMCPServerStartup:
         # V10 RAG tools
         assert "boring_rag_index" in tool_names
         assert "boring_rag_search" in tool_names
+        assert "boring_rag_status" in tool_names
 
         # V10 Agent tools
         assert "boring_multi_agent" in tool_names
-        assert "boring_agent_plan" in tool_names
+        assert "boring_prompt_plan" in tool_names
+        assert "boring_agent_review" in tool_names
 
         # V10 Shadow Mode tools
         assert "boring_shadow_status" in tool_names
         assert "boring_shadow_mode" in tool_names
+        assert "boring_shadow_approve" in tool_names
+        assert "boring_shadow_reject" in tool_names
+        assert "boring_shadow_clear" in tool_names
 
 
 class TestRAGSystem:
