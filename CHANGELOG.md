@@ -1,6 +1,6 @@
 # Changelog
 
-## [10.18.0] - 2026-01-07 - MCP Intelligence Phase 2 🧠
+## [10.18.1] - 2026-01-07 - MCP Intelligence Phase 2 🧠
 
 ### Added
 - **Auto Pattern Detection**: New `auto_learner.py` module for automatic error→solution pattern extraction.
