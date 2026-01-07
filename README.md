@@ -27,21 +27,40 @@
 
 ## 📦 Quick Installation
 
-### Option 1: Smithery (Recommended)
+### Option 1: Smithery (✅ Recommended)
+
+> **Best for: Multi-project workflows, frequent project switching, cloud-based development**
 
 ```bash
 npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ```
 
-### Option 2: pip
+✅ **Advantages**: Automatic updates, consistent environment, no path issues  
+⚠️ **Note**: Requires npx/Node.js installed
+
+### Option 2: Local pip Installation
+
+> **Best for: Single-project development, CI/CD pipelines, offline environments**
 
 ```bash
+# Basic installation (core features)
 pip install boring-aicoding
-# Or full installation
-pip install "boring[all]"
+
+# Full installation with all features (RAG, MCP, GUI, Vector Search)
+pip install "boring-aicoding[all]"
+
+# Or install specific extras:
+pip install "boring-aicoding[mcp]"     # MCP server support
+pip install "boring-aicoding[vector]"  # RAG/Vector search (chromadb, sentence-transformers)
+pip install "boring-aicoding[gui]"     # Streamlit dashboard
+pip install "boring-aicoding[dev]"     # Development tools
 ```
 
+> ⚠️ **Path Issue Warning**: Local installation may encounter path issues when switching between different project directories. For multi-project workflows, we recommend **Smithery deployment**.
+
 ### MCP Configuration
+
+#### For Smithery (Recommended)
 
 In `mcp_config.json` or IDE settings:
 
@@ -51,10 +70,23 @@ In `mcp_config.json` or IDE settings:
     "boring": {
       "command": "npx",
       "args": ["-y", "@smithery/cli", "run", "@boring/boring", "--config", "{}"]
-    },
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"]
+    }
+  }
+}
+```
+
+#### For Local pip Installation
+
+```json
+{
+  "mcpServers": {
+    "boring": {
+      "command": "python",
+      "args": ["-m", "boring.mcp.server"],
+      "env": {
+        "BORING_MCP_MODE": "1",
+        "PROJECT_ROOT_DEFAULT": "."
+      }
     }
   }
 }

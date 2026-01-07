@@ -433,20 +433,33 @@ def boring_forget_all(
 
 if MCP_AVAILABLE and mcp is not None:
     # Register all core tools
+    # Register all core tools with detailed descriptions for Smithery
     mcp.tool(
-        description="Run autonomous development loop",
+        description="Run autonomous development loop (creates workflow template in MCP mode)",
         annotations={"readOnlyHint": False, "openWorldHint": True},
     )(run_boring)
-    mcp.tool(description="Check system health", annotations={"readOnlyHint": True})(
-        boring_health_check
-    )
-    mcp.tool(description="Get quick start guide", annotations={"readOnlyHint": True})(
-        boring_quickstart
-    )
-    mcp.tool(description="Get project status", annotations={"readOnlyHint": True})(boring_status)
+
     mcp.tool(
-        description="Report completion with notification", annotations={"readOnlyHint": False}
+        description="Check Boring system health including API key status, dependencies, and backend availability",
+        annotations={"readOnlyHint": True, "openWorldHint": False},
+    )(boring_health_check)
+
+    mcp.tool(
+        description="Get a comprehensive quick start guide for new users with recommended workflows",
+        annotations={"readOnlyHint": True, "openWorldHint": False},
+    )(boring_quickstart)
+
+    mcp.tool(
+        description="Get current autonomous loop status, including active task, call counts, and recent errors",
+        annotations={"readOnlyHint": True, "openWorldHint": False},
+    )(boring_status)
+
+    mcp.tool(
+        description="Report task completion to the user with optional desktop notification",
+        annotations={"readOnlyHint": False, "openWorldHint": False},
     )(boring_done)
-    mcp.tool(description="Signal to clear LLM context", annotations={"readOnlyHint": True})(
-        boring_forget_all
-    )
+
+    mcp.tool(
+        description="Signal to clear LLM context to maintain accuracy (Context Hygiene)",
+        annotations={"readOnlyHint": False, "openWorldHint": False, "destructiveHint": True},
+    )(boring_forget_all)

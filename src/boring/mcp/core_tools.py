@@ -13,7 +13,9 @@ This module contains the most frequently used tools:
 """
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Annotated, Optional
+
+from pydantic import Field
 
 
 @dataclass
@@ -41,9 +43,16 @@ def register_core_tools(mcp, audited, helpers):
     _check_rate_limit = helpers["check_rate_limit"]
     helpers["check_project_root"]
 
-    @mcp.tool()
+    @mcp.tool(
+        description="Initialize a new Boring project with recommended structure and configuration",
+        annotations={"readOnlyHint": False, "openWorldHint": False},
+    )
     @audited
-    def boring_quickstart(project_path: Optional[str] = None) -> dict:
+    def boring_quickstart(
+        project_path: Annotated[
+            str, Field(description="Optional explicit path to project root")
+        ] = None,
+    ) -> dict:
         """
         Get a comprehensive quick start guide for new users.
 
@@ -72,7 +81,10 @@ def register_core_tools(mcp, audited, helpers):
             ],
         }
 
-    @mcp.tool()
+    @mcp.tool(
+        description="Check Boring system health including API key status, dependencies, and backend availability",
+        annotations={"readOnlyHint": True, "openWorldHint": False},
+    )
     @audited
     def boring_health_check() -> dict:
         """Check Boring system health."""
@@ -95,9 +107,16 @@ def register_core_tools(mcp, audited, helpers):
             ],
         }
 
-    @mcp.tool()
+    @mcp.tool(
+        description="Get current autonomous loop status, including active task, call counts, and recent errors",
+        annotations={"readOnlyHint": True, "openWorldHint": False},
+    )
     @audited
-    def boring_status(project_path: Optional[str] = None) -> dict:
+    def boring_status(
+        project_path: Annotated[
+            str, Field(description="Optional explicit path to project root")
+        ] = None,
+    ) -> dict:
         """Get current Boring project status."""
         from ..memory import MemoryManager
 
