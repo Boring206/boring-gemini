@@ -490,3 +490,154 @@ class BrainManager:
 def create_brain_manager(project_root: Path, log_dir: Optional[Path] = None) -> BrainManager:
     """Factory function to create BrainManager instance."""
     return BrainManager(project_root, log_dir)
+
+
+class GlobalKnowledgeStore:
+    """
+    Manages global knowledge shared across all projects.
+
+    Stores patterns in ~/.boring_brain/global_patterns.json
+    Allows exporting from one project and importing to another.
+    """
+
+    def __init__(self):
+        self.global_dir = Path.home() / ".boring_brain"
+        self.global_patterns_file = self.global_dir / "global_patterns.json"
+        self.global_dir.mkdir(parents=True, exist_ok=True)
+
+    def _load_global_patterns(self) -> list[dict]:
+        """Load global patterns."""
+        if self.global_patterns_file.exists():
+            try:
+                return json.loads(self.global_patterns_file.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                return []
+        return []
+
+    def _save_global_patterns(self, patterns: list[dict]):
+        """Save global patterns."""
+        self.global_patterns_file.write_text(
+            json.dumps(patterns, indent=2, ensure_ascii=False),
+            encoding="utf-8",
+        )
+
+    def export_from_project(self, project_root: Path, min_success_count: int = 2) -> dict[str, Any]:
+        """
+        Export high-quality patterns from a project to global store.
+
+        Args:
+            project_root: Project to export from
+            min_success_count: Minimum success count for export (filters low-quality patterns)
+
+        Returns:
+            Export result
+        """
+        brain = BrainManager(project_root)
+        local_patterns = brain._load_patterns()
+
+        # Filter by success count
+        quality_patterns = [
+            p for p in local_patterns if p.get("success_count", 0) >= min_success_count
+        ]
+
+        if not quality_patterns:
+            return {"status": "NO_PATTERNS", "exported": 0}
+
+        global_patterns = self._load_global_patterns()
+        exported_count = 0
+
+        for pattern in quality_patterns:
+            # Add source project info
+            pattern["source_project"] = str(project_root.name)
+            pattern["exported_at"] = datetime.now().isoformat()
+
+            # Check for duplicates (by pattern_id)
+            existing = [
+                p for p in global_patterns if p.get("pattern_id") == pattern.get("pattern_id")
+            ]
+            if existing:
+                # Update if our version has higher success count
+                if pattern.get("success_count", 0) > existing[0].get("success_count", 0):
+                    existing[0].update(pattern)
+                    exported_count += 1
+            else:
+                global_patterns.append(pattern)
+                exported_count += 1
+
+        self._save_global_patterns(global_patterns)
+        return {
+            "status": "SUCCESS",
+            "exported": exported_count,
+            "total_global": len(global_patterns),
+        }
+
+    def import_to_project(
+        self, project_root: Path, pattern_types: Optional[list[str]] = None
+    ) -> dict[str, Any]:
+        """
+        Import relevant patterns from global store to a project.
+
+        Args:
+            project_root: Project to import to
+            pattern_types: Optional filter by pattern types
+
+        Returns:
+            Import result
+        """
+        global_patterns = self._load_global_patterns()
+
+        if not global_patterns:
+            return {"status": "NO_GLOBAL_PATTERNS", "imported": 0}
+
+        # Filter by pattern type if specified
+        if pattern_types:
+            global_patterns = [p for p in global_patterns if p.get("pattern_type") in pattern_types]
+
+        brain = BrainManager(project_root)
+        local_patterns = brain._load_patterns()
+        local_ids = {p.get("pattern_id") for p in local_patterns}
+
+        imported_count = 0
+        for pattern in global_patterns:
+            if pattern.get("pattern_id") not in local_ids:
+                # Mark as imported
+                pattern["imported_from_global"] = True
+                pattern["imported_at"] = datetime.now().isoformat()
+                local_patterns.append(pattern)
+                imported_count += 1
+
+        brain._save_patterns(local_patterns)
+        return {"status": "SUCCESS", "imported": imported_count, "total_local": len(local_patterns)}
+
+    def list_global_patterns(self) -> list[dict]:
+        """List all global patterns with summary info."""
+        patterns = self._load_global_patterns()
+        return [
+            {
+                "pattern_id": p.get("pattern_id"),
+                "pattern_type": p.get("pattern_type"),
+                "description": p.get("description"),
+                "source_project": p.get("source_project"),
+                "success_count": p.get("success_count", 0),
+            }
+            for p in patterns
+        ]
+
+    def clear_global_patterns(self) -> int:
+        """Clear all global patterns. Returns count removed."""
+        patterns = self._load_global_patterns()
+        count = len(patterns)
+        self._save_global_patterns([])
+        return count
+
+
+# Singleton global store
+_global_store: Optional[GlobalKnowledgeStore] = None
+
+
+def get_global_knowledge_store() -> GlobalKnowledgeStore:
+    """Get global knowledge store singleton."""
+    global _global_store
+    if _global_store is None:
+        _global_store = GlobalKnowledgeStore()
+    return _global_store
