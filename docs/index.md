@@ -39,6 +39,7 @@ Practical how-to content.
 | [Cookbook](./guides/cookbook.md) | Ready-to-use recipes for all features |
 | [Pro Tips](./guides/pro-tips.md) | Expert techniques by skill level |
 | [Git Hooks](./guides/git-hooks.md) | Automated commit/push verification |
+| [Knowledge System](./guides/knowledge-system.md) | Brain, RAG & Patterns - storage and migration |
 
 ### Tutorials (教學)
 In-depth learning resources.
@@ -85,6 +86,7 @@ Technical specifications.
 | [Cookbook](./guides/cookbook_zh.md) | 所有功能的即用食譜 |
 | [專業技巧](./guides/pro-tips_zh.md) | 按技能水平的專家技術 |
 | [Git Hooks](./guides/git-hooks_zh.md) | 自動化提交/推送驗證 |
+| [知識系統](./guides/knowledge-system_zh.md) | Brain、RAG 與 Patterns - 儲存與遷移 |
 
 ### 教學
 | 教學 | 說明 |
