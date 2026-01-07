@@ -1,60 +1,117 @@
-# Boring for Gemini - Documentation
+# Boring Documentation
 
-> **Boring Vibecoder Assistant** - AI-powered development support tool
-
-Welcome to the Boring-Gemini documentation. Boring is an autonomous AI development agent powered by Google's Gemini models, designed for seamless integration with modern IDEs.
-
-## Features
-
-- 🤖 **Autonomous & Architect Mode**: Auto-write full programs or direct your IDE AI
-- 🔌 **Full MCP Support**: Works with Cursor, Claude Desktop, VS Code
-- 🛡️ **Enterprise-Grade Protection**: Circuit breaker, self-healing, 100% test coverage
-- 🧩 **Spec-Driven Development**: SpecKit integration from PRD to Code
-- 🧠 **MCP Intelligence (v10.18.1)**: Auto Pattern Detection, RAG Auto-Update, Cross-Project Knowledge
-- 🎯 **41 Prompts**: Complete Prompt-First UX for all core workflows (Auto-Sensing Enabled)
-
-## Quick Start
-
-```bash
-# Install via Smithery (Recommended)
-npx -y @smithery/cli@latest install boring/boring --client gemini-cli
-
-# Or install via pip
-pip install boring-aicoding
-```
-
-## Verified Platforms
-
-✅ Gemini CLI • ✅ Antigravity • ✅ Cursor • ✅ Claude Desktop
+> **Boring for Gemini** - The autonomous AI development loop. Make AI development boring (in a good way).
 
 ---
 
-## 📚 Documentation Index
+## 🚀 Quick Start
 
-### Tutorials & Guides (教程與指南)
-| English | Traditional Chinese (繁體中文) | Description |
-|---------|--------------------------------|-------------|
-| [Complete Tutorial](TUTORIAL_en.md) | [完整教程](TUTORIAL.md) | Beginner-to-intermediate guide |
-| [Advanced Developer Guide](ADVANCED_TUTORIAL.md) | [進階開發者指南](ADVANCED_TUTORIAL_zh.md) | Architecture deep dive & tool development |
-| [Professional Playbook](PROFESSIONAL_PLAYBOOK_en.md) | [專業實戰指南](PROFESSIONAL_PLAYBOOK.md) | Expert-level workflows and best practices |
-| [Practical Demo](PRACTICAL_DEMO_en.md) | [實戰展示](PRACTICAL_DEMO.md) | 10-min hands-on showcase |
+Choose your path:
 
-### Appendices (附錄)
-| English | Traditional Chinese (繁體中文) | Description |
-|---------|--------------------------------|-------------|
-| [Tool Reference (Appendix A)](APPENDIX_A_TOOL_REFERENCE.md) | [工具清單 (附錄 A)](APPENDIX_A_TOOL_REFERENCE_zh.md) | Complete 55+ MCP tools reference |
-| [FAQ (Appendix B)](APPENDIX_B_FAQ.md) | [FAQ (附錄 B)](APPENDIX_B_FAQ_zh.md) | Installation, troubleshooting, common questions |
-| [Prompt Philosophy (Appendix C)](APPENDIX_C_PROMPT_PHILOSOPHY.md) | [Prompt 設計哲學 (附錄 C)](APPENDIX_C_PROMPT_PHILOSOPHY_zh.md) | Architect persona design principles |
-
-### Reference (參考資料)
-| English | Traditional Chinese (繁體中文) | Description |
-|---------|--------------------------------|-------------|
-| [Architect Mode](architect_mode.md) | [架構師模式](architect_mode_zh.md) | Hostile Architect evaluation mode |
-| [Contributing](contributing.md) | [貢獻指南](contributing_zh.md) | How to contribute |
-| [API Reference](api/mcp_server.md) | - | MCP Server API (MkDocs) |
+| You Are | Start Here |
+|---------|-----------|
+| 🎨 **Vibe Coder** (describe & build) | [Vibe Coder Guide](./guides/vibe-coder.md) |
+| 💻 **Developer** (hands-on) | [Quick Tutorials](./guides/quick-tutorials.md) |
+| 🔧 **DevOps/CI** | [Quality Gates](./features/quality-gates.md) |
+| 🏢 **Team Lead** | [Pro Tips](./guides/pro-tips.md) |
 
 ---
 
-## License
+## 📚 Documentation Structure
 
-Apache License 2.0 - See [LICENSE](https://github.com/Boring206/boring-gemini/blob/main/LICENSE)
+### Features (功能)
+Core capabilities explained in depth.
+
+| Feature | Description |
+|---------|-------------|
+| [Performance & Architecture](./features/performance.md) | Incremental verification, caching, parallelization |
+| [MCP Toolset](./features/mcp-tools.md) | All 55+ tools with examples |
+| [Shadow Mode](./features/shadow-mode.md) | Security sandbox for AI operations |
+| [Quality Gates](./features/quality-gates.md) | CI/CD integration and verification levels |
+
+### Guides (指南)
+Practical how-to content.
+
+| Guide | Description |
+|-------|-------------|
+| [Vibe Coder Guide](./guides/vibe-coder.md) | For description-based developers |
+| [Quick Tutorials](./guides/quick-tutorials.md) | 5-minute step-by-step guides |
+| [Cookbook](./guides/cookbook.md) | Ready-to-use recipes for all features |
+| [Pro Tips](./guides/pro-tips.md) | Expert techniques by skill level |
+| [Git Hooks](./guides/git-hooks.md) | Automated commit/push verification |
+
+### Tutorials (教學)
+In-depth learning resources.
+
+| Tutorial | Description |
+|----------|-------------|
+| [Basic Tutorial](./TUTORIAL.md) | Getting started with Boring |
+| [Advanced Tutorial](./ADVANCED_TUTORIAL.md) | Deep dive into advanced features |
+| [Practical Demo](./PRACTICAL_DEMO.md) | Real-world project walkthrough |
+| [Professional Playbook](./PROFESSIONAL_PLAYBOOK.md) | Enterprise usage patterns |
+
+### Reference (參考)
+Technical specifications.
+
+| Reference | Description |
+|-----------|-------------|
+| [Tool Reference (Appendix A)](./APPENDIX_A_TOOL_REFERENCE.md) | Complete API documentation |
+| [FAQ (Appendix B)](./APPENDIX_B_FAQ.md) | Common questions answered |
+| [Prompt Philosophy (Appendix C)](./APPENDIX_C_PROMPT_PHILOSOPHY.md) | AI prompt design principles |
+| [Architect Mode](./architect_mode.md) | High-level architecture planning |
+
+### API Documentation
+| Page | Description |
+|------|-------------|
+| [SpecKit API](./api/speckit.md) | Specification workflow API |
+
+---
+
+## 🌏 繁體中文文檔
+
+### 功能
+| 功能 | 說明 |
+|------|------|
+| [效能與架構](./features/performance_zh.md) | 增量驗證、快取、平行化 |
+| [MCP 工具集](./features/mcp-tools_zh.md) | 所有 55+ 工具及範例 |
+| [影子模式](./features/shadow-mode_zh.md) | AI 操作的安全沙箱 |
+| [品質閘道](./features/quality-gates_zh.md) | CI/CD 整合和驗證級別 |
+
+### 指南
+| 指南 | 說明 |
+|------|------|
+| [Vibe Coder 指南](./guides/vibe-coder_zh.md) | 給描述式開發者 |
+| [快速教學](./guides/quick-tutorials_zh.md) | 5 分鐘逐步指南 |
+| [Cookbook](./guides/cookbook_zh.md) | 所有功能的即用食譜 |
+| [專業技巧](./guides/pro-tips_zh.md) | 按技能水平的專家技術 |
+| [Git Hooks](./guides/git-hooks_zh.md) | 自動化提交/推送驗證 |
+
+### 教學
+| 教學 | 說明 |
+|------|------|
+| [基礎教學](./TUTORIAL.md) | 開始使用 Boring |
+| [進階教學](./ADVANCED_TUTORIAL_zh.md) | 深入進階功能 |
+| [實戰演示](./PRACTICAL_DEMO.md) | 真實專案演練 |
+| [專業手冊](./PROFESSIONAL_PLAYBOOK.md) | 企業使用模式 |
+
+### 參考
+| 參考 | 說明 |
+|------|------|
+| [工具參考（附錄 A）](./APPENDIX_A_TOOL_REFERENCE_zh.md) | 完整 API 文檔 |
+| [常見問題（附錄 B）](./APPENDIX_B_FAQ_zh.md) | 常見問題解答 |
+| [提示詞哲學（附錄 C）](./APPENDIX_C_PROMPT_PHILOSOPHY_zh.md) | AI 提示設計原則 |
+| [架構師模式](./architect_mode_zh.md) | 高階架構規劃 |
+
+---
+
+## 🔗 External Links
+
+- [GitHub Repository](https://github.com/Boring206/boring-gemini)
+- [PyPI Package](https://pypi.org/project/boring-aicoding/)
+- [Smithery MCP Server](https://smithery.ai/server/boring/boring)
+
+---
+
+## 📝 Contributing
+
+See [Contributing Guide](./contributing.md) for how to contribute to Boring.

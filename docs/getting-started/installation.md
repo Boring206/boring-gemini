@@ -1,59 +1,77 @@
-# Installation
+# Installation Guide
 
-## Recommended: Smithery (One-Click)
+> Get Boring installed in under 2 minutes.
 
-The easiest way to install Boring for use with Cursor or Claude Desktop:
+---
+
+## 🚀 Quick Install
+
+### Option 1: Smithery (Recommended)
 
 ```bash
 npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ```
 
-## Required Configuration
+**Best for**: Multi-project workflows, cloud development, automatic updates.
 
-Boring requires companion MCP servers for full functionality. Add this to your IDE's MCP config:
+### Option 2: pip
+
+```bash
+# Basic
+pip install boring-aicoding
+
+# Full features (RAG, MCP, GUI)
+pip install "boring-aicoding[all]"
+
+# Just MCP + RAG
+pip install "boring-aicoding[mcp]"
+```
+
+**Best for**: Single projects, CI/CD, offline environments.
+
+---
+
+## ⚙️ MCP Configuration
+
+### Claude Desktop / Cursor
+
+Add to your MCP config:
 
 ```json
 {
   "mcpServers": {
     "boring": {
-      "command": "npx",
-      "args": ["-y", "@smithery/cli", "run", "@boring/boring", "--config", "{}"]
-    },
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"]
-    },
-    "criticalthink": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    },
-    "notebooklm": {
-      "command": "npx",
-      "args": ["-y", "notebooklm-mcp@latest"]
+      "command": "python",
+      "args": ["-m", "boring.mcp.server"],
+      "env": {
+        "PROJECT_ROOT_DEFAULT": "."
+      }
     }
   }
 }
 ```
 
-## Alternative: pip install
+### Config File Locations
 
-For development or custom installations:
+| Client | Location |
+|--------|----------|
+| Claude Desktop (macOS) | `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| Claude Desktop (Windows) | `%APPDATA%\Claude\claude_desktop_config.json` |
+| Cursor | Settings → MCP Servers |
 
-```bash
-# Clone the repository
-git clone https://github.com/Boring206/boring-gemini.git
-cd boring-gemini
+---
 
-# Install with all extras
-pip install -e ".[all,dev]"
-
-# Install extensions
-boring setup-extensions
-```
-
-## Verify Installation
+## ✅ Verify Installation
 
 ```bash
-boring --help
-boring-mcp --help
+boring --version
+# Expected: boring v10.18.3
 ```
+
+---
+
+## Next Steps
+
+- [Quick Start Guide](./quickstart.md)
+- [Vibe Coder Guide](../guides/vibe-coder.md)
+- [Full Documentation](../index.md)
