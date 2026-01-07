@@ -130,7 +130,7 @@
 | Tool | Description | Key Parameters |
 |------|-------------|----------------|
 | `boring_auto_fix` | Automated fix loop | `max_iterations`, `verification_level` |
-| `boring_suggest_next` | AI suggestions | `limit` |
+| `boring_suggest_next` | AI suggestions (Context-aware: Git, Task, Patterns) | `limit` |
 | `boring_get_progress` | Check long-running task | `task_id` |
 
 ---
@@ -177,8 +177,8 @@
 | `manage_memory` | Memory management workflow |
 | `evaluate_architecture` | Hostile Architect review |
 | `run_agent` | Multi-agent workflow |
-| `vibe_start` | Full Vibe Coding workflow |
-| `quick_fix` | Auto-fix all issues |
+| `vibe_start` | **One-click Start** - Full workflow (Plan → Build → Verify). Best for: "Build new app", "Start project" |
+| `quick_fix` | **Quick Fix** - Auto-fix lint/format/bugs. Best for: "Fix lint errors", "Clean up code" |
 | `full_stack_dev` | Full-stack development |
 
 ---
