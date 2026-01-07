@@ -1,5 +1,18 @@
 # Changelog
 
+## [10.17.4] - 2026-01-07 - Protected File Tools 🛡️
+### Added
+- **Secure File Tools**: Implemented `boring_write_file` and `boring_read_file` in MCP server.
+  - These tools are explicitly protected by Shadow Mode (`STRICT` compliant).
+  - Includes robust path validation and security checks.
+  - Addresses the limitation where native `write_file` bypassed Shadow Mode.
+
+### Documentation
+- **Shadow Mode Clarification**: Updated READMEs to clearly explain Shadow Mode's scope limitations (only protects Boring tools).
+- **Security Warnings**: Added prominent warnings advising against using native file tools for sensitive operations.
+
+---
+
 ## [10.17.3] - 2026-01-07 - CI Quality Gates & Test Fixes
 ### Fixed
 - **CI Quality Gates**: Resolved all failing CI checks including Lint & Format, Quality Gate Status, and Test Suite.
