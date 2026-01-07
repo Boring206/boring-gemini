@@ -27,21 +27,40 @@
 
 ## 📦 快速安裝
 
-### 方式一：Smithery（推薦）
+### 方式一：Smithery（✅ 推薦）
+
+> **適合：多專案工作流程、經常切換專案、雲端開發環境**
 
 ```bash
 npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ```
 
-### 方式二：pip
+✅ **優勢**：自動更新、環境一致、無路徑問題  
+⚠️ **注意**：需要安裝 npx/Node.js
+
+### 方式二：本地 pip 安裝
+
+> **適合：單一專案開發、CI/CD 流程、離線環境**
 
 ```bash
+# 基本安裝 (核心功能)
 pip install boring-aicoding
-# 或完整安裝
-pip install "boring[all]"
+
+# 完整安裝 (包含 RAG、MCP、GUI、向量搜尋)
+pip install "boring-aicoding[all]"
+
+# 或安裝特定功能：
+pip install "boring-aicoding[mcp]"     # MCP 伺服器支援
+pip install "boring-aicoding[vector]"  # RAG/向量搜尋 (chromadb, sentence-transformers)
+pip install "boring-aicoding[gui]"     # Streamlit 儀表板
+pip install "boring-aicoding[dev]"     # 開發工具
 ```
 
+> ⚠️ **路徑問題警告**：本地安裝在切換不同專案目錄時可能遇到路徑問題。如需頻繁切換專案，建議使用 **Smithery 部署**。
+
 ### MCP 配置
+
+#### Smithery 部署（推薦）
 
 在 `mcp_config.json` 或 IDE 設定中：
 
@@ -51,10 +70,23 @@ pip install "boring[all]"
     "boring": {
       "command": "npx",
       "args": ["-y", "@smithery/cli", "run", "@boring/boring", "--config", "{}"]
-    },
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"]
+    }
+  }
+}
+```
+
+#### 本地 pip 安裝
+
+```json
+{
+  "mcpServers": {
+    "boring": {
+      "command": "python",
+      "args": ["-m", "boring.mcp.server"],
+      "env": {
+        "BORING_MCP_MODE": "1",
+        "PROJECT_ROOT_DEFAULT": "."
+      }
     }
   }
 }

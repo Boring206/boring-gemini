@@ -17,30 +17,50 @@ build:
 startCommand:
   type: "http"
   configSchema:
+    $schema: "http://json-schema.org/draft-07/schema#"
+    title: "Boring MCP Server Configuration"
+    description: "Configure the Boring AI Development Assistant. See https://github.com/Boring206/boring-gemini for full documentation."
     type: "object"
     properties:
       BORING_MCP_MODE:
         type: "string"
         title: "MCP Mode"
-        description: "Enable MCP mode. Set to '1' for enabled, '0' for disabled."
+        description: "Enable MCP mode for tool registration. '1' enables all 55+ MCP tools, '0' disables MCP functionality."
         default: "1"
         enum: ["0", "1"]
       LOG_LEVEL:
         type: "string"
         title: "Log Level"
-        description: "Logging level (DEBUG, INFO, WARNING, ERROR)."
+        description: "Server logging verbosity. DEBUG shows all details, INFO for normal operation, WARNING/ERROR for production."
         default: "INFO"
         enum: ["DEBUG", "INFO", "WARNING", "ERROR"]
       PROJECT_ROOT_DEFAULT:
         type: "string"
         title: "Default Project Root"
-        description: "Default path for new projects if not specified."
+        description: "Default working directory for file operations when project_path is not specified in tool calls. Use '.' for current directory."
         default: "."
       BORING_ALLOW_DANGEROUS:
         type: "boolean"
         title: "Allow Dangerous Operations"
-        description: "Allow dangerous operations without prompt (NOT RECOMMENDED)."
+        description: "⚠️ DANGEROUS: Skip human approval for destructive operations. Only enable in fully isolated environments (containers). Shadow Mode overrides this when active."
         default: false
+      SHADOW_MODE_LEVEL:
+        type: "string"
+        title: "Shadow Mode Level"
+        description: "Human-in-the-loop protection level. DISABLED=no protection, ENABLED=auto-approve low-risk ops, STRICT=approve all writes."
+        default: "ENABLED"
+        enum: ["DISABLED", "ENABLED", "STRICT"]
+      RAG_ENABLED:
+        type: "boolean"
+        title: "Enable RAG Features"
+        description: "Enable semantic code search with vector embeddings. Requires chromadb and sentence-transformers packages."
+        default: true
+      VERIFICATION_LEVEL:
+        type: "string"
+        title: "Default Verification Level"
+        description: "Default code verification strictness. BASIC=syntax only, STANDARD=lint, FULL=tests, SEMANTIC=AI review."
+        default: "STANDARD"
+        enum: ["BASIC", "STANDARD", "FULL", "SEMANTIC"]
     additionalProperties: false
     required: []
 
