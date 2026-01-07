@@ -55,9 +55,7 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
     )
     @audited
     def speckit_tasks(
-        context: Annotated[
-            str, Field(description="Additional context for task generation")
-        ] = None,
+        context: Annotated[str, Field(description="Additional context for task generation")] = None,
         project_path: Annotated[
             str, Field(description="Optional explicit path to project root")
         ] = None,
@@ -76,9 +74,7 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
     )
     @audited
     def speckit_analyze(
-        context: Annotated[
-            str, Field(description="Additional context for analysis")
-        ] = None,
+        context: Annotated[str, Field(description="Additional context for analysis")] = None,
         project_path: Annotated[
             str, Field(description="Optional explicit path to project root")
         ] = None,
@@ -97,9 +93,7 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
     )
     @audited
     def speckit_clarify(
-        context: Annotated[
-            str, Field(description="Additional context for clarification")
-        ] = None,
+        context: Annotated[str, Field(description="Additional context for clarification")] = None,
         project_path: Annotated[
             str, Field(description="Optional explicit path to project root")
         ] = None,
