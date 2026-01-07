@@ -23,7 +23,7 @@ class TestV10Tools:
         ):
             count = v10_tools.register_v10_tools(mock_mcp, mock_audited, helpers)
 
-            assert count == 12  # 4 + 3 + 5
+            assert count == 15  # 4 + 3 + 8 (shadow now has trust tools)
             mock_rag.assert_called_once()
             mock_agent.assert_called_once()
             mock_shadow.assert_called_once()
@@ -43,7 +43,7 @@ class TestV10Tools:
             count = v10_tools.register_v10_tools(mock_mcp, mock_audited, helpers)
 
             # Should continue and register other tools
-            assert count == 8  # 0 + 3 + 5
+            assert count == 11  # 0 + 3 + 8
             mock_agent.assert_called_once()
             mock_shadow.assert_called_once()
 
@@ -61,7 +61,7 @@ class TestV10Tools:
         ):
             count = v10_tools.register_v10_tools(mock_mcp, mock_audited, helpers)
 
-            assert count == 9  # 4 + 0 + 5
+            assert count == 12  # 4 + 0 + 8
             mock_rag.assert_called_once()
             mock_shadow.assert_called_once()
 
@@ -97,4 +97,4 @@ class TestV10Tools:
         ):
             count = v10_tools.register_v10_tools(mock_mcp, mock_audited, helpers)
 
-            assert count == 8  # 0 + 3 + 5
+            assert count == 11  # 0 + 3 + 8

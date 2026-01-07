@@ -43,7 +43,7 @@ def create_monitor_app(project_root: Path) -> Optional[Any]:
     app = FastAPI(
         title="Boring Monitor",
         description="Real-time monitoring dashboard for Boring autonomous loop",
-        version="1.0.0"
+        version="1.0.0",
     )
 
     memory_dir = project_root / ".boring_memory"

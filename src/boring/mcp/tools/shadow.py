@@ -330,6 +330,7 @@ def register_shadow_tools(mcp, helpers: dict):
 
         try:
             from boring.trust_rules import get_trust_manager
+
             manager = get_trust_manager(project_root)
 
             manager.add_rule(
@@ -369,6 +370,7 @@ def register_shadow_tools(mcp, helpers: dict):
 
         try:
             from boring.trust_rules import get_trust_manager
+
             manager = get_trust_manager(project_root)
 
             rules = manager.list_rules()
@@ -421,6 +423,7 @@ def register_shadow_tools(mcp, helpers: dict):
 
         try:
             from boring.trust_rules import get_trust_manager
+
             manager = get_trust_manager(project_root)
 
             if manager.remove_rule(tool_name, path_pattern or None):

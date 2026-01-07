@@ -22,16 +22,19 @@ logger = logging.getLogger(__name__)
 # Import trust rules (lazy to avoid circular import)
 _trust_manager = None
 
+
 def _get_trust_manager(project_root):
     """Lazy-load trust manager to avoid circular imports."""
     global _trust_manager
     if _trust_manager is None:
         try:
             from .trust_rules import get_trust_manager
+
             _trust_manager = get_trust_manager(project_root)
         except ImportError:
             _trust_manager = None
     return _trust_manager
+
 
 class ShadowModeLevel(Enum):
     """Shadow mode protection levels."""

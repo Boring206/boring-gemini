@@ -41,6 +41,7 @@ class TrustRule:
     def _match_pattern(self, path: str, pattern: str) -> bool:
         """Simple glob-like pattern matching."""
         import fnmatch
+
         return fnmatch.fnmatch(path, pattern)
 
     def to_dict(self) -> dict:
@@ -97,8 +98,7 @@ class TrustRuleManager:
         try:
             data = {"rules": [r.to_dict() for r in self.rules]}
             self.rules_file.write_text(
-                json.dumps(data, indent=2, ensure_ascii=False),
-                encoding="utf-8"
+                json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"
             )
         except Exception as e:
             logger.error(f"Failed to save trust rules: {e}")
@@ -122,7 +122,8 @@ class TrustRuleManager:
 
         # Remove existing rule for same tool+pattern combo
         self.rules = [
-            r for r in self.rules
+            r
+            for r in self.rules
             if not (r.tool_name == tool_name and r.path_pattern == path_pattern)
         ]
 
@@ -136,7 +137,8 @@ class TrustRuleManager:
         """Remove a trust rule."""
         original_count = len(self.rules)
         self.rules = [
-            r for r in self.rules
+            r
+            for r in self.rules
             if not (r.tool_name == tool_name and r.path_pattern == path_pattern)
         ]
 
@@ -146,10 +148,7 @@ class TrustRuleManager:
         return False
 
     def check_trust(
-        self,
-        op_name: str,
-        args: dict[str, Any],
-        severity: str = "medium"
+        self, op_name: str, args: dict[str, Any], severity: str = "medium"
     ) -> Optional[TrustRule]:
         """
         Check if an operation is trusted (should be auto-approved).
@@ -174,7 +173,9 @@ class TrustRuleManager:
             # Check if severity is within rule's threshold
             max_level = self.SEVERITY_ORDER.get(rule.max_severity.lower(), 3)
             if severity_level <= max_level:
-                logger.debug(f"Operation {op_name} auto-approved by trust rule: {rule.description or rule.tool_name}")
+                logger.debug(
+                    f"Operation {op_name} auto-approved by trust rule: {rule.description or rule.tool_name}"
+                )
                 return rule
 
         return None
