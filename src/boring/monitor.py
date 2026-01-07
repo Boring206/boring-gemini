@@ -212,7 +212,9 @@ def generate_layout() -> Layout:
 
 @app.command()
 def main(
-    web: bool = typer.Option(False, "--web", "-w", help="Start web UI dashboard instead of terminal"),
+    web: bool = typer.Option(
+        False, "--web", "-w", help="Start web UI dashboard instead of terminal"
+    ),
     port: int = typer.Option(8765, "--port", "-p", help="Port for web UI (default: 8765)"),
     host: str = typer.Option("127.0.0.1", "--host", help="Host for web UI (default: localhost)"),
 ):
@@ -225,6 +227,7 @@ def main(
         # Use web-based dashboard
         try:
             from .web_monitor import run_web_monitor
+
             run_web_monitor(Path.cwd(), port=port, host=host)
         except ImportError as e:
             console.print(f"[bold red]Web monitor not available: {e}[/bold red]")
