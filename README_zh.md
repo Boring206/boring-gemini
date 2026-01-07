@@ -182,7 +182,7 @@ your-project/
 - **歷史記錄**：將稽核分數記錄於 `.boring_brain/quality_history.json`。
 - **視覺化**：使用 `boring_quality_trend` 工具繪製 ASCII 趨勢圖。
 
-### 核心工具 (Core Tools v10.18.0)
+### 核心工具 (Core Tools v10.18.1)
 - **並發處理**：使用 `ThreadPoolExecutor` 最大化大型專案的 CPU 利用率。
 - **速度提升**：在全新建置時驗證速度提升 3x-5x 倍。
 - **即時進度**：擁有獨立於 CI log 的 Rich CLI 即時進度條。
