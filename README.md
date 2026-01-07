@@ -50,8 +50,8 @@ pip install boring-aicoding
 pip install "boring-aicoding[all]"
 
 # Or install specific extras:
-pip install "boring-aicoding[mcp]"     # MCP server support
-pip install "boring-aicoding[vector]"  # RAG/Vector search (chromadb, sentence-transformers)
+pip install "boring-aicoding[mcp]"     # MCP server support (includes RAG)
+pip install "boring-aicoding[vector]"  # Pure RAG/Vector search (chromadb, sentence-transformers)
 pip install "boring-aicoding[gui]"     # Streamlit dashboard
 pip install "boring-aicoding[dev]"     # Development tools
 ```

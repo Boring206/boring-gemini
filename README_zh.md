@@ -50,8 +50,8 @@ pip install boring-aicoding
 pip install "boring-aicoding[all]"
 
 # 或安裝特定功能：
-pip install "boring-aicoding[mcp]"     # MCP 伺服器支援
-pip install "boring-aicoding[vector]"  # RAG/向量搜尋 (chromadb, sentence-transformers)
+pip install "boring-aicoding[mcp]"     # MCP 伺服器支援 (包含 RAG 功能)
+pip install "boring-aicoding[vector]"  # 純 RAG/向量搜索 (chromadb, sentence-transformers)
 pip install "boring-aicoding[gui]"     # Streamlit 儀表板
 pip install "boring-aicoding[dev]"     # 開發工具
 ```
