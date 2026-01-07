@@ -155,4 +155,4 @@ Boring v10.18 支援全域知識庫。
 *“專業玩家不記 Tool，因為 Prompt 已經幫你準備好了所有戰術組合。”*
 
 ---
-*Last updated: V10.16.0*
+*Last updated: V10.18.1*

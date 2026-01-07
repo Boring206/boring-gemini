@@ -1,6 +1,6 @@
 {
     "name": "boring",
-    "version": "10.18.0",
+    "version": "10.18.1",
     "description": "Autonomous AI development agent for code generation & verification",
     "author": "Boring206",
     "mcpServers": [
