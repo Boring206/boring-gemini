@@ -52,10 +52,13 @@ In-depth learning resources.
 | [Professional Playbook](./PROFESSIONAL_PLAYBOOK.md) | Enterprise usage patterns |
 
 ### Reference (參考)
-Technical specifications.
+Deep dive technical documentation.
 
 | Reference | Description |
 |-----------|-------------|
+| [Configuration](./reference/configuration.md) | **Deep Dive**: `.boring.toml` & ENV variables |
+| [Troubleshooting](./reference/troubleshooting.md) | **Deep Dive**: Diagnosis & common fixes |
+| [Architecture](./reference/architecture.md) | **Deep Dive**: Internals & Design |
 | [Tool Reference (Appendix A)](./APPENDIX_A_TOOL_REFERENCE.md) | Complete API documentation |
 | [FAQ (Appendix B)](./APPENDIX_B_FAQ.md) | Common questions answered |
 | [Prompt Philosophy (Appendix C)](./APPENDIX_C_PROMPT_PHILOSOPHY.md) | AI prompt design principles |
@@ -99,6 +102,9 @@ Technical specifications.
 ### 參考
 | 參考 | 說明 |
 |------|------|
+| [配置手冊](./reference/configuration_zh.md) | **深度指南**：`.boring.toml` 與環境變數 |
+| [故障排除](./reference/troubleshooting_zh.md) | **深度指南**：診斷與常見修復 |
+| [架構原理](./reference/architecture_zh.md) | **深度指南**：內部機制與設計 |
 | [工具參考（附錄 A）](./APPENDIX_A_TOOL_REFERENCE_zh.md) | 完整 API 文檔 |
 | [常見問題（附錄 B）](./APPENDIX_B_FAQ_zh.md) | 常見問題解答 |
 | [提示詞哲學（附錄 C）](./APPENDIX_C_PROMPT_PHILOSOPHY_zh.md) | AI 提示設計原則 |
