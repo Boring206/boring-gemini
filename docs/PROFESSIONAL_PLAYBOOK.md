@@ -131,6 +131,12 @@ Boring 的核心大腦位於 `.boring_brain/`，這是你可以「打包帶走�
 3. 貼到新專案的同名資料夾。
 4. **完成**：新專案的 AI 瞬間擁有 5 年資深工程師的經驗。
 
+### 3. 跨專案知識共享 (Cross-Project Knowledge v10.18)
+Boring v10.18 支援全域知識庫。
+- 你的修正與偏好會自動同步到 `~/.boring_brain/global_patterns.json`。
+- 開啟任何新專案時，Boring 都已經知道你的喜好。
+
+
 ---
 
 ## 專家案例：重構一個 API

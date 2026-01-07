@@ -243,6 +243,28 @@ boring_list_tasks()
 
 ---
 
+### 3.5 Auto-Learning 自動學習 (v10.18)
+
+Boring 會觀察你的修正，自動進化：
+
+1. **被動學習**：當你拒絕 AI 的變更並手動修改後，Boring 會分析差異並學習。
+2. **主動學習**：
+   ```python
+   # 教會 AI 一個新規則
+   boring_learn_pattern(
+       pattern_type="code_style",
+       description="Always use UTC for datetimes",
+       context="When handling time",
+       solution="datetime.now(timezone.utc)"
+   )
+   ```
+3. **知識查看**:
+   ```python
+   boring_brain_summary()
+   ```
+
+---
+
 ## Part 4: IDE 整合
 
 ### 4.1 Cursor/Windsurf MCP 設定
