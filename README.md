@@ -1,5 +1,5 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-10.17.3-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-10.17.5-green.svg)](https://github.com/Boring206/boring-gemini)
 [![Evaluation](https://img.shields.io/badge/Smithery-58%2F58-brightgreen.svg)](https://smithery.ai/server/boring/boring)
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 
@@ -394,6 +394,17 @@ boring hooks uninstall  # Remove
 | quick-check | Every commit | QUICK (multi-language) |
 
 ---
+
+## 🆕 V10.17.5 New Features - Protected File Tools 🛡️
+
+### Secure File Operations
+We introduced `boring_write_file` and `boring_read_file` to provide robust security guarantees within Shadow Mode.
+
+> [!IMPORTANT]
+> **Security Warning**: Standard MCP tools like `write_file` (provided by some clients) are **NOT** intercepted by Shadow Mode. For secure, audited file operations, always use `boring_write_file`.
+
+- **`boring_write_file`**: Writes content with strict path validation and Shadow Mode approval (in STRICT mode).
+- **`boring_read_file`**: Reads content safely within project boundaries.
 
 ## 🆕 V10.16.3 New Features (Security & Stability)
 
