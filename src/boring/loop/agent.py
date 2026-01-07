@@ -18,6 +18,7 @@ from ..gemini_client import create_gemini_client
 from ..limiter import can_make_call, init_call_tracking, wait_for_reset
 from ..logger import console, log_status
 from ..memory import MemoryManager
+from ..rag.rag_watcher import RAGWatcher
 from ..storage import create_storage
 from ..verification import CodeVerifier
 from .base import LoopState
@@ -68,6 +69,9 @@ class StatefulAgentLoop:
         # Initial state
         self._current_state: Optional[LoopState] = None
 
+        # RAG Watcher for auto-indexing
+        self._rag_watcher: Optional[RAGWatcher] = None
+
     def _init_subsystems(self) -> None:
         """Initialize all subsystems and inject into context."""
         ctx = self.context
@@ -103,6 +107,12 @@ class StatefulAgentLoop:
                         "Install with: npm install -g @google/gemini-cli"
                     )
 
+        # RAG Watcher (for automatic re-indexing on file changes)
+        try:
+            self._rag_watcher = RAGWatcher(ctx.project_root)
+        except Exception as e:
+            log_status(ctx.log_dir, "WARN", f"Failed to init RAG watcher: {e}")
+
         # Log status
         if ctx.verbose:
             console.print(f"[dim]Memory: {ctx.memory.memory_dir}[/dim]")
@@ -132,6 +142,27 @@ class StatefulAgentLoop:
             settings.PROJECT_ROOT / ".exit_signals",
         )
 
+        # Start RAG Watcher (auto-index on file changes)
+        if self._rag_watcher:
+            try:
+                from ..rag import create_rag_retriever
+
+                retriever = create_rag_retriever(ctx.project_root)
+
+                def on_file_change():
+                    try:
+                        retriever.build_index(incremental=True)
+                        log_status(ctx.log_dir, "INFO", "[RAG] Incremental index complete")
+                    except Exception as e:
+                        log_status(ctx.log_dir, "WARN", f"[RAG] Re-index failed: {e}")
+
+                self._rag_watcher.start(on_change=on_file_change)
+                log_status(ctx.log_dir, "INFO", "[RAG] File watcher started")
+            except ImportError:
+                log_status(ctx.log_dir, "WARN", "[RAG] Watcher disabled (chromadb not installed)")
+            except Exception as e:
+                log_status(ctx.log_dir, "WARN", f"[RAG] Watcher failed to start: {e}")
+
         # Main loop
         while ctx.should_continue():
             # Check rate limits
@@ -159,6 +190,10 @@ class StatefulAgentLoop:
                 break
 
         # Cleanup
+        if self._rag_watcher:
+            self._rag_watcher.stop()
+            log_status(ctx.log_dir, "INFO", "[RAG] File watcher stopped")
+
         BackupManager.cleanup_old_backups(keep_last=10)
 
         if ctx.exit_reason:
