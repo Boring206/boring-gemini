@@ -24,9 +24,9 @@ COPY src src
 # Install the project with MCP dependencies (Core + MCP)
 RUN pip install --no-cache-dir ".[mcp]"
 
-# Health check endpoint
+# Health check endpoint (use port 8000, Smithery sets PORT env at runtime)
 HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-8000}/health || exit 1
+    CMD curl -f http://localhost:8000/health || exit 1
 
 # Document the port
 EXPOSE 8000
