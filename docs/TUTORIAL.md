@@ -469,10 +469,10 @@ boring_evaluate(target="src/", rubric="my_rules")
 
 ## 下一步
 
-- 📖 [進階開發者指南](ADVANCED_TUTORIAL.md) — 深入架構與內部機制
-- 📚 [完整工具清單](APPENDIX_A_TOOL_REFERENCE.md) — 所有 55 個工具
-- ❓ [常見問題 FAQ](APPENDIX_B_FAQ.md) — 疑難排解
-- 🏛️ [Prompt 設計哲學](APPENDIX_C_PROMPT_PHILOSOPHY.md) — 架構師人設設計
+- 📖 [進階開發者指南](ADVANCED_TUTORIAL_zh.md) — 深入架構與內部機制
+- 📚 [完整工具清單](APPENDIX_A_TOOL_REFERENCE_zh.md) — 所有 55 個工具
+- ❓ [常見問題 FAQ](APPENDIX_B_FAQ_zh.md) — 疑難排解
+- 🏛️ [Prompt 設計哲學](APPENDIX_C_PROMPT_PHILOSOPHY_zh.md) — 架構師人設設計
 
 ---
 

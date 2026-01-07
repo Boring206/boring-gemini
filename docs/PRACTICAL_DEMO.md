@@ -518,6 +518,6 @@ my-awesome-app/
 ## 📚 延伸閱讀
 
 - [完整教程](TUTORIAL.md) — 詳細的功能介紹
-- [進階開發者指南](ADVANCED_TUTORIAL.md) — 架構與內部機制
+- [進階開發者指南](ADVANCED_TUTORIAL_zh.md) — 架構與內部機制
 - [專業實戰指南](PROFESSIONAL_PLAYBOOK.md) — 18 個專家工作流
-- [工具清單](APPENDIX_A_TOOL_REFERENCE.md) — 所有 55+ 個工具
+- [工具清單](APPENDIX_A_TOOL_REFERENCE_zh.md) — 所有 55+ 個工具

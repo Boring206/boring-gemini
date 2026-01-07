@@ -142,10 +142,10 @@ your-project/
 | Document | Description | Audience |
 |----------|-------------|----------|
 | [**Getting Started**](docs/getting-started/installation.md) | Installation, first steps, MCP setup | New users |
-| [**🔥 Practical Demo**](docs/PRACTICAL_DEMO.md) | 10-min hands-on showcase, 6 real-world examples | 🆕 Vibe Coders |
-| [**Complete Tutorial**](docs/TUTORIAL.md) | Quick start, core workflows, practical examples | All developers |
+| [**🔥 Practical Demo**](docs/PRACTICAL_DEMO_en.md) | 10-min hands-on showcase, 6 real-world examples | 🆕 Vibe Coders |
+| [**Complete Tutorial**](docs/TUTORIAL_en.md) | Quick start, core workflows, practical examples | All developers |
 | [**Advanced Developer Guide**](docs/ADVANCED_TUTORIAL.md) | Architecture deep dive, tool development, internals | Senior developers |
-| [**Professional Playbook**](docs/PROFESSIONAL_PLAYBOOK.md) | 18 expert workflows with `/slash` commands | Senior developers |
+| [**Professional Playbook**](docs/PROFESSIONAL_PLAYBOOK_en.md) | 18 expert workflows with `/slash` commands | Senior developers |
 
 ### Reference & Appendices
 | Document | Description | Audience |
@@ -232,6 +232,15 @@ To reduce context consumption, we consolidated 50+ tools into 14 high-level entr
 | **Knowledge** | `boring_learn` | Project knowledge extraction and storage |
 | **Plugins** | `boring_run_plugin` | External plugin execution |
 | **Evaluation** | `boring_evaluate` | LLM-as-Judge code scoring |
+
+### 🧠 MCP Intelligence (V10.18+)
+
+| Feature | Description |
+|---------|-------------|
+| **Auto Pattern Detection** | `AutoLearner` automatically extracts error→solution patterns from AI responses |
+| **RAG Auto-Update** | `RAGWatcher` detects file changes and triggers incremental re-indexing |
+| **Cross-Project Knowledge** | `GlobalKnowledgeStore` shares learned patterns via `~/.boring_brain/` |
+| **Smart Suggestions** | `boring_suggest_next` now includes git changes, task progress, and learned patterns |
 
 ### 🚀 Quick Start Prompts
 

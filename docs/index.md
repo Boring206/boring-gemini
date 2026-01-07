@@ -31,40 +31,27 @@ pip install boring-aicoding
 
 ## 📚 Documentation Index
 
-### Tutorials
-| Document | Description |
-|----------|-------------|
-| [Complete Tutorial](TUTORIAL.md) | Beginner-to-intermediate guide (Parts 1-6) |
-| [Advanced Developer Guide](ADVANCED_TUTORIAL.md) | Architecture deep dive, tool development |
-| [Professional Playbook](PROFESSIONAL_PLAYBOOK.md) | Expert-level workflows and best practices |
+### Tutorials & Guides (教程與指南)
+| English | Traditional Chinese (繁體中文) | Description |
+|---------|--------------------------------|-------------|
+| [Complete Tutorial](TUTORIAL_en.md) | [完整教程](TUTORIAL.md) | Beginner-to-intermediate guide |
+| [Advanced Developer Guide](ADVANCED_TUTORIAL.md) | [進階開發者指南](ADVANCED_TUTORIAL_zh.md) | Architecture deep dive & tool development |
+| [Professional Playbook](PROFESSIONAL_PLAYBOOK_en.md) | [專業實戰指南](PROFESSIONAL_PLAYBOOK.md) | Expert-level workflows and best practices |
+| [Practical Demo](PRACTICAL_DEMO_en.md) | [實戰展示](PRACTICAL_DEMO.md) | 10-min hands-on showcase |
 
-### Appendices
-| Document | Description |
-|----------|-------------|
-| [Tool Reference (Appendix A)](APPENDIX_A_TOOL_REFERENCE.md) | Complete 55+ MCP tools reference |
-| [FAQ (Appendix B)](APPENDIX_B_FAQ.md) | Installation, troubleshooting, common questions |
-| [Prompt Philosophy (Appendix C)](APPENDIX_C_PROMPT_PHILOSOPHY.md) | Architect persona design principles |
+### Appendices (附錄)
+| English | Traditional Chinese (繁體中文) | Description |
+|---------|--------------------------------|-------------|
+| [Tool Reference (Appendix A)](APPENDIX_A_TOOL_REFERENCE.md) | [工具清單 (附錄 A)](APPENDIX_A_TOOL_REFERENCE_zh.md) | Complete 55+ MCP tools reference |
+| [FAQ (Appendix B)](APPENDIX_B_FAQ.md) | [FAQ (附錄 B)](APPENDIX_B_FAQ_zh.md) | Installation, troubleshooting, common questions |
+| [Prompt Philosophy (Appendix C)](APPENDIX_C_PROMPT_PHILOSOPHY.md) | [Prompt 設計哲學 (附錄 C)](APPENDIX_C_PROMPT_PHILOSOPHY_zh.md) | Architect persona design principles |
 
-> 🌏 **Traditional Chinese (繁體中文)**:
-> - [工具清單 (附錄 A)](APPENDIX_A_TOOL_REFERENCE_zh.md)
-> - [FAQ (附錄 B)](APPENDIX_B_FAQ_zh.md)
-> - [Prompt 設計哲學 (附錄 C)](APPENDIX_C_PROMPT_PHILOSOPHY_zh.md)
-
-
-### Getting Started
-| Document | Description |
-|----------|-------------|
-| [Installation Guide](getting-started/installation.md) | Setup instructions |
-| [Quick Start](getting-started/quickstart.md) | First steps with Boring |
-
-### Reference
-| Document | Description |
-|----------|-------------|
-| [Architect Mode](architect_mode.md) | Hostile Architect evaluation mode |
-| [Architect Mode (中文)](architect_mode_zh.md) | 架構師模式指南 (中文版) |
-| [Contributing](contributing.md) | How to contribute |
-| [Contributing (中文)](contributing_zh.md) | 貢獻指南 (中文版) |
-| [API Reference](api/mcp_server.md) | MCP Server API (MkDocs) |
+### Reference (參考資料)
+| English | Traditional Chinese (繁體中文) | Description |
+|---------|--------------------------------|-------------|
+| [Architect Mode](architect_mode.md) | [架構師模式](architect_mode_zh.md) | Hostile Architect evaluation mode |
+| [Contributing](contributing.md) | [貢獻指南](contributing_zh.md) | How to contribute |
+| [API Reference](api/mcp_server.md) | - | MCP Server API (MkDocs) |
 
 ---
 
