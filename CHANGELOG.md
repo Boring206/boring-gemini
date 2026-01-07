@@ -1,6 +1,6 @@
 # Changelog
 
-## [10.17.4] - 2026-01-07 - Protected File Tools 🛡️
+## [10.17.5] - 2026-01-07 - Protected File Tools 🛡️ (Re-release)
 ### Added
 - **Secure File Tools**: Implemented `boring_write_file` and `boring_read_file` in MCP server.
   - These tools are explicitly protected by Shadow Mode (`STRICT` compliant).
