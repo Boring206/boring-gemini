@@ -1,5 +1,17 @@
 # Changelog
 
+## [10.17.6] - 2026-01-07 - Built-in Release Workflow 📝
+
+### Added
+- **`release-prep` Workflow**: A pre-configured checklist workflow is now bundled with every new `boring-setup` project.
+  - Ensures documentation (README, CHANGELOG, pyproject.toml) is always updated before release.
+  - Registered in `workflow_evolver.py` for evolution/tracking.
+
+### Changed
+- **`setup.py`**: Now copies `.agent/workflows/` templates automatically during project creation.
+
+---
+
 ## [10.17.5] - 2026-01-07 - Protected File Tools 🛡️ (Re-release)
 ### Added
 - **Secure File Tools**: Implemented `boring_write_file` and `boring_read_file` in MCP server.
