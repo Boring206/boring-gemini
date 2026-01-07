@@ -158,6 +158,7 @@ class TestExtensionsManager:
         with (
             patch.object(manager, "is_gemini_available", return_value=True),
             patch.object(manager, "get_installed_extensions", return_value=[]),
+            patch.object(manager, "gemini_cmd", "/usr/bin/gemini"),
             patch("subprocess.run") as mock_run,
         ):
             mock_run.return_value = MagicMock(returncode=0)
