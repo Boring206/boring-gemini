@@ -45,12 +45,15 @@ def register_core_tools(mcp, audited, helpers):
 
     @mcp.tool(
         description="Initialize a new Boring project with recommended structure and configuration",
-        annotations={"readOnlyHint": False, "openWorldHint": False},
+        annotations={"readOnlyHint": False, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
     def boring_quickstart(
         project_path: Annotated[
-            str, Field(description="Optional explicit path to project root")
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory."
+            ),
         ] = None,
     ) -> dict:
         """
@@ -109,12 +112,15 @@ def register_core_tools(mcp, audited, helpers):
 
     @mcp.tool(
         description="Get current autonomous loop status, including active task, call counts, and recent errors",
-        annotations={"readOnlyHint": True, "openWorldHint": False},
+        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
     def boring_status(
         project_path: Annotated[
-            str, Field(description="Optional explicit path to project root")
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory."
+            ),
         ] = None,
     ) -> dict:
         """Get current Boring project status."""

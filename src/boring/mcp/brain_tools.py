@@ -10,7 +10,9 @@ This module contains tools for AI learning and evaluation:
 - boring_brain_summary: Knowledge base summary
 """
 
-from typing import Optional
+from typing import Annotated, Optional
+
+from pydantic import Field
 
 
 def register_brain_tools(mcp, audited, helpers):
@@ -25,9 +27,19 @@ def register_brain_tools(mcp, audited, helpers):
     _get_project_root_or_error = helpers["get_project_root_or_error"]
     _configure_runtime_for_project = helpers["configure_runtime"]
 
-    @mcp.tool()
+    @mcp.tool(
+        description="Extract and learn patterns from project memory to build reusable knowledge base",
+        annotations={"readOnlyHint": False, "openWorldHint": False, "idempotentHint": True},
+    )
     @audited
-    def boring_learn(project_path: Optional[str] = None) -> dict:
+    def boring_learn(
+        project_path: Annotated[
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory."
+            ),
+        ] = None,
+    ) -> dict:
         """
         Trigger learning from .boring_memory to .boring_brain.
 
@@ -49,9 +61,19 @@ def register_brain_tools(mcp, audited, helpers):
 
         return brain.learn_from_memory(storage)
 
-    @mcp.tool()
+    @mcp.tool(
+        description="Create default evaluation rubrics for code quality assessment",
+        annotations={"readOnlyHint": False, "openWorldHint": False, "idempotentHint": True},
+    )
     @audited
-    def boring_create_rubrics(project_path: Optional[str] = None) -> dict:
+    def boring_create_rubrics(
+        project_path: Annotated[
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory."
+            ),
+        ] = None,
+    ) -> dict:
         """
         Create default evaluation rubrics in .boring_brain/rubrics/.
 
@@ -69,9 +91,19 @@ def register_brain_tools(mcp, audited, helpers):
         brain = BrainManager(project_root, settings.LOG_DIR)
         return brain.create_default_rubrics()
 
-    @mcp.tool()
+    @mcp.tool(
+        description="Get summary of learned knowledge base including patterns, rubrics, and adaptations",
+        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
+    )
     @audited
-    def boring_brain_summary(project_path: Optional[str] = None) -> dict:
+    def boring_brain_summary(
+        project_path: Annotated[
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory."
+            ),
+        ] = None,
+    ) -> dict:
         """
         Get summary of .boring_brain knowledge base.
 

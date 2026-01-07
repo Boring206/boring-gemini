@@ -157,14 +157,20 @@ def register_rag_tools(mcp, helpers: dict):
 
     @mcp.tool(
         description="Index codebase for RAG",
-        annotations={"readOnlyHint": False, "idempotentHint": True},
+        annotations={"readOnlyHint": False, "idempotentHint": True, "openWorldHint": False},
     )
     def boring_rag_index(
         force: Annotated[
-            bool, Field(description="If True, rebuild index even if it exists")
+            bool,
+            Field(
+                description="If True, rebuild index even if it exists. Use when codebase structure changed significantly or index appears corrupted. Default: False (skips if index exists)."
+            ),
         ] = False,
         project_path: Annotated[
-            str, Field(description="Optional explicit path to project root")
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory. Example: '.' or '/path/to/project'."
+            ),
         ] = None,
     ) -> str:
         """
@@ -214,27 +220,44 @@ def register_rag_tools(mcp, helpers: dict):
 
     @mcp.tool(
         description="Semantic code search",
-        annotations={"readOnlyHint": True, "openWorldHint": False},
+        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     def boring_rag_search(
         query: Annotated[
             str,
-            Field(description="What you're looking for (e.g., 'authentication error handling')"),
+            Field(
+                description="Natural language query describing what code you're looking for. Uses semantic similarity search. Examples: 'authentication error handling', 'database connection pool', 'user login validation'. Be specific for better results."
+            ),
         ],
         max_results: Annotated[
-            int, Field(description="Maximum number of results (default 10)")
+            int,
+            Field(
+                description="Maximum number of search results to return. Range: 1-50. Default: 10. Higher values provide more context but may include less relevant results."
+            ),
         ] = 10,
         expand_graph: Annotated[
-            bool, Field(description="Include related code via dependency graph (default True)")
+            bool,
+            Field(
+                description="If True, includes related code via dependency graph (callers/callees). Provides more comprehensive context. Default: True. Set to False for faster searches with only direct matches."
+            ),
         ] = True,
         file_filter: Annotated[
-            str, Field(description="Filter by file path substring (e.g., 'auth' or 'src/api')")
+            str,
+            Field(
+                description="Optional substring to filter results by file path. Only files containing this substring will be included. Examples: 'auth' (matches auth.py, authentication.py), 'src/api' (matches files in src/api/). Case-sensitive."
+            ),
         ] = None,
         threshold: Annotated[
-            float, Field(description="Minimum relevance score (0.0 to 1.0)")
+            float,
+            Field(
+                description="Minimum relevance score (0.0 to 1.0) for results. Higher values return only highly relevant matches. Default: 0.0 (all results). Recommended: 0.3-0.5 for quality filtering."
+            ),
         ] = 0.0,
         project_path: Annotated[
-            str, Field(description="Optional explicit path to project root")
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory. Example: '.' or '/path/to/project'."
+            ),
         ] = None,
     ) -> str:
         """
@@ -325,11 +348,14 @@ def register_rag_tools(mcp, helpers: dict):
 
     @mcp.tool(
         description="Check RAG index health and statistics",
-        annotations={"readOnlyHint": True, "openWorldHint": False},
+        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     def boring_rag_status(
         project_path: Annotated[
-            str, Field(description="Optional explicit path to project root")
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory. Example: '.' or '/path/to/project'."
+            ),
         ] = None,
     ) -> str:
         """
@@ -398,18 +424,32 @@ def register_rag_tools(mcp, helpers: dict):
 
     @mcp.tool(
         description="Get code context (callers/callees)",
-        annotations={"readOnlyHint": True, "openWorldHint": False},
+        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     def boring_rag_context(
-        file_path: Annotated[str, Field(description="Path to the file (relative to project root)")],
+        file_path: Annotated[
+            str,
+            Field(
+                description="Path to the file relative to project root. Example: 'src/auth/login.py' or 'app/models/user.py'. Must be a valid file path in the indexed codebase."
+            ),
+        ],
         function_name: Annotated[
-            str, Field(description="Name of the function to get context for")
+            str,
+            Field(
+                description="Optional name of the function to get context for. If provided, returns callers and callees for this specific function. Example: 'authenticate_user' or 'process_payment'. Leave empty to get file-level context."
+            ),
         ] = None,
         class_name: Annotated[
-            str, Field(description="Name of the class (if getting class context)")
+            str,
+            Field(
+                description="Optional name of the class if getting class-level context. Use when function_name is a method. Example: 'UserService' or 'PaymentProcessor'. Required when function_name is a class method."
+            ),
         ] = None,
         project_path: Annotated[
-            str, Field(description="Optional explicit path to project root")
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory. Example: '.' or '/path/to/project'."
+            ),
         ] = None,
     ) -> str:
         """
@@ -480,15 +520,26 @@ def register_rag_tools(mcp, helpers: dict):
 
     @mcp.tool(
         description="Recursively expand code dependencies",
-        annotations={"readOnlyHint": True, "openWorldHint": False},
+        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     def boring_rag_expand(
         chunk_id: Annotated[
-            str, Field(description="The chunk ID to expand from (from search results)")
+            str,
+            Field(
+                description="The chunk ID to expand from, obtained from boring_rag_search results. Format: string identifier. Example: 'chunk_abc123' or 'func:auth:login'. Use this to get deeper dependency context for a specific code location."
+            ),
         ],
-        depth: Annotated[int, Field(description="How many layers to expand (default 2)")] = 2,
+        depth: Annotated[
+            int,
+            Field(
+                description="Number of dependency layers to expand recursively. Range: 1-5. Default: 2. Higher values provide more comprehensive context but may include less relevant code. Use 1 for immediate dependencies only, 3-5 for deep dependency analysis."
+            ),
+        ] = 2,
         project_path: Annotated[
-            str, Field(description="Optional explicit path to project root")
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory. Example: '.' or '/path/to/project'."
+            ),
         ] = None,
     ) -> str:
         """
