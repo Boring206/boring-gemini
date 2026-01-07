@@ -237,6 +237,8 @@ class ThinkingState(LoopState):
                 "SUCCESS",
                 f"Generated {len(context.function_calls)} function calls",
             )
+            # Auto-learn patterns from response
+            self._auto_learn(context, text_response or "")
             return StateResult.SUCCESS
         else:
             return StateResult.FAILURE
@@ -323,6 +325,9 @@ class ThinkingState(LoopState):
                 f"Extracted {len(context.function_calls)} tool calls from text",
             )
 
+        # Auto-learn patterns from response
+        self._auto_learn(context, response_text)
+
         return StateResult.SUCCESS if success else StateResult.FAILURE
 
     def _record_metrics(self, context: LoopContext, result: StateResult) -> None:
@@ -341,3 +346,24 @@ class ThinkingState(LoopState):
                 )
             except Exception:
                 pass  # Don't fail on metrics
+
+    def _auto_learn(self, context: LoopContext, response_text: str) -> None:
+        """Trigger auto-learning from response to extract error-solution patterns."""
+        if not response_text or len(response_text) < 100:
+            return  # Skip empty or trivial responses
+
+        try:
+            from ...auto_learner import auto_learn_from_response
+
+            result = auto_learn_from_response(context.project_root, response_text)
+            if result.get("status") == "LEARNED":
+                patterns_count = result.get("patterns_learned", 0)
+                log_status(
+                    context.log_dir,
+                    "INFO",
+                    f"[AutoLearn] Captured {patterns_count} new pattern(s)",
+                )
+        except ImportError:
+            pass  # auto_learner not available
+        except Exception as e:
+            log_status(context.log_dir, "WARN", f"[AutoLearn] Failed: {e}")
