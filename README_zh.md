@@ -3,66 +3,55 @@
 [![Evaluation](https://img.shields.io/badge/Smithery-58%2F58-brightgreen.svg)](https://smithery.ai/server/boring/boring)
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 
-# Boring：你的自主編碼夥伴，專為 Vibe 開發打造
+# Boring：你的自主編碼夥伴
 
 > **企業級自主 AI 開發代理**  
-> 專為 Cursor / Claude Desktop / VS Code / Gemini CLI 打造的全語言自動化編碼與驗證引擎。
+> 為 Cursor / Claude Desktop / VS Code / Gemini CLI 打造的全語言自動編碼與驗證引擎。
 
-**[English README](README.md)**
+**[English README](README.md)** | **[完整文檔](docs/index.md)**
 
 ---
 
 ## 🚀 核心優勢
 
-| 特色 | 說明 |
+| 功能 | 說明 |
 |------|------|
-| 🌐 **Polyglot & CLI Native** | 支援 Gemini CLI 與 Claude Code CLI 無縫切換，零 API Key 運行 |
-| 🛡️ **Parallel Verification** | 支援多執行緒平行驗證，效能提升 3-5 倍 |
-| 🧠 **RAG Memory** | Hybrid Search (向量 + 關鍵字) + 依賴圖即時檢索相關程式碼 |
-| 🛡️ **Shadow Mode** | 高風險操作需人工批准，跨 Session 持久化配置 |
-| 📐 **Spec-Driven** | 從 PRD 到 Code 實現 100% 規格一致性 |
-| 🔒 **Quality Gates** | CI/CD 多層門檻 + 全語言 Linting + 20+ 檔案格式安全掃描 |
+| 🌐 **多語言 & CLI 原生** | Gemini CLI 與 Claude Code CLI 無縫切換，零 API Key |
+| 🛡️ **平行驗證** | 多執行緒平行驗證，3-5 倍效能提升 |
+| 🧠 **RAG 記憶** | 混合搜尋（向量 + 關鍵字）+ 依賴圖即時檢索 |
+| 🛡️ **影子模式** | 高風險操作需人工批准，跨會話持久配置 |
+| 📐 **規格驅動** | 從 PRD 到 Code 100% 規格一致性 |
+| 🔒 **品質閘道** | CI/CD 多層閘道 + 多語言 linting + 20+ 檔案類型安全掃描 |
 
 ---
 
 ## 📦 快速安裝
 
-### 方式一：Smithery（✅ 推薦）
-
-> **適合：多專案工作流程、經常切換專案、雲端開發環境**
+### 選項 1：Smithery（✅ 推薦）
 
 ```bash
 npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ```
 
-✅ **優勢**：自動更新、環境一致、無路徑問題  
-⚠️ **注意**：需要安裝 npx/Node.js
-
-### 方式二：本地 pip 安裝
-
-> **適合：單一專案開發、CI/CD 流程、離線環境**
+### 選項 2：本地 pip 安裝
 
 ```bash
-# 基本安裝 (核心功能)
+# 基本安裝
 pip install boring-aicoding
 
-# 完整安裝 (包含 RAG、MCP、GUI、向量搜尋)
+# 完整安裝（含所有功能）
 pip install "boring-aicoding[all]"
 
-# 或安裝特定功能：
-pip install "boring-aicoding[mcp]"     # MCP 伺服器支援 (包含 RAG 功能)
-pip install "boring-aicoding[vector]"  # 純 RAG/向量搜索 (chromadb, sentence-transformers)
-pip install "boring-aicoding[gui]"     # Streamlit 儀表板
-pip install "boring-aicoding[dev]"     # 開發工具
+# 特定擴充
+pip install "boring-aicoding[mcp]"     # MCP 伺服器 + RAG
+pip install "boring-aicoding[vector]"  # 純 RAG/向量搜尋
 ```
 
-> ⚠️ **路徑問題警告**：本地安裝在切換不同專案目錄時可能遇到路徑問題。如需頻繁切換專案，建議使用 **Smithery 部署**。
+---
 
-### MCP 配置
+## ⚙️ MCP 配置
 
-#### Smithery 部署（推薦）
-
-在 `mcp_config.json` 或 IDE 設定中：
+### Smithery
 
 ```json
 {
@@ -75,7 +64,7 @@ pip install "boring-aicoding[dev]"     # 開發工具
 }
 ```
 
-#### 本地 pip 安裝
+### 本地 pip
 
 ```json
 {
@@ -94,490 +83,70 @@ pip install "boring-aicoding[dev]"     # 開發工具
 
 ---
 
-## 🎮 兩種使用方式
+## 🎯 快速啟動提示
 
-### 方式 1：MCP/Smithery（推薦大多數用戶）
-
-直接在 **Gemini CLI**、**Cursor** 或 **Claude Desktop** 中使用 Boring 工具：
-
-```
-你（在 Gemini CLI 中）: "幫我建立一個 FastAPI 認證服務"
-                        或
-                        "/vibe_start 建立一個認證服務"
-
-Gemini + Boring: 「好的，讓我先問你幾個問題...」
-```
-
-✅ 不需要 `PROMPT.md`  
-✅ 互動式對話  
-✅ 支援任何 MCP 相容的客戶端
-
-### 方式 2：自主循環模式（`boring start`）
-
-用於 **長時間、全自動化開發**，在 CLI 中執行：
-
-```bash
-# 需要專案根目錄有 PROMPT.md（透過 boring-setup 建立）
-boring-setup my-project              # 1. 初始化專案（必須！）
-cd my-project                        # 2. 進入專案目錄
-boring start                         # 3. 啟動自主循環
-boring start --provider claude-code  # 使用 Claude Code CLI
-boring start --provider gemini-cli   # 使用 Gemini CLI
-boring run "修復所有 lint 錯誤"      # 單次執行命令
-```
-
-**`boring start` 需要的檔案：**
-```
-your-project/
-├── PROMPT.md      # ✅ 必要 - 告訴 AI 要做什麼
-├── @fix_plan.md   # 可選 - 任務清單
-└── GEMINI.md      # 可選 - 專案說明
-```
-
----
-
-## 📚 完整教程與文件
-
-### 教程與指南
-| 文件 | 說明 | 適合對象 |
-|------|------|----------|
-| [**快速入門**](docs/getting-started/installation.md) | 安裝、首次設定、MCP 配置 | 新手使用者 |
-| [**🔥 實戰展示**](docs/PRACTICAL_DEMO.md) | 10 分鐘見識 Boring 的強大，6 大實戰案例 | 🆕 Vibe Coder |
-| [**完整教程**](docs/TUTORIAL.md) | 快速入門、核心工作流程、實戰案例 | 所有開發者 |
-| [**進階開發者指南**](docs/ADVANCED_TUTORIAL_zh.md) | 架構深度、Tool 開發、內部機制 | 資深開發者 |
-| [**專業實戰指南**](docs/PROFESSIONAL_PLAYBOOK.md) | 18 個專家工作流，使用 `/slash` 指令 | 資深開發者 |
-
-### 參考與附錄
-| 文件 | 說明 | 適合對象 |
-|------|------|----------|
-| [**工具清單 (附錄 A)**](docs/APPENDIX_A_TOOL_REFERENCE_zh.md) | 完整 55+ 個 MCP 工具參考 | 速查 |
-| [**FAQ (附錄 B)**](docs/APPENDIX_B_FAQ_zh.md) | 安裝、疑難排解、API Key 問題 | 遇到問題時 |
-| [**Prompt 設計哲學 (附錄 C)**](docs/APPENDIX_C_PROMPT_PHILOSOPHY_zh.md) | 架構師人設設計原則 | Prompt 工程師 |
-| [**架構師模式**](docs/architect_mode_zh.md) | 惡魔架構師評估模式 | 生產代碼審查 |
-
----
-
-
-## ⚡ 效能與架構
-
-### 1. 增量驗證
-- **智慧快取**：`.boring_cache/verification.json` 儲存檔案雜湊值。
-- **極速**：若檔案未變更，重新驗證 100+ 個檔案僅需 <2秒。
-- **強制模式**：使用 `boring verify --force` 可略過快取強制重跑。
-
-### 2. 增量 RAG 索引
-- **狀態追蹤**：僅對變更的檔案重新建立索引。
-- **CLI**：`boring rag index` (預設即為增量模式)。
-
-### 3. 本地 LLM 與 CLI 支援
-- **支援模式**：Gemini CLI (推薦), Claude Code CLI (推薦), Ollama (本地), SDK (API Key)。
-- **自動偵測**：系統啟動時會自動偵測本地路徑下的指令工具。
-- **設定方式**：
-  ```bash
-  boring start --provider claude-code
-  boring verify --provider gemini-cli
-  ```
-
-### 4. 品質趨勢追蹤
-- **歷史記錄**：將稽核分數記錄於 `.boring_brain/quality_history.json`。
-- **視覺化**：使用 `boring_quality_trend` 工具繪製 ASCII 趨勢圖。
-
-### 核心工具 (Core Tools v10.18.1)
-- **並發處理**：使用 `ThreadPoolExecutor` 最大化大型專案的 CPU 利用率。
-- **速度提升**：在全新建置時驗證速度提升 3x-5x 倍。
-- **即時進度**：擁有獨立於 CI log 的 Rich CLI 即時進度條。
-
-### 6. 對比評估
-- **A/B 測試**：使用 `evaluate --level PAIRWISE` 並排比較兩種實作。
-- **LLM 裁判**：由 AI 根據正確性、邏輯和效率選出優勝者。
-- **偏差緩解**：自動處理位置偏差，透過交換 A/B/A 順序驗證。
-
-### 7. 開發者體驗優化
-- **配置檔**：支援 `.boring.toml` 定義專案專屬規則。
-- **自訂提示詞**：於 `[boring.prompts]` 覆寫 Judge Prompts。
-- **Linter 覆寫**：於 `[boring.linter_configs]` 自訂特定工具參數。
-
----
-
-## 🛠️ MCP 工具組 (整合與動態發現)
-
-Boring V10.16 採用 **動態發現架構**，解決了工具過多導致的 Context 溢出問題。
-
-### 🔎 動態發現 (AI Only)
-- **`boring://capabilities`**：讀取此資源以發現所有可用能力。
-- **`boring://tools/{category}`**：讀取特定類別的詳細工具用法。
-
-### 🧰 核心工具 (整合版)
-
-為了減少 Context 消耗，我們將 50+ 個工具整合為以下 14 個高階入口：
-
-| 類別 | 主要工具 | 功能描述 |
-|------|----------|----------|
-| **Security** | `boring_security_scan` | SAST、秘密檢測、依賴掃描 (Bandit/Safety) |
-| **Transactions** | `boring_transaction` | 原子化 Git 操作 (Start/Commit/Rollback) |
-| **Background** | `boring_task` | 非同步背景任務 (Verify/Test/Lint) |
-| **Context** | `boring_context` | 跨 Session 記憶保存與載入 |
-| **Profile** | `boring_profile` | 用戶偏好與跨專案學習 |
-| **Verification** | `boring_verify` | 多層級程式碼驗證 (Basic/Standard/Full) |
-| **RAG Memory** | `boring_rag_search` | 語義搜尋與依賴上下文檢索。安裝依賴後使用 `boring_rag_reload` 熱載入更新。 |
-| **Agents** | `boring_multi_agent` | **[提示生成/執行器]** 返回提示或在後台執行工作流程 (`execute=True`). 輔助工具: `boring_prompt_plan`, `boring_prompt_fix` |
-| **Shadow** | `boring_shadow_mode` | 高風險操作安全沙箱 |
-| **Git** | `boring_commit` | 從 task.md 自動生成語義化 commit 訊息 (供 `smart_commit` 使用) |
-| **Workspace** | `boring_workspace_switch` | 多專案工作區切換 |
-| **Knowledge** | `boring_learn` | 專案知識提取與存儲 |
-| **Plugins** | `boring_run_plugin` | 外部插件執行 |
-| **Evaluation** | `boring_evaluate` | LLM-as-Judge 程式碼評分 |
-
-### 🧠 MCP 智能增強 (V10.18+)
-
-| 功能 | 描述 |
+| 提示 | 用法 |
 |------|------|
-| **自動模式識別** | `AutoLearner` 自動從 AI 回應中提取 錯誤→解決方案 模式 |
-| **RAG 自動更新** | `RAGWatcher` 檢測檔案變更並觸發增量重新索引 |
-| **跨專案知識共享** | `GlobalKnowledgeStore` 透過 `~/.boring_brain/` 共享學習到的模式 |
-| **智能建議** | `boring_suggest_next` 現在包含 Git 變更、任務進度及學習模式分析 |
-
-### 🚀 快速啟動 Prompts
-
-專為 Claude Desktop / Gemini CLI 用戶設計的一鍵式工作流程：
-
-| Prompt | 用途 | 使用方式 |
-|--------|------|----------|
-| `vibe_start` | 一鍵啟動完整開發流程 | `/vibe_start 建立一個 FastAPI 認證服務` |
-| `quick_fix` | 自動修復所有程式碼問題 | `/quick_fix` |
-| `full_stack_dev` | 全棧應用開發 | `/full_stack_dev my-app "Next.js + FastAPI"` |
-
-> 💡 **Vibe Coding 模式**：描述你的想法，讓 AI 處理剩下的一切！
-
-### 🚀 Quick Start (一鍵啟動)
-
-使用 Vibe Coder 專屬的 **Slash Commands** 快速啟動：
-
-1. **啟動 Boring**：
-   ```bash
-   boring start
-   ```
-
-2. **輸入指令**：
-   ```text
-   /vibe_start 建立一個 FastAPI 認證服務
-   ```
-
-   或者使用更特定的技術棧：
-   ```text
-   /full_stack_dev my-app "Next.js + Tailwind + Supabase"
-   ```
-
-> **Note**: 目前所有模板與捷徑皆已整合至 Slash Commands (Prompts) 中，無需記憶複雜 CLI 參數。
-
-### ⚡ One-Shot Mode (單次執行)
-不需進入互動模式，直接執行單一指令 (適合 Vibe Coder)：
-```bash
-boring run "幫我重構 src/main.py"
-```
-
-
-**內建模板：**
-| 模板 ID | 說明 |
-|---------|------|
-| `fastapi-auth` | FastAPI + JWT 認證服務 |
-| `nextjs-dashboard` | Next.js 管理後台 |
-| `cli-tool` | Python CLI 工具 (Typer) |
-| `vue-spa` | Vue 3 單頁應用 |
+| `/vibe_start` | 在 AI 引導下開始新專案 |
+| `/quick_fix` | 自動修復所有 linting 和格式錯誤 |
+| `/smart_commit` | 生成語意化提交訊息 |
+| `/full_stack_dev` | 建立完整的全端應用 |
 
 ---
 
-## 📊 即時監控
+## 📚 文檔
 
-我們提供兩種監控方式：
-
-- **終端機看板 (TUI)**：執行 `boring-monitor`。在終端機直接顯示運行狀態、API 呼叫次數及近期日誌。
-- **網頁儀表板**：執行 `boring-dashboard`。Streamlit 驅動的視覺化介面，提供專案趨勢圖與知識庫檢查功能。
-
----
-
-## 🌐 支援語言
-
-| 語言 | 語法檢查 | Linter | 測試執行 |
-|------|----------|--------|----------|
-| Python | ✅ compile() | ✅ ruff | ✅ pytest |
-| JS/TS | ✅ node --check | ✅ eslint | ✅ npm test |
-| Go | ✅ go fmt | ✅ golangci-lint | ✅ go test |
-| Rust | ✅ rustc | ✅ cargo clippy | ✅ cargo test |
-| Java | ✅ javac | - | ✅ mvn/gradle |
-| C/C++ | ✅ gcc/g++ | ✅ clang-tidy | - |
+| 類別 | 連結 |
+|------|------|
+| **入門** | [Vibe Coder 指南](docs/guides/vibe-coder_zh.md) · [快速教學](docs/guides/quick-tutorials_zh.md) |
+| **功能** | [MCP 工具（55+）](docs/features/mcp-tools_zh.md) · [影子模式](docs/features/shadow-mode_zh.md) · [品質閘道](docs/features/quality-gates_zh.md) |
+| **指南** | [Cookbook](docs/guides/cookbook_zh.md) · [專業技巧](docs/guides/pro-tips_zh.md) · [Git Hooks](docs/guides/git-hooks_zh.md) |
+| **參考** | [工具參考](docs/APPENDIX_A_TOOL_REFERENCE_zh.md) · [常見問題](docs/APPENDIX_B_FAQ_zh.md) · [V10 更新日誌](docs/changelog/v10_zh.md) |
 
 ---
 
-## 💡 Pro Tips
+## 🛡️ 影子模式
 
-### Tip 1: SpecKit 完整流程 (五部曲)
-
-開始寫程式碼前，Boring 會帶你走過：
-
-1. `speckit_constitution` → 確立原則 (憲法)
-2. `speckit_clarify` → 釐清需求
-3. `speckit_plan` → 制定計畫
-4. `speckit_checklist` → 建立驗收標準
-5. `speckit_analyze` → 一致性分析 (Spec vs Plan)
-
-> **"Measure Twice, Cut Once"** 的 AI 實踐！
-
-### Tip 2: 善用混合模式
-
-| 任務類型 | 推薦工具 |
-|----------|----------|
-| 小修改 | `boring_apply_patch` |
-| 大功能 | `run_boring` + SpecKit |
-| 品質檢查 | `boring_evaluate` |
-
-### Tip 3: 累積經驗
+影子模式保護你免受破壞性 AI 操作：
 
 ```
-開發 → AI 遇錯修復 → 記錄到 .boring_memory
-專案結束 → boring_learn → 提取模式到 .boring_brain
-下次專案 → AI 自動參考！
+DISABLED  ⚠️  無保護（僅限隔離容器）
+ENABLED   🛡️  自動批准安全操作，阻擋危險操作（預設）
+STRICT    🔒  所有寫入需要批准（生產環境）
 ```
-
-### Tip 4: 自訂 Lint 規則
-
-建立 `ruff.toml`：
-
-```toml
-line-length = 120
-[lint]
-ignore = ["T201", "F401"]  # 允許 print() 和未使用 import
-```
-
----
-
-## 📚 快速教程
-
-### 1. 新專案開發
-
-```
-你: 幫我建立一個 TypeScript API 專案
-AI: (執行 speckit_plan) 生成 implementation_plan.md...
-你: 批准這個計畫
-AI: (執行 boring_multi_agent) 開始 Plan→Code→Review 循環...
-```
-
-### 2. 程式碼驗證
-
-```
-你: 驗證這個專案的程式碼品質
-AI: (執行 boring_verify --level FULL) 
-    ✅ 語法檢查通過
-    ⚠️ 發現 3 個 lint 問題
-    ✅ 測試通過 (12/12)
-```
-
-### 3. RAG 搜尋
-
-```
-你: 我想找處理用戶認證的程式碼
-AI: (執行 boring_rag_search "user authentication")
-    找到 3 個相關函數：
-    1. auth.py:verify_token (L23-45)
-    2. middleware.py:require_auth (L67-89)
-    ...
-```
-
----
-
-## 🔌 Git Hooks
-
-自動在 commit/push 前驗證程式碼：
-
-```bash
-boring hooks install    # 安裝
-boring hooks status     # 狀態
-boring hooks uninstall  # 移除
-```
-
-| Hook | 觸發時機 | 驗證級別 |
-|------|----------|----------|
-| pre-commit | 每次 commit | STANDARD |
-| pre-push | 每次 push | FULL |
-| quick-check | 每次 commit | QUICK (多語言) |
-
----
-
-## 🆕 V10.17.5 新功能 - 受保護的檔案工具 🛡️
-
-### 安全檔案操作
-我們引入了 `boring_write_file` 和 `boring_read_file`，以在 Shadow Mode 中提供強大的安全保證。
-
-> [!IMPORTANT]
-> **安全警告**：標準 MCP 工具如 `write_file`（由某些客戶端提供）**不會**被 Shadow Mode 攔截。為了確保安全且受稽核的檔案操作，請務必使用 `boring_write_file`。
-
-- **`boring_write_file`**：在嚴格路徑驗證和 Shadow Mode 批准下寫入內容（在 STRICT 模式下）。
-- **`boring_read_file`**：在專案範圍內安全讀取內容。
-
-## 🆕 V10.16.3 新功能 (安全性與穩定性)
-
-### 1. 強化版 Shadow Mode 🛡️
-**Shadow Mode 是什麼？**
-Shadow Mode 是 Boring 的安全核心，作為 AI 與您檔案系統之間的**強制攔截層**。
-- **功能**：它會攔截所有具破壞性的操作（如寫入檔案、刪除檔案、執行指令）。
-- **流程**：AI 提出操作請求 -> Shadow Mode 攔截並評估風險 -> 放入待審核佇列 -> 需要您批准 (`boring_shadow_approve`) 才會執行。
-- **全面攔截**：在 v10.16.3 中，我們修復了所有漏洞，確保即使是 `boring_apply_patch` 或 Agent 的背景執行，只要開啟 `STRICT` 模式，所有寫入都必須經過您的同意。
-
-**三種模式：**
-- **DISABLED** (⚠️ 危險): 不進行攔截，適合完全隔離環境。
-- **ENABLED** (🛡️ 預設): 自動放行低風險操作 (如讀取)，攔截高風險操作。
-- **STRICT** (🔒 嚴格): 攔截 **所有** 寫入操作，最高安全級別。
-
-### 2. 穩健交易 (Transactions) 💾
-**非互動式 Git**：`boring_transaction` 現已自動繞過 GPG/憑證提示，防止 CI 流程卡死。
-
-### 3. 智慧 RAG 環境 🧠
-**自動偵測**：RAG 工具現在能自動尋找使用者安裝的 Python 套件 (`chromadb`)，解決隔離環境下的 "Module not found" 問題。
-
-## 🆕 V10.16.0 新功能
-
-### 1. Quality Gates (CI/CD 品質門檻)
-
-專案已包含 `.github/workflows/quality-gates.yml`：
-
-```yaml
-# 推送至 GitHub 後自動運行
-Tier 1: Lint & Format     # ruff check, ruff format
-Tier 2: Security Scan     # bandit, safety
-Tier 3: Unit Tests        # pytest --cov-fail-under=39
-Tier 4: Integration Tests # 僅 main 分支
-```
-
-### 2. 專案配置 (.boring.toml)
-
-在專案根目錄創建 `.boring.toml` 自訂品質政策：
-
-```toml
-[boring.quality_gates]
-min_coverage = 40           # 最低覆蓋率
-max_complexity = 15         # 最大複雜度
-max_file_lines = 500        # 最大檔案行數
-```
-
-### 3. 評估 Rubric (LLM Judge)
-
-使用標準化 Rubric 評估代碼品質：
-
-```bash
-boring_evaluate --target src/main.py --level DIRECT
-```
-
-### 4. 快速多語言檢查
-
-```bash
-# 安裝 Quick Check Hook
-boring hooks install
-```
-
----
-
-## 🆕 V10.15 新功能
-
-### 1. 增量驗證 (Git-based)
-
-```bash
-# 僅驗證 Git 變更的檔案
-boring verify --incremental
-
-# MCP 調用
-boring_verify(incremental=true)
-```
-
-### 2. 多專案 RAG 搜尋
 
 ```python
-boring_rag_search(
-    query="authentication middleware",
-    additional_roots=["/path/to/other-project"]
-)
-```
-
-### 3. 依賴圖視覺化
-
-```bash
-boring_visualize --scope full --output mermaid
-```
-
-### 4. 並行審查 (Multi-Reviewer)
-
-```bash
-boring_agent_review --parallel
-```
-
-### 5. VS Code 整合 (JSON-RPC Server)
-
-實現編輯器內的原生開發體驗：
-
-1. **即時錯誤提示**：儲存時顯示紅色波浪線
-2. **品質分數 CodeLens**：函數上方顯示 `Quality: 4.5/5`
-3. **側邊欄語義搜尋**：自然語言程式碼搜尋
-4. **一鍵 Quick Fix**：透過燈泡圖示自動修復
-
-```json
-// .vscode/settings.json
-{
-  "boring.enableServer": true,
-  "boring.port": 8765
-}
-```
-
-### 6. 其他 IDE 支援 (LSP & CLI)
-
-- **Cursor / VS Code 衍生產品**：透過 MCP Server 完整支援
-- **IntelliJ / PyCharm / Vim**：執行 `boring lsp start --port 9876` 啟動 JSON-RPC 伺服器
-- **CLI 模式**：所有自動化功能可透過 `boring` 指令使用
-
-### 7. 錯誤診斷
-
-自動分析錯誤並建議修復：
-
-```bash
-boring_diagnose --error "ModuleNotFoundError: No module named 'foo'"
+boring_shadow_mode(action="set_level", level="STRICT")
 ```
 
 ---
 
-## 🎯 未來願景
+## 🔭 未來願景
 
-> **注意**：以下功能需要伺服器端支援（尚未實現）
-
-- 🌐 **Boring Cloud**：雲端協作與團隊共享
-- 🤝 **Team Workflows**：多人工作流程同步
-- 🔐 **Enterprise SSO**：企業級身份認證
+| 階段 | 重點 |
+|------|------|
+| **2025 Q1** | NotebookLM 整合、MCP Compose |
+| **2025 Q2** | Agent Orchestration 2.0、跨儲存庫學習 |
+| **2025 Q3** | AI 代碼生成基準、自我修復管道 |
 
 ---
 
 ## 🙏 致謝
 
-感謝以下專案與社群的貢獻：
-
-- [Google Gemini](https://deepmind.google/technologies/gemini/) - 強大的 AI 模型
-- [Model Context Protocol](https://modelcontextprotocol.io/) - 標準化的 AI 工具協議
-- [Tree-sitter](https://tree-sitter.github.io/) - 高效的多語言解析器
-- [ChromaDB](https://www.trychroma.com/) - 向量資料庫
-- [Ruff](https://docs.astral.sh/ruff/) - 超快的 Python Linter
-- [FastMCP](https://github.com/jlooper/fastmcp) - MCP Server 框架
-- 所有 Contributors 和使用者！
+- [Google Gemini](https://ai.google.dev/) - AI 引擎
+- [Anthropic Claude](https://anthropic.com/) - MCP 協議
+- [Smithery](https://smithery.ai/) - 部署平台
 
 ---
 
 ## 📄 授權
 
-[Apache License 2.0](LICENSE)
+[MIT License](LICENSE) - 開源且免費使用
 
 ---
 
 ## 🔗 連結
 
-- [GitHub Repository](https://github.com/Boring206/boring-gemini)
-- [Smithery](https://smithery.ai/server/boring/boring)
-- [Bug Reports](https://github.com/Boring206/boring-gemini/issues)
-- [CHANGELOG](CHANGELOG.md)
-- [Bug Reports](https://github.com/Boring206/boring-gemini/issues)
-- [CHANGELOG](CHANGELOG.md)
-- [貢獻指南](docs/contributing_zh.md)
+[![GitHub](https://img.shields.io/badge/GitHub-Boring206%2Fboring--gemini-blue?logo=github)](https://github.com/Boring206/boring-gemini)
+[![PyPI](https://img.shields.io/badge/PyPI-boring--aicoding-orange?logo=pypi)](https://pypi.org/project/boring-aicoding/)
+[![Smithery](https://img.shields.io/badge/Smithery-boring%2Fboring-green)](https://smithery.ai/server/boring/boring)

@@ -1,67 +1,73 @@
-# Quick Start
+# Quick Start Guide
 
-## Your First Boring Task
+> Start building with Boring in 5 minutes.
 
-After installation, you can use Boring directly from your IDE chat:
+---
 
-### Using run_boring
+## 🎯 Choose Your Path
 
-```
-@boring run_boring "Create a hello world Python script"
-```
+### For Vibe Coders (Natural Language)
 
-### Using SpecKit Workflows
+Just describe what you want:
 
 ```
-@boring speckit_plan "Build a REST API with FastAPI"
-@boring speckit_tasks
+/vibe_start Build a weather dashboard with city search
 ```
 
-### Verifying Code
+AI will ask clarifying questions and build it for you.
 
-```
-@boring boring_verify
-```
-
-## CLI Usage
-
-If you're using the terminal:
+### For Developers (Hands-On)
 
 ```bash
-# Start the Boring agent
-boring start
-
-# Check status
-boring status
-
-# Monitor in real-time
-boring-monitor
-```
-
-## Project Setup
-
-For new projects:
-
-```bash
-# 2. Setup a new project (Required for boring start!)
+# Create new project
 boring-setup my-project
 cd my-project
 
-# 3. Start the autonomous loop
+# Start development loop
 boring start
 ```
 
-## Available Tools
+---
 
-| Tool | Description |
-|------|-------------|
-| `run_boring` | Main entry point - autonomous task execution |
-| `boring_verify` | Run lint, syntax, and test checks |
-| `speckit_plan` | Generate implementation plan from requirements |
-| `speckit_tasks` | Break plan into actionable tasks |
-| `boring_apply_patch` | Apply precise file edits |
+## 🚀 Quick Commands
 
-## Next Steps
+| Command | What It Does |
+|---------|--------------|
+| `/vibe_start [idea]` | Start a new project with AI guidance |
+| `/quick_fix` | Fix all linting/formatting errors |
+| `/smart_commit` | Generate semantic commit message |
 
-- Browse the [API Reference](../api/gemini_client.md)
-- Read about [Contributing](../contributing.md)
+---
+
+## 🛠️ MCP Tools
+
+All tools are available via MCP:
+
+```python
+# Verify code quality
+boring_verify(level="FULL")
+
+# Search codebase semantically
+boring_rag_search(query="authentication")
+
+# Security scan
+boring_security_scan(scan_type="all")
+```
+
+---
+
+## 📚 Learn More
+
+| Topic | Guide |
+|-------|-------|
+| **Beginners** | [Vibe Coder Guide](../guides/vibe-coder.md) |
+| **Tutorials** | [Quick Tutorials](../guides/quick-tutorials.md) |
+| **All Features** | [Cookbook](../guides/cookbook.md) |
+| **Best Practices** | [Pro Tips](../guides/pro-tips.md) |
+
+---
+
+## 🆘 Need Help?
+
+- [FAQ](../APPENDIX_B_FAQ.md)
+- [GitHub Issues](https://github.com/Boring206/boring-gemini/issues)

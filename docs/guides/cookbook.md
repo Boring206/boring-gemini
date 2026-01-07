@@ -1,0 +1,341 @@
+# Cookbook - Complete Feature Recipes
+
+> Ready-to-use recipes for every Boring feature. Copy, paste, and customize.
+
+---
+
+## 📚 Recipe Index
+
+### 🚀 Getting Started
+- [Recipe 1: First Project Setup](#recipe-1-first-project-setup)
+- [Recipe 2: MCP Server Configuration](#recipe-2-mcp-server-configuration)
+
+### 🔧 Daily Workflows
+- [Recipe 3: Quick Bug Fix](#recipe-3-quick-bug-fix)
+- [Recipe 4: Feature Development](#recipe-4-feature-development)
+- [Recipe 5: Code Review](#recipe-5-code-review)
+
+### 🔒 Security
+- [Recipe 6: Security Audit](#recipe-6-security-audit)
+- [Recipe 7: Shadow Mode Setup](#recipe-7-shadow-mode-setup)
+
+### 🧠 Advanced
+- [Recipe 8: Multi-Agent Workflow](#recipe-8-multi-agent-workflow)
+- [Recipe 9: RAG Knowledge Base](#recipe-9-rag-knowledge-base)
+- [Recipe 10: CI/CD Integration](#recipe-10-cicd-integration)
+
+---
+
+## Recipe 1: First Project Setup
+
+### Ingredients
+- Empty directory or existing project
+- Python 3.9+
+- pip
+
+### Steps
+
+```bash
+# 1. Install Boring
+pip install boring-aicoding
+
+# 2. Initialize project (if new)
+boring-setup my-project
+cd my-project
+
+# 3. Start development
+boring start
+```
+
+### Expected Output
+```
+🚀 Boring v10.18.3 started
+📁 Project: my-project
+🔍 Monitoring for changes...
+```
+
+---
+
+## Recipe 2: MCP Server Configuration
+
+### For Claude Desktop
+
+Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows):
+
+```json
+{
+  "mcpServers": {
+    "boring": {
+      "command": "python",
+      "args": ["-m", "boring.mcp.server"],
+      "env": {
+        "PROJECT_ROOT_DEFAULT": "/path/to/your/project",
+        "SHADOW_MODE_LEVEL": "ENABLED"
+      }
+    }
+  }
+}
+```
+
+### For Cursor
+
+In Settings → MCP Servers:
+```json
+{
+  "boring": {
+    "command": "boring-mcp",
+    "args": [],
+    "env": {
+      "PROJECT_ROOT_DEFAULT": "."
+    }
+  }
+}
+```
+
+### For Smithery (Cloud)
+```
+npx -y @anthropic-ai/mcp install @boring/boring
+```
+
+---
+
+## Recipe 3: Quick Bug Fix
+
+### Problem
+You have a bug and want AI to fix it.
+
+### Steps
+
+```python
+# Option 1: Describe the bug
+boring_apply_patch(
+    project_path=".",
+    description="Fix the login function - it crashes when password is empty"
+)
+
+# Option 2: Use quick_fix prompt
+# Just say: /quick_fix
+```
+
+### Verification
+```python
+boring_verify(level="FULL")
+```
+
+---
+
+## Recipe 4: Feature Development
+
+### Using SpecKit Workflow
+
+```python
+# Step 1: Establish principles
+speckit_constitution(project_path=".")
+
+# Step 2: Clarify requirements
+speckit_clarify(
+    feature="User authentication with OAuth",
+    questions=["providers", "storage", "session"]
+)
+
+# Step 3: Create implementation plan
+speckit_plan(feature="user-auth")
+
+# Step 4: Generate checklist
+speckit_checklist(plan_path=".boring/plans/user-auth.md")
+
+# Step 5: Implement
+boring_multi_agent(
+    workflow="plan_and_implement",
+    context={"feature": "user-auth"}
+)
+```
+
+---
+
+## Recipe 5: Code Review
+
+### Direct Evaluation
+```python
+boring_evaluate(
+    target="src/main.py",
+    level="DIRECT",
+    criteria=["correctness", "security", "performance", "maintainability"]
+)
+```
+
+### Pairwise Comparison
+```python
+boring_evaluate(
+    level="PAIRWISE",
+    target_a="src/auth_v1.py",
+    target_b="src/auth_v2.py"
+)
+```
+
+### Rubric-Based Scoring
+```python
+boring_evaluate(
+    target="src/",
+    level="RUBRIC",
+    rubric_path=".boring/rubrics/production-ready.md"
+)
+```
+
+---
+
+## Recipe 6: Security Audit
+
+### Full Security Scan
+```python
+boring_security_scan(
+    project_path=".",
+    scan_type="all"  # sast + secrets + dependencies
+)
+```
+
+### Secrets Only
+```python
+boring_security_scan(
+    project_path=".",
+    scan_type="secrets"
+)
+```
+
+### With Auto-Fix
+```python
+boring_security_scan(
+    project_path=".",
+    scan_type="all",
+    fix_mode=True
+)
+```
+
+---
+
+## Recipe 7: Shadow Mode Setup
+
+### Enable for Production
+```python
+# Set STRICT mode
+boring_shadow_mode(action="set_level", level="STRICT")
+
+# Verify status
+boring_shadow_mode(action="status")
+```
+
+### Configure Patterns
+Edit `~/.boring_brain/shadow_config.json`:
+```json
+{
+  "level": "STRICT",
+  "auto_approve_patterns": ["*.md", "docs/*"],
+  "always_block_patterns": ["*.env", "secrets/*", ".git/*"]
+}
+```
+
+---
+
+## Recipe 8: Multi-Agent Workflow
+
+### Plan and Implement
+```python
+boring_multi_agent(
+    workflow="plan_and_implement",
+    context={
+        "feature": "Real-time notifications",
+        "tech_stack": ["WebSockets", "Redis", "FastAPI"]
+    },
+    execute=True  # Actually run, not just generate prompt
+)
+```
+
+### Review and Fix
+```python
+boring_multi_agent(
+    workflow="review_and_fix",
+    context={
+        "target": "src/",
+        "focus": ["security", "performance"]
+    }
+)
+```
+
+---
+
+## Recipe 9: RAG Knowledge Base
+
+### Build Index
+```python
+boring_rag_index(
+    project_path=".",
+    force=False  # Incremental
+)
+```
+
+### Search Code
+```python
+boring_rag_search(
+    query="authentication middleware",
+    project_path=".",
+    top_k=10,
+    expand_deps=True
+)
+```
+
+### Multi-Project Search
+```python
+boring_rag_search(
+    query="error handling patterns",
+    additional_roots=[
+        "/path/to/shared-libs",
+        "/path/to/reference-project"
+    ]
+)
+```
+
+---
+
+## Recipe 10: CI/CD Integration
+
+### GitHub Actions
+
+```yaml
+# .github/workflows/quality-gates.yml
+name: Quality Gates
+
+on: [push, pull_request]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install boring-aicoding
+      - run: boring verify --level FULL
+      
+  security:
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install boring-aicoding
+      - run: |
+          python -c "
+          from boring.mcp.tools import boring_security_scan
+          result = boring_security_scan('.', 'all')
+          if result.get('critical_count', 0) > 0:
+              exit(1)
+          "
+```
+
+---
+
+## See Also
+
+- [Vibe Coder Guide](./vibe-coder.md) - For visual/description-based developers
+- [Quick Tutorials](./quick-tutorials.md) - Step-by-step guides
+- [MCP Tools](../features/mcp-tools.md) - Complete tool reference
