@@ -479,6 +479,35 @@ Requirements:
         except Exception:
             pass
 
+        # 5. Check for Prompt Recommendations (New!)
+        # Guide Vibe Coders to use high-level prompts
+        try:
+            # If changed files exist -> Recommend smart_commit prompt
+            if "changed_files" in locals() and changed_files:
+                enhancements.append(
+                    {
+                        "type": "prompt_recommendation",
+                        "action": "Run `/smart_commit` to auto-generate message and save",
+                        "priority": "high",
+                        "details": "High-level prompt available",
+                    }
+                )
+
+            # If project seems empty (no src/ or minimal files) -> Recommend vibe_start
+            src_dir = project_root / "src"
+            if not src_dir.exists() or not any(src_dir.iterdir()):
+                enhancements.append(
+                    {
+                        "type": "prompt_recommendation",
+                        "action": "Run `/vibe_start` to kickstart development",
+                        "priority": "critical",
+                        "details": "Project appears empty",
+                    }
+                )
+        except Exception:
+            pass
+
+
         return {
             "status": "SUCCESS",
             "suggestions": base_suggestions,

@@ -12,7 +12,7 @@ from pydantic import Field
 def register_prompts(mcp):
     """Register prompts with the MCP server."""
 
-    @mcp.prompt(name="plan_feature", description="Generate a plan for implementing a new feature")
+    @mcp.prompt(name="plan_feature", description="Generate a plan for implementing a new feature (Feature Plan). 適合: 'Plan new feature', 'Design implementation', 'Technical spec'.")
     def plan_feature(
         feature: str = Field(
             default="New Feature",
@@ -30,7 +30,7 @@ Include:
 3. Testing strategy
 4. Potential edge cases"""
 
-    @mcp.prompt(name="review_code", description="Request a code review for specific files")
+    @mcp.prompt(name="review_code", description="Request a code review (Architect Review). 適合: 'Review code', 'Check quality', 'Find bugs'.")
     def review_code(
         file_path: str = Field(
             default="src/",
@@ -53,7 +53,7 @@ Include:
 
 Be constructive but firm. Save the developer from future production incidents."""
 
-    @mcp.prompt(name="debug_error", description="Help debug an error message")
+    @mcp.prompt(name="debug_error", description="Help debug an error message (Root Cause Analysis). 適合: 'Fix error', 'Debug crash', 'Analyze stack trace'.")
     def debug_error(
         error_message: str = Field(
             default="Error: ...",
@@ -79,7 +79,7 @@ Be constructive but firm. Save the developer from future production incidents.""
 
 Don't just fix the symptom—fix the root design issue."""
 
-    @mcp.prompt(name="refactor_code", description="Request refactoring suggestions")
+    @mcp.prompt(name="refactor_code", description="Request refactoring suggestions (Code Improvement). 適合: 'Refactor code', 'Improve quality', 'Clean code'.")
     def refactor_code(
         target: str = Field(default="src/", description="What to refactor (file, function, class)"),
     ) -> str:
@@ -147,7 +147,7 @@ Steps:
 """
 
     @mcp.prompt(
-        name="evaluate_architecture", description="Run Hostile Architect review (Production Level)"
+        name="evaluate_architecture", description="Run Hostile Architect review (Architecture Audit). 適合: 'Evaluate architecture', 'System design review', 'Find bottlenecks'."
     )
     def evaluate_architecture(
         target: str = Field(default="src/core", description="Code path to evaluate"),
@@ -189,10 +189,10 @@ Steps:
     # --- Vibe Coder Prompts (Optimized for AI Clients) ---
 
     @mcp.prompt(
-        name="vibe_start", description="一鍵啟動完整開發流程：需求釐清 → 規劃 → 程式碼生成 → 驗證"
+        name="vibe_start", description="一鍵啟動完整開發流程 (One-click Start) - 建立新專案、新功能、Full Workflow. 適合: 'Build new app', 'Design system', 'Start project'."
     )
     def vibe_start(
-        idea: str = Field(default="Build a REST API", description="你想要建立什麼？用自然語言描述"),
+        idea: str = Field(default="Build a REST API", description="你想要建立什麼？(e.g., 'CRM System', 'Blog API', 'Auth Service')"),
     ) -> str:
         """One-click full development workflow for Vibe Coders."""
         return f"""🚀 **Vibe Coding 模式啟動** (Architect-First Workflow)
@@ -231,9 +231,9 @@ Steps:
 - 潛在改進建議
 """
 
-    @mcp.prompt(name="quick_fix", description="自動修復所有程式碼問題：Lint、格式、測試錯誤")
+    @mcp.prompt(name="quick_fix", description="一鍵修復 (Quick Fix) - 自動解決 Lint 錯誤、格式問題、簡單 Bug. 適合: 'Fix lint errors', 'Auto correct', 'Clean up code'.")
     def quick_fix(
-        target: str = Field(default=".", description="要修復的目標路徑"),
+        target: str = Field(default=".", description="要修復的目標路徑 (Target path to fix)"),
     ) -> str:
         """Auto-fix all code issues in one click."""
         return f"""🔧 **快速修復模式**
@@ -487,7 +487,7 @@ Run test suite without blocking:
 
     @mcp.prompt(
         name="smart_commit",
-        description="Smart commit with verification, auto-message generation, and optional push",
+        description="智能提交 (Smart Commit) - 自動生成語義化 Commit Message 並提交. 適合: 'Save changes', 'Git commit', 'Push code'.",
     )
     def smart_commit(
         message: str = Field(default="", description="Commit message (optional)"),
