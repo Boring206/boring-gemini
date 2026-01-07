@@ -1,5 +1,5 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/Version-10.17.3-green.svg)](https://github.com/Boring206/boring-gemini)
+[![Version](https://img.shields.io/badge/Version-10.17.5-green.svg)](https://github.com/Boring206/boring-gemini)
 [![Evaluation](https://img.shields.io/badge/Smithery-58%2F58-brightgreen.svg)](https://smithery.ai/server/boring/boring)
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 
@@ -393,6 +393,17 @@ boring hooks uninstall  # 移除
 | quick-check | 每次 commit | QUICK (多語言) |
 
 ---
+
+## 🆕 V10.17.5 新功能 - 受保護的檔案工具 🛡️
+
+### 安全檔案操作
+我們引入了 `boring_write_file` 和 `boring_read_file`，以在 Shadow Mode 中提供強大的安全保證。
+
+> [!IMPORTANT]
+> **安全警告**：標準 MCP 工具如 `write_file`（由某些客戶端提供）**不會**被 Shadow Mode 攔截。為了確保安全且受稽核的檔案操作，請務必使用 `boring_write_file`。
+
+- **`boring_write_file`**：在嚴格路徑驗證和 Shadow Mode 批准下寫入內容（在 STRICT 模式下）。
+- **`boring_read_file`**：在專案範圍內安全讀取內容。
 
 ## 🆕 V10.16.3 新功能 (安全性與穩定性)
 
