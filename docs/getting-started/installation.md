@@ -31,6 +31,16 @@ pip install "boring-aicoding[mcp]"
 
 **Best for**: Single projects, CI/CD, offline environments.
 
+### Option 3: Manual Clone (Fallback)
+
+If `pip install` fails or you want the latest source:
+
+```bash
+git clone https://github.com/Boring206/boring-gemini.git
+cd boring-gemini
+pip install -e .
+```
+
 ---
 
 ## ⚙️ MCP Configuration

@@ -49,6 +49,16 @@ pip install "boring-aicoding[mcp]"     # MCP server + RAG
 pip install "boring-aicoding[vector]"  # Pure RAG/Vector search
 ```
 
+### Option 3: Clone from GitHub (Fallback)
+
+> **Best for: Developers or if pip install fails**
+
+```bash
+git clone https://github.com/Boring206/boring-gemini.git
+cd boring-gemini
+pip install -e .
+```
+
 ---
 
 ## ⚙️ MCP Configuration
