@@ -99,8 +99,12 @@ if MCP_AVAILABLE and mcp is not None:
         try:
             content = task_file.read_text(encoding="utf-8")
             # Simple markdown task list parser
-            completed_tasks = len(re.findall(r"^\s*-\s*\[x\]", content, re.MULTILINE | re.IGNORECASE))
-            pending_tasks = len(re.findall(r"^\s*-\s*\[\s\]", content, re.MULTILINE | re.IGNORECASE))
+            completed_tasks = len(
+                re.findall(r"^\s*-\s*\[x\]", content, re.MULTILINE | re.IGNORECASE)
+            )
+            pending_tasks = len(
+                re.findall(r"^\s*-\s*\[\s\]", content, re.MULTILINE | re.IGNORECASE)
+            )
 
             return json.dumps(
                 {
@@ -114,4 +118,3 @@ if MCP_AVAILABLE and mcp is not None:
             )
         except Exception as e:
             return json.dumps({"status": "error", "message": str(e)})
-
