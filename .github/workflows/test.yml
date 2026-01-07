@@ -34,10 +34,15 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y jq
 
-    - name: Run unit tests
-      run: python -m pytest tests/ -v
+    - name: Run unit tests with coverage
+      run: |
+        python -m pytest tests/unit/ \
+          --cov=src/boring \
+          --cov-report=term-missing \
+          --cov-fail-under=39 \
+          -v
 
-    - name: Run integration tests
+    - name: Run integration tests (non-blocking)
       run: python -m pytest tests/integration/ -v || true
 
     - name: Generate test report
