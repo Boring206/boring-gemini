@@ -52,7 +52,8 @@ vector = [
     "chromadb>=0.4.0",
     "sentence-transformers>=2.2.0",
 ]
-mcp = [
+# MCP server without heavy vector search (for Smithery deployment)
+mcp-lite = [
     "fastmcp>=2.0.0",
     "mcp>=1.15.0",
     "smithery>=0.4.2",
@@ -60,6 +61,10 @@ mcp = [
     "starlette>=0.37.0",
     "bandit>=1.7.0",
     "pip-audit>=2.7.0",
+]
+# MCP server with full RAG capabilities (local use)
+mcp = [
+    "boring-aicoding[mcp-lite]",
     "chromadb>=0.4.0",
     "sentence-transformers>=2.2.0",
     "win10toast>=0.9; platform_system=='Windows'",

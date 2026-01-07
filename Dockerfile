@@ -21,8 +21,9 @@ COPY pyproject.toml README.md ./
 # Copy source code
 COPY src src
 
-# Install the project with MCP dependencies (Core + MCP)
-RUN pip install --no-cache-dir ".[mcp]"
+# Install the project with lightweight MCP dependencies (without heavy torch/chromadb)
+# For full RAG support, use ".[mcp]" instead (requires ~4GB more disk space)
+RUN pip install --no-cache-dir ".[mcp-lite]"
 
 # Health check endpoint (use port 8000, Smithery sets PORT env at runtime)
 HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
