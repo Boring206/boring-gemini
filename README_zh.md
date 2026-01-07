@@ -228,6 +228,15 @@ Boring V10.16 採用 **動態發現架構**，解決了工具過多導致的 Con
 | **Plugins** | `boring_run_plugin` | 外部插件執行 |
 | **Evaluation** | `boring_evaluate` | LLM-as-Judge 程式碼評分 |
 
+### 🧠 MCP 智能增強 (V10.18+)
+
+| 功能 | 描述 |
+|------|------|
+| **自動模式識別** | `AutoLearner` 自動從 AI 回應中提取 錯誤→解決方案 模式 |
+| **RAG 自動更新** | `RAGWatcher` 檢測檔案變更並觸發增量重新索引 |
+| **跨專案知識共享** | `GlobalKnowledgeStore` 透過 `~/.boring_brain/` 共享學習到的模式 |
+| **智能建議** | `boring_suggest_next` 現在包含 Git 變更、任務進度及學習模式分析 |
+
 ### 🚀 快速啟動 Prompts
 
 專為 Claude Desktop / Gemini CLI 用戶設計的一鍵式工作流程：
