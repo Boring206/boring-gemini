@@ -100,7 +100,10 @@ class TransactionManager:
         # Check if we're in a git repo
         success, _ = self._run_git(["rev-parse", "--git-dir"])
         if not success:
-            return {"status": "error", "message": "Not a Git repository"}
+            return {
+                "status": "error",
+                "message": "Not a Git repository. Please initialize with: git init",
+            }
 
         # Get current state
         commit_hash = self._get_current_commit()

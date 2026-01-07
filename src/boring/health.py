@@ -78,7 +78,7 @@ def check_api_key() -> HealthCheckResult:
             name="API Key",
             status=HealthStatus.FAIL,
             message="GOOGLE_API_KEY not set",
-            suggestion="Set environment variable: export GOOGLE_API_KEY='your-key'",
+            suggestion="Set environment variable: export GOOGLE_API_KEY='<your-api-key>'",
         )
 
     # Basic format validation (Google API keys start with AIza, allow MOCK_ for tests)

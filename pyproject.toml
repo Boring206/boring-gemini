@@ -60,6 +60,8 @@ mcp = [
     "starlette>=0.37.0",
     "bandit>=1.7.0",
     "pip-audit>=2.7.0",
+    "chromadb>=0.4.0",
+    "sentence-transformers>=2.2.0",
     "win10toast>=0.9; platform_system=='Windows'",
 ]
 all = [
