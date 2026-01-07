@@ -6,7 +6,6 @@ Comprehensive unit tests for boring.quality_tracker module.
 """
 
 import json
-from pathlib import Path
 from unittest.mock import patch
 
 import pytest

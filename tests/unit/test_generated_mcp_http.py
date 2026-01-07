@@ -8,6 +8,8 @@ Comprehensive unit tests for boring.mcp.http module.
 import os
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from boring.mcp.http import MCP_CONFIG_SCHEMA, MCP_SERVER_CARD, create_app, main
 
 pytest.importorskip("starlette")
