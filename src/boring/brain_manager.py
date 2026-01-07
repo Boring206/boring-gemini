@@ -155,6 +155,64 @@ class BrainManager:
         except Exception as e:
             return {"status": "ERROR", "error": str(e)}
 
+    def learn_pattern(
+        self,
+        pattern_type: str,
+        description: str,
+        context: str,
+        solution: str,
+    ) -> dict[str, Any]:
+        """
+        Learn a pattern directly from AI observation.
+
+        This allows AI to explicitly record patterns it discovers,
+        without needing to go through the memory storage.
+
+        Args:
+            pattern_type: Category of pattern (error_solution, code_style, workflow_tip, etc.)
+            description: Short description of what was learned
+            context: When this pattern applies (error message, scenario, etc.)
+            solution: The solution or recommendation
+
+        Returns:
+            Result with pattern_id and status
+        """
+        import hashlib
+
+        # Generate unique pattern ID from content
+        content_hash = hashlib.md5(f"{pattern_type}:{context}:{solution}".encode()).hexdigest()[:8]
+        pattern_id = f"{pattern_type.upper()}_{content_hash}"
+
+        patterns = self._load_patterns()
+
+        # Check if similar pattern exists (by ID)
+        existing = [p for p in patterns if p.get("pattern_id") == pattern_id]
+        if existing:
+            # Update existing pattern
+            existing[0]["success_count"] = existing[0].get("success_count", 0) + 1
+            existing[0]["last_used"] = datetime.now().isoformat()
+            existing[0]["solution"] = solution  # Update solution if improved
+            self._save_patterns(patterns)
+            log_status(self.log_dir, "INFO", f"Updated pattern: {pattern_id}")
+            return {"status": "UPDATED", "pattern_id": pattern_id}
+
+        # Create new pattern
+        new_pattern = LearnedPattern(
+            pattern_id=pattern_id,
+            pattern_type=pattern_type,
+            description=description,
+            context=context,
+            solution=solution,
+            success_count=1,
+            created_at=datetime.now().isoformat(),
+            last_used=datetime.now().isoformat(),
+        )
+        patterns.append(asdict(new_pattern))
+        self._save_patterns(patterns)
+
+        log_status(self.log_dir, "INFO", f"Learned new pattern: {pattern_id}")
+        return {"status": "CREATED", "pattern_id": pattern_id, "total_patterns": len(patterns)}
+
     def get_relevant_patterns(self, context: str, limit: int = 5) -> list[dict]:
         """
         Get patterns relevant to given context.

@@ -1,5 +1,26 @@
 # Changelog
 
+## [10.17.7] - 2026-01-07 - Smoothness Enhancements 🚀
+
+### Added
+- **Shadow Mode Trust Rules**: New `boring_shadow_trust`, `boring_shadow_trust_list`, `boring_shadow_trust_remove` tools for auto-approving trusted operations.
+  - Auto-approve specific tools to reduce approval prompts.
+  - Path pattern matching and severity thresholds.
+  - Persisted in `.boring_brain/trust_rules.json`.
+- **Context Learning**: New `boring_learn_pattern` tool for AI to record discovered patterns directly.
+  - Patterns stored in `.boring_brain/learned_patterns/patterns.json`.
+  - `BrainManager.learn_pattern()` method for programmatic learning.
+- **Web Monitor**: New `web_monitor.py` module for browser-based monitoring dashboard.
+  - FastAPI-powered with real-time stats, logs, and circuit breaker status.
+  - `run_web_monitor()` function to start the dashboard.
+
+### Changed
+- **`shadow_mode.py`**: Now checks trust rules before blocking operations.
+- **`brain_tools.py`**: Added `boring_learn_pattern` to MCP tools.
+- **`v10_tools.py`**: Updated tool count for new shadow tools.
+
+---
+
 ## [10.17.6] - 2026-01-07 - Built-in Release Workflow 📝
 
 ### Added

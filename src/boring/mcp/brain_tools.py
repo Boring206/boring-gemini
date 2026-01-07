@@ -121,8 +121,66 @@ def register_brain_tools(mcp, audited, helpers):
         brain = BrainManager(project_root, settings.LOG_DIR)
         return brain.get_brain_summary()
 
+    @mcp.tool(
+        description="Learn a specific pattern directly (for AI to record discovered patterns)",
+        annotations={"readOnlyHint": False, "openWorldHint": False, "idempotentHint": True},
+    )
+    @audited
+    def boring_learn_pattern(
+        pattern_type: Annotated[
+            str,
+            Field(
+                description="Category of pattern: 'error_solution', 'code_style', 'workflow_tip', 'performance', 'security'"
+            ),
+        ],
+        description: Annotated[
+            str,
+            Field(description="Short description of what was learned"),
+        ],
+        context: Annotated[
+            str,
+            Field(description="When this pattern applies (error message, scenario, etc.)"),
+        ],
+        solution: Annotated[
+            str,
+            Field(description="The solution or recommendation"),
+        ],
+        project_path: Annotated[
+            str,
+            Field(description="Optional explicit path to project root"),
+        ] = None,
+    ) -> dict:
+        """
+        Learn a pattern directly from AI observation.
+
+        This allows AI to explicitly record patterns it discovers.
+        Patterns are persisted in .boring_brain/learned_patterns/patterns.json.
+
+        Use cases:
+        - Record error solutions for future reference
+        - Save code style preferences
+        - Document workflow optimizations
+        """
+        from ..brain_manager import BrainManager
+        from ..config import settings
+
+        project_root, error = _get_project_root_or_error(project_path)
+        if error:
+            return error
+
+        _configure_runtime_for_project(project_root)
+
+        brain = BrainManager(project_root, settings.LOG_DIR)
+        return brain.learn_pattern(
+            pattern_type=pattern_type,
+            description=description,
+            context=context,
+            solution=solution,
+        )
+
     return {
         "boring_learn": boring_learn,
         "boring_create_rubrics": boring_create_rubrics,
         "boring_brain_summary": boring_brain_summary,
+        "boring_learn_pattern": boring_learn_pattern,
     }
