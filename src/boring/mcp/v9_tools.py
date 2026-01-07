@@ -507,7 +507,6 @@ Requirements:
         except Exception:
             pass
 
-
         return {
             "status": "SUCCESS",
             "suggestions": base_suggestions,
