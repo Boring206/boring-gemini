@@ -128,7 +128,9 @@ class TestCheckApiKey:
         """Test check_api_key with API key present."""
         import os
 
-        with patch.dict(os.environ, {"GOOGLE_API_KEY": "MOCK_AIzaSyTestKey12345678901234567890123456"}):
+        with patch.dict(
+            os.environ, {"GOOGLE_API_KEY": "MOCK_AIzaSyTestKey12345678901234567890123456"}
+        ):
             result = check_api_key()
             assert result.status == HealthStatus.PASS
             assert "API key" in result.message  # Message might be "API key configured"
