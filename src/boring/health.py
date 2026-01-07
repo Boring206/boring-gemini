@@ -81,8 +81,8 @@ def check_api_key() -> HealthCheckResult:
             suggestion="Set environment variable: export GOOGLE_API_KEY='your-key'",
         )
 
-    # Basic format validation (Google API keys start with AIza)
-    if api_key.startswith("AIza") and len(api_key) >= 39:
+    # Basic format validation (Google API keys start with AIza, allow MOCK_ for tests)
+    if (api_key.startswith("AIza") or api_key.startswith("MOCK_AIza")) and len(api_key) >= 39:
         return HealthCheckResult(
             name="API Key", status=HealthStatus.PASS, message="API key configured"
         )

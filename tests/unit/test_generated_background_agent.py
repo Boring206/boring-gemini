@@ -6,7 +6,6 @@ Tests the BackgroundTaskRunner class and convenience functions for background ta
 
 import time
 from datetime import datetime
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -26,7 +25,13 @@ def reset_runner_singleton():
     """Reset BackgroundTaskRunner singleton before each test."""
     # Reset singleton state
     BackgroundTaskRunner._instance = None
-    BackgroundTaskRunner._lock = __import__('threading').Lock()
+    BackgroundTaskRunner._lock = __import__("threading").Lock()
+
+    # Reset global runner in module
+    import boring.background_agent
+
+    boring.background_agent._runner = None
+
     yield
     # Cleanup after test - shutdown executor if it exists
     if BackgroundTaskRunner._instance is not None:
@@ -36,6 +41,8 @@ def reset_runner_singleton():
             pass
         BackgroundTaskRunner._instance = None
 
+    # Reset global runner again
+    boring.background_agent._runner = None
 
 
 class TestBackgroundTask:
@@ -98,7 +105,7 @@ class TestBackgroundTaskRunner:
         def test_func(x, y):
             return x + y
 
-        task_id = runner.submit(test_func, name="Add", args=(1, 2))
+        task_id = runner.submit(test_func, 1, 2, name="Add")
 
         # Wait for completion
         time.sleep(0.1)
@@ -207,7 +214,7 @@ class TestBackgroundTaskRunner:
             return "done"
 
         task_id1 = runner.submit(quick_func, name="Quick")
-        task_id2 = runner.submit(slow_func, name="Slow")
+        runner.submit(slow_func, name="Slow")
 
         time.sleep(0.1)
 
@@ -269,7 +276,7 @@ class TestBackgroundTaskRunner:
 
         task_ids = []
         for i in range(5):
-            task_id = runner.submit(task_func, name=f"Task {i}", args=(i,))
+            task_id = runner.submit(task_func, i, name=f"Task {i}")
             task_ids.append(task_id)
 
         # Wait for all to complete
@@ -397,7 +404,7 @@ class TestListBackgroundTasks:
         def test_func():
             return "result"
 
-        task_id = runner.submit(test_func, name="Test")
+        runner.submit(test_func, name="Test")
         time.sleep(0.1)
 
         result = list_background_tasks()
@@ -411,9 +418,8 @@ class TestListBackgroundTasks:
         def test_func():
             return "result"
 
-        task_id = runner.submit(test_func, name="Test")
+        runner.submit(test_func, name="Test")
         time.sleep(0.1)
 
         result = list_background_tasks(status="completed")
         assert "tasks" in result
-

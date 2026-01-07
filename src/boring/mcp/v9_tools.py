@@ -10,6 +10,13 @@ from typing import Annotated
 
 from pydantic import Field
 
+from ..pattern_mining import get_pattern_miner
+from ..plugins import PluginLoader
+from ..streaming import get_streaming_manager
+from ..verification import CodeVerifier
+from ..workspace import get_workspace_manager
+from .utils import detect_project_root, get_project_root_or_error  # noqa: F401
+
 
 def register_v9_tools(mcp, audited, helpers):
     """
@@ -47,8 +54,6 @@ def register_v9_tools(mcp, audited, helpers):
         1. User plugins: ~/.boring/plugins/ or {project}/.boring_plugins/
         2. (Optional) Built-in tools: Core Boring capability tools
         """
-        from ..plugins import PluginLoader
-
         project_root = _detect_project_root(project_path)
         loader = PluginLoader(project_root)
         loader.load_all()
@@ -114,8 +119,6 @@ def register_v9_tools(mcp, audited, helpers):
         """
         Execute a registered plugin by name.
         """
-        from ..plugins import PluginLoader
-
         project_root = _detect_project_root(project_path)
         loader = PluginLoader(project_root)
         loader.load_all()
@@ -139,8 +142,6 @@ def register_v9_tools(mcp, audited, helpers):
 
         Enables hot-reloading of plugin code without restarting.
         """
-        from ..plugins import PluginLoader
-
         project_root = _detect_project_root(project_path)
         loader = PluginLoader(project_root)
         loader.load_all()
@@ -170,8 +171,6 @@ def register_v9_tools(mcp, audited, helpers):
         """
         Add a project to the workspace.
         """
-        from ..workspace import get_workspace_manager
-
         manager = get_workspace_manager()
         return manager.add_project(name, path, description, tags)
 
@@ -188,8 +187,6 @@ def register_v9_tools(mcp, audited, helpers):
 
         Note: This only removes from tracking, does not delete files.
         """
-        from ..workspace import get_workspace_manager
-
         manager = get_workspace_manager()
         return manager.remove_project(name)
 
@@ -204,8 +201,6 @@ def register_v9_tools(mcp, audited, helpers):
         """
         List all projects in the workspace.
         """
-        from ..workspace import get_workspace_manager
-
         manager = get_workspace_manager()
         projects = manager.list_projects(tag)
 
@@ -224,8 +219,6 @@ def register_v9_tools(mcp, audited, helpers):
 
         All subsequent operations will use this project.
         """
-        from ..workspace import get_workspace_manager
-
         manager = get_workspace_manager()
         return manager.switch_project(name)
 
@@ -269,8 +262,6 @@ def register_v9_tools(mcp, audited, helpers):
             return error
 
         # Run actual verification
-        from ..verification import CodeVerifier
-
         try:
             verifier = CodeVerifier(project_root)
             passed, message = verifier.verify_project(verification_level.upper())
@@ -349,8 +340,6 @@ Requirements:
         Returns:
             List of suggested actions with confidence scores
         """
-        from ..pattern_mining import get_pattern_miner
-
         project_root, error = _get_project_root_or_error(project_path)
         if error:
             return error
@@ -381,8 +370,6 @@ Requirements:
         Returns:
             Current progress status
         """
-        from ..streaming import get_streaming_manager
-
         manager = get_streaming_manager()
         reporter = manager.get_reporter(task_id)
 

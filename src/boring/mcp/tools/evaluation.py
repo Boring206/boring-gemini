@@ -5,6 +5,7 @@ from typing import Annotated
 from pydantic import Field
 
 from ...audit import audited
+from ...judge import LLMJudge, create_judge_provider
 from ..instance import MCP_AVAILABLE, mcp
 from ..utils import check_rate_limit, detect_project_root
 
@@ -59,7 +60,8 @@ def boring_evaluate(
         # CRITICAL: Contextually update project root
         settings.PROJECT_ROOT = project_root
 
-        from ...judge import LLMJudge, create_judge_provider
+        # CRITICAL: Contextually update project root
+        settings.PROJECT_ROOT = project_root
 
         # Auto-detect MCP mode: If running as MCP tool, default to interactive
         is_mcp_mode = os.environ.get("BORING_MCP_MODE", "0") == "1"

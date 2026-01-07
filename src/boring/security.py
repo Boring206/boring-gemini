@@ -162,14 +162,6 @@ def validate_file_path(
     except Exception as e:
         return PathValidationResult(False, f"Invalid path: {e}")
 
-    # Check extension
-    extensions = allowed_extensions or ALLOWED_EXTENSIONS
-    if full_path.suffix.lower() not in extensions:
-        return PathValidationResult(
-            False,
-            f"Extension '{full_path.suffix}' not allowed. Allowed: {', '.join(sorted(extensions)[:10])}...",
-        )
-
     # Check blocked directories
     path_parts = Path(path).parts
     for blocked in BLOCKED_DIRECTORIES:
@@ -181,6 +173,14 @@ def validate_file_path(
     if full_path.name in BLOCKED_FILENAMES:
         log_status(log_dir, "WARN", f"Blocked filename: {path}")
         return PathValidationResult(False, f"Cannot modify {full_path.name}")
+
+    # Check extension
+    extensions = allowed_extensions or ALLOWED_EXTENSIONS
+    if full_path.suffix.lower() not in extensions:
+        return PathValidationResult(
+            False,
+            f"Extension '{full_path.suffix}' not allowed. Allowed: {', '.join(sorted(extensions)[:10])}...",
+        )
 
     # Get normalized relative path (Windows-compatible)
     try:
@@ -531,7 +531,9 @@ class SecurityScanner:
                             file_path="pyproject.toml",
                             line_number=0,
                             description=f"{vuln.get('name')}: {vuln.get('vulns', [{}])[0].get('id', 'Unknown')}",
-                            recommendation=f"Upgrade to {vuln.get('fix_versions', ['N/A'])[0]}",
+                            recommendation=f"Upgrade to {vuln['fix_versions'][0]}"
+                            if vuln.get("fix_versions")
+                            else "Update dependency",
                         )
                         issues.append(issue)
                 except Exception:

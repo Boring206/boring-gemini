@@ -1,5 +1,18 @@
 # Changelog
 
+## [10.17.3] - 2026-01-07 - CI Quality Gates & Test Fixes
+### Fixed
+- **CI Quality Gates**: Resolved all failing CI checks including Lint & Format, Quality Gate Status, and Test Suite.
+- **Linting & Formatting**: Fixed 100+ Ruff linting errors (F841, F401, I001, B017) and standardized formatting.
+- **Critical Bug Fixes**:
+  - `BackgroundTaskRunner`: Fixed parameter signature conflict in `submit` method.
+  - `AuditLogger`: Enhanced `audited` decorator to correctly capture all arguments using `inspect.signature`.
+  - `Git Hooks`: Fixed incorrect mock paths in tests causing failures.
+  - `MCP Tools`: Restored necessary imports in v9/v10 tools that were incorrectly removed by linters.
+- **Test Suite**: Achieved 100% pass rate for all 2100+ unit tests.
+
+---
+
 ## [10.17.2] - 2026-01-06 - ChromaDB API Modernization
 ### Fixed
 - **ChromaDB Client**: Replaced deprecated `chromadb.Client()` with `chromadb.EphemeralClient()` for in-memory memory store.

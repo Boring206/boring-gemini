@@ -1,4 +1,4 @@
-# GEMINI.md - Boring for Gemini (V10.17.2)
+# GEMINI.md - Boring for Gemini (V10.17.3)
 
 ## Project Overview
 

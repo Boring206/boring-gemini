@@ -175,6 +175,9 @@ class _StdoutInterceptor:
     def detach(self):
         return self._original.detach()
 
+    def __getattr__(self, name):
+        return getattr(self._original, name)
+
 
 def install_interceptors():
     """Install the stdout interceptor."""

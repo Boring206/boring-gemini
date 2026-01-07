@@ -4,8 +4,6 @@ Unit tests for boring.debugger module.
 Tests the BoringDebugger class for runtime debugging and self-healing.
 """
 
-import traceback
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -95,6 +93,7 @@ class TestBoringDebugger:
         try:
             # Import and execute the test file to create a traceback
             import importlib.util
+
             spec = importlib.util.spec_from_file_location("test_code", test_file)
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
@@ -162,9 +161,11 @@ class TestBoringDebugger:
         mock_response.success = True
 
         with patch.object(debugger, "_find_relevant_frame", return_value=mock_frame):
-            with patch.object(debugger.adapter, "generate", return_value=("SEARCH_REPLACE fix", True)):
+            with patch.object(
+                debugger.adapter, "generate", return_value=("SEARCH_REPLACE fix", True)
+            ):
                 with patch.object(debugger, "_apply_fix", return_value=True) as mock_apply:
-                    result = debugger._heal_crash(exc)
+                    debugger._heal_crash(exc)
 
                     # Should have called adapter
                     debugger.adapter.generate.assert_called_once()
@@ -177,7 +178,7 @@ class TestBoringDebugger:
         def test_func():
             return "success"
 
-        with patch("boring.debugger.log_status") as mock_log:
+        with patch("boring.debugger.log_status"):
             debugger.run_with_healing(test_func)
             # Should log when verbose is enabled
             # (exact call count may vary based on implementation)
@@ -204,4 +205,3 @@ class TestBoringDebugger:
                     # Should re-raise original exception if fix fails
                     with pytest.raises(ValueError):
                         debugger._heal_crash(exc)
-

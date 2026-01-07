@@ -10,6 +10,8 @@ status.json
 .circuit_breaker_state
 .circuit_breaker_history
 .response_analysis
+.boring_cache/
+
 
 # Boring Memory & Brain (local state, NOT for sharing)
 .boring_memory/

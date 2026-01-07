@@ -1084,5 +1084,25 @@
         "Fix the syntax error at line 1"
       ]
     }
+  },
+  "src\\file1.py": {
+    "hash": "96f43d529af3430cb6b0e2c02f6b38ef1a121e8a31d2d09a3ebb716f2f35c9de",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: file1.py",
+      "details": [],
+      "suggestions": []
+    }
+  },
+  "src\\file2.py": {
+    "hash": "de2abade832c8e350a1bdc98cfcdb1e202ac4749c5fc51a4a970d41736b6df5c",
+    "result": {
+      "passed": true,
+      "check_type": "file_comparison",
+      "message": "All checks passed: file2.py",
+      "details": [],
+      "suggestions": []
+    }
   }
 }

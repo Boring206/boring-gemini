@@ -65,8 +65,8 @@ class BackgroundTaskRunner:
     def submit(
         self,
         func: Callable,
-        name: str = "Background task",
         *args,
+        name: str = "Background task",
         **kwargs,
     ) -> str:
         """

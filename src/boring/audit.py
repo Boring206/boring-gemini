@@ -83,6 +83,7 @@ class AuditLogger:
             "result_status": result.get("status", "UNKNOWN")
             if isinstance(result, dict)
             else "UNKNOWN",
+            "result": result,
             "duration_ms": duration_ms,
             "project_root": project_root,
         }
@@ -135,10 +136,26 @@ def audited(func: Callable) -> Callable:
         def my_tool(arg1: str) -> dict:
             ...
     """
+    import inspect
+
+    sig = inspect.signature(func)
 
     @wraps(func)
     def wrapper(*args, **kwargs):
         start_time = time.time()
+
+        # Capture all arguments including defaults
+        try:
+            bound_args = sig.bind(*args, **kwargs)
+            bound_args.apply_defaults()
+            all_args = dict(bound_args.arguments)
+            # Remove 'self' or 'cls' if present
+            if "self" in all_args:
+                all_args.pop("self")
+            if "cls" in all_args:
+                all_args.pop("cls")
+        except Exception:
+            all_args = kwargs  # Fallback to just kwargs if binding fails
 
         try:
             result = func(*args, **kwargs)
@@ -146,7 +163,7 @@ def audited(func: Callable) -> Callable:
             duration_ms = int((time.time() - start_time) * 1000)
             AuditLogger.get_instance().log(
                 tool_name=func.__name__,
-                args=kwargs,
+                args=all_args,
                 result={"status": "EXCEPTION", "error": str(e)},
                 duration_ms=duration_ms,
             )
@@ -155,7 +172,7 @@ def audited(func: Callable) -> Callable:
         duration_ms = int((time.time() - start_time) * 1000)
         AuditLogger.get_instance().log(
             tool_name=func.__name__,
-            args=kwargs,
+            args=all_args,
             result=result
             if isinstance(result, dict)
             else {"status": "OK", "value": str(result)[:200]},
