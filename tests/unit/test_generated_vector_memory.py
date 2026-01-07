@@ -88,7 +88,8 @@ class TestVectorMemory:
 
     @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
     @patch("boring.vector_memory.chromadb")
-    def test_vector_memory_init_with_persist_dir(self, mock_chromadb, temp_persist_dir):
+    @patch("boring.vector_memory.ChromaSettings")
+    def test_vector_memory_init_with_persist_dir(self, mock_settings, mock_chromadb, temp_persist_dir):
         """Test VectorMemory initialization with persist directory."""
         mock_client = MagicMock()
         mock_collection = MagicMock()
@@ -102,7 +103,8 @@ class TestVectorMemory:
 
     @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
     @patch("boring.vector_memory.chromadb")
-    def test_vector_memory_init_in_memory(self, mock_chromadb):
+    @patch("boring.vector_memory.ChromaSettings")
+    def test_vector_memory_init_in_memory(self, mock_settings, mock_chromadb):
         """Test VectorMemory initialization in-memory mode."""
         mock_client = MagicMock()
         mock_collection = MagicMock()
@@ -125,7 +127,8 @@ class TestVectorMemory:
 
     @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
     @patch("boring.vector_memory.chromadb")
-    def test_vector_memory_add_experience(self, mock_chromadb, temp_persist_dir, sample_experience):
+    @patch("boring.vector_memory.ChromaSettings")
+    def test_vector_memory_add_experience(self, mock_settings, mock_chromadb, temp_persist_dir, sample_experience):
         """Test adding an experience."""
         mock_client = MagicMock()
         mock_collection = MagicMock()
@@ -167,7 +170,8 @@ class TestVectorMemory:
 
     @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
     @patch("boring.vector_memory.chromadb")
-    def test_vector_memory_retrieve_similar(self, mock_chromadb, temp_persist_dir):
+    @patch("boring.vector_memory.ChromaSettings")
+    def test_vector_memory_retrieve_similar(self, mock_settings, mock_chromadb, temp_persist_dir):
         """Test retrieving similar experiences."""
         mock_client = MagicMock()
         mock_collection = MagicMock()
@@ -189,7 +193,8 @@ class TestVectorMemory:
 
     @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
     @patch("boring.vector_memory.chromadb")
-    def test_vector_memory_retrieve_similar_empty(self, mock_chromadb, temp_persist_dir):
+    @patch("boring.vector_memory.ChromaSettings")
+    def test_vector_memory_retrieve_similar_empty(self, mock_settings, mock_chromadb, temp_persist_dir):
         """Test retrieve_similar with empty collection."""
         mock_client = MagicMock()
         mock_collection = MagicMock()
@@ -210,7 +215,8 @@ class TestVectorMemory:
 
     @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
     @patch("boring.vector_memory.chromadb")
-    def test_vector_memory_retrieve_similar_min_similarity(self, mock_chromadb, temp_persist_dir):
+    @patch("boring.vector_memory.ChromaSettings")
+    def test_vector_memory_retrieve_similar_min_similarity(self, mock_settings, mock_chromadb, temp_persist_dir):
         """Test retrieve_similar with min_similarity filter."""
         mock_client = MagicMock()
         mock_collection = MagicMock()
@@ -231,7 +237,8 @@ class TestVectorMemory:
 
     @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
     @patch("boring.vector_memory.chromadb")
-    def test_vector_memory_get_solution_for_error(self, mock_chromadb, temp_persist_dir):
+    @patch("boring.vector_memory.ChromaSettings")
+    def test_vector_memory_get_solution_for_error(self, mock_settings, mock_chromadb, temp_persist_dir):
         """Test get_solution_for_error."""
         mock_client = MagicMock()
         mock_collection = MagicMock()
@@ -250,7 +257,8 @@ class TestVectorMemory:
 
     @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
     @patch("boring.vector_memory.chromadb")
-    def test_vector_memory_get_solution_for_error_no_match(self, mock_chromadb, temp_persist_dir):
+    @patch("boring.vector_memory.ChromaSettings")
+    def test_vector_memory_get_solution_for_error_no_match(self, mock_settings, mock_chromadb, temp_persist_dir):
         """Test get_solution_for_error with no match."""
         mock_client = MagicMock()
         mock_collection = MagicMock()
@@ -269,7 +277,8 @@ class TestVectorMemory:
 
     @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
     @patch("boring.vector_memory.chromadb")
-    def test_vector_memory_generate_context_injection(self, mock_chromadb, temp_persist_dir):
+    @patch("boring.vector_memory.ChromaSettings")
+    def test_vector_memory_generate_context_injection(self, mock_settings, mock_chromadb, temp_persist_dir):
         """Test generate_context_injection."""
         mock_client = MagicMock()
         mock_collection = MagicMock()
@@ -297,7 +306,8 @@ class TestVectorMemory:
 
     @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
     @patch("boring.vector_memory.chromadb")
-    def test_vector_memory_clear(self, mock_chromadb, temp_persist_dir):
+    @patch("boring.vector_memory.ChromaSettings")
+    def test_vector_memory_clear(self, mock_settings, mock_chromadb, temp_persist_dir):
         """Test clearing vector memory."""
         mock_client = MagicMock()
         mock_collection = MagicMock()

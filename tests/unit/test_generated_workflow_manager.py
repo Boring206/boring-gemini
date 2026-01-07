@@ -141,12 +141,14 @@ class TestWorkflowManager:
             manager = WorkflowManager(temp_project)
             assert manager.project_root == temp_project
 
-    def test_workflow_manager_init_default_root(self):
+    def test_workflow_manager_init_default_root(self, tmp_path):
         """Test WorkflowManager with default project root."""
+        default_root = tmp_path / "default"
+        default_root.mkdir()
         with patch("boring.workflow_manager.settings") as mock_settings:
-            mock_settings.PROJECT_ROOT = Path("/default")
+            mock_settings.PROJECT_ROOT = default_root
             manager = WorkflowManager()
-            assert manager.project_root == Path("/default")
+            assert manager.project_root == default_root
 
     def test_workflow_manager_list_local_workflows(self, temp_project):
         """Test WorkflowManager.list_local_workflows method."""

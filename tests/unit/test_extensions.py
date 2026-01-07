@@ -55,9 +55,10 @@ class TestExtensionsManager:
             # 测试结果：应该使用默认值
             assert manager.project_root == Path("/default")
 
-    def test_当系统中有gemini命令时_应返回True(self, manager):
+    def test_当系统中有gemini命令时_应返回True(self, temp_project):
         """规格：shutil.which("gemini") 返回路径 → is_gemini_available() 应返回 True"""
         with patch("shutil.which", return_value="/usr/bin/gemini"):
+            manager = ExtensionsManager(temp_project)
             result = manager.is_gemini_available()
 
             # 测试结果：应该返回 True

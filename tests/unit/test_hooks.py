@@ -121,11 +121,11 @@ class TestHooksManager:
         assert backup_path.exists()
         assert backup_path.read_text() == original_content
 
+    @pytest.mark.skipif(os.name == "nt", reason="Windows does not use chmod")
     def test_当在Unix系统上安装hook时_应设置可执行权限(self, manager, git_repo):
         """规格：在 Unix 系统上 → install_hook() 应调用 chmod 设置可执行权限"""
-        import os
         from unittest.mock import MagicMock
-
+        
         with patch("os.stat") as mock_stat, patch("os.chmod") as mock_chmod:
             mock_stat.return_value = MagicMock(st_mode=0o644)
 

@@ -77,13 +77,15 @@ class TestQualityTracker:
             assert tracker.project_root == temp_project
             assert tracker.history_file.exists() or tracker.brain_dir.exists()
 
-    def test_quality_tracker_init_default_root(self):
+    def test_quality_tracker_init_default_root(self, tmp_path):
         """Test QualityTracker with default project root."""
+        default_root = tmp_path / "default"
+        default_root.mkdir()
         with patch("boring.quality_tracker.settings") as mock_settings:
-            mock_settings.PROJECT_ROOT = Path("/default")
+            mock_settings.PROJECT_ROOT = default_root
             mock_settings.BRAIN_DIR = ".boring_brain"
             tracker = QualityTracker()
-            assert tracker.project_root == Path("/default")
+            assert tracker.project_root == default_root
 
     def test_quality_tracker_record(self, temp_project):
         """Test recording a quality entry."""

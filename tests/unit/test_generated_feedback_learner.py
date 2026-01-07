@@ -85,13 +85,15 @@ class TestFeedbackLearner:
             learner = FeedbackLearner(temp_project)
             assert learner.project_root == temp_project
 
-    def test_feedback_learner_init_default_root(self):
+    def test_feedback_learner_init_default_root(self, tmp_path):
         """Test FeedbackLearner with default project root."""
+        default_root = tmp_path / "default"
+        default_root.mkdir()
         with patch("boring.feedback_learner.settings") as mock_settings:
-            mock_settings.PROJECT_ROOT = Path("/default")
+            mock_settings.PROJECT_ROOT = default_root
             mock_settings.BRAIN_DIR = Path(".boring")
             learner = FeedbackLearner()
-            assert learner.project_root == Path("/default")
+            assert learner.project_root == default_root
 
     def test_feedback_learner_record_review(self, temp_project):
         """Test FeedbackLearner.record_review method."""
