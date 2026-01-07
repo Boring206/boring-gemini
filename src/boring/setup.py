@@ -89,6 +89,12 @@ def setup_new_project(
     if (templates_dir / "specs").exists():
         shutil.copytree(templates_dir / "specs", project_path / "specs", dirs_exist_ok=True)
 
+    # Copy workflow templates (Agentic Workflows)
+    if (templates_dir / "workflows").exists():
+        workflows_dest = project_path / ".agent" / "workflows"
+        workflows_dest.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(templates_dir / "workflows", workflows_dest, dirs_exist_ok=True)
+
     # Initialize git
     subprocess.run(["git", "init"], stdin=subprocess.DEVNULL, check=True, capture_output=True)
     (project_path / "README.md").write_text(f"# {project_name}\n")

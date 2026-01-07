@@ -57,6 +57,7 @@ class WorkflowEvolver:
         "speckit-clarify",
         "speckit-analyze",
         "speckit-checklist",
+        "release-prep",
     ]
 
     def __init__(self, project_root: Path, log_dir: Optional[Path] = None):
