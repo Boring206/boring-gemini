@@ -33,6 +33,8 @@
 npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ```
 
+> ⚠️ **Gemini 客戶端使用者注意**：如果您透過 Smithery 安裝失敗，請使用 **選項 2（本地 pip）**。Smithery 在 Gemini 客戶端上的整合可能不穩定。
+
 ### 選項 2：本地 pip 安裝
 
 ```bash

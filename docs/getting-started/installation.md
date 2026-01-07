@@ -12,6 +12,8 @@
 npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ```
 
+> ⚠️ **Gemini Client Users**: If you encounter issues installing via Smithery, please use **Option 2 (pip)**. Direct Smithery integration on Gemini Client can be intermittent.
+
 **Best for**: Multi-project workflows, cloud development, automatic updates.
 
 ### Option 2: pip
