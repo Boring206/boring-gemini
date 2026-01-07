@@ -13,7 +13,7 @@ This module contains the most frequently used tools:
 """
 
 from dataclasses import dataclass
-from typing import Annotated, Optional
+from typing import Annotated
 
 from pydantic import Field
 
