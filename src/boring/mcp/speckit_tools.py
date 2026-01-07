@@ -30,15 +30,21 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
 
     @mcp.tool(
         description="Create technical implementation plan from requirements",
-        annotations={"readOnlyHint": True, "openWorldHint": False},
+        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
     def speckit_plan(
         context: Annotated[
-            str, Field(description="Additional context or requirements for plan generation")
+            str,
+            Field(
+                description="Additional context or requirements for plan generation. Can include user stories, technical constraints, or specific implementation goals. If not provided, uses existing project specification files."
+            ),
         ] = None,
         project_path: Annotated[
-            str, Field(description="Optional explicit path to project root")
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory."
+            ),
         ] = None,
     ) -> dict:
         """
@@ -51,13 +57,21 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
 
     @mcp.tool(
         description="Break implementation plan into actionable tasks",
-        annotations={"readOnlyHint": True, "openWorldHint": False},
+        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
     def speckit_tasks(
-        context: Annotated[str, Field(description="Additional context for task generation")] = None,
+        context: Annotated[
+            str,
+            Field(
+                description="Additional context for task generation. Can specify task granularity, priorities, or dependencies. If not provided, uses existing implementation plan."
+            ),
+        ] = None,
         project_path: Annotated[
-            str, Field(description="Optional explicit path to project root")
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory."
+            ),
         ] = None,
     ) -> dict:
         """
@@ -70,13 +84,21 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
 
     @mcp.tool(
         description="Cross-artifact consistency & coverage analysis",
-        annotations={"readOnlyHint": True, "openWorldHint": False},
+        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
     def speckit_analyze(
-        context: Annotated[str, Field(description="Additional context for analysis")] = None,
+        context: Annotated[
+            str,
+            Field(
+                description="Additional context for analysis. Can specify focus areas (specs, code, tests) or specific artifacts to compare. If not provided, analyzes all project artifacts."
+            ),
+        ] = None,
         project_path: Annotated[
-            str, Field(description="Optional explicit path to project root")
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory."
+            ),
         ] = None,
     ) -> dict:
         """
@@ -89,13 +111,21 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
 
     @mcp.tool(
         description="Clarify underspecified areas in the project specification (formerly /quizme)",
-        annotations={"readOnlyHint": True, "openWorldHint": False},
+        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
     def speckit_clarify(
-        context: Annotated[str, Field(description="Additional context for clarification")] = None,
+        context: Annotated[
+            str,
+            Field(
+                description="Additional context for clarification. Can include specific areas of uncertainty or questions to focus on. If not provided, analyzes entire specification for ambiguities."
+            ),
+        ] = None,
         project_path: Annotated[
-            str, Field(description="Optional explicit path to project root")
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory."
+            ),
         ] = None,
     ) -> dict:
         """
@@ -108,15 +138,21 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
 
     @mcp.tool(
         description="Create project constitution and guiding principles",
-        annotations={"readOnlyHint": True, "openWorldHint": False},
+        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
     def speckit_constitution(
         context: Annotated[
-            str, Field(description="Additional context for constitution creation")
+            str,
+            Field(
+                description="Additional context for constitution creation. Can include architectural preferences, coding standards, or organizational constraints. If not provided, analyzes existing project patterns."
+            ),
         ] = None,
         project_path: Annotated[
-            str, Field(description="Optional explicit path to project root")
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory."
+            ),
         ] = None,
     ) -> dict:
         """
@@ -129,15 +165,21 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
 
     @mcp.tool(
         description="Generate custom quality checklists to validate requirements",
-        annotations={"readOnlyHint": True, "openWorldHint": False},
+        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
     def speckit_checklist(
         context: Annotated[
-            str, Field(description="Additional context for checklist generation")
+            str,
+            Field(
+                description="Additional context for checklist generation. Can specify quality dimensions (security, performance, maintainability) or specific requirements to validate. If not provided, generates comprehensive default checklist."
+            ),
         ] = None,
         project_path: Annotated[
-            str, Field(description="Optional explicit path to project root")
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory."
+            ),
         ] = None,
     ) -> dict:
         """

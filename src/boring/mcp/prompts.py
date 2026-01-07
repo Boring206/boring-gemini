@@ -15,7 +15,8 @@ def register_prompts(mcp):
     @mcp.prompt(name="plan_feature", description="Generate a plan for implementing a new feature")
     def plan_feature(
         feature: str = Field(
-            default="New Feature", description="Description of the feature to implement"
+            default="New Feature",
+            description="Detailed description of the feature to implement. Include functional requirements, user stories, or technical specifications. Example: 'Add user authentication with JWT tokens and refresh token support'.",
         ),
     ) -> str:
         """Generate a feature implementation plan."""
@@ -31,7 +32,10 @@ Include:
 
     @mcp.prompt(name="review_code", description="Request a code review for specific files")
     def review_code(
-        file_path: str = Field(default="src/", description="Path to the file to review"),
+        file_path: str = Field(
+            default="src/",
+            description="Path to the file or directory to review. Can be a specific file (e.g., 'src/auth/login.py') or a directory (e.g., 'src/api/'). Relative to project root.",
+        ),
     ) -> str:
         """Generate a code review request."""
         return f"""You are the Chief Architect reviewing code in `{file_path}`.
@@ -51,7 +55,10 @@ Be constructive but firm. Save the developer from future production incidents.""
 
     @mcp.prompt(name="debug_error", description="Help debug an error message")
     def debug_error(
-        error_message: str = Field(default="Error: ...", description="The error message to debug"),
+        error_message: str = Field(
+            default="Error: ...",
+            description="The complete error message, stack trace, or exception details to debug. Include context like when the error occurs, input data, or environment details if available. Example: 'TypeError: unsupported operand type(s) for +: int and str at line 42'.",
+        ),
     ) -> str:
         """Generate a debugging request."""
         return f"""You are a Senior Architect helping debug an issue.

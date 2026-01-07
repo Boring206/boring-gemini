@@ -104,15 +104,26 @@ def register_shadow_tools(mcp, helpers: dict):
 
     @mcp.tool(
         description="Approve a pending Shadow Mode operation",
-        annotations={"readOnlyHint": False, "idempotentHint": True},
+        annotations={"readOnlyHint": False, "idempotentHint": True, "openWorldHint": False},
     )
     def boring_shadow_approve(
         operation_id: Annotated[
-            str, Field(description="ID of the operation to approve (from shadow_status)")
+            str,
+            Field(
+                description="Unique identifier of the operation to approve. Get this from boring_shadow_status output. Format: UUID string. Example: '550e8400-e29b-41d4-a716-446655440000'."
+            ),
         ],
-        note: Annotated[str, Field(description="Optional note explaining the approval")] = None,
+        note: Annotated[
+            str,
+            Field(
+                description="Optional human-readable note explaining why this operation is approved. Stored in operation history for audit trail. Example: 'Reviewed changes, safe to proceed'."
+            ),
+        ] = None,
         project_path: Annotated[
-            str, Field(description="Optional explicit path to project root")
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory. Example: '.' or '/path/to/project'."
+            ),
         ] = None,
     ) -> str:
         """
@@ -139,13 +150,26 @@ def register_shadow_tools(mcp, helpers: dict):
 
     @mcp.tool(
         description="Reject a pending Shadow Mode operation",
-        annotations={"readOnlyHint": False, "idempotentHint": True},
+        annotations={"readOnlyHint": False, "idempotentHint": True, "openWorldHint": False},
     )
     def boring_shadow_reject(
-        operation_id: Annotated[str, Field(description="ID of the operation to reject")],
-        note: Annotated[str, Field(description="Optional note explaining the rejection")] = None,
+        operation_id: Annotated[
+            str,
+            Field(
+                description="Unique identifier of the operation to reject. Get this from boring_shadow_status output. Format: UUID string. Example: '550e8400-e29b-41d4-a716-446655440000'."
+            ),
+        ],
+        note: Annotated[
+            str,
+            Field(
+                description="Optional human-readable note explaining why this operation is rejected. Stored in operation history for audit trail. Example: 'Operation too risky, requires manual review'."
+            ),
+        ] = None,
         project_path: Annotated[
-            str, Field(description="Optional explicit path to project root")
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory. Example: '.' or '/path/to/project'."
+            ),
         ] = None,
     ) -> str:
         """
@@ -172,10 +196,15 @@ def register_shadow_tools(mcp, helpers: dict):
 
     @mcp.tool(
         description="Change Shadow Mode protection level",
-        annotations={"readOnlyHint": False, "idempotentHint": True},
+        annotations={"readOnlyHint": False, "idempotentHint": True, "openWorldHint": False},
     )
     def boring_shadow_mode(
-        mode: Annotated[str, Field(description="New mode (DISABLED, ENABLED, or STRICT)")],
+        mode: Annotated[
+            str,
+            Field(
+                description="New protection level. Options: 'DISABLED' (no protection, not recommended), 'ENABLED' (auto-approve low-risk, require approval for high-risk, recommended default), 'STRICT' (require approval for all writes, recommended for production)."
+            ),
+        ],
         project_path: Annotated[
             str, Field(description="Optional explicit path to project root")
         ] = None,

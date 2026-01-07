@@ -106,15 +106,28 @@ def register_v9_tools(mcp, audited, helpers):
 
     @mcp.tool(
         description="Execute a specific plugin by name",
-        annotations={"readOnlyHint": False, "openWorldHint": True},
+        annotations={"readOnlyHint": False, "openWorldHint": True, "idempotentHint": False},
     )
     @audited
     def boring_run_plugin(
-        name: Annotated[str, Field(description="Plugin name to execute")],
+        name: Annotated[
+            str,
+            Field(
+                description="Plugin name to execute. Use boring_list_plugins to see available plugins. Example: 'my_custom_plugin' or 'pre_commit_hook'."
+            ),
+        ],
         project_path: Annotated[
-            str, Field(description="Path to project root (default: current directory)")
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory. Example: '.' or '/path/to/project'."
+            ),
         ] = None,
-        args: Annotated[dict, Field(description="Arguments to pass to the plugin")] = None,
+        args: Annotated[
+            dict,
+            Field(
+                description="Optional dictionary of arguments to pass to the plugin. Format depends on the plugin's expected parameters. Example: {'target': 'src/', 'mode': 'strict'}."
+            ),
+        ] = None,
     ) -> dict:
         """
         Execute a registered plugin by name.
@@ -159,14 +172,34 @@ def register_v9_tools(mcp, audited, helpers):
 
     @mcp.tool(
         description="Register a new project in the workspace",
-        annotations={"readOnlyHint": False, "idempotentHint": False},
+        annotations={"readOnlyHint": False, "idempotentHint": False, "openWorldHint": False},
     )
     @audited
     def boring_workspace_add(
-        name: Annotated[str, Field(description="Unique project name")],
-        path: Annotated[str, Field(description="Path to project root")],
-        description: Annotated[str, Field(description="Optional description")] = "",
-        tags: Annotated[list[str], Field(description="Optional tags for filtering")] = None,
+        name: Annotated[
+            str,
+            Field(
+                description="Unique project name identifier. Must be unique across all registered projects. Used for switching contexts. Example: 'my-api-project' or 'frontend-app'."
+            ),
+        ],
+        path: Annotated[
+            str,
+            Field(
+                description="Absolute or relative path to project root directory. Must point to a valid project directory. Example: '/home/user/projects/my-app' or './my-app'."
+            ),
+        ],
+        description: Annotated[
+            str,
+            Field(
+                description="Optional human-readable description of the project. Helps identify projects when listing. Example: 'Main API server for e-commerce platform'."
+            ),
+        ] = "",
+        tags: Annotated[
+            list[str],
+            Field(
+                description="Optional list of tags for filtering and organizing projects. Useful for grouping related projects. Example: ['api', 'backend', 'production'] or ['frontend', 'react']."
+            ),
+        ] = None,
     ) -> dict:
         """
         Add a project to the workspace.
@@ -228,15 +261,28 @@ def register_v9_tools(mcp, audited, helpers):
 
     @mcp.tool(
         description="Generate a prompt to fix verification issues (Not autonomous)",
-        annotations={"readOnlyHint": True, "destructiveHint": False},
+        annotations={"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True},
     )
     @audited
     def boring_prompt_fix(
-        max_iterations: Annotated[int, Field(description="Maximum fix attempts (default: 3)")] = 3,
+        max_iterations: Annotated[
+            int,
+            Field(
+                description="Maximum number of fix attempts to suggest in the generated prompt. Range: 1-10. Default: 3. Higher values allow more iterative fixes but may generate longer prompts."
+            ),
+        ] = 3,
         verification_level: Annotated[
-            str, Field(description="BASIC, STANDARD, or FULL")
+            str,
+            Field(
+                description="Verification strictness level. Options: 'BASIC' (syntax only), 'STANDARD' (includes linting), 'FULL' (includes tests). Default: 'STANDARD'. Use 'FULL' for comprehensive checks before production."
+            ),
         ] = "STANDARD",
-        project_path: Annotated[str, Field(description="Optional project root path")] = None,
+        project_path: Annotated[
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory. Example: '.' or '/path/to/project'."
+            ),
+        ] = None,
     ) -> dict:
         """
         Generate a prompt to fix verification issues.
