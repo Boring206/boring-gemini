@@ -211,10 +211,27 @@ def generate_layout() -> Layout:
 
 
 @app.command()
-def main():
+def main(
+    web: bool = typer.Option(False, "--web", "-w", help="Start web UI dashboard instead of terminal"),
+    port: int = typer.Option(8765, "--port", "-p", help="Port for web UI (default: 8765)"),
+    host: str = typer.Option("127.0.0.1", "--host", help="Host for web UI (default: localhost)"),
+):
     """
     Starts the Boring live monitoring dashboard.
+
+    Use --web flag to start a browser-based dashboard instead of terminal UI.
     """
+    if web:
+        # Use web-based dashboard
+        try:
+            from .web_monitor import run_web_monitor
+            run_web_monitor(Path.cwd(), port=port, host=host)
+        except ImportError as e:
+            console.print(f"[bold red]Web monitor not available: {e}[/bold red]")
+            console.print("[yellow]Install with: pip install fastapi uvicorn[/yellow]")
+        return
+
+    # Terminal-based dashboard
     console.print("[bold green]Starting Boring Monitor...[/bold green]")
     time.sleep(1)
 

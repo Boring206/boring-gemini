@@ -66,7 +66,7 @@ def register_v10_tools(mcp, audited: Callable, helpers: dict[str, Any]) -> int:
     # =========================================================================
     try:
         register_shadow_tools(mcp, helpers)
-        tool_count += 5  # status, approve, reject, mode, clear
+        tool_count += 8  # status, approve, reject, mode, clear, trust, trust_list, trust_remove
     except ImportError as e:
         import sys
 

@@ -270,3 +270,162 @@ def register_shadow_tools(mcp, helpers: dict):
 
         count = guard.clear_pending()
         return f"✅ Cleared {count} pending operations"
+
+    @mcp.tool(
+        description="Add or update a trust rule for auto-approving operations",
+        annotations={"readOnlyHint": False, "idempotentHint": True, "openWorldHint": False},
+    )
+    def boring_shadow_trust(
+        tool_name: Annotated[
+            str,
+            Field(
+                description="Tool name to trust, e.g., 'boring_commit'. Use '*' to trust all tools (dangerous)."
+            ),
+        ],
+        auto_approve: Annotated[
+            bool,
+            Field(description="Whether to auto-approve matching operations. Default: True"),
+        ] = True,
+        path_pattern: Annotated[
+            str,
+            Field(
+                description="Optional glob pattern to limit trust to specific paths, e.g., 'src/*'. Leave empty for all paths."
+            ),
+        ] = None,
+        max_severity: Annotated[
+            str,
+            Field(
+                description="Maximum severity to auto-approve: 'low', 'medium', 'high'. Default: 'high'. Use 'critical' with extreme caution."
+            ),
+        ] = "high",
+        description: Annotated[
+            str,
+            Field(description="Optional description for this rule"),
+        ] = "",
+        project_path: Annotated[
+            str, Field(description="Optional explicit path to project root")
+        ] = None,
+    ) -> str:
+        """
+        Add a trust rule to auto-approve specific operations.
+
+        Trust rules let you bypass approval prompts for operations you trust.
+        Rules are persisted in `.boring_brain/trust_rules.json`.
+
+        Examples:
+        - Trust all commit operations: boring_shadow_trust("boring_commit")
+        - Trust file writes in src/: boring_shadow_trust("boring_write_file", path_pattern="src/*")
+
+        Args:
+            tool_name: Tool to trust
+            auto_approve: Whether to auto-approve (True) or explicitly block (False)
+            path_pattern: Optional glob pattern for path filtering
+            max_severity: Maximum severity level to auto-approve
+            description: Optional description
+            project_path: Optional explicit path to project root
+        """
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error.get("message")
+
+        try:
+            from boring.trust_rules import get_trust_manager
+            manager = get_trust_manager(project_root)
+
+            manager.add_rule(
+                tool_name=tool_name,
+                auto_approve=auto_approve,
+                path_pattern=path_pattern or None,
+                max_severity=max_severity,
+                description=description,
+            )
+
+            action = "trusted" if auto_approve else "blocked"
+            icon = "✅" if auto_approve else "🚫"
+            path_info = f" (path: `{path_pattern}`)" if path_pattern else ""
+
+            return f"{icon} Tool `{tool_name}` is now {action}{path_info} up to severity `{max_severity}`"
+        except Exception as e:
+            return f"❌ Failed to add trust rule: {e}"
+
+    @mcp.tool(
+        description="List all trust rules",
+        annotations={"readOnlyHint": True, "openWorldHint": False},
+    )
+    def boring_shadow_trust_list(
+        project_path: Annotated[
+            str, Field(description="Optional explicit path to project root")
+        ] = None,
+    ) -> str:
+        """
+        List all trust rules configured for this project.
+
+        Returns:
+            List of trust rules with their settings
+        """
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error.get("message")
+
+        try:
+            from boring.trust_rules import get_trust_manager
+            manager = get_trust_manager(project_root)
+
+            rules = manager.list_rules()
+
+            if not rules:
+                return "📋 No trust rules configured. Use `boring_shadow_trust` to add rules."
+
+            output = ["# 📋 Trust Rules", ""]
+            for i, rule in enumerate(rules, 1):
+                icon = "✅" if rule.get("auto_approve") else "🚫"
+                path = f" (path: `{rule.get('path_pattern')}`)" if rule.get("path_pattern") else ""
+                desc = f" — {rule.get('description')}" if rule.get("description") else ""
+                output.append(
+                    f"{i}. {icon} **`{rule.get('tool_name')}`**{path} "
+                    f"[max: {rule.get('max_severity')}]{desc}"
+                )
+
+            return "\n".join(output)
+        except Exception as e:
+            return f"❌ Failed to list trust rules: {e}"
+
+    @mcp.tool(
+        description="Remove a trust rule",
+        annotations={"readOnlyHint": False, "destructiveHint": True, "openWorldHint": False},
+    )
+    def boring_shadow_trust_remove(
+        tool_name: Annotated[
+            str,
+            Field(description="Tool name of the rule to remove"),
+        ],
+        path_pattern: Annotated[
+            str,
+            Field(description="Path pattern of the rule to remove (must match exactly)"),
+        ] = None,
+        project_path: Annotated[
+            str, Field(description="Optional explicit path to project root")
+        ] = None,
+    ) -> str:
+        """
+        Remove a trust rule.
+
+        Args:
+            tool_name: Tool name of the rule to remove
+            path_pattern: Path pattern to match (if rule has one)
+            project_path: Optional explicit path to project root
+        """
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error.get("message")
+
+        try:
+            from boring.trust_rules import get_trust_manager
+            manager = get_trust_manager(project_root)
+
+            if manager.remove_rule(tool_name, path_pattern or None):
+                return f"✅ Removed trust rule for `{tool_name}`"
+            else:
+                return f"❓ No matching trust rule found for `{tool_name}`"
+        except Exception as e:
+            return f"❌ Failed to remove trust rule: {e}"

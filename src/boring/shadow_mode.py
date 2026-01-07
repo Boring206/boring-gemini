@@ -19,6 +19,19 @@ from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
+# Import trust rules (lazy to avoid circular import)
+_trust_manager = None
+
+def _get_trust_manager(project_root):
+    """Lazy-load trust manager to avoid circular imports."""
+    global _trust_manager
+    if _trust_manager is None:
+        try:
+            from .trust_rules import get_trust_manager
+            _trust_manager = get_trust_manager(project_root)
+        except ImportError:
+            _trust_manager = None
+    return _trust_manager
 
 class ShadowModeLevel(Enum):
     """Shadow mode protection levels."""
@@ -178,9 +191,18 @@ class ShadowModeGuard:
         if not pending:
             return None
 
+        # Check trust rules BEFORE blocking
+        trust_manager = _get_trust_manager(self.project_root)
+        if trust_manager:
+            severity_str = pending.severity.value if pending.severity else "medium"
+            matched_rule = trust_manager.check_trust(op_name, args, severity_str)
+            if matched_rule:
+                logger.info(f"✅ Auto-approved by trust rule: {op_name}")
+                return None  # Trusted operation, no blocking
+
         # Check protection level
         if self.mode == ShadowModeLevel.STRICT:
-            # Block ALL write operations
+            # Block ALL write operations (unless trusted above)
             return pending
 
         # ENABLED mode: only block HIGH and CRITICAL
