@@ -53,7 +53,6 @@ if MCP_AVAILABLE and mcp is not None:
             return '{"status": "error", "message": "No project detected"}'
 
         import json
-        from pathlib import Path
 
         config = {
             "project_root": str(root),
@@ -67,7 +66,7 @@ if MCP_AVAILABLE and mcp is not None:
             try:
                 import yaml
 
-                with open(boring_config, "r", encoding="utf-8") as f:
+                with open(boring_config, encoding="utf-8") as f:
                     boring_data = yaml.safe_load(f)
                     config["boring_config"] = boring_data
             except Exception:
@@ -84,7 +83,6 @@ if MCP_AVAILABLE and mcp is not None:
 
         import json
         import re
-        from pathlib import Path
 
         task_file = root / "task.md"
         if not task_file.exists():
@@ -116,3 +114,4 @@ if MCP_AVAILABLE and mcp is not None:
             )
         except Exception as e:
             return json.dumps({"status": "error", "message": str(e)})
+
