@@ -10,7 +10,8 @@ Welcome to the Boring-Gemini documentation. Boring is an autonomous AI developme
 - 🔌 **Full MCP Support**: Works with Cursor, Claude Desktop, VS Code
 - 🛡️ **Enterprise-Grade Protection**: Circuit breaker, self-healing, 100% test coverage
 - 🧩 **Spec-Driven Development**: SpecKit integration from PRD to Code
-- 🎯 **41 Prompts**: Complete Prompt-First UX for all core workflows
+- 🧠 **MCP Intelligence (v10.18)**: Auto Pattern Detection, RAG Auto-Update, Cross-Project Knowledge
+- 🎯 **41 Prompts**: Complete Prompt-First UX for all core workflows (Auto-Sensing Enabled)
 
 ## Quick Start
 
