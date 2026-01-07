@@ -6,8 +6,7 @@ Tests the AuditLogger class and audited decorator for MCP tool invocation loggin
 
 import json
 import time
-from pathlib import Path
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -48,6 +47,7 @@ class TestAuditLogger:
         """Test get_instance with default log directory."""
         # Use a real tmp directory since Path.cwd() patching is complex
         import os
+
         original_cwd = os.getcwd()
         try:
             os.chdir(tmp_path)
@@ -159,7 +159,7 @@ class TestAuditLogger:
         """Test that log handles write errors gracefully."""
         logger = AuditLogger(tmp_path / "logs")
 
-        with patch("builtins.open", side_effect=IOError("Permission denied")):
+        with patch("builtins.open", side_effect=OSError("Permission denied")):
             # Should not raise exception
             logger.log("test_tool", {}, {"status": "OK"}, 100)
 
@@ -234,7 +234,7 @@ class TestAuditedDecorator:
         assert logs[0]["tool"] == "test_function"
         assert logs[0]["args"]["arg1"] == "test"
         assert logs[0]["args"]["arg2"] == 100
-        assert logs[0]["result_status"] == "OK"
+        assert logs[0]["result_status"] == "SUCCESS"
 
     def test_audited_decorator_exception(self, tmp_path):
         """Test audited decorator logs exceptions."""
@@ -271,6 +271,7 @@ class TestAuditedDecorator:
 
     def test_audited_decorator_preserves_function_metadata(self, tmp_path):
         """Test audited decorator preserves function metadata."""
+
         @audited
         def documented_function():
             """This is a test function."""
@@ -295,4 +296,3 @@ class TestAuditedDecorator:
         assert len(logs) > 0
         # Note: decorator only logs kwargs, not positional args
         assert logs[0]["tool"] == "test_function"
-

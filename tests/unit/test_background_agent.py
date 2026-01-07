@@ -30,7 +30,7 @@ def test_submit_task(runner):
     def dummy_task(x):
         return x * 2
 
-    task_id = runner.submit(dummy_task, "Test Task", 10)
+    task_id = runner.submit(dummy_task, 10, name="Test Task")
     assert task_id.startswith("task-")
     assert task_id in runner.tasks
 
@@ -67,8 +67,8 @@ def test_task_failure(runner):
 
 def test_list_tasks(runner):
     """Test listing tasks."""
-    runner.submit(lambda: 1, "Task 1")
-    runner.submit(lambda: 2, "Task 2")
+    runner.submit(lambda: 1, name="Task 1")
+    runner.submit(lambda: 2, name="Task 2")
 
     tasks = runner.list_tasks()
     assert len(tasks) == 2

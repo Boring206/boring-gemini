@@ -75,7 +75,8 @@ def analyze_response(
                 if exit_signal or status in ("COMPLETE", "DONE", "FINISHED"):
                     analysis_results["analysis"]["has_completion_signal"] = True
                     analysis_results["analysis"]["exit_signal"] = True
-                    analysis_results["analysis"]["confidence_score"] = 100
+                    # Base 100 + 20 for completion task
+                    analysis_results["analysis"]["confidence_score"] = 120
 
                 if tasks:
                     analysis_results["analysis"]["has_progress"] = True
@@ -135,7 +136,7 @@ def analyze_response(
                 analysis_results["analysis"]["has_progress"] = True
                 analysis_results["analysis"]["files_modified"] = total_modified_files
                 analysis_results["analysis"]["confidence_score"] += 20
-                if not analysis_results["analysis"]["source"]:
+                if analysis_results["analysis"]["source"] == "none":
                     analysis_results["analysis"]["source"] = "git_diff"
         except InvalidGitRepositoryError:
             pass

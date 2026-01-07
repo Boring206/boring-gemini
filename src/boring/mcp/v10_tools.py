@@ -6,6 +6,11 @@ Registers all V10 tools (RAG, Multi-Agent, Shadow Mode) with FastMCP.
 
 from typing import Any, Callable
 
+from .tools.agents import register_agent_tools
+from .tools.rag import register_rag_tools
+from .tools.shadow import register_shadow_tools
+from .utils import get_project_root_or_error  # noqa: F401
+
 
 def register_v10_tools(mcp, audited: Callable, helpers: dict[str, Any]) -> int:
     """
@@ -30,8 +35,6 @@ def register_v10_tools(mcp, audited: Callable, helpers: dict[str, Any]) -> int:
     # RAG Tools
     # =========================================================================
     try:
-        from .tools.rag import register_rag_tools
-
         register_rag_tools(mcp, helpers)
         tool_count += 4  # index, search, context, expand
     except ImportError as e:
@@ -47,8 +50,6 @@ def register_v10_tools(mcp, audited: Callable, helpers: dict[str, Any]) -> int:
     # Multi-Agent Tools
     # =========================================================================
     try:
-        from .tools.agents import register_agent_tools
-
         register_agent_tools(mcp, helpers)
         tool_count += 3  # multi_agent, agent_plan, agent_review
     except ImportError as e:
@@ -64,8 +65,6 @@ def register_v10_tools(mcp, audited: Callable, helpers: dict[str, Any]) -> int:
     # Shadow Mode Tools
     # =========================================================================
     try:
-        from .tools.shadow import register_shadow_tools
-
         register_shadow_tools(mcp, helpers)
         tool_count += 5  # status, approve, reject, mode, clear
     except ImportError as e:

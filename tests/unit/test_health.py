@@ -30,7 +30,7 @@ class TestCheckApiKey:
     def test_api_key_valid_format(self, monkeypatch):
         """Test when API key has valid format."""
         # Fake API key with correct format (AIza + 35 chars)
-        monkeypatch.setenv("GOOGLE_API_KEY", "AIzaSyD-fakekey123456789012345678901234")
+        monkeypatch.setenv("GOOGLE_API_KEY", "MOCK_AIzaSyD-fakekey123456789012345678901234")
 
         result = check_api_key()
 

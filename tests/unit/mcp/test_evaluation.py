@@ -9,7 +9,9 @@ class TestEvaluationTools:
     @patch("boring.mcp.tools.evaluation.check_rate_limit")
     @patch("boring.mcp.tools.evaluation.create_judge_provider")
     @patch("boring.mcp.tools.evaluation.LLMJudge")
-    def test_boring_evaluate_file(self, mock_judge_cls, mock_create_provider, mock_limit, mock_root):
+    def test_boring_evaluate_file(
+        self, mock_judge_cls, mock_create_provider, mock_limit, mock_root
+    ):
         """Test file evaluation."""
         mock_limit.return_value = (True, "")
         mock_root.return_value = Path("/tmp/project")

@@ -76,10 +76,24 @@ def register_core_tools(mcp, audited, helpers):
     @audited
     def boring_health_check() -> dict:
         """Check Boring system health."""
-        from ..health import HealthChecker
+        from ..health import run_health_check
 
-        checker = HealthChecker()
-        return checker.full_check()
+        report = run_health_check()
+        return {
+            "healthy": report.is_healthy,
+            "passed": report.passed,
+            "failed": report.failed,
+            "warnings": report.warnings,
+            "checks": [
+                {
+                    "name": c.name,
+                    "status": c.status.value,
+                    "message": c.message,
+                    "suggestion": c.suggestion,
+                }
+                for c in report.checks
+            ],
+        }
 
     @mcp.tool()
     @audited

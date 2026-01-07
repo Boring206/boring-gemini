@@ -2,7 +2,6 @@
 Unit tests for boring.mcp.v10_tools module.
 """
 
-import pytest
 from unittest.mock import MagicMock, patch
 
 from boring.mcp import v10_tools
@@ -16,12 +15,14 @@ class TestV10Tools:
         mock_mcp = MagicMock()
         mock_audited = MagicMock()
         helpers = {}
-        
-        with patch("boring.mcp.v10_tools.register_rag_tools") as mock_rag, \
-             patch("boring.mcp.v10_tools.register_agent_tools") as mock_agent, \
-             patch("boring.mcp.v10_tools.register_shadow_tools") as mock_shadow:
+
+        with (
+            patch("boring.mcp.v10_tools.register_rag_tools") as mock_rag,
+            patch("boring.mcp.v10_tools.register_agent_tools") as mock_agent,
+            patch("boring.mcp.v10_tools.register_shadow_tools") as mock_shadow,
+        ):
             count = v10_tools.register_v10_tools(mock_mcp, mock_audited, helpers)
-            
+
             assert count == 12  # 4 + 3 + 5
             mock_rag.assert_called_once()
             mock_agent.assert_called_once()
@@ -32,13 +33,15 @@ class TestV10Tools:
         mock_mcp = MagicMock()
         mock_audited = MagicMock()
         helpers = {}
-        
-        with patch("boring.mcp.v10_tools.register_rag_tools", side_effect=ImportError("Error")), \
-             patch("boring.mcp.v10_tools.register_agent_tools") as mock_agent, \
-             patch("boring.mcp.v10_tools.register_shadow_tools") as mock_shadow, \
-             patch("sys.stderr.write"):
+
+        with (
+            patch("boring.mcp.v10_tools.register_rag_tools", side_effect=ImportError("Error")),
+            patch("boring.mcp.v10_tools.register_agent_tools") as mock_agent,
+            patch("boring.mcp.v10_tools.register_shadow_tools") as mock_shadow,
+            patch("sys.stderr.write"),
+        ):
             count = v10_tools.register_v10_tools(mock_mcp, mock_audited, helpers)
-            
+
             # Should continue and register other tools
             assert count == 8  # 0 + 3 + 5
             mock_agent.assert_called_once()
@@ -49,13 +52,15 @@ class TestV10Tools:
         mock_mcp = MagicMock()
         mock_audited = MagicMock()
         helpers = {}
-        
-        with patch("boring.mcp.v10_tools.register_rag_tools") as mock_rag, \
-             patch("boring.mcp.v10_tools.register_agent_tools", side_effect=ImportError("Error")), \
-             patch("boring.mcp.v10_tools.register_shadow_tools") as mock_shadow, \
-             patch("sys.stderr.write"):
+
+        with (
+            patch("boring.mcp.v10_tools.register_rag_tools") as mock_rag,
+            patch("boring.mcp.v10_tools.register_agent_tools", side_effect=ImportError("Error")),
+            patch("boring.mcp.v10_tools.register_shadow_tools") as mock_shadow,
+            patch("sys.stderr.write"),
+        ):
             count = v10_tools.register_v10_tools(mock_mcp, mock_audited, helpers)
-            
+
             assert count == 9  # 4 + 0 + 5
             mock_rag.assert_called_once()
             mock_shadow.assert_called_once()
@@ -65,13 +70,15 @@ class TestV10Tools:
         mock_mcp = MagicMock()
         mock_audited = MagicMock()
         helpers = {}
-        
-        with patch("boring.mcp.v10_tools.register_rag_tools") as mock_rag, \
-             patch("boring.mcp.v10_tools.register_agent_tools") as mock_agent, \
-             patch("boring.mcp.v10_tools.register_shadow_tools", side_effect=ImportError("Error")), \
-             patch("sys.stderr.write"):
+
+        with (
+            patch("boring.mcp.v10_tools.register_rag_tools") as mock_rag,
+            patch("boring.mcp.v10_tools.register_agent_tools") as mock_agent,
+            patch("boring.mcp.v10_tools.register_shadow_tools", side_effect=ImportError("Error")),
+            patch("sys.stderr.write"),
+        ):
             count = v10_tools.register_v10_tools(mock_mcp, mock_audited, helpers)
-            
+
             assert count == 7  # 4 + 3 + 0
             mock_rag.assert_called_once()
             mock_agent.assert_called_once()
@@ -81,12 +88,13 @@ class TestV10Tools:
         mock_mcp = MagicMock()
         mock_audited = MagicMock()
         helpers = {}
-        
-        with patch("boring.mcp.v10_tools.register_rag_tools", side_effect=Exception("Error")), \
-             patch("boring.mcp.v10_tools.register_agent_tools") as mock_agent, \
-             patch("boring.mcp.v10_tools.register_shadow_tools") as mock_shadow, \
-             patch("sys.stderr.write"):
-            count = v10_tools.register_v10_tools(mock_mcp, mock_audited, helpers)
-            
-            assert count == 8  # 0 + 3 + 5
 
+        with (
+            patch("boring.mcp.v10_tools.register_rag_tools", side_effect=Exception("Error")),
+            patch("boring.mcp.v10_tools.register_agent_tools"),
+            patch("boring.mcp.v10_tools.register_shadow_tools"),
+            patch("sys.stderr.write"),
+        ):
+            count = v10_tools.register_v10_tools(mock_mcp, mock_audited, helpers)
+
+            assert count == 8  # 0 + 3 + 5

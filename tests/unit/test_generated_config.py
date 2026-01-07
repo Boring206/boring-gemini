@@ -5,11 +5,8 @@ Tests the Settings class, project root detection, directory initialization,
 and configuration loading from TOML files.
 """
 
-import os
 from pathlib import Path
 from unittest.mock import MagicMock, mock_open, patch
-
-import pytest
 
 from boring.config import (
     SUPPORTED_MODELS,
@@ -18,7 +15,6 @@ from boring.config import (
     discover_tools,
     init_directories,
     load_toml_config,
-    settings,
 )
 
 
@@ -83,7 +79,7 @@ class TestFindProjectRoot:
 
     def test_find_project_root_fallback_to_cwd(self, tmp_path, monkeypatch):
         """Test that _find_project_root returns valid path when no anchor in CWD.
-        
+
         Note: When running in the test environment, _find_project_root may still
         find the project root via Strategy 2 (searching from __file__ location).
         So we just verify it returns some valid path.
@@ -265,7 +261,16 @@ use_function_calling = false
             mock_settings.MAX_LOOPS = 100
             mock_settings.USE_FUNCTION_CALLING = True
 
-            with patch("tomllib.load", return_value={"boring": {"default_model": "models/gemini-3-pro", "max_loops": 200, "use_function_calling": False}}):
+            with patch(
+                "tomllib.load",
+                return_value={
+                    "boring": {
+                        "default_model": "models/gemini-3-pro",
+                        "max_loops": 200,
+                        "use_function_calling": False,
+                    }
+                },
+            ):
                 load_toml_config()
 
                 assert mock_settings.DEFAULT_MODEL == "models/gemini-3-pro"
@@ -281,24 +286,39 @@ use_function_calling = false
             mock_settings.PROJECT_ROOT = tmp_path
             mock_settings.DEFAULT_MODEL = "models/gemini-2.5-flash"
 
-            with patch("tomllib.load", return_value={"global": {"default_model": "models/gemini-3-pro"}}):
+            with patch(
+                "tomllib.load", return_value={"global": {"default_model": "models/gemini-3-pro"}}
+            ):
                 # Need to mock open again because load_toml_config opens the file
-                with patch("builtins.open", mock_open(read_data=b"[global]\ndefault_model = 'models/gemini-3-pro'")):
-                     load_toml_config()
+                with patch(
+                    "builtins.open",
+                    mock_open(read_data=b"[global]\ndefault_model = 'models/gemini-3-pro'"),
+                ):
+                    load_toml_config()
 
             assert mock_settings.DEFAULT_MODEL == "models/gemini-3-pro"
 
     def test_load_toml_config_with_flat_keys(self, tmp_path, monkeypatch):
         """Test load_toml_config with flat top-level keys."""
         config_file = tmp_path / ".boring.toml"
-        config_file.write_text("default_model = 'models/gemini-3-pro'\ntimeout_minutes = 30", encoding="utf-8")
+        config_file.write_text(
+            "default_model = 'models/gemini-3-pro'\ntimeout_minutes = 30", encoding="utf-8"
+        )
 
         with patch("boring.config.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = tmp_path
             mock_settings.DEFAULT_MODEL = "models/gemini-2.5-flash"
 
-            with patch("tomllib.load", return_value={"default_model": "models/gemini-3-pro", "timeout_minutes": 30}):
-                 with patch("builtins.open", mock_open(read_data=b"default_model = 'models/gemini-3-pro'\ntimeout_minutes = 30")):
+            with patch(
+                "tomllib.load",
+                return_value={"default_model": "models/gemini-3-pro", "timeout_minutes": 30},
+            ):
+                with patch(
+                    "builtins.open",
+                    mock_open(
+                        read_data=b"default_model = 'models/gemini-3-pro'\ntimeout_minutes = 30"
+                    ),
+                ):
                     load_toml_config()
 
             assert mock_settings.DEFAULT_MODEL == "models/gemini-3-pro"
@@ -328,22 +348,26 @@ use_function_calling = false
 
     def test_load_toml_config_only_updates_existing_attributes(self, tmp_path, monkeypatch):
         """Test that load_toml_config only updates existing settings attributes.
-        
+
         Note: The actual security check in load_toml_config uses hasattr which works
         correctly on real Settings objects. With MagicMock, hasattr always returns True,
         so we verify the behavior by checking that existing attributes are updated correctly.
         """
         config_file = tmp_path / ".boring.toml"
         config_file.write_text('[boring]\ndefault_model = "models/gemini-3-pro"', encoding="utf-8")
-        
+
         with patch("boring.config.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = tmp_path
             mock_settings.DEFAULT_MODEL = "original"
             # Make hasattr return False for nonexistent_ setting to simulate real behavior
-            type(mock_settings).__getattr__ = lambda s, n: getattr(super(type(s), s), n) if n.startswith('nonexistent') else MagicMock()
+            type(mock_settings).__getattr__ = (
+                lambda s, n: getattr(super(type(s), s), n)
+                if n.startswith("nonexistent")
+                else MagicMock()
+            )
 
             load_toml_config()
-            
+
             # Verify that existing attributes were updated
             # (The exact verification depends on how the function updates settings)
 
@@ -357,7 +381,10 @@ class TestDiscoverTools:
             mock_settings.CLAUDE_CLI_PATH = None
             mock_settings.GEMINI_CLI_PATH = None
 
-            with patch("shutil.which", side_effect=lambda cmd: "/usr/bin/claude" if cmd == "claude" else None):
+            with patch(
+                "shutil.which",
+                side_effect=lambda cmd: "/usr/bin/claude" if cmd == "claude" else None,
+            ):
                 discover_tools()
 
                 assert mock_settings.CLAUDE_CLI_PATH == "/usr/bin/claude"
@@ -368,7 +395,10 @@ class TestDiscoverTools:
             mock_settings.CLAUDE_CLI_PATH = None
             mock_settings.GEMINI_CLI_PATH = None
 
-            with patch("shutil.which", side_effect=lambda cmd: "/usr/bin/gemini" if cmd == "gemini" else None):
+            with patch(
+                "shutil.which",
+                side_effect=lambda cmd: "/usr/bin/gemini" if cmd == "gemini" else None,
+            ):
                 discover_tools()
 
                 assert mock_settings.GEMINI_CLI_PATH == "/usr/bin/gemini"
@@ -379,7 +409,10 @@ class TestDiscoverTools:
             mock_settings.CLAUDE_CLI_PATH = None
             mock_settings.GEMINI_CLI_PATH = None
 
-            with patch("shutil.which", side_effect=lambda cmd: f"/usr/bin/{cmd}" if cmd in ["claude", "gemini"] else None):
+            with patch(
+                "shutil.which",
+                side_effect=lambda cmd: f"/usr/bin/{cmd}" if cmd in ["claude", "gemini"] else None,
+            ):
                 discover_tools()
 
                 assert mock_settings.CLAUDE_CLI_PATH == "/usr/bin/claude"
@@ -396,4 +429,3 @@ class TestDiscoverTools:
 
                 assert mock_settings.CLAUDE_CLI_PATH is None
                 assert mock_settings.GEMINI_CLI_PATH is None
-

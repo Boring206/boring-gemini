@@ -220,7 +220,7 @@ Start with the most foundational files first (e.g., base classes before derived 
         changes = {}
 
         # Pattern: ### File: `path/to/file.ext`
-        file_pattern = r"###\s*(?:File|Modify|Create):\s*`([^`]+)`"
+        file_pattern = r"###\s*(?:File|Modify|Create)(?:\s+File)?\s*:\s*`([^`]+)`"
         code_pattern = r"```[a-z]*\n(.*?)```"
 
         # Split by file markers

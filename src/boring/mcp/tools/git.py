@@ -4,6 +4,7 @@ from typing import Annotated
 from pydantic import Field
 
 from ...audit import audited
+from ...hooks import HooksManager
 from ..instance import MCP_AVAILABLE, mcp
 from ..utils import configure_runtime_for_project, get_project_root_or_error
 
@@ -36,8 +37,6 @@ def boring_hooks_install(
 
         # Configure runtime
         configure_runtime_for_project(root)
-
-        from ...hooks import HooksManager
 
         manager = HooksManager(root)
 
@@ -94,8 +93,6 @@ def boring_hooks_uninstall(
 
         configure_runtime_for_project(root)
 
-        from ...hooks import HooksManager
-
         manager = HooksManager(root)
 
         success, msg = manager.uninstall_all()
@@ -125,8 +122,6 @@ def boring_hooks_status(
             return error
 
         configure_runtime_for_project(root)
-
-        from ...hooks import HooksManager
 
         manager = HooksManager(root)
 
