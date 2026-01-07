@@ -10,7 +10,7 @@ This module contains tools for AI learning and evaluation:
 - boring_brain_summary: Knowledge base summary
 """
 
-from typing import Annotated, Optional
+from typing import Annotated
 
 from pydantic import Field
 
