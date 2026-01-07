@@ -115,6 +115,7 @@ class TestRAGRetrieverInitialization:
         with (
             patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True),
             patch("boring.rag.rag_retriever.chromadb") as mock_chromadb,
+            patch("boring.rag.rag_retriever.ChromaSettings"),
             patch("boring.rag.rag_retriever.CodeIndexer") as mock_indexer_class,
             patch("boring.rag.rag_retriever.IndexState") as mock_state_class,
         ):
@@ -161,6 +162,7 @@ class TestRAGRetrieverInitialization:
         with (
             patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True),
             patch("boring.rag.rag_retriever.chromadb") as mock_chromadb,
+            patch("boring.rag.rag_retriever.ChromaSettings"),
         ):
             # Mock 外部数据库查询（边界）
             mock_client = MagicMock()
@@ -170,8 +172,20 @@ class TestRAGRetrieverInitialization:
                 "distances": [[0.1, 0.2]],
                 "metadatas": [
                     [
-                        {"file_path": "test.py", "name": "test"},
-                        {"file_path": "test2.py", "name": "test2"},
+                        {
+                            "file_path": "test.py",
+                            "name": "test",
+                            "chunk_type": "function",
+                            "start_line": 1,
+                            "end_line": 1,
+                        },
+                        {
+                            "file_path": "test2.py",
+                            "name": "test2",
+                            "chunk_type": "function",
+                            "start_line": 1,
+                            "end_line": 1,
+                        },
                     ]
                 ],
                 "documents": [["def test(): pass", "def test2(): pass"]],
@@ -234,13 +248,24 @@ class TestRAGRetrieverInitialization:
         with (
             patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True),
             patch("boring.rag.rag_retriever.chromadb") as mock_chromadb,
+            patch("boring.rag.rag_retriever.ChromaSettings"),
         ):
             mock_client = MagicMock()
             mock_collection = MagicMock()
             mock_collection.query.return_value = {
                 "ids": [["chunk1"]],
                 "distances": [[0.1]],
-                "metadatas": [[{"file_path": "auth/test.py"}]],
+                "metadatas": [
+                    [
+                        {
+                            "file_path": "auth/test.py",
+                            "chunk_type": "function",
+                            "name": "test",
+                            "start_line": 1,
+                            "end_line": 1,
+                        }
+                    ]
+                ],
                 "documents": [["def test(): pass"]],
             }
             mock_client.get_or_create_collection.return_value = mock_collection

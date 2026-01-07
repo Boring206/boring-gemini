@@ -177,6 +177,7 @@ class TestRunServer:
             mock_mcp_instance.run.assert_called_once_with(transport="stdio")
 
     @patch("boring.mcp.server.instance.MCP_AVAILABLE", False)
+    @patch("boring.mcp.server.instance.mcp", MagicMock())
     @patch("sys.stderr")
     @patch("sys.exit")
     @patch.dict(os.environ, {}, clear=False)

@@ -550,7 +550,8 @@ class TestRAGRetrieverExtended:
 
     @patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True)
     @patch("boring.rag.rag_retriever.chromadb")
-    def test_rag_retriever_init_with_chromadb(self, mock_chromadb, temp_project):
+    @patch("boring.rag.rag_retriever.ChromaSettings")
+    def test_rag_retriever_init_with_chromadb(self, mock_settings, mock_chromadb, temp_project):
         """Test RAGRetriever initialization with ChromaDB available."""
         mock_client = MagicMock()
         mock_collection = MagicMock()
