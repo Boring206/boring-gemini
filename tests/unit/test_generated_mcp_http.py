@@ -10,6 +10,8 @@ from unittest.mock import MagicMock, patch
 
 from boring.mcp.http import MCP_CONFIG_SCHEMA, MCP_SERVER_CARD, create_app, main
 
+pytest.importorskip("starlette")
+
 # =============================================================================
 # CONSTANTS TESTS
 # =============================================================================

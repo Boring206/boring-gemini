@@ -35,17 +35,15 @@ class TestRAGRetrieverInitialization:
             patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True),
             patch("boring.rag.rag_retriever.chromadb") as mock_chromadb,
         ):
-            # Mock 外部数据库（边界）
-            mock_client = MagicMock()
-            mock_collection = MagicMock()
             mock_client.get_or_create_collection.return_value = mock_collection
             mock_chromadb.PersistentClient.return_value = mock_client
 
-            retriever = RAGRetriever(temp_project)
+            with patch("boring.rag.rag_retriever.ChromaSettings"):  # Added patch
+                retriever = RAGRetriever(temp_project)
 
-            # 测试结果：应该可以检索
-            assert retriever.is_available is True
-            assert retriever.project_root == temp_project
+                # 测试结果：应该可以检索
+                assert retriever.is_available is True
+                assert retriever.project_root == temp_project
 
     def test_當ChromaDB不可用時_應标记為不可用(self, temp_project):
         """規格：ChromaDB 不可用 → is_available 应为 False"""
@@ -86,18 +84,18 @@ class TestRAGRetrieverInitialization:
             patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True),
             patch("boring.rag.rag_retriever.chromadb") as mock_chromadb,
         ):
-            mock_client = MagicMock()
             mock_collection = MagicMock()
             mock_client.get_or_create_collection.return_value = mock_collection
             mock_chromadb.PersistentClient.return_value = mock_client
 
-            retriever = RAGRetriever(temp_project)
+            with patch("boring.rag.rag_retriever.ChromaSettings"):
+                retriever = RAGRetriever(temp_project)
 
-            assert retriever.is_available is True
+                assert retriever.is_available is True
 
-            # Test when collection is None
-            retriever.collection = None
-            assert retriever.is_available is False
+                # Test when collection is None
+                retriever.collection = None
+                assert retriever.is_available is False
 
     def test_當RAG不可用時_構築索引應返回0(self, temp_project):
         """規格：is_available=False → build_index() 应返回 0（不执行索引）"""

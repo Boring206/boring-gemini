@@ -46,6 +46,8 @@ class TestGetServerInstance:
     ):
         """Test get_server_instance when MCP is available."""
         mock_mcp_instance = MagicMock()
+        mock_mcp_instance.tool = MagicMock()  # Ensure tool attribute exists
+        mock_mcp_instance.resource = MagicMock()
         # instance.mcp is the actual mcp object, not a function
         with patch.object(server.instance, "mcp", mock_mcp_instance):
             result = server.get_server_instance()
