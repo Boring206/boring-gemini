@@ -35,10 +35,12 @@ class TestRAGRetrieverInitialization:
             patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True),
             patch("boring.rag.rag_retriever.chromadb") as mock_chromadb,
         ):
+            mock_client = MagicMock()
+            mock_collection = MagicMock()
             mock_client.get_or_create_collection.return_value = mock_collection
             mock_chromadb.PersistentClient.return_value = mock_client
 
-            with patch("boring.rag.rag_retriever.ChromaSettings"):  # Added patch
+            with patch("boring.rag.rag_retriever.ChromaSettings"):
                 retriever = RAGRetriever(temp_project)
 
                 # 测试结果：应该可以检索
@@ -84,6 +86,7 @@ class TestRAGRetrieverInitialization:
             patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True),
             patch("boring.rag.rag_retriever.chromadb") as mock_chromadb,
         ):
+            mock_client = MagicMock()
             mock_collection = MagicMock()
             mock_client.get_or_create_collection.return_value = mock_collection
             mock_chromadb.PersistentClient.return_value = mock_client
