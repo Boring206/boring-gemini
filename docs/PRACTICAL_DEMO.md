@@ -246,7 +246,46 @@ Boring:
 
 ---
 
-## 🤖 實戰案例 6：Multi-Agent 協作
+## 🧠 實戰案例 7：自動學習與進化 (Auto-Learning v10.18)
+
+### 場景：AI 老是犯同樣的錯
+
+**傳統方式**：
+```
+你: "這不對，這裡要用 `check_password_hash` 不是 `check_password`"
+AI: "抱歉我改..."
+(第二天，新的對話)
+AI: "我又用了 `check_password`..."
+(你崩潰...)
+```
+
+**Boring 方式 (Auto-Sense Mode)**：
+```
+你: "這不對，這裡要用 `check_password_hash`"
+Boring: (修正代碼)
+
+[系統背景運作]:
+🔍 偵測到用戶修正 -> 提取模式 -> 存入知識庫
+
+(第二天，新的對話)
+你: "幫我寫登入功能"
+Boring: 
+  ✅ 讀取專案記憶...
+  💡 發現學習模式: "Password Hashing Preference"
+  
+  "好的，我會使用 `check_password_hash` 進行驗證..."
+```
+
+**主動教學**：
+你也可以主動教它：
+```
+你: "/learn 這裡的 API 回傳格式必須包在 `data` 欄位裡"
+Boring: ✅ 已學習規則：[API Response Format]
+```
+
+---
+
+## 🤖 實戰案例 8：Multi-Agent 協作
 
 ### 場景：複雜任務需要多個角色
 

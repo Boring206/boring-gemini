@@ -45,6 +45,12 @@ pip install boring-aicoding
 | [FAQ (Appendix B)](APPENDIX_B_FAQ.md) | Installation, troubleshooting, common questions |
 | [Prompt Philosophy (Appendix C)](APPENDIX_C_PROMPT_PHILOSOPHY.md) | Architect persona design principles |
 
+> 🌏 **Traditional Chinese (繁體中文)**:
+> - [工具清單 (附錄 A)](APPENDIX_A_TOOL_REFERENCE_zh.md)
+> - [FAQ (附錄 B)](APPENDIX_B_FAQ_zh.md)
+> - [Prompt 設計哲學 (附錄 C)](APPENDIX_C_PROMPT_PHILOSOPHY_zh.md)
+
+
 ### Getting Started
 | Document | Description |
 |----------|-------------|
@@ -55,7 +61,9 @@ pip install boring-aicoding
 | Document | Description |
 |----------|-------------|
 | [Architect Mode](architect_mode.md) | Hostile Architect evaluation mode |
+| [Architect Mode (中文)](architect_mode_zh.md) | 架構師模式指南 (中文版) |
 | [Contributing](contributing.md) | How to contribute |
+| [Contributing (中文)](contributing_zh.md) | 貢獻指南 (中文版) |
 | [API Reference](api/mcp_server.md) | MCP Server API (MkDocs) |
 
 ---
