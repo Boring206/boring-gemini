@@ -1,5 +1,27 @@
 # Changelog
 
+## [10.18.0] - 2026-01-07 - MCP Intelligence Phase 2 🧠
+
+### Added
+- **Auto Pattern Detection**: New `auto_learner.py` module for automatic error→solution pattern extraction.
+  - `AutoLearner` class with error pattern matching (Python, JS, Rust, etc.)
+  - Auto-detects fix patterns from AI responses
+- **RAG Auto-Update**: New `rag_watcher.py` for automatic file change detection.
+  - `RAGWatcher` class with polling-based file watcher
+  - Debounced change detection triggers incremental re-indexing
+- **Cross-Project Knowledge**: New `GlobalKnowledgeStore` in `brain_manager.py`.
+  - Stores patterns in `~/.boring_brain/global_patterns.json`
+  - `export_from_project()` and `import_to_project()` methods
+
+### Changed
+- **`boring_suggest_next`**: Enhanced with context-aware suggestions:
+  - Git change analysis (uncommitted files)
+  - Learned patterns from brain
+  - RAG index freshness check
+  - Task.md progress detection
+
+---
+
 ## [10.17.7] - 2026-01-07 - Smoothness Enhancements 🚀
 
 ### Added

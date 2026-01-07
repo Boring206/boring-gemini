@@ -376,8 +376,11 @@ Requirements:
         """
         Suggest next actions based on project state and learned patterns.
 
-        Analyzes current project state and matches against known
-        successful patterns to recommend what to do next.
+        Enhanced with:
+        - Git change analysis (uncommitted files)
+        - Learned patterns from brain
+        - RAG index freshness check
+        - Task.md progress detection
 
         Args:
             limit: Maximum suggestions to return
@@ -391,12 +394,96 @@ Requirements:
             return error
 
         miner = get_pattern_miner(project_root)
-        suggestions = miner.suggest_next(project_root, limit)
+        base_suggestions = miner.suggest_next(project_root, limit)
+        project_state = miner.analyze_project_state(project_root)
+
+        # Enhanced context analysis
+        enhancements = []
+
+        # 1. Check for uncommitted git changes
+        try:
+            import subprocess
+
+            result = subprocess.run(
+                ["git", "diff", "--name-only"],
+                cwd=project_root,
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            changed_files = result.stdout.strip().split("\n") if result.stdout.strip() else []
+            if changed_files:
+                enhancements.append(
+                    {
+                        "type": "git_changes",
+                        "action": "Consider running `boring_commit` or `boring_verify`",
+                        "priority": "high",
+                        "details": f"{len(changed_files)} uncommitted files",
+                    }
+                )
+        except Exception:
+            pass
+
+        # 2. Check learned patterns for relevant suggestions
+        try:
+            from ..brain_manager import BrainManager
+
+            brain = BrainManager(project_root)
+            patterns = brain.get_relevant_patterns("next steps recommendations", limit=3)
+            if patterns:
+                for p in patterns:
+                    enhancements.append(
+                        {
+                            "type": "learned_pattern",
+                            "action": p.get("solution", "")[:100],
+                            "priority": "medium",
+                            "details": f"From: {p.get('description', 'Unknown')}",
+                        }
+                    )
+        except Exception:
+            pass
+
+        # 3. Check RAG index freshness
+        try:
+            rag_dir = project_root / ".boring_memory" / "rag_db"
+            if not rag_dir.exists():
+                enhancements.append(
+                    {
+                        "type": "rag_not_indexed",
+                        "action": "Run `boring_rag_index` to enable semantic code search",
+                        "priority": "medium",
+                        "details": "RAG index not found",
+                    }
+                )
+        except Exception:
+            pass
+
+        # 4. Check task.md for incomplete items
+        try:
+            task_file = project_root / ".agent" / "workflows" / "task.md"
+            if not task_file.exists():
+                task_file = project_root / "task.md"
+            if task_file.exists():
+                content = task_file.read_text(encoding="utf-8")
+                incomplete = content.count("[ ]")
+                in_progress = content.count("[/]")
+                if incomplete > 0 or in_progress > 0:
+                    enhancements.append(
+                        {
+                            "type": "task_progress",
+                            "action": f"Continue working on task.md ({in_progress} in progress, {incomplete} remaining)",
+                            "priority": "high",
+                            "details": "Found incomplete tasks",
+                        }
+                    )
+        except Exception:
+            pass
 
         return {
             "status": "SUCCESS",
-            "suggestions": suggestions,
-            "project_state": miner.analyze_project_state(project_root),
+            "suggestions": base_suggestions,
+            "context_enhancements": enhancements,
+            "project_state": project_state,
         }
 
     @mcp.tool(
