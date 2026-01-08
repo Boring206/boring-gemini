@@ -908,8 +908,7 @@ Keep Rubrics: {keep_rubrics}
     def setup_ide() -> str:
         """Set up IDE integration."""
         python_path = sys.executable
-        python_path_escaped = python_path.replace('\\', '\\\\')
-
+        python_path_escaped = python_path.replace("\\", "\\\\")
 
         return f"""🔌 **IDE Integration Setup**
 

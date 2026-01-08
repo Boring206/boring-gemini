@@ -22,7 +22,8 @@ Use this workflow to let the AI Agent handle all release-related tasks automatic
 
 ## 3. Deep Verification (Strict CI)
 
-- [ ] **Lint & Format**: Run `ruff check .` (Must pass with 0 errors).
+- [ ] **Lint**: Run `ruff check .` (Must pass with 0 errors).
+- [ ] **Format**: Run `ruff format --check src/ tests/` (Must pass with 0 reformats).
 - [ ] **Test Suite**: Run `pytest` (Must pass 100%).
 - [ ] **Verify**: Run `boring verify --level FULL` (Ensure 100% pass).
 - [ ] **Security**: Run `boring security-scan --scan-type all` to prevent secret leaks.
