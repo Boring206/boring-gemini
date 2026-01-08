@@ -329,6 +329,13 @@ SECRET_SCAN_PATTERNS = {
     "OpenAI Key": r"sk-[a-zA-Z0-9]{48}",
     "Stripe Key": r"sk_live_[a-zA-Z0-9]{24}",
     "Anthropic Key": r"sk-ant-[a-zA-Z0-9]{32}",
+    # JS/TS Ecosystem Tokens (Phase 13 Enhancement)
+    "NPM Token": r"npm_[a-zA-Z0-9]{36}",
+    "Vercel Token": r"vercel_[a-zA-Z0-9]{24}",
+    "Yarn Token": r"yarn_[a-zA-Z0-9]{40}",
+    "Supabase Key": r"sbp_[a-zA-Z0-9]{40}",
+    "Firebase Key": r"AAAA[A-Za-z0-9_-]{7}:[A-Za-z0-9_-]{140}",
+    "Netlify Token": r"nft_[a-zA-Z0-9]{40}",
 }
 
 
@@ -510,15 +517,15 @@ class SecurityScanner:
 
         issues = []
 
+        # Run pip-audit for Python
         try:
             result = subprocess.run(
                 ["pip-audit", "--format", "json", "--progress-spinner", "off"],
                 capture_output=True,
                 text=True,
                 cwd=self.project_root,
-                timeout=30,  # Reduced from 120 to prevent long hangs
+                timeout=30,
             )
-
             if result.stdout:
                 import json
 
@@ -528,7 +535,7 @@ class SecurityScanner:
                         issue = SecurityIssue(
                             severity="HIGH" if vuln.get("fix_versions") else "MEDIUM",
                             category="dependency",
-                            file_path="pyproject.toml",
+                            file_path="pyproject.toml/requirements.txt",
                             line_number=0,
                             description=f"{vuln.get('name')}: {vuln.get('vulns', [{}])[0].get('id', 'Unknown')}",
                             recommendation=f"Upgrade to {vuln['fix_versions'][0]}"
@@ -538,21 +545,91 @@ class SecurityScanner:
                         issues.append(issue)
                 except Exception:
                     pass
-
-        except FileNotFoundError:
-            pass  # pip-audit not installed
-        except Exception:
+        except (FileNotFoundError, Exception):
             pass
+
+        # Run npm audit for JS/TS if package.json exists
+        if (self.project_root / "package.json").exists():
+            try:
+                # Check if npm is available first
+                import shutil
+
+                if shutil.which("npm"):
+                    result = subprocess.run(
+                        ["npm", "audit", "--json"],
+                        capture_output=True,
+                        text=True,
+                        cwd=self.project_root,
+                        timeout=30,
+                    )
+                    if result.stdout:
+                        import json
+
+                        try:
+                            # npm audit exits with 1 if vulns found, but still prints JSON
+                            data = json.loads(result.stdout)
+                            if "advisories" in data:  # npm 6
+                                vulns = data["advisories"].values()
+                            elif "vulnerabilities" in data:  # npm 7+
+                                vulns = data["vulnerabilities"].values()
+                            else:
+                                vulns = []
+
+                            for vuln in vulns:
+                                # Normalize npm 7 structure if nested
+                                if isinstance(vuln, dict):
+                                    severity = vuln.get("severity", "low").upper()
+                                    pkg_name = (
+                                        vuln.get("name") or vuln.get("module_name") or "unknown"
+                                    )
+                                    # Map npm severity
+                                    if severity in ["CRITICAL", "HIGH"]:
+                                        sec_severity = severity
+                                    else:
+                                        sec_severity = "MEDIUM" if severity == "MODERATE" else "LOW"
+
+                                    issue = SecurityIssue(
+                                        severity=sec_severity,
+                                        category="dependency",
+                                        file_path="package.json",
+                                        line_number=0,
+                                        description=f"npm: {pkg_name} ({vuln.get('title', 'Vulnerability')})",
+                                        recommendation="Run 'npm audit fix'",
+                                    )
+                                    issues.append(issue)
+                        except Exception:
+                            pass
+            except Exception:
+                pass
 
         self.report.dependency_issues = len(issues)
         self.report.issues.extend(issues)
         return issues
 
     def full_scan(self) -> SecurityReport:
-        """Run all security scans."""
-        self.scan_secrets()
-        self.scan_vulnerabilities()
-        self.scan_dependencies()
+        """
+        Run all security scans in parallel for better performance.
+
+        V10.22: Uses ThreadPoolExecutor for parallel scanning.
+        """
+        import concurrent.futures
+
+        # Run all scans in parallel
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+            futures = {
+                executor.submit(self.scan_secrets): "secrets",
+                executor.submit(self.scan_vulnerabilities): "vulnerabilities",
+                executor.submit(self.scan_dependencies): "dependencies",
+            }
+
+            # Wait for all to complete (results are stored in self.report)
+            for future in concurrent.futures.as_completed(futures):
+                futures[future]
+                try:
+                    future.result()  # Raises exception if scan failed
+                except Exception:
+                    pass  # Individual scan failures are handled internally
+
         return self.report
 
 

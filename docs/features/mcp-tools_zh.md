@@ -1,6 +1,8 @@
 # MCP 工具集參考
 
-> Boring 提供 55+ 個 MCP 工具，按邏輯類別組織。本參考涵蓋所有可用工具及使用範例。
+> Boring 提供 55+ 個 MCP 工具，按邏輯分類組織。
+>
+> **✨ Vibe Coder 提示**: 你通常不需要直接呼叫這些工具。請使用 **[通用路由器 (Universal Router)](./vibe-coder_zh.md)** (`boring()`)。
 
 ---
 

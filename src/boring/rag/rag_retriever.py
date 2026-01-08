@@ -1,15 +1,37 @@
 """
-RAG Retriever - Hybrid Search Engine for Code
+RAG Retriever - Hybrid Search Engine for Code (V10.23 Enhanced)
 
 Combines:
 1. Vector search (semantic similarity via ChromaDB)
 2. Graph traversal (dependency-aware context expansion)
 3. Recency weighting (recent edits rank higher)
+4. Intelligent ranking (usage-based learning) - V10.22
+5. 🆕 Session-aware context boosting - V10.23
+6. 🆕 Task-type optimization - V10.23
+7. 🆕 Predictive prefetching - V10.23
+
+Performance optimizations (V10.15):
+- Query result caching with TTL
+- Batch upsert operations
+- Lazy graph building
+- Connection pooling for ChromaDB
+
+Intelligence enhancements (V10.22):
+- IntelligentRanker integration for usage-based re-ranking
+- User selection feedback loop
+- Query pattern learning
+
+V10.23 enhancements:
+- Session context integration for task-aware boosting
+- Predictive prefetch based on access patterns
+- Enhanced scoring with multi-factor confidence
 
 Per user decision: 1-layer graph expansion with smart jump capability.
 """
 
 import logging
+import threading
+import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -20,6 +42,77 @@ from .graph_builder import DependencyGraph, GraphStats
 from .index_state import IndexState
 
 logger = logging.getLogger(__name__)
+
+# =============================================================================
+# Intelligence: Optional IntelligentRanker integration (V10.23 Enhanced)
+# =============================================================================
+_intelligent_ranker = None
+_session_context: Optional[dict] = None  # V10.23: Global session context
+
+
+def _get_intelligent_ranker(project_root: Path):
+    """Lazily load IntelligentRanker if available."""
+    global _intelligent_ranker
+    if _intelligent_ranker is None:
+        try:
+            from boring.intelligence import IntelligentRanker
+
+            _intelligent_ranker = IntelligentRanker(project_root)
+            logger.info("IntelligentRanker enabled for usage-based ranking")
+        except ImportError:
+            logger.debug("IntelligentRanker not available")
+            _intelligent_ranker = False  # Mark as unavailable
+    return _intelligent_ranker if _intelligent_ranker else None
+
+
+def set_session_context(
+    task_type: str = "general",
+    focus_files: Optional[list[str]] = None,
+    keywords: Optional[list[str]] = None,
+):
+    """
+    V10.23: Set session context for task-aware retrieval.
+
+    Args:
+        task_type: Type of task ("debugging", "feature", "refactoring", "testing")
+        focus_files: List of files the user is currently focused on
+        keywords: Keywords from the current task
+    """
+    global _session_context
+    _session_context = {
+        "task_type": task_type,
+        "focus_files": focus_files or [],
+        "keywords": keywords or [],
+        "set_at": time.time(),
+    }
+    logger.debug(f"Session context set: {task_type}, focus: {focus_files}")
+
+
+def get_session_context() -> Optional[dict]:
+    """V10.23: Get current session context."""
+    return _session_context
+
+
+def clear_session_context():
+    """V10.23: Clear session context."""
+    global _session_context
+    _session_context = None
+
+
+# =============================================================================
+# Performance: Query result cache
+# =============================================================================
+_query_cache: dict[str, tuple[list, float]] = {}  # query_hash -> (results, timestamp)
+_QUERY_CACHE_TTL = 30.0  # seconds
+_cache_lock = threading.RLock()
+
+
+def _clear_query_cache():
+    """Clear the query cache (for testing or cache invalidation)."""
+    global _query_cache
+    with _cache_lock:
+        _query_cache.clear()
+
 
 # Try to import ChromaDB (optional dependency)
 try:
@@ -39,8 +132,11 @@ class RetrievalResult:
 
     chunk: CodeChunk
     score: float
-    retrieval_method: str  # "vector", "graph", "keyword"
+    retrieval_method: str  # "vector", "graph", "keyword", "session"
     distance: Optional[float] = None
+    # V10.23: Enhanced metadata
+    session_boost: float = 0.0  # Boost from session context
+    task_relevance: float = 0.0  # Task-type relevance score
 
 
 @dataclass
@@ -52,6 +148,9 @@ class RAGStats:
     total_chunks_indexed: int = 0
     last_index_time: Optional[str] = None
     chroma_available: bool = CHROMA_AVAILABLE
+    # V10.23: Session stats
+    session_context_active: bool = False
+    session_boosts_applied: int = 0
 
 
 class RAGRetriever:
@@ -290,7 +389,7 @@ class RAGRetriever:
         threshold: float = 0.0,
     ) -> list[RetrievalResult]:
         """
-        Retrieve relevant code chunks.
+        Retrieve relevant code chunks with caching.
 
         Args:
             query: Natural language query or error message
@@ -305,6 +404,40 @@ class RAGRetriever:
         """
         if not self.is_available:
             return []
+
+        # Generate cache key
+        cache_key = f"{query}:{n_results}:{expand_graph}:{file_filter}:{chunk_types}:{threshold}"
+
+        # Check cache
+        with _cache_lock:
+            if cache_key in _query_cache:
+                cached_results, cache_time = _query_cache[cache_key]
+                if time.time() - cache_time < _QUERY_CACHE_TTL:
+                    return cached_results
+
+        # Perform actual retrieval
+        results = self._retrieve_impl(
+            query, n_results, expand_graph, file_filter, chunk_types, threshold
+        )
+
+        # Update cache
+        with _cache_lock:
+            _query_cache[cache_key] = (results, time.time())
+
+        return results
+
+    def _retrieve_impl(
+        self,
+        query: str,
+        n_results: int = 10,
+        expand_graph: bool = True,
+        file_filter: Optional[str] = None,
+        chunk_types: Optional[list[str]] = None,
+        threshold: float = 0.0,
+    ) -> list[RetrievalResult]:
+        """
+        Internal implementation of retrieve without caching.
+        """
 
         # Build ChromaDB filter
         where_filter = self._build_where_filter(file_filter, chunk_types)
@@ -387,9 +520,80 @@ class RAGRetriever:
 
             result.score = min(1.0, result.score + boost)  # Cap at 1.0
 
+        # =================================================================
+        # V10.23: SESSION CONTEXT BOOSTING
+        # =================================================================
+        session_ctx = get_session_context()
+        if session_ctx:
+            for result in retrieved:
+                session_boost = 0.0
+                chunk_file = result.chunk.file_path if result.chunk.file_path else ""
+
+                # Boost for focus files
+                if session_ctx.get("focus_files"):
+                    for focus_file in session_ctx["focus_files"]:
+                        if focus_file in chunk_file or chunk_file in focus_file:
+                            session_boost += 0.2
+                            break
+
+                # Boost for task-type keywords
+                task_type = session_ctx.get("task_type", "general")
+                chunk_content = result.chunk.content.lower() if result.chunk.content else ""
+
+                if task_type == "debugging":
+                    if any(
+                        kw in chunk_content
+                        for kw in ["error", "exception", "try", "except", "catch"]
+                    ):
+                        session_boost += 0.1
+                        result.task_relevance = 0.8
+                elif task_type == "testing":
+                    if any(kw in chunk_content for kw in ["test", "assert", "mock", "fixture"]):
+                        session_boost += 0.1
+                        result.task_relevance = 0.8
+                elif task_type == "refactoring":
+                    if any(kw in chunk_content for kw in ["class", "def", "function", "method"]):
+                        session_boost += 0.05
+                        result.task_relevance = 0.6
+
+                # Boost for session keywords
+                if session_ctx.get("keywords"):
+                    matching = sum(
+                        1 for kw in session_ctx["keywords"] if kw.lower() in chunk_content
+                    )
+                    session_boost += min(0.15, matching * 0.05)
+
+                result.session_boost = session_boost
+                result.score = min(1.0, result.score + session_boost)
+
+        # =================================================================
+        # INTELLIGENT RANKING: Re-rank based on usage patterns (V10.22+)
+        # =================================================================
+        ranker = _get_intelligent_ranker(self.project_root)
+        if ranker:
+            # V10.23: Pass session context to ranker
+            context = {"session": session_ctx} if session_ctx else None
+            retrieved = ranker.rerank(query, retrieved, top_k=n_results * 2, context=context)
+
         # Sort by score and limit
         retrieved.sort(key=lambda x: x.score, reverse=True)
         return retrieved[:n_results]
+
+    def record_user_selection(self, chunk_id: str, query: str, session_id: str = ""):
+        """
+        Record that a user selected a specific chunk from results.
+
+        This feedback improves future ranking for similar queries.
+
+        Args:
+            chunk_id: The chunk that was selected
+            query: The query that produced the results
+            session_id: Optional session identifier
+        """
+        ranker = _get_intelligent_ranker(self.project_root)
+        if ranker:
+            ranker.record_selection(chunk_id, query, session_id=session_id)
+            logger.debug(f"Recorded selection: {chunk_id} for query: {query[:50]}")
 
     async def retrieve_async(
         self,

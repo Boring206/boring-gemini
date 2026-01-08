@@ -1,6 +1,8 @@
 # MCP Toolset Reference
 
-> Boring provides 55+ MCP tools organized into logical categories. This reference covers all available tools with usage examples.
+> Boring provides 55+ MCP tools organized into logical categories.
+>
+> **✨ Vibe Coder Tip**: You usually don't need to call these tools directly. Use the **[Universal Router](./vibe-coder.md)** (`boring()`) instead.
 
 ---
 
@@ -268,9 +270,21 @@ graph LR
 | 2 | `speckit_clarify` | Clarify requirements |
 | 3 | `speckit_plan` | Create implementation plan |
 | 4 | `speckit_checklist` | Build acceptance criteria |
-| 5 | `speckit_analyze` | Verify consistency |
+| 5 | `speckit_analyze` | Lint (100 files) | ~15s | < 2s |
 
----
+### Context Optimization (Tool Profiles)
+
+Boring V10.24 introduces **Tool Profiles** to reduce LLM context usage:
+
+| Profile | Tools | Context Usage | Best For |
+|---------|-------|---------------|----------|
+| `minimal` | 8 | ~2k tokens | Chat / Q&A |
+| `lite` | 20 | ~5k tokens | **Default** / General Dev |
+| `standard` | 50 | ~15k tokens | Complex Refactoring |
+| `full` | 98+ | ~30k tokens | Admin / Deep Debug |
+
+Enable via `.boring.toml` or env `BORING_MCP_PROFILE=lite`.
+
 
 ## See Also
 

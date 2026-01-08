@@ -1,9 +1,12 @@
 import os
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 import boring.setup
 
 
+@pytest.mark.skip(reason="Templates deprecated in v10.19.0 - using Skills Guide instead")
 def test_setup_copies_release_workflow(tmp_path):
     """Verify that setup_new_project copies the release-prep workflow."""
 

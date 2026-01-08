@@ -1,5 +1,5 @@
 site_name: Boring-Gemini API Documentation
-site_description: Autonomous AI Development Agent with Function Calling
+site_description: Autonomous AI Development Agent with Vibe Coder
 site_author: Boring206
 repo_url: https://github.com/Boring206/boring-gemini
 
@@ -18,17 +18,35 @@ plugins:
 
 nav:
   - Home: index.md
-  - Getting Started:
-    - Installation: getting-started/installation.md
-    - Quick Start: getting-started/quickstart.md
+  - Tutorials:
+    - Basic: tutorials/TUTORIAL.md
+    - Advanced: tutorials/ADVANCED_TUTORIAL.md
+    - Practical Demo: tutorials/PRACTICAL_DEMO.md
+    - Enterprise Playbook: tutorials/PROFESSIONAL_PLAYBOOK.md
+  - Guides:
+    - Vibe Coder: guides/vibe-coder.md
+    - Cookbook: guides/cookbook.md
+    - Skills Guide: guides/skills_guide.md
+    - Architect Mode: guides/architect_mode.md
+    - Human Alignment: guides/human-alignment_zh.md
+    - Plugins: guides/plugins_zh.md
+  - Features:
+    - MCP Toolset: features/mcp-tools.md
+    - Shadow Mode: features/shadow-mode.md
+    - Quality Gates: features/quality-gates.md
+    - 💎 Hidden Gems: features/hidden-gems.md
+  - Reference:
+    - Tool Reference: reference/APPENDIX_A_TOOL_REFERENCE.md
+    - Configuration: reference/configuration.md
+    - Architecture: reference/architecture.md
+    - Security & Privacy: reference/security-privacy.md
+    - Troubleshooting: reference/troubleshooting.md
+    - FAQ: reference/APPENDIX_B_FAQ.md
+    - Prompt Philosophy: reference/APPENDIX_C_PROMPT_PHILOSOPHY.md
+    - Contributing: reference/contributing.md
   - API Reference:
-    - gemini_client: api/gemini_client.md
-    - circuit: api/circuit.md
     - mcp_server: api/mcp_server.md
-    - llm_providers: api/llm_providers.md
     - verification: api/verification.md
-    - judge: api/judge.md
-  - Contributing: contributing.md
 
 markdown_extensions:
   - admonition

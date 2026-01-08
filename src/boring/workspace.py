@@ -5,13 +5,25 @@ Multi-Project Workspace Manager.
 
 Enables managing multiple projects simultaneously,
 switching context between them without restarting.
+
+Performance optimizations (V10.15):
+- Lazy config loading
+- In-memory caching with dirty flag
+- Batched saves
 """
 
 import json
+import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
+
+# =============================================================================
+# Performance: Configuration cache
+# =============================================================================
+_config_cache: dict[str, tuple[dict, float]] = {}  # path -> (data, mtime)
+_SAVE_DEBOUNCE_MS = 500  # Minimum time between saves
 
 
 @dataclass
@@ -56,6 +68,8 @@ class WorkspaceManager:
     Manages a collection of projects for multi-project workflows.
 
     Config stored in: ~/.boring/workspace.json
+
+    Performance: Uses lazy loading and deferred saves.
     """
 
     def __init__(self, config_dir: Optional[Path] = None):
@@ -63,14 +77,35 @@ class WorkspaceManager:
         self.config_file = self.config_dir / "workspace.json"
         self.projects: dict[str, Project] = {}
         self.active_project: Optional[str] = None
+        self._dirty = False
+        self._last_save_time = 0.0
 
         self._load()
 
     def _load(self):
-        """Load workspace configuration from disk."""
+        """Load workspace configuration from disk with caching."""
+        cache_key = str(self.config_file)
+
         if self.config_file.exists():
             try:
+                file_mtime = self.config_file.stat().st_mtime
+
+                # Check cache
+                if cache_key in _config_cache:
+                    cached_data, cached_mtime = _config_cache[cache_key]
+                    if file_mtime <= cached_mtime:
+                        # Use cached data
+                        self.projects = {
+                            name: Project.from_dict(proj)
+                            for name, proj in cached_data.get("projects", {}).items()
+                        }
+                        self.active_project = cached_data.get("active_project")
+                        return
+
+                # Load from disk
                 data = json.loads(self.config_file.read_text(encoding="utf-8"))
+                _config_cache[cache_key] = (data, file_mtime)
+
                 self.projects = {
                     name: Project.from_dict(proj) for name, proj in data.get("projects", {}).items()
                 }
@@ -80,7 +115,14 @@ class WorkspaceManager:
                 self.active_project = None
 
     def _save(self):
-        """Save workspace configuration to disk."""
+        """Save workspace configuration to disk with debouncing."""
+        current_time = time.time() * 1000  # ms
+
+        # Debounce: skip if saved recently
+        if current_time - self._last_save_time < _SAVE_DEBOUNCE_MS:
+            self._dirty = True
+            return
+
         self.config_dir.mkdir(parents=True, exist_ok=True)
 
         data = {
@@ -89,6 +131,17 @@ class WorkspaceManager:
         }
 
         self.config_file.write_text(json.dumps(data, indent=2), encoding="utf-8")
+
+        # Update cache
+        _config_cache[str(self.config_file)] = (data, time.time())
+        self._last_save_time = current_time
+        self._dirty = False
+
+    def flush(self):
+        """Force save if there are pending changes."""
+        if self._dirty:
+            self._last_save_time = 0  # Reset debounce
+            self._save()
 
     def add_project(
         self, name: str, path: str, description: str = "", tags: Optional[list[str]] = None

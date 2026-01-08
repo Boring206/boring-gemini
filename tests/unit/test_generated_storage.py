@@ -16,6 +16,7 @@ from boring.storage import (
     ErrorPattern,
     LoopRecord,
     SQLiteStorage,
+    _clear_thread_local_connection,
     create_storage,
 )
 
@@ -382,6 +383,9 @@ class TestSQLiteStorage:
     def test_storage_connection_error_handling(self, temp_memory_dir, sample_loop_record):
         """Test error handling in connection context manager."""
         storage = SQLiteStorage(temp_memory_dir)
+        
+        # Clear thread-local cached connection to allow mocking sqlite3.connect
+        _clear_thread_local_connection(storage.db_path)
 
         with patch("sqlite3.connect") as mock_connect:
             mock_conn = MagicMock()

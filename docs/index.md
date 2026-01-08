@@ -22,12 +22,16 @@ Choose your path:
 ### Features (功能)
 Core capabilities explained in depth.
 
-| Feature | Description |
-|---------|-------------|
-| [Performance & Architecture](./features/performance.md) | Incremental verification, caching, parallelization |
-| [MCP Toolset](./features/mcp-tools.md) | All 55+ tools with examples |
-| [Shadow Mode](./features/shadow-mode.md) | Security sandbox for AI operations |
+| **Feature** | **Description** |
+|:--------|:------------|
+| [✨ Vibe Coder Experience](./features/vibe-coder.md) | **NEW**: Pure Natural Language Coding ([中文](./features/vibe-coder_zh.md)) |
+| [🕵️ Hybrid RAG](./features/rag.md) | **POWER**: HyDE + Cross-Encoder + Graph ([中文](./features/rag_zh.md)) |
+| [🧠 Memory System](./features/memory.md) | **BRAIN**: Persistent Learning & Recall ([中文](./features/memory_zh.md)) |
+| [🤖 Autonomous Agents](./features/agents.md) | **LOOP**: Planner, Coder, Reviewer Squad ([中文](./features/agents_zh.md)) |
+| [MCP Toolset](./features/mcp-tools.md) | 55+ Tools, Profiles, Router ([中文](./features/mcp-tools_zh.md)) |
+| [Shadow Mode](./features/shadow-mode.md) | Security Sandbox ([中文](./features/shadow-mode_zh.md)) |
 | [Quality Gates](./features/quality-gates.md) | CI/CD integration and verification levels |
+| [💎 Hidden Gems](./features/hidden-gems.md) | **Pro**: Advanced tips & secrets ([中文](./features/hidden-gems_zh.md)) |
 
 ### Guides (指南)
 Practical how-to content.
@@ -39,17 +43,22 @@ Practical how-to content.
 | [Cookbook](./guides/cookbook.md) | Ready-to-use recipes for all features |
 | [Pro Tips](./guides/pro-tips.md) | Expert techniques by skill level |
 | [Git Hooks](./guides/git-hooks.md) | Automated commit/push verification |
+| [Agentic Workflows](./guides/workflows.md) | **Slash Commands**: `/release-prep` and SOPs |
 | [Knowledge System](./guides/knowledge-system.md) | Brain, RAG & Patterns - storage and migration |
+| [Plugin Guide](./guides/plugins.md) | Extend Boring with custom Python tools |
+| [Knowledge & Brain](./guides/knowledge-management.md) | **Pro**: Backup & sharing intelligence |
+| [Human Alignment](./guides/human-alignment.md) | **Pro**: Steer AI with Rubrics & Memory |
+| [API Integration](./guides/api-integration.md) | Use Boring as a Python library |
 
 ### Tutorials (教學)
 In-depth learning resources.
 
 | Tutorial | Description |
 |----------|-------------|
-| [Basic Tutorial](./TUTORIAL.md) | Getting started with Boring |
-| [Advanced Tutorial](./ADVANCED_TUTORIAL.md) | Deep dive into advanced features |
-| [Practical Demo](./PRACTICAL_DEMO.md) | Real-world project walkthrough |
-| [Professional Playbook](./PROFESSIONAL_PLAYBOOK.md) | Enterprise usage patterns |
+| [Basic Tutorial](./tutorials/TUTORIAL.md) | Getting started with Boring |
+| [Advanced Tutorial](./tutorials/ADVANCED_TUTORIAL.md) | Deep dive into advanced features |
+| [Practical Demo](./tutorials/PRACTICAL_DEMO.md) | Real-world project walkthrough |
+| [Professional Playbook](./tutorials/PROFESSIONAL_PLAYBOOK.md) | Enterprise usage patterns |
 
 ### Reference (參考)
 Deep dive technical documentation.
@@ -59,14 +68,20 @@ Deep dive technical documentation.
 | [Configuration](./reference/configuration.md) | **Deep Dive**: `.boring.toml` & ENV variables |
 | [Troubleshooting](./reference/troubleshooting.md) | **Deep Dive**: Diagnosis & common fixes |
 | [Architecture](./reference/architecture.md) | **Deep Dive**: Internals & Design |
-| [Tool Reference (Appendix A)](./APPENDIX_A_TOOL_REFERENCE.md) | Complete API documentation |
-| [FAQ (Appendix B)](./APPENDIX_B_FAQ.md) | Common questions answered |
-| [Prompt Philosophy (Appendix C)](./APPENDIX_C_PROMPT_PHILOSOPHY.md) | AI prompt design principles |
-| [Architect Mode](./architect_mode.md) | High-level architecture planning |
+| [Tool Reference (Appendix A)](./reference/APPENDIX_A_TOOL_REFERENCE.md) | Complete API documentation |
+| [Security & Privacy](./reference/security-privacy.md) | **Deep Dive**: Data flows & protection |
+| [Agent Comparison](./reference/comparison.md) | **Deep Dive**: Boring vs Cursor/Claude |
+| [FAQ (Appendix B)](./reference/APPENDIX_B_FAQ.md) | Common questions answered |
+| [Prompt Philosophy (Appendix C)](./reference/APPENDIX_C_PROMPT_PHILOSOPHY.md) | AI prompt design principles |
+| [Architect Mode](./guides/architect_mode.md) | High-level architecture planning |
 
 ### API Documentation
 | Page | Description |
 |------|-------------|
+| [Core API](./api/core.md) | Rate limiting, Circuit Breaker, Hooks |
+| [Agents API](./api/agents.md) | Orchestrator, Coder, Reviewer logic |
+| [RAG & Memory API](./api/rag.md) | Vector Search, Hybrid Indexing |
+| [MCP Server API](./api/mcp_server.md) | Model Context Protocol integration |
 | [SpecKit API](./api/speckit.md) | Specification workflow API |
 
 ---
@@ -77,6 +92,7 @@ Deep dive technical documentation.
 | 功能 | 說明 |
 |------|------|
 | [效能與架構](./features/performance_zh.md) | 增量驗證、快取、平行化 |
+| [Vibe Coder Pro](./guides/vibe-coder_zh.md) | **最新**: 文件生成、測試生成、衝擊分析、友善審查 |
 | [MCP 工具集](./features/mcp-tools_zh.md) | 所有 55+ 工具及範例 |
 | [影子模式](./features/shadow-mode_zh.md) | AI 操作的安全沙箱 |
 | [品質閘道](./features/quality-gates_zh.md) | CI/CD 整合和驗證級別 |
@@ -89,15 +105,22 @@ Deep dive technical documentation.
 | [Cookbook](./guides/cookbook_zh.md) | 所有功能的即用食譜 |
 | [專業技巧](./guides/pro-tips_zh.md) | 按技能水平的專家技術 |
 | [Git Hooks](./guides/git-hooks_zh.md) | 自動化提交/推送驗證 |
+| [代理工作流](./guides/workflows_zh.md) | **斜槓指令**：`/release-prep` 與 SOP 自動化 |
 | [知識系統](./guides/knowledge-system_zh.md) | Brain、RAG 與 Patterns - 儲存與遷移 |
+| [插件開發指南](./guides/plugins_zh.md) | 使用自定義 Python 工具擴充 Boring |
+| [知識與大腦管理](./guides/knowledge-management_zh.md) | **進階**：備份與分享學習成果 |
+| [人類對齊指南](./guides/human-alignment_zh.md) | **進階**：使用 Rubrics 與記憶引導 AI |
+| [人類對齊指南](./guides/human-alignment_zh.md) | **進階**：使用 Rubrics 與記憶引導 AI |
+| [API 整合指南](./guides/api-integration_zh.md) | 將 Boring 作為 Python 函式庫使用 |
+| [技能指南](./guides/skills_guide.md) | 掌握 Boring 技能樹 |
 
 ### 教學
 | 教學 | 說明 |
 |------|------|
-| [基礎教學](./TUTORIAL.md) | 開始使用 Boring |
-| [進階教學](./ADVANCED_TUTORIAL_zh.md) | 深入進階功能 |
-| [實戰演示](./PRACTICAL_DEMO.md) | 真實專案演練 |
-| [專業手冊](./PROFESSIONAL_PLAYBOOK.md) | 企業使用模式 |
+| [基礎教學](./tutorials/TUTORIAL.md) | 開始使用 Boring |
+| [進階教學](./tutorials/ADVANCED_TUTORIAL_zh.md) | 深入進階功能 |
+| [實戰演示](./tutorials/PRACTICAL_DEMO.md) | 真實專案演練 |
+| [專業手冊](./tutorials/PROFESSIONAL_PLAYBOOK.md) | 企業使用模式 |
 
 ### 參考
 | 參考 | 說明 |
@@ -105,11 +128,22 @@ Deep dive technical documentation.
 | [配置手冊](./reference/configuration_zh.md) | **深度指南**：`.boring.toml` 與環境變數 |
 | [故障排除](./reference/troubleshooting_zh.md) | **深度指南**：診斷與常見修復 |
 | [架構原理](./reference/architecture_zh.md) | **深度指南**：內部機制與設計 |
-| [工具參考（附錄 A）](./APPENDIX_A_TOOL_REFERENCE_zh.md) | 完整 API 文檔 |
-| [常見問題（附錄 B）](./APPENDIX_B_FAQ_zh.md) | 常見問題解答 |
-| [提示詞哲學（附錄 C）](./APPENDIX_C_PROMPT_PHILOSOPHY_zh.md) | AI 提示設計原則 |
-| [架構師模式](./architect_mode_zh.md) | 高階架構規劃 |
-
+| [工具參考（附錄 A）](./reference/APPENDIX_A_TOOL_REFERENCE_zh.md) | 完整 API 文檔 |
+| [安全與隱私白皮書](./reference/security-privacy_zh.md) | **深度指南**：資料流向與防護機制 |
+| [工具對比分析](./reference/comparison_zh.md) | **深度指南**：Boring vs Cursor/Claude |
+| [常見問題（附錄 B）](./reference/APPENDIX_B_FAQ_zh.md) | 常見問題解答 |
+| [提示詞哲學（附錄 C）](./reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh.md) | AI 提示設計原則 |
+| [架構師模式](./guides/architect_mode_zh.md) | 高階架構規劃 |
+ 
+### API 文檔
+| 頁面 | 說明 |
+|------|------|
+| [核心 API (Core)](./api/core_zh.md) | 速率限制、斷路器、鉤子機制 |
+| [代理 API (Agents)](./api/agents_zh.md) | 編排器、編碼員、審核員邏輯 |
+| [RAG 與記憶 API](./api/rag_zh.md) | 向量搜尋、混合索引與知識庫 |
+| [MCP 伺服器 API](./api/mcp_server_zh.md) | 模型內容協定 (MCP) 整合 |
+| [SpecKit API](./api/speckit_zh.md) | 規格書工作流 API |
+ 
 ---
 
 ## 🔗 External Links
@@ -122,4 +156,4 @@ Deep dive technical documentation.
 
 ## 📝 Contributing
 
-See [Contributing Guide](./contributing.md) for how to contribute to Boring.
+See [Contributing Guide](./reference/contributing.md) for how to contribute to Boring.

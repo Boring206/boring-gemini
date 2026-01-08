@@ -158,6 +158,16 @@ boring_verify(level="FULL")
 boring_verify(level="SEMANTIC")
 ```
 
+#### ✨ Vibe Coder CLI
+```bash
+# 自然語言驗證
+boring-route "幫我驗證程式碼"
+# 🎯 boring_verify (STANDARD)
+
+boring-route "做一次完整檢查"
+# 🎯 boring_verify (FULL)
+```
+
 ### 背景任務
 
 ```python

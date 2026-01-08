@@ -144,6 +144,11 @@ def audited(func: Callable) -> Callable:
     def wrapper(*args, **kwargs):
         start_time = time.time()
 
+        # Lazy import to avoid circular dependency
+        from .error_translator import ErrorTranslator
+
+        translator = ErrorTranslator()
+
         # Capture all arguments including defaults
         try:
             bound_args = sig.bind(*args, **kwargs)
@@ -159,12 +164,49 @@ def audited(func: Callable) -> Callable:
 
         try:
             result = func(*args, **kwargs)
+
+            # Check for functional errors (status="ERROR")
+            if isinstance(result, dict) and result.get("status") == "ERROR" and "message" in result:
+                explanation = translator.translate(result["message"])
+                result["vibe_explanation"] = explanation.friendly_message
+                if explanation.fix_command:
+                    result["vibe_fix"] = explanation.fix_command
+
+                # Tutorial Hook for Error
+                try:
+                    from .tutorial import TutorialManager
+
+                    TutorialManager().show_tutorial("first_error")
+                except Exception as tutorial_err:
+                    import sys
+
+                    sys.stderr.write(f"[boring-audit] Tutorial hook failed: {tutorial_err}\n")
+
         except Exception as e:
             duration_ms = int((time.time() - start_time) * 1000)
+
+            # Translate exception
+            error_msg = str(e)
+            explanation = translator.translate(error_msg)
+
+            # Tutorial Hook for Exception
+            try:
+                from .tutorial import TutorialManager
+
+                TutorialManager().show_tutorial("first_error")
+            except Exception as tutorial_err:
+                import sys
+
+                sys.stderr.write(f"[boring-audit] Tutorial hook failed: {tutorial_err}\n")
+
             AuditLogger.get_instance().log(
                 tool_name=func.__name__,
                 args=all_args,
-                result={"status": "EXCEPTION", "error": str(e)},
+                result={
+                    "status": "EXCEPTION",
+                    "error": error_msg,
+                    "vibe_explanation": explanation.friendly_message,
+                },
                 duration_ms=duration_ms,
             )
             raise

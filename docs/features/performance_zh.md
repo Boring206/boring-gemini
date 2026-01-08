@@ -27,8 +27,18 @@ boring verify --force
 | 操作 | 冷啟動 | 快取後 |
 |------|--------|--------|
 | 語法檢查（100 檔案） | ~5秒 | < 1秒 |
-| Lint（100 檔案） | ~15秒 | < 2秒 |
-| 完整驗證 | ~60秒 | ~5秒 |
+| Lint (100 files) | ~15s | < 2s |
+| Full Verification | ~60s | ~5s |
+
+### 上下文優化 (Context Optimization)
+
+Boring V10.24 引入 **工具配置檔 (Tool Profiles)** 來大幅減少上下文佔用：
+
+- **問題**: 載入 98 個工具定義會消耗約 30k tokens 的上下文窗口。
+- **解決方案**: `lite` 配置 (預設) 僅載入 20 個核心工具 (~5k tokens)。
+- **影響**: **上下文減少 80%**，推理更快，成本更低。
+
+通過 `.boring.toml` 或環境變數 `BORING_MCP_PROFILE=lite` 啟用。
 
 ---
 

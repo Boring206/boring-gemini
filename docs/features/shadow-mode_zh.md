@@ -4,6 +4,8 @@
 
 ---
 
+> **✨ Vibe Coder 相容**: Shadow Mode 會攔截 **所有** 工具呼叫，包括透過 Vibe Coder (`boring()`) 或 CLI (`boring-route`) 發出的請求。
+
 ## 🛡️ 什麼是影子模式？
 
 影子模式作為 AI 和檔案系統之間的**強制攔截層**。啟用時，它會：

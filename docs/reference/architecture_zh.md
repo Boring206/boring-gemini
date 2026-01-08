@@ -29,6 +29,40 @@ graph TD
     AgentLoop -->|驗證| Verifier
     Verifier -->|結果| Circuit
     Circuit -->|狀態| AgentLoop
+
+    style AgentLoop fill:#f9f,stroke:#333,stroke-width:2px
+```
+
+## 🔄 開發循環流程
+
+Boring 遵循持續回饋循環以確保程式碼的正確性。
+
+```mermaid
+sequenceDiagram
+    participant U as 使用者/CLI
+    participant A as Agent (思考)
+    participant E as 執行器 (工具)
+    participant V as 驗證器 (測試)
+    participant M as 記憶 (大腦)
+
+    U->>A: 提交任務
+    loop 直到完成或斷路器開啟
+        A->>M: 獲取上下文與學習經驗
+        M-->>A: 上下文數據
+        A->>A: 生成計畫
+        A->>E: 執行工具 (編輯/執行)
+        E-->>A: 執行結果
+        A->>V: 觸發驗證
+        V->>V: 執行 Lint 與測試
+        V-->>A: 通過/失敗 + 日誌
+        alt 如果失敗
+            A->>M: 記錄錯誤模式
+            A->>A: 分析下一步修復原因
+        else 如果通過
+            A->>M: 更新進度
+        end
+    end
+    A->>U: 最終報告
 ```
 
 ### 1. 自主迴圈 (`src/boring/loop/`)

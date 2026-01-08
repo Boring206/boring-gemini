@@ -1,41 +1,35 @@
 ---
-description: Release Preparation Checklist
+description: Release Preparation Checklist (Turbo Mode)
 ---
 
+// turbo-all
 # Release Preparation Checklist
 
-Use this workflow before tagging a new release to ensure all documentation and configuration files are consistent.
+Use this workflow to let the AI Agent handle all release-related tasks automatically.
 
 ## 1. Version Bump & Configuration
 
-- [ ] **`pyproject.toml`**: Update `version = "x.y.z"`
-- [ ] **`src/boring/__init__.py`**: Update version string (if applicable)
+- [ ] **Bump Version**: Detect current version in `pyproject.toml` and increment it (Patch by default).
+- [ ] **Sync Config**: Update version strings in `src/boring/__init__.py`, `gemini-extension.json`, and `smithery.yaml`.
+- [ ] **Asset Check**: Ensure `NOTICE` and `LICENSE` copyright years are current (if needed).
 
 ## 2. Documentation Updates
 
-Check the following files for version numbers and new features:
+- [ ] **Changelog**: Analyze git logs since last tag and update `CHANGELOG.md`.
+- [ ] **Bilingual Sync**: Cross-check all `docs/*.md` files with their `*_zh.md` counterparts to ensure feature parity.
+- [ ] **English README**: Update Shields.io badges and "New Features" section in `README.md`.
+- [ ] **Chinese README**: Synchronize translations and badges in `README_zh.md`.
 
-- [ ] **`CHANGELOG.md`**: Add new section `## [x.y.z] - YYYY-MM-DD`
-- [ ] **`README.md`**:
-    - Update Badge: `[![Version](...-x.y.z-green.svg)]`
-    - Check "New Features" section is up to date
-- [ ] **`README_zh.md`**:
-    - Update Badge: `[![Version](...-x.y.z-green.svg)]`
-    - Check "New Features" section (translated)
-- [ ] **`CONTRIBUTING.md`**: Check for any process changes
-- [ ] **`GEMINI.md`**: Update context if architecture changed
+## 3. Deep Verification
 
-## 3. Verification
+- [ ] **Verify**: Run `boring verify --level FULL` (Ensure 100% pass).
+- [ ] **Security**: Run `boring security-scan --scan-type all` to prevent secret leaks.
+- [ ] **Docs**: Run `mkdocs build --strict` to ensure link integrity.
+- [ ] **RAG**: Execute `boring rag-reindex --force` for a clean post-release index.
 
-- [ ] Run `boring verify --level FULL`
-- [ ] Check `boring hooks status`
+## 4. Automated Git Operations
 
-## 4. Git Operations
-
-```bash
-git add pyproject.toml CHANGELOG.md README.md README_zh.md
-git commit -m "chore(release): Bump version to x.y.z"
-git tag vx.y.z
-git push origin main
-git push origin vx.y.z
-```
+- [ ] **Staging**: Add all modified version and documentation files.
+- [ ] **Commit**: Create a semantic commit `chore(release): bump version to x.y.z`.
+- [ ] **Tagging**: Create git tag `vx.y.z`.
+- [ ] **Push**: Push branch and tags to origin.

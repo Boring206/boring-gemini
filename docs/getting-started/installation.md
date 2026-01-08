@@ -77,7 +77,12 @@ Add to your MCP config:
 
 ```bash
 boring --version
+boring --version
 # Expected: boring v10.18.3
+
+boring-route --help
+# Expected: Boring Route - Natural Language Tool Router
+
 ```
 
 ---

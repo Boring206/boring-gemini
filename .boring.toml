@@ -6,8 +6,25 @@
 
 [boring]
 # Project metadata
-version = "10.15.0"
+version = "10.24.0"
 min_python = "3.9"
+
+# ==============================================================================
+# MCP SERVER CONFIGURATION (V10.24)
+# ==============================================================================
+[boring.mcp]
+# Tool exposure profile: minimal (8), lite (20), standard (50), full (all 98+)
+# Set to "lite" to reduce LLM context usage and improve tool selection
+profile = "lite"
+
+# Enable the universal router tool (boring) for natural language routing
+enable_router = true
+
+# Tools to always include regardless of profile (comma-separated)
+# always_include = ["boring_commit", "boring_verify"]
+
+# Tools to always exclude regardless of profile (comma-separated)
+# always_exclude = ["boring_dangerous_tool"]
 
 # ==============================================================================
 # VERIFICATION POLICIES

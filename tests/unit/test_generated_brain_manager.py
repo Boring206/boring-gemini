@@ -275,8 +275,9 @@ class TestBrainManager:
         brain._save_patterns(patterns)
 
         result = brain.get_relevant_patterns("authentication", limit=5)
-        assert len(result) == 1
-        assert result[0]["pattern_id"] == "ERR_1"
+        # V10.22: TF-IDF 智能匹配可能返回多個相關結果，但最相關的應該在最前面
+        assert len(result) >= 1
+        assert result[0]["pattern_id"] == "ERR_1"  # 最相關的結果應該是 ERR_1
 
     def test_brain_manager_create_rubric(self, tmp_path):
         """Test create_rubric creates rubric file."""

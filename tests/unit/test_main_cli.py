@@ -286,7 +286,7 @@ def test_status_command(mock_dependencies):
     result = runner.invoke(app, ["status"])
 
     assert result.exit_code == 0
-    assert "Boring Project Status" in result.stdout
+    assert "✨ Vibe Coder Status ✨" in result.stdout
     assert "Test Project" in result.stdout
     assert "Loop #1: SUCCESS" in result.stdout
 
