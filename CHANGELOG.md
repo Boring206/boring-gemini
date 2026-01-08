@@ -1,6 +1,6 @@
 # Changelog
 
-## [10.24.1] - 2026-01-08 - Dashboard & Documentation Polish 💅
+## [10.24.2] - 2026-01-08 - Dashboard & Documentation Polish 💅
 
 ### Fixed
 - **Dashboard Launch**: Improved Streamlit detection logic in `boring-dashboard` command.
