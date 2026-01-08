@@ -1,5 +1,19 @@
 # Changelog
 
+## [10.24.6] - 2026-01-08 - Documentation Harmony 📚✨
+
+### Added
+- **Comprehensive Prompt Reference**: New `docs/reference/prompts.md` (English) and `docs/reference/prompts_zh.md` (Traditional Chinese) providing detailed usage scenarios for all 35+ MCP prompts and workflows.
+- **Top 5 Prompts Table**: Added quick-reference table to READMEs for the most essential Vibe Coder prompts.
+
+### Fixed
+- **Documentation Synchronization**: Fully synchronized `README_zh.md` with the English version, resolving content gaps (Troubleshooting section) and structural differences.
+- **Localization Fixes**: Fixed garbled emoji characters (e.g., 🛡️) in Chinese documentation.
+- **LSP Clarity**: Rewrote LSP section to clearly distinguish between MCP (Recommended for Cursor) and LSP (for VS Code/Neovim), adding specific config examples.
+
+### Changed
+- **Vibe Coder Guide**: Streamlined Vibe Coder usage examples in README for better readability.
+
 ## [10.24.5] - 2026-01-08 - Global Brain 🌐
 
 ### Added

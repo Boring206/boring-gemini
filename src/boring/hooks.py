@@ -182,7 +182,9 @@ class HooksManager:
         # Replace 'boring' command with explicit python module invocation
         # This ensures the hook runs in the same environment where it was installed
         final_content = content.replace("boring verify", f'"{python_exe}" -m boring verify')
-        final_content = final_content.replace("boring speckit-analyze", f'"{python_exe}" -m boring speckit-analyze')
+        final_content = final_content.replace(
+            "boring speckit-analyze", f'"{python_exe}" -m boring speckit-analyze'
+        )
 
         # Replace existence check
         check_cmd = f'"{python_exe}" -m boring --help'

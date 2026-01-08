@@ -82,7 +82,6 @@ def main(
 console = Console()
 
 
-
 @app.command(hidden=True)
 def start(
     backend: str = typer.Option(
@@ -204,7 +203,6 @@ def start(
         else:
             console.print("[dim]Tip: Run with --self-heal to attempt auto-repair.[/dim]")
         raise typer.Exit(code=1)
-
 
 
 @app.command(hidden=True)
