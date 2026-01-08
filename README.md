@@ -86,15 +86,11 @@ npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ### Option 2: Local pip Installation
 
 ```bash
-# Basic installation
-pip install boring-aicoding
-
-# Full installation with all features
+# Install with all features (Recommended for Vibe Coder)
 pip install "boring-aicoding[all]"
 
-# Specific extras
-pip install "boring-aicoding[mcp]"     # MCP server + RAG
-pip install "boring-aicoding[vector]"  # Pure RAG/Vector search
+# Or minimal install
+pip install boring-aicoding
 ```
 
 ### Option 3: Clone from GitHub (Fallback)
