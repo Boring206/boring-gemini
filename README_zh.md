@@ -1,10 +1,10 @@
-# Boring for Gemini
-
-**Autonomous AI Agent Loop with VibeCoder Experience**
-
 [![PyPI version](https://badge.fury.io/py/boring-aicoding.svg)](https://badge.fury.io/py/boring-aicoding)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Vibe Coder](https://img.shields.io/badge/Vibe_Coder-純自然語言-ff69b4)](docs/features/vibe-coder_zh.md)
+
+# Boring for Gemini
+
+**Autonomous AI Agent Loop with VibeCoder Experience**
 
 [English](README.md) | [繁體中文](README_zh.md)
 
@@ -26,11 +26,8 @@ Boring-Gemini 現在內建 **通用自然語言路由器**。你不需要記住 
 
 **在終端機也能用：**
 ```bash
-boring-route "幫我寫測試"
-# 🎯 自動路由到 boring_test_gen (100%)
-
-boring-route "幫我想一下這怎麼解"
-# 🎯 自動路由到 sequentialthinking (Thinking Mode)
+boring-route "幫我審代碼"
+# 🎯 自動路由到 boring_code_review (100%)
 ```
 
 [👉 了解更多 Vibe Coder 體驗](docs/features/vibe-coder_zh.md)
@@ -72,6 +69,7 @@ Boring 不只是一個 MCP 伺服器；它是一套 **Intelligence Maximization 
 | 🛡️ **影子模式** | 高風險操作需人工批准，跨會話持久配置 |
 | 📐 **規格驅動** | 從 PRD 到 Code 100% 規格一致性 |
 | 🔒 **品質閘道** | CI/CD 多層閘道 + 多語言 linting + 20+ 檔案類型安全掃描 |
+| ✨ **Vibe Coder Pro** | **文檔生成** | **測試生成** | **程式碼審查** | **效能建議** | **架構檢查** | 多語言支援 (Py/JS/TS) |
 
 ---
 
@@ -127,15 +125,26 @@ pip install -e .
 
 ---
 
----
-
 ## 🚀 使用指南 (Usage)
 
 ### 1️⃣ MCP 模式（推薦）
 將 Boring 加入您的 **Cursor** 或 **VS Code** 設定檔。Agent 將變身為 IDE 中的自主工程師。
 
-- **Vibe Coder**: 直接在 Chat 輸入 "幫我審查代碼"。
-- **工具箱**: 直接調用 50+ 種強大工具。
+- **Prompts**: 點擊 ✨ 按鈕或使用 `Cmd+I` 選擇 prompt。
+- **Workflows**: 在 Chat 中輸入 `/` 以觸發工作流。
+
+#### 💎 Top 5 最常用功能
+
+**[👉 查看完整功能參考手冊 (含所有 30+ 功能)](docs/reference/prompts_zh.md)**
+
+| 指令 | 類型 | 說明 |
+| :--- | :--- | :--- |
+| **`vibe_start`** | Prompt | **一鍵專案啟動**。從想法到架構計畫一步到位。 |
+| **`quick_fix`** | Prompt | **一鍵修復**。自動修復 Lint 錯誤與 Bug。 |
+| **`/speckit-plan`** | Workflow | **技術規劃**。生成詳細的實作計畫。 |
+| **`smart_commit`** | Prompt | **智能提交**。根據開發進度自動生成 Commit。 |
+| **`review_code`** | Prompt | **架構師審查**。深度分析程式碼隱患。 |
+
 
 ### 2️⃣ 維護指令
 在終端機執行以下指令：
@@ -151,22 +160,49 @@ python -m boring dashboard
 python -m boring status
 ```
 
-### 3️⃣ LSP 伺服器 (可選)
-如果您偏好標準 LSP (Language Server Protocol) 整合：
+### 3️⃣ LSP 伺服器 (可選 - 僅適用於 VS Code / Neovim)
 
-1. **安裝前置需求**:
+> [!NOTE]
+> **Cursor 用戶不需要 LSP！** Cursor 已內建 AI 功能，只需使用上方的 MCP 配置即可。
+>
+> LSP 適用於：VS Code（無 AI）、Neovim（Linux/Mac 終端機編輯器）。
+
+**兩者差異：**
+| | MCP | LSP |
+|---|-----|-----|
+| **用途** | AI 代理工具（聊天指令） | 編輯器語法服務 |
+| **互動方式** | 聊天："幫我審代碼" | 自動補全、進階診斷 |
+| **必要性** | ✅ **必要** | ⚠️ 可選 |
+
+<details>
+<summary>🔧 <b>LSP 配置說明（點此展開）</b></summary>
+
+1. **安裝**:
    ```bash
    pip install "boring-aicoding[all]"
    ```
-2. **配置編輯器 (VS Code / Neovim)**:
-   設定您的編輯器 LSP Client 執行此指令 (請勿直接在終端機執行)：
-   ```bash
-   python -m boring lsp start
+
+2. **VS Code** (`settings.json`):
+   ```json
+   {
+     "boring.lsp.enabled": true,
+     "boring.lsp.command": "python",
+     "boring.lsp.args": ["-m", "boring", "lsp", "start"]
+   }
    ```
 
+3. **Neovim** (`nvim-lspconfig` - Linux/Mac 終端機用戶):
+   ```lua
+   require('lspconfig').boring.setup {
+     cmd = { "python", "-m", "boring", "lsp", "start" },
+     filetypes = { "python", "javascript", "typescript" },
+   }
+   ```
+</details>
+
 > [!CAUTION]
-> **Legacy CLI (`boring start`) 已棄用**
-> 請使用 IDE 中的 MCP 整合以獲得最佳體驗。
+> **請勿直接在終端機執行 `python -m boring lsp start`**
+> 此指令僅供編輯器配置使用，LSP 伺服器透過 stdin/stdout 通訊。
 
 ---
 
@@ -246,10 +282,11 @@ export BORING_MCP_PROFILE=lite
 
 | 類別 | 連結 |
 |------|------|
-| **入門** | [Vibe Coder 指南](docs/guides/vibe-coder_zh.md) · [快速教學](docs/guides/quick-tutorials_zh.md) |
-| **功能** | [MCP 工具（55+）](docs/features/mcp-tools_zh.md) · [影子模式](docs/features/shadow-mode_zh.md) · [品質閘道](docs/features/quality-gates_zh.md) |
+| **入門** | [Vibe Coder 指南](docs/guides/vibe-coder_zh.md) · [**🗣️ 自然語言觸發詞**](docs/guides/vibe-coder-prompts.md) · [快速教學](docs/guides/quick-tutorials_zh.md) |
+| **功能** | [MCP 工具（55+）](docs/features/mcp-tools_zh.md) · [影子模式](docs/features/shadow-mode_zh.md) · [品質閘道](docs/features/quality-gates_zh.md) · [監控](docs/features/monitor.md) |
 | **指南** | [Cookbook](docs/guides/cookbook_zh.md) · [專業技巧](docs/guides/pro-tips_zh.md) · [Git Hooks](docs/guides/git-hooks_zh.md) · [代理工作流](docs/guides/workflows_zh.md) |
-| **進階** | [插件開發](docs/guides/plugins_zh.md) · [知識管理](docs/guides/knowledge-management_zh.md) · [API 整合](docs/guides/api-integration_zh.md) · [人類對齊](docs/guides/human-alignment_zh.md) |
+| **學習** | [教學課程](docs/tutorials/TUTORIAL.md) · [技能指南](docs/guides/skills_guide.md) · [知識管理](docs/guides/knowledge-management_zh.md) |
+| **進階** | [插件開發](docs/guides/plugins_zh.md) · [API 整合](docs/guides/api-integration_zh.md) · [人類對齊](docs/guides/human-alignment_zh.md) |
 | **參考** | [核心架構](docs/reference/architecture_zh.md) · [安全與隱私](docs/reference/security-privacy_zh.md) · [工具對比](docs/reference/comparison_zh.md) · [V10 更新日誌](docs/changelog/v10_zh.md) |
 
 ---
@@ -319,7 +356,7 @@ Boring 預設整合了最強大的外部 MCP 工具，讓 Agent 變身超級工�
 
 ---
 
-## �️ 影子模式
+## 🛡️ 影子模式
 
 影子模式保護你免受破壞性 AI 操作：
 
@@ -335,10 +372,33 @@ boring_shadow_mode(action="set_level", level="STRICT")
 
 ---
 
+
+## 🔧 疑難排解與環境
+
+### 常見問題
+
+**1. "Command not found" 或 Python 版本錯誤**
+如果執行 `boring` 指令失敗或使用了錯誤的 Python 環境（例如系統 Python 而非 venv），請使用 `python -m`：
+
+```bash
+# ✅ 推薦用法，確保可靠性
+python -m boring --help
+python -m boring hooks install
+```
+
+**2. "tree-sitter-languages not installed" 警告**
+這表示進階程式碼解析器缺失。RAG 功能將僅限於關鍵字搜尋。
+
+**解決方式**:
+```bash
+pip install tree-sitter-languages
+# 或更新所有依賴
+pip install "boring-aicoding[all]"
+```
+
 ---
 
-
-## 🎯 未來願景 (Future Vision)
+## 🎯 未來願景
 
 **注意：以下功能需要伺服器端支援 (尚未實作)**
 

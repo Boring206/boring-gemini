@@ -132,8 +132,21 @@ pip install -e .
 ### 1️⃣ MCP Mode (Recommended)
 Add Boring to your **Cursor** or **VS Code** config. The Agent will become an autonomous engineer in your IDE.
 
-- **Vibe Coder**: Just type "Please review my code" in Chat.
-- **Tools**: Use 50+ tools directly.
+- **Prompts**: Click the ✨ button or use `Cmd+I` to select a prompt.
+- **Workflows**: Type `/` in Chat to trigger a workflow.
+
+#### 💎 Top 5 Most Used Functions
+
+**[👉 View Complete Reference Manual (All 30+ Functions)](docs/reference/prompts.md)**
+
+| Command | Type | Description |
+| :--- | :--- | :--- |
+| **`vibe_start`** | Prompt | **One-click project kick-off**. From idea to architecture plan. |
+| **`quick_fix`** | Prompt | **Auto-fix everything**. Repairs lint errors and bugs. |
+| **`/speckit-plan`** | Workflow | **Technical Planning**. Creates a detailed implementation plan. |
+| **`smart_commit`** | Prompt | **Auto Commit**. Generates commit message from progress. |
+| **`review_code`** | Prompt | **Architect Review**. Deep code analysis for issues. |
+
 
 ### 2️⃣ Maintenance Commands
 Run these commands in your terminal:
@@ -149,22 +162,49 @@ python -m boring dashboard
 python -m boring status
 ```
 
-### 3️⃣ LSP Server (Optional)
-If you prefer standard LSP (Language Server Protocol) integration:
+### 3️⃣ LSP Server (Optional - For VS Code / Neovim Only)
 
-1. **Install Prerequisites**:
+> [!NOTE]
+> **Cursor users: You DON'T need LSP!** Cursor has built-in AI features. Just use MCP config above.
+>
+> LSP is for: VS Code (without AI), Neovim, and other terminal editors.
+
+**What's the difference?**
+| | MCP | LSP |
+|---|-----|-----|
+| **Purpose** | AI Agent tools (chat commands) | Editor syntax services |
+| **Interaction** | Chat: "Review my code" | Auto-complete, diagnostics |
+| **Required?** | ✅ **Yes** | ⚠️ Optional |
+
+<details>
+<summary>🔧 <b>LSP Configuration (click to expand)</b></summary>
+
+1. **Install**:
    ```bash
    pip install "boring-aicoding[all]"
    ```
-2. **Configure Editor (VS Code / Neovim)**:
-   Set your editor's LSP client to execute this command (DO NOT run manually list in terminal):
-   ```bash
-   python -m boring lsp start
+
+2. **VS Code** (`settings.json`):
+   ```json
+   {
+     "boring.lsp.enabled": true,
+     "boring.lsp.command": "python",
+     "boring.lsp.args": ["-m", "boring", "lsp", "start"]
+   }
    ```
 
+3. **Neovim** (`nvim-lspconfig` - for Linux/Mac terminal users):
+   ```lua
+   require('lspconfig').boring.setup {
+     cmd = { "python", "-m", "boring", "lsp", "start" },
+     filetypes = { "python", "javascript", "typescript" },
+   }
+   ```
+</details>
+
 > [!CAUTION]
-> **Legacy CLI (`boring start`) is deprecated.**
-> Please use the MCP integration in your IDE for the best experience.
+> **DO NOT run `python -m boring lsp start` directly in terminal.**
+> This command is for editor configuration only. The LSP server communicates via stdin/stdout.
 
 ---
 
