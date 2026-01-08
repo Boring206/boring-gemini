@@ -117,7 +117,10 @@ def main():
             # Run with Uvicorn
             import uvicorn
 
-            uvicorn.run(app, host=host, port=port, log_level="info")
+            # Ensure host is string and port is int to avoid getaddrinfo TypeErrors
+            host_str = str(host)
+            port_int = int(port)
+            uvicorn.run(app, host=host_str, port=port_int, log_level="info")
         else:
             # Fallback: Use FastMCP's built-in HTTP run
             from boring.mcp.server import get_server_instance
@@ -125,7 +128,7 @@ def main():
             mcp = get_server_instance()
             tool_count = len(getattr(mcp, "_tools", getattr(mcp, "tools", {})))
             logger.info(f"Registered tools: {tool_count}")
-            mcp.run(transport="http", host=host, port=port)
+            mcp.run(transport="http", host=str(host), port=int(port))
 
     except Exception as e:
         logger.error(f"Failed to start HTTP server: {e}")

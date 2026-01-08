@@ -51,3 +51,28 @@ boring-route "how do we handle token expiration?"
 *   `boring_rag_search`: The main entry point (Hybrid search).
 *   `boring_rag_context`: Get deep context for a specific file/symbol.
 *   `boring_rag_index`: Force a re-index of the codebase.
+*   `boring_rag_reload`: Reload RAG features after installing dependencies.
+
+## ⚠️ Notes & Troubleshooting
+
+### 1. Missing Dependencies
+RAG features require specialized libraries. If you see "No module named `chromadb`" or `sentence-transformers`, run:
+```bash
+python -m pip install chromadb sentence-transformers
+```
+
+> [!IMPORTANT]
+> **MCP Server Environment**: If you're using Cursor or other IDE MCP integrations, the Boring MCP Server may run in a **separate Python environment** (e.g., `/usr/local/bin/python` or Docker container).
+> 
+> In this case, you need to:
+> 1. Check the Python path used by MCP (see the `Python:` line in error messages)
+> 2. Install dependencies in **that environment**:
+>    ```bash
+>    /usr/local/bin/python -m pip install chromadb sentence-transformers
+>    ```
+> 3. Or configure MCP to use your local Python environment
+
+After installation, you **must** run `boring_rag_reload` or **Refresh the MCP Server**.
+
+### 2. Changes Not Reflecting
+If you've updated code or settings and don't see the changes in the tools, please refer to [Monitor Troubleshooting - Changes Not Reflecting](file:///d:/User/Desktop/ralphgeminicode/boring-gemini/docs/features/monitor.md#4-why-dont-my-changes-take-effect) for MCP server refresh instructions.

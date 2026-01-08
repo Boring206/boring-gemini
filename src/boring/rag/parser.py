@@ -12,13 +12,15 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
+import sys
+
 try:
     from tree_sitter_languages import get_language, get_parser
 
     HAS_TREE_SITTER = True
 except ImportError:
     HAS_TREE_SITTER = False
-    logger.warning("tree-sitter-languages not installed. Advanced parsing disabled.")
+    logger.warning(f"tree-sitter-languages not installed in {sys.executable}. Advanced parsing disabled.")
 
 
 @dataclass

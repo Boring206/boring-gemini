@@ -335,5 +335,8 @@ def run_web_monitor(project_root: Path, port: int = 8765, host: str = "127.0.0.1
 
     app = create_monitor_app(project_root)
     if app:
-        print(f"🚀 Starting Boring Monitor at http://{host}:{port}")
-        uvicorn.run(app, host=host, port=port, log_level="warning")
+        # Ensure host is string and port is int to avoid getaddrinfo TypeErrors on some environments
+        host_str = str(host)
+        port_int = int(port)
+        print(f"🚀 Starting Boring Monitor at http://{host_str}:{port_int}")
+        uvicorn.run(app, host=host_str, port=port_int, log_level="warning")

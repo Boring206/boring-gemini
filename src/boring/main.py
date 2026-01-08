@@ -48,7 +48,7 @@ EPILOG_TEXT = """
   [dim]# Check project health[/dim]
   $ boring status
 
-[bold]Documentation:[/bold] https://github.com/your-username/boring-gemini
+[bold]Documentation:[/bold] https://github.com/Boring206/boring-gemini
 """
 
 app = typer.Typer(

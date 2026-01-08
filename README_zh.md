@@ -75,6 +75,17 @@ Boring 不只是一個 MCP 伺服器；它是一套 **Intelligence Maximization 
 
 ---
 
+> [!IMPORTANT]
+> **Boring 現在主要作為 MCP 工具使用（透過 Cursor / Claude Desktop 等 IDE）**
+> 
+> - ❌ **不建議在 CMD/終端機直接執行 `boring start`**：Gemini CLI 已不再支援免費授權（除非使用 API，但未經充分測試）
+> - ✅ **推薦使用方式**：透過 Smithery 或 MCP 設定檔在 IDE/Client 中使用 Boring 工具
+> - ✅ **監控工具仍可用**：`boring-monitor`、`boring-dashboard` 可在本地執行
+> 
+> 大部分功能已針對 MCP 環境優化，CLI 模式已不再是主要支援方式。
+
+---
+
 ## 📦 快速安裝
 
 ### 選項 1：Smithery（✅ 推薦）
@@ -255,12 +266,18 @@ Boring 預設整合了最強大的外部 MCP 工具，讓 Agent 變身超級工�
 | **Context7** | 📚 **即時文檔庫**<br>查詢最新的 Library 用法，解決訓練資料過時問題。 | `context7_query_docs` |
 | **Sequential Thinking** | 🤔 **深度思考**<br>強迫 Agent 在寫代碼前進行從分析到驗證的完整思維鏈。 | `sequentialthinking` |
 | **Critical Thinking** | 🧐 **批判性思維**<br>自我反思與尋找盲點，進行高品質 Code Review。 | `boring-route "think deeper"` |
-| **Boring Monitor** | 🖥️ **戰情儀表板**<br>即時查看 Agent 狀態、日誌與記憶庫。 | `boring-dashboard` |
+| **Boring Monitor** | 🖥️ **TUI 戰情室**<br>終端機即時查看狀態、日誌 (v10.23+)。 | `boring-monitor` / `python -m boring.monitor` |
+| **Boring Dashboard**| 🎨 **GUI 儀表板**<br>圖形化介面，包含大腦瀏覽器與視覺化日誌。 | `boring-dashboard` / `python -m boring dashboard` / `python -m boring.monitor --web` |
 
 ## 🚀 性能優化 (v10.21.0)
 - **Thread-local SQLite**: 零開銷資料庫連線。
 - **WAL Mode**: 50%更快併發讀取。
 - **Smart Caching**: 30秒查詢快取與 Pattern 快取，實現即時 RAG 回應。
+
+---
+
+## 🛠️ 常見問題 (FAQ)
+- **明明安裝了 `[all]` 卻顯示找不到？** 請嘗試使用 `python -m boring dashboard`。這通常是多 Python 版本環境導致的，詳見 [問題排查指南](./docs/features/monitor_zh.md#常見問題排查)。
 
 ---
 

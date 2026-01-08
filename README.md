@@ -73,6 +73,17 @@ Boring isn't just an MCP server; it's a **Intelligence Maximization System**:
 
 ---
 
+> [!IMPORTANT]
+> **Boring is now primarily an MCP tool (used via Cursor / Claude Desktop / IDE)**
+> 
+> - ❌ **Not recommended to run `boring start` directly in CMD/terminal**: Gemini CLI no longer supports free authorization (unless using API, which is not well-tested)
+> - ✅ **Recommended usage**: Use Boring tools through Smithery or MCP config in your IDE or Client
+> - ✅ **Monitoring tools still work**: `boring-monitor`, `boring-dashboard` can be run locally
+> 
+> Most features are optimized for the MCP environment. CLI mode is no longer the primary supported method.
+
+---
+
 ## 📦 Quick Installation
 
 ### Option 1: Smithery (✅ Recommended)
@@ -249,7 +260,8 @@ Boring integrates the most powerful external MCP tools by default, turning the A
 | **Context7** | 📚 **Real-time Docs**<br>Query latest library usage, solving stale training data issues. | `context7_query_docs` |
 | **Sequential Thinking** | 🤔 **Deep Thinking**<br>Force Agent into a full chain of thought from analysis to verification before coding. | `sequentialthinking` |
 | **Critical Thinking** | 🧐 **Critical Thinking**<br>Self-reflection and blind spot detection for high-quality Code Review. | `boring-route "think deeper"` |
-| **Boring Monitor** | 🖥️ **Dashboard**<br>Real-time view of Agent status, logs, and memory. | `boring-dashboard` |
+| **Boring Monitor** | 🖥️ **TUI Dashboard**<br>Real-time terminal view of status, logs (v10.23+). | `boring-monitor` / `python -m boring.monitor` |
+| **Boring Dashboard**| 🎨 **GUI Dashboard**<br>Comprehensive web view with Brain Explorer. | `boring-dashboard` / `python -m boring dashboard` / `python -m boring.monitor --web` |
 
 ## 🚀 Performance (v10.21.0)
 - **Thread-local SQLite**: Zero-overhead DB connections.
