@@ -1,5 +1,29 @@
 # Changelog
 
+## [10.24.5] - 2026-01-08 - Global Brain 🌐
+
+### Added
+- **🆕 Global Brain - Cross-Project Knowledge Sharing**: Implemented complete Global Brain system for sharing learned patterns across projects
+  - `boring_global_export` - Export high-quality patterns from project to global brain (`~/.boring_brain/global_patterns.json`)
+  - `boring_global_import` - Import patterns from global brain to project (with type filtering)
+  - `boring_global_list` - List all global patterns with statistics
+  - Quality filtering (min_success_count) to ensure only verified patterns are shared
+  - Auto-deduplication based on pattern_id
+  - Cross-platform support (Windows/Linux/Mac)
+  - Bilingual UI (Traditional Chinese/English)
+
+### Documentation
+- **Global Brain Guides**: Added comprehensive bilingual documentation
+  - `docs/features/global-brain.md` - Complete English guide
+  - `docs/features/global-brain_zh.md` - 繁體中文完整指南
+  - Includes: concepts, workflows, best practices, FAQ
+  
+### Use Cases
+- Share successful error solutions across projects
+- Build personal knowledge base that grows with experience
+- Quick-start new projects with proven patterns
+- Team knowledge sharing (manual JSON file distribution)
+
 ## [10.24.4] - 2026-01-08 - Cursor Test Fixes & MCP Environment Documentation 🐛
 
 ### Fixed
