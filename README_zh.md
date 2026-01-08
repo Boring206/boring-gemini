@@ -88,15 +88,11 @@ npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ### 選項 2：本地 pip 安裝
 
 ```bash
-# 基本安裝
-pip install boring-aicoding
-
-# 完整安裝（含所有功能）
+# 完整安裝 (推薦用於 Vibe Coder 體驗)
 pip install "boring-aicoding[all]"
 
-# 特定擴充
-pip install "boring-aicoding[mcp]"     # MCP 伺服器 + RAG
-pip install "boring-aicoding[vector]"  # 純 RAG/向量搜尋
+# 或最小安裝
+pip install boring-aicoding
 ```
 
 ### 選項 3：從 GitHub Clone（備用）
