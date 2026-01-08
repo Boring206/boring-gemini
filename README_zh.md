@@ -97,12 +97,12 @@ pip install boring-aicoding
 
 **🤔 我該選哪一個？**
 
-| 功能 | `[all]` (完整版) | 基礎版 |
+| 功能 | `[all]` (完整版 / Local) | `Lite` (基礎版 / Smithery 預設) |
 | :--- | :--- | :--- |
-| **RAG 記憶** | ✅ 向量理解 (懂語意) | ⚠️ 僅關鍵字 (較弱) |
-| **自我驗證** | ✅ 可跑測試 (`boring verify`) | ❌ 無法驗證 |
-| **儀表板** | ✅ 圖形介面 | ❌ 無 |
-| **適用場景** | **Vibe Coding** | 純指令操作 |
+| **RAG 記憶** | ✅ 向量理解 (懂語意 + 關聯) | ⚠️ 僅關鍵字 (無向量庫) |
+| **自我驗證** | ✅ 可跑測試 (`boring verify`) | ❌無法自我驗證 (缺 pytest) |
+| **儀表板** | ✅ 圖形介面 (Dashboard) | ❌ 無 |
+| **Vibe Coding**| ✅ **完全體** (會思考、會修復) | ⚠️ **輕量版** (只會寫，不會驗) |
 
 ### 選項 3：從 GitHub Clone（備用）
 
@@ -245,6 +245,18 @@ result = boring_vibe_check(project_path=".", max_files=100)
 print(result["security_issues"])  # 顯示偵測到的安全風險
 ```
 
+
+## 🧠 擴充智能 (External Intelligence)
+
+Boring 預設整合了最強大的外部 MCP 工具，讓 Agent 變身超級工程師。
+
+| 工具 | 功能 | 如何使用 |
+|------|------|----------|
+| **Context7** | 📚 **即時文檔庫**<br>查詢最新的 Library 用法，解決訓練資料過時問題。 | `context7_query_docs` |
+| **Sequential Thinking** | 🤔 **深度思考**<br>強迫 Agent 在寫代碼前進行從分析到驗證的完整思維鏈。 | `sequentialthinking` |
+| **Critical Thinking** | 🧐 **批判性思維**<br>自我反思與尋找盲點，進行高品質 Code Review。 | `boring-route "think deeper"` |
+| **Boring Monitor** | 🖥️ **戰情儀表板**<br>即時查看 Agent 狀態、日誌與記憶庫。 | `boring-dashboard` |
+
 ## 🚀 性能優化 (v10.21.0)
 - **Thread-local SQLite**: 零開銷資料庫連線。
 - **WAL Mode**: 50%更快併發讀取。
@@ -268,13 +280,14 @@ boring_shadow_mode(action="set_level", level="STRICT")
 
 ---
 
-## 🔭 未來願景
+## 🎯 未來願景 (Future Vision)
 
-| 階段 | 重點 |
-|------|------|
-| **2025 Q1** | NotebookLM 整合、MCP Compose |
-| **2025 Q2** | Agent Orchestration 2.0、跨儲存庫學習 |
-| **2025 Q3** | AI 代碼生成基準、自我修復管道 |
+**注意：以下功能需要伺服器端支援 (尚未實作)**
+
+- **🌐 Boring Cloud**: 雲端協作與團隊分享
+- **🤝 Team Workflows**: 多人工作流同步
+- **🔐 Enterprise SSO**: 企業級身分驗證
+
 
 ---
 

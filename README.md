@@ -95,12 +95,12 @@ pip install boring-aicoding
 
 **🤔 Which one should I choose?**
 
-| Feature | `[all]` (Full) | Basic |
+| Feature | `[all]` (Full / Local) | `Lite` (Basic / Smithery Default) |
 | :--- | :--- | :--- |
-| **RAG Memory** | ✅ Vector + Semantic | ⚠️ Keyword only (Weak) |
-| **Self-Verify** | ✅ Can run tests (`boring verify`) | ❌ Cannot verify |
+| **RAG Memory** | ✅ Vector + Semantic | ⚠️ Keyword only (No vector DB) |
+| **Self-Verify** | ✅ Can run tests (`boring verify`) | ❌ Cannot verify (Missing pytest) |
 | **Dashboard** | ✅ GUI Available | ❌ None |
-| **Use Case** | **Vibe Coding** | CLI Only |
+| **Vibe Coding**| ✅ **Full Experience** (Think + Fix) | ⚠️ **Lite** (Write code only) |
 
 ### Option 3: Clone from GitHub (Fallback)
 
@@ -191,9 +191,10 @@ export BORING_MCP_PROFILE=lite
 | Category | Links |
 |----------|-------|
 | **Getting Started** | [Vibe Coder Guide](docs/guides/vibe-coder.md) · [**🗣️ Natural Language Prompts**](docs/guides/vibe-coder-prompts.md) · [Quick Tutorials](docs/guides/quick-tutorials.md) |
-| **Features** | [MCP Tools (55+)](docs/features/mcp-tools.md) · [Shadow Mode](docs/features/shadow-mode.md) · [Quality Gates](docs/features/quality-gates.md) |
+| **Features** | [MCP Tools (55+)](docs/features/mcp-tools.md) · [Shadow Mode](docs/features/shadow-mode.md) · [Quality Gates](docs/features/quality-gates.md) · [Monitoring](docs/features/monitor.md) |
 | **Guides** | [Cookbook](docs/guides/cookbook.md) · [Pro Tips](docs/guides/pro-tips.md) · [Git Hooks](docs/guides/git-hooks.md) · [Workflows](docs/guides/workflows.md) |
-| **Advanced** | [Plugins](docs/guides/plugins.md) · [Knowledge Mgmt](docs/guides/knowledge-management.md) · [API Integration](docs/guides/api-integration.md) · [Human Alignment](docs/guides/human-alignment.md) |
+| **Learning** | [Tutorials](docs/tutorials/TUTORIAL.md) · [Skills Guide](docs/guides/skills_guide.md) · [Knowledge Mgmt](docs/guides/knowledge-management.md) |
+| **Advanced** | [Plugins](docs/guides/plugins.md) · [API Integration](docs/guides/api-integration.md) · [Human Alignment](docs/guides/human-alignment.md) |
 | **Reference** | [Architecture](docs/reference/architecture.md) · [Security & Privacy](docs/reference/security-privacy.md) · [Agent Comparison](docs/reference/comparison.md) · [V10 Changelog](docs/changelog/v10.md) |
 
 ---
@@ -238,21 +239,33 @@ result = boring_vibe_check(project_path=".", max_files=100)
 print(result["security_issues"])
 ```
 
-## 🚀 Performance Optimization (v10.21.0)
-- **Thread-local SQLite**: Zero-overhead database connections.
+
+## 🧠 External Intelligence
+
+Boring integrates the most powerful external MCP tools by default, turning the Agent into a super engineer.
+
+| Tool | Function | How to Use |
+|------|----------|------------|
+| **Context7** | 📚 **Real-time Docs**<br>Query latest library usage, solving stale training data issues. | `context7_query_docs` |
+| **Sequential Thinking** | 🤔 **Deep Thinking**<br>Force Agent into a full chain of thought from analysis to verification before coding. | `sequentialthinking` |
+| **Critical Thinking** | 🧐 **Critical Thinking**<br>Self-reflection and blind spot detection for high-quality Code Review. | `boring-route "think deeper"` |
+| **Boring Monitor** | 🖥️ **Dashboard**<br>Real-time view of Agent status, logs, and memory. | `boring-dashboard` |
+
+## 🚀 Performance (v10.21.0)
+- **Thread-local SQLite**: Zero-overhead DB connections.
 - **WAL Mode**: 50% faster concurrent reads.
-- **Smart Caching**: 30s Query Cache & Pattern Caching for instant RAG responses.
+- **Smart Caching**: 30s query cache & Pattern cache for instant RAG.
 
 ---
 
 ## 🛡️ Shadow Mode
 
-Shadow Mode protects you from destructive AI operations:
+Shadow mode protects you from destructive AI operations:
 
 ```
-DISABLED  ⚠️  No protection (isolated containers only)
-ENABLED   🛡️  Auto-approve safe, block dangerous (default)
-STRICT    🔒  All writes require approval (production)
+DISABLED  ⚠️  No protection (Container only)
+ENABLED   🛡️  Auto-approve safe, Block risky (Default)
+STRICT    🔒  Approve all writes (Production)
 ```
 
 ```python
@@ -261,13 +274,14 @@ boring_shadow_mode(action="set_level", level="STRICT")
 
 ---
 
-## 🔭 Future Vision
+## 🎯 Future Vision
 
-| Phase | Focus |
-|-------|-------|
-| **Q1 2025** | NotebookLM Integration, MCP Compose |
-| **Q2 2025** | Agent Orchestration 2.0, Cross-Repo Learning |
-| **Q3 2025** | AI Code Generation Benchmarks, Self-Healing Pipelines |
+**Note: The following features require server support (not yet implemented)**
+
+- **🌐 Boring Cloud**: Cloud collaboration and team sharing
+- **🤝 Team Workflows**: Multi-person workflow synchronization
+- **🔐 Enterprise SSO**: Enterprise-grade identity authentication
+
 
 ---
 

@@ -55,19 +55,32 @@ pip install -e .
 
 Add to your MCP config:
 
-```json
 {
   "mcpServers": {
     "boring": {
-      "command": "python",
-      "args": ["-m", "boring.mcp.server"],
+      "command": "boring-mcp",
+      "args": [],
       "env": {
+        "BORING_MCP_MODE": "1",
+        "BORING_MCP_PROFILE": "pro",
         "PROJECT_ROOT_DEFAULT": "."
       }
     }
   }
 }
 ```
+
+> **Note**: `boring-mcp` is installed automatically with pip. It enables a cleaner configuration than invoking python directly.
+
+### 🖥️ Dashboard & GUI
+
+If you installed with `[all]` or `[gui]`, you can launch the control dashboard:
+
+```bash
+boring-dashboard
+```
+
+This opens a browser interface to view logs, circuit breaker status, and memory patterns.
 
 ### Config File Locations
 
