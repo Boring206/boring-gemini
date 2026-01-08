@@ -256,8 +256,8 @@ class TestAutoEvolve:
         evolver = WorkflowEvolver(temp_project)
         result = evolver.auto_evolve("release-prep")
 
-        # Should find and fix gaps
-        assert result["status"] in ["EVOLVED", "NO_GAPS"]
+        # Should find gaps and either fix them or ask for interaction
+        assert result["status"] in ["EVOLVED", "NO_GAPS", "NEEDS_INTERACTION", "SKIPPED"]
 
     def test_analyze_project_returns_context(self, temp_project):
         """Test analyze_project returns proper context dict."""

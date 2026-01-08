@@ -24,7 +24,46 @@ boring://tools/agents
 
 ---
 
+### 0. 技能生態系 (Skills Ecosystem)
+
+#### 技能發現 (`boring_skills_browse`)
+
+互動式瀏覽社群 Skills 和 Extensions。
+
+```python
+boring_skills_browse(query="web")
+# 回傳結果會包含安裝建議
+```
+
+#### 技能安裝 (`boring_skills_install`)
+
+一鍵安裝指定的 Skill (基於 `skills_catalog.py` 的白名單)。
+
+```python
+boring_skills_install(name="awesome-gemini-cli-extensions")
+```
+
+---
+
 ## 🧰 核心工具類別
+
+### 0. 技能發現 (`boring_skills_browse`)
+
+互動式瀏覽並發現由社群維護的 Gemini/Claude Skills 與 MCP Servers。
+
+```python
+boring_skills_browse(
+    query="web automation",   # 關鍵字：'web', 'database', 'auth'
+    platform="all"            # all|gemini|claude
+)
+```
+
+**用途**：
+- 尋找適合當前任務的擴充工具
+- 發現最新的 MCP Servers
+- 獲取安裝指引
+
+---
 
 ### 1. 安全掃描 (`boring_security_scan`)
 

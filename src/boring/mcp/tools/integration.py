@@ -3,6 +3,7 @@ from typing import Annotated
 from pydantic import Field
 
 from ...audit import audited
+from ...skills_catalog import SKILLS_CATALOG
 from ..instance import MCP_AVAILABLE, mcp
 from ..utils import get_project_root_or_error
 
@@ -101,6 +102,70 @@ To connect Boring with NotebookLM and fix authentication issues:
 """
 
 
+@audited
+def boring_skills_install(
+    name: Annotated[
+        str, Field(description="Name of the skill to install (e.g., 'awesome-gemini-cli')")
+    ],
+) -> dict:
+    """
+    Install a specific skill by name (One-click Install).
+
+    Args:
+        name: The exact name of the skill from the skills catalog.
+
+    Returns:
+        Installation result status and message.
+    """
+    import subprocess
+
+    # 1. Find the skill
+    skill = next((s for s in SKILLS_CATALOG if s.name == name), None)
+    if not skill:
+        return {
+            "status": "ERROR",
+            "message": f"❌ Skill '{name}' not found in catalog.",
+            "suggestion": "Run `boring_skills_browse` to find valid skill names.",
+        }
+
+    # 2. Check for install command
+    if not skill.install_command:
+        return {
+            "status": "SKIPPED",
+            "message": f"ℹ️ Skill '{name}' has no automated install command.",
+            "url": skill.repo_url,
+            "instruction": "Please visit the repo URL to install manually.",
+        }
+
+    # 3. Execute installation
+    cmd = skill.install_command
+    try:
+        # Use shell=True for complex commands (e.g., git clone, npm install)
+        # Security Note: SKILLS_CATALOG acts as an allowlist, so these commands are trusted.
+        process = subprocess.run(
+            cmd,
+            shell=True,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        return {
+            "status": "SUCCESS",
+            "message": f"✅ Successfully installed '{name}'!",
+            "command": cmd,
+            "stdout": process.stdout.strip(),
+        }
+    except subprocess.CalledProcessError as e:
+        return {
+            "status": "ERROR",
+            "message": f"❌ Installation failed for '{name}'",
+            "command": cmd,
+            "stderr": e.stderr.strip(),
+            "stdout": e.stdout.strip(),
+        }
+
+
+
 if MCP_AVAILABLE and mcp is not None:
     mcp.tool(
         description="Install recommended extensions",
@@ -109,3 +174,7 @@ if MCP_AVAILABLE and mcp is not None:
     mcp.tool(description="Get NotebookLM setup guide", annotations={"readOnlyHint": True})(
         boring_notebooklm_guide
     )
+    mcp.tool(
+        description="Install a skill by name",
+        annotations={"readOnlyHint": False, "idempotentHint": False},
+    )(boring_skills_install)

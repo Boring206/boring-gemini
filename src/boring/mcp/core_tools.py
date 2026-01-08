@@ -209,7 +209,7 @@ def register_core_tools(mcp, audited, helpers):
             "platform_filter": platform,
             "results": formatted,
             "vibe_summary": "\n".join(summary_lines),
-            "tip": "💡 查看完整資源清單: docs/skills_guide.md",
+            "tip": "💡 想要下載嗎？直接問我: '幫我安裝 [名稱]' (我會使用 boring_skills_install)。",
         }
 
     return {
