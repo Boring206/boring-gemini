@@ -39,7 +39,6 @@ boring start
 |---------|--------------|
 | `/vibe_start [idea]` | Start a new project with AI guidance |
 | `/quick_fix` | Fix all linting/formatting errors |
-| `/quick_fix` | Fix all linting/formatting errors |
 | `/smart_commit` | Generate semantic commit message |
 | `boring-route "help me"` | Natural language routing |
 
