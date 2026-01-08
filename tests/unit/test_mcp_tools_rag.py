@@ -102,15 +102,17 @@ class TestGetRetriever:
 
             assert result == mock_retriever
 
-    def test_当RAG不可用时_应抛出ImportError(self, temp_project):
-        """规格：RAG 不可用 → 应抛出 ImportError"""
+    def test_当RAG不可用时_应返回None(self, temp_project):
+        """规格：RAG 不可用 → 应返回 None"""
         # 清空缓存
         rag._retrievers.clear()
         original_create = rag.create_rag_retriever
         rag.create_rag_retriever = None
 
-        with pytest.raises(ImportError):
-            rag.get_retriever(temp_project)
+        result = rag.get_retriever(temp_project)
+
+        # 新行为：返回 None 而不是抛出 ImportError
+        assert result is None
 
         # 恢复
         rag.create_rag_retriever = original_create
