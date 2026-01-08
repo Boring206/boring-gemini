@@ -8,6 +8,7 @@ before allowing commits/pushes. This implements a local version of
 
 import os
 import stat
+import sys
 from pathlib import Path
 
 from rich.console import Console
@@ -174,8 +175,21 @@ class HooksManager:
             hook_path.rename(backup_path)
             console.print(f"[yellow]Backed up existing {hook_name} to {hook_name}.backup[/yellow]")
 
+        # Get absolute path to current python executable
+        # Ensure forward slashes for shell script compatibility (even on Windows)
+        python_exe = sys.executable.replace("\\", "/")
+
+        # Replace 'boring' command with explicit python module invocation
+        # This ensures the hook runs in the same environment where it was installed
+        final_content = content.replace("boring verify", f'"{python_exe}" -m boring verify')
+        final_content = final_content.replace("boring speckit-analyze", f'"{python_exe}" -m boring speckit-analyze')
+
+        # Replace existence check
+        check_cmd = f'"{python_exe}" -m boring --help'
+        final_content = final_content.replace("command -v boring", check_cmd)
+
         # Write new hook
-        hook_path.write_text(content, encoding="utf-8")
+        hook_path.write_text(final_content, encoding="utf-8")
 
         # Make executable (Unix systems)
         try:
