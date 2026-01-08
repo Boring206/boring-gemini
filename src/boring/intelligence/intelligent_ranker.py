@@ -169,7 +169,7 @@ class IntelligentRanker:
                 top_chunk_ids TEXT,  -- JSON array
                 occurrence_count INTEGER DEFAULT 1,
                 last_seen TEXT,
-                semantic_cluster TEXT DEFAULT '',
+                semantic_cluster TEXT DEFAULT ''
             );
 
             -- V10.23: Session context tracking

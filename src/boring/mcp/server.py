@@ -26,7 +26,7 @@ from .tools.advanced import register_advanced_tools
 from .tools.discovery import register_discovery_resources
 
 # Import tools packages to trigger decorators
-from .utils import detect_project_root, get_project_root_or_error
+from .utils import configure_runtime_for_project, detect_project_root, get_project_root_or_error
 from .v9_tools import register_v9_tools
 from .v10_tools import register_v10_tools
 from .vibe_tools import register_vibe_tools
@@ -78,6 +78,7 @@ def get_server_instance():
     helpers = {
         "get_project_root_or_error": get_project_root_or_error,
         "detect_project_root": detect_project_root,
+        "configure_runtime": configure_runtime_for_project,
     }
     register_v9_tools(instance.mcp, audited, helpers)
 
@@ -145,6 +146,7 @@ def run_server():
     helpers = {
         "get_project_root_or_error": get_project_root_or_error,
         "detect_project_root": detect_project_root,
+        "configure_runtime": configure_runtime_for_project,
     }
     register_v9_tools(instance.mcp, audited, helpers)
 
