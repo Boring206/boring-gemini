@@ -11,6 +11,7 @@ This module exposes the intelligence subsystem to MCP for Vibe Coder maximizatio
 - boring_session_context: Set/get session context for intelligent processing
 """
 
+from dataclasses import asdict
 from typing import Annotated
 
 from pydantic import Field
@@ -197,7 +198,9 @@ def register_intelligence_tools(mcp, audited, helpers):
 
         try:
             cache = AdaptiveCache(project_root)
-            stats = cache.get_stats()
+            cache_stats = cache.get_stats()
+            # Convert dataclass to dict for consistent access
+            stats = asdict(cache_stats) if hasattr(cache_stats, '__dataclass_fields__') else cache_stats
             tier_dist = cache.get_tier_distribution()
             correlations = cache.get_correlation_insights()
 
@@ -268,7 +271,9 @@ def register_intelligence_tools(mcp, audited, helpers):
             from ..intelligence.adaptive_cache import AdaptiveCache
 
             cache = AdaptiveCache(project_root)
-            combined_stats["cache"] = cache.get_stats()
+            cache_stats = cache.get_stats()
+            # Convert dataclass to dict for consistent access
+            combined_stats["cache"] = asdict(cache_stats) if hasattr(cache_stats, '__dataclass_fields__') else cache_stats
         except Exception as e:
             combined_stats["cache"] = {"error": str(e)}
 

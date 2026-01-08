@@ -180,3 +180,4 @@ test.py
 debug_*.py
 cli_*.txt
 demo_*.py
+fix_paths.py

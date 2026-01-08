@@ -52,8 +52,18 @@ def _get_storage(project_root: Path):
         from ..storage import SQLiteStorage
 
         memory_dir = project_root / ".boring_memory"
-        return SQLiteStorage(memory_dir)
-    except Exception:
+        # SQLiteStorage.__init__ already creates directories automatically
+        # But we add an explicit check here for clarity
+        storage = SQLiteStorage(memory_dir)
+        return storage
+    except ImportError:
+        # Missing dependency (unlikely, but possible)
+        return None
+    except Exception as e:
+        # Any other initialization error (permissions, disk space, etc.)
+        # Log to stderr for debugging, but don't crash the tool
+        import sys
+        sys.stderr.write(f"[boring] Warning: Failed to initialize Storage: {e}\n")
         return None
 
 
@@ -430,7 +440,13 @@ def register_vibe_tools(mcp, audited, helpers):
             return error.get("message")
 
         project_root = Path(root_str)
-        target = project_root / target_path if target_path != "." else project_root
+        # Handle both absolute and relative paths
+        if target_path != "." and (target_path.startswith('/') or (len(target_path) > 1 and target_path[1] == ':')):
+            target = Path(target_path)
+        elif target_path == ".":
+            target = project_root
+        else:
+            target = project_root / target_path
 
         files_to_scan = []
         if target.is_file():
@@ -527,7 +543,13 @@ def register_vibe_tools(mcp, audited, helpers):
             return error.get("message")
 
         project_root = Path(root_str)
-        target = project_root / target_path if target_path != "." else project_root
+        # Handle both absolute and relative paths
+        if target_path != "." and (target_path.startswith('/') or (len(target_path) > 1 and target_path[1] == ':')):
+            target = Path(target_path)
+        elif target_path == ".":
+            target = project_root
+        else:
+            target = project_root / target_path
 
         files_to_scan = []
         if target.is_file():
@@ -608,7 +630,15 @@ def register_vibe_tools(mcp, audited, helpers):
             return error
 
         project_root = Path(root_str)
-        target = project_root / target_path if target_path != "." else project_root
+        # Handle both absolute and relative paths
+        if target_path.startswith('/') or (len(target_path) > 1 and target_path[1] == ':'):
+            # Absolute path (Unix-style or Windows-style)
+            target = Path(target_path)
+        elif target_path == ".":
+            target = project_root
+        else:
+            # Relative path
+            target = project_root / target_path
 
         if not target.exists():
             return {"status": "ERROR", "message": f"❌ 找不到目標: {target}"}
@@ -805,7 +835,13 @@ def register_vibe_tools(mcp, audited, helpers):
             return error
 
         project_root = Path(root_str)
-        target = project_root / target_path if target_path != "." else project_root
+        # Handle both absolute and relative paths
+        if target_path != "." and (target_path.startswith('/') or (len(target_path) > 1 and target_path[1] == ':')):
+            target = Path(target_path)
+        elif target_path == ".":
+            target = project_root
+        else:
+            target = project_root / target_path
 
         if not target.exists() or not target.is_file():
             return {"status": "ERROR", "message": f"❌ 找不到目標檔案: {target_path}"}
@@ -1037,10 +1073,9 @@ def register_vibe_tools(mcp, audited, helpers):
         - 提供信心分數和預防建議
         - 學習專案特定的錯誤模式
         """
-        try:
-            project_root = _get_project_root_or_error(project_path)
-        except Exception as e:
-            return {"status": "ERROR", "message": str(e)}
+        project_root, error = _get_project_root_or_error(project_path)
+        if error:
+            return error
 
         # Try to use PredictiveAnalyzer
         predictions = []

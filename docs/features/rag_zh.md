@@ -51,3 +51,28 @@ boring-route "token 過期是怎麼處理的？"
 *   `boring_rag_search`: 主要入口 (混合搜尋)。
 *   `boring_rag_context`: 獲取特定檔案/符號的深度上下文。
 *   `boring_rag_index`: 強制重新索引程式庫。
+*   `boring_rag_reload`: 安裝套件後重新載入 RAG 功能。
+
+## ⚠️ 注意事項與排查
+
+### 1. 缺少相依套件 (Dependency)
+RAG 功能需要專門的處理套件，如果您看到「找不到 `chromadb`」或 `sentence-transformers` 錯誤，請執行：
+```bash
+python -m pip install chromadb sentence-transformers
+```
+
+> [!IMPORTANT]
+> **MCP 伺服器環境問題**：如果您使用 Cursor 或其他 IDE 的 MCP 整合，Boring MCP Server 可能運行在**獨立的 Python 環境**中（如 `/usr/local/bin/python` 或 Docker 容器）。
+> 
+> 在這種情況下，您需要：
+> 1. 確認 MCP 使用的 Python 路徑（查看錯誤訊息中的 `Python:` 行）
+> 2. 在**該環境**中安裝依賴：
+>    ```bash
+>    /usr/local/bin/python -m pip install chromadb sentence-transformers
+>    ```
+> 3. 或修改 MCP 設定使用本地 Python 環境
+
+安裝完成後，請務必執行 `boring_rag_reload` 或是 **重新整理 MCP 伺服器**。
+
+### 2. 更新未生效
+如果您修改了 RAG 的設定或翻譯，請參考 [監控工具排查 - 更新未生效](file:///d:/User/Desktop/ralphgeminicode/boring-gemini/docs/features/monitor_zh.md#4-為什麼修改了程式碼如翻譯工具設定卻沒生效) 進行 MCP 伺服器重啟。

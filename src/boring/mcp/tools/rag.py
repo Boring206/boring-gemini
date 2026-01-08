@@ -5,7 +5,7 @@ Exposes RAG functionality as MCP tools for AI agents.
 """
 
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Optional
 
 from pydantic import Field
 
@@ -119,10 +119,10 @@ def reload_rag_dependencies() -> dict:
         }
 
 
-def get_retriever(project_root: Path) -> RAGRetriever:
-    """Get or create RAG retriever for a project."""
+def get_retriever(project_root: Path) -> Optional[RAGRetriever]:
+    """Get or create RAG retriever for a project. Returns None if RAG is not available."""
     if create_rag_retriever is None:
-        raise ImportError(f"RAG module not available: {_RAG_IMPORT_ERROR}")
+        return None
     key = str(project_root)
     if key not in _retrievers:
         _retrievers[key] = create_rag_retriever(project_root)
@@ -190,12 +190,13 @@ def register_rag_tools(mcp, helpers: dict):
         if error:
             return error.get("message")
         retriever = get_retriever(project_root)
-
-        if not retriever.is_available:
+        if retriever is None or not retriever.is_available:
+            pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
             return (
-                "❌ RAG not available. Install optional dependencies:\n"
-                f"    {sys.executable} -m pip install chromadb sentence-transformers\n\n"
-                "After installation, run `boring_rag_reload` to apply changes without restarting."
+                "❌ RAG module not available.\n\n"
+                f"[Recommended Fix]\nRun this command: {pip_cmd}\n\n"
+                "After installation, run `boring_rag_reload` to apply changes.\n\n"
+                "💡 [Instructions for AI]: If you see this error, please ask the user if you should run the install command for them."
             )
 
         count = retriever.build_index(force=force)
@@ -281,15 +282,13 @@ def register_rag_tools(mcp, helpers: dict):
         if error:
             return error.get("message")
         retriever = get_retriever(project_root)
-
-        if not retriever.is_available:
+        if retriever is None or not retriever.is_available:
+            pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
             return (
-                "❌ RAG not available.\n\n"
-                "**Install dependencies:**\n"
-                "```bash\n"
-                f"{sys.executable} -m pip install chromadb sentence-transformers\n"
-                "```\n"
-                "After installation, run `boring_rag_reload` to apply changes without restarting."
+                "❌ RAG module not available.\n\n"
+                f"[Recommended Fix]\nRun this command: {pip_cmd}\n\n"
+                "After installation, run `boring_rag_reload` to apply changes.\n\n"
+                "💡 [Instructions for AI]: If you see this error, please ask the user if you should run the install command for them."
             )
 
         # Enhanced index health check with diagnostics
@@ -372,16 +371,14 @@ def register_rag_tools(mcp, helpers: dict):
         project_root, error = get_project_root_or_error(project_path)
         if error:
             return error.get("message")
+
+        report = []  # Initialize report list
         retriever = get_retriever(project_root)
-
-        report = ["# 📊 RAG Index Status\n"]
-
-        # Check ChromaDB availability
-        if not retriever.is_available:
-            report.append("## ❌ ChromaDB Not Available\n")
-            report.append(
-                "Install dependencies:\n```bash\npip install chromadb sentence-transformers\n```\n"
-            )
+        if retriever is None or not retriever.is_available:
+            pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
+            report.append("## ❌ RAG Not Available\n")
+            report.append(f"Install dependencies:\n```bash\n{pip_cmd}\n```\n")
+            report.append("\n💡 [Instructions for AI]: If you see this, please ask the user if you should run the install command for them.")
             return "\n".join(report)
 
         report.append("## ✅ ChromaDB Available\n")
@@ -473,9 +470,14 @@ def register_rag_tools(mcp, helpers: dict):
         if error:
             return error.get("message")
         retriever = get_retriever(project_root)
-
-        if not retriever.is_available:
-            return "❌ RAG not available. Run boring_rag_index first."
+        if retriever is None or not retriever.is_available:
+            pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
+            return (
+                "❌ RAG module not available.\n\n"
+                f"[Recommended Fix]\nRun this command: {pip_cmd}\n\n"
+                "After installation, run `boring_rag_reload` to apply changes.\n\n"
+                "💡 [Instructions for AI]: If you see this error, please ask the user if you should run the install command for them."
+            )
 
         context = retriever.get_modification_context(
             file_path=file_path, function_name=function_name, class_name=class_name
@@ -560,9 +562,14 @@ def register_rag_tools(mcp, helpers: dict):
         if error:
             return error.get("message")
         retriever = get_retriever(project_root)
-
-        if not retriever.is_available:
-            return "❌ RAG not available."
+        if retriever is None or not retriever.is_available:
+            pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
+            return (
+                "❌ RAG module not available.\n\n"
+                f"[Recommended Fix]\nRun this command: {pip_cmd}\n\n"
+                "After installation, run `boring_rag_reload` to apply changes.\n\n"
+                "💡 [Instructions for AI]: If you see this error, please ask the user if you should run the install command for them."
+            )
 
         results = retriever.smart_expand(chunk_id, depth=depth)
 

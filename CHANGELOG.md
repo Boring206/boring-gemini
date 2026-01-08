@@ -1,5 +1,23 @@
 # Changelog
 
+## [10.24.4] - 2026-01-08 - Cursor Test Fixes & MCP Environment Documentation 🐛
+
+### Fixed
+- **CacheStats Attribute Errors**: Fixed `boring_intelligence_stats` and `boring_cache_insights` failing with `'CacheStats' object has no attribute 'get'`. Converted dataclass to dict using `asdict()` before accessing attributes.
+- **Path Resolution**: Fixed `boring_vibe_check`, `boring_arch_check`, `boring_doc_gen`, and `boring_impact_check` to support absolute paths (Unix `/path` and Windows `C:\path`) in addition to relative paths.
+- **Parameter Type Bug**: Fixed `boring_predict_errors` tuple unpacking issue from `_get_project_root_or_error` helper function.
+- **Storage Error Diagnostics**: Improved `_get_storage` helper to log specific initialization errors (permissions, disk space) to stderr instead of failing silently.
+
+### Added
+- **Error Translation**: Added Traditional Chinese translations for "Storage 未初始化" and other Vibe Coder tool errors.
+- **MCP Environment Documentation**: Added critical notes to RAG documentation explaining that MCP servers run in separate Python environments (e.g., `/usr/local/bin/python`) and require dependencies to be installed separately.
+- **Usage Mode Notice**: Added prominent warnings to README.md and README_zh.md that Boring is now primarily an MCP tool, not recommended for direct CLI usage (`boring start` requires API setup).
+
+### Documentation
+- **Monitor Troubleshooting**: Added "Changes Not Reflecting" section explaining MCP server refresh requirement.
+- **RAG Troubleshooting**: Added dependency installation instructions specific to MCP server environments.
+- **Dashboard Launch**: Clarified the difference between `python -m boring dashboard` and `python -m boring.monitor --web`.
+
 ## [10.24.3] - 2026-01-08 - Dashboard & Documentation Polish 💅
 
 ### Fixed

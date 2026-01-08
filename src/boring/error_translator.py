@@ -35,6 +35,48 @@ class ErrorTranslator:
                 "Indentation Error",
                 "gemini --prompt 'Fix indentation in {filename}'",
             ),
+            (
+                re.compile(r"FileNotFoundError: \[Errno 2\] No such file or directory: '(.*?)'"),
+                "找不到檔案 '{0}'。請檢查路徑是否正確，或者是檔案不小心被移動、刪除了。",
+                "File Not Found",
+                None,
+            ),
+            (
+                re.compile(r"(?:❌\s*)?找不到(檔案|目標)[\s：:]*(.*)"),
+                "找不到你要處理的檔案或目錄 '{1}'。請確認檔案路徑是否正確（是相對路徑還是絕對路徑？）。",
+                "File Not Found (Boring UI)",
+                None,
+            ),
+            (
+                re.compile(r"❌ 不支援的(檔案類型|格式): (.*)"),
+                "目前還不支援 '{1}' 這種格式。目前我比較擅長處理 Python (.py)、JavaScript (.js, .jsx) 和 TypeScript (.ts, .tsx) 喔！",
+                "Unsupported File Type",
+                None,
+            ),
+            (
+                re.compile(r"😅 沒有找到可測試的導出函式或類別"),
+                "在這個檔案裡沒看到可以寫測試的東西（例如 function 或 class）。請確認你有沒有寫 export，或是檔案內容是否完整。",
+                "No Testable Content",
+                None,
+            ),
+            (
+                re.compile(r"⚠️ 找不到可分析的程式碼檔案"),
+                "在這個目錄下找不到我可以處理的程式碼 (Python, JS, TS)。請確認目標路徑是否正確。",
+                "No Code Files Found",
+                None,
+            ),
+            (
+                re.compile(r"❌ (分析|審查)失敗: (.*)"),
+                "哎呀，我在處理程式碼時卡住了。原始錯誤是：{1}。這通常是檔案太大或格式太亂導致的。",
+                "Tool Execution Failure",
+                None,
+            ),
+            (
+                re.compile(r"Storage 未初始化"),
+                "智能記憶系統 (Storage) 尚未啟動。這是進階功能，如果你想啟用歷史追蹤，請確認專案根目錄有 `.boring_memory` 資料夾。不過，這個功能是選配的，不影響主要工具運作。",
+                "Storage Not Initialized",
+                None,
+            ),
             # === JavaScript / TypeScript Errors ===
             (
                 re.compile(r"ReferenceError: (.*?) is not defined"),
