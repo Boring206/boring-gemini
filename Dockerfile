@@ -25,9 +25,8 @@ COPY src src
 # For full RAG support, use ".[mcp]" instead (requires ~4GB more disk space)
 RUN pip install --no-cache-dir ".[mcp-lite]"
 
-# Health check endpoint (use port 8000, Smithery sets PORT env at runtime)
-HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+# Note: HEALTHCHECK removed to prevent build-time failures on Smithery
+# Smithery handles container health separately
 
 # Document the port
 EXPOSE 8000
