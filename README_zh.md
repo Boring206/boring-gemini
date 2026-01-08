@@ -113,6 +113,25 @@ pip install boring-aicoding
 | **儀表板** | ✅ 圖形介面 (Dashboard) | ❌ 無 |
 | **Vibe Coding**| ✅ **完全體** (會思考、會修復) | ⚠️ **輕量版** (只會寫，不會驗) |
 
+### ⚙️ MCP 環境變數設定
+
+| 變數 | 值 | 說明 |
+|------|---|------|
+| `BORING_MCP_MODE` | `1` (必須) | 啟用 MCP 模式 |
+| `BORING_MCP_PROFILE` | `minimal` / `lite` / `standard` / `full` | 工具曝露層級 |
+| `PROJECT_ROOT_DEFAULT` | `.` 或路徑 | 預設專案根目錄 |
+
+**Profile 比較：**
+
+| Profile | 工具數 | 適用場景 |
+|---------|-------|---------|
+| `minimal` | 8 | 快速任務 |
+| `lite` | 20 | 日常開發 (預設) |
+| `standard` | 50 | 專業開發 |
+| `full` | ~98 | Power User |
+
+> 📖 **[完整 MCP 設定指南](docs/guides/mcp-configuration.md)**
+
 ### 選項 3：從 GitHub Clone（備用）
 
 > **適用於：開發者或 pip 安裝失敗時**
@@ -230,7 +249,7 @@ python -m boring status
       "command": "python",
       "args": ["-m", "boring.mcp.server"],
       "env": {
-        "BORING_MCP_MODE": "1",
+        "BORING_MCP_MODE": "1"(必填),
         "PROJECT_ROOT_DEFAULT": ".",
         "BORING_MCP_PROFILE": "lite"
       }

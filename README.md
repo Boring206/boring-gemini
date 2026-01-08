@@ -113,6 +113,25 @@ pip install boring-aicoding
 | **Dashboard** | ✅ GUI Available | ❌ None |
 | **Vibe Coding**| ✅ **Full Experience** (Think + Fix) | ⚠️ **Lite** (Write code only) |
 
+### ⚙️ MCP Environment Variables
+
+| Variable | Values | Description |
+|----------|--------|-------------|
+| `BORING_MCP_MODE` | `1` (required) | Enable MCP mode |
+| `BORING_MCP_PROFILE` | `minimal` / `lite` / `standard` / `full` | Tool exposure level |
+| `PROJECT_ROOT_DEFAULT` | `.` or path | Default project root |
+
+**Profile Comparison:**
+
+| Profile | Tools | Best For |
+|---------|-------|----------|
+| `minimal` | 8 | Quick tasks |
+| `lite` | 20 | Daily dev (Default) |
+| `standard` | 50 | Professional dev |
+| `full` | ~98 | Power Users |
+
+> 📖 **[Full MCP Configuration Guide](docs/guides/mcp-configuration_en.md)**
+
 ### Option 3: Clone from GitHub (Fallback)
 
 > **Best for: Developers or if pip install fails**
@@ -232,7 +251,7 @@ python -m boring status
       "command": "python",
       "args": ["-m", "boring.mcp.server"],
       "env": {
-        "BORING_MCP_MODE": "1",
+        "BORING_MCP_MODE": "1"(NEEDED),
         "PROJECT_ROOT_DEFAULT": ".",
         "BORING_MCP_PROFILE": "lite"
       }
