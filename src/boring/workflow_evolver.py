@@ -322,7 +322,11 @@ class WorkflowGapAnalyzer:
             except Exception:
                 pass
 
-            if has_build_script and "npm run build" not in content_lower and "yarn build" not in content_lower:
+            if (
+                has_build_script
+                and "npm run build" not in content_lower
+                and "yarn build" not in content_lower
+            ):
                 gaps.append(
                     WorkflowGap(
                         gap_type="missing_check",
@@ -333,7 +337,7 @@ class WorkflowGapAnalyzer:
                 )
 
             if has_test_script and "npm test" not in content_lower:
-                 gaps.append(
+                gaps.append(
                     WorkflowGap(
                         gap_type="missing_check",
                         description="Frontend tests detected but missing in workflow",
@@ -343,7 +347,7 @@ class WorkflowGapAnalyzer:
                 )
 
             if has_lint_script and "npm run lint" not in content_lower:
-                 gaps.append(
+                gaps.append(
                     WorkflowGap(
                         gap_type="missing_check",
                         description="Frontend lint script detected but missing in workflow",
@@ -354,7 +358,7 @@ class WorkflowGapAnalyzer:
 
         # Docker Capabilities
         if (self.project_root / "Dockerfile").exists():
-             if "docker build" not in content_lower:
+            if "docker build" not in content_lower:
                 gaps.append(
                     WorkflowGap(
                         gap_type="missing_check",
@@ -373,19 +377,26 @@ class WorkflowGapAnalyzer:
             has_conflicting_tool = True
 
         # Check for Semantic Release
-        if (self.project_root / ".releaserc").exists() or (self.project_root / "release.config.js").exists():
+        if (self.project_root / ".releaserc").exists() or (
+            self.project_root / "release.config.js"
+        ).exists():
             has_conflicting_tool = True
 
         # Check package.json for config
         if (self.project_root / "package.json").exists():
-             try:
+            try:
                 pkg_content = (self.project_root / "package.json").read_text(encoding="utf-8")
                 if '"commitizen"' in pkg_content or '"semantic-release"' in pkg_content:
                     has_conflicting_tool = True
-             except:
+            except:
                 pass
 
-        if not has_conflicting_tool and "commit" in content_lower and "smart commit" not in content_lower and "smart_commit" not in content_lower:
+        if (
+            not has_conflicting_tool
+            and "commit" in content_lower
+            and "smart commit" not in content_lower
+            and "smart_commit" not in content_lower
+        ):
             gaps.append(
                 WorkflowGap(
                     gap_type="improvement",
@@ -789,24 +800,28 @@ class WorkflowEvolver:
             return {
                 "status": "NEEDS_INTERACTION",
                 "gaps": [
-                    {"type": g.gap_type, "desc": g.description, "fix": g.suggested_fix, "key": pref_key}
+                    {
+                        "type": g.gap_type,
+                        "desc": g.description,
+                        "fix": g.suggested_fix,
+                        "key": pref_key,
+                    }
                     for g in gaps
                 ],
-                "message": "User input needed to finalize workflow choices."
+                "message": "User input needed to finalize workflow choices.",
             }
 
         if not confirmed_gaps:
-             return {
-                "status": "SKIPPED",
-                "message": "All gaps skipped based on user preferences."
-            }
+            return {"status": "SKIPPED", "message": "All gaps skipped based on user preferences."}
 
         # Generate enhanced content with ONLY confirmed gaps
         # (This requires refactoring generate_enhanced_workflow to accept specific gaps or re-analyzing)
         # For simplicity in this step, we assume all gaps passed if we reached here for now
         # Ideally we pass confirmed_gaps to a modifier method.
 
-        enhanced_content = analyzer.generate_enhanced_workflow(original_content) # Simplified for now
+        enhanced_content = analyzer.generate_enhanced_workflow(
+            original_content
+        )  # Simplified for now
 
         # Apply evolution
         result = self.evolve_workflow(

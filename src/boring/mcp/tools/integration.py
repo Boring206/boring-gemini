@@ -165,7 +165,6 @@ def boring_skills_install(
         }
 
 
-
 if MCP_AVAILABLE and mcp is not None:
     mcp.tool(
         description="Install recommended extensions",

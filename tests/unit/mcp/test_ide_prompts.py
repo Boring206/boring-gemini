@@ -11,14 +11,16 @@ class FakeMCP:
         def decorator(func):
             self.prompts[name] = func
             return func
+
         return decorator
+
 
 def test_setup_ide_prompt():
     fake_mcp = FakeMCP()
     register_prompts(fake_mcp)
 
     # Run the prompt function
-    output = fake_mcp.prompts['setup_ide']()
+    output = fake_mcp.prompts["setup_ide"]()
 
     # Check for critical elements
     assert sys.executable in output
