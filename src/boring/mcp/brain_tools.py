@@ -412,6 +412,190 @@ def register_brain_tools(mcp, audited, helpers):
                 "message": "V10.23 prune_patterns 功能未啟用",
             }
 
+    # =========================================================================
+    # Global Brain Tools (Cross-Project Knowledge Sharing)
+    # =========================================================================
+
+    @mcp.tool(
+        description="從專案導出知識到全局 Brain (Export to global brain). 適合: 'Export knowledge', '導出到全局', 'Share patterns globally'.",
+        annotations={"readOnlyHint": False, "openWorldHint": False, "idempotentHint": True},
+    )
+    @audited
+    def boring_global_export(
+        min_success_count: Annotated[
+            int,
+            Field(
+                description="Minimum success count to export (filters low-quality patterns). Default: 2. Higher values = only export proven patterns."
+            ),
+        ] = 2,
+        project_path: Annotated[
+            str,
+            Field(description="Optional explicit path to project root."),
+        ] = None,
+    ) -> dict:
+        """
+        Export high-quality patterns from current project to global brain.
+
+        This allows sharing learned patterns across all projects.
+        Patterns are stored in ~/.boring_brain/global_patterns.json
+
+        Use cases:
+        - Share successful error solutions with other projects
+        - Build a personal knowledge base across projects
+        - Export proven patterns before archiving a project
+        """
+        from ..brain_manager import get_global_knowledge_store
+
+        project_root, error = _get_project_root_or_error(project_path)
+        if error:
+            return error
+
+        _configure_runtime_for_project(project_root)
+
+        try:
+            global_store = get_global_knowledge_store()
+            result = global_store.export_from_project(project_root, min_success_count)
+
+            if result["status"] == "NO_PATTERNS":
+                return {
+                    "status": "NO_PATTERNS",
+                    "message": f"❌ No patterns with success_count >= {min_success_count}",
+                    "suggestion": "Lower min_success_count or use boring_learn to create patterns first",
+                }
+
+            return {
+                "status": "SUCCESS",
+                "message": f"✅ Exported {result['exported']} patterns to global brain",
+                "exported": result["exported"],
+                "total_global": result["total_global"],
+                "vibe_summary": f"🌐 **Global Brain Export**\n"
+                f"- 已導出: {result['exported']} patterns\n"
+                f"- 全局總數: {result['total_global']}\n"
+                f"- 儲存位置: ~/.boring_brain/global_patterns.json",
+            }
+        except Exception as e:
+            return {
+                "status": "ERROR",
+                "message": f"❌ Export failed: {str(e)}",
+            }
+
+    @mcp.tool(
+        description="從全局 Brain 導入知識到專案 (Import from global brain). 適合: 'Import global patterns', '導入全局知識', 'Load shared knowledge'.",
+        annotations={"readOnlyHint": False, "openWorldHint": False, "idempotentHint": True},
+    )
+    @audited
+    def boring_global_import(
+        pattern_types: Annotated[
+            list[str],
+            Field(
+                description="Optional filter by pattern types (e.g., ['error_solution', 'code_style']). Leave empty to import all types."
+            ),
+        ] = None,
+        project_path: Annotated[
+            str,
+            Field(description="Optional explicit path to project root."),
+        ] = None,
+    ) -> dict:
+        """
+        Import patterns from global brain to current project.
+
+        This allows reusing knowledge learned in other projects.
+
+        Use cases:
+        - Start a new project with existing best practices
+        - Import error solutions from other projects
+        - Sync knowledge across similar projects
+        """
+        from ..brain_manager import get_global_knowledge_store
+
+        project_root, error = _get_project_root_or_error(project_path)
+        if error:
+            return error
+
+        _configure_runtime_for_project(project_root)
+
+        try:
+            global_store = get_global_knowledge_store()
+            result = global_store.import_to_project(project_root, pattern_types)
+
+            if result["status"] == "NO_GLOBAL_PATTERNS":
+                return {
+                    "status": "NO_GLOBAL_PATTERNS",
+                    "message": "❌ Global brain is empty",
+                    "suggestion": "Use boring_global_export from another project to populate global brain",
+                }
+
+            return {
+                "status": "SUCCESS",
+                "message": f"✅ Imported {result['imported']} patterns from global brain",
+                "imported": result["imported"],
+                "total_local": result["total_local"],
+                "vibe_summary": f"🌐 **Global Brain Import**\n"
+                f"- 已導入: {result['imported']} new patterns\n"
+                f"- 專案總數: {result['total_local']}\n"
+                f"- 來源: ~/.boring_brain/global_patterns.json",
+            }
+        except Exception as e:
+            return {
+                "status": "ERROR",
+                "message": f"❌ Import failed: {str(e)}",
+            }
+
+    @mcp.tool(
+        description="查看全局 Brain 的所有知識 (List global brain). 適合: 'Show global knowledge', '全局有什麼', 'List global patterns'.",
+        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
+    )
+    @audited
+    def boring_global_list() -> dict:
+        """
+        List all patterns in global brain.
+
+        Shows summary of all cross-project knowledge:
+        - Pattern ID and type
+        - Description
+        - Source project
+        - Success count
+
+        Storage location: ~/.boring_brain/global_patterns.json
+        """
+        from ..brain_manager import get_global_knowledge_store
+
+        try:
+            global_store = get_global_knowledge_store()
+            patterns = global_store.list_global_patterns()
+
+            if not patterns:
+                return {
+                    "status": "EMPTY",
+                    "message": "🌐 Global brain is empty",
+                    "patterns": [],
+                    "suggestion": "Use boring_global_export to add patterns from your projects",
+                }
+
+            # Group by pattern type
+            by_type = {}
+            for p in patterns:
+                ptype = p.get("pattern_type", "unknown")
+                if ptype not in by_type:
+                    by_type[ptype] = []
+                by_type[ptype].append(p)
+
+            return {
+                "status": "SUCCESS",
+                "total": len(patterns),
+                "by_type": {k: len(v) for k, v in by_type.items()},
+                "patterns": patterns,
+                "vibe_summary": f"🌐 **Global Brain Summary**\n"
+                f"- 總 Patterns: {len(patterns)}\n"
+                f"- 類型分布: {', '.join(f'{k}({len(v)})' for k, v in by_type.items())}\n"
+                f"- 儲存: ~/.boring_brain/global_patterns.json",
+            }
+        except Exception as e:
+            return {
+                "status": "ERROR",
+                "message": f"❌ List failed: {str(e)}",
+            }
+
     return {
         "boring_learn": boring_learn,
         "boring_create_rubrics": boring_create_rubrics,
@@ -422,4 +606,8 @@ def register_brain_tools(mcp, audited, helpers):
         "boring_incremental_learn": boring_incremental_learn,
         "boring_pattern_stats": boring_pattern_stats,
         "boring_prune_patterns": boring_prune_patterns,
+        # Global Brain tools
+        "boring_global_export": boring_global_export,
+        "boring_global_import": boring_global_import,
+        "boring_global_list": boring_global_list,
     }
