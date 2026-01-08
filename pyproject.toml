@@ -5,7 +5,7 @@ description = "Boring Vibecoder Assistant: An AI-powered development support too
 authors = [
     { name = "Boring206", email = "C112156246@nkust.edu.tw" }
 ]
-readme = "README.md"
+readme = "PYPI.md"
 requires-python = ">=3.9"
 keywords = ["gemini", "ai", "autonomous-agent", "devops"]
 classifiers = [

@@ -23,30 +23,29 @@ from .config import settings
 from .loop import AgentLoop
 
 HELP_TEXT = """
-[bold blue]Boring - Autonomous AI Development Agent[/bold blue]
+[bold blue]Boring - Enterprise AI Development Agent (MCP)[/bold blue]
 
-A powerful AI coding assistant that iteratively improves your project using:
-- [green]Memory System[/green]: Learns from mistakes across sessions
-- [green]Advanced Verification[/green]: Syntax, Linting (ruff), and Testing (pytest)
-- [green]Context Injection[/green]: Smart project context management
+A powerful AI coding assistant designed for IDEs (Cursor, VS Code) and Gemini.
 
-[bold]Common Usage:[/bold]
-  $ [cyan]boring-setup "my-new-project"[/cyan]   # Create a new project
-  $ [cyan]cd my-new-project[/cyan]                # Enter project
-  $ [cyan]boring start[/cyan]                      # Start coding loop
-  $ [cyan]boring start --verify FULL[/cyan]        # Start with strict verification
+[bold yellow]⚠️  Legacy CLI Mode:[/bold yellow]
+  Direct usage of `boring start` is deprecated as Gemini CLI auth is no longer supported.
+  Please use Boring as an MCP Server in your IDE.
+
+[bold green]✅ Recommended Usage (MCP):[/bold green]
+  Configure your IDE to run: `python -m boring.mcp.server`
+
+[bold]🛠️  Maintenance Tools:[/bold]
+  $ [cyan]python -m boring hooks install[/cyan]    # Install Git hooks (Best practice)
+  $ [cyan]python -m boring dashboard[/cyan]        # Open Web Dashboard
+  $ [cyan]pip install tree-sitter-languages[/cyan] # Fix parsing warnings
 """
 
 EPILOG_TEXT = """
-[bold]Examples:[/bold]
-  [dim]# Run with full verification (Syntax + Lint + Tests)[/dim]
-  $ boring start --verify FULL --model gemini-3-pro
+[bold]Troubleshooting:[/bold]
+  If commands fail, try using [cyan]python -m boring[/cyan] instead of [cyan]boring[/cyan].
 
-  [dim]# Install extensions (context7, criticalthink)[/dim]
-  $ boring setup-extensions
-
-  [dim]# Check project health[/dim]
-  $ boring status
+  Missing "tree-sitter-languages"?
+  $ pip install tree-sitter-languages
 
 [bold]Documentation:[/bold] https://github.com/Boring206/boring-gemini
 """
@@ -83,7 +82,8 @@ def main(
 console = Console()
 
 
-@app.command()
+
+@app.command(hidden=True)
 def start(
     backend: str = typer.Option(
         "api", "--backend", "-b", help="Backend: 'api' (SDK) or 'cli' (local CLI)"
@@ -206,7 +206,8 @@ def start(
         raise typer.Exit(code=1)
 
 
-@app.command()
+
+@app.command(hidden=True)
 def run(
     instruction: str = typer.Argument(..., help="The instruction to execute"),
     backend: str = typer.Option(

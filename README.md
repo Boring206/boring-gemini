@@ -125,6 +125,49 @@ pip install -e .
 
 ---
 
+---
+
+## 🚀 Usage
+
+### 1️⃣ MCP Mode (Recommended)
+Add Boring to your **Cursor** or **VS Code** config. The Agent will become an autonomous engineer in your IDE.
+
+- **Vibe Coder**: Just type "Please review my code" in Chat.
+- **Tools**: Use 50+ tools directly.
+
+### 2️⃣ Maintenance Commands
+Run these commands in your terminal:
+
+```bash
+# Install Git Hooks (Auto-verify commits)
+python -m boring hooks install
+
+# Open Dashboard (Web UI)
+python -m boring dashboard
+
+# Check Health
+python -m boring status
+```
+
+### 3️⃣ LSP Server (Optional)
+If you prefer standard LSP (Language Server Protocol) integration:
+
+1. **Install Prerequisites**:
+   ```bash
+   pip install "boring-aicoding[all]"
+   ```
+2. **Configure Editor (VS Code / Neovim)**:
+   Set your editor's LSP client to execute this command (DO NOT run manually list in terminal):
+   ```bash
+   python -m boring lsp start
+   ```
+
+> [!CAUTION]
+> **Legacy CLI (`boring start`) is deprecated.**
+> Please use the MCP integration in your IDE for the best experience.
+
+---
+
 ## ⚙️ MCP Configuration
 
 ### For Smithery
@@ -282,6 +325,32 @@ STRICT    🔒  Approve all writes (Production)
 
 ```python
 boring_shadow_mode(action="set_level", level="STRICT")
+```
+
+---
+
+
+## 🔧 Troubleshooting & Environment
+
+### Common Issues
+
+**1. "Command not found" or Wrong Python Version**
+If running `boring` commands fails or uses the wrong Python environment (e.g., system Python instead of venv), use `python -m`:
+
+```bash
+# ✅ Recommended usage for reliability
+python -m boring --help
+python -m boring hooks install
+```
+
+**2. "tree-sitter-languages not installed" Warning**
+This means the advanced code parser is missing. RAG features will be limited to keyword search only.
+
+**Fix**:
+```bash
+pip install tree-sitter-languages
+# Or update all dependencies
+pip install "boring-aicoding[all]"
 ```
 
 ---

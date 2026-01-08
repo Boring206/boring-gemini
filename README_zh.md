@@ -127,6 +127,49 @@ pip install -e .
 
 ---
 
+---
+
+## 🚀 使用指南 (Usage)
+
+### 1️⃣ MCP 模式（推薦）
+將 Boring 加入您的 **Cursor** 或 **VS Code** 設定檔。Agent 將變身為 IDE 中的自主工程師。
+
+- **Vibe Coder**: 直接在 Chat 輸入 "幫我審查代碼"。
+- **工具箱**: 直接調用 50+ 種強大工具。
+
+### 2️⃣ 維護指令
+在終端機執行以下指令：
+
+```bash
+# 安裝 Git Hooks (自動驗證提交)
+python -m boring hooks install
+
+# 開啟儀表板 (Web UI)
+python -m boring dashboard
+
+# 檢查健康狀態
+python -m boring status
+```
+
+### 3️⃣ LSP 伺服器 (可選)
+如果您偏好標準 LSP (Language Server Protocol) 整合：
+
+1. **安裝前置需求**:
+   ```bash
+   pip install "boring-aicoding[all]"
+   ```
+2. **配置編輯器 (VS Code / Neovim)**:
+   設定您的編輯器 LSP Client 執行此指令 (請勿直接在終端機執行)：
+   ```bash
+   python -m boring lsp start
+   ```
+
+> [!CAUTION]
+> **Legacy CLI (`boring start`) 已棄用**
+> 請使用 IDE 中的 MCP 整合以獲得最佳體驗。
+
+---
+
 ## ⚙️ MCP 配置
 
 ### Smithery
@@ -276,12 +319,7 @@ Boring 預設整合了最強大的外部 MCP 工具，讓 Agent 變身超級工�
 
 ---
 
-## 🛠️ 常見問題 (FAQ)
-- **明明安裝了 `[all]` 卻顯示找不到？** 請嘗試使用 `python -m boring dashboard`。這通常是多 Python 版本環境導致的，詳見 [問題排查指南](./docs/features/monitor_zh.md#常見問題排查)。
-
----
-
-## 🛡️ 影子模式
+## �️ 影子模式
 
 影子模式保護你免受破壞性 AI 操作：
 
@@ -296,6 +334,9 @@ boring_shadow_mode(action="set_level", level="STRICT")
 ```
 
 ---
+
+---
+
 
 ## 🎯 未來願景 (Future Vision)
 
