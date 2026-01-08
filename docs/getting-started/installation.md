@@ -19,17 +19,23 @@ npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ### Option 2: pip
 
 ```bash
-# Basic
-pip install boring-aicoding
-
-# Full features (RAG, MCP, GUI)
+# Full Installation (Recommended for Vibe Coder)
 pip install "boring-aicoding[all]"
 
-# Just MCP + RAG
-pip install "boring-aicoding[mcp]"
+# Minimal Installation
+pip install boring-aicoding
 ```
 
-**Best for**: Single projects, CI/CD, offline environments.
+**🤔 Which one should I choose?**
+
+| Feature | `[all]` (Full) | Basic |
+| :--- | :--- | :--- |
+| **RAG Memory** | ✅ Vector + Semantic | ⚠️ Keyword only (Weak) |
+| **Self-Verify** | ✅ Can run tests (`boring verify`) | ❌ Cannot verify |
+| **Dashboard** | ✅ GUI Available | ❌ None |
+| **Use Case** | **Vibe Coding** | CLI Only |
+
+**Best for**: Single projects, CI/CD, offline environments. `[all]` includes everything needed for full Vibe Coder experience (RAG, self-healing, GUI).
 
 ### Option 3: Manual Clone (Fallback)
 

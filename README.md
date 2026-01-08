@@ -93,6 +93,15 @@ pip install "boring-aicoding[all]"
 pip install boring-aicoding
 ```
 
+**🤔 Which one should I choose?**
+
+| Feature | `[all]` (Full) | Basic |
+| :--- | :--- | :--- |
+| **RAG Memory** | ✅ Vector + Semantic | ⚠️ Keyword only (Weak) |
+| **Self-Verify** | ✅ Can run tests (`boring verify`) | ❌ Cannot verify |
+| **Dashboard** | ✅ GUI Available | ❌ None |
+| **Use Case** | **Vibe Coding** | CLI Only |
+
 ### Option 3: Clone from GitHub (Fallback)
 
 > **Best for: Developers or if pip install fails**

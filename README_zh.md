@@ -95,6 +95,15 @@ pip install "boring-aicoding[all]"
 pip install boring-aicoding
 ```
 
+**🤔 我該選哪一個？**
+
+| 功能 | `[all]` (完整版) | 基礎版 |
+| :--- | :--- | :--- |
+| **RAG 記憶** | ✅ 向量理解 (懂語意) | ⚠️ 僅關鍵字 (較弱) |
+| **自我驗證** | ✅ 可跑測試 (`boring verify`) | ❌ 無法驗證 |
+| **儀表板** | ✅ 圖形介面 | ❌ 無 |
+| **適用場景** | **Vibe Coding** | 純指令操作 |
+
 ### 選項 3：從 GitHub Clone（備用）
 
 > **適用於：開發者或 pip 安裝失敗時**
