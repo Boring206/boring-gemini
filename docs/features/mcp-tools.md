@@ -24,7 +24,46 @@ boring://tools/agents
 
 ---
 
+### 0. Skills Ecosystem
+
+#### Discovery (`boring_skills_browse`)
+
+Interactively browse community Skills and Extensions.
+
+```python
+boring_skills_browse(query="web")
+# Result will include installation suggestions
+```
+
+#### Installation (`boring_skills_install`)
+
+One-click install for specific Skills (based on `skills_catalog.py` allowlist).
+
+```python
+boring_skills_install(name="awesome-gemini-cli-extensions")
+```
+
+---
+
 ## 🧰 Core Tool Categories
+
+### 0. Skills Discovery (`boring_skills_browse`)
+
+Interactively browse and discover community-maintained Gemini/Claude Skills and MCP Servers.
+
+```python
+boring_skills_browse(
+    query="web automation",   # Keywords: 'web', 'database', 'auth'
+    platform="all"            # all|gemini|claude
+)
+```
+
+**Use Cases**:
+- Find extensions for your current task
+- Discover trending MCP Servers
+- Get installation instructions
+
+---
 
 ### 1. Security (`boring_security_scan`)
 

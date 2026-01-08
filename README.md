@@ -320,6 +320,7 @@ export BORING_MCP_PROFILE=lite
 | 🚀 `boring_perf` | **Perf Tips** - Identify bottlenecks | `boring_perf(file_path="main.py")` |
 | 📐 `boring_arch` | **Arch Check** - Visualize module structure | `boring_arch(project_path=".")` |
 | 📄 `boring_doc_gen` | **Doc Gen** - Auto-generate docstrings | `boring_doc_gen(file_path="api.py")` |
+| 🔍 `boring_skills_browse` | **Skills Discovery** - Find and install MCP skills | `boring_skills_browse(query="web")` |
 
 ### 🔐 Security Scan Integration
 Vibe Coder Pro includes built-in Token detection for:

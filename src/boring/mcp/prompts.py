@@ -6,6 +6,8 @@ MCP Prompts for Boring.
 Registers prompts that help users interact with the server.
 """
 
+import sys
+
 from pydantic import Field
 
 
@@ -905,15 +907,58 @@ Keep Rubrics: {keep_rubrics}
     @mcp.prompt(name="setup_ide", description="Configure IDE extensions for Boring integration")
     def setup_ide() -> str:
         """Set up IDE integration."""
-        return """🔌 **IDE Integration Setup**
+        python_path = sys.executable
+        python_path_escaped = python_path.replace('\\', '\\\\')
 
-1. Run `boring_setup_extensions`
-2. This will:
-   - Detect your IDE (VS Code, Cursor, etc.)
-   - Install recommended extensions
-   - Configure MCP settings
-   - Set up Git hooks
-3. Verify with `boring_health_check`
+
+        return f"""🔌 **IDE Integration Setup**
+
+Detected Python Environment: `{python_path}`
+
+To enable the Boring LSP (Language Server Protocol) features, configure your editor as follows:
+
+### 1. VS Code / Cursor (settings.json)
+Add this to your workspace or user settings:
+
+```json
+{{
+  "boring.lsp.enabled": true,
+  "boring.command": "{python_path_escaped}",
+  "boring.args": ["-m", "boring", "lsp", "start"]
+}}
+```
+
+### 2. Neovim (init.lua)
+Using `nvim-lspconfig`:
+```lua
+local lspconfig = require('lspconfig')
+local configs = require('lspconfig.configs')
+
+if not configs.boring then
+  configs.boring = {{
+    default_config = {{
+      cmd = {{ "{python_path_escaped}", "-m", "boring", "lsp", "start" }},
+      filetypes = {{ "python" }},
+      root_dir = lspconfig.util.root_pattern(".git", "pyproject.toml", "setup.py"),
+    }},
+  }}
+end
+lspconfig.boring.setup{{}}
+```
+
+### 3. Zed (settings.json)
+```json
+{{
+  "lsp": {{
+    "boring": {{
+      "command": {{
+        "system_path": "{python_path_escaped}",
+        "args": ["-m", "boring", "lsp", "start"]
+      }}
+    }}
+  }}
+}}
+```
 """
 
     @mcp.prompt(name="mark_done", description="Mark current task as complete and generate summary")

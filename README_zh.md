@@ -321,6 +321,7 @@ export BORING_MCP_PROFILE=lite
 | 🚀 `boring_perf` | **效能建議** - 找出潛在瓶頸 | `boring_perf(file_path="main.py")` |
 | 📐 `boring_arch` | **架構檢查** - 分析模組結構健康度 | `boring_arch(project_path=".")` |
 | 📄 `boring_doc_gen` | **文件生成** - 自動產生 docstring | `boring_doc_gen(file_path="api.py")` |
+| 🔍 `boring_skills_browse` | **技能發現** - 搜尋與安裝 MCP Skills | `boring_skills_browse(query="web")` |
 
 ### 🔐 安全掃描整合
 

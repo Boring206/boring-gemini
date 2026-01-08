@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.24.7] - 2026-01-09 - Skills & IDE Experience 🛠️✨
+
+### Added
+- **Interactive Skills Installation**: New `boring_skills_install` tool allows one-click installation of Gemini/Claude skills directly from the agent interface.
+- **Universal IDE Setup**: Enhanced `setup_ide` prompt now auto-detects the active Python environment (`sys.executable`) and generates copy-pasteable LSP configurations for **Cursor**, **Neovim**, and **Zed**.
+- **Documentation**: Added `boring_skills_browse` and `boring_skills_install` to the Core Tools reference in READMEs.
+
 ## [10.24.6] - 2026-01-08 - Documentation Harmony 📚✨
 
 ### Added
