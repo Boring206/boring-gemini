@@ -20,7 +20,9 @@ try:
     HAS_TREE_SITTER = True
 except ImportError:
     HAS_TREE_SITTER = False
-    logger.warning(f"tree-sitter-languages not installed in {sys.executable}. Advanced parsing disabled.")
+    logger.warning(
+        f"tree-sitter-languages not installed in {sys.executable}. Advanced parsing disabled."
+    )
 
 
 @dataclass

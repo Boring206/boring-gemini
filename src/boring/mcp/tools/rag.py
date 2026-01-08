@@ -378,7 +378,9 @@ def register_rag_tools(mcp, helpers: dict):
             pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
             report.append("## ❌ RAG Not Available\n")
             report.append(f"Install dependencies:\n```bash\n{pip_cmd}\n```\n")
-            report.append("\n💡 [Instructions for AI]: If you see this, please ask the user if you should run the install command for them.")
+            report.append(
+                "\n💡 [Instructions for AI]: If you see this, please ask the user if you should run the install command for them."
+            )
             return "\n".join(report)
 
         report.append("## ✅ ChromaDB Available\n")

@@ -63,6 +63,7 @@ def _get_storage(project_root: Path):
         # Any other initialization error (permissions, disk space, etc.)
         # Log to stderr for debugging, but don't crash the tool
         import sys
+
         sys.stderr.write(f"[boring] Warning: Failed to initialize Storage: {e}\n")
         return None
 
@@ -441,7 +442,9 @@ def register_vibe_tools(mcp, audited, helpers):
 
         project_root = Path(root_str)
         # Handle both absolute and relative paths
-        if target_path != "." and (target_path.startswith('/') or (len(target_path) > 1 and target_path[1] == ':')):
+        if target_path != "." and (
+            target_path.startswith("/") or (len(target_path) > 1 and target_path[1] == ":")
+        ):
             target = Path(target_path)
         elif target_path == ".":
             target = project_root
@@ -544,7 +547,9 @@ def register_vibe_tools(mcp, audited, helpers):
 
         project_root = Path(root_str)
         # Handle both absolute and relative paths
-        if target_path != "." and (target_path.startswith('/') or (len(target_path) > 1 and target_path[1] == ':')):
+        if target_path != "." and (
+            target_path.startswith("/") or (len(target_path) > 1 and target_path[1] == ":")
+        ):
             target = Path(target_path)
         elif target_path == ".":
             target = project_root
@@ -631,7 +636,7 @@ def register_vibe_tools(mcp, audited, helpers):
 
         project_root = Path(root_str)
         # Handle both absolute and relative paths
-        if target_path.startswith('/') or (len(target_path) > 1 and target_path[1] == ':'):
+        if target_path.startswith("/") or (len(target_path) > 1 and target_path[1] == ":"):
             # Absolute path (Unix-style or Windows-style)
             target = Path(target_path)
         elif target_path == ".":
@@ -836,7 +841,9 @@ def register_vibe_tools(mcp, audited, helpers):
 
         project_root = Path(root_str)
         # Handle both absolute and relative paths
-        if target_path != "." and (target_path.startswith('/') or (len(target_path) > 1 and target_path[1] == ':')):
+        if target_path != "." and (
+            target_path.startswith("/") or (len(target_path) > 1 and target_path[1] == ":")
+        ):
             target = Path(target_path)
         elif target_path == ".":
             target = project_root

@@ -200,7 +200,9 @@ def register_intelligence_tools(mcp, audited, helpers):
             cache = AdaptiveCache(project_root)
             cache_stats = cache.get_stats()
             # Convert dataclass to dict for consistent access
-            stats = asdict(cache_stats) if hasattr(cache_stats, '__dataclass_fields__') else cache_stats
+            stats = (
+                asdict(cache_stats) if hasattr(cache_stats, "__dataclass_fields__") else cache_stats
+            )
             tier_dist = cache.get_tier_distribution()
             correlations = cache.get_correlation_insights()
 
@@ -273,7 +275,9 @@ def register_intelligence_tools(mcp, audited, helpers):
             cache = AdaptiveCache(project_root)
             cache_stats = cache.get_stats()
             # Convert dataclass to dict for consistent access
-            combined_stats["cache"] = asdict(cache_stats) if hasattr(cache_stats, '__dataclass_fields__') else cache_stats
+            combined_stats["cache"] = (
+                asdict(cache_stats) if hasattr(cache_stats, "__dataclass_fields__") else cache_stats
+            )
         except Exception as e:
             combined_stats["cache"] = {"error": str(e)}
 
