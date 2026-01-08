@@ -45,6 +45,21 @@ startCommand:
         default: "1"
         enum: ["0", "1"]
         examples: ["1", "0"]
+      BORING_MCP_PROFILE:
+        type: "string"
+        title: "Tool Profile"
+        description: |
+          Select the toolset profile to load.
+          
+          - "lite": Essential coding tools only (fastest, low noise)
+          - "dev": Adds debugging, git, and project tools (recommended for developers)
+          - "pro": Full suite including RAG, Multi-Agent, and Intelligence (maximum capability)
+          
+          **Default:** "lite"
+          **Example:** Use "pro" for full Vibe Coder experience
+        default: "lite"
+        enum: ["lite", "dev", "pro"]
+        examples: ["lite", "pro"]
       LOG_LEVEL:
         type: "string"
         title: "Log Level"
