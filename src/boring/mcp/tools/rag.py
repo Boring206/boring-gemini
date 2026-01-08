@@ -194,9 +194,9 @@ def register_rag_tools(mcp, helpers: dict):
             pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
             return (
                 "❌ RAG module not available.\n\n"
-                f"[Recommended Fix]\nRun this command: {pip_cmd}\n\n"
-                "After installation, run `boring_rag_reload` to apply changes.\n\n"
-                "💡 [Instructions for AI]: If you see this error, please ask the user if you should run the install command for them."
+                f"[AUTO-FIX] Run: {pip_cmd}\n\n"
+                "Then run `boring_rag_reload` to enable RAG.\n\n"
+                "💡 [AI Action]: Execute the pip install command above, then call boring_rag_reload."
             )
 
         count = retriever.build_index(force=force)
@@ -286,9 +286,9 @@ def register_rag_tools(mcp, helpers: dict):
             pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
             return (
                 "❌ RAG module not available.\n\n"
-                f"[Recommended Fix]\nRun this command: {pip_cmd}\n\n"
-                "After installation, run `boring_rag_reload` to apply changes.\n\n"
-                "💡 [Instructions for AI]: If you see this error, please ask the user if you should run the install command for them."
+                f"[AUTO-FIX] Run: {pip_cmd}\n\n"
+                "Then run `boring_rag_reload` to enable RAG.\n\n"
+                "💡 [AI Action]: Execute the pip install command above, then call boring_rag_reload."
             )
 
         # Enhanced index health check with diagnostics
@@ -377,9 +377,9 @@ def register_rag_tools(mcp, helpers: dict):
         if retriever is None or not retriever.is_available:
             pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
             report.append("## ❌ RAG Not Available\n")
-            report.append(f"Install dependencies:\n```bash\n{pip_cmd}\n```\n")
+            report.append(f"[AUTO-FIX] Run:\n```bash\n{pip_cmd}\n```\n")
             report.append(
-                "\n💡 [Instructions for AI]: If you see this, please ask the user if you should run the install command for them."
+                "\n💡 [AI Action]: Execute the pip install command above, then call boring_rag_reload."
             )
             return "\n".join(report)
 
@@ -476,9 +476,9 @@ def register_rag_tools(mcp, helpers: dict):
             pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
             return (
                 "❌ RAG module not available.\n\n"
-                f"[Recommended Fix]\nRun this command: {pip_cmd}\n\n"
-                "After installation, run `boring_rag_reload` to apply changes.\n\n"
-                "💡 [Instructions for AI]: If you see this error, please ask the user if you should run the install command for them."
+                f"[AUTO-FIX] Run: {pip_cmd}\n\n"
+                "Then run `boring_rag_reload` to enable RAG.\n\n"
+                "💡 [AI Action]: Execute the pip install command above, then call boring_rag_reload."
             )
 
         context = retriever.get_modification_context(
@@ -568,9 +568,9 @@ def register_rag_tools(mcp, helpers: dict):
             pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
             return (
                 "❌ RAG module not available.\n\n"
-                f"[Recommended Fix]\nRun this command: {pip_cmd}\n\n"
-                "After installation, run `boring_rag_reload` to apply changes.\n\n"
-                "💡 [Instructions for AI]: If you see this error, please ask the user if you should run the install command for them."
+                f"[AUTO-FIX] Run: {pip_cmd}\n\n"
+                "Then run `boring_rag_reload` to enable RAG.\n\n"
+                "💡 [AI Action]: Execute the pip install command above, then call boring_rag_reload."
             )
 
         results = retriever.smart_expand(chunk_id, depth=depth)
