@@ -1,5 +1,5 @@
 """
-Workflow Evolver Module for Boring V5.0
+Workflow Evolver Module for Boring V10.18
 
 Enables dynamic evolution of SpecKit workflows based on project analysis.
 AI can modify workflow content to adapt to specific project needs.
@@ -8,16 +8,292 @@ Key Features:
 - Backup original workflows to _base/ directory
 - Track all modifications in _evolution_log.json
 - Rollback to base template when needed
+- [V10.18+] Automatic project context detection
+- [V10.18+] Gap analysis for workflow completeness
+- [V10.18+] Intelligent workflow suggestion generation
 """
 
 import hashlib
 import json
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
 from .logger import log_status
+
+# =============================================================================
+# Project Context Detection
+# =============================================================================
+
+
+@dataclass
+class ProjectContext:
+    """Detected project context and metadata files."""
+
+    project_type: str  # python, node, go, rust, docker, mcp, etc.
+    detected_files: list[str] = field(default_factory=list)
+    version_files: list[str] = field(default_factory=list)
+    doc_languages: list[str] = field(default_factory=list)  # en, zh, ja, ko, es, fr, de, etc.
+    is_multilingual: bool = False  # True if more than 1 language detected
+    suggested_checks: list[str] = field(default_factory=list)
+
+
+class ProjectContextDetector:
+    """
+    Automatically detects project type and required sync files.
+
+    Usage:
+        detector = ProjectContextDetector(project_root)
+        context = detector.analyze()
+        print(context.project_type)  # 'mcp_server'
+        print(context.version_files)  # ['pyproject.toml', 'smithery.yaml']
+    """
+
+    # File patterns that indicate project type
+    PROJECT_INDICATORS = {
+        "python": ["pyproject.toml", "setup.py", "requirements.txt"],
+        "node": ["package.json", "package-lock.json", "yarn.lock"],
+        "go": ["go.mod", "go.sum"],
+        "rust": ["Cargo.toml", "Cargo.lock"],
+        "docker": ["Dockerfile", "docker-compose.yml", "docker-compose.yaml"],
+        "mcp_server": ["smithery.yaml", "gemini-extension.json"],
+    }
+
+    # Files that contain version info and need syncing
+    VERSION_FILES = {
+        "pyproject.toml": r'version\s*=\s*["\']([^"\']+)["\']',
+        "package.json": r'"version"\s*:\s*"([^"]+)"',
+        "Cargo.toml": r'version\s*=\s*"([^"]+)"',
+        "smithery.yaml": r'version:\s*["\']?([^"\'"\n]+)',
+        "gemini-extension.json": r'"version"\s*:\s*"([^"]+)"',
+        "__init__.py": r'__version__\s*=\s*["\']([^"\']+)["\']',
+    }
+
+    def __init__(self, project_root: Path):
+        self.project_root = Path(project_root)
+
+    def analyze(self) -> ProjectContext:
+        """Analyze project and return detected context."""
+        detected_files = []
+        version_files = []
+        project_types = set()
+
+        # Scan for indicator files
+        for ptype, indicators in self.PROJECT_INDICATORS.items():
+            for indicator in indicators:
+                if (self.project_root / indicator).exists():
+                    detected_files.append(indicator)
+                    project_types.add(ptype)
+
+        # Scan for version files
+        for vfile, _pattern in self.VERSION_FILES.items():
+            # Check root and src/*/
+            paths_to_check = [
+                self.project_root / vfile,
+                *list(self.project_root.glob(f"src/*/{vfile}")),
+            ]
+            for path in paths_to_check:
+                if path.exists():
+                    version_files.append(str(path.relative_to(self.project_root)))
+
+        # Detect multilingual docs
+        doc_languages = self._detect_doc_languages()
+        is_multilingual = len(doc_languages) > 1
+
+        # Determine primary project type
+        primary_type = self._determine_primary_type(project_types)
+
+        # Generate suggested checks
+        suggested = self._generate_suggested_checks(primary_type, version_files, is_multilingual)
+
+        return ProjectContext(
+            project_type=primary_type,
+            detected_files=detected_files,
+            version_files=version_files,
+            doc_languages=doc_languages,
+            is_multilingual=is_multilingual,
+            suggested_checks=suggested,
+        )
+
+    # Supported language suffixes (ISO 639-1 codes)
+    LANGUAGE_SUFFIXES = {
+        "_zh": "zh",  # Chinese
+        "_ja": "ja",  # Japanese
+        "_ko": "ko",  # Korean
+        "_es": "es",  # Spanish
+        "_fr": "fr",  # French
+        "_de": "de",  # German
+        "_pt": "pt",  # Portuguese
+        "_ru": "ru",  # Russian
+        "_ar": "ar",  # Arabic
+        "_it": "it",  # Italian
+        "_nl": "nl",  # Dutch
+        "_vi": "vi",  # Vietnamese
+        "_th": "th",  # Thai
+    }
+
+    def _detect_doc_languages(self) -> list[str]:
+        """Detect documentation languages from file suffixes."""
+        languages = set()
+        docs_dir = self.project_root / "docs"
+
+        if docs_dir.exists():
+            for md_file in docs_dir.rglob("*.md"):
+                name = md_file.stem
+                detected = False
+                for suffix, lang_code in self.LANGUAGE_SUFFIXES.items():
+                    if name.endswith(suffix):
+                        languages.add(lang_code)
+                        detected = True
+                        break
+                if not detected:
+                    languages.add("en")  # Default to English
+
+        return sorted(languages)
+
+    def _determine_primary_type(self, types: set[str]) -> str:
+        """Determine primary project type from detected types."""
+        # Priority order
+        priority = ["mcp_server", "docker", "rust", "go", "node", "python"]
+        for ptype in priority:
+            if ptype in types:
+                return ptype
+        return "unknown"
+
+    def _generate_suggested_checks(
+        self, project_type: str, version_files: list[str], is_multilingual: bool
+    ) -> list[str]:
+        """Generate suggested workflow checks based on context."""
+        checks = []
+
+        # Version sync checks
+        if len(version_files) > 1:
+            checks.append(f"Sync version across: {', '.join(version_files)}")
+
+        # Project-type specific checks
+        type_checks = {
+            "python": ["Run pytest", "Check ruff lint"],
+            "node": ["Run npm test", "Check eslint"],
+            "mcp_server": ["Validate smithery.yaml", "Test MCP startup"],
+            "docker": ["Build Docker image", "Run container tests"],
+        }
+        checks.extend(type_checks.get(project_type, []))
+
+        # Multilingual checks
+        if is_multilingual:
+            checks.append("Verify multilingual doc parity across all language versions")
+
+        return checks
+
+
+# =============================================================================
+# Gap Analysis
+# =============================================================================
+
+
+@dataclass
+class WorkflowGap:
+    """A detected gap in workflow coverage."""
+
+    gap_type: str  # 'missing_file', 'missing_check', 'outdated'
+    description: str
+    suggested_fix: str
+    severity: str  # 'low', 'medium', 'high'
+
+
+class WorkflowGapAnalyzer:
+    """
+    Analyzes workflow content against project context to find gaps.
+
+    Usage:
+        analyzer = WorkflowGapAnalyzer(project_root)
+        gaps = analyzer.analyze_release_workflow(workflow_content)
+        for gap in gaps:
+            print(f"[{gap.severity}] {gap.description}")
+    """
+
+    def __init__(self, project_root: Path):
+        self.project_root = Path(project_root)
+        self.detector = ProjectContextDetector(project_root)
+        self._context: Optional[ProjectContext] = None
+
+    @property
+    def context(self) -> ProjectContext:
+        if self._context is None:
+            self._context = self.detector.analyze()
+        return self._context
+
+    def analyze_release_workflow(self, workflow_content: str) -> list[WorkflowGap]:
+        """Analyze release workflow and return gaps."""
+        gaps = []
+        content_lower = workflow_content.lower()
+
+        # Check version file coverage
+        for vfile in self.context.version_files:
+            if vfile.lower() not in content_lower:
+                gaps.append(
+                    WorkflowGap(
+                        gap_type="missing_file",
+                        description=f"Version file '{vfile}' not mentioned in workflow",
+                        suggested_fix=f"- [ ] Sync version in `{vfile}`",
+                        severity="high"
+                        if "pyproject" in vfile or "package.json" in vfile
+                        else "medium",
+                    )
+                )
+
+        # Check multilingual doc parity
+        if self.context.is_multilingual:
+            bilingual_keywords = ["bilingual", "雙語", "parity", "translation", "_zh"]
+            if not any(kw in content_lower for kw in bilingual_keywords):
+                gaps.append(
+                    WorkflowGap(
+                        gap_type="missing_check",
+                        description="Bilingual documentation parity check missing",
+                        suggested_fix="- [ ] Verify bilingual doc parity (`docs/*.md` ↔ `*_zh.md`)",
+                        severity="medium",
+                    )
+                )
+
+        # Check project-type specific
+        if self.context.project_type == "mcp_server":
+            if "smithery" not in content_lower:
+                gaps.append(
+                    WorkflowGap(
+                        gap_type="missing_file",
+                        description="MCP server project but smithery.yaml not in workflow",
+                        suggested_fix="- [ ] Update `smithery.yaml` metadata",
+                        severity="high",
+                    )
+                )
+
+        return gaps
+
+    def generate_enhanced_workflow(self, original_content: str) -> str:
+        """Generate enhanced workflow content with gap fixes."""
+        gaps = self.analyze_release_workflow(original_content)
+
+        if not gaps:
+            return original_content
+
+        # Find insertion point (before last checkbox or at end)
+        lines = original_content.split("\n")
+        insert_idx = len(lines)
+
+        for i in range(len(lines) - 1, -1, -1):
+            if lines[i].strip().startswith("- ["):
+                insert_idx = i + 1
+                break
+
+        # Generate new lines
+        new_lines = ["\n## Auto-Detected Checks (WorkflowEvolver)"]
+        for gap in gaps:
+            new_lines.append(gap.suggested_fix)
+
+        # Insert
+        lines = lines[:insert_idx] + new_lines + lines[insert_idx:]
+        return "\n".join(lines)
 
 
 @dataclass
@@ -269,6 +545,126 @@ class WorkflowEvolver:
             return [e for e in log if e.get("workflow_name") == workflow_name]
 
         return log
+
+    # =========================================================================
+    # V10.18+ Autonomous Evolution Methods
+    # =========================================================================
+
+    def analyze_project(self) -> dict[str, Any]:
+        """
+        Analyze project context and return detected information.
+
+        Returns:
+            Dict with project_type, version_files, doc_languages, suggested_checks
+        """
+        detector = ProjectContextDetector(self.project_root)
+        context = detector.analyze()
+        return {
+            "project_type": context.project_type,
+            "detected_files": context.detected_files,
+            "version_files": context.version_files,
+            "doc_languages": context.doc_languages,
+            "is_multilingual": context.is_multilingual,
+            "suggested_checks": context.suggested_checks,
+        }
+
+    def analyze_gaps(self, workflow_name: str = "release-prep") -> list[dict]:
+        """
+        Analyze gaps in a workflow against project context.
+
+        Args:
+            workflow_name: Name of workflow to analyze
+
+        Returns:
+            List of gaps with type, description, suggested_fix, severity
+        """
+        workflow_path = self.workflows_dir / f"{workflow_name}.md"
+        if not workflow_path.exists():
+            return [{"error": f"Workflow not found: {workflow_name}"}]
+
+        content = workflow_path.read_text(encoding="utf-8")
+        analyzer = WorkflowGapAnalyzer(self.project_root)
+        gaps = analyzer.analyze_release_workflow(content)
+
+        return [
+            {
+                "gap_type": g.gap_type,
+                "description": g.description,
+                "suggested_fix": g.suggested_fix,
+                "severity": g.severity,
+            }
+            for g in gaps
+        ]
+
+    def auto_evolve(self, workflow_name: str = "release-prep") -> dict[str, Any]:
+        """
+        Automatically evolve a workflow based on project context analysis.
+
+        This is the main entry point for autonomous workflow optimization.
+        It detects project context, analyzes gaps, and applies fixes.
+
+        Args:
+            workflow_name: Name of workflow to evolve (default: release-prep)
+
+        Returns:
+            Result dict with status, gaps_found, gaps_fixed, new_content preview
+
+        Usage:
+            evolver = WorkflowEvolver(project_root)
+            result = evolver.auto_evolve("release-prep")
+            if result["status"] == "EVOLVED":
+                print(f"Fixed {result['gaps_fixed']} gaps")
+        """
+        if workflow_name not in self.EVOLVABLE_WORKFLOWS:
+            return {
+                "status": "ERROR",
+                "error": f"Workflow '{workflow_name}' is not evolvable",
+            }
+
+        workflow_path = self.workflows_dir / f"{workflow_name}.md"
+        if not workflow_path.exists():
+            return {
+                "status": "ERROR",
+                "error": f"Workflow not found: {workflow_path}",
+            }
+
+        # Analyze project and gaps
+        analyzer = WorkflowGapAnalyzer(self.project_root)
+        original_content = workflow_path.read_text(encoding="utf-8")
+        gaps = analyzer.analyze_release_workflow(original_content)
+
+        if not gaps:
+            return {
+                "status": "NO_GAPS",
+                "message": "Workflow is already complete for this project",
+                "project_type": analyzer.context.project_type,
+            }
+
+        # Generate enhanced content
+        enhanced_content = analyzer.generate_enhanced_workflow(original_content)
+
+        # Apply evolution
+        result = self.evolve_workflow(
+            workflow_name,
+            enhanced_content,
+            reason=f"Auto-evolved: fixed {len(gaps)} gaps ({', '.join(g.gap_type for g in gaps)})",
+        )
+
+        if result["status"] == "SUCCESS":
+            return {
+                "status": "EVOLVED",
+                "gaps_found": len(gaps),
+                "gaps_fixed": len(gaps),
+                "gaps_details": [
+                    {"type": g.gap_type, "desc": g.description, "severity": g.severity}
+                    for g in gaps
+                ],
+                "project_type": analyzer.context.project_type,
+                "old_hash": result.get("old_hash"),
+                "new_hash": result.get("new_hash"),
+            }
+
+        return result
 
 
 def create_workflow_evolver(project_root: Path, log_dir: Optional[Path] = None) -> WorkflowEvolver:

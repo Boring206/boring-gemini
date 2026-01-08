@@ -182,6 +182,15 @@ def start(
                 "[bold yellow]🚑 Self-Healing Enabled: I will attempt to fix crashes automatically.[/bold yellow]"
             )
 
+        # Tutorial Hook
+        try:
+            from .tutorial import TutorialManager
+
+            tutorial = TutorialManager(settings.PROJECT_ROOT)
+            tutorial.show_tutorial("loop_start")
+        except Exception:
+            pass
+
         # Execute with Debugger Wrapper
         debugger.run_with_healing(loop.run)
 
@@ -285,23 +294,28 @@ def status():
     memory = MemoryManager(settings.PROJECT_ROOT)
     state = memory.get_project_state()
 
-    console.print("[bold blue]Boring Project Status[/bold blue]")
-    console.print(f"  Project: {state.get('project_name', 'Unknown')}")
-    console.print(f"  Total Loops: {state.get('total_loops', 0)}")
+    console.print("[bold magenta]✨ Vibe Coder Status ✨[/bold magenta]")
+    console.print(f"  📂 Project: {state.get('project_name', 'Unknown')}")
+    console.print(f"  🔄 Total Loops: {state.get('total_loops', 0)}")
     console.print(
-        f"  Success: {state.get('successful_loops', 0)} | Failed: {state.get('failed_loops', 0)}"
+        f"  ✅ Success: {state.get('successful_loops', 0)} | ❌ Failed: {state.get('failed_loops', 0)}"
     )
-    console.print(f"  Last Activity: {state.get('last_activity', 'Never')}")
+    console.print(f"  🕒 Last Activity: {state.get('last_activity', 'Never')}")
 
     # Show recent history
     history = memory.get_loop_history(last_n=3)
     if history:
-        console.print("\n[bold]Recent Loops:[/bold]")
+        console.print("\n[bold]📜 Recent Loops:[/bold]")
         for h in history:
-            status_icon = "✓" if h.get("status") == "SUCCESS" else "✗"
-            console.print(
-                f"  {status_icon} Loop #{h.get('loop_id', '?')}: {h.get('status', 'UNKNOWN')}"
-            )
+            status = h.get("status", "UNKNOWN")
+            if status == "SUCCESS":
+                status_icon = "✅"
+            elif status == "FAILED":
+                status_icon = "❌"
+            else:
+                status_icon = "❓"
+
+            console.print(f"  {status_icon} Loop #{h.get('loop_id', '?')}: {status}")
 
 
 @app.command()
@@ -432,6 +446,11 @@ def version():
 # --- Workflow Hub CLI ---
 workflow_app = typer.Typer(help="Manage Boring Workflows (Hub)")
 app.add_typer(workflow_app, name="workflow")
+
+# --- Tutorial CLI ---
+tutorial_app = typer.Typer(help="Vibe Coder Tutorials")
+app.add_typer(tutorial_app, name="tutorial")
+
 
 # --- LSP & IDE Integration CLI ---
 lsp_app = typer.Typer(help="IDE Integration & LSP Server")
@@ -730,6 +749,21 @@ def dashboard():
     except Exception as e:
         console.print(f"[bold red]Failed to launch dashboard:[/bold red] {e}")
         raise typer.Exit(1)
+
+
+@tutorial_app.command("note")
+def tutorial_note():
+    """
+    Generate a learning note (LEARNING.md) based on your vibe coding journey.
+    """
+    from .tutorial import TutorialManager
+
+    manager = TutorialManager(settings.PROJECT_ROOT)
+    path = manager.generate_learning_note()
+
+    console.print("[bold green]✨ 學習筆記已生成！[/bold green]")
+    console.print(f"👉 {path}")
+    console.print("[dim]快打開來看看你解鎖了哪些成就吧！[/dim]")
 
 
 @app.command()

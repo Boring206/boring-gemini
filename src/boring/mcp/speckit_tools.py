@@ -29,7 +29,7 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
     """
 
     @mcp.tool(
-        description="Create technical implementation plan from requirements",
+        description="規劃怎麼做、設計實作計畫 (Create plan). 適合: '幫我規劃怎麼做', 'Design implementation', '我想做 XXX 功能', 'Plan this feature'.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
@@ -56,7 +56,7 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
         return execute_workflow("speckit-plan", context, project_path)
 
     @mcp.tool(
-        description="Break implementation plan into actionable tasks",
+        description="把計畫拆成具體的任務清單 (Break into tasks). 適合: '拆成步驟', 'Break into tasks', '給我一個清單', 'What should I do first?'.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
@@ -83,7 +83,7 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
         return execute_workflow("speckit-tasks", context, project_path)
 
     @mcp.tool(
-        description="Cross-artifact consistency & coverage analysis",
+        description="檢查需求和程式碼是否一致 (Check consistency). 適合: '對照一下需求', 'Check if code matches spec', '有沒有漏掉什麼'.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
@@ -110,7 +110,7 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
         return execute_workflow("speckit-analyze", context, project_path)
 
     @mcp.tool(
-        description="Clarify underspecified areas in the project specification (formerly /quizme)",
+        description="釐清模糊的需求、問我問題 (Clarify requirements). 適合: '有什麼不清楚的嗎', 'Ask me questions', '釐清需求', 'What do you need to know?'.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
@@ -137,7 +137,7 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
         return execute_workflow("speckit-clarify", context, project_path)
 
     @mcp.tool(
-        description="Create project constitution and guiding principles",
+        description="建立專案的指導原則和規範 (Set project rules). 適合: '定義規範', 'Set coding standards', '這個專案的規則'.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
@@ -164,7 +164,7 @@ def register_speckit_tools(mcp, audited, helpers, execute_workflow):
         return execute_workflow("speckit-constitution", context, project_path)
 
     @mcp.tool(
-        description="Generate custom quality checklists to validate requirements",
+        description="建立品質驗收清單 (Create quality checklist). 適合: '做完要檢查什麼', 'Quality checklist', '驗收標準'.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited

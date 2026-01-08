@@ -4,9 +4,17 @@
 V9 MCP Tools - Plugin, Workspace, Auto-Fix, Pattern Mining tools.
 
 This module registers all V9 local features as MCP tools.
+
+Performance optimizations:
+- Concurrent execution for independent I/O operations
+- Cached PluginLoader singleton per project
+- Lazy loading of heavy modules
 """
 
-from typing import Annotated
+import subprocess
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
+from typing import Annotated, Any, Optional
 
 from pydantic import Field
 
@@ -16,6 +24,153 @@ from ..streaming import get_streaming_manager
 from ..verification import CodeVerifier
 from ..workspace import get_workspace_manager
 from .utils import detect_project_root, get_project_root_or_error  # noqa: F401
+
+# =============================================================================
+# Performance: Cached PluginLoader singleton per project
+# =============================================================================
+_plugin_loader_cache: dict[str, PluginLoader] = {}
+
+
+def _get_cached_plugin_loader(project_root: Optional[Path]) -> PluginLoader:
+    """Get or create a cached PluginLoader for the given project root."""
+    cache_key = str(project_root) if project_root else "__default__"
+    if cache_key not in _plugin_loader_cache:
+        loader = PluginLoader(project_root)
+        loader.load_all()
+        _plugin_loader_cache[cache_key] = loader
+    return _plugin_loader_cache[cache_key]
+
+
+def _clear_plugin_cache(project_root: Optional[Path] = None):
+    """Clear plugin cache for a specific project or all projects."""
+    if project_root:
+        cache_key = str(project_root)
+        _plugin_loader_cache.pop(cache_key, None)
+    else:
+        _plugin_loader_cache.clear()
+
+
+# =============================================================================
+# Performance: Parallel helper functions for boring_suggest_next
+# =============================================================================
+def _check_git_changes(project_root: Path) -> list[dict[str, Any]]:
+    """Check for uncommitted git changes (runs in thread)."""
+    enhancements = []
+    try:
+        result = subprocess.run(
+            ["git", "diff", "--name-only"],
+            cwd=project_root,
+            capture_output=True,
+            text=True,
+            timeout=3,
+            stdin=subprocess.DEVNULL,
+        )
+        changed_files = result.stdout.strip().split("\n") if result.stdout.strip() else []
+        if changed_files:
+            enhancements.append(
+                {
+                    "type": "git_changes",
+                    "action": "Consider running `boring_commit` or `boring_verify`",
+                    "priority": "high",
+                    "details": f"{len(changed_files)} uncommitted files",
+                }
+            )
+            enhancements.append(
+                {
+                    "type": "prompt_recommendation",
+                    "action": "Run `/smart_commit` to auto-generate message and save",
+                    "priority": "high",
+                    "details": "High-level prompt available",
+                }
+            )
+    except Exception:
+        pass
+    return enhancements
+
+
+def _check_learned_patterns(project_root: Path) -> list[dict[str, Any]]:
+    """Check learned patterns from brain (runs in thread)."""
+    enhancements = []
+    try:
+        from ..brain_manager import BrainManager
+
+        brain = BrainManager(project_root)
+        patterns = brain.get_relevant_patterns("next steps recommendations", limit=3)
+        for p in patterns:
+            enhancements.append(
+                {
+                    "type": "learned_pattern",
+                    "action": p.get("solution", "")[:100],
+                    "priority": "medium",
+                    "details": f"From: {p.get('description', 'Unknown')}",
+                }
+            )
+    except Exception:
+        pass
+    return enhancements
+
+
+def _check_rag_index(project_root: Path) -> list[dict[str, Any]]:
+    """Check RAG index freshness (runs in thread)."""
+    enhancements = []
+    try:
+        rag_dir = project_root / ".boring_memory" / "rag_db"
+        if not rag_dir.exists():
+            enhancements.append(
+                {
+                    "type": "rag_not_indexed",
+                    "action": "Run `boring_rag_index` to enable semantic code search",
+                    "priority": "medium",
+                    "details": "RAG index not found",
+                }
+            )
+    except Exception:
+        pass
+    return enhancements
+
+
+def _check_task_progress(project_root: Path) -> list[dict[str, Any]]:
+    """Check task.md for incomplete items (runs in thread)."""
+    enhancements = []
+    try:
+        task_file = project_root / ".agent" / "workflows" / "task.md"
+        if not task_file.exists():
+            task_file = project_root / "task.md"
+        if task_file.exists():
+            content = task_file.read_text(encoding="utf-8")
+            incomplete = content.count("[ ]")
+            in_progress = content.count("[/]")
+            if incomplete > 0 or in_progress > 0:
+                enhancements.append(
+                    {
+                        "type": "task_progress",
+                        "action": f"Continue working on task.md ({in_progress} in progress, {incomplete} remaining)",
+                        "priority": "high",
+                        "details": "Found incomplete tasks",
+                    }
+                )
+    except Exception:
+        pass
+    return enhancements
+
+
+def _check_project_empty(project_root: Path) -> list[dict[str, Any]]:
+    """Check if project appears empty (runs in thread)."""
+    enhancements = []
+    try:
+        src_dir = project_root / "src"
+        if not src_dir.exists() or not any(src_dir.iterdir()):
+            enhancements.append(
+                {
+                    "type": "prompt_recommendation",
+                    "action": "Run `/vibe_start` to kickstart development",
+                    "priority": "critical",
+                    "details": "Project appears empty",
+                }
+            )
+    except Exception:
+        pass
+    return enhancements
 
 
 def register_v9_tools(mcp, audited, helpers):
@@ -35,7 +190,7 @@ def register_v9_tools(mcp, audited, helpers):
     # =========================================================================
 
     @mcp.tool(
-        description="List all available plugins (and optionally built-in tools)",
+        description="看看有什麼擴充功能可以用 (List plugins). 適合: 'What plugins?', '有什麼擴充', 'Show available tools'.",
         annotations={"readOnlyHint": True, "openWorldHint": False},
     )
     @audited
@@ -53,10 +208,11 @@ def register_v9_tools(mcp, audited, helpers):
         Shows:
         1. User plugins: ~/.boring/plugins/ or {project}/.boring_plugins/
         2. (Optional) Built-in tools: Core Boring capability tools
+
+        Performance: Uses cached PluginLoader singleton.
         """
         project_root = _detect_project_root(project_path)
-        loader = PluginLoader(project_root)
-        loader.load_all()
+        loader = _get_cached_plugin_loader(project_root)
 
         plugins = loader.list_plugins()
         plugin_dirs = [str(d) for d in loader.plugin_dirs]
@@ -105,7 +261,7 @@ def register_v9_tools(mcp, audited, helpers):
         return response
 
     @mcp.tool(
-        description="Execute a specific plugin by name",
+        description="執行指定的擴充功能 (Run plugin). 適合: '跑 XXX 外掛', 'Execute plugin', '執行擴充'.",
         annotations={"readOnlyHint": False, "openWorldHint": True, "idempotentHint": False},
     )
     @audited
@@ -131,17 +287,18 @@ def register_v9_tools(mcp, audited, helpers):
     ) -> dict:
         """
         Execute a registered plugin by name.
+
+        Performance: Uses cached PluginLoader singleton.
         """
         project_root = _detect_project_root(project_path)
-        loader = PluginLoader(project_root)
-        loader.load_all()
+        loader = _get_cached_plugin_loader(project_root)
 
         # Unpack args if provided, else empty dict
         plugin_kwargs = args if args else {}
         return loader.execute_plugin(name, **plugin_kwargs)
 
     @mcp.tool(
-        description="Reload all plugins from disk",
+        description="重新載入所有擴充功能 (Reload plugins). 適合: '重載外掛', 'Reload plugins', '更新擴充'.",
         annotations={"readOnlyHint": False, "idempotentHint": True},
     )
     @audited
@@ -154,10 +311,14 @@ def register_v9_tools(mcp, audited, helpers):
         Reload plugins that have changed on disk.
 
         Enables hot-reloading of plugin code without restarting.
+        Clears plugin cache to force fresh reload.
         """
         project_root = _detect_project_root(project_path)
-        loader = PluginLoader(project_root)
-        loader.load_all()
+
+        # Clear cache to force fresh reload
+        _clear_plugin_cache(project_root)
+
+        loader = _get_cached_plugin_loader(project_root)
         updated = loader.check_for_updates()
 
         return {
@@ -171,7 +332,7 @@ def register_v9_tools(mcp, audited, helpers):
     # =========================================================================
 
     @mcp.tool(
-        description="Register a new project in the workspace",
+        description="註冊新專案到工作區 (Register project). 適合: '加入專案', 'Add project', '註冊新專案'.",
         annotations={"readOnlyHint": False, "idempotentHint": False, "openWorldHint": False},
     )
     @audited
@@ -208,7 +369,7 @@ def register_v9_tools(mcp, audited, helpers):
         return manager.add_project(name, path, description, tags)
 
     @mcp.tool(
-        description="Unregister a project from the workspace",
+        description="移除專案 (Remove project). 適合: '移除專案', 'Remove project', '刪除專案註冊' (檔案不會刪除).",
         annotations={"readOnlyHint": False, "destructiveHint": True},
     )
     @audited
@@ -224,7 +385,7 @@ def register_v9_tools(mcp, audited, helpers):
         return manager.remove_project(name)
 
     @mcp.tool(
-        description="List all registered projects",
+        description="看看我有哪些專案 (List projects). 適合: 'Show my projects', '我的專案有哪些', 'What am I working on?'.",
         annotations={"readOnlyHint": True, "openWorldHint": False},
     )
     @audited
@@ -240,7 +401,7 @@ def register_v9_tools(mcp, audited, helpers):
         return {"status": "SUCCESS", "projects": projects, "active_project": manager.active_project}
 
     @mcp.tool(
-        description="Switch active project context",
+        description="切換到另一個專案 (Switch project). 適合: 'Switch to XXX', '切換專案', 'Work on another project'.",
         annotations={"readOnlyHint": False, "idempotentHint": True},
     )
     @audited
@@ -260,7 +421,7 @@ def register_v9_tools(mcp, audited, helpers):
     # =========================================================================
 
     @mcp.tool(
-        description="Generate a prompt to fix verification issues (Not autonomous)",
+        description="幫我修問題、自動修復 (Auto fix issues). 適合: 'Fix errors', '幫我修', '處理問題', 'Auto correct'.",
         annotations={"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True},
     )
     @audited
@@ -365,7 +526,7 @@ Requirements:
     # =========================================================================
 
     @mcp.tool(
-        description="Get AI suggestions for next steps",
+        description="告訴我下一步該做什麼 (Suggest next steps). 適合: 'What should I do next?', '下一步呢', '給我建議', 'What now?'.",
         annotations={"readOnlyHint": True, "openWorldHint": False},
     )
     @audited
@@ -382,6 +543,8 @@ Requirements:
         - RAG index freshness check
         - Task.md progress detection
 
+        Performance: Uses ThreadPoolExecutor for parallel I/O operations.
+
         Args:
             limit: Maximum suggestions to return
             project_path: Optional project root path
@@ -397,115 +560,32 @@ Requirements:
         base_suggestions = miner.suggest_next(project_root, limit)
         project_state = miner.analyze_project_state(project_root)
 
-        # Enhanced context analysis
+        # =====================================================================
+        # Performance: Parallel context analysis using ThreadPoolExecutor
+        # =====================================================================
         enhancements = []
 
-        # 1. Check for uncommitted git changes
-        try:
-            import subprocess
+        # Define all check functions with their args
+        check_functions = [
+            (_check_git_changes, project_root),
+            (_check_learned_patterns, project_root),
+            (_check_rag_index, project_root),
+            (_check_task_progress, project_root),
+            (_check_project_empty, project_root),
+        ]
 
-            result = subprocess.run(
-                ["git", "diff", "--name-only"],
-                cwd=project_root,
-                capture_output=True,
-                text=True,
-                timeout=5,
-            )
-            changed_files = result.stdout.strip().split("\n") if result.stdout.strip() else []
-            if changed_files:
-                enhancements.append(
-                    {
-                        "type": "git_changes",
-                        "action": "Consider running `boring_commit` or `boring_verify`",
-                        "priority": "high",
-                        "details": f"{len(changed_files)} uncommitted files",
-                    }
-                )
-        except Exception:
-            pass
+        # Execute all checks in parallel (max 4 workers to avoid overhead)
+        with ThreadPoolExecutor(max_workers=4, thread_name_prefix="suggest-") as executor:
+            futures = {executor.submit(func, arg): func.__name__ for func, arg in check_functions}
 
-        # 2. Check learned patterns for relevant suggestions
-        try:
-            from ..brain_manager import BrainManager
-
-            brain = BrainManager(project_root)
-            patterns = brain.get_relevant_patterns("next steps recommendations", limit=3)
-            if patterns:
-                for p in patterns:
-                    enhancements.append(
-                        {
-                            "type": "learned_pattern",
-                            "action": p.get("solution", "")[:100],
-                            "priority": "medium",
-                            "details": f"From: {p.get('description', 'Unknown')}",
-                        }
-                    )
-        except Exception:
-            pass
-
-        # 3. Check RAG index freshness
-        try:
-            rag_dir = project_root / ".boring_memory" / "rag_db"
-            if not rag_dir.exists():
-                enhancements.append(
-                    {
-                        "type": "rag_not_indexed",
-                        "action": "Run `boring_rag_index` to enable semantic code search",
-                        "priority": "medium",
-                        "details": "RAG index not found",
-                    }
-                )
-        except Exception:
-            pass
-
-        # 4. Check task.md for incomplete items
-        try:
-            task_file = project_root / ".agent" / "workflows" / "task.md"
-            if not task_file.exists():
-                task_file = project_root / "task.md"
-            if task_file.exists():
-                content = task_file.read_text(encoding="utf-8")
-                incomplete = content.count("[ ]")
-                in_progress = content.count("[/]")
-                if incomplete > 0 or in_progress > 0:
-                    enhancements.append(
-                        {
-                            "type": "task_progress",
-                            "action": f"Continue working on task.md ({in_progress} in progress, {incomplete} remaining)",
-                            "priority": "high",
-                            "details": "Found incomplete tasks",
-                        }
-                    )
-        except Exception:
-            pass
-
-        # 5. Check for Prompt Recommendations (New!)
-        # Guide Vibe Coders to use high-level prompts
-        try:
-            # If changed files exist -> Recommend smart_commit prompt
-            if "changed_files" in locals() and changed_files:
-                enhancements.append(
-                    {
-                        "type": "prompt_recommendation",
-                        "action": "Run `/smart_commit` to auto-generate message and save",
-                        "priority": "high",
-                        "details": "High-level prompt available",
-                    }
-                )
-
-            # If project seems empty (no src/ or minimal files) -> Recommend vibe_start
-            src_dir = project_root / "src"
-            if not src_dir.exists() or not any(src_dir.iterdir()):
-                enhancements.append(
-                    {
-                        "type": "prompt_recommendation",
-                        "action": "Run `/vibe_start` to kickstart development",
-                        "priority": "critical",
-                        "details": "Project appears empty",
-                    }
-                )
-        except Exception:
-            pass
+            for future in as_completed(futures, timeout=5):
+                try:
+                    results = future.result(timeout=2)
+                    if results:
+                        enhancements.extend(results)
+                except Exception:
+                    # Silently ignore individual check failures
+                    pass
 
         return {
             "status": "SUCCESS",
@@ -515,7 +595,7 @@ Requirements:
         }
 
     @mcp.tool(
-        description="Check status of long-running task",
+        description="查看任務進度 (Check task progress). 適合: '任務做到哪了', 'Check progress', '進度如何', 'Is it done yet?'.",
         annotations={"readOnlyHint": True, "openWorldHint": False},
     )
     @audited

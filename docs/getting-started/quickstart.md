@@ -12,6 +12,10 @@ Just describe what you want:
 
 ```
 /vibe_start Build a weather dashboard with city search
+
+# OR from terminal
+boring-route "Build a weather dashboard with city search"
+
 ```
 
 AI will ask clarifying questions and build it for you.
@@ -35,7 +39,9 @@ boring start
 |---------|--------------|
 | `/vibe_start [idea]` | Start a new project with AI guidance |
 | `/quick_fix` | Fix all linting/formatting errors |
+| `/quick_fix` | Fix all linting/formatting errors |
 | `/smart_commit` | Generate semantic commit message |
+| `boring-route "help me"` | Natural language routing |
 
 ---
 

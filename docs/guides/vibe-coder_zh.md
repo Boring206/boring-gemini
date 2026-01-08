@@ -20,7 +20,11 @@ Vibe Coding 是一種開發風格：
 ### 步驟 1：從 /vibe_start 開始
 
 ```
-你：/vibe_start 我想建立一個深色主題的個人部落格
+你：You: /vibe_start 我想建立一個深色主題的個人部落格
+
+# 或者使用 boring-route CLI
+$ boring-route "我想建立一個深色主題的個人部落格"
+
 ```
 
 ### 步驟 2：回答問題
@@ -67,9 +71,9 @@ Boring：完美！這是我會建立的：
 | 你想要什麼 | 只需說 |
 |------------|--------|
 | 建立新東西 | `/vibe_start [描述你的想法]` |
-| 修復任何錯誤 | `/quick_fix` |
-| 提交變更 | `/smart_commit` |
-| 全端應用 | `/full_stack_dev [名稱] [技術棧]` |
+| 修復錯誤 | `/quick_fix` 或 `boring-route "修好它"` |
+| 提交變更 | `/smart_commit` 或 `boring-route "提交變更"` |
+| 全端應用 | `/full_stack_dev` 或 `boring-route "建立應用..."` |
 
 ### 範例
 

@@ -14,10 +14,19 @@ templates_dir = Path(__file__).parent / "templates"
 setup_app = typer.Typer(help="Boring project setup commands.")
 import_app = typer.Typer(help="Boring PRD import commands.")
 
+# Templates removed in v10.19.0 - we now recommend using official Gemini/Claude Skills
+# See: docs/skills_guide.md
+
 
 @setup_app.command("new")
 def setup_new_project(
     project_name: str = typer.Argument(..., help="Name for the new Boring project."),
+    template: str = typer.Option(
+        None,
+        "--template",
+        "-t",
+        help="[DEPRECATED] Templates removed. We now recommend using Gemini/Claude Skills. See docs/skills_guide.md",
+    ),
 ):
     project_path = Path(project_name)
     if not project_path.is_absolute():
@@ -45,17 +54,34 @@ def setup_new_project(
     (project_path / "openspec/specs").mkdir(parents=True, exist_ok=True)
     (project_path / "openspec/changes").mkdir(parents=True, exist_ok=True)
 
-    # Copy templates
-    shutil.copy(templates_dir / "PROMPT.md", project_path / "PROMPT.md")
-    shutil.copy(templates_dir / "fix_plan.md", project_path / "@fix_plan.md")
-    shutil.copy(templates_dir / "AGENT.md", project_path / "@AGENT.md")
-    if (templates_dir / "GEMINI.md").exists():
-        shutil.copy(templates_dir / "GEMINI.md", project_path / "GEMINI.md")
-    else:
-        # Create a minimal default GEMINI.md if template doesn't exist
-        (project_path / "GEMINI.md").write_text(
-            "# Boring Context\n\nRole: Autonomous AI developer\n", encoding="utf-8"
+    # Template deprecation notice
+    if template:
+        console.print("\n[bold yellow]⚠️ 範本功能已移除 (Templates Deprecated)[/bold yellow]")
+        console.print("我們建議使用官方的 Gemini Skills 或 Claude Skills，它們更強大且持續更新。")
+        console.print(
+            "📚 詳情請參考: [link=file://docs/skills_guide.md]docs/skills_guide.md[/link]\n"
         )
+
+    # Create default PROMPT.md
+    (project_path / "PROMPT.md").write_text(
+        f"# {project_name}\n\n"
+        "## Goal\n"
+        "Describe your project goal here.\n\n"
+        "## Tech Stack\n"
+        "- Define your technology choices\n\n"
+        "## Features\n"
+        "- [ ] Feature 1\n"
+        "- [ ] Feature 2\n\n"
+        "## 💡 Pro Tip\n"
+        "Use Gemini CLI Skills (`.gemini/skills/`) or Claude Skills (`.claude/skills/`)\n"
+        "for advanced templates. See `docs/skills_guide.md` for recommendations.\n",
+        encoding="utf-8",
+    )
+
+    # Create default GEMINI.md
+    (project_path / "GEMINI.md").write_text(
+        "# Boring Context\n\nRole: Autonomous AI developer\n", encoding="utf-8"
+    )
 
     # Create CONTEXT.md for AI agent guidance
     (project_path / "CONTEXT.md").write_text(
@@ -106,16 +132,19 @@ def setup_new_project(
         capture_output=True,
     )
 
-    console.print(f"✅ Project [bold green]{project_name}[/bold green] created at {project_path}!")
-    console.print("\nNext steps:")
-    console.print(
-        Markdown(f"""
-  1. `cd {project_name}`
-  2. Edit `PROMPT.md` with your project requirements.
-  3. Update `specs/` with your project specifications.
-  4. Run: `boring start --monitor`
-    """)
-    )
+    # Success message
+    console.print(f"\n[bold green]✅ Project '{project_name}' created successfully![/bold green]")
+    console.print(f"Location: {project_path}")
+
+    # Tutorial Hook
+    from .tutorial import TutorialManager
+
+    tutorial = TutorialManager(project_path)
+    tutorial.show_tutorial("first_project")
+
+    console.print("\n[bold]Next Steps:[/bold]")
+    console.print(f"  $ cd {project_name}")
+    console.print("  $ boring start")
 
 
 @import_app.command("prd")

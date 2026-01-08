@@ -140,7 +140,7 @@ def register_rag_tools(mcp, helpers: dict):
     get_project_root_or_error = helpers.get("get_project_root_or_error")
 
     @mcp.tool(
-        description="Reload RAG dependencies after installing packages (hot reload)",
+        description="重新載入 RAG 功能 (Reload RAG). 適合: '刷新一下', 'Refresh RAG', '安裝套件後重新載入'.",
         annotations={"readOnlyHint": False, "idempotentHint": True},
     )
     def boring_rag_reload() -> dict:
@@ -156,7 +156,7 @@ def register_rag_tools(mcp, helpers: dict):
         return reload_rag_dependencies()
 
     @mcp.tool(
-        description="Index codebase for RAG",
+        description="讓我記住這個專案的所有程式碼 (Index code for search). 適合: '記住這個專案', 'Learn my codebase', '建立索引', 'Index my project'.",
         annotations={"readOnlyHint": False, "idempotentHint": True, "openWorldHint": False},
     )
     def boring_rag_index(
@@ -219,7 +219,7 @@ def register_rag_tools(mcp, helpers: dict):
         return f"✅ RAG Index ready with {count} chunks for `{project_root}`"
 
     @mcp.tool(
-        description="Semantic code search",
+        description="找程式碼、搜尋功能、查看某個功能怎麼寫的 (Search code). 適合: 'Find code', '找登入那邊的程式碼', 'Show me authentication', '搜尋 XXX 功能'.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     def boring_rag_search(
@@ -347,7 +347,7 @@ def register_rag_tools(mcp, helpers: dict):
         return "\n".join(parts)
 
     @mcp.tool(
-        description="Check RAG index health and statistics",
+        description="查看索引狀態、檢查程式碼記憶 (Check index status). 適合: 'RAG 狀態', 'Check if indexed', '有沒有記住我的程式碼'.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     def boring_rag_status(
@@ -423,7 +423,7 @@ def register_rag_tools(mcp, helpers: dict):
         return "\n".join(report)
 
     @mcp.tool(
-        description="Get code context (callers/callees)",
+        description="查看某個函數叫了誰、被誰叫 (Code context). 適合: '這個函數被誰用', 'Who uses this?', '查看依賴關係'.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     def boring_rag_context(
@@ -519,7 +519,7 @@ def register_rag_tools(mcp, helpers: dict):
         return "\n".join(parts)
 
     @mcp.tool(
-        description="Recursively expand code dependencies",
+        description="展開更深層的依賴關係 (Expand dependencies). 適合: '繼續展開', 'Show more context', '看更深的依賴'.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     def boring_rag_expand(

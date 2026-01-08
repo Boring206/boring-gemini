@@ -15,11 +15,14 @@ from boring.rag.rag_retriever import (
     RAGRetriever,
     RAGStats,
     RetrievalResult,
+    _clear_query_cache,
 )
 
 
 @pytest.fixture
 def temp_project(tmp_path):
+    # Clear query cache before each test to prevent test pollution
+    _clear_query_cache()
     project = tmp_path / "project"
     project.mkdir()
     (project / "test.py").write_text("def test(): pass\n", encoding="utf-8")

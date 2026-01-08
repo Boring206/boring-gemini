@@ -44,7 +44,11 @@ boring-setup my-project
 cd my-project
 
 # 3. Start development
+# 3. Start development
 boring start
+
+# Or use Vibe Coder CLI directly
+boring-route "Initialize a new project called my-project"
 ```
 
 ### Expected Output
@@ -107,14 +111,17 @@ You have a bug and want AI to fix it.
 ### Steps
 
 ```python
-# Option 1: Describe the bug
+# Option 1: Vibe Coder (Recommended)
+# You: "Fix the login function - it crashes when password is empty"
+
+# Option 2: CLI
+# $ boring-route "Fix the login bug"
+
+# Option 3: Python Tool
 boring_apply_patch(
     project_path=".",
     description="Fix the login function - it crashes when password is empty"
 )
-
-# Option 2: Use quick_fix prompt
-# Just say: /quick_fix
 ```
 
 ### Verification
@@ -128,27 +135,18 @@ boring_verify(level="FULL")
 
 ### Using SpecKit Workflow
 
+### Vibe Coder Prompt
+> **You**: "Deeply analyze the user authentication requirements, then create a detailed checklist and implement it."
+
+### Python Workflow (SpecKit)
+### Vibe Coder Prompt
+> **You**: "Deeply analyze the user authentication requirements, then create a detailed checklist and implement it."
+
+### Python Workflow (SpecKit)
 ```python
 # Step 1: Establish principles
 speckit_constitution(project_path=".")
-
-# Step 2: Clarify requirements
-speckit_clarify(
-    feature="User authentication with OAuth",
-    questions=["providers", "storage", "session"]
-)
-
-# Step 3: Create implementation plan
-speckit_plan(feature="user-auth")
-
-# Step 4: Generate checklist
-speckit_checklist(plan_path=".boring/plans/user-auth.md")
-
-# Step 5: Implement
-boring_multi_agent(
-    workflow="plan_and_implement",
-    context={"feature": "user-auth"}
-)
+# ... (rest of manual steps)
 ```
 
 ---

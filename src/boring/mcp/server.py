@@ -11,7 +11,12 @@ interceptors.install_interceptors()
 # Import all modules to register tools with FastMCP
 from ..audit import audited  # Moved to top-level to avoid import issues in tests
 from . import instance
+from .intelligence_tools import register_intelligence_tools  # V10.23
 from .prompts import register_prompts
+
+# V10.24: Tool Profiles and Router
+from .tool_profiles import ToolRegistrationFilter, get_profile
+from .tool_router import create_router_tool_description, get_tool_router
 
 # Import git tools to trigger @mcp.tool registration (boring_commit, boring_visualize)
 from .tools import git  # noqa: F401
@@ -24,6 +29,7 @@ from .tools.discovery import register_discovery_resources
 from .utils import detect_project_root, get_project_root_or_error
 from .v9_tools import register_v9_tools
 from .v10_tools import register_v10_tools
+from .vibe_tools import register_vibe_tools
 
 # Try to import Smithery decorator for HTTP deployment
 try:
@@ -33,6 +39,12 @@ try:
 except ImportError:
     SMITHERY_AVAILABLE = False
     smithery = None
+
+
+def _get_tool_filter() -> ToolRegistrationFilter:
+    """Get tool filter based on current profile configuration."""
+    profile_name = os.environ.get("BORING_MCP_PROFILE", "lite")
+    return ToolRegistrationFilter(profile_name)
 
 
 @contextmanager
@@ -80,6 +92,12 @@ def get_server_instance():
 
     # Register Prompts
     register_prompts(instance.mcp)
+
+    # Register Vibe Coder Pro Tools
+    register_vibe_tools(instance.mcp, audited, helpers)
+
+    # Register Intelligence Tools (V10.23: PredictiveAnalyzer, AdaptiveCache, Session Context)
+    register_intelligence_tools(instance.mcp, audited, helpers)
 
     return instance.mcp
 
@@ -142,6 +160,65 @@ def run_server():
     # Register Prompts
     register_prompts(instance.mcp)
 
+    # Register Vibe Coder Pro Tools
+    register_vibe_tools(instance.mcp, audited, helpers)
+
+    # Register Intelligence Tools (V10.23: PredictiveAnalyzer, AdaptiveCache, Session Context)
+    register_intelligence_tools(instance.mcp, audited, helpers)
+
+    # V10.24: Register Tool Router (Universal Natural Language Gateway)
+    profile = get_profile()
+    router = get_tool_router()
+
+    @instance.mcp.tool(
+        description=create_router_tool_description(),
+        annotations={"readOnlyHint": True, "openWorldHint": True},
+    )
+    def boring(request: str) -> str:
+        """
+        🎯 Universal Router - Natural Language Tool Interface
+
+        Instead of remembering 98+ tool names, just describe what you want:
+        - "search for authentication code" → boring_rag_search
+        - "review my code for security" → boring_security_scan
+        - "generate tests for user.py" → boring_test_gen
+
+        Args:
+            request: Natural language description of what you want to do
+
+        Returns:
+            Routing result with matched tool and suggested parameters
+        """
+        result = router.route(request)
+        return (
+            f"🎯 **Routed to:** `{result.matched_tool}`\n"
+            f"📊 **Confidence:** {result.confidence:.0%}\n"
+            f"📁 **Category:** {result.category}\n"
+            f"📝 **Suggested params:** {result.suggested_params}\n"
+            f"🔄 **Alternatives:** {', '.join(result.alternatives) if result.alternatives else 'None'}\n\n"
+            f"💡 Call `{result.matched_tool}` with the suggested parameters."
+        )
+
+    @instance.mcp.tool(
+        description="Show all available tool categories and help.",
+        annotations={"readOnlyHint": True},
+    )
+    def boring_help() -> str:
+        """Get help on available Boring tools and categories."""
+        summary = router.get_categories_summary()
+        profile_info = (
+            f"\n## 🎛️ Current Profile: **{profile.name}** ({len(profile.tools) or 'all'} tools)\n"
+        )
+        return summary + profile_info
+
+    # Vibe Coder Tutorial Hook - Show MCP intro on first launch
+    try:
+        from ..tutorial import TutorialManager
+
+        TutorialManager().show_tutorial("mcp_intro")
+    except Exception:
+        pass  # Fail silently if tutorial not available
+
     # 4. Configured logging
     with _configure_logging():
         # Always check for optional RAG dependencies at startup
@@ -156,6 +233,11 @@ def run_server():
                 f"[boring-mcp] To enable RAG, run:\n"
                 f"    {sys.executable} -m pip install chromadb sentence-transformers\n"
             )
+
+        # V10.24: Show profile info
+        sys.stderr.write(
+            f"[boring-mcp] 🎛️ Tool Profile: {profile.name} ({len(profile.tools) or 'all'} tools)\n"
+        )
 
         if os.environ.get("BORING_MCP_DEBUG") == "1":
             sys.stderr.write("[boring-mcp] Server starting...\n")

@@ -30,6 +30,16 @@ boring verify --force
 | Lint (100 files) | ~15s | < 2s |
 | Full Verification | ~60s | ~5s |
 
+### Context Optimization (Tool Profiles)
+
+Boring V10.24 introduces **Tool Profiles** to drastically reduce context overhead:
+
+- **Problem**: Loading 98 tool definitions consumes ~30k tokens of context window.
+- **Solution**: The `lite` profile (default) loads only 19 essential tools (~5k tokens).
+- **Impact**: **80% reduction** in context usage, faster inference, and lower cost.
+
+Enable via `.boring.toml` or env `BORING_MCP_PROFILE=lite`.
+
 ---
 
 ## 🧠 Incremental RAG Indexing

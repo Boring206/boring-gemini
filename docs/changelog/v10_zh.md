@@ -4,6 +4,36 @@
 
 ---
 
+## V10.21.x - 效能優化
+
+### V10.21.0（最新）
+**效能優化**
+- Thread-local SQLite Connection Pool
+- SQLite WAL Mode
+- Query Result Caching
+
+---
+
+## V10.20.x - Vibe Engineer
+
+### V10.20.0
+**Vibe Score 與 Impact Analysis**
+- Vibe Score (`boring_vibe_check`)
+- Impact Analysis (`boring_impact_check`)
+- One-Click Fix Prompt
+
+---
+
+## V10.19.x - Vibe Coder
+
+### V10.19.0
+**Vibe Coder Edition**
+- Vibe Coder Pro Toolset
+- 多語言支援擴充
+- 互動式教學
+
+---
+
 ## V10.18.x - AI 回饋循環
 
 ### V10.18.3（最新）

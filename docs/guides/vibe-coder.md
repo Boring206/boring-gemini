@@ -21,6 +21,10 @@ Vibe Coding is a development style where you:
 
 ```
 You: /vibe_start I want to build a personal blog with a dark theme
+
+# OR using boring-route CLI
+$ boring-route "I want to build a personal blog with a dark theme"
+
 ```
 
 ### Step 2: Answer the Questions
@@ -67,9 +71,9 @@ Boring: Perfect! Here's what I'll create:
 | What You Want | Just Say |
 |---------------|----------|
 | Build something new | `/vibe_start [describe your idea]` |
-| Fix any error | `/quick_fix` |
-| Commit changes | `/smart_commit` |
-| Full-stack app | `/full_stack_dev [name] [stack]` |
+| Fix any error | `/quick_fix` or `boring-route "fix it"` |
+| Commit changes | `/smart_commit` or `boring-route "commit this"` |
+| Full-stack app | `/full_stack_dev` or `boring-route "build app..."` |
 
 ### Examples
 

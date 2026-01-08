@@ -18,6 +18,23 @@ debug = false
 # 啟用/停用特定功能
 enable_shadow_mode = true
 enable_rag = true
+
+# 預設工具 Profile (minimal, lite, standard, full)
+profile = "lite"
+```
+
+### `[boring.profiles]`
+自訂工具 Profile 或建立新的。
+
+```toml
+[boring.profiles.my_custom]
+# 明確包含的工具清單
+include = ["boring_read_file", "boring_verify"]
+# 或繼承現有 profile
+extend = "lite"
+# 排除特定工具
+exclude = ["boring_commit"]
+
 ```
 
 ### `[boring.performance]`
@@ -114,6 +131,7 @@ secret_scan = true
 |------|--------|------|
 | `BORING_LOG_LEVEL` | `INFO` | 日誌詳細程度 (`DEBUG`, `INFO`, `WARNING`, `ERROR`) |
 | `BORING_PROJECT_ROOT` | `.` | 覆蓋專案根目錄路徑 |
+| `BORING_MCP_PROFILE` | `lite` | 啟用的 Profile (`minimal`, `lite`, `standard`, `full`) |
 | `BORING_CI_MODE` | `0` | 設為 `1` 以停用互動式提示 |
 
 ### 影子模式

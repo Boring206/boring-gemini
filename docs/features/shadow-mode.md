@@ -4,6 +4,8 @@
 
 ---
 
+> **✨ Vibe Coder Compatible**: Shadow Mode intercepts **ALL** tools, including those called via Vibe Coder (`boring()`) or CLI (`boring-route`).
+
 ## 🛡️ What is Shadow Mode?
 
 Shadow Mode acts as a **mandatory interception layer** between AI and your file system. When enabled, it:

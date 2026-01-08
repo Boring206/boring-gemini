@@ -44,7 +44,7 @@ def register_core_tools(mcp, audited, helpers):
     helpers["check_project_root"]
 
     @mcp.tool(
-        description="Initialize a new Boring project with recommended structure and configuration",
+        description="開始新專案、建立專案結構 (Start new project). 適合: 'Create project', 'Setup project', '幫我開始', '建立專案'.",
         annotations={"readOnlyHint": False, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
@@ -85,7 +85,7 @@ def register_core_tools(mcp, audited, helpers):
         }
 
     @mcp.tool(
-        description="Check Boring system health including API key status, dependencies, and backend availability",
+        description="檢查系統是否正常運作 (System health check). 適合: 'Check status', '看看有沒有問題', '系統狀態', 'Is everything working?'.",
         annotations={"readOnlyHint": True, "openWorldHint": False},
     )
     @audited
@@ -111,7 +111,7 @@ def register_core_tools(mcp, audited, helpers):
         }
 
     @mcp.tool(
-        description="Get current autonomous loop status, including active task, call counts, and recent errors",
+        description="查看目前專案進度和狀態 (Project status). 適合: 'What am I working on?', '現在做到哪了', '專案狀態', 'Show progress'.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
@@ -141,10 +141,80 @@ def register_core_tools(mcp, audited, helpers):
             "loop_count": state.get("loop_count", 0),
             "last_run": state.get("last_run"),
             "files_modified": state.get("files_modified", 0),
+            "vibe_status": "✨ 專案狀態良好 (Project is healthy)"
+            if state.get("failed_loops", 0) == 0
+            else "⚠️ 專案有一些問題 (Issues detected)",
+        }
+
+    @mcp.tool(
+        description="推薦 Gemini/Claude Skills 資源 (Browse Skills). "
+        "說: '幫我找電商範本', 'AI Chat Skills', '後台管理', 'Claude Skills 有哪些', "
+        "'推薦 Gemini Extensions'. 我會根據你的需求推薦最合適的 Skills!",
+        annotations={"readOnlyHint": True, "openWorldHint": True, "idempotentHint": True},
+    )
+    @audited
+    def boring_skills_browse(
+        query: Annotated[
+            str,
+            Field(
+                description="你想做什麼？例如: '電商網站', 'AI 聊天機器人', '後台管理', 'Dashboard'"
+            ),
+        ],
+        platform: Annotated[
+            str, Field(description="篩選平台: 'gemini', 'claude', 或 'all' (預設)")
+        ] = "all",
+    ) -> dict:
+        """
+        🔍 Skills 瀏覽器 - 根據需求推薦 Gemini/Claude Skills 資源。
+
+        Vibe Coder 友善設計：
+        - 支援中英文關鍵字
+        - 自動匹配最相關的 Skills
+        - 提供直接安裝指令
+        """
+        from ..skills_catalog import search_skills
+
+        results = search_skills(query, platform=platform.lower(), limit=5)
+
+        if not results:
+            return {
+                "status": "NO_RESULTS",
+                "message": f"😅 找不到 '{query}' 相關的 Skills",
+                "suggestion": "試試更通用的關鍵字，如 'ecommerce', 'chat', 'admin'，或直接瀏覽 docs/skills_guide.md",
+            }
+
+        # 格式化結果
+        formatted = []
+        for skill in results:
+            formatted.append(
+                {
+                    "name": skill.name,
+                    "platform": skill.platform,
+                    "url": skill.repo_url,
+                    "description_zh": skill.description_zh,
+                    "install_command": skill.install_command,
+                }
+            )
+
+        # 生成人類可讀的摘要
+        summary_lines = [f"🎯 找到 {len(results)} 個相關 Skills:"]
+        for i, skill in enumerate(results, 1):
+            summary_lines.append(
+                f"{i}. **{skill.name}** ({skill.platform}) - {skill.description_zh}"
+            )
+
+        return {
+            "status": "SUCCESS",
+            "query": query,
+            "platform_filter": platform,
+            "results": formatted,
+            "vibe_summary": "\n".join(summary_lines),
+            "tip": "💡 查看完整資源清單: docs/skills_guide.md",
         }
 
     return {
         "boring_quickstart": boring_quickstart,
         "boring_health_check": boring_health_check,
         "boring_status": boring_status,
+        "boring_skills_browse": boring_skills_browse,
     }

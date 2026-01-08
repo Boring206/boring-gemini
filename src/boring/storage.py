@@ -6,6 +6,12 @@ Replaces JSON file-based storage with SQLite for:
 - Complex query support (e.g., failure rate by error type)
 - Improved performance for large datasets
 
+Performance optimizations (V10.15):
+- Connection pooling with thread-local storage
+- Prepared statements caching
+- WAL mode for better concurrent reads
+- Batch operations support
+
 Tables:
 - loops: Loop execution history
 - errors: Error patterns and solutions
@@ -14,6 +20,7 @@ Tables:
 
 import json
 import sqlite3
+import threading
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime
@@ -21,6 +28,41 @@ from pathlib import Path
 from typing import Any, Optional
 
 from .logger import log_status
+
+# =============================================================================
+# Performance: Thread-local connection pool
+# =============================================================================
+_local = threading.local()
+
+
+def _clear_thread_local_connection(db_path: Path = None):
+    """Clear thread-local connection (for testing or cleanup).
+
+    Args:
+        db_path: If provided, only clear connection for this specific db_path.
+                 If None, clear all cached connections.
+    """
+    global _local
+    if db_path is not None:
+        conn_key = f"conn_{db_path}"
+        conn = getattr(_local, conn_key, None)
+        if conn is not None:
+            try:
+                conn.close()
+            except Exception:
+                pass
+            delattr(_local, conn_key)
+    else:
+        # Clear all connections
+        for key in list(vars(_local).keys()):
+            if key.startswith("conn_"):
+                conn = getattr(_local, key, None)
+                if conn is not None:
+                    try:
+                        conn.close()
+                    except Exception:
+                        pass
+                delattr(_local, key)
 
 
 @dataclass
@@ -68,8 +110,14 @@ class SQLiteStorage:
         self._init_database()
 
     def _init_database(self):
-        """Initialize database schema."""
+        """Initialize database schema with performance optimizations."""
         with self._get_connection() as conn:
+            # Enable WAL mode for better concurrent read performance
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("PRAGMA synchronous=NORMAL")
+            conn.execute("PRAGMA cache_size=-64000")  # 64MB cache
+            conn.execute("PRAGMA temp_store=MEMORY")
+
             conn.executescript("""
                 -- Loop execution history
                 CREATE TABLE IF NOT EXISTS loops (
@@ -128,9 +176,16 @@ class SQLiteStorage:
 
     @contextmanager
     def _get_connection(self):
-        """Get database connection with automatic commit/rollback."""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
+        """Get thread-local database connection with automatic commit/rollback."""
+        # Use thread-local connection for better performance
+        conn_key = f"conn_{self.db_path}"
+        conn = getattr(_local, conn_key, None)
+
+        if conn is None:
+            conn = sqlite3.connect(self.db_path, check_same_thread=False, timeout=30.0)
+            conn.row_factory = sqlite3.Row
+            setattr(_local, conn_key, conn)
+
         try:
             yield conn
             conn.commit()
@@ -138,8 +193,6 @@ class SQLiteStorage:
             conn.rollback()
             log_status(self.log_dir, "ERROR", f"Database error: {e}")
             raise
-        finally:
-            conn.close()
 
     # --- Loop Operations ---
 
@@ -399,6 +452,200 @@ class SQLiteStorage:
                 """,
                     (datetime.now().isoformat(),),
                 )
+
+    # =========================================================================
+    # Predictive Analytics (V10.22)
+    # =========================================================================
+
+    def get_error_predictions(self, file_path: str = "", limit: int = 5) -> list[dict[str, Any]]:
+        """
+        Predict likely errors based on historical patterns.
+
+        Args:
+            file_path: Optional file path to narrow predictions
+            limit: Maximum predictions to return
+
+        Returns:
+            List of predicted errors with confidence scores
+        """
+        try:
+            from boring.intelligence import PredictiveAnalyzer
+
+            analyzer = PredictiveAnalyzer(self.memory_dir.parent, storage=self)
+            predictions = analyzer.predict_errors(file_path, limit)
+            return [
+                {
+                    "error_type": p.error_type,
+                    "message": p.predicted_message,
+                    "confidence": p.confidence,
+                    "reason": p.reason,
+                    "prevention_tip": p.prevention_tip,
+                    "frequency": p.historical_frequency,
+                }
+                for p in predictions
+            ]
+        except ImportError:
+            # Fallback to simple frequency-based prediction
+            return self._simple_error_predictions(file_path, limit)
+
+    def _simple_error_predictions(self, file_path: str, limit: int) -> list[dict[str, Any]]:
+        """Simple frequency-based error prediction fallback."""
+        top_errors = self.get_top_errors(limit)
+        return [
+            {
+                "error_type": e["error_type"],
+                "message": f"Frequent error ({e['occurrence_count']} times)",
+                "confidence": min(0.8, 0.3 + e["occurrence_count"] * 0.05),
+                "reason": "Based on historical frequency",
+                "prevention_tip": e.get("solution", "Review code carefully"),
+                "frequency": e["occurrence_count"],
+            }
+            for e in top_errors
+        ]
+
+    def get_error_trend(self, days: int = 7) -> dict[str, Any]:
+        """
+        Analyze error trends over time.
+
+        Returns:
+            Trend analysis with direction and recommendation
+        """
+        with self._get_connection() as conn:
+            from datetime import timedelta
+
+            # Get error counts by day
+            cutoff = (datetime.now() - timedelta(days=days)).isoformat()
+            rows = conn.execute(
+                """
+                SELECT
+                    DATE(last_seen) as day,
+                    SUM(occurrence_count) as daily_errors
+                FROM error_patterns
+                WHERE last_seen >= ?
+                GROUP BY DATE(last_seen)
+                ORDER BY day ASC
+            """,
+                (cutoff,),
+            ).fetchall()
+
+            if len(rows) < 2:
+                return {
+                    "trend": "insufficient_data",
+                    "message": "Not enough data for trend analysis",
+                    "recommendation": "Continue using the system to gather data",
+                }
+
+            daily_counts = [row["daily_errors"] for row in rows]
+
+            # Calculate trend
+            midpoint = len(daily_counts) // 2
+            first_half = sum(daily_counts[:midpoint]) / max(1, midpoint)
+            second_half = sum(daily_counts[midpoint:]) / max(1, len(daily_counts) - midpoint)
+
+            if second_half > first_half * 1.2:
+                trend = "increasing"
+                emoji = "📈"
+                recommendation = "Error rate increasing. Review recent changes and add more tests."
+            elif second_half < first_half * 0.8:
+                trend = "decreasing"
+                emoji = "📉"
+                recommendation = "Great progress! Error rate is declining."
+            else:
+                trend = "stable"
+                emoji = "➡️"
+                recommendation = "Error rate is stable. Consider preventive improvements."
+
+            return {
+                "trend": trend,
+                "emoji": emoji,
+                "first_half_avg": round(first_half, 1),
+                "second_half_avg": round(second_half, 1),
+                "change_percent": round((second_half - first_half) / max(1, first_half) * 100, 1),
+                "recommendation": recommendation,
+                "days_analyzed": days,
+                "data_points": len(rows),
+            }
+
+    def get_health_score(self) -> dict[str, Any]:
+        """
+        Calculate overall project health score.
+
+        Returns:
+            Health score 0-100 with breakdown
+        """
+        stats = self.get_loop_stats()
+
+        total_loops = stats.get("total_loops", 0)
+        successful = stats.get("successful", 0)
+        stats.get("failed", 0)
+
+        if total_loops == 0:
+            return {
+                "score": 50,
+                "grade": "N/A",
+                "message": "No data yet. Start running loops to track health.",
+                "breakdown": {},
+            }
+
+        # Calculate success rate (40% weight)
+        success_rate = successful / total_loops
+        success_score = success_rate * 40
+
+        # Calculate error resolution rate (30% weight)
+        with self._get_connection() as conn:
+            total_errors = conn.execute("SELECT COUNT(*) FROM error_patterns").fetchone()[0]
+            solved_errors = conn.execute(
+                "SELECT COUNT(*) FROM error_patterns WHERE solution IS NOT NULL"
+            ).fetchone()[0]
+
+        resolution_rate = solved_errors / max(1, total_errors)
+        resolution_score = resolution_rate * 30
+
+        # Calculate recent activity score (30% weight)
+        avg_duration = stats.get("avg_duration", 60) or 60
+        activity_score = min(30, 30 * (60 / avg_duration))  # Faster loops = higher score
+
+        overall = success_score + resolution_score + activity_score
+
+        # Determine grade
+        if overall >= 90:
+            grade = "A+"
+        elif overall >= 80:
+            grade = "A"
+        elif overall >= 70:
+            grade = "B"
+        elif overall >= 60:
+            grade = "C"
+        elif overall >= 50:
+            grade = "D"
+        else:
+            grade = "F"
+
+        return {
+            "score": round(overall, 1),
+            "grade": grade,
+            "message": self._get_health_message(overall),
+            "breakdown": {
+                "success_rate": round(success_rate * 100, 1),
+                "resolution_rate": round(resolution_rate * 100, 1),
+                "avg_loop_duration": round(avg_duration, 1),
+            },
+        }
+
+    def _get_health_message(self, score: float) -> str:
+        """Get health message based on score."""
+        if score >= 90:
+            return "🌟 Excellent! Your project is in great shape."
+        elif score >= 80:
+            return "✅ Good health. Minor improvements possible."
+        elif score >= 70:
+            return "👍 Acceptable. Some areas need attention."
+        elif score >= 60:
+            return "⚠️ Fair. Consider addressing error patterns."
+        elif score >= 50:
+            return "🔶 Needs improvement. Focus on reducing errors."
+        else:
+            return "🚨 Critical. Immediate attention required."
 
     # --- Utilities ---
 

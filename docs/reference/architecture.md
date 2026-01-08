@@ -29,6 +29,40 @@ graph TD
     AgentLoop -->|Verify| Verifier
     Verifier -->|Result| Circuit
     Circuit -->|Status| AgentLoop
+
+    style AgentLoop fill:#f9f,stroke:#333,stroke-width:2px
+```
+
+## 🔄 The Development Loop Process
+
+Boring follows a continuous feedback loop to ensure code correctness.
+
+```mermaid
+sequenceDiagram
+    participant U as User/CLI
+    participant A as Agent (Thinking)
+    participant E as Executor (Tools)
+    participant V as Verifier (Tests)
+    participant M as Memory (Brain)
+
+    U->>A: Submit Task
+    loop Until Done or Circuit Open
+        A->>M: Fetch Context & Learnings
+        M-->>A: Context Data
+        A->>A: Generate Plan
+        A->>E: Execute Tool (Edit/Run)
+        E-->>A: Execution Result
+        A->>V: Trigger Verification
+        V->>V: Run Lint & Tests
+        V-->>A: Pass/Fail + Logs
+        alt If Fail
+            A->>M: Record Error Pattern
+            A->>A: Reason for next Fix
+        else If Pass
+            A->>M: Update Progress
+        end
+    end
+    A->>U: Final Report
 ```
 
 ### 1. The Autonomous Loop (`src/boring/loop/`)

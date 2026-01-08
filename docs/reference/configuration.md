@@ -18,6 +18,23 @@ debug = false
 # Enable/Disable specific features
 enable_shadow_mode = true
 enable_rag = true
+
+# Default Tool Profile (minimal, lite, standard, full)
+profile = "lite"
+```
+
+### `[boring.profiles]`
+Customize tool profiles or create new ones.
+
+```toml
+[boring.profiles.my_custom]
+# Explicitly include list of tools
+include = ["boring_read_file", "boring_verify"]
+# Or extend an existing profile
+extend = "lite"
+# Exclude specific tools
+exclude = ["boring_commit"]
+
 ```
 
 ### `[boring.performance]`
@@ -114,6 +131,7 @@ Global overrides, best set in `.env` or CI/CD pipelines.
 |----------|---------|-------------|
 | `BORING_LOG_LEVEL` | `INFO` | Logging verbosity (`DEBUG`, `INFO`, `WARNING`, `ERROR`) |
 | `BORING_PROJECT_ROOT` | `.` | Override project root path |
+| `BORING_MCP_PROFILE` | `lite` | Active Profile (`minimal`, `lite`, `standard`, `full`) |
 | `BORING_CI_MODE` | `0` | Set to `1` to disable interactive prompts |
 
 ### Shadow Mode

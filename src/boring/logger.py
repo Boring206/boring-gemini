@@ -81,15 +81,32 @@ def log_status(log_dir: Any, level: str, message: str, **kwargs: Any):
         "LOOP": "purple",
         "DEBUG": "dim",
         "CRITICAL": "bold red",
+        "PLAN": "cyan",  # New level for Vibe Coder planning
+        "VIBE": "magenta",  # New level for Vibe Coder interactions
     }
+
+    # Emoji mapping for Vibe Coder
+    emoji_map = {
+        "INFO": "ℹ️ ",
+        "WARN": "⚠️ ",
+        "ERROR": "❌ ",
+        "SUCCESS": "✅ ",
+        "LOOP": "🔄 ",
+        "DEBUG": "🐛 ",
+        "CRITICAL": "🚨 ",
+        "PLAN": "🗺️ ",
+        "VIBE": "✨ ",
+    }
+
     style = color_map.get(level.upper(), "default")
+    emoji = emoji_map.get(level.upper(), "")
 
     # Format extra fields for display
     extra_str = ""
     if kwargs:
         extra_str = " " + " ".join(f"{k}={v}" for k, v in kwargs.items())
 
-    console.print(f"[{timestamp}] [[{level.upper()}]] {message}{extra_str}", style=style)
+    console.print(f"[{timestamp}] [[{level.upper()}]] {emoji}{message}{extra_str}", style=style)
 
     # File output in JSON Lines format for analysis
     if log_file:
