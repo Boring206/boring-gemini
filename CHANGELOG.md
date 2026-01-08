@@ -1,5 +1,18 @@
 # Changelog
 
+## [10.24.1] - 2026-01-08 - Dashboard & Documentation Polish 💅
+
+### Fixed
+- **Dashboard Launch**: Improved Streamlit detection logic in `boring-dashboard` command.
+- **MCP Configuration**: Fixed `KeyError: 'configure_runtime'` in `server.py` by properly importing `configure_runtime_for_project`.
+- **SQL Syntax**: Fixed trailing comma in `IntelligentRanker` SQL (sqlite3 compatibility).
+
+### Documentation
+- **Skills Guide**: Added `docs/guides/skills_guide.md` with comprehensive MCP/Tool resources.
+- **External Intelligence**: Added guides for Context7, Critical/Sequential Thinking (`docs/features/external-intelligence.md`).
+- **Monitor Guide**: Added dedicated guide for Boring Monitor/Dashboard (`docs/features/monitor.md`).
+- **Smithery Config**: Added `BORING_MCP_PROFILE` schema support for selectable tool profiles.
+
 ## [10.24.0] - 2026-01-08 - Intelligence Maximization Ultimate 🚀🎯💯
 
 ### 🎯 Vision

@@ -25,6 +25,8 @@ Core capabilities explained in depth.
 | **Feature** | **Description** |
 |:--------|:------------|
 | [✨ Vibe Coder Experience](./features/vibe-coder.md) | **NEW**: Pure Natural Language Coding ([中文](./features/vibe-coder_zh.md)) |
+| [🧠 External Intelligence](./features/external-intelligence.md) | **NEW**: Context7 (Docs) + Thinking Mode ([中文](./features/external-intelligence_zh.md)) |
+| [🖥️ Boring Monitor](./features/monitor.md) | **NEW**: Live Dashboard & Brain Explorer ([中文](./features/monitor_zh.md)) |
 | [🕵️ Hybrid RAG](./features/rag.md) | **POWER**: HyDE + Cross-Encoder + Graph ([中文](./features/rag_zh.md)) |
 | [🧠 Memory System](./features/memory.md) | **BRAIN**: Persistent Learning & Recall ([中文](./features/memory_zh.md)) |
 | [🤖 Autonomous Agents](./features/agents.md) | **LOOP**: Planner, Coder, Reviewer Squad ([中文](./features/agents_zh.md)) |
@@ -49,6 +51,7 @@ Practical how-to content.
 | [Knowledge & Brain](./guides/knowledge-management.md) | **Pro**: Backup & sharing intelligence |
 | [Human Alignment](./guides/human-alignment.md) | **Pro**: Steer AI with Rubrics & Memory |
 | [API Integration](./guides/api-integration.md) | Use Boring as a Python library |
+| [Skills Guide](./guides/skills_guide.md) | **Learning**: Master the Boring Skill Tree |
 
 ### Tutorials (教學)
 In-depth learning resources.

@@ -34,7 +34,7 @@ def main():
             # Use a safe way to show help if streamlit is missing
             print("\n[bold red]Error: Dashboard requirements not found.[/bold red]")
             print("Please install the GUI optional dependencies:")
-            print('  [bold]pip install "boring[gui]"[/bold]\n')
+            print('  [bold]pip install "boring-aicoding[gui]"[/bold]\n')
             return
 
     # Configuration (Must be first streamlit call)
@@ -184,11 +184,12 @@ def run_app():
     script_path = Path(__file__).resolve()
 
     # Run streamlit
-    import importlib.util
-
-    if importlib.util.find_spec("streamlit") is None:
+    try:
+        import streamlit  # noqa: F401
+    except ImportError as e:
         print("\n[bold red]Error: Streamlit is required for the web dashboard.[/bold red]")
-        print('Please install it with: [bold]pip install "boring[gui]"[/bold]\n')
+        print(f"Debug Info: {e}")
+        print('Please install it with: [bold]pip install "boring-aicoding[gui]"[/bold]\n')
         return
 
     try:
