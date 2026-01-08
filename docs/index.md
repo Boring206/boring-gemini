@@ -43,6 +43,7 @@ Practical how-to content.
 | [🎯 Usage Modes](./guides/usage-modes.md) | **NEW**: MCP vs YOLO vs Autonomous ([中文](./guides/usage-modes.md)) |
 | [🚀 YOLO + Boring](./guides/yolo-boring-integration.md) | **NEW**: Maximum automation guide ([中文](./guides/yolo-boring-integration.md)) |
 | [⚙️ MCP Configuration](./guides/mcp-configuration.md) | **NEW**: Profiles, ENV vars, Smithery vs Local ([中文](./guides/mcp-configuration.md)) |
+| [🛠️ Tool Manual](./guides/tool-manual.md) | **NEW**: Complete tool usage guide ([English](./guides/tool-manual_en.md)) |
 | [Vibe Coder Guide](./guides/vibe-coder.md) | For description-based developers |
 | [Quick Tutorials](./guides/quick-tutorials.md) | 5-minute step-by-step guides |
 | [Cookbook](./guides/cookbook.md) | Ready-to-use recipes for all features |
