@@ -35,4 +35,9 @@ Use this workflow to let the AI Agent handle all release-related tasks automatic
 - [ ] **Staging**: Add all modified version and documentation files.
 - [ ] **Smart Commit**: Use `boring smart_commit` to generate a high-quality semantic commit message.
 - [ ] **Tagging**: Create git tag `vx.y.z`.
+- [ ] **Release Notes**: Create GitHub Release with tag, include changelog summary.
 - [ ] **Push**: Push branch and tags to origin.
+
+> **自動化說明**：
+> - **Smithery**: 推送後自動更新，不需手動發布
+> - **PyPI**: GitHub Actions 偵測到 tag 後自動發布
