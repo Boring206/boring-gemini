@@ -55,9 +55,8 @@ def test_boring_quickstart(mcp_mock, helpers_mock):
 
 
 def test_boring_health_check(mcp_mock, helpers_mock):
-    # Mock the underlying service that the relative import eventually reaches
-    # Use a string target to avoid early import issues during discovery
-    with patch("boring.services.health.run_health_check") as mock_health:
+    # Mock the health check directly in the module it's imported from
+    with patch("boring.health.run_health_check") as mock_health:
         mock_report = MagicMock()
         mock_report.is_healthy = True
         mock_report.passed = 1
