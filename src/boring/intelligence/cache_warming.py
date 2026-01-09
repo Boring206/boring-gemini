@@ -107,7 +107,7 @@ class CacheWarmer:
         # 1. Load learned patterns
         def load_patterns():
             try:
-                from boring.brain_manager import BrainManager
+                from .brain_manager import BrainManager
 
                 brain = BrainManager(self.project_root)
                 patterns = brain._load_patterns()

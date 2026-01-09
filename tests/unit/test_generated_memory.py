@@ -95,24 +95,24 @@ class TestMemoryManager:
 
     def test_memory_manager_init(self, temp_project):
         """Test MemoryManager initialization."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = MemoryManager(temp_project)
             assert manager.project_root == temp_project
             assert manager.memory_dir == temp_project / ".boring_memory"
 
-    @patch("boring.memory.SQLiteStorage")
+    @patch("boring.intelligence.memory.SQLiteStorage")
     @patch("pathlib.Path.mkdir")
     def test_memory_manager_init_default_root(self, mock_mkdir, mock_storage):
         """Test MemoryManager with default project root."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = Path("/default")
             manager = MemoryManager()
             assert manager.project_root == Path("/default")
 
     def test_memory_manager_get_project_state(self, temp_project):
         """Test get_project_state."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = MemoryManager(temp_project)
             state = manager.get_project_state()
@@ -121,7 +121,7 @@ class TestMemoryManager:
 
     def test_memory_manager_update_project_state(self, temp_project):
         """Test update_project_state."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = MemoryManager(temp_project)
             updates = {"total_loops": 5, "current_focus": "Testing"}
@@ -130,7 +130,7 @@ class TestMemoryManager:
 
     def test_memory_manager_record_loop(self, temp_project, sample_loop_memory):
         """Test record_loop."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = MemoryManager(temp_project)
             manager.record_loop(sample_loop_memory)
@@ -138,7 +138,7 @@ class TestMemoryManager:
 
     def test_memory_manager_record_loop_failed(self, temp_project):
         """Test record_loop with failed status."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = MemoryManager(temp_project)
             memory = LoopMemory(
@@ -156,7 +156,7 @@ class TestMemoryManager:
 
     def test_memory_manager_get_loop_history(self, temp_project):
         """Test get_loop_history."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = MemoryManager(temp_project)
             history = manager.get_loop_history(10)
@@ -164,7 +164,7 @@ class TestMemoryManager:
 
     def test_memory_manager_get_last_loop_summary(self, temp_project):
         """Test get_last_loop_summary."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = MemoryManager(temp_project)
             summary = manager.get_last_loop_summary()
@@ -172,7 +172,7 @@ class TestMemoryManager:
 
     def test_memory_manager_get_last_loop_summary_with_data(self, temp_project, sample_loop_memory):
         """Test get_last_loop_summary with recorded loop."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = MemoryManager(temp_project)
             manager.record_loop(sample_loop_memory)
@@ -181,7 +181,7 @@ class TestMemoryManager:
 
     def test_memory_manager_record_error_pattern(self, temp_project):
         """Test record_error_pattern."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = MemoryManager(temp_project)
             manager.record_error_pattern("TypeError", "test error", "fix it")
@@ -189,7 +189,7 @@ class TestMemoryManager:
 
     def test_memory_manager_record_error_pattern_no_solution(self, temp_project):
         """Test record_error_pattern without solution."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = MemoryManager(temp_project)
             manager.record_error_pattern("TypeError", "test error")
@@ -197,7 +197,7 @@ class TestMemoryManager:
 
     def test_memory_manager_get_error_patterns(self, temp_project):
         """Test get_error_patterns."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = MemoryManager(temp_project)
             patterns = manager.get_error_patterns()
@@ -205,7 +205,7 @@ class TestMemoryManager:
 
     def test_memory_manager_record_metric(self, temp_project):
         """Test record_metric."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = MemoryManager(temp_project)
             manager.record_metric("test_metric", 42.5, {"key": "value"})
@@ -213,7 +213,7 @@ class TestMemoryManager:
 
     def test_memory_manager_record_metric_no_metadata(self, temp_project):
         """Test record_metric without metadata."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = MemoryManager(temp_project)
             manager.record_metric("test_metric", 10.0)
@@ -221,7 +221,7 @@ class TestMemoryManager:
 
     def test_memory_manager_get_common_errors_warning(self, temp_project):
         """Test get_common_errors_warning."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = MemoryManager(temp_project)
             warning = manager.get_common_errors_warning()
@@ -229,7 +229,7 @@ class TestMemoryManager:
 
     def test_memory_manager_get_common_errors_warning_with_errors(self, temp_project):
         """Test get_common_errors_warning with errors."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = MemoryManager(temp_project)
             manager.record_error_pattern("TypeError", "test error", "fix")
@@ -239,7 +239,7 @@ class TestMemoryManager:
 
     def test_memory_manager_generate_context_injection(self, temp_project):
         """Test generate_context_injection."""
-        with patch("boring.memory.settings") as mock_settings:
+        with patch("boring.intelligence.memory.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = MemoryManager(temp_project)
             context = manager.generate_context_injection()

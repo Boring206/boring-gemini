@@ -10,7 +10,7 @@ if MCP_AVAILABLE and mcp is not None:
         if not root:
             return '{"status": "error", "message": "No project detected"}'
 
-        from ..memory import MemoryManager
+        from ..intelligence import MemoryManager
 
         # Ensure log dir is set
         logs = root / "logs"

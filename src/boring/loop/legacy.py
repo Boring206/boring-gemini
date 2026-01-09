@@ -18,9 +18,9 @@ from ..config import init_directories, settings
 from ..extensions import ExtensionsManager
 from ..file_patcher import process_gemini_output
 from ..gemini_client import GeminiClient, create_gemini_client
+from ..intelligence.memory import LoopMemory, MemoryManager
 from ..limiter import can_make_call, increment_call_counter, init_call_tracking, wait_for_reset
 from ..logger import log_status
-from ..memory import LoopMemory, MemoryManager
 from ..response_analyzer import analyze_response
 from ..utils import check_and_install_dependencies, check_syntax
 from ..verification import CodeVerifier

@@ -124,7 +124,7 @@ def register_core_tools(mcp, audited, helpers):
         ] = None,
     ) -> dict:
         """Get current Boring project status."""
-        from ..memory import MemoryManager
+        from ..intelligence import MemoryManager
 
         project_root, error = _get_project_root_or_error(project_path)
         if error:

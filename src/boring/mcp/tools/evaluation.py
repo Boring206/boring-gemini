@@ -80,7 +80,7 @@ def boring_evaluate(
 
         judge = LLMJudge(provider)
 
-        # Handle Pairwise Comparison
+        # Handle Pairwise Comparison (V10.27: PREPAIR technique)
         if level.upper() == "PAIRWISE":
             targets = [t.strip() for t in target.split(",")]
             if len(targets) != 2:
@@ -103,6 +103,27 @@ def boring_evaluate(
             content_a = path_a.read_text(encoding="utf-8", errors="replace")
             content_b = path_b.read_text(encoding="utf-8", errors="replace")
 
+            # V10.27: PREPAIR - Check reasoning cache for pointwise analyses
+            from ...intelligence.context_optimizer import get_reasoning_cache
+
+            cache = get_reasoning_cache()
+            cached_a, cached_b = cache.compare_with_cache(content_a, content_b)
+
+            prepair_info = ""
+            if cached_a and cached_b:
+                # Both cached - use existing pointwise reasoning
+                prepair_info = (
+                    f"\n\n### 🧠 PREPAIR Cache (Both Hit)\n"
+                    f"- **{path_a.name}**: Score {cached_a.score}/5, "
+                    f"{len(cached_a.strengths)} strengths, {len(cached_a.weaknesses)} weaknesses\n"
+                    f"- **{path_b.name}**: Score {cached_b.score}/5, "
+                    f"{len(cached_b.strengths)} strengths, {len(cached_b.weaknesses)} weaknesses\n"
+                )
+            elif cached_a:
+                prepair_info = f"\n\n### 🧠 PREPAIR Cache (Partial: {path_a.name} hit)\n"
+            elif cached_b:
+                prepair_info = f"\n\n### 🧠 PREPAIR Cache (Partial: {path_b.name} hit)\n"
+
             result = judge.compare_code(
                 name_a=path_a.name,
                 code_a=content_a,
@@ -115,7 +136,7 @@ def boring_evaluate(
             if interactive:
                 prompts = result.get("prompts", {})
                 return (
-                    f"### ⚖️ Pairwise Comparison Prompts\n\n"
+                    f"### ⚖️ Pairwise Comparison Prompts (PREPAIR Enhanced){prepair_info}\n\n"
                     f"**Pass 1 (A vs B):**\n```markdown\n{prompts.get('pass1', '')}\n```\n\n"
                     f"**Pass 2 (B vs A):**\n```markdown\n{prompts.get('pass2', '')}\n```"
                 )
@@ -124,12 +145,33 @@ def boring_evaluate(
             confidence = result.get("confidence", 0.0)
             reasoning = result.get("reasoning", "")
 
+            # V10.27: Cache the pointwise analyses for future comparisons
+            if "analysis_a" in result:
+                cache.set(
+                    content_a,
+                    result.get("analysis_a", ""),
+                    score=result.get("score_a", 0),
+                    strengths=result.get("strengths_a", []),
+                    weaknesses=result.get("weaknesses_a", []),
+                )
+            if "analysis_b" in result:
+                cache.set(
+                    content_b,
+                    result.get("analysis_b", ""),
+                    score=result.get("score_b", 0),
+                    strengths=result.get("strengths_b", []),
+                    weaknesses=result.get("weaknesses_b", []),
+                )
+
             emoji = "🏆" if winner != "TIE" else "⚖️"
+            stats = cache.get_stats()
 
             return (
-                f"# {emoji} Pairwise Evaluation Result\n\n"
+                f"# {emoji} Pairwise Evaluation Result (PREPAIR)\n\n"
                 f"**Winner**: {winner} (Confidence: {confidence})\n\n"
                 f"**Reasoning**:\n{reasoning}\n"
+                f"{prepair_info}"
+                f"\n📊 Cache: {stats['hits']} hits, {stats['misses']} misses ({stats['hit_rate']:.0%} hit rate)"
             )
 
         # Resolve target

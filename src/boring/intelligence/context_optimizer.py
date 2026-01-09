@@ -710,3 +710,193 @@ class SmartContextBuilder:
             f"├─ Duplicates merged: {s.duplicates_merged}\n"
             f"└─ Sections removed: {s.sections_removed}/{s.total_sections}"
         )
+
+
+# ==============================================================================
+# V10.27: PREPAIR Reasoning Cache (Based on NotebookLM Research)
+# ==============================================================================
+
+
+@dataclass
+class ReasoningEntry:
+    """Cached pointwise reasoning for PREPAIR technique."""
+
+    content_hash: str
+    reasoning: str  # Pointwise analysis result
+    score: float  # Individual evaluation score
+    strengths: list[str]
+    weaknesses: list[str]
+    timestamp: float
+    metadata: dict = field(default_factory=dict)
+
+
+class ReasoningCache:
+    """
+    PREPAIR Reasoning Cache - Cache pointwise analysis for pairwise comparisons.
+
+    Based on NotebookLM research: PREPAIR (PREpend PAirwise Reasoning) technique
+    improves evaluation accuracy by analyzing each option independently before
+    making pairwise decisions.
+
+    Benefits:
+    - Reduces bias from direct comparisons
+    - Enables cache reuse across multiple comparisons
+    - Improves evaluation robustness
+
+    Usage:
+        cache = ReasoningCache()
+
+        # Analyze independently (cache these)
+        cache.set("file_a.py", analysis_a, score=4.2, strengths=[...], weaknesses=[...])
+        cache.set("file_b.py", analysis_b, score=3.8, strengths=[...], weaknesses=[...])
+
+        # Compare using cached pointwise reasoning
+        a_data = cache.get("file_a.py")
+        b_data = cache.get("file_b.py")
+        # Make decision based on cached analyses
+    """
+
+    def __init__(self, ttl_seconds: int = 3600, max_entries: int = 100):
+        """
+        Initialize reasoning cache.
+
+        Args:
+            ttl_seconds: Time-to-live for cache entries (default: 1 hour)
+            max_entries: Maximum cache entries before eviction
+        """
+        self._cache: dict[str, ReasoningEntry] = {}
+        self._lock = threading.RLock()
+        self._ttl = ttl_seconds
+        self._max_entries = max_entries
+        # Stats
+        self._hits = 0
+        self._misses = 0
+
+    def _compute_key(self, content: str) -> str:
+        """Compute cache key from content."""
+        return hashlib.md5(content.encode()).hexdigest()
+
+    def get(self, content: str) -> Optional[ReasoningEntry]:
+        """
+        Get cached reasoning for content.
+
+        Args:
+            content: The code/text content to look up
+
+        Returns:
+            ReasoningEntry if found and not expired, None otherwise
+        """
+        import time
+
+        key = self._compute_key(content)
+
+        with self._lock:
+            if key not in self._cache:
+                self._misses += 1
+                return None
+
+            entry = self._cache[key]
+
+            # Check TTL
+            if time.time() - entry.timestamp > self._ttl:
+                del self._cache[key]
+                self._misses += 1
+                return None
+
+            self._hits += 1
+            return entry
+
+    def set(
+        self,
+        content: str,
+        reasoning: str,
+        score: float = 0.0,
+        strengths: list[str] = None,
+        weaknesses: list[str] = None,
+        metadata: dict = None,
+    ) -> str:
+        """
+        Cache pointwise reasoning for content.
+
+        Args:
+            content: The code/text content
+            reasoning: Pointwise analysis result
+            score: Evaluation score (0-5)
+            strengths: List of identified strengths
+            weaknesses: List of identified weaknesses
+            metadata: Additional metadata
+
+        Returns:
+            Cache key for reference
+        """
+        import time
+
+        key = self._compute_key(content)
+
+        entry = ReasoningEntry(
+            content_hash=key,
+            reasoning=reasoning,
+            score=score,
+            strengths=strengths or [],
+            weaknesses=weaknesses or [],
+            timestamp=time.time(),
+            metadata=metadata or {},
+        )
+
+        with self._lock:
+            # Evict oldest if at capacity
+            if len(self._cache) >= self._max_entries:
+                oldest_key = min(self._cache.keys(), key=lambda k: self._cache[k].timestamp)
+                del self._cache[oldest_key]
+
+            self._cache[key] = entry
+
+        return key
+
+    def compare_with_cache(
+        self, content_a: str, content_b: str
+    ) -> tuple[Optional[ReasoningEntry], Optional[ReasoningEntry]]:
+        """
+        Get cached reasoning for both contents (PREPAIR comparison).
+
+        Args:
+            content_a: First content to compare
+            content_b: Second content to compare
+
+        Returns:
+            Tuple of (entry_a, entry_b), None for cache misses
+        """
+        return self.get(content_a), self.get(content_b)
+
+    def get_stats(self) -> dict:
+        """Get cache statistics."""
+        with self._lock:
+            total = self._hits + self._misses
+            hit_rate = self._hits / total if total > 0 else 0.0
+
+            return {
+                "hits": self._hits,
+                "misses": self._misses,
+                "hit_rate": round(hit_rate, 3),
+                "size": len(self._cache),
+                "max_size": self._max_entries,
+            }
+
+    def clear(self):
+        """Clear all cached entries."""
+        with self._lock:
+            self._cache.clear()
+            self._hits = 0
+            self._misses = 0
+
+
+# Global singleton for cross-tool caching
+_reasoning_cache: Optional[ReasoningCache] = None
+
+
+def get_reasoning_cache() -> ReasoningCache:
+    """Get or create the global reasoning cache."""
+    global _reasoning_cache
+    if _reasoning_cache is None:
+        _reasoning_cache = ReasoningCache()
+    return _reasoning_cache

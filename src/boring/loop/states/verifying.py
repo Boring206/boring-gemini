@@ -11,9 +11,9 @@ from typing import Optional
 
 from ...circuit import record_loop_result
 from ...config import settings
+from ...intelligence.memory import LoopMemory
 from ...limiter import increment_call_counter
 from ...logger import console, log_status
-from ...memory import LoopMemory
 from ..base import LoopState, StateResult
 from ..context import LoopContext
 

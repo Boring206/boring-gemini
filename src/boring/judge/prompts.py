@@ -5,7 +5,7 @@ Prompt Templates and Building Logic for Judge
 import os
 
 from ..config import settings
-from ..rubrics import Rubric
+from .rubrics import Rubric
 
 
 def build_grade_prompt(

@@ -19,7 +19,7 @@ from typing import TYPE_CHECKING, Any, Optional
 if TYPE_CHECKING:
     from ..extensions import ExtensionsManager
     from ..gemini_client import GeminiClient
-    from ..memory import MemoryManager
+    from ..intelligence.memory import MemoryManager
     from ..storage import SQLiteStorage
     from ..verification import CodeVerifier
 

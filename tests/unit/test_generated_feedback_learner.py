@@ -79,7 +79,7 @@ class TestFeedbackLearner:
 
     def test_feedback_learner_init(self, temp_project):
         """Test FeedbackLearner initialization."""
-        with patch("boring.feedback_learner.settings") as mock_settings:
+        with patch("boring.intelligence.feedback_learner.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             mock_settings.BRAIN_DIR = Path(".boring")
             learner = FeedbackLearner(temp_project)
@@ -89,7 +89,7 @@ class TestFeedbackLearner:
         """Test FeedbackLearner with default project root."""
         default_root = tmp_path / "default"
         default_root.mkdir()
-        with patch("boring.feedback_learner.settings") as mock_settings:
+        with patch("boring.intelligence.feedback_learner.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = default_root
             mock_settings.BRAIN_DIR = Path(".boring")
             learner = FeedbackLearner()
@@ -97,7 +97,7 @@ class TestFeedbackLearner:
 
     def test_feedback_learner_record_review(self, temp_project):
         """Test FeedbackLearner.record_review method."""
-        with patch("boring.feedback_learner.settings") as mock_settings:
+        with patch("boring.intelligence.feedback_learner.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             mock_settings.BRAIN_DIR = Path(".boring")
             learner = FeedbackLearner(temp_project)
@@ -116,7 +116,7 @@ class TestFeedbackLearner:
 
     def test_feedback_learner_record_review_with_all_params(self, temp_project):
         """Test FeedbackLearner.record_review with all parameters."""
-        with patch("boring.feedback_learner.settings") as mock_settings:
+        with patch("boring.intelligence.feedback_learner.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             mock_settings.BRAIN_DIR = Path(".boring")
             learner = FeedbackLearner(temp_project)
@@ -137,7 +137,7 @@ class TestFeedbackLearner:
 
     def test_feedback_learner_record_fix(self, temp_project):
         """Test FeedbackLearner.record_fix method."""
-        with patch("boring.feedback_learner.settings") as mock_settings:
+        with patch("boring.intelligence.feedback_learner.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             mock_settings.BRAIN_DIR = Path(".boring")
             learner = FeedbackLearner(temp_project)
@@ -152,7 +152,7 @@ class TestFeedbackLearner:
 
     def test_feedback_learner_record_fix_failure(self, temp_project):
         """Test FeedbackLearner.record_fix with failure."""
-        with patch("boring.feedback_learner.settings") as mock_settings:
+        with patch("boring.intelligence.feedback_learner.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             mock_settings.BRAIN_DIR = Path(".boring")
             learner = FeedbackLearner(temp_project)
@@ -166,7 +166,7 @@ class TestFeedbackLearner:
 
     def test_feedback_learner_get_suggestions(self, temp_project):
         """Test FeedbackLearner.get_suggestions method."""
-        with patch("boring.feedback_learner.settings") as mock_settings:
+        with patch("boring.intelligence.feedback_learner.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             mock_settings.BRAIN_DIR = Path(".boring")
             learner = FeedbackLearner(temp_project)
@@ -180,7 +180,7 @@ class TestFeedbackLearner:
 
     def test_feedback_learner_get_suggestions_limit(self, temp_project):
         """Test FeedbackLearner.get_suggestions with limit."""
-        with patch("boring.feedback_learner.settings") as mock_settings:
+        with patch("boring.intelligence.feedback_learner.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             mock_settings.BRAIN_DIR = Path(".boring")
             learner = FeedbackLearner(temp_project)
@@ -193,7 +193,7 @@ class TestFeedbackLearner:
 
     def test_feedback_learner_get_fix_success_rate(self, temp_project):
         """Test FeedbackLearner.get_fix_success_rate method."""
-        with patch("boring.feedback_learner.settings") as mock_settings:
+        with patch("boring.intelligence.feedback_learner.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             mock_settings.BRAIN_DIR = Path(".boring")
             learner = FeedbackLearner(temp_project)
@@ -207,7 +207,7 @@ class TestFeedbackLearner:
 
     def test_feedback_learner_get_fix_success_rate_by_pattern(self, temp_project):
         """Test FeedbackLearner.get_fix_success_rate with pattern filter."""
-        with patch("boring.feedback_learner.settings") as mock_settings:
+        with patch("boring.intelligence.feedback_learner.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             mock_settings.BRAIN_DIR = Path(".boring")
             learner = FeedbackLearner(temp_project)
@@ -220,7 +220,7 @@ class TestFeedbackLearner:
 
     def test_feedback_learner_get_recurring_issues(self, temp_project):
         """Test FeedbackLearner.get_recurring_issues method."""
-        with patch("boring.feedback_learner.settings") as mock_settings:
+        with patch("boring.intelligence.feedback_learner.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             mock_settings.BRAIN_DIR = Path(".boring")
             learner = FeedbackLearner(temp_project)
@@ -235,7 +235,7 @@ class TestFeedbackLearner:
 
     def test_feedback_learner_get_recurring_issues_min_occurrences(self, temp_project):
         """Test FeedbackLearner.get_recurring_issues with min_occurrences."""
-        with patch("boring.feedback_learner.settings") as mock_settings:
+        with patch("boring.intelligence.feedback_learner.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             mock_settings.BRAIN_DIR = Path(".boring")
             learner = FeedbackLearner(temp_project)
@@ -247,7 +247,7 @@ class TestFeedbackLearner:
 
     def test_feedback_learner_load_history_empty(self, temp_project):
         """Test FeedbackLearner._load_history with no file."""
-        with patch("boring.feedback_learner.settings") as mock_settings:
+        with patch("boring.intelligence.feedback_learner.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             mock_settings.BRAIN_DIR = Path(".boring")
             learner = FeedbackLearner(temp_project)
@@ -257,7 +257,7 @@ class TestFeedbackLearner:
 
     def test_feedback_learner_load_history_corrupted(self, temp_project):
         """Test FeedbackLearner._load_history with corrupted file."""
-        with patch("boring.feedback_learner.settings") as mock_settings:
+        with patch("boring.intelligence.feedback_learner.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             mock_settings.BRAIN_DIR = Path(".boring")
             learner = FeedbackLearner(temp_project)

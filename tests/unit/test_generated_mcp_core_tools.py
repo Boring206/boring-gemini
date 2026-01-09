@@ -145,7 +145,7 @@ class TestRegisterCoreTools:
 
     def test_register_core_tools_boring_status(self, mock_mcp, mock_audited, mock_helpers):
         """Test boring_status tool registration."""
-        with patch("boring.memory.MemoryManager") as mock_memory:
+        with patch("boring.intelligence.MemoryManager") as mock_memory:
             mock_instance = MagicMock()
             mock_instance.get_project_state.return_value = {
                 "loop_count": 5,
@@ -166,7 +166,7 @@ class TestRegisterCoreTools:
         self, mock_mcp, mock_audited, mock_helpers
     ):
         """Test boring_status with project path."""
-        with patch("boring.memory.MemoryManager") as mock_memory:
+        with patch("boring.intelligence.MemoryManager") as mock_memory:
             mock_instance = MagicMock()
             mock_instance.get_project_state.return_value = {}
             mock_memory.return_value = mock_instance

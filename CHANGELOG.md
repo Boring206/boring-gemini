@@ -1,5 +1,73 @@
 # Changelog
 
+## [10.27.0] - 2026-01-09 - Theme-Tips & PREPAIR Optimization 🎯🧠
+
+### Added
+- **Theme-Tips Hierarchical Output** (based on NotebookLM research)
+  - `boring_help` - Categories now display as Theme → Tips format
+  - `boring_vibe_check` - Issues grouped by Theme (Code Quality, Security, Documentation)
+  - `boring_code_review` - Findings organized by category with nested tips
+  - Research shows +1.13% LLM comprehension accuracy with structured output
+
+- **PREPAIR Reasoning Cache** (based on NotebookLM PREPAIR technique)
+  - `ReasoningCache` class in `intelligence/context_optimizer.py`
+  - Caches pointwise analysis before pairwise comparisons
+  - Reduces evaluation bias from direct comparisons
+  - TTL-based expiration (1 hour default) with hit/miss statistics
+  - Integrated into `boring_evaluate` PAIRWISE mode
+
+### Changed
+- **Output Format**: All tool outputs now use hierarchical structure:
+  ```
+  📁 Theme: Performance
+    └─ Tip: N+1 query detected at line 45
+    └─ Tip: Missing index on user_id column
+  ```
+- **Tool Router**: `get_categories_summary()` displays Theme-Tips format with actionable keywords
+- **Pairwise Evaluation**: Now shows cache statistics and reuses pointwise analyses
+
+- **Dynamic Prompts with Contextual Embedding** (based on NotebookLM research)
+  - `debug_with_logs` - Embeds log content directly into debug prompt
+  - `review_diff` - Embeds git diff for targeted code review
+  - `analyze_error_context` - Embeds code context for precise error analysis
+  - Only loads context when needed, reducing token waste
+
+---
+
+## [10.26.0] - 2026-01-09 - Token Economy & Structure Refactoring V2 🏗️💰
+
+### Added
+- **🆕 ULTRA_LITE Profile**: New extreme token-saving profile with only 3 tools
+  - `boring` - Universal NL router
+  - `boring_help` - Category discovery
+  - `boring_discover` - Progressive disclosure (on-demand tool schema)
+  - **97% token savings** compared to FULL profile (~5000 → ~150 tokens)
+- **Progressive Disclosure Tool** (`boring_discover`): Fetch full JSON schema for any tool on-demand
+  - Enables lazy loading of tool definitions
+  - Works even after profile filtering (caches all tools before filter)
+
+### Changed
+- **Major Code Reorganization**: Completed structure-v2 refactoring
+  - Moved intelligence modules to `intelligence/` directory
+  - Moved loop-related modules to `loop/` directory
+  - Consolidated judge modules in `judge/` directory
+  - Maintained backward compatibility - old import paths still work
+- **Tool Description Compression**: Reduced 14+ tool descriptions from ~100 chars to ~40 chars
+  - Removed redundant bilingual text (Chinese/English)
+  - Removed example phrases (router handles NL routing)
+  - Estimated savings: ~600 tokens per session
+- **Documentation Updates**: Updated all architecture documentation to reflect V10.26 structure
+
+### Fixed
+- README.md structure cleanup - removed duplicate content sections
+- Version number consistency across all configuration files
+- Documentation version references updated to V10.26
+
+## [10.25.1] - 2026-01-09
+
+### Fixed
+- Fixed linting errors (trailing whitespace, unused imports) in evaluation tests
+
 ## [10.25.0] - 2026-01-09 - Advanced Evaluation V10.25 📊🎯
 
 ### Added

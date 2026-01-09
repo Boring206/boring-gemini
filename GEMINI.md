@@ -1,4 +1,4 @@
-# GEMINI.md - Boring for Gemini (V10.18.1)
+# GEMINI.md - Boring for Gemini (V10.27)
 
 ## Project Overview
 
@@ -11,7 +11,10 @@ The system is built entirely in **Python**, using modern CLI frameworks and rich
 - **Intelligent Exit Detection:** The loop automatically terminates when it detects project completion through multiple signals (done signals, task list completion, test saturation).
 - **Safeguards:** Implements rate limiting (to manage API costs), a circuit breaker (to prevent getting stuck in failing loops), and graceful handling of API usage limits.
 - **Live Monitoring:** Provides real-time monitoring of the agent's status, logs, and API call usage via `boring-monitor`.
-- **🆕 Boring Polyglot (V10.15):** Zero-API-Key switching between Gemini CLI and Claude Code CLI with native protocol awareness.
+- **🆕 Theme-Tips Output (V10.27):** Hierarchical tool output format for better LLM comprehension (+1.13% accuracy).
+- **🆕 PREPAIR Reasoning Cache (V10.27):** Caches pointwise analysis before pairwise comparisons, reducing evaluation bias.
+- **🆕 Dynamic Prompts (V10.27):** MCP prompts with contextual embedding (logs, diffs, code) on-demand.
+- **🆕 Token Economy (V10.26):** ULTRA_LITE profile with 97% token savings via progressive disclosure (`boring_discover` tool).
 - **🆕 Hybrid RAG (V10.17):** Combined Vector + Keyword search with dependency graph expansion.
 - **🆕 Security Guard (V10.17):** Cross-session persistent Shadow Mode and multi-file-type security scanning.
 - **🆕 Knowledge Base (.boring_brain):** Persistent storage for workflow adaptations, learned patterns, and evaluation rubrics.
