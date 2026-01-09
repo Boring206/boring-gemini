@@ -20,6 +20,22 @@ from boring.rag.rag_retriever import (
 
 
 @pytest.fixture
+def mock_chroma_env():
+    """Fixture to mock chromadb modules for local imports."""
+    mock_chromadb = MagicMock()
+    mock_settings = MagicMock()
+    # Mock the classes/methods needed by RAGRetriever
+    mock_client = MagicMock()
+    mock_chromadb.PersistentClient.return_value = mock_client
+    
+    with patch.dict("sys.modules", {
+        "chromadb": mock_chromadb,
+        "chromadb.config": mock_settings
+    }):
+        yield mock_chromadb, mock_settings, mock_client
+
+
+@pytest.fixture
 def temp_project(tmp_path):
     # Clear query cache before each test to prevent test pollution
     _clear_query_cache()
@@ -32,23 +48,18 @@ def temp_project(tmp_path):
 class TestRAGRetrieverInitialization:
     """测试 RAGRetriever 初始化的行为"""
 
-    def test_當ChromaDB可用時_應初始化成功並可检索(self, temp_project):
+    def test_當ChromaDB可用時_應初始化成功並可检索(self, temp_project, mock_chroma_env):
         """規格：ChromaDB 可用 → is_available 应为 True，可以执行检索"""
-        with (
-            patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True),
-            patch("boring.rag.rag_retriever.chromadb") as mock_chromadb,
-        ):
-            mock_client = MagicMock()
-            mock_collection = MagicMock()
-            mock_client.get_or_create_collection.return_value = mock_collection
-            mock_chromadb.PersistentClient.return_value = mock_client
+        mock_chromadb, _, mock_client = mock_chroma_env
+        mock_collection = MagicMock()
+        mock_client.get_or_create_collection.return_value = mock_collection
 
-            with patch("boring.rag.rag_retriever.ChromaSettings"):
-                retriever = RAGRetriever(temp_project)
+        with patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True):
+            retriever = RAGRetriever(temp_project)
 
-                # 测试结果：应该可以检索
-                assert retriever.is_available is True
-                assert retriever.project_root == temp_project
+            # 测试结果：应该可以检索
+            assert retriever.is_available is True
+            assert retriever.project_root == temp_project
 
     def test_當ChromaDB不可用時_應标记為不可用(self, temp_project):
         """規格：ChromaDB 不可用 → is_available 应为 False"""
@@ -58,18 +69,16 @@ class TestRAGRetrieverInitialization:
             # 测试结果：应该标记为不可用
             assert retriever.is_available is False
 
-    def test_當ChromaDB初始化失敗時_應優雅降級為不可用(self, temp_project):
+    def test_當ChromaDB初始化失敗時_應優雅降級為不可用(self, temp_project, mock_chroma_env):
         """規格：ChromaDB 初始化失败 → 应优雅降级，is_available 为 False"""
-        with (
-            patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True),
-            patch("boring.rag.rag_retriever.chromadb") as mock_chromadb,
-        ):
-            # Mock 数据库初始化失败（边界错误）
-            mock_chromadb.PersistentClient.side_effect = Exception("DB Error")
+        mock_chromadb, _, mock_client = mock_chroma_env
+        # Mock 数据库初始化失败（边界错误）
+        mock_chromadb.PersistentClient.side_effect = Exception("DB Error")
 
+        with patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True):
             retriever = RAGRetriever(temp_project)
 
-            # 测试结果：应该优雅降级
+            # 测试结果：应该优雅降級
             assert retriever.is_available is False
 
     def test_init_with_additional_roots(self, temp_project):
@@ -83,25 +92,19 @@ class TestRAGRetrieverInitialization:
             assert len(retriever.all_project_roots) == 2
             assert additional in retriever.all_project_roots
 
-    def test_is_available_property(self, temp_project):
+    def test_is_available_property(self, temp_project, mock_chroma_env):
         """Test is_available property."""
-        with (
-            patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True),
-            patch("boring.rag.rag_retriever.chromadb") as mock_chromadb,
-        ):
-            mock_client = MagicMock()
-            mock_collection = MagicMock()
-            mock_client.get_or_create_collection.return_value = mock_collection
-            mock_chromadb.PersistentClient.return_value = mock_client
+        mock_chromadb, _, mock_client = mock_chroma_env
+        mock_collection = MagicMock()
+        mock_client.get_or_create_collection.return_value = mock_collection
 
-            with patch("boring.rag.rag_retriever.ChromaSettings"):
-                retriever = RAGRetriever(temp_project)
+        with patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True):
+            retriever = RAGRetriever(temp_project)
+            assert retriever.is_available is True
 
-                assert retriever.is_available is True
-
-                # Test when collection is None
-                retriever.collection = None
-                assert retriever.is_available is False
+            # Test when collection is None
+            retriever.collection = None
+            assert retriever.is_available is False
 
     def test_當RAG不可用時_構築索引應返回0(self, temp_project):
         """規格：is_available=False → build_index() 应返回 0（不执行索引）"""
@@ -113,23 +116,20 @@ class TestRAGRetrieverInitialization:
             # 测试结果：应该返回 0，表示没有索引任何内容
             assert result == 0
 
-    def test_當強制重建索引時_應清除舊索引並重建(self, temp_project):
+    def test_當強制重建索引時_應清除舊索引並重建(self, temp_project, mock_chroma_env):
         """規格：build_index(force=True) → 应清除旧索引，返回新索引的chunk数量"""
+        mock_chromadb, _, mock_client = mock_chroma_env
         with (
             patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True),
-            patch("boring.rag.rag_retriever.chromadb") as mock_chromadb,
-            patch("boring.rag.rag_retriever.ChromaSettings"),
             patch("boring.rag.rag_retriever.CodeIndexer") as mock_indexer_class,
             patch("boring.rag.rag_retriever.IndexState") as mock_state_class,
         ):
             # Mock 外部数据库（边界）
-            mock_client = MagicMock()
             mock_collection = MagicMock()
             mock_collection.count.return_value = 5  # 新索引后的数量
             mock_client.get_or_create_collection.return_value = mock_collection
             mock_client.delete_collection.return_value = None
             mock_client.create_collection.return_value = mock_collection
-            mock_chromadb.PersistentClient.return_value = mock_client
 
             # Mock 文件系统操作（边界）
             mock_indexer = MagicMock()
@@ -160,15 +160,13 @@ class TestRAGRetrieverInitialization:
             # 测试结果：应该返回空列表
             assert results == []
 
-    def test_當查詢代碼時_應返回相關的代码塊(self, temp_project):
+    def test_當查詢代碼時_應返回相關的代码塊(self, temp_project, mock_chroma_env):
         """規格：retrieve("test function") → 应返回包含相关代码的 RetrievalResult 列表"""
+        mock_chromadb, _, mock_client = mock_chroma_env
         with (
             patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True),
-            patch("boring.rag.rag_retriever.chromadb") as mock_chromadb,
-            patch("boring.rag.rag_retriever.ChromaSettings"),
         ):
             # Mock 外部数据库查询（边界）
-            mock_client = MagicMock()
             mock_collection = MagicMock()
             mock_collection.query.return_value = {
                 "ids": [["chunk1", "chunk2"]],
@@ -194,7 +192,6 @@ class TestRAGRetrieverInitialization:
                 "documents": [["def test(): pass", "def test2(): pass"]],
             }
             mock_client.get_or_create_collection.return_value = mock_collection
-            mock_chromadb.PersistentClient.return_value = mock_client
 
             retriever = RAGRetriever(temp_project)
             # 设置内部状态（不 mock 自己的 domain logic）
@@ -213,14 +210,13 @@ class TestRAGRetrieverInitialization:
             # 每个结果应该有 chunk 和 score
             assert all(hasattr(r, "chunk") and hasattr(r, "score") for r in results)
 
-    def test_當設置閾值時_應只返回分數高於閾值的結果(self, temp_project):
+    def test_當設置閾值時_應只返回分數高於閾值的結果(self, temp_project, mock_chroma_env):
         """規格：retrieve(query, threshold=0.5) → 应只返回 score >= 0.5 的结果"""
+        mock_chromadb, _, mock_client = mock_chroma_env
         with (
             patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True),
-            patch("boring.rag.rag_retriever.chromadb") as mock_chromadb,
         ):
             # Mock 数据库返回不同分数的结果
-            mock_client = MagicMock()
             mock_collection = MagicMock()
             mock_collection.query.return_value = {
                 "ids": [["chunk1", "chunk2"]],
@@ -229,7 +225,6 @@ class TestRAGRetrieverInitialization:
                 "documents": [["def test(): pass", "def test2(): pass"]],
             }
             mock_client.get_or_create_collection.return_value = mock_collection
-            mock_chromadb.PersistentClient.return_value = mock_client
 
             retriever = RAGRetriever(temp_project)
             retriever._chunks = {
@@ -246,14 +241,12 @@ class TestRAGRetrieverInitialization:
             if results:
                 assert results[0].score >= 0.5
 
-    def test_retrieve_with_file_filter(self, temp_project):
+    def test_retrieve_with_file_filter(self, temp_project, mock_chroma_env):
         """Test retrieve with file_filter."""
+        mock_chromadb, _, mock_client = mock_chroma_env
         with (
             patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True),
-            patch("boring.rag.rag_retriever.chromadb") as mock_chromadb,
-            patch("boring.rag.rag_retriever.ChromaSettings"),
         ):
-            mock_client = MagicMock()
             mock_collection = MagicMock()
             mock_collection.query.return_value = {
                 "ids": [["chunk1"]],
@@ -272,7 +265,6 @@ class TestRAGRetrieverInitialization:
                 "documents": [["def test(): pass"]],
             }
             mock_client.get_or_create_collection.return_value = mock_collection
-            mock_chromadb.PersistentClient.return_value = mock_client
 
             retriever = RAGRetriever(temp_project)
             retriever._chunks = {
@@ -287,17 +279,15 @@ class TestRAGRetrieverInitialization:
             call_kwargs = mock_collection.query.call_args[1]
             assert "where" in call_kwargs
 
-    def test_retrieve_query_failure(self, temp_project):
+    def test_retrieve_query_failure(self, temp_project, mock_chroma_env):
         """Test retrieve when query fails."""
+        mock_chromadb, _, mock_client = mock_chroma_env
         with (
             patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True),
-            patch("boring.rag.rag_retriever.chromadb") as mock_chromadb,
         ):
-            mock_client = MagicMock()
             mock_collection = MagicMock()
             mock_collection.query.side_effect = Exception("Query error")
             mock_client.get_or_create_collection.return_value = mock_collection
-            mock_chromadb.PersistentClient.return_value = mock_client
 
             retriever = RAGRetriever(temp_project)
 
@@ -361,19 +351,17 @@ class TestRAGRetrieverInitialization:
             assert isinstance(stats, RAGStats)
             assert stats.total_chunks_indexed == 2
 
-    def test_當清除索引時_應清空所有數據和數據庫集合(self, temp_project):
+    def test_當清除索引時_應清空所有數據和數據庫集合(self, temp_project, mock_chroma_env):
         """規格：clear() → 应清空内存中的chunks、文件映射和数据库集合"""
+        mock_chromadb, _, mock_client = mock_chroma_env
         with (
             patch("boring.rag.rag_retriever.CHROMA_AVAILABLE", True),
-            patch("boring.rag.rag_retriever.chromadb") as mock_chromadb,
         ):
             # Mock 外部数据库（边界）
-            mock_client = MagicMock()
             mock_collection = MagicMock()
             mock_client.get_or_create_collection.return_value = mock_collection
             mock_client.delete_collection.return_value = None
             mock_client.create_collection.return_value = mock_collection
-            mock_chromadb.PersistentClient.return_value = mock_client
 
             retriever = RAGRetriever(temp_project)
             retriever._chunks = {"chunk1": MagicMock()}

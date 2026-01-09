@@ -242,23 +242,9 @@ def test_start_exception_self_heal(mock_dependencies):
 
 
 def test_dashboard_missing_deps(mock_dependencies, mocker):
-    mocker.patch.dict("sys.modules", {"streamlit": None})  # Simulate missing
-    # Need to make import fail.
-    # mocker.patch.dict doesn't remove from sys.modules if set to None?
-    # Better to patch builtins.__import__ or modify sys.modules to raise ImportError?
-    # Or just patch sys.modules and ensure 'streamlit' key is missing?
-    # But pytest startup might have loaded it.
-
-    # Simpler: patch import statement in dashboard.py? No, it's inside function.
-    # Use side_effect on a method that checks for it?
-    # The code does `import streamlit`.
-    # If I mock `sys.modules` and REMOVE streamlit from it?
-    # mocker.patch.dict("sys.modules") with clear=False?
-    # Actually, verify logic: `try: import streamlit`.
-
-    # We can use sys.modules to fail import if we map it to None?
-    # Python 3.12: setting sys.modules['streamlit'] = None causes ModuleNotFoundError.
-    mocker.patch.dict("sys.modules", {"streamlit": None})
+    """Test dashboard command when dependencies are missing."""
+    # Patch the source DependencyManager as it's imported locally in main.py
+    mocker.patch("boring.core.dependencies.DependencyManager.check_gui", return_value=False)
 
     result = runner.invoke(app, ["dashboard"])
     assert result.exit_code == 1
