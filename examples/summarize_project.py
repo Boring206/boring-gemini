@@ -30,5 +30,6 @@ async def main():
     print("\n--- Project Summary ---")
     print(response.content)
 
+
 if __name__ == "__main__":
     asyncio.run(main())
