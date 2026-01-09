@@ -9,7 +9,7 @@ mock_st_module = MagicMock()
 mock_st_module.__version__ = "1.0.0"
 sys.modules["streamlit"] = mock_st_module
 
-from boring.dashboard import load_json, main
+from boring.cli.dashboard import load_json, main
 
 
 class TestDashboard:
@@ -34,9 +34,9 @@ class TestDashboard:
             data = load_json(Path("dummy.json"))
             assert data is None
 
-    @patch("boring.dashboard.st")
-    @patch("boring.dashboard.load_json")
-    @patch("boring.dashboard.get_version")
+    @patch("boring.cli.dashboard.st")
+    @patch("boring.cli.dashboard.load_json")
+    @patch("boring.cli.dashboard.get_version")
     def test_main_layout(self, mock_version, mock_load_json, mock_st):
         """Test main dashboard layout generation."""
         mock_version.return_value = "1.0.0"
@@ -85,8 +85,8 @@ class TestDashboard:
         # Verify Tabs
         mock_st.tabs.assert_called_with(["📊 Live Logs", "🧠 Brain Explorer", "⚙️ System Info"])
 
-    @patch("boring.dashboard.st")
-    @patch("boring.dashboard.load_json")
+    @patch("boring.cli.dashboard.st")
+    @patch("boring.cli.dashboard.load_json")
     def test_main_no_data(self, mock_load_json, mock_st):
         """Test dashboard handles missing data gracefully."""
         mock_st.__version__ = "1.0.0"
@@ -103,7 +103,7 @@ class TestDashboard:
         # Should not crash
         mock_st.title.assert_called()
 
-    @patch("boring.dashboard.st")
+    @patch("boring.cli.dashboard.st")
     def test_main_brain_explorer(self, mock_st):
         """Test Brain Explorer tab logic."""
         mock_st.__version__ = "1.0.0"

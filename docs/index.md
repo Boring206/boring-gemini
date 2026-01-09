@@ -42,7 +42,9 @@ Practical how-to content.
 |-------|-------------|
 | [🎯 Usage Modes](./guides/usage-modes.md) | **NEW**: MCP vs YOLO vs Autonomous ([中文](./guides/usage-modes.md)) |
 | [🚀 YOLO + Boring](./guides/yolo-boring-integration.md) | **NEW**: Maximum automation guide ([中文](./guides/yolo-boring-integration.md)) |
+| [🔄 Workflow Comparison](./guides/workflow-comparison.md) | **NEW**: Code-level analysis of Start vs Session ([中文](./guides/workflow-comparison_zh.md)) |
 | [⚙️ MCP Configuration](./guides/mcp-configuration.md) | **NEW**: Profiles, ENV vars, Smithery vs Local ([中文](./guides/mcp-configuration.md)) |
+| [🎛️ MCP Profiles](./guides/mcp-profiles-comparison.md) | **NEW**: Code-level analysis of Lite vs Standard ([中文](./guides/mcp-profiles-comparison_zh.md)) |
 | [🛠️ Tool Manual](./guides/tool-manual.md) | **NEW**: Complete tool usage guide ([English](./guides/tool-manual_en.md)) |
 | [📊 Evaluation Metrics](./guides/evaluation-metrics.md) | **NEW**: Kappa, Spearman, F1, Bias Monitoring ([English](./guides/evaluation-metrics_en.md)) |
 | [Vibe Coder Guide](./guides/vibe-coder.md) | For description-based developers |
@@ -55,6 +57,7 @@ Practical how-to content.
 | [Plugin Guide](./guides/plugins.md) | Extend Boring with custom Python tools |
 | [Knowledge & Brain](./guides/knowledge-management.md) | **Pro**: Backup & sharing intelligence |
 | [Human Alignment](./guides/human-alignment.md) | **Pro**: Steer AI with Rubrics & Memory |
+| [Modular Installation](./guides/modular-installation.md) | **NEW**: "Boring Diet" & Extras Guide ([中文](./guides/modular-installation_zh.md)) |
 | [API Integration](./guides/api-integration.md) | Use Boring as a Python library |
 | [Skills Guide](./guides/skills_guide.md) | **Learning**: Master the Boring Skill Tree |
 
@@ -110,6 +113,7 @@ Deep dive technical documentation.
 | 指南 | 說明 |
 |------|------|
 | [Vibe Coder 指南](./guides/vibe-coder_zh.md) | 給描述式開發者 |
+| [工作流程比較](./guides/workflow-comparison_zh.md) | **最新**: Start vs Session 的代碼級分析 |
 | [快速教學](./guides/quick-tutorials_zh.md) | 5 分鐘逐步指南 |
 | [Cookbook](./guides/cookbook_zh.md) | 所有功能的即用食譜 |
 | [專業技巧](./guides/pro-tips_zh.md) | 按技能水平的專家技術 |
@@ -120,6 +124,7 @@ Deep dive technical documentation.
 | [知識與大腦管理](./guides/knowledge-management_zh.md) | **進階**：備份與分享學習成果 |
 | [人類對齊指南](./guides/human-alignment_zh.md) | **進階**：使用 Rubrics 與記憶引導 AI |
 | [API 整合指南](./guides/api-integration_zh.md) | 將 Boring 作為 Python 函式庫使用 |
+| [模組化安裝指南](./guides/modular-installation_zh.md) | **最新**: "Boring Diet" 與延伸安裝說明 |
 | [技能指南](./guides/skills_guide.md) | 掌握 Boring 技能樹 |
 
 ### 教學

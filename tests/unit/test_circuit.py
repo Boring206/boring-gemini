@@ -37,7 +37,7 @@ class TestInitCircuitBreaker:
 
     def test_init_creates_state_file(self, tmp_path, monkeypatch):
         """Test that init creates state file."""
-        from boring import circuit
+        from boring.core import circuit
 
         state_file = tmp_path / ".circuit_breaker_state"
         history_file = tmp_path / ".circuit_breaker_history"
@@ -52,7 +52,7 @@ class TestInitCircuitBreaker:
 
     def test_init_sets_closed_state(self, tmp_path, monkeypatch):
         """Test that init sets CLOSED state."""
-        from boring import circuit
+        from boring.core import circuit
 
         state_file = tmp_path / ".circuit_breaker_state"
         history_file = tmp_path / ".circuit_breaker_history"
@@ -72,7 +72,7 @@ class TestGetCircuitState:
 
     def test_get_circuit_state_returns_dict(self, tmp_path, monkeypatch):
         """Test that get_circuit_state returns a dict."""
-        from boring import circuit
+        from boring.core import circuit
 
         state_file = tmp_path / ".circuit_breaker_state"
         history_file = tmp_path / ".circuit_breaker_history"
@@ -92,7 +92,7 @@ class TestRecordLoopResult:
 
     def test_record_success(self, tmp_path, monkeypatch):
         """Test recording a successful loop."""
-        from boring import circuit
+        from boring.core import circuit
 
         state_file = tmp_path / ".circuit_breaker_state"
         history_file = tmp_path / ".circuit_breaker_history"
@@ -108,7 +108,7 @@ class TestRecordLoopResult:
 
     def test_record_failure(self, tmp_path, monkeypatch):
         """Test recording a failed loop."""
-        from boring import circuit
+        from boring.core import circuit
 
         state_file = tmp_path / ".circuit_breaker_state"
         history_file = tmp_path / ".circuit_breaker_history"
@@ -129,7 +129,7 @@ class TestShouldHaltExecution:
 
     def test_should_not_halt_initially(self, tmp_path, monkeypatch):
         """Test that execution should not halt initially."""
-        from boring import circuit
+        from boring.core import circuit
 
         state_file = tmp_path / ".circuit_breaker_state"
         history_file = tmp_path / ".circuit_breaker_history"
@@ -147,7 +147,7 @@ class TestResetCircuitBreaker:
 
     def test_reset_sets_closed_state(self, tmp_path, monkeypatch):
         """Test that reset sets CLOSED state."""
-        from boring import circuit
+        from boring.core import circuit
 
         state_file = tmp_path / ".circuit_breaker_state"
         history_file = tmp_path / ".circuit_breaker_history"

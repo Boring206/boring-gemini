@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from boring.interactive import InteractiveAction, InteractiveSession
+from boring.cli.interactive import InteractiveAction, InteractiveSession
 
 
 @pytest.fixture
@@ -29,7 +29,7 @@ class TestInteractiveSession:
 
     def test_init_defaults(self):
         """Test initialization with defaults."""
-        with patch("boring.interactive.settings") as mock_settings:
+        with patch("boring.cli.interactive.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = Path("/default")
             mock_settings.LOG_DIR = Path("/default/logs")
 
@@ -41,7 +41,7 @@ class TestInteractiveSession:
         """Test showing header."""
         session = InteractiveSession(reason="Test", project_root=temp_project)
 
-        with patch("boring.interactive.console") as mock_console, patch("boring.interactive.Panel"):
+        with patch("boring.cli.interactive.console") as mock_console, patch("boring.cli.interactive.Panel"):
             session._show_header()
 
             mock_console.print.assert_called()
@@ -50,7 +50,7 @@ class TestInteractiveSession:
         """Test prompting for action."""
         session = InteractiveSession(project_root=temp_project)
 
-        with patch("boring.interactive.Prompt.ask", return_value="1"):
+        with patch("boring.cli.interactive.Prompt.ask", return_value="1"):
             action = session._prompt_action()
 
             assert action in InteractiveAction
@@ -59,7 +59,7 @@ class TestInteractiveSession:
         """Test confirming resume."""
         session = InteractiveSession(project_root=temp_project)
 
-        with patch("boring.interactive.Confirm.ask", return_value=True):
+        with patch("boring.cli.interactive.Confirm.ask", return_value=True):
             result = session._confirm_resume()
 
             assert result is True
@@ -68,7 +68,7 @@ class TestInteractiveSession:
         """Test confirming abort."""
         session = InteractiveSession(project_root=temp_project)
 
-        with patch("boring.interactive.Confirm.ask", return_value=True):
+        with patch("boring.cli.interactive.Confirm.ask", return_value=True):
             result = session._confirm_abort()
 
             assert result is True
@@ -77,7 +77,7 @@ class TestInteractiveSession:
         """Test editing prompt."""
         session = InteractiveSession(project_root=temp_project)
 
-        with patch("boring.interactive.console"), patch("subprocess.run") as mock_run:
+        with patch("boring.cli.interactive.console"), patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0)
 
             session._edit_prompt()
@@ -90,10 +90,10 @@ class TestInteractiveSession:
         session = InteractiveSession(project_root=temp_project)
 
         with (
-            patch("boring.interactive.Prompt.ask", return_value="echo test"),
-            patch("boring.interactive.Confirm.ask", return_value=True),
+            patch("boring.cli.interactive.Prompt.ask", return_value="echo test"),
+            patch("boring.cli.interactive.Confirm.ask", return_value=True),
             patch("subprocess.run") as mock_run,
-            patch("boring.interactive.console"),
+            patch("boring.cli.interactive.console"),
         ):
             mock_run.return_value = MagicMock(returncode=0, stdout="test", stderr="")
 
@@ -108,9 +108,9 @@ class TestInteractiveSession:
         )
 
         with (
-            patch("boring.interactive.console") as mock_console,
-            patch("boring.interactive.Table"),
-            patch("boring.interactive.Prompt.ask", return_value=""),
+            patch("boring.cli.interactive.console") as mock_console,
+            patch("boring.cli.interactive.Table"),
+            patch("boring.cli.interactive.Prompt.ask", return_value=""),
         ):
             session._view_errors()
 
@@ -125,9 +125,9 @@ class TestInteractiveSession:
         session = InteractiveSession(project_root=temp_project, log_dir=log_file.parent)
 
         with (
-            patch("boring.interactive.console") as mock_console,
-            patch("boring.interactive.Syntax"),
-            patch("boring.interactive.Prompt.ask", return_value=""),
+            patch("boring.cli.interactive.console") as mock_console,
+            patch("boring.cli.interactive.Syntax"),
+            patch("boring.cli.interactive.Prompt.ask", return_value=""),
         ):
             session._view_logs()
 
@@ -138,9 +138,9 @@ class TestInteractiveSession:
         session = InteractiveSession(project_root=temp_project)
 
         with (
-            patch("boring.interactive.reset_circuit_breaker") as mock_reset,
-            patch("boring.interactive.Confirm.ask", return_value=True),
-            patch("boring.interactive.console"),
+            patch("boring.cli.interactive.reset_circuit_breaker") as mock_reset,
+            patch("boring.cli.interactive.Confirm.ask", return_value=True),
+            patch("boring.cli.interactive.console"),
         ):
             mock_reset.return_value = True
 

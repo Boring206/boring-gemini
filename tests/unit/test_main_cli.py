@@ -13,23 +13,20 @@ runner = CliRunner()
 def mock_dependencies(mocker):
     # Setup mocks using pytest-mock
     # Global imports in main.py
-    mock_loop = mocker.patch("boring.main.AgentLoop")
     mock_settings = mocker.patch("boring.main.settings")
-    mock_show_circuit = mocker.patch("boring.main.show_circuit_status")
-    mock_reset_circuit = mocker.patch("boring.main.reset_circuit_breaker")
     mock_subprocess = mocker.patch("subprocess.run")
+    # mock_show_circuit and reset_circuit are not module level in main anymore
 
-    # Local imports - must patch at source
+    # Local imports - must patch at source for function-scoped imports
     mock_loop_local = mocker.patch("boring.loop.legacy.AgentLoop")
     # Also patch boring.loop.AgentLoop directly to be safe for importers
     mock_loop_direct = mocker.patch("boring.loop.AgentLoop")
     mock_stateful_loop = mocker.patch("boring.loop.StatefulAgentLoop")
     mock_debugger = mocker.patch("boring.debugger.BoringDebugger")
-    # ... (rest of fixture)
 
-    # ... (End of fixture)
-
-    # Add new tests at the end
+    # Circuit commands patch
+    mock_show_circuit = mocker.patch("boring.circuit.show_circuit_status")
+    mock_reset_circuit = mocker.patch("boring.circuit.reset_circuit_breaker")
 
     mock_memory = mocker.patch("boring.intelligence.MemoryManager")
 
@@ -60,7 +57,7 @@ def mock_dependencies(mocker):
     mock_settings.TIMEOUT_MINUTES = 30
 
     return {
-        "loop": mock_loop,
+        "loop": mock_loop_direct,
         "stateful_loop": mock_stateful_loop,
         "debugger": mock_debugger,
         "memory": mock_memory,
@@ -158,7 +155,7 @@ def test_start_command_invalid_backend(mock_dependencies):
 # ==============================================================================
 # V10.7 Coverage Tests
 # ==============================================================================
-@patch("boring.main.AgentLoop")
+@patch("boring.loop.AgentLoop")
 def test_start_cli_backend_coverage(mock_loop):
     """Test boring start command with CLI backend (Coverage)."""
     runner = CliRunner()
@@ -168,7 +165,7 @@ def test_start_cli_backend_coverage(mock_loop):
     assert mock_loop.call_args[1]["use_cli"] is True
 
 
-@patch("boring.main.AgentLoop")
+@patch("boring.loop.AgentLoop")
 def test_start_api_backend_coverage(mock_loop):
     """Test boring start command with API backend (Coverage)."""
     runner = CliRunner()
@@ -265,7 +262,7 @@ def test_dashboard_missing_deps(mock_dependencies, mocker):
 
     result = runner.invoke(app, ["dashboard"])
     assert result.exit_code == 1
-    assert "Dashboard dependencies not found" in result.stdout
+    assert "dashboard requires extra dependencies" in result.stdout.lower()
 
 
 def test_auto_fix_target_not_found(mock_dependencies, tmp_path):
@@ -528,6 +525,9 @@ def test_dashboard_success(mock_dependencies, mocker):
     mocker.patch.dict("sys.modules", {"streamlit": mocker.MagicMock()})
     mocker.patch("importlib.util.find_spec", return_value=mocker.MagicMock())
 
+    # Mock DependencyManager
+    mocker.patch("boring.core.dependencies.DependencyManager.check_gui", return_value=True)
+
     result = runner.invoke(app, ["dashboard"])
     assert result.exit_code == 0
     mocks["subprocess"].assert_called_once()
@@ -541,7 +541,14 @@ def test_dashboard_subprocess_error(mock_dependencies, mocker):
     mocker.patch.dict("sys.modules", {"streamlit": mocker.MagicMock()})
     mocker.patch("importlib.util.find_spec", return_value=mocker.MagicMock())
 
+    # Mock DependencyManager
+    mocker.patch("boring.core.dependencies.DependencyManager.check_gui", return_value=True)
+
     result = runner.invoke(app, ["dashboard"])
+    # If it fails with dependencies error here, it means mock didn't work.
+    # Let's check output if failure occurs.
+    if result.exit_code != 1 or "Failed to launch dashboard" not in result.stdout:
+        print(f"DEBUG STDOUT: {result.stdout}")
     assert result.exit_code == 1
     assert "Failed to launch dashboard" in result.stdout
 

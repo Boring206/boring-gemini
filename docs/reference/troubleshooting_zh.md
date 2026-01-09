@@ -142,3 +142,22 @@ tail -f ~/.boring_logs/api_trace.log
 1. **執行 `boring doctor`** 並保存輸出。
 2. **收集日誌**：壓縮 `~/.boring_logs/`。
 3. **開啟 Issue**：[GitHub Issues](https://github.com/Boring206/boring-gemini/issues) 並附上上述資訊。
+
+### 6. "找不到工具 / 指令未找到"
+
+**症狀**：嘗試使用 `boring_code_review` 或 `boring_test_gen` 但 Agent 說「找不到工具」。
+
+**原因**：
+- 您可能處於 `minimal` 或 `ultra_lite` Profile 模式。
+
+**解決方案**：
+1. 檢查當前 Profile：
+   ```bash
+   boring config show
+   ```
+2. 切換至 `lite` 或 `standard`：
+   ```bash
+   export BORING_MCP_PROFILE=lite
+   # 重啟 IDE/Server
+   ```
+   詳情請見 [MCP Profiles 指南](../guides/mcp-profiles-comparison_zh.md)。

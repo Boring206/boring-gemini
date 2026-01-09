@@ -56,9 +56,9 @@ boring-route "how do we handle token expiration?"
 ## ⚠️ Notes & Troubleshooting
 
 ### 1. Missing Dependencies
-RAG features require specialized libraries. If you see "No module named `chromadb`" or `sentence-transformers`, run:
+RAG features require specialized libraries (ChromaDB, Torch). If you see "No module named `chromadb`" or `sentence-transformers`, the easiest way to fix this is:
 ```bash
-python -m pip install chromadb sentence-transformers
+pip install "boring-aicoding[vector]"
 ```
 
 > [!IMPORTANT]
@@ -68,7 +68,7 @@ python -m pip install chromadb sentence-transformers
 > 1. Check the Python path used by MCP (see the `Python:` line in error messages)
 > 2. Install dependencies in **that environment**:
 >    ```bash
->    /usr/local/bin/python -m pip install chromadb sentence-transformers
+>    /usr/local/bin/python -m pip install "boring-aicoding[vector]"
 >    ```
 > 3. Or configure MCP to use your local Python environment
 

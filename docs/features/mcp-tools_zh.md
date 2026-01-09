@@ -277,6 +277,18 @@ boring_evaluate(
 ```
 
 ---
+    
+### 13. 外部智能 (`boring_external`)
+
+整合強大的外部 MCP 伺服器，增強思考與知識能力。
+
+- **Context7**: 即時技術文檔 RAG (`context7_query_docs`)
+- **Sequential Thinking**: 深度循序思考引擎 (`sequentialthinking`)
+- **Critical Thinking**: 批判性思維與審計 (`criticalthink`)
+
+詳細用法請參閱 **[外部智能整合](./external-intelligence_zh.md)**。
+
+---
 
 ## 🚀 快速啟動提示
 

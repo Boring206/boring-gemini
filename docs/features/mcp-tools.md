@@ -277,6 +277,18 @@ boring_evaluate(
 ```
 
 ---
+    
+### 13. External Intelligence (`boring_external`)
+
+Integrates powerful external MCP servers for enhanced thinking and knowledge.
+
+- **Context7**: Real-time technical documentation RAG (`context7_query_docs`)
+- **Sequential Thinking**: Deep sequential thinking engine (`sequentialthinking`)
+- **Critical Thinking**: Critical thinking and auditing (`criticalthink`)
+
+See **[External Intelligence](./external-intelligence.md)** for detailed usage.
+
+---
 
 ## 🚀 Quick Start Prompts
 

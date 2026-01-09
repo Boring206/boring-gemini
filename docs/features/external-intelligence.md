@@ -47,12 +47,33 @@ It teaches the Agent "Self-Doubt":
 
 ---
 
-## 🚀 How to Enable?
+## 🛠️ Zero Config: One-Click Integration
 
-If you are using the **Boring Pro** profile (`BORING_MCP_PROFILE="pro"`), these tools are enabled by default!
+**You DO NOT need to manually download or install these external tools!**
 
-You can ask directly in chat:
-> "Please use **Sequential Thinking** to plan this refactor."
-> "Please use **Context7** to check the new React 19 Hooks."
+Boring uses an "All-in-One" design. Core features are built-in, and external intelligence is managed via a one-click extension mechanism.
+
+### How to Enable?
+
+1.  **Initialize Extensions** (Run once):
+    ```bash
+    # In CLI
+    boring setup-extensions
+    ```
+    Or ask the Agent in chat:
+    > "Help me setup extensions"
+    > (Agent will call `boring_setup_extensions()` tool)
+
+2.  **Auto-Configuration**:
+    Boring will automatically:
+    - Download necessary MCP Servers (`context7`, `criticalthink`, `sequential-thinking`)
+    - Configure API Keys and environment variables
+    - Update configuration to enable them
+
+3.  **Ready to Use**:
+    Once setup, these tools appear automatically in the Agent's toolbox.
+    You can ask directly in chat:
+    > "Please use **Sequential Thinking** to plan this refactor."
+    > "Please use **Context7** to check the new React 19 Hooks."
 
 This way, you get not just code, but high-quality output that has been "thought through" and "verified".

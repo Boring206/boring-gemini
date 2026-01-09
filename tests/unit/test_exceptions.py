@@ -117,7 +117,7 @@ class TestConfigurationErrors:
         """Test DependencyError."""
         from boring.exceptions import DependencyError
 
-        error = DependencyError("chromadb", "pip install chromadb")
+        error = DependencyError("chromadb", 'pip install "boring-aicoding[vector]"')
         assert error.package == "chromadb"
 
 

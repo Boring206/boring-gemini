@@ -89,7 +89,7 @@ def get_server_instance():
     os.environ["BORING_MCP_MODE"] = "1"
 
     if not instance.MCP_AVAILABLE:
-        raise RuntimeError("'fastmcp' not found. Install with: pip install fastmcp")
+        raise RuntimeError("'fastmcp' not found. Install with: pip install boring-aicoding[mcp]")
 
     # Register Resources
     @instance.mcp.resource("boring://logs")
@@ -158,7 +158,7 @@ def run_server():
     os.environ["BORING_MCP_MODE"] = "1"
 
     if not instance.MCP_AVAILABLE:
-        sys.stderr.write("Error: 'fastmcp' not found. Install with: pip install fastmcp\n")
+        sys.stderr.write("Error: 'fastmcp' not found. Install with: pip install boring-aicoding[mcp]\n")
         sys.exit(1)
 
     # 1. Install stdout interceptor immediately
@@ -335,7 +335,7 @@ def run_server():
             sys.stderr.write(
                 f"[boring-mcp] ⚠️ RAG features unavailable: Missing dependencies.\n"
                 f"[boring-mcp] To enable RAG, run:\n"
-                f"    {sys.executable} -m pip install chromadb sentence-transformers\n"
+                f"    {sys.executable} -m pip install boring-aicoding[vector]\n"
             )
 
         # V10.24: Show profile info

@@ -241,7 +241,7 @@ Steps:
 
 **Phase 5: 驗證 & 品質**
 12. 開發完成後，使用 `boring_verify(level='FULL')` 驗證程式碼品質
-13. 使用 `boring_security_scan` 執行安全掃描 (若缺少依賴，依提示安裝後執行 `boring_rag_reload` 刷新環境)
+13. 使用 `boring_security_scan` 執行安全掃描 (若缺少依賴，執行 `pip install "boring-aicoding[vector]"` 安裝後執行 `boring_rag_reload` 刷新環境)
 14. 如有問題，使用 `boring_prompt_fix` 產生修復建議
 
 完成後提供摘要報告，包含：
@@ -385,7 +385,7 @@ Query: {query}
 
 Execute search:
 
-1. Check RAG status: `boring_rag_status` (If dependencies are missing, follow the instructions to install and then run `boring_rag_reload`)
+1. Check RAG status: `boring_rag_status` (If dependencies are missing, run `pip install "boring-aicoding[vector]"` and then run `boring_rag_reload`)
 2. If not indexed, run: `boring_rag_index` (force=True if needed)
 3. Search: `boring_rag_search(query='{query}', expand_graph=True)`
 4. If search fails with dependency errors, run `boring_rag_reload` after fixing the environment.

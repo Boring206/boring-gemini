@@ -82,6 +82,23 @@ All registered tools.
 
 ---
 
+### `BORING_LLM_PROVIDER`
+
+Select the underlying model provider.
+
+| Provider | Value | Description |
+|----------|-------|-------------|
+| **Gemini** | `gemini-cli` | Default. Requires `gemini-cli`. |
+| **Claude** | `claude-code` | Requires `claude` CLI. |
+| **Ollama** | `ollama` | Local model (Experimental). |
+
+> [!CAUTION]
+> **Ollama Limitations**: The current Ollama implementation does **not** support Function Calling (Tool Use).
+> If you use `ollama`, `boring` cannot execute tools (edit files, run tests). It will behave as a text-only chat bot.
+> For Vibe Coder automation workflows, please use Gemini or Claude.
+
+---
+
 ## MCP Configuration Examples
 
 ### Local Full Version (Recommended)

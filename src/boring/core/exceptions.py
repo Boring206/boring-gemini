@@ -1,0 +1,196 @@
+"""
+Exceptions Module for Boring V4.0
+
+Defines custom exception hierarchy for consistent error handling.
+"""
+
+from typing import Optional
+
+
+class BoringError(Exception):
+    """Base exception for all Boring errors."""
+
+    def __init__(self, message: str, details: Optional[list[str]] = None):
+        super().__init__(message)
+        self.message = message
+        self.details = details or []
+
+    def __str__(self) -> str:
+        if self.details:
+            return f"{self.message}: {'; '.join(self.details)}"
+        return self.message
+
+
+# =============================================================================
+# API ERRORS
+# =============================================================================
+
+
+class APIError(BoringError):
+    """Base class for API-related errors."""
+
+    pass
+
+
+class RateLimitError(APIError):
+    """Raised when API rate limit is exceeded."""
+
+    def __init__(self, message: str = "Rate limit exceeded", retry_after: Optional[int] = None):
+        super().__init__(message)
+        self.retry_after = retry_after
+
+
+class AuthenticationError(APIError):
+    """Raised when API authentication fails."""
+
+    def __init__(self, message: str = "Authentication failed"):
+        super().__init__(message, ["Check GOOGLE_API_KEY environment variable"])
+
+
+class TimeoutError(APIError):
+    """Raised when API request times out."""
+
+    def __init__(self, message: str = "Request timed out", timeout_seconds: Optional[int] = None):
+        super().__init__(message)
+        self.timeout_seconds = timeout_seconds
+
+
+class ModelNotFoundError(APIError):
+    """Raised when specified model is not available."""
+
+    def __init__(self, model_name: str):
+        super().__init__(f"Model not found: {model_name}")
+        self.model_name = model_name
+
+
+# =============================================================================
+# FILE ERRORS
+# =============================================================================
+
+
+class FileError(BoringError):
+    """Base class for file-related errors."""
+
+    pass
+
+
+class PathSecurityError(FileError):
+    """Raised when a path fails security validation."""
+
+    def __init__(self, path: str, reason: str):
+        super().__init__(f"Security violation for path '{path}': {reason}")
+        self.path = path
+        self.reason = reason
+
+
+class FileNotFoundError(FileError):
+    """Raised when a required file is not found."""
+
+    def __init__(self, path: str):
+        super().__init__(f"File not found: {path}")
+        self.path = path
+
+
+class FileSizeError(FileError):
+    """Raised when file exceeds size limits."""
+
+    def __init__(self, path: str, size: int, max_size: int):
+        super().__init__(f"File too large: {path} ({size} > {max_size})")
+        self.path = path
+        self.size = size
+        self.max_size = max_size
+
+
+# =============================================================================
+# VERIFICATION ERRORS
+# =============================================================================
+
+
+class VerificationError(BoringError):
+    """Base class for verification-related errors."""
+
+    pass
+
+
+class SyntaxError(VerificationError):
+    """Raised when Python syntax check fails."""
+
+    def __init__(self, file_path: str, line: int, message: str):
+        super().__init__(f"Syntax error in {file_path}:{line}: {message}")
+        self.file_path = file_path
+        self.line = line
+
+
+class LintError(VerificationError):
+    """Raised when linting fails."""
+
+    def __init__(self, file_path: str, issues: list[str]):
+        super().__init__(f"Lint errors in {file_path}", issues)
+        self.file_path = file_path
+        self.issues = issues
+
+
+class TestError(VerificationError):
+    """Raised when tests fail."""
+
+    def __init__(self, failed_tests: list[str]):
+        super().__init__(f"{len(failed_tests)} test(s) failed", failed_tests)
+        self.failed_tests = failed_tests
+
+
+# =============================================================================
+# LOOP ERRORS
+# =============================================================================
+
+
+class LoopError(BoringError):
+    """Base class for loop-related errors."""
+
+    pass
+
+
+class CircuitBreakerOpenError(LoopError):
+    """Raised when circuit breaker is open."""
+
+    def __init__(self, message: str = "Circuit breaker is open"):
+        super().__init__(message, ["Use 'boring reset-circuit' to reset"])
+
+
+class MaxLoopsExceededError(LoopError):
+    """Raised when maximum loop count is exceeded."""
+
+    def __init__(self, max_loops: int):
+        super().__init__(f"Maximum loops exceeded: {max_loops}")
+        self.max_loops = max_loops
+
+
+class ExitSignalError(LoopError):
+    """Raised when an exit signal is detected."""
+
+    def __init__(self, signal_type: str):
+        super().__init__(f"Exit signal detected: {signal_type}")
+        self.signal_type = signal_type
+
+
+# =============================================================================
+# CONFIGURATION ERRORS
+# =============================================================================
+
+
+class ConfigurationError(BoringError):
+    """Raised when configuration is invalid."""
+
+    def __init__(self, setting: str, issue: str):
+        super().__init__(f"Configuration error for '{setting}': {issue}")
+        self.setting = setting
+        self.issue = issue
+
+
+class DependencyError(BoringError):
+    """Raised when a required dependency is missing."""
+
+    def __init__(self, package: str, install_command: Optional[str] = None):
+        install_hint = f"Install with: {install_command}" if install_command else ""
+        super().__init__(f"Missing dependency: {package}", [install_hint] if install_hint else [])
+        self.package = package
+        self.install_command = install_command

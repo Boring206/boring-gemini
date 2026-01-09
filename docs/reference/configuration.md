@@ -20,6 +20,7 @@ enable_shadow_mode = true
 enable_rag = true
 
 # Default Tool Profile (minimal, lite, standard, full)
+# See Details: docs/guides/mcp-profiles-comparison.md
 profile = "lite"
 ```
 

@@ -4,6 +4,7 @@
 runtime: "container"
 displayName: "Boring Gemini Agent"
 description: "Boring Vibecoder Assistant: An AI-powered development support tool handling project planning, logic verification, and knowledge management. Works alongside Cursor, Copilot, and others to ensure rigorous, efficient workflows, letting developers focus on architecture and decision-making."
+version: 10.28.0
 repository: "https://github.com/Boring206/boring-gemini"
 homepage: "https://github.com/Boring206/boring-gemini"
 documentation: "https://github.com/Boring206/boring-gemini/blob/main/README.md"
@@ -128,8 +129,8 @@ startCommand:
           Enable semantic code search with vector embeddings using RAG (Retrieval-Augmented Generation).
           
           **Requirements:**
-          - Requires `chromadb` and `sentence-transformers` Python packages
-          - Install with: `pip install chromadb sentence-transformers`
+          - Requires `boring-aicoding[vector]` installation
+          - Install with: `pip install "boring-aicoding[vector]"`
           - After installation, use `boring_rag_reload` tool to hot-reload dependencies
           
           **Features Enabled:**

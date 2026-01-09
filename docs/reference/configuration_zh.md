@@ -20,6 +20,7 @@ enable_shadow_mode = true
 enable_rag = true
 
 # 預設工具 Profile (minimal, lite, standard, full)
+# 詳見: ./guides/mcp-profiles-comparison_zh.md
 profile = "lite"
 ```
 

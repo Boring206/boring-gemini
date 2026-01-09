@@ -65,22 +65,29 @@ sequenceDiagram
     A->>U: 最終報告
 ```
 
-### 1. 自主迴圈 (`src/boring/loop/`)
+### 1. 模組化核心與延遲載入 (src/boring/)
 
-核心是 `StatefulAgentLoop`，實作了一個有限狀態機 (FSM)：
+從 v10.28.0 開始，Boring 採用了 **「瘦身架構」(Diet Architecture)**：
+- **延遲載入 (Lazy Loading)**：大幅利用 `__init__.py` 中的 `__getattr__` 技巧，僅在真正存取時才匯入子模組。這讓冷啟動時間從約 2.5 秒降至 **< 600 毫秒**。
+- **依賴管理器 (Dependency Manager)**：統一的 `DependencyManager` (位於 `core/dependencies.py`) 負責管理所有可選的「加點」(Extras，如 ChromaDB, FastAPI, Streamlit)，確保核心 CLI 保持輕量化 (< 50MB)。
 
-- **THINKING 狀態**：使用 LLM 生成下一個動作。
-- **EXECUTING 狀態**：執行工具（編輯檔案、執行命令）。
-- **VERIFYING 狀態**：驗證變更（lint、測試、建置）。
-- **LEARNING 狀態**：分析結果並更新記憶。
+### 2. 子模組重構
 
-### 2. 大腦與記憶 (`src/boring/memory/`)
+源代碼現在按功能層級組織：
+- `core/`：常量、遙測與依賴管理。
+- `services/`：核心邏輯，如健康檢查與監控。
+- `cli/`：基於 Typer 的界面與指令定義。
+- `tools/`：原子化的工具，用於文件操作與分析。
+- `intelligence/`：大腦 (Memory)、RAG 與模式學習。
+- `loop/`：自主運作的狀態機。
+- `mcp/`：Model Context Protocol 伺服器與工具曝露。
 
-Boring 不只是讀取檔案；它維護「狀態」：
+### 3. 大腦與記憶 (src/boring/intelligence/)
 
+Boring 不只讀取檔案；它維護「狀態」：
 - **Context (`context.json`)**：當前任務、計畫和進度。
 - **Learnings (`learnings.json`)**：錯誤模式和成功的修復。
-- **RAG Index (ChromaDB)**：代碼庫的向量嵌入，用於語意搜尋。
+- **RAG Index (ChromaDB)**：[選配] 代碼庫的向量嵌入，用於語意搜尋。
 
 #### 🕵️ 混合 RAG (Hybrid RAG) 工作流
 

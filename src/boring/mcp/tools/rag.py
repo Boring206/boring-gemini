@@ -4,6 +4,7 @@ MCP Tools for RAG System
 Exposes RAG functionality as MCP tools for AI agents.
 """
 
+import sys
 from pathlib import Path
 from typing import Annotated, Optional
 
@@ -12,51 +13,21 @@ from pydantic import Field
 # Import error tracking for better diagnostics
 _RAG_IMPORT_ERROR = None
 
-# Robust dependency check with improved environment bridging
-try:
-    import chromadb  # noqa: F401
-    from sentence_transformers import SentenceTransformer  # noqa: F401
+from boring.core.dependencies import DependencyManager
 
-    # Only import internal RAG module if dependencies exist
-    from boring.rag import RAGRetriever, create_rag_retriever
+# Lazy loaded module references
+RAGRetriever = None
+create_rag_retriever = None
 
-    _RAG_IMPORT_ERROR = None
-except ImportError:
-    # Attempt to bridge isolated environments (e.g. MCP running in embedded Python)
-    import site
-    import sys
-
-    # Strategy 1: User site packages
+# Attempt to load if available, but don't fail yet
+if DependencyManager.check_chroma():
     try:
-        user_site = site.getusersitepackages()
-        if isinstance(user_site, str) and user_site not in sys.path:
-            sys.path.append(user_site)
-    except Exception:
+        from boring.rag import RAGRetriever as _RR
+        from boring.rag import create_rag_retriever as _CRR
+        RAGRetriever = _RR
+        create_rag_retriever = _CRR
+    except ImportError:
         pass
-
-    # Strategy 2: Global python site-packages (if accessible)
-    # This matches where 'pip install' likely went if running basic python
-    # We can't easily guess it, but we can try common paths or just rely on user_site.
-
-    try:
-        import chromadb  # noqa: F401
-        from sentence_transformers import SentenceTransformer  # noqa: F401
-
-        from boring.rag import RAGRetriever, create_rag_retriever
-
-        _RAG_IMPORT_ERROR = None
-    except ImportError as final_error:
-        # Capture the specific missing dependency and environment info for debugging
-        pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
-        debug_info = f"Python: {sys.executable}\nPaths: {sys.path}"
-        _RAG_IMPORT_ERROR = (
-            f"{str(final_error)}\n\n"
-            f"[Recommended Fix]\n"
-            f"Run this command:\n    {pip_cmd}\n\n"
-            f"[Debug Info]\n{debug_info}"
-        )
-        RAGRetriever = None
-        create_rag_retriever = None
 
 
 # Singleton retriever instance (per project)
@@ -91,32 +62,35 @@ def reload_rag_dependencies() -> dict:
         if mod_name in sys.modules:
             del sys.modules[mod_name]
 
-    # Step 3: Try importing again
-    try:
-        import chromadb  # noqa: F401
-        from sentence_transformers import SentenceTransformer  # noqa: F401
+    # Step 3: Check again via DependencyManager
+    # Reset cached availability first
+    if hasattr(DependencyManager, "_chroma_available"):
+        DependencyManager._chroma_available = None
 
-        from boring.rag import RAGRetriever as _RAGRetriever
-        from boring.rag import create_rag_retriever as _create_rag_retriever
+    if DependencyManager.check_chroma():
+        try:
+            from boring.rag import RAGRetriever as _RAGRetriever
+            from boring.rag import create_rag_retriever as _create_rag_retriever
 
-        RAGRetriever = _RAGRetriever
-        create_rag_retriever = _create_rag_retriever
-        _RAG_IMPORT_ERROR = None
-        _retrievers.clear()  # Clear cached retrievers
+            global RAGRetriever, create_rag_retriever
+            RAGRetriever = _RAGRetriever
+            create_rag_retriever = _create_rag_retriever
+            _retrievers.clear()  # Clear cached retrievers
 
-        return {
-            "status": "SUCCESS",
-            "message": "✅ RAG dependencies reloaded successfully! You can now use boring_rag_index and boring_rag_search.",
-        }
-    except ImportError as e:
-        pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
-        _RAG_IMPORT_ERROR = str(e)
-        return {
-            "status": "ERROR",
-            "message": f"❌ Failed to reload RAG dependencies: {e}",
-            "fix_command": pip_cmd,
-            "hint": f"Run this command first, then try boring_rag_reload again:\n    {pip_cmd}",
-        }
+            return {
+                "status": "SUCCESS",
+                "message": "✅ RAG dependencies reloaded successfully! You can now use boring_rag_index and boring_rag_search.",
+            }
+        except ImportError as e:
+            return {"status": "ERROR", "message": f"❌ Error importing RAG modules: {e}"}
+
+    pip_cmd = f"{sys.executable} -m pip install boring-aicoding[vector]"
+    return {
+        "status": "ERROR",
+        "message": "❌ RAG dependencies still missing via DependencyManager.",
+        "fix_command": pip_cmd,
+        "hint": f"Run this command first:\n    {pip_cmd}",
+    }
 
 
 def get_retriever(project_root: Path) -> Optional[RAGRetriever]:
@@ -191,7 +165,7 @@ def register_rag_tools(mcp, helpers: dict):
             return error.get("message")
         retriever = get_retriever(project_root)
         if retriever is None or not retriever.is_available:
-            pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
+            pip_cmd = f"{sys.executable} -m pip install boring-aicoding[vector]"
             return (
                 "❌ RAG module not available.\n\n"
                 f"[AUTO-FIX] Run: {pip_cmd}\n\n"
@@ -283,7 +257,7 @@ def register_rag_tools(mcp, helpers: dict):
             return error.get("message")
         retriever = get_retriever(project_root)
         if retriever is None or not retriever.is_available:
-            pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
+            pip_cmd = f"{sys.executable} -m pip install boring-aicoding[vector]"
             return (
                 "❌ RAG module not available.\n\n"
                 f"[AUTO-FIX] Run: {pip_cmd}\n\n"
@@ -375,7 +349,7 @@ def register_rag_tools(mcp, helpers: dict):
         report = []  # Initialize report list
         retriever = get_retriever(project_root)
         if retriever is None or not retriever.is_available:
-            pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
+            pip_cmd = f"{sys.executable} -m pip install boring-aicoding[vector]"
             report.append("## ❌ RAG Not Available\n")
             report.append(f"[AUTO-FIX] Run:\n```bash\n{pip_cmd}\n```\n")
             report.append(
@@ -473,7 +447,7 @@ def register_rag_tools(mcp, helpers: dict):
             return error.get("message")
         retriever = get_retriever(project_root)
         if retriever is None or not retriever.is_available:
-            pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
+            pip_cmd = f"{sys.executable} -m pip install boring-aicoding[vector]"
             return (
                 "❌ RAG module not available.\n\n"
                 f"[AUTO-FIX] Run: {pip_cmd}\n\n"
@@ -565,7 +539,7 @@ def register_rag_tools(mcp, helpers: dict):
             return error.get("message")
         retriever = get_retriever(project_root)
         if retriever is None or not retriever.is_available:
-            pip_cmd = f"{sys.executable} -m pip install chromadb sentence-transformers"
+            pip_cmd = f"{sys.executable} -m pip install boring-aicoding[vector]"
             return (
                 "❌ RAG module not available.\n\n"
                 f"[AUTO-FIX] Run: {pip_cmd}\n\n"

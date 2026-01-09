@@ -40,36 +40,25 @@ pip install -e ".[mcp]"
 
 ---
 
-### 1.3 IDE 整合
+### 1.3 IDE 整合 (One-Click)
 
-#### Cursor / Windsurf
-建立 `.cursor/mcp.json`:
-```json
-{
-  "mcpServers": {
-    "boring": {
-      "command": "python",
-      "args": ["-m", "boring.mcp.server"],
-      "env": {
-        "GOOGLE_API_KEY": "your-api-key"
-      }
-    }
-  }
-}
+不要手動編輯設定檔！Boring 提供了自動設定工具。
+
+#### ✅ 推薦方法：一鍵整合
+在終端機執行：
+
+```bash
+# 自動偵測 Cursor/VSCode/Claude 並安裝設定
+boring setup-extensions
 ```
 
-#### Claude Desktop
-在 `claude_desktop_config.json` 中加入:
-```json
-{
-  "mcpServers": {
-    "boring": {
-      "command": "python",
-      "args": ["-m", "boring.mcp.server"]
-    }
-  }
-}
-```
+這會自動：
+1. 建立/更新 MCP 設定檔 (`mcp.json`)
+2. 安裝必要的 MCP Server (Boring, Context7)
+3. 設定 API Key (會提示輸入)
+
+#### 手動方法 (Fallback)
+如果自動設定失敗，請參考 [MCP Configuration Guide](../guides/mcp-configuration.md) 進行手動設定。
 
 ---
 

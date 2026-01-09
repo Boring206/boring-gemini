@@ -114,16 +114,10 @@ def _clear_query_cache():
         _query_cache.clear()
 
 
-# Try to import ChromaDB (optional dependency)
-try:
-    import chromadb
-    from chromadb.config import Settings as ChromaSettings
+from ..core.dependencies import DependencyManager
 
-    CHROMA_AVAILABLE = True
-except ImportError:
-    CHROMA_AVAILABLE = False
-    chromadb = None
-    ChromaSettings = None
+# Verify dependencies (lazy load later)
+CHROMA_AVAILABLE = DependencyManager.check_chroma()
 
 
 @dataclass
@@ -209,6 +203,9 @@ class RAGRetriever:
 
         if CHROMA_AVAILABLE:
             try:
+                import chromadb
+                from chromadb.config import Settings as ChromaSettings
+
                 self.client = chromadb.PersistentClient(
                     path=str(self.persist_dir),
                     settings=ChromaSettings(anonymized_telemetry=False, allow_reset=True),
