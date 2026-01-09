@@ -26,6 +26,7 @@ class TestMCPInstance:
         """Test when FastMCP is not available."""
         with patch("boring.core.dependencies.DependencyManager.check_mcp", return_value=False):
             import boring.mcp.instance as instance_module
+
             importlib.reload(instance_module)
 
             # When FastMCP is not available, mcp should be None
