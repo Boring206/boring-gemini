@@ -236,7 +236,9 @@ class BrainManager:
         import hashlib
 
         # Generate unique pattern ID from content
-        content_hash = hashlib.sha256(f"{pattern_type}:{context}:{solution}".encode()).hexdigest()[:8]
+        content_hash = hashlib.sha256(f"{pattern_type}:{context}:{solution}".encode()).hexdigest()[
+            :8
+        ]
         pattern_id = f"{pattern_type.upper()}_{content_hash}"
 
         patterns = self._load_patterns()
@@ -965,7 +967,9 @@ class GlobalKnowledgeStore:
         import hashlib
 
         # Generate pattern ID
-        content_hash = hashlib.sha256(f"{error_type}:{error_context[:100]}".encode()).hexdigest()[:8]
+        content_hash = hashlib.sha256(f"{error_type}:{error_context[:100]}".encode()).hexdigest()[
+            :8
+        ]
         pattern_id = f"INC_{content_hash}"
 
         patterns = self._load_patterns()

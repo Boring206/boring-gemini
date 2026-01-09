@@ -509,13 +509,14 @@ class PredictionTracker:
             where = "prediction_type = ?"
             params = [prediction_type]
 
-        rows = conn.execute(
-            f"""
+        # nosec B608: static table/column names, safe
+        query = f"""
             SELECT bucket, total_count, correct_count, avg_confidence
             FROM calibration_data
             WHERE {where}
             ORDER BY bucket
-        """, params).fetchall()  # nosec B608: static table/column names, safe
+        """
+        rows = conn.execute(query, params).fetchall()
 
         buckets = []
         expected = []

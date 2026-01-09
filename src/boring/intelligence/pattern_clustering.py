@@ -290,9 +290,9 @@ class PatternClusterer:
         representative = max(patterns, key=lambda p: p.get("success_count", 0))
 
         # Generate cluster ID
-        cluster_id = hashlib.sha256(representative.get("description", "")[:50].encode()).hexdigest()[
-            :12
-        ]
+        cluster_id = hashlib.sha256(
+            representative.get("description", "")[:50].encode()
+        ).hexdigest()[:12]
 
         # Merge contexts from all patterns
         merged_contexts = []
