@@ -82,7 +82,57 @@ Boring 不只是讀取檔案；它維護「狀態」：
 - **Learnings (`learnings.json`)**：錯誤模式和成功的修復。
 - **RAG Index (ChromaDB)**：代碼庫的向量嵌入，用於語意搜尋。
 
-### 3. 驗證引擎 (`src/boring/verification/`)
+#### 🕵️ 混合 RAG (Hybrid RAG) 工作流
+
+Boring 採用多層檢索策略以確保上下文精確度：
+
+```mermaid
+graph LR
+    Query[使用者查詢] --> HybridSearch
+    
+    subgraph "Hybrid Search Engine"
+        HybridSearch --> Keyword[關鍵字搜尋 (BM25)]
+        HybridSearch --> Vector[向量搜尋 (ChromaDB)]
+        
+        Keyword --> Merger[結果合併 & 重排序]
+        Vector --> Merger
+    end
+    
+    Merger --> TopK[Top-K 初選結果]
+    
+    subgraph "Graph Expansion"
+        TopK --> DepGraph[依賴圖分析]
+        DepGraph --> Callers[調用者]
+        DepGraph --> Callees[被調用者]
+    end
+    
+    Callers --> FinalContext[最終上下文]
+    Callees --> FinalContext
+    TopK --> FinalContext
+```
+
+### 3. 評估與審判 (`src/boring/judge/`)
+
+Boring 內建 **LLM-as-a-Judge** 系統，用於自我評估與品質控制：
+
+```mermaid
+sequenceDiagram
+    participant Agent as Agent
+    participant Judge as Judge Engine
+    participant Rubric as 動態評分表
+    participant LLM as Evaluator Model
+    
+    Agent->>Judge: 請求評估 (Code/Plan)
+    Judge->>Rubric: 生成/載入評分標準
+    Judge->>LLM: 執行 Direct Scoring / Pairwise Comparison
+    loop Bias Mitigation
+        LLM->>LLM: 自我反思 (校準分數)
+    end
+    LLM-->>Judge: 評分結果 + 改進建議
+    Judge-->>Agent: 結構化報告 (JSON)
+```
+
+### 4. 驗證引擎 (`src/boring/verification/`)
 
 與只生成代碼的典型 Agent 不同，Boring 會 **驗證** 它。
 
@@ -93,7 +143,7 @@ Boring 不只是讀取檔案；它維護「狀態」：
   - **動態**：單元測試 (pytest)。
   - **安全**：漏洞掃描 (bandit)。
 
-### 4. 斷路器 (`src/boring/util/circuit_breaker.py`)
+### 5. 斷路器 (`src/boring/util/circuit_breaker.py`)
 
 防止 Agent 重複嘗試並失敗的「無限迴圈災難」。
 

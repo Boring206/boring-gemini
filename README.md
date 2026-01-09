@@ -1,6 +1,7 @@
 [![PyPI version](https://badge.fury.io/py/boring-aicoding.svg)](https://badge.fury.io/py/boring-aicoding)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Vibe Coder](https://img.shields.io/badge/Vibe_Coder-Pure_Natural_Language-ff69b4)](docs/features/vibe-coder.md)
+[![Coverage](https://img.shields.io/badge/coverage-80%25-green)](tests/)
 
 # Boring for Gemini
 
@@ -8,9 +9,13 @@
 
 [English](README.md) | [繁體中文](README_zh.md)
 
+> 🤖 **Proudly Built with AI-Human Collaboration**
+>
+> _"This project explores the limits of autonomous AI coding. While we strive for quality, some logic is AI-generated and subject to continuous improvement. Pull Requests are welcome!"_
+
 ---
 
-## ✨ The Vibe Coder Experience (V10.24)
+## ✨ The Vibe Coder Experience (V10.27)
 
 **No Code Needed.** Just describe the vibe.
 
@@ -46,34 +51,15 @@ Boring isn't just an MCP server; it's a **Intelligence Maximization System**:
 
 ---
 
-## 🚀 Quick Start
-[![Downloads](https://img.shields.io/pypi/dm/boring-aicoding.svg)](https://pypi.org/project/boring-aicoding/)
-[![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
+## 🧪 NotebookLM Optimizations (V10.27)
 
-# Boring: Your Autonomous Coding Partner
+Boring-Gemini V10.27 introduces several critical optimizations inspired by NotebookLM research to maximize LLM comprehension and minimize token overhead:
 
-> **Enterprise-grade Autonomous AI Development Agent**  
-> A full-language automated coding and verification engine built for Cursor / Claude Desktop / VS Code / Gemini CLI.
-
-**[中文版 README](README_zh.md)** | **[Full Documentation](docs/index.md)**
+- **Theme-Tips Hierarchical Output**: Restructures complex tool outputs into a "Theme → Tips" format. This hierarchical structure has been shown to improve LLM comprehension accuracy by **+1.13%** by reducing cognitive load.
+- **PREPAIR Reasoning Cache**: Implements the *PREPAIR* technique for code evaluation. By caching pointwise reasoning results before pairwise comparison, we eliminate evaluation bias and reduce LLM "laziness" during code selection.
+- **Dynamic Prompts with Contextual Embedding**: Modular prompt system that only loads what is necessary (logs, diffs, or code chunks) on-demand, saving up to 60% in token costs for routine tasks.
 
 ---
-
-## 🚀 Core Advantages
-
-| Feature | Description |
-|---------|-------------|
-| 🌐 **Polyglot & CLI Native** | Seamless switching between Gemini CLI and Claude Code CLI, zero API key required |
-| 🛡️ **Parallel Verification** | Multi-threaded parallel verification, 3-5x performance boost |
-| 🧠 **RAG Memory** | Hybrid Search (Vector + Keyword) + dependency graph for real-time retrieval |
-| 🛡️ **Shadow Mode** | High-risk operations require human approval, with persistent config |
-| 📐 **Spec-Driven** | 100% specification consistency from PRD to Code |
-| 🔒 **Quality Gates** | CI/CD multi-tier gates + multi-language linting + 20+ file type security scanning |
-| ✨ **Vibe Coder Pro** | **Doc Gen** | **Test Gen** | **Code Review** | **Perf Tips** | **Arch Check** | Multi-Lang Support (Py/JS/TS) |
-
----
-
-> [!IMPORTANT]
 > **Boring is now primarily an MCP tool (used via Cursor / Claude Desktop / IDE)**
 > 
 > - ❌ **Not recommended to run `boring start` directly in CMD/terminal**: Gemini CLI no longer supports free authorization (unless using API, which is not well-tested)
@@ -84,7 +70,9 @@ Boring isn't just an MCP server; it's a **Intelligence Maximization System**:
 
 ---
 
-## 📦 Quick Installation
+## 🚀 Quick Start
+
+## 📦 Installation
 
 ### Option 1: Smithery (✅ Recommended)
 
@@ -118,17 +106,18 @@ pip install boring-aicoding
 | Variable | Values | Description |
 |----------|--------|-------------|
 | `BORING_MCP_MODE` | `1` (required) | Enable MCP mode |
-| `BORING_MCP_PROFILE` | `minimal` / `lite` / `standard` / `full` | Tool exposure level |
+| `BORING_MCP_PROFILE` | `ultra_lite` / `minimal` / `lite` / `standard` / `full` | Tool exposure level |
 | `PROJECT_ROOT_DEFAULT` | `.` or path | Default project root |
 
 **Profile Comparison:**
 
-| Profile | Tools | Best For |
-|---------|-------|----------|
-| `minimal` | 8 | Quick tasks |
-| `lite` | 20 | Daily dev (Default) |
-| `standard` | 50 | Professional dev |
-| `full` | ~98 | Power Users |
+| Profile | Tools | Token Savings | Best For |
+|---------|-------|---------------|----------|
+| `ultra_lite` | 3 | **97%** | Token-constrained LLMs |
+| `minimal` | 8 | 92% | Quick tasks |
+| `lite` | 20 | 80% | Daily dev (Default) |
+| `standard` | 50 | 50% | Professional dev |
+| `full` | ~98 | 0% | Power Users |
 
 > 📖 **[Full MCP Configuration Guide](docs/guides/mcp-configuration_en.md)**
 

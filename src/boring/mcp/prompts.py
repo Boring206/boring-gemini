@@ -973,6 +973,7 @@ lspconfig.boring.setup{{}}
    - Optionally create a release note
 3. Use `/learn_patterns` afterwards to capture learnings
 """
+
     # =========================================================================
     # VIBE SESSION - Human-Aligned AI Coding Workflow (V10.25)
     # =========================================================================
@@ -1343,7 +1344,7 @@ Please provide the diff content:
         return f"""# 📝 Diff Code Review (Dynamic Context)
 
 ## Review Focus: {review_focus.upper()}
-{focus_instructions.get(review_focus, focus_instructions['all'])}
+{focus_instructions.get(review_focus, focus_instructions["all"])}
 
 ## Changes to Review
 ```diff

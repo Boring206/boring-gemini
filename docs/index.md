@@ -86,11 +86,12 @@ Deep dive technical documentation.
 ### API Documentation
 | Page | Description |
 |------|-------------|
-| [Core API](./api/core.md) | Rate limiting, Circuit Breaker, Hooks |
+| [Intelligence API](./api/intelligence_zh.md) | **NEW**: Brain, Vector Memory, Patterns |
+| [Loop & Workflow API](./api/loop_zh.md) | **NEW**: Shadow Mode, Transactions |
+| [Judge API](./api/judge_zh.md) | **NEW**: Rubrics, Metrics, Evaluation |
+| [Security API](./api/security_zh.md) | **NEW**: Security Scanner & Guard |
 | [Agents API](./api/agents.md) | Orchestrator, Coder, Reviewer logic |
-| [RAG & Memory API](./api/rag.md) | Vector Search, Hybrid Indexing |
 | [MCP Server API](./api/mcp_server.md) | Model Context Protocol integration |
-| [SpecKit API](./api/speckit.md) | Specification workflow API |
 
 ---
 
@@ -145,11 +146,12 @@ Deep dive technical documentation.
 ### API 文檔
 | 頁面 | 說明 |
 |------|------|
-| [核心 API (Core)](./api/core_zh.md) | 速率限制、斷路器、鉤子機制 |
+| [智能 API (Intelligence)](./api/intelligence_zh.md) | **最新**: 大腦、向量記憶、模式學習 |
+| [工作流 API (Loop)](./api/loop_zh.md) | **最新**: 影子模式、原子交易 |
+| [評審 API (Judge)](./api/judge_zh.md) | **最新**: 評分準則、指標、自動評估 |
+| [安全 API (Security)](./api/security_zh.md) | **最新**: 安全掃描與防護守衛 |
 | [代理 API (Agents)](./api/agents_zh.md) | 編排器、編碼員、審核員邏輯 |
-| [RAG 與記憶 API](./api/rag_zh.md) | 向量搜尋、混合索引與知識庫 |
 | [MCP 伺服器 API](./api/mcp_server_zh.md) | 模型內容協定 (MCP) 整合 |
-| [SpecKit API](./api/speckit_zh.md) | 規格書工作流 API |
  
 ---
 
