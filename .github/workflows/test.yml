@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Setup Python
       uses: actions/setup-python@v5
@@ -19,14 +19,15 @@ jobs:
         python-version: '3.11'
 
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'
 
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -e ".[dev]"
+        pip install radon interrogate
 
     - name: Install Node dependencies
       run: |
@@ -34,18 +35,36 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y jq
 
+    - name: Check Code Complexity
+      run: |
+        radon cc src/boring/ -a -nb --total-average
+        radon mi src/boring/ -nb
+
+    - name: Check Docstring Coverage
+      run: |
+        interrogate -vv --fail-under=60 src/boring/ --ignore-init-module --ignore-magic || echo "Docstring coverage warning"
+
     - name: Run unit tests with coverage
       run: |
-        python -m pytest tests/unit/ \
+        pytest tests/unit/ \
           --cov=src/boring \
+          --cov-report=xml \
           --cov-report=term-missing \
-          --cov-fail-under=39 \
-          -v
+          --cov-report=html \
+          --cov-fail-under=50 \
+          -v --tb=short
+
+    - name: Upload Coverage Reports
+      uses: codecov/codecov-action@v4
+      with:
+        files: ./coverage.xml
+        fail_ci_if_error: false
+      continue-on-error: true
 
     - name: Run integration tests (non-blocking)
-      run: python -m pytest tests/integration/ -v || true
+      run: pytest tests/integration/ -v || true
 
     - name: Generate test report
       run: |
         echo "## Test Results" >> $GITHUB_STEP_SUMMARY
-        echo "✅ Unit tests passed" >> $GITHUB_STEP_SUMMARY
+        echo "✅ Unit tests passed (50%+ coverage)" >> $GITHUB_STEP_SUMMARY
