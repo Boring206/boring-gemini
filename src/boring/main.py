@@ -322,6 +322,7 @@ def circuit_status():
     Show circuit breaker details.
     """
     from .circuit import show_circuit_status
+
     show_circuit_status()
 
 

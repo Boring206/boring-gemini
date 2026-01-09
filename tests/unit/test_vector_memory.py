@@ -16,6 +16,8 @@ from boring.vector_memory import (
 
 VECTOR_MEMORY_IMPORTABLE = True
 CHROMADB_AVAILABLE = True
+
+
 @pytest.fixture
 def mock_chroma_env():
     """Fixture to mock chromadb modules for local imports."""
@@ -27,17 +29,19 @@ def mock_chroma_env():
 
     with (
         patch.dict("sys.modules", {"chromadb": mock_chromadb, "chromadb.config": mock_settings}),
-        patch("boring.intelligence.vector_memory.DependencyManager.check_chroma", return_value=True)
+        patch(
+            "boring.intelligence.vector_memory.DependencyManager.check_chroma", return_value=True
+        ),
     ):
         yield mock_chromadb, mock_settings, mock_client
-
-
 
 
 @contextlib.contextmanager
 def disabled_chroma():
     """Context manager to mock chromadb as unavailable."""
-    with patch("boring.intelligence.vector_memory.DependencyManager.check_chroma", return_value=False):
+    with patch(
+        "boring.intelligence.vector_memory.DependencyManager.check_chroma", return_value=False
+    ):
         yield
 
 

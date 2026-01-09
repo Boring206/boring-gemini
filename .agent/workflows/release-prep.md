@@ -22,16 +22,16 @@ Use this workflow to let the AI Agent handle all release-related tasks automatic
 
 ## 3. Deep Verification (Strict CI)
 
+- [ ] **CI Status Check**: Manually or automatically verify that **ALL** GitHub Actions/CI checks (Lint, Security, Tests) are passing before proceeding.
 - [ ] **Lint & Format**: Run `ruff check .` (Must pass with 0 errors).
 - [ ] **Test Suite**: Run `pytest` (Must pass 100%).
 - [ ] **Verify**: Run `boring verify --level FULL` (Ensure 100% pass).
 - [ ] **Security**: Run `boring security-scan --scan-type all` to prevent secret leaks.
-- [ ] **Docs**: Run `mkdocs build --strict` to ensure link integrity.
-- [ ] **RAG**: Execute `boring rag-reindex --force` for a clean post-release index.
 
-## 4. Automated Git Operations
+## 4. Automated Git Operations & Release
 
 - [ ] **Staging**: Add all modified version and documentation files.
-- [ ] **Smart Commit**: Use `boring smart_commit` to generate a high-quality semantic commit message.
+- [ ] **Release Notes**: Generate a detailed release note (Markdown) summarizing key changes, breaking changes, and internal optimizations.
+- [ ] **Smart Commit**: Use `boring smart_commit` to generate a high-quality semantic commit message referencing the new version.
 - [ ] **Tagging**: Create git tag `vx.y.z`.
-- [ ] **Push**: Push branch and tags to origin.
+- [ ] **Push**: Push branch and tags to origin **ONLY** if all previous steps (including CI verification) are confirmed successful.

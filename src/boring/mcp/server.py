@@ -158,7 +158,9 @@ def run_server():
     os.environ["BORING_MCP_MODE"] = "1"
 
     if not instance.MCP_AVAILABLE:
-        sys.stderr.write("Error: 'fastmcp' not found. Install with: pip install boring-aicoding[mcp]\n")
+        sys.stderr.write(
+            "Error: 'fastmcp' not found. Install with: pip install boring-aicoding[mcp]\n"
+        )
         sys.exit(1)
 
     # 1. Install stdout interceptor immediately

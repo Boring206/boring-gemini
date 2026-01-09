@@ -187,9 +187,9 @@ def run_app():
 
     # Check dependencies
     if not DependencyManager.check_gui():
-         print("\n[bold red]Error: Streamlit is required for the web dashboard.[/bold red]")
-         print('Please install it with: [bold]pip install "boring-aicoding[gui]"[/bold]\n')
-         return
+        print("\n[bold red]Error: Streamlit is required for the web dashboard.[/bold red]")
+        print('Please install it with: [bold]pip install "boring-aicoding[gui]"[/bold]\n')
+        return
 
     try:
         subprocess.run([sys.executable, "-m", "streamlit", "run", str(script_path)] + sys.argv[1:])

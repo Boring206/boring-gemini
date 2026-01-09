@@ -24,6 +24,7 @@ if DependencyManager.check_chroma():
     try:
         from boring.rag import RAGRetriever as _RR
         from boring.rag import create_rag_retriever as _CRR
+
         RAGRetriever = _RR
         create_rag_retriever = _CRR
     except ImportError:
