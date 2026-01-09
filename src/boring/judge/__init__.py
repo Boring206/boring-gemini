@@ -49,6 +49,9 @@ from .rubric_generator import (
     rubric_to_prompt,
 )
 
+# V10.26 Reorganized Modules (moved from root)
+from .rubrics import CODE_QUALITY_RUBRIC, SECURITY_RUBRIC, Criterion, Rubric
+
 __all__ = [
     # Core
     "LLMJudge",
@@ -86,4 +89,9 @@ __all__ = [
     "generate_security_rubric",
     "rubric_to_prompt",
     "format_rubric_json",
+    # V10.26 Reorganized (simple rubrics)
+    "Rubric",
+    "Criterion",
+    "CODE_QUALITY_RUBRIC",
+    "SECURITY_RUBRIC",
 ]

@@ -288,7 +288,7 @@ def status():
     """
     Show current loop status and memory summary.
     """
-    from .memory import MemoryManager
+    from .intelligence import MemoryManager
 
     memory = MemoryManager(settings.PROJECT_ROOT)
     state = memory.get_project_state()
@@ -477,7 +477,7 @@ def lsp_start(
 @workflow_app.command("list")
 def workflow_list():
     """List local workflows."""
-    from .workflow_manager import WorkflowManager
+    from .loop import WorkflowManager
 
     manager = WorkflowManager()
     flows = manager.list_local_workflows()
@@ -497,7 +497,7 @@ def workflow_export(
     author: str = typer.Option("Anonymous", "--author", "-a", help="Author name"),
 ):
     """Export a workflow to .bwf.json package."""
-    from .workflow_manager import WorkflowManager
+    from .loop import WorkflowManager
 
     manager = WorkflowManager()
     path, msg = manager.export_workflow(name, author)
@@ -530,7 +530,7 @@ def workflow_publish(
         console.print("Create one at: https://github.com/settings/tokens (Scpoe: gist)")
         raise typer.Exit(1)
 
-    from .workflow_manager import WorkflowManager
+    from .loop import WorkflowManager
 
     manager = WorkflowManager()
 
@@ -570,8 +570,7 @@ def evaluate(
 
     from .cli_client import GeminiCLIAdapter
     from .gemini_client import GeminiClient
-    from .judge import LLMJudge
-    from .rubrics import CODE_QUALITY_RUBRIC
+    from .judge import CODE_QUALITY_RUBRIC, LLMJudge
 
     # Resolve rubric
     rubric = _get_rubric_for_level(level) if level.upper() != "PAIRWISE" else CODE_QUALITY_RUBRIC
@@ -684,7 +683,7 @@ def evaluate(
 
 def _get_rubric_for_level(level: str):
     """Map verification level/string to Rubric object"""
-    from .rubrics import RUBRIC_REGISTRY, get_rubric
+    from .judge.rubrics import RUBRIC_REGISTRY, get_rubric
 
     # Direct name match
     if level.lower() in RUBRIC_REGISTRY:
@@ -708,7 +707,7 @@ def _get_rubric_for_level(level: str):
 @workflow_app.command("install")
 def workflow_install(source: str = typer.Argument(..., help="File path or URL to .bwf.json")):
     """Install a workflow from file or URL."""
-    from .workflow_manager import WorkflowManager
+    from .loop import WorkflowManager
 
     manager = WorkflowManager()
     success, msg = manager.install_workflow(source)
@@ -805,8 +804,8 @@ def auto_fix(
     Auto-fix syntax and linting errors in a file.
     """
     from .auto_fix import AutoFixPipeline
+    from .intelligence import MemoryManager
     from .loop import AgentLoop
-    from .memory import MemoryManager
     from .verification import CodeVerifier
 
     target_path = Path(target).resolve()
@@ -971,7 +970,7 @@ def learn():
     Analyses successful loops and error fixes to create reusable patterns
     in .boring_brain/learned_patterns/.
     """
-    from .brain_manager import create_brain_manager
+    from .intelligence.brain_manager import create_brain_manager
     from .storage import SQLiteStorage
 
     console.print("[bold blue]🧠 Analyzing Project History...[/bold blue]")

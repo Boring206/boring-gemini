@@ -49,8 +49,8 @@ def register_brain_tools(mcp, audited, helpers):
         Extracts successful patterns from loop history and error solutions,
         storing them in learned_patterns/ for future reference.
         """
-        from ..brain_manager import BrainManager
         from ..config import settings
+        from ..intelligence.brain_manager import BrainManager
         from ..storage import SQLiteStorage
 
         project_root, error = _get_project_root_or_error(project_path)
@@ -82,8 +82,8 @@ def register_brain_tools(mcp, audited, helpers):
 
         Creates rubrics for: implementation_plan, task_list, code_quality.
         """
-        from ..brain_manager import BrainManager
         from ..config import settings
+        from ..intelligence.brain_manager import BrainManager
 
         project_root, error = _get_project_root_or_error(project_path)
         if error:
@@ -112,8 +112,8 @@ def register_brain_tools(mcp, audited, helpers):
 
         Shows counts of patterns, rubrics, and adaptations.
         """
-        from ..brain_manager import BrainManager
         from ..config import settings
+        from ..intelligence.brain_manager import BrainManager
 
         project_root, error = _get_project_root_or_error(project_path)
         if error:
@@ -164,8 +164,8 @@ def register_brain_tools(mcp, audited, helpers):
         - Save code style preferences
         - Document workflow optimizations
         """
-        from ..brain_manager import BrainManager
         from ..config import settings
+        from ..intelligence.brain_manager import BrainManager
 
         project_root, error = _get_project_root_or_error(project_path)
         if error:
@@ -205,8 +205,8 @@ def register_brain_tools(mcp, audited, helpers):
         - High-value and at-risk patterns
         - Recommendations for brain maintenance
         """
-        from ..brain_manager import BrainManager
         from ..config import settings
+        from ..intelligence.brain_manager import BrainManager
 
         project_root, error = _get_project_root_or_error(project_path)
         if error:
@@ -267,8 +267,8 @@ def register_brain_tools(mcp, audited, helpers):
         this allows immediate learning from a specific error-solution pair.
         Great for capturing fixes as they happen!
         """
-        from ..brain_manager import BrainManager
         from ..config import settings
+        from ..intelligence.brain_manager import BrainManager
 
         project_root, error = _get_project_root_or_error(project_path)
         if error:
@@ -324,8 +324,8 @@ def register_brain_tools(mcp, audited, helpers):
         - Top performing patterns
         - Least used patterns (candidates for pruning)
         """
-        from ..brain_manager import BrainManager
         from ..config import settings
+        from ..intelligence.brain_manager import BrainManager
 
         project_root, error = _get_project_root_or_error(project_path)
         if error:
@@ -382,8 +382,8 @@ def register_brain_tools(mcp, audited, helpers):
 
         This keeps the brain lean and focused on valuable patterns.
         """
-        from ..brain_manager import BrainManager
         from ..config import settings
+        from ..intelligence.brain_manager import BrainManager
 
         project_root, error = _get_project_root_or_error(project_path)
         if error:
@@ -444,7 +444,7 @@ def register_brain_tools(mcp, audited, helpers):
         - Build a personal knowledge base across projects
         - Export proven patterns before archiving a project
         """
-        from ..brain_manager import get_global_knowledge_store
+        from ..intelligence.brain_manager import get_global_knowledge_store
 
         project_root, error = _get_project_root_or_error(project_path)
         if error:
@@ -506,7 +506,7 @@ def register_brain_tools(mcp, audited, helpers):
         - Import error solutions from other projects
         - Sync knowledge across similar projects
         """
-        from ..brain_manager import get_global_knowledge_store
+        from ..intelligence.brain_manager import get_global_knowledge_store
 
         project_root, error = _get_project_root_or_error(project_path)
         if error:
@@ -558,7 +558,7 @@ def register_brain_tools(mcp, audited, helpers):
 
         Storage location: ~/.boring_brain/global_patterns.json
         """
-        from ..brain_manager import get_global_knowledge_store
+        from ..intelligence.brain_manager import get_global_knowledge_store
 
         try:
             global_store = get_global_knowledge_store()

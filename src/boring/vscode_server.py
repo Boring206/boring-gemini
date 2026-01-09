@@ -182,7 +182,7 @@ class VSCodeServer:
     async def _handle_status(self, params: dict) -> dict:
         """Handle status request."""
         try:
-            from .memory import MemoryManager
+            from .intelligence import MemoryManager
 
             memory = MemoryManager(self.project_root)
             state = memory.get_project_state()

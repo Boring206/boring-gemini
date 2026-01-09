@@ -19,17 +19,23 @@ from .tool_profiles import ToolRegistrationFilter, get_profile
 from .tool_router import create_router_tool_description, get_tool_router
 
 # Import git tools to trigger @mcp.tool registration (boring_commit, boring_visualize)
-from .tools import git  # noqa: F401
+# Import session tools to trigger @mcp.tool registration (boring_session_*)
+from .tools import (
+    git,  # noqa: F401
+    session,  # noqa: F401 - V10.25: Vibe Session
+)
 
 # Import legacy tools to trigger @mcp.tool registration
 from .tools.advanced import register_advanced_tools
+
+# V10.26: Import refactored tools from tools/ directory
 from .tools.discovery import register_discovery_resources
 
 # Import tools packages to trigger decorators
 from .utils import configure_runtime_for_project, detect_project_root, get_project_root_or_error
-from .v9_tools import register_v9_tools
+from .v9_tools import register_v9_tools  # Deprecated: use tools/*.py
 from .v10_tools import register_v10_tools
-from .vibe_tools import register_vibe_tools
+from .vibe_tools import register_vibe_tools  # Deprecated: use tools/vibe.py
 
 # Try to import Smithery decorator for HTTP deployment
 try:
