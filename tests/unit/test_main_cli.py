@@ -31,7 +31,7 @@ def mock_dependencies(mocker):
 
     # Add new tests at the end
 
-    mock_memory = mocker.patch("boring.memory.MemoryManager")
+    mock_memory = mocker.patch("boring.intelligence.MemoryManager")
 
     mock_setup_ext = mocker.patch("boring.extensions.setup_project_extensions")
     mock_create_ct = mocker.patch("boring.extensions.create_criticalthink_command")
@@ -42,7 +42,7 @@ def mock_dependencies(mocker):
 
     mock_version = mocker.patch("importlib.metadata.version")
 
-    mock_workflow_mgr = mocker.patch("boring.workflow_manager.WorkflowManager")
+    mock_workflow_mgr = mocker.patch("boring.loop.WorkflowManager")
 
     mock_judge = mocker.patch("boring.judge.LLMJudge")
     mock_gemini_client = mocker.patch("boring.gemini_client.GeminiClient")
@@ -177,7 +177,7 @@ def test_start_api_backend_coverage(mock_loop):
     assert mock_loop.call_args[1]["use_cli"] is False
 
 
-@patch("boring.memory.MemoryManager")
+@patch("boring.intelligence.MemoryManager")
 def test_status_coverage(mock_memory):
     """Test boring status command (Coverage)."""
     runner = CliRunner()

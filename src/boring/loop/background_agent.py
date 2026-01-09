@@ -208,14 +208,14 @@ def submit_background_task(
     Returns:
         Task info with task_id
     """
-    from .config import settings
+    from ..config import settings
 
     path = Path(project_path) if project_path else settings.PROJECT_ROOT
     runner = get_runner()
     args = task_args or {}
 
     if task_type == "verify":
-        from .verification import CodeVerifier
+        from ..verification import CodeVerifier
 
         def run_verify():
             verifier = CodeVerifier(path)
@@ -224,7 +224,7 @@ def submit_background_task(
         task_id = runner.submit(run_verify, name=f"Verify ({args.get('level', 'STANDARD')})")
 
     elif task_type == "security_scan":
-        from .security import run_security_scan
+        from ..security import run_security_scan
 
         task_id = runner.submit(lambda: run_security_scan(str(path)), name="Security Scan")
 

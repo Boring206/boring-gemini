@@ -17,7 +17,7 @@ except ImportError:
 @pytest.mark.skipif(not MCP_AVAILABLE, reason="FastMCP not available")
 class TestResources:
     @patch("boring.mcp.resources.detect_project_root")
-    @patch("boring.memory.MemoryManager")
+    @patch("boring.intelligence.MemoryManager")
     def test_get_project_status(self, mock_mem_cls, mock_detect):
         """Test status resource."""
         mock_detect.return_value = MagicMock()

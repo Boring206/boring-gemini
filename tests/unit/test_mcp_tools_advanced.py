@@ -106,7 +106,7 @@ class TestAdvancedTools:
     def test_boring_transaction_start(self, temp_project):
         """Test boring_transaction start action."""
         with patch(
-            "boring.transactions.start_transaction", return_value={"status": "started"}
+            "boring.loop.transactions.start_transaction", return_value={"status": "started"}
         ) as mock_start:
             result = advanced.boring_transaction(action="start", description="Test transaction")
 
@@ -116,7 +116,7 @@ class TestAdvancedTools:
     def test_boring_transaction_commit(self, temp_project):
         """Test boring_transaction commit action."""
         with patch(
-            "boring.transactions.commit_transaction", return_value={"status": "committed"}
+            "boring.loop.transactions.commit_transaction", return_value={"status": "committed"}
         ) as mock_commit:
             result = advanced.boring_transaction(action="commit")
 
@@ -126,7 +126,7 @@ class TestAdvancedTools:
     def test_boring_transaction_rollback(self, temp_project):
         """Test boring_transaction rollback action."""
         with patch(
-            "boring.transactions.rollback_transaction", return_value={"status": "rolled_back"}
+            "boring.loop.transactions.rollback_transaction", return_value={"status": "rolled_back"}
         ) as mock_rollback:
             result = advanced.boring_transaction(action="rollback")
 
@@ -136,7 +136,7 @@ class TestAdvancedTools:
     def test_boring_transaction_status(self, temp_project):
         """Test boring_transaction status action."""
         with patch(
-            "boring.transactions.transaction_status", return_value={"status": "active"}
+            "boring.loop.transactions.transaction_status", return_value={"status": "active"}
         ) as mock_status:
             result = advanced.boring_transaction(action="status")
 
@@ -153,7 +153,7 @@ class TestAdvancedTools:
     def test_boring_task_submit(self, temp_project):
         """Test boring_task submit action."""
         with patch(
-            "boring.background_agent.submit_background_task", return_value={"task_id": "123"}
+            "boring.loop.background_agent.submit_background_task", return_value={"task_id": "123"}
         ) as mock_submit:
             result = advanced.boring_task(
                 action="submit", task_type="verify", task_args={"level": "FULL"}
@@ -172,7 +172,7 @@ class TestAdvancedTools:
     def test_boring_task_status(self):
         """Test boring_task status action."""
         with patch(
-            "boring.background_agent.get_task_status", return_value={"status": "completed"}
+            "boring.loop.background_agent.get_task_status", return_value={"status": "completed"}
         ) as mock_status:
             result = advanced.boring_task(action="status", task_id="123")
 
@@ -189,7 +189,7 @@ class TestAdvancedTools:
     def test_boring_task_list(self):
         """Test boring_task list action."""
         with patch(
-            "boring.background_agent.list_background_tasks", return_value={"tasks": []}
+            "boring.loop.background_agent.list_background_tasks", return_value={"tasks": []}
         ) as mock_list:
             result = advanced.boring_task(action="list")
 

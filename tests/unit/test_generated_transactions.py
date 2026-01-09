@@ -372,29 +372,27 @@ class TestConvenienceFunctions:
             result = start_transaction(str(tmp_path))
             assert result["status"] == "success"
 
-    @patch("boring.transactions.TransactionManager")
+    @patch("boring.loop.transactions.TransactionManager")
     def test_commit_transaction(self, mock_manager_class, tmp_path):
         """Test commit_transaction function."""
         mock_manager = MagicMock()
         mock_manager.commit.return_value = {"status": "success"}
         mock_manager_class.return_value = mock_manager
 
-        with patch("boring.config.settings") as mock_settings:
-            mock_settings.PROJECT_ROOT = tmp_path
-            result = commit_transaction(str(tmp_path))
-            assert result["status"] == "success"
+        # Since project_path is provided, settings is not used
+        result = commit_transaction(str(tmp_path))
+        assert result["status"] == "success"
 
-    @patch("boring.transactions.TransactionManager")
+    @patch("boring.loop.transactions.TransactionManager")
     def test_rollback_transaction(self, mock_manager_class, tmp_path):
         """Test rollback_transaction function."""
         mock_manager = MagicMock()
         mock_manager.rollback.return_value = {"status": "success"}
         mock_manager_class.return_value = mock_manager
 
-        with patch("boring.config.settings") as mock_settings:
-            mock_settings.PROJECT_ROOT = tmp_path
-            result = rollback_transaction(str(tmp_path))
-            assert result["status"] == "success"
+        # Since project_path is provided, settings is not used
+        result = rollback_transaction(str(tmp_path))
+        assert result["status"] == "success"
 
     @patch("boring.transactions.TransactionManager")
     def test_transaction_status(self, mock_manager_class, tmp_path):
