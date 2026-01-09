@@ -1,5 +1,11 @@
 # Changelog
 
+## [10.28.1] - 2026-01-10
+
+### 🔧 Fixes
+- **PyPI Hotfix**: Bumped version to `10.28.1` to resolve PyPI version conflict.
+- **CI Stability**: Integrated all 10.28.0 CI fixes (AttributeError, publish.yml steps) and test coverage (AgentProtocol, Workspace, Core Tools).
+
 ## [10.28.0] - 2026-01-10
 
 ### 🚀 Performance & Architecture ("The Diet Update")
