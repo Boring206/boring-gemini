@@ -17,7 +17,7 @@
 
 ---
 
-## ✨ Vibe Coder 體驗 (V10.27)
+## ✨ Vibe Coder 體驗 (V10.28)
 
 **不需要寫程式碼 (No Code)。只要描述你的感覺 (Vibe)。**
 
@@ -45,7 +45,9 @@ boring-route "幫我審代碼"
 
 Boring 不只是一個 MCP 伺服器；它是一套 **Intelligence Maximization System (智能最大化系統)**：
 
-1.  **🧠 自動化迴圈 (Autonomous Loop)**: 不只是聊天機器人。Boring 會在一個迴圈中運行 (`boring start`)，自主思考、寫程式、測試、修復，直到工作完成。
+1.  **🤝 Vibe Session (協作會話)**: 取代了舊的 `boring start`。這是一個結構化的 AI 協作流程 (`boring_session_start`)，將開發分解為「規劃、實作、驗證」等階段。
+    - **預設模式**: 每個階段完成後會等待您確認 (`boring_session_confirm`)，確保您對流程的完全控制。
+    - **自動模式**: 可切換至自主代理模式 (`boring_session_auto`)，自動推進直到任務完成。
 2.  **🕵️ 混合型 RAG (Hybrid RAG)**: 結合關鍵字、向量和依賴圖的高級代碼搜索 (HyDE + Cross-Encoder)。它能找到你甚至不知道存在的程式碼。
 3.  **🛡️ 安全影子模式 (Security Shadow Mode)**: 安全執行沙箱。它會在危險操作發生*之前*攔截並警告你。
 4.  **⚡ 速度快 30%**: 智慧快取與優化路由將上下文佔用減少 80% (從 98 個工具降至 19 個)。
@@ -53,9 +55,9 @@ Boring 不只是一個 MCP 伺服器；它是一套 **Intelligence Maximization 
 
 ---
 
-## 🧪 NotebookLM 深度優化 (V10.27)
+## 🧪 NotebookLM 深度優化 (V10.28)
 
-Boring-Gemini V10.27 引入了受 NotebookLM 研究啟發的多項核心優化，旨在最大化 LLM 的理解能力並降低 Token 消耗：
+Boring-Gemini V10.28 持續優化受 NotebookLM 研究啟發的多項核心功能，旨在最大化 LLM 的理解能力並降低 Token 消耗：
 
 - **Theme-Tips 階層式輸出**：將複雜的工具輸出重新結構化為「主題 → 提示」格式。這種階層化設計經研究證實能降低模型認知負荷，提升 LLM 理解準確度達 **+1.13%**。
 - **PREPAIR 推理快取**：為代碼評估引入 *PREPAIR* 技術。透過在進行「配對比較 (Pairwise)」前先快取「單點分析 (Pointwise)」結果，有效消除評估偏見並解決 LLM 在優選代碼時的倦怠問題。
@@ -112,11 +114,14 @@ npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ### 選項 2：本地 pip 安裝
 
 ```bash
-# 完整安裝 (推薦用於 Vibe Coder 體驗)
+# 安裝完整功能 (Vibe Coder 推薦)
 pip install "boring-aicoding[all]"
 
-# 或最小安裝
-pip install boring-aicoding
+# 模組化安裝 ("瘦身"版):
+pip install boring-aicoding           # 最小核心 (<50MB)
+pip install "boring-aicoding[vector]" # 增加 RAG (ChromaDB + Torch)
+pip install "boring-aicoding[gui]"    # 增加 Dashboard (Streamlit)
+pip install "boring-aicoding[mcp]"    # 增加 MCP Server (FastMCP)
 ```
 
 **🤔 我該選哪一個？**
@@ -128,7 +133,9 @@ pip install boring-aicoding
 | **儀表板** | ✅ 圖形介面 (Dashboard) | ❌ 無 |
 | **Vibe Coding**| ✅ **完全體** (會思考、會修復) | ⚠️ **輕量版** (只會寫，不會驗) |
 
-### ⚙️ MCP 環境變數設定
+### ⚙️ MCP 環境變數與 Profile 對照
+
+Boring-Gemini 使用 **Profiles** 來平衡 **工具豐富度** 與 **Token 經濟**。您的安裝類型決定了哪些 Profile 最能發揮作用。
 
 | 變數 | 值 | 說明 |
 |------|---|------|
@@ -136,17 +143,17 @@ pip install boring-aicoding
 | `BORING_MCP_PROFILE` | `ultra_lite` / `minimal` / `lite` / `standard` / `full` | 工具曝露層級 |
 | `PROJECT_ROOT_DEFAULT` | `.` 或路徑 | 預設專案根目錄 |
 
-**Profile 比較：**
+**Profile 與安裝建議對照表：**
 
-| Profile | 工具數 | Token 節省 | 適用場景 |
-|---------|-------|-----------|----------|
-| `ultra_lite` | 3 | **97%** | Token 受限 LLM |
-| `minimal` | 8 | 92% | 快速任務 |
-| `lite` | 20 | 80% | 日常開發 (預設) |
-| `standard` | 50 | 50% | 專業開發 |
-| `full` | ~98 | 0% | Power User |
+| Profile | 建議安裝指令 | 核心特點 | 記憶體類型 |
+| :--- | :--- | :--- | :--- |
+| `ultra_lite` | `pip install boring-aicoding` | 僅限閘道器 (Gateway) | 無 |
+| `minimal` | `pip install boring-aicoding` | 基礎運維 / 唯讀 | 關鍵字 (Keyword) |
+| `lite` | `pip install boring-aicoding` | 日常開發 (預設) | 關鍵字 (Keyword) |
+| `standard` | `pip install "boring[mcp,vector]"` | 專業開發 / 架構設計 | 向量 (ChromaDB) |
+| `full` | `pip install "boring[all]"` | 全知模式 (God Mode) | 向量 + GUI |
 
-> 📖 **[完整 MCP 設定指南](docs/guides/mcp-configuration.md)**
+> 📖 **[完整 MCP 設定指南](docs/guides/mcp-configuration.md)** | **[Profile 深度解析指南](docs/guides/mcp-profiles-comparison_zh.md)**
 
 ### 選項 3：從 GitHub Clone（備用）
 
@@ -306,6 +313,7 @@ export BORING_MCP_PROFILE=lite
 | 提示 | 用法 |
 |------|------|
 | `/vibe_start` | 在 AI 引導下開始新專案 |
+| `boring_session_start` | **啟動 Vibe Session** (AI 協作流程) |
 | `/full_stack_dev` | 建立完整的全端應用 |
 | `/release-prep`| **Turbo**: 自動更新版本與 Git Tag |
 | `/quick_fix` | 自動修復所有 linting 和格式錯誤 |

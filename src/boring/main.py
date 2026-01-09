@@ -18,12 +18,10 @@ from typing import Optional
 import typer
 from rich.console import Console
 
-from .circuit import reset_circuit_breaker, show_circuit_status
-from .config import settings
-from .loop import AgentLoop
+from boring.core.config import settings
 
 HELP_TEXT = """
-[bold blue]Boring - Enterprise AI Development Agent (MCP)[/bold blue]
+[bold blue]Boring v10.28.0 - Enterprise AI Development Agent (MCP)[/bold blue]
 
 A powerful AI coding assistant designed for IDEs (Cursor, VS Code) and Gemini.
 
@@ -145,6 +143,7 @@ def start(
 
         # Debugger Setup
         from .debugger import BoringDebugger
+        from .loop import AgentLoop
 
         debugger = BoringDebugger(
             model_name=model if use_cli else "default", enable_healing=self_heal, verbose=debug
@@ -322,6 +321,7 @@ def circuit_status():
     """
     Show circuit breaker details.
     """
+    from .circuit import show_circuit_status
     show_circuit_status()
 
 
@@ -330,6 +330,8 @@ def reset_circuit():
     """
     Reset the circuit breaker.
     """
+    from .circuit import reset_circuit_breaker
+
     reset_circuit_breaker("Manual reset via CLI")
     console.print("[green]Circuit breaker reset.[/green]")
 
@@ -729,12 +731,14 @@ def dashboard():
 
     dashboard_path = Path(__file__).parent / "dashboard.py"
 
-    import importlib.util
+    dashboard_path = Path(__file__).parent / "dashboard.py"
 
-    if importlib.util.find_spec("streamlit") is None:
-        console.print("[bold red]❌ Dashboard dependencies not found.[/bold red]")
+    from boring.core.dependencies import DependencyManager
+
+    if not DependencyManager.check_gui():
+        console.print("[bold red]❌ The dashboard requires extra dependencies.[/bold red]")
         console.print("\nPlease install the GUI extras:")
-        console.print('  [cyan]pip install -e ".\\[gui\\]"[/cyan]')
+        console.print('  [cyan]pip install "boring-aicoding[gui]"[/cyan]')
         raise typer.Exit(1)
 
     console.print("🚀 Launching Dashboard at [bold green]http://localhost:8501[/bold green]")

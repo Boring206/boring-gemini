@@ -22,21 +22,21 @@ boring verify
 boring verify --force
 ```
 
-### Performance Metrics
+### Performance Metrics (v10.28.0)
 
-| Operation | Cold Start | Cached |
-|-----------|-----------|--------|
-| Syntax Check (100 files) | ~5s | < 1s |
-| Lint (100 files) | ~15s | < 2s |
-| Full Verification | ~60s | ~5s |
+| Operation | v10.24 (Legacy) | v10.28 (Diet) | Speedup |
+|-----------|-----------------|---------------|---------|
+| **Cold Helper Start** | ~2,500ms | **~575ms** | **~4.3x** |
+| Tool Profile Load | ~800ms | < 100ms | 8x |
+| Full Index Search | ~4s | ~2s | 2x |
+| Verify (Cached) | ~5s | ~3s | 1.6x |
 
-### Context Optimization (Tool Profiles)
+### The "Boring Diet" Optimization
 
-Boring V10.24 introduces **Tool Profiles** to drastically reduce context overhead:
-
-- **Problem**: Loading 98 tool definitions consumes ~30k tokens of context window.
-- **Solution**: The `lite` profile (default) loads only 19 essential tools (~5k tokens).
-- **Impact**: **80% reduction** in context usage, faster inference, and lower cost.
+Boring V10.28 removes the "bloat" from the core startup path:
+- **Eager Import Removal**: All heavy libraries (Torch, ChromaDB, FastAPI) are now **Lazy-Loaded**.
+- **Modular Extras**: Optional features are gated behind `DependencyManager`.
+- **Zero-Latency Profile**: The `lite` profile is now the default, consuming only ~3k tokens with negligible CPU overhead.
 
 Enable via `.boring.toml` or env `BORING_MCP_PROFILE=lite`.
 

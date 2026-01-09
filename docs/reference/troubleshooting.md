@@ -141,4 +141,23 @@ If these steps don't fix it:
 
 1. **Run `boring doctor`** and save the output.
 2. **Collect logs**: Zip `~/.boring_logs/`.
-3. **Open an Issue**: [GitHub Issues](https://github.com/Boring206/boring-gemini/issues) with the above info.
+4. **Open an Issue**: [GitHub Issues](https://github.com/Boring206/boring-gemini/issues) with the above info.
+
+### 6. "Tools are missing / Command not found"
+
+**Symptoms**: You try to use `boring_code_review` or `boring_test_gen` but the agent says "Tool not found".
+
+**Causes**:
+- You are likely in `minimal` or `ultra_lite` profile.
+
+**Solution**:
+1. Check current profile:
+   ```bash
+   boring config show
+   ```
+2. Switch to `lite` or `standard`:
+   ```bash
+   export BORING_MCP_PROFILE=lite
+   # Restart your IDE/Server
+   ```
+   See [MCP Profiles Guide](../guides/mcp-profiles-comparison.md) for details.

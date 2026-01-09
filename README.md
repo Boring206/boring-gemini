@@ -16,7 +16,7 @@
 
 ---
 
-## ✨ The Vibe Coder Experience (V10.27)
+## ✨ The Vibe Coder Experience (V10.28)
 
 **No Code Needed.** Just describe the vibe.
 
@@ -44,7 +44,9 @@ boring-route "review my code"
 
 Boring isn't just an MCP server; it's a **Intelligence Maximization System**:
 
-1.  **🧠 Autonomous Loop**: Not just a chatbot. Boring runs in a loop (`boring start`), thinking, coding, testing, and fixing until the job is done.
+1.  **🤝 Vibe Session**: Replaces the legacy `boring start`. A structured AI collaboration workflow (`boring_session_start`) that breaks development into phases: Alignment, Planning, Implementation, and Verification.
+    - **Default Mode**: Pauses for your confirmation (`boring_session_confirm`) after each phase, giving you full control.
+    - **Auto Mode**: Switch to autonomous agent mode (`boring_session_auto`) to auto-advance until the task is done.
 2.  **🕵️ Hybrid RAG**: Advanced code search combining keywords, vectors, and dependency graphs (HyDE + Cross-Encoder). It finds code you didn't even know existed.
 3.  **🛡️ Security Shadow Mode**: Safe execution sandbox. It catches dangerous operations *before* they happen.
 4.  **⚡ 30% Faster**: Smart caching and optimized router reduce context usage by 80% (from 98 tools to 19).
@@ -52,9 +54,9 @@ Boring isn't just an MCP server; it's a **Intelligence Maximization System**:
 
 ---
 
-## 🧪 NotebookLM Optimizations (V10.27)
+## 🧪 NotebookLM Optimizations (V10.28)
 
-Boring-Gemini V10.27 introduces several critical optimizations inspired by NotebookLM research to maximize LLM comprehension and minimize token overhead:
+Boring-Gemini V10.28 continues to refine the critical optimizations inspired by NotebookLM research to maximize LLM comprehension and minimize token overhead:
 
 - **Theme-Tips Hierarchical Output**: Restructures complex tool outputs into a "Theme → Tips" format. This hierarchical structure has been shown to improve LLM comprehension accuracy by **+1.13%** by reducing cognitive load.
 - **PREPAIR Reasoning Cache**: Implements the *PREPAIR* technique for code evaluation. By caching pointwise reasoning results before pairwise comparison, we eliminate evaluation bias and reduce LLM "laziness" during code selection.
@@ -89,8 +91,11 @@ npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 # Install with all features (Recommended for Vibe Coder)
 pip install "boring-aicoding[all]"
 
-# Or minimal install
-pip install boring-aicoding
+# Modular Installation (The "Diet" Update):
+pip install boring-aicoding           # Minimal Core (<50MB)
+pip install "boring-aicoding[vector]" # Adds RAG (ChromaDB + Torch)
+pip install "boring-aicoding[gui]"    # Adds Dashboard (Streamlit)
+pip install "boring-aicoding[mcp]"    # Adds MCP Server (FastMCP)
 ```
 
 **🤔 Which one should I choose?**
@@ -102,7 +107,9 @@ pip install boring-aicoding
 | **Dashboard** | ✅ GUI Available | ❌ None |
 | **Vibe Coding**| ✅ **Full Experience** (Think + Fix) | ⚠️ **Lite** (Write code only) |
 
-### ⚙️ MCP Environment Variables
+### ⚙️ MCP Environment Variables & Profiles
+
+Boring-Gemini uses **Profiles** to balance between **Tool Richness** and **Token Economy**. Your installation type determines which profiles are most effective.
 
 | Variable | Values | Description |
 |----------|--------|-------------|
@@ -110,17 +117,17 @@ pip install boring-aicoding
 | `BORING_MCP_PROFILE` | `ultra_lite` / `minimal` / `lite` / `standard` / `full` | Tool exposure level |
 | `PROJECT_ROOT_DEFAULT` | `.` or path | Default project root |
 
-**Profile Comparison:**
+**Profile vs. Installation Mapping:**
 
-| Profile | Tools | Token Savings | Best For |
-|---------|-------|---------------|----------|
-| `ultra_lite` | 3 | **97%** | Token-constrained LLMs |
-| `minimal` | 8 | 92% | Quick tasks |
-| `lite` | 20 | 80% | Daily dev (Default) |
-| `standard` | 50 | 50% | Professional dev |
-| `full` | ~98 | 0% | Power Users |
+| Profile | Recommended Install | Key Features | Memory Type |
+| :--- | :--- | :--- | :--- |
+| `ultra_lite` | `pip install boring-aicoding` | Gateway only | None |
+| `minimal` | `pip install boring-aicoding` | Basic Ops / Read-only | Keyword |
+| `lite` | `pip install boring-aicoding` | Daily Dev (Default) | Keyword |
+| `standard` | `pip install "boring[mcp,vector]"` | Pro Dev / Architecture | Vector (ChromaDB) |
+| `full` | `pip install "boring[all]"` | Power User / God Mode | Vector + GUI |
 
-> 📖 **[Full MCP Configuration Guide](docs/guides/mcp-configuration_en.md)**
+> 📖 **[Full MCP Configuration Guide](docs/guides/mcp-configuration_en.md)** | **[Profile Comparison Guide](docs/guides/mcp-profiles-comparison.md)**
 
 ### Option 3: Clone from GitHub (Fallback)
 
@@ -282,6 +289,7 @@ export BORING_MCP_PROFILE=lite
 | Prompt | Usage |
 |--------|-------|
 | `/vibe_start` | Start a new project with AI guidance |
+| `boring_session_start` | **Start Vibe Session** (AI Collaboration Workflow) |
 | `/full_stack_dev` | Build a complete full-stack application |
 | `/release-prep`| **Turbo**: Auto-bump version & git tag |
 | `/quick_fix` | Auto-fix all linting and formatting errors |

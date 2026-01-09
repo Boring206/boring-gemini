@@ -1,5 +1,22 @@
 # Changelog
 
+## [10.28.0] - 2026-01-10
+
+### 🚀 Performance & Architecture ("The Diet Update")
+- **Startup Latency**: Optimized CLI startup to ~575ms via lazy loading.
+- **Dependency Separation**: Split heavy dependencies into optional extras.
+    - Core package size reduced (< 50MB).
+    - `pip install boring-aicoding` (Minimal)
+    - `pip install boring-aicoding[vector]` (Adds ChromaDB + Torch)
+    - `pip install boring-aicoding[gui]` (Adds Streamlit)
+    - `pip install boring-aicoding[mcp]` (Adds FastMCP)
+- **Structural Refactoring**: Reorganized `src/boring/` into `core`, `services`, `cli`, `tools`.
+- **Optimization**: Completed Phases 1-3 of the optimization plan.
+
+### 🛠️ Improvements
+- **Health Check**: Updated `boring health` to correctly identify and suggest missing optional dependencies.
+- **MCP Integration**: `boring-mcp` now fully respects "minimal" profile, avoiding eager imports of vector DBs.
+
 ## [10.27.5] - 2026-01-09 - Quality Gate Fixes & CI Improvements 🔧✅
 
 ### Fixed

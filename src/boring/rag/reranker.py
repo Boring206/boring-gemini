@@ -1,5 +1,7 @@
 # Copyright 2026 Boring for Gemini Authors
 # SPDX-License-Identifier: Apache-2.0
+from __future__ import annotations
+
 """
 Cross-Encoder Reranker Module - V10.24
 
@@ -14,18 +16,11 @@ This module provides:
 
 import logging
 from dataclasses import dataclass
-from typing import Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
-# Try to import sentence-transformers for cross-encoder
-try:
-    from sentence_transformers import CrossEncoder
-
-    CROSS_ENCODER_AVAILABLE = True
-except ImportError:
-    CROSS_ENCODER_AVAILABLE = False
-    CrossEncoder = None
+from boring.core.dependencies import DependencyManager
 
 
 @dataclass
@@ -69,7 +64,7 @@ class CrossEncoderReranker:
         """
         self.model_name = self.MODELS.get(model_name, model_name)
         self.device = device
-        self._model: Optional[CrossEncoder] = None
+        self._model: Any | None = None
         self._initialized = False
 
     def _ensure_model(self) -> bool:
@@ -79,11 +74,12 @@ class CrossEncoderReranker:
 
         self._initialized = True
 
-        if not CROSS_ENCODER_AVAILABLE:
-            logger.debug("CrossEncoder not available, using heuristic reranking")
+        if not DependencyManager.check_chroma():
+            logger.debug("CrossEncoder not available (sentence-transformers missing), using heuristic reranking")
             return False
 
         try:
+            from sentence_transformers import CrossEncoder
             self._model = CrossEncoder(self.model_name, device=self.device)
             logger.info(f"CrossEncoder initialized: {self.model_name}")
             return True
@@ -240,7 +236,7 @@ class EnsembleReranker:
     4. Usage patterns (from IntelligentRanker)
     """
 
-    def __init__(self, weights: Optional[dict[str, float]] = None):
+    def __init__(self, weights: dict[str, float] | None = None):
         """
         Initialize ensemble reranker.
 
@@ -260,7 +256,7 @@ class EnsembleReranker:
         query: str,
         chunks: list,  # list of CodeChunk or similar
         original_scores: list[float],
-        usage_scores: Optional[dict[str, float]] = None,
+        usage_scores: dict[str, float] | None = None,
         top_k: int = 10,
     ) -> list[tuple[int, float]]:
         """
@@ -383,8 +379,8 @@ class EnsembleReranker:
 
 
 # Singleton instances
-_cross_encoder_reranker: Optional[CrossEncoderReranker] = None
-_ensemble_reranker: Optional[EnsembleReranker] = None
+_cross_encoder_reranker: CrossEncoderReranker | None = None
+_ensemble_reranker: EnsembleReranker | None = None
 
 
 def get_cross_encoder_reranker(model: str = "balanced") -> CrossEncoderReranker:

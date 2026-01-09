@@ -1,5 +1,5 @@
 """
-Unit tests for V10.27 ReasoningCache (PREPAIR technique).
+Unit tests for V10.28 ReasoningCache (PREPAIR technique).
 """
 
 import time

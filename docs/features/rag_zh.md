@@ -56,9 +56,9 @@ boring-route "token 過期是怎麼處理的？"
 ## ⚠️ 注意事項與排查
 
 ### 1. 缺少相依套件 (Dependency)
-RAG 功能需要專門的處理套件，如果您看到「找不到 `chromadb`」或 `sentence-transformers` 錯誤，請執行：
+RAG 功能需要專門的處理套件 (ChromaDB, Torch)。如果您看到「找不到 `chromadb`」或 `sentence-transformers` 錯誤，最簡單的修復方法是：
 ```bash
-python -m pip install chromadb sentence-transformers
+pip install "boring-aicoding[vector]"
 ```
 
 > [!IMPORTANT]
@@ -68,7 +68,7 @@ python -m pip install chromadb sentence-transformers
 > 1. 確認 MCP 使用的 Python 路徑（查看錯誤訊息中的 `Python:` 行）
 > 2. 在**該環境**中安裝依賴：
 >    ```bash
->    /usr/local/bin/python -m pip install chromadb sentence-transformers
+>    /usr/local/bin/python -m pip install "boring-aicoding[vector]"
 >    ```
 > 3. 或修改 MCP 設定使用本地 Python 環境
 

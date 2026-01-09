@@ -13,18 +13,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
+from ..core.dependencies import DependencyManager
 from ..logger import log_status
 
-# Try to import optional dependencies
-try:
-    import chromadb
-    from chromadb.config import Settings as ChromaSettings
-
-    CHROMADB_AVAILABLE = True
-except ImportError:
-    CHROMADB_AVAILABLE = False
-    chromadb = None
-    ChromaSettings = None
+# Lazy load verification
+CHROMADB_AVAILABLE = DependencyManager.check_chroma()
 
 
 @dataclass
@@ -67,15 +60,18 @@ class VectorMemory:
         self.collection_name = collection_name
         self.enabled = False
 
-        if not CHROMADB_AVAILABLE:
+        if not DependencyManager.check_chroma():
             log_status(
                 log_dir,
                 "WARN",
-                "ChromaDB not available. Install with: pip install chromadb sentence-transformers",
+                "ChromaDB not available. Install with: pip install boring-aicoding[vector]",
             )
             return
 
         try:
+            import chromadb
+            from chromadb.config import Settings as ChromaSettings
+
             if persist_dir:
                 persist_dir.mkdir(parents=True, exist_ok=True)
                 self.client = chromadb.PersistentClient(

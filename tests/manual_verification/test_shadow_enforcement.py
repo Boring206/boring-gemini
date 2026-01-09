@@ -6,8 +6,8 @@ from unittest.mock import MagicMock, patch
 project_root = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(project_root / "src"))
 
-from boring.file_patcher import _write_file
 from boring.mcp.tools.shadow import ShadowModeLevel
+from boring.tools.file_patcher import _write_file
 
 
 def test_shadow_enforcement():
@@ -20,7 +20,7 @@ def test_shadow_enforcement():
 
     # 1. Test STRICT Mode (Should Block)
     print("\n[TEST 1] Testing STRICT Mode (Expect Block)...")
-    with patch("boring.file_patcher.get_shadow_guard") as mock_get_guard:
+    with patch("boring.mcp.tools.shadow.get_shadow_guard") as mock_get_guard:
         # Mock the guard to return a pending operation (simulating block)
         mock_guard_instance = MagicMock()
         mock_guard_instance.mode = ShadowModeLevel.STRICT
@@ -53,7 +53,7 @@ def test_shadow_enforcement():
 
     # 2. Test DISABLED Mode (Should Allow)
     print("\n[TEST 2] Testing DISABLED Mode (Expect Success)...")
-    with patch("boring.file_patcher.get_shadow_guard") as mock_get_guard:
+    with patch("boring.mcp.tools.shadow.get_shadow_guard") as mock_get_guard:
         # Mock the guard to return None (allowed)
         mock_guard_instance = MagicMock()
         mock_guard_instance.mode = ShadowModeLevel.DISABLED

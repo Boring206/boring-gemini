@@ -82,6 +82,23 @@
 
 ---
 
+### `BORING_LLM_PROVIDER`
+
+選擇使用的模型提供者。
+
+| 提供者 | 值 | 說明 |
+|--------|----|------|
+| **Gemini** | `gemini-cli` | 預設。需安裝 `gemini-cli`。 |
+| **Claude** | `claude-code` | 需安裝 `claude` CLI。 |
+| **Ollama** | `ollama` | 本地模型 (實驗性)。 |
+
+> [!CAUTION]
+> **Ollama 限制**: 目前的 Ollama 實作 **不支援** Function Calling (工具使用)。
+> 若使用 `ollama`，`boring` 無法執行編輯檔案、運行測試等操作。它僅能作為純文字聊天機器人使用。
+> 若要使用 Vibe Coder 自動化流程，請使用 Gemini 或 Claude。
+
+---
+
 ## MCP 設定範例
 
 ### 本地完整版 (推薦)

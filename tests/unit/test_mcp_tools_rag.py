@@ -84,7 +84,7 @@ class TestReloadRAGDependencies:
             result = rag.reload_rag_dependencies()
 
             assert result["status"] == "ERROR"
-            assert "Failed to reload" in result["message"]
+            assert "dependencies still missing" in result["message"]
             assert "fix_command" in result
 
 
@@ -212,7 +212,7 @@ class TestBoringRAGIndex:
             if not retriever.is_available:
                 result = (
                     "❌ RAG not available. Install optional dependencies:\n"
-                    f"    {sys.executable} -m pip install chromadb sentence-transformers\n\n"
+                    f"    {sys.executable} -m pip install boring-aicoding[vector]\n\n"
                     "After installation, run `boring_rag_reload` to apply changes without restarting."
                 )
                 assert "not available" in result
@@ -412,7 +412,7 @@ class TestBoringRAGStatus:
             if not retriever.is_available:
                 report.append("## ❌ ChromaDB Not Available\n")
                 report.append(
-                    "Install dependencies:\n```bash\npip install chromadb sentence-transformers\n```\n"
+                    "Install dependencies:\n```bash\npip install boring-aicoding[vector]\n```\n"
                 )
 
             result = "\n".join(report)

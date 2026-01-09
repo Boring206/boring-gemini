@@ -47,12 +47,33 @@ Boring 整合了兩種強大的思考模式，讓 Agent 在寫代碼前先「想
 
 ---
 
-## 🚀 如何啟用？
+## 🛠️ 免安裝：一鍵整合 (One-Click Integration)
 
-如果您使用的是 **Boring Pro** 配置 (`BORING_MCP_PROFILE="pro"`)，這些工具預設都已啟用！
+**您不需要手動下載或安裝這些外部工具！**
 
-您可以在對話中直接要求：
-> 「請用 **Sequential Thinking** 幫我規劃這次的重構。」
-> 「請用 **Context7** 查一下 React 19 的新 Hook。」
+Boring 採用「All-in-One」設計，核心功能內建，外部智能則透過擴充機制一鍵管理。
+
+### 如何啟用？
+
+1.  **初始化擴充功能**（只需執行一次）：
+    ```bash
+    # 在 CLI 中
+    boring setup-extensions
+    ```
+    或者在對話中要求 Agent：
+    > "Help me setup extensions"
+    > (Agent 會呼叫 `boring_setup_extensions()` 工具)
+
+2.  **自動配置**：
+    Boring 會自動：
+    - 下載必要的 MCP Servers (`context7`, `criticalthink`, `sequential-thinking`)
+    - 設定 API Keys 與環境變數
+    - 更新設定檔以啟用它們
+
+3.  **直接使用**：
+    設定完成後，這些工具就會自動出現在 Agent 的工具箱中。
+    您可以在對話中直接要求：
+    > 「請用 **Sequential Thinking** 幫我規劃這次的重構。」
+    > 「請用 **Context7** 查一下 React 19 的新 Hook。」
 
 這樣，您得到的不只是代碼，而是經過「深思熟慮」與「查證」的高品質產出。

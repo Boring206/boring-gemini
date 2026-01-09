@@ -199,7 +199,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-      - run: pip install boring-aicoding
+      - run: pip install "boring-aicoding[all]"
       - run: boring verify --level FULL
 ```
 

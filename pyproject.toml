@@ -1,6 +1,6 @@
 [project]
 name = "boring-aicoding"
-version = "10.27.5"
+version = "10.28.0"
 description = "Boring Vibecoder Assistant: An AI-powered development support tool handling project planning, logic verification, and knowledge management. Works alongside Cursor, Copilot, and others to ensure rigorous, efficient workflows."
 authors = [
     { name = "Boring206", email = "C112156246@nkust.edu.tw" }
@@ -87,11 +87,11 @@ all = [
 
 [project.scripts]
 boring = "boring.main:app"
-boring-monitor = "boring.monitor:app"
-boring-setup = "boring.setup:setup_app"
-boring-import = "boring.setup:import_app"
+boring-monitor = "boring.services.monitor:app"
+boring-setup = "boring.cli.setup:setup_app"
+boring-import = "boring.cli.setup:import_app"
 boring-mcp = "boring.mcp.server:run_server"
-boring-dashboard = "boring.dashboard:run_app"
+boring-dashboard = "boring.cli.dashboard:run_app"
 boring-route = "boring.mcp.tool_router:cli_route"
 
 [project.urls]

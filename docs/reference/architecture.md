@@ -65,22 +65,29 @@ sequenceDiagram
     A->>U: Final Report
 ```
 
-### 1. The Autonomous Loop (`src/boring/loop/`)
+### 1. Modular Core & Lazy Loading (`src/boring/`)
 
-The core is `StatefulAgentLoop`, implementing a Finite State Machine (FSM):
+Starting from v10.28.0, Boring uses a **Diet Architecture**:
+- **Lazy Loading**: Heavily utilizes `__getattr__` in `__init__.py` to import submodules ONLY when accessed. This dropped cold startup time from ~2.5s to **< 600ms**.
+- **Dependency Manager**: A centralized `DependencyManager` (in `core/dependencies.py`) handles all optional "Extras" (ChromaDB, FastAPI, Streamlit), ensuring the core CLI remains lightweight (< 50MB).
 
-- **THINKING State**: Generates the next action using the LLM.
-- **EXECUTING State**: Runs tools (edit files, run commands).
-- **VERIFYING State**: Validates changes (lint, test, build).
-- **LEARNING State**: Analyzes results and updates memory.
+### 2. Submodule Reconstruction
 
-### 2. The Brain & Memory (`src/boring/memory/`)
+The source is organized into specific functional layers:
+- `core/`: Constants, telemetry, and dependency management.
+- `services/`: Core logic like health checks and monitoring.
+- `cli/`: Typer-based interface and command definitions.
+- `tools/`: Atomic tools for file manipulation and analysis.
+- `intelligence/`: Memory (Brain), RAG, and pattern learning.
+- `loop/`: The autonomous state machine.
+- `mcp/`: Model Context Protocol server and tool exposure.
+
+### 3. The Brain & Memory (`src/boring/intelligence/`)
 
 Boring doesn't just read files; it maintains "state":
-
 - **Context (`context.json`)**: Current task, plan, and progress.
 - **Learnings (`learnings.json`)**: Error patterns and successful fixes.
-- **RAG Index (ChromaDB)**: Vector embeddings of the codebase for semantic search.
+- **RAG Index (ChromaDB)**: [OPTIONAL] Vector embeddings of the codebase for semantic search.
 
 #### 🕵️ Hybrid RAG Workflow
 

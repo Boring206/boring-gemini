@@ -22,13 +22,21 @@ boring verify
 boring verify --force
 ```
 
-### 效能指標
+### 效能指標 (v10.28.0)
 
-| 操作 | 冷啟動 | 快取後 |
-|------|--------|--------|
-| 語法檢查（100 檔案） | ~5秒 | < 1秒 |
-| Lint (100 files) | ~15s | < 2s |
-| Full Verification | ~60s | ~5s |
+| 操作 | v10.24 (舊版) | v10.28 (瘦身版) | 加速倍率 |
+| :--- | :--- | :--- | :--- |
+| **冷啟動 (Cold Start)** | ~2,500ms | **~575ms** | **~4.3x** |
+| 工具 Profile 載入 | ~800ms | < 100ms | 8x |
+| 全局索引搜尋 | ~4s | ~2s | 2x |
+| 驗證 (快取) | ~5s | ~3s | 1.6x |
+
+### 「Boring Diet」瘦身優化
+
+Boring V10.28 移除了核心啟動路徑中的「贅肉」：
+- **移除預先載入**：所有重量級函式庫（Torch, ChromaDB, FastAPI）現在改為 **延遲載入 (Lazy-Loaded)**。
+- **模組化 Extras**：可選功能被隔離在 `DependencyManager` 後方。
+- **零延遲 Profile**：`lite` 設定檔現在是預設，僅消耗 ~3k tokens，CPU 開銷微乎其微。
 
 ### 上下文優化 (Context Optimization)
 
