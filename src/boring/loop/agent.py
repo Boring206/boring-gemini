@@ -21,9 +21,9 @@ from ..circuit import should_halt_execution
 from ..config import init_directories, settings
 from ..extensions import ExtensionsManager
 from ..gemini_client import create_gemini_client
+from ..intelligence.memory import MemoryManager
 from ..limiter import can_make_call, init_call_tracking, wait_for_reset
 from ..logger import console, log_status
-from ..memory import MemoryManager
 from ..rag.rag_watcher import RAGWatcher
 from ..storage import create_storage
 from ..verification import CodeVerifier
