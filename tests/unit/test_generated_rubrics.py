@@ -73,7 +73,7 @@ class TestRubricFunctions:
     def test_get_rubric(self):
         """Test get_rubric function."""
         with patch(
-            "boring.rubrics.RUBRIC_REGISTRY",
+            "boring.judge.rubrics.RUBRIC_REGISTRY",
             {"test": Rubric(name="test", description="Test", criteria=[])},
         ):
             rubric = get_rubric("test")
@@ -82,13 +82,13 @@ class TestRubricFunctions:
 
     def test_get_rubric_not_found(self):
         """Test get_rubric with nonexistent rubric."""
-        with patch("boring.rubrics.RUBRIC_REGISTRY", {}):
+        with patch("boring.judge.rubrics.RUBRIC_REGISTRY", {}):
             rubric = get_rubric("nonexistent")
             assert rubric is None
 
     def test_list_rubrics(self):
         """Test list_rubrics function."""
-        with patch("boring.rubrics.RUBRIC_REGISTRY", {"rubric1": None, "rubric2": None}):
+        with patch("boring.judge.rubrics.RUBRIC_REGISTRY", {"rubric1": None, "rubric2": None}):
             rubrics = list_rubrics()
             assert len(rubrics) == 2
             assert "rubric1" in rubrics
@@ -96,6 +96,6 @@ class TestRubricFunctions:
 
     def test_list_rubrics_empty(self):
         """Test list_rubrics with no rubrics."""
-        with patch("boring.rubrics.RUBRIC_REGISTRY", {}):
+        with patch("boring.judge.rubrics.RUBRIC_REGISTRY", {}):
             rubrics = list_rubrics()
             assert rubrics == []

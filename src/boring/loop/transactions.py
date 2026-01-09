@@ -269,7 +269,7 @@ class TransactionManager:
 
 def start_transaction(project_path: str = None, description: str = "Boring transaction") -> dict:
     """Start a new atomic transaction."""
-    from .config import settings
+    from ..config import settings
 
     path = Path(project_path) if project_path else settings.PROJECT_ROOT
     manager = TransactionManager(path)
@@ -278,7 +278,7 @@ def start_transaction(project_path: str = None, description: str = "Boring trans
 
 def commit_transaction(project_path: str = None) -> dict:
     """Commit the current transaction."""
-    from .config import settings
+    from ..config import settings
 
     path = Path(project_path) if project_path else settings.PROJECT_ROOT
     manager = TransactionManager(path)
@@ -288,7 +288,7 @@ def commit_transaction(project_path: str = None) -> dict:
 
 def rollback_transaction(project_path: str = None) -> dict:
     """Rollback the current transaction."""
-    from .config import settings
+    from ..config import settings
 
     path = Path(project_path) if project_path else settings.PROJECT_ROOT
     manager = TransactionManager(path)
@@ -298,7 +298,7 @@ def rollback_transaction(project_path: str = None) -> dict:
 
 def transaction_status(project_path: str = None) -> dict:
     """Get transaction status."""
-    from .config import settings
+    from ..config import settings
 
     path = Path(project_path) if project_path else settings.PROJECT_ROOT
     manager = TransactionManager(path)

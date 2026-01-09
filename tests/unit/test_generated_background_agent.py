@@ -27,10 +27,12 @@ def reset_runner_singleton():
     BackgroundTaskRunner._instance = None
     BackgroundTaskRunner._lock = __import__("threading").Lock()
 
-    # Reset global runner in module
+    # Reset global runner in BOTH modules (stub and actual)
     import boring.background_agent
+    import boring.loop.background_agent as loop_bg_agent
 
     boring.background_agent._runner = None
+    loop_bg_agent._runner = None
 
     yield
     # Cleanup after test - shutdown executor if it exists
@@ -41,8 +43,9 @@ def reset_runner_singleton():
             pass
         BackgroundTaskRunner._instance = None
 
-    # Reset global runner again
+    # Reset global runner again in BOTH modules
     boring.background_agent._runner = None
+    loop_bg_agent._runner = None
 
 
 class TestBackgroundTask:

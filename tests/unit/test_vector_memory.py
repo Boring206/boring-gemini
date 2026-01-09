@@ -45,7 +45,7 @@ class TestVectorMemoryInit:
 
     def test_init_without_chromadb(self, tmp_path):
         """Test initialization when ChromaDB is not available."""
-        with patch("boring.vector_memory.CHROMADB_AVAILABLE", False):
+        with patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", False):
             memory = VectorMemory(persist_dir=tmp_path, log_dir=tmp_path)
             assert memory.enabled is False
 
@@ -53,7 +53,7 @@ class TestVectorMemoryInit:
         """Test that persist directory is created."""
         persist_dir = tmp_path / "new_db"
 
-        with patch("boring.vector_memory.CHROMADB_AVAILABLE", False):
+        with patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", False):
             memory = VectorMemory(persist_dir=persist_dir, log_dir=tmp_path)
             # Directory creation happens only when ChromaDB is available
             # When disabled, no directory is created
@@ -66,7 +66,7 @@ class TestVectorMemoryAddExperience:
 
     def test_add_experience_disabled(self, tmp_path):
         """Test adding experience when disabled."""
-        with patch("boring.vector_memory.CHROMADB_AVAILABLE", False):
+        with patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", False):
             memory = VectorMemory(log_dir=tmp_path)
             result = memory.add_experience("Error", "message", "solution")
             assert result is False
@@ -78,7 +78,7 @@ class TestVectorMemoryRetrieve:
 
     def test_retrieve_disabled(self, tmp_path):
         """Test retrieval when disabled."""
-        with patch("boring.vector_memory.CHROMADB_AVAILABLE", False):
+        with patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", False):
             memory = VectorMemory(log_dir=tmp_path)
             results = memory.retrieve_similar("error message")
             assert results == []
@@ -90,21 +90,21 @@ class TestVectorMemoryHelpers:
 
     def test_get_solution_for_error_disabled(self, tmp_path):
         """Test get_solution_for_error when disabled."""
-        with patch("boring.vector_memory.CHROMADB_AVAILABLE", False):
+        with patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", False):
             memory = VectorMemory(log_dir=tmp_path)
             result = memory.get_solution_for_error("some error")
             assert result is None
 
     def test_generate_context_injection_disabled(self, tmp_path):
         """Test context injection when disabled."""
-        with patch("boring.vector_memory.CHROMADB_AVAILABLE", False):
+        with patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", False):
             memory = VectorMemory(log_dir=tmp_path)
             result = memory.generate_context_injection("error")
             assert result == ""
 
     def test_clear_disabled(self, tmp_path):
         """Test clear when disabled."""
-        with patch("boring.vector_memory.CHROMADB_AVAILABLE", False):
+        with patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", False):
             memory = VectorMemory(log_dir=tmp_path)
             result = memory.clear()
             assert result is False
@@ -116,13 +116,13 @@ class TestCreateVectorMemory:
 
     def test_create_with_project_root(self, tmp_path):
         """Test creating vector memory with project root."""
-        with patch("boring.vector_memory.CHROMADB_AVAILABLE", False):
+        with patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", False):
             memory = create_vector_memory(project_root=tmp_path, log_dir=tmp_path)
             assert isinstance(memory, VectorMemory)
 
     def test_create_without_project_root(self, tmp_path):
         """Test creating vector memory without project root."""
-        with patch("boring.vector_memory.CHROMADB_AVAILABLE", False):
+        with patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", False):
             memory = create_vector_memory(log_dir=tmp_path)
             assert isinstance(memory, VectorMemory)
 
