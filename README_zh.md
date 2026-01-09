@@ -249,7 +249,7 @@ python -m boring status
       "command": "python",
       "args": ["-m", "boring.mcp.server"],
       "env": {
-        "BORING_MCP_MODE": "1"(必填),
+        "BORING_MCP_MODE": "1",
         "PROJECT_ROOT_DEFAULT": ".",
         "BORING_MCP_PROFILE": "lite"
       }
@@ -302,7 +302,7 @@ export BORING_MCP_PROFILE=lite
 | 類別 | 連結 |
 |------|------|
 | **入門** | [Vibe Coder 指南](docs/guides/vibe-coder_zh.md) · [**🗣️ 自然語言觸發詞**](docs/guides/vibe-coder-prompts.md) · [快速教學](docs/guides/quick-tutorials_zh.md) |
-| **功能** | [MCP 工具（55+）](docs/features/mcp-tools_zh.md) · [影子模式](docs/features/shadow-mode_zh.md) · [品質閘道](docs/features/quality-gates_zh.md) · [監控](docs/features/monitor.md) |
+| **功能** | [MCP 工具（55+）](docs/features/mcp-tools_zh.md) · [影子模式](docs/features/shadow-mode_zh.md) · [品質閘道](docs/features/quality-gates_zh.md) · [監控](docs/features/monitor.md) · **[📊 評估指標](docs/guides/evaluation-metrics.md)** |
 | **指南** | [Cookbook](docs/guides/cookbook_zh.md) · [專業技巧](docs/guides/pro-tips_zh.md) · [Git Hooks](docs/guides/git-hooks_zh.md) · [代理工作流](docs/guides/workflows_zh.md) |
 | **學習** | [教學課程](docs/tutorials/TUTORIAL.md) · [技能指南](docs/guides/skills_guide.md) · [知識管理](docs/guides/knowledge-management_zh.md) |
 | **進階** | [插件開發](docs/guides/plugins_zh.md) · [API 整合](docs/guides/api-integration_zh.md) · [人類對齊](docs/guides/human-alignment_zh.md) |

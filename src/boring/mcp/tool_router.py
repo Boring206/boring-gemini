@@ -459,6 +459,50 @@ TOOL_CATEGORIES = {
             "boring_speckit_analyze",
         ],
     ),
+    # V10.25: Advanced Evaluation
+    "evaluation": ToolCategory(
+        name="Evaluation & Judging",
+        description="Evaluate code quality, bias monitoring, metrics, rubrics",
+        keywords=[
+            # English
+            "evaluation",
+            "evaluate",
+            "judge",
+            "grade",
+            "score",
+            "rating",
+            "quality",
+            "metrics",
+            "bias",
+            "rubric",
+            "kappa",
+            "spearman",
+            "f1",
+            "pairwise",
+            "compare",
+            # Chinese
+            "評估",
+            "評分",
+            "評價",
+            "打分",
+            "分數",
+            "品質",
+            "指標",
+            "偏見",
+            "量表",
+            "比較",
+            "幫我評",
+            "評測",
+            "評審",
+            "判斷",
+        ],
+        tools=[
+            "boring_evaluate",
+            "boring_evaluation_metrics",
+            "boring_bias_report",
+            "boring_generate_rubric",
+        ],
+    ),
 }
 
 
@@ -684,6 +728,9 @@ Instead of remembering 98+ specific tools, just describe what you want:
 - "generate tests for user.py" → boring_test_gen
 - "check project health" → boring_vibe_check
 - "commit my changes" → boring_commit
+- "評估這段程式碼" → boring_evaluate
+- "show bias report" → boring_bias_report
+- "generate rubric for API" → boring_generate_rubric
 
 **Categories:**
 - RAG & Search: Find code, get context
@@ -693,6 +740,7 @@ Instead of remembering 98+ specific tools, just describe what you want:
 - Security: Scans, audits
 - Planning: Architecture, workflows
 - Intelligence: Predictions, learning
+- Evaluation: Code grading, bias monitoring, metrics
 
 Just ask naturally - I'll route to the right tool!
 """

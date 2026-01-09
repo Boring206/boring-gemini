@@ -251,7 +251,7 @@ python -m boring status
       "command": "python",
       "args": ["-m", "boring.mcp.server"],
       "env": {
-        "BORING_MCP_MODE": "1"(NEEDED),
+        "BORING_MCP_MODE": "1",
         "PROJECT_ROOT_DEFAULT": ".",
         "BORING_MCP_PROFILE": "lite"
       }
@@ -304,7 +304,7 @@ export BORING_MCP_PROFILE=lite
 | Category | Links |
 |----------|-------|
 | **Getting Started** | [Vibe Coder Guide](docs/guides/vibe-coder.md) · [**🗣️ Natural Language Prompts**](docs/guides/vibe-coder-prompts.md) · [Quick Tutorials](docs/guides/quick-tutorials.md) |
-| **Features** | [MCP Tools (55+)](docs/features/mcp-tools.md) · [Shadow Mode](docs/features/shadow-mode.md) · [Quality Gates](docs/features/quality-gates.md) · [Monitoring](docs/features/monitor.md) |
+| **Features** | [MCP Tools (55+)](docs/features/mcp-tools.md) · [Shadow Mode](docs/features/shadow-mode.md) · [Quality Gates](docs/features/quality-gates.md) · [Monitoring](docs/features/monitor.md) · **[📊 Evaluation Metrics](docs/guides/evaluation-metrics.md)** |
 | **Guides** | [Cookbook](docs/guides/cookbook.md) · [Pro Tips](docs/guides/pro-tips.md) · [Git Hooks](docs/guides/git-hooks.md) · [Workflows](docs/guides/workflows.md) |
 | **Learning** | [Tutorials](docs/tutorials/TUTORIAL.md) · [Skills Guide](docs/guides/skills_guide.md) · [Knowledge Mgmt](docs/guides/knowledge-management.md) |
 | **Advanced** | [Plugins](docs/guides/plugins.md) · [API Integration](docs/guides/api-integration.md) · [Human Alignment](docs/guides/human-alignment.md) |
