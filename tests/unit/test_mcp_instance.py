@@ -12,34 +12,26 @@ class TestMCPInstance:
 
     def test_mcp_available(self):
         """Test when FastMCP is available."""
-        with patch("boring.mcp.instance.FastMCP", create=True) as mock_fastmcp:
-            # Reload module to test with FastMCP available
+        with patch("boring.core.dependencies.DependencyManager.check_mcp", return_value=True):
+            import importlib
             import boring.mcp.instance as instance_module
-
-            # Mock FastMCP class
-            mock_fastmcp_class = MagicMock()
-            mock_fastmcp.return_value = mock_fastmcp_class
-
-            # Test that mcp is created when available
-            # We need to check the actual module state
-            if hasattr(instance_module, "MCP_AVAILABLE"):
-                if instance_module.MCP_AVAILABLE:
-                    assert instance_module.mcp is not None
-                else:
-                    assert instance_module.mcp is None
+            
+            # Use create=True to ensure we can patch it even if not imported
+            with patch("boring.mcp.instance.FastMCP", create=True) as mock_fastmcp:
+                importlib.reload(instance_module)
+                assert instance_module.MCP_AVAILABLE
+                assert instance_module.mcp is not None
 
     def test_mcp_not_available(self):
         """Test when FastMCP is not available."""
-        with patch("boring.mcp.instance.FastMCP", side_effect=ImportError("No module")):
+        with patch("boring.core.dependencies.DependencyManager.check_mcp", return_value=False):
             import importlib
-
             import boring.mcp.instance as instance_module
-
             importlib.reload(instance_module)
 
             # When FastMCP is not available, mcp should be None
-            if not instance_module.MCP_AVAILABLE:
-                assert instance_module.mcp is None
+            assert not instance_module.MCP_AVAILABLE
+            assert instance_module.mcp is None
 
     def test_mcp_available_flag(self):
         """Test MCP_AVAILABLE flag."""

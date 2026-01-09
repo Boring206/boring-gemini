@@ -16,6 +16,12 @@
 ### 🛠️ Improvements
 - **Health Check**: Updated `boring health` to correctly identify and suggest missing optional dependencies.
 - **MCP Integration**: `boring-mcp` now fully respects "minimal" profile, avoiding eager imports of vector DBs.
+- **CI Stability**: Resolved `AttributeError` in `test_mcp_instance.py` by mocking `DependencyManager` instead of direct module patching.
+- **Test Coverage**: Added 400+ lines of unit tests for critical components:
+    - `AgentProtocol`: 78% coverage.
+    - `WorkspaceManager`: 83% coverage.
+    - `Core MCP Tools`: 93% coverage.
+- **Workflow Optimization**: Reordered `publish.yml` steps to install `tomli` before version extraction, fixing CI publication failures.
 
 ## [10.27.5] - 2026-01-09 - Quality Gate Fixes & CI Improvements 🔧✅
 
