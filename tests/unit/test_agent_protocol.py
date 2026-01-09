@@ -4,18 +4,18 @@
 Unit tests for Agent Protocol.
 """
 
-import json
-import pytest
 from pathlib import Path
 from tempfile import TemporaryDirectory
+
+import pytest
+
 from boring.agents.agent_protocol import (
-    AgentProtocol, 
-    AgentRole, 
-    MessageType, 
     AgentHandoff,
+    AgentRole,
+    MessageType,
     get_agent_protocol,
-    _agent_protocol
 )
+
 
 @pytest.fixture
 def protocol():
@@ -44,7 +44,7 @@ def test_send_message(protocol):
 def test_get_messages(protocol):
     protocol.send_message(AgentRole.ARCHITECT, AgentRole.CODER, MessageType.REQUEST, {"id": 1})
     protocol.send_message(AgentRole.CODER, AgentRole.REVIEWER, MessageType.REQUEST, {"id": 2})
-    
+
     coder_msgs = protocol.get_messages(AgentRole.CODER)
     assert len(coder_msgs) == 1
     assert coder_msgs[0].content["id"] == 1
@@ -52,7 +52,7 @@ def test_get_messages(protocol):
 def test_respond_to_message(protocol):
     msg_id = protocol.send_message(AgentRole.ARCHITECT, AgentRole.CODER, MessageType.REQUEST, {"q": "?"})
     resp_id = protocol.respond_to_message(msg_id, AgentRole.CODER, {"a": "!"})
-    
+
     assert resp_id != ""
     msgs = protocol.get_messages(AgentRole.ARCHITECT)
     assert any(m.response_to == msg_id for m in msgs)
@@ -61,7 +61,7 @@ def test_shared_context(protocol):
     ctx = protocol.create_shared_context("task-123", "Test Task")
     assert ctx.task_id == "task-123"
     assert ctx.current_phase == "planning"
-    
+
     protocol.update_context(AgentRole.ARCHITECT, {"phase": "coding", "note": "started"})
     updated_ctx = protocol.get_shared_context()
     assert updated_ctx.current_phase == "coding"
@@ -70,10 +70,10 @@ def test_shared_context(protocol):
 def test_consensus_voting(protocol):
     vote_id = protocol.start_vote("Should we release?", ["yes", "no"], [AgentRole.CODER, AgentRole.REVIEWER])
     assert vote_id is not None
-    
+
     protocol.cast_vote(vote_id, AgentRole.CODER, "yes")
     protocol.cast_vote(vote_id, AgentRole.REVIEWER, "yes")
-    
+
     result = protocol.get_vote_result(vote_id)
     assert result.winner == "yes"
     assert result.consensus_reached is True
