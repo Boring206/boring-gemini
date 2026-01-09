@@ -1,15 +1,10 @@
-"""
-Performance benchmarking tests for boring-gemini
-
-This module contains performance tests to ensure performance regressions don't occur.
-Run with: pytest tests/performance/
-"""
-
-import time
 import os
-import psutil
+import time
 from pathlib import Path
+
+import psutil
 import pytest
+
 
 class TestCorePerformance:
     """Performance benchmarks for core functionality"""
@@ -17,21 +12,22 @@ class TestCorePerformance:
     def test_module_import_time(self):
         """Benchmark module import time - should be < 15 seconds with heavy AI libs"""
         start_time = time.perf_counter()
-        import boring.core
+        import boring.core  # noqa: F401
+
         duration = time.perf_counter() - start_time
-        
+
         # Verify import is fast enough (lenient limit for environments with TF/PyTorch)
         assert duration < 15.0, f"Import took too long: {duration:.2f}s"
 
     def test_config_loading(self):
         """Benchmark configuration loading"""
         from boring.config import Settings
-        
+
         start_time = time.perf_counter()
         for _ in range(10):
             Settings()
         duration = (time.perf_counter() - start_time) / 10
-        
+
         assert duration < 0.5, f"Config loading too slow: {duration:.2f}s"
 
 
@@ -45,7 +41,7 @@ class TestRAGPerformance:
         start_time = time.perf_counter()
         time.sleep(0.01)  # Simulate search
         duration = time.perf_counter() - start_time
-        
+
         assert duration < 0.1
 
 
@@ -59,6 +55,7 @@ class TestMemoryPerformance:
 
         # Perform some operations
         from boring.config import Settings
+
         Settings()
 
         final_memory = process.memory_info().rss / 1024 / 1024  # MB
@@ -78,7 +75,7 @@ class TestCachePerformance:
 
         def cached_operation(key):
             if key not in cache:
-                time.sleep(0.01) # Simulate work
+                time.sleep(0.01)  # Simulate work
                 cache[key] = key * 2
             return cache[key]
 
@@ -98,11 +95,12 @@ class TestCachePerformance:
 
 # Baseline metrics for tracking over time
 PERFORMANCE_BASELINES = {
-    "module_import": 5.0,     # seconds
-    "config_loading": 0.5,    # seconds
-    "code_search": 0.1,       # seconds
-    "memory_footprint": 1024, # MB
+    "module_import": 5.0,  # seconds
+    "config_loading": 0.5,  # seconds
+    "code_search": 0.1,  # seconds
+    "memory_footprint": 1024,  # MB
 }
+
 
 def test_performance_baselines_documented():
     """Ensure all baselines are documented"""
