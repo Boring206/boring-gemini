@@ -1,6 +1,6 @@
 # Changelog
 
-## [10.24.9] - 2026-01-09 - Advanced Evaluation V10.25 📊🎯
+## [10.25.0] - 2026-01-09 - Advanced Evaluation V10.25 📊🎯
 
 ### Added
 - **LLM-as-a-Judge Evaluation System**: Complete implementation of advanced evaluation tools
