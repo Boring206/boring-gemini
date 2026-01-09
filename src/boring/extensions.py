@@ -266,7 +266,7 @@ When working with external libraries, invoke: `use context7`
                 capture_output=True,
                 text=True,
                 shell=(os.name == "nt"),
-            )
+            )  # nosec B602: Safe shell usage for Windows command registration
 
             if process.returncode == 0:
                 return True, "Successfully registered Boring MCP with Gemini CLI"

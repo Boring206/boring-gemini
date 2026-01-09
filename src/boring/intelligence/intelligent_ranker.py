@@ -564,7 +564,7 @@ class IntelligentRanker:
     def record_query_pattern(self, query: str, selected_chunk_ids: list[str]):
         """Record which chunks are typically selected for a query pattern."""
 
-        query_hash = hashlib.md5(query.lower().strip().encode()).hexdigest()
+        query_hash = hashlib.sha256(query.lower().strip().encode()).hexdigest()
         timestamp = datetime.now().isoformat()
 
         conn = self._get_connection()
@@ -584,7 +584,7 @@ class IntelligentRanker:
     def predict_relevant_chunks(self, query: str) -> list[str]:
         """Predict which chunks are likely relevant based on similar past queries."""
 
-        query_hash = hashlib.md5(query.lower().strip().encode()).hexdigest()
+        query_hash = hashlib.sha256(query.lower().strip().encode()).hexdigest()
 
         conn = self._get_connection()
         row = conn.execute(

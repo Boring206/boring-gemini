@@ -216,7 +216,7 @@ class InteractiveSession:
                 capture_output=True,
                 text=True,
                 timeout=60,
-            )
+            )  # nosec B602: Interactive mode allows trusted user commands
 
             if result.stdout:
                 console.print(Panel(result.stdout[-2000:], title="stdout", border_style="green"))

@@ -144,7 +144,7 @@ def boring_skills_install(
         # Security Note: SKILLS_CATALOG acts as an allowlist, so these commands are trusted.
         process = subprocess.run(
             cmd,
-            shell=True,
+            shell=True,  # nosec B602: Commands are from trusted, internal SKILLS_CATALOG allowlist
             check=True,
             capture_output=True,
             text=True,

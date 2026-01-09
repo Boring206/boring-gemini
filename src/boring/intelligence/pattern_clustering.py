@@ -163,7 +163,7 @@ class PatternClusterer:
         for pattern in patterns:
             # Create content hash
             content = f"{pattern.get('description', '')}|{pattern.get('solution', '')}"
-            content_hash = hashlib.md5(content.encode()).hexdigest()
+            content_hash = hashlib.sha256(content.encode()).hexdigest()
 
             if content_hash not in seen_hashes:
                 seen_hashes.add(content_hash)
@@ -290,7 +290,7 @@ class PatternClusterer:
         representative = max(patterns, key=lambda p: p.get("success_count", 0))
 
         # Generate cluster ID
-        cluster_id = hashlib.md5(representative.get("description", "")[:50].encode()).hexdigest()[
+        cluster_id = hashlib.sha256(representative.get("description", "")[:50].encode()).hexdigest()[
             :12
         ]
 

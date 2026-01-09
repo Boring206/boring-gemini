@@ -596,7 +596,8 @@ class CodeIndexer:
     def _make_id(self, file_path: str, name: str) -> str:
         """Generate unique chunk ID."""
         raw = f"{file_path}::{name}"
-        return hashlib.md5(raw.encode()).hexdigest()[:12]
+        # Use sha256 for ID generation (non-security) to satisfy bandit
+        return hashlib.sha256(raw.encode()).hexdigest()[:12]
 
     def get_stats(self) -> IndexStats:
         """Return indexing statistics."""
