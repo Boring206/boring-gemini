@@ -435,9 +435,12 @@ def version():
     from importlib.metadata import version as pkg_version
 
     try:
-        ver = pkg_version("boring")
+        from . import __version__ as ver
     except Exception:
-        ver = "10.9.0"
+        try:
+            ver = pkg_version("boring")
+        except Exception:
+            ver = "10.28.0"
 
     console.print(f"[bold blue]Boring[/bold blue] v{ver}")
     console.print(f"  Model: {settings.DEFAULT_MODEL}")
