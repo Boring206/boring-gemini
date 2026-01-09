@@ -9,7 +9,7 @@ from typing import Annotated
 
 from pydantic import Field
 
-from boring.shadow_mode import (
+from boring.loop.shadow_mode import (
     ShadowModeGuard,
     ShadowModeLevel,
     create_shadow_guard,

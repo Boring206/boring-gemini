@@ -16,9 +16,9 @@ from typing import Any, Optional
 
 from ..llm.provider import LLMProvider
 from ..quality_tracker import QualityTracker
-from ..rubrics import CODE_QUALITY_RUBRIC, Rubric
 from .parsers import extract_json
 from .prompts import build_code_comparison_prompt, build_comparison_prompt, build_grade_prompt
+from .rubrics import CODE_QUALITY_RUBRIC, Rubric
 
 logger = logging.getLogger(__name__)
 

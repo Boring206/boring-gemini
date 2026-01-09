@@ -973,3 +973,459 @@ lspconfig.boring.setup{{}}
    - Optionally create a release note
 3. Use `/learn_patterns` afterwards to capture learnings
 """
+    # =========================================================================
+    # VIBE SESSION - Human-Aligned AI Coding Workflow (V10.25)
+    # =========================================================================
+
+    @mcp.prompt(
+        name="vibe_session",
+        description="🎯 一鍵啟動完整 AI 協作流程 - 需求確認 → 計劃制定 → 增量實作 → 自動評分 → 持續學習。解決 AI 與人類期望落差問題。",
+    )
+    def vibe_session(
+        goal: str = Field(
+            default="",
+            description="你想要達成什麼目標？留空則進入互動式問答模式",
+        ),
+    ) -> str:
+        """
+        Complete Human-in-the-Loop AI Coding Session.
+
+        Solves:
+        - AI vs Human expectation gap
+        - Architecture drift
+        - Quality degradation
+        - Lack of confirmation checkpoints
+        """
+        goal_section = f"**你的目標**: {goal}" if goal else "**目標**: 待確認（進入互動模式）"
+        goal_param = f'goal="{goal}"' if goal else ""
+
+        return f"""# 🎯 Vibe Session - 完整 AI 協作流程
+
+{goal_section}
+
+---
+
+## ⚙️ SYSTEM RULES (必須遵守，不可違反)
+
+1. **必須使用 Tool 管理狀態** - 禁止「假裝」執行，必須真正調用
+2. **每個 Phase 轉換必須調用對應 Tool**
+3. **Tool 調用失敗時報告錯誤，不要跳過**
+
+### 🔧 必須調用的 Tools 對照表
+
+| 用戶動作 | 必須調用的 Tool |
+|----------|----------------|
+| 開始 Session | `boring_session_start({goal_param})` |
+| 說「確認」「ok」「approve」 | `boring_session_confirm()` |
+| 說「暫停」「pause」 | `boring_session_pause()` |
+| 說「狀態」「status」 | `boring_session_status()` |
+| 說「自動模式」 | `boring_session_auto(enable=True)` |
+| 說「載入 XXX」 | `boring_session_load(session_id='XXX')` |
+
+### ⚠️ 立即執行
+
+**現在立即調用：** `boring_session_start({goal_param})`
+
+調用後，根據返回結果繼續對話。
+
+---
+
+## ⚠️ 重要原則
+
+**我是你的「資深架構師夥伴」，不是無腦代碼生成器。**
+
+在這個 Session 中，我會：
+1. ✅ **先確認再動手** - 每個階段都等你批准
+2. ✅ **保持架構意識** - 持續檢查設計一致性
+3. ✅ **自動品質閘門** - 每步都評分，不合格不繼續
+4. ✅ **持續學習** - 成功/失敗模式都記住
+
+---
+
+## 📋 Phase 1: 需求對齊 (Alignment) 🔒
+
+**目標**: 確保我 100% 理解你的需求，避免做出來不是你要的
+
+**我會問你**:
+1. 🎯 **核心目標**: 你想解決什麼問題？達成什麼效果？
+2. 🛠️ **技術偏好**: 語言/框架有限制嗎？（如：必須用 Python、偏好 FastAPI）
+3. 📊 **品質期望**:
+   - 🚀 快速原型（可以有技術債）
+   - 🏗️ 生產級（需要測試、文檔、錯誤處理）
+   - 🏢 企業級（需要安全審計、性能優化、監控）
+4. 📁 **現有約束**: 有沒有必須遵守的架構？已有的代碼規範？
+5. 🚫 **明確排除**: 什麼是你「不要」的？
+
+**當用戶確認後，調用：** `boring_session_confirm()`
+
+**輸出**: 📄 需求摘要文件
+**確認點**: ⏸️ **等待你說「確認」或提出修改**
+
+---
+
+## 📐 Phase 2: 計劃制定 (Planning) 🔒
+
+**目標**: 產出可執行的實作計劃，並確保架構設計正確
+
+**必須調用的 Tools（按順序）**:
+1. `boring_arch_check()` - 分析現有架構
+2. `boring_speckit_plan()` - 生成結構化實作計劃
+3. `boring_speckit_checklist()` - 產生驗收清單
+
+**當用戶批准計劃後，調用：** `boring_session_confirm()`
+
+**計劃內容**:
+```
+📁 檔案結構
+├── 要創建的檔案
+├── 要修改的檔案
+└── 測試檔案
+
+📝 步驟清單
+Step 1: ... (預估 5 分鐘)
+Step 2: ... (預估 10 分鐘)
+...
+
+✅ 驗收標準
+□ 功能測試通過
+□ 無 Lint 錯誤
+□ 文檔完整
+```
+
+**🏛️ 架構審查**:
+- 我會檢查是否有過度耦合、缺少抽象、單點故障等問題
+- 如果發現問題，會標註 ⚠️ 並建議修改
+
+**輸出**: 📄 實作計劃 + 驗收清單
+**確認點**: ⏸️ **等待你說「批准」或提出修改**
+
+---
+
+## 🔨 Phase 3: 增量實作 (Implementation) 🔄
+
+**目標**: 一步一步實作，每步都可驗證
+
+**每個步驟我會**:
+1. 📋 說明這一步要做什麼
+2. 👁️ 預覽將要進行的變更
+3. ⏸️ 等待你確認（或設定為自動模式）
+4. ✏️ 執行變更
+5. 📊 自動評分 (`boring_evaluate`)
+6. 📈 進度更新
+
+**品質閘門** (每步自動執行):
+```
+┌─────────────────────────────────────┐
+│  📊 Step 評分                        │
+│  ├─ 正確性: 8/10                     │
+│  ├─ 可讀性: 9/10                     │
+│  ├─ 架構一致性: 9/10                 │
+│  └─ 總分: 8.7/10 ✅ 通過             │
+└─────────────────────────────────────┘
+```
+
+**如果評分 < 7**:
+- ⏸️ 暫停並報告問題
+- 🔧 自動嘗試修復 (`boring_prompt_fix`)
+- 📚 記錄到 Brain 供未來學習
+
+**進度顯示**:
+```
+[████████░░░░░░░░] Step 2/5 完成 (40%)
+```
+
+---
+
+## ✅ Phase 4: 驗證與交付 (Verification) 🔒
+
+**目標**: 確保交付物符合所有驗收標準
+
+**我會執行**:
+1. `boring_verify(level='FULL')` - 完整驗證
+2. `boring_test_gen` - 生成/補充測試
+3. `boring_code_review` - 最終代碼審查
+4. `boring_security_scan` - 安全掃描（如適用）
+
+**最終報告**:
+```
+📊 Vibe Session 完成報告
+═══════════════════════════════════════
+
+✅ 已實作功能:
+  • 功能 A - 通過
+  • 功能 B - 通過
+
+📈 品質指標:
+  • 測試覆蓋率: 85%
+  • Lint 錯誤: 0
+  • 安全問題: 0
+
+🏛️ 架構決策記錄:
+  • 選擇 X 模式因為 Y
+  • 使用 Z 庫因為 W
+
+📚 學習記錄:
+  • 新增 3 個成功模式到 Brain
+  • 記錄 1 個避免模式
+
+🚀 下一步建議:
+  • 建議 A
+  • 建議 B
+```
+
+---
+
+## 🎮 互動指令
+
+在 Session 過程中，你可以隨時說：
+
+| 指令 | 效果 |
+|------|------|
+| `確認` / `ok` / `approve` | 進入下一階段 |
+| `修改 XXX` | 調整計劃或需求 |
+| `跳過這步` | 跳過當前步驟 |
+| `自動模式` | 不再逐步確認，自動完成 |
+| `暫停` | 保存進度，稍後繼續 |
+| `回滾` | 撤銷最近的變更 |
+| `狀態` | 顯示當前進度 |
+| `結束` | 提前結束 Session |
+
+---
+
+## 🚀 現在開始！
+
+""" + (
+            f"讓我確認一下你的目標：{goal}\n\n這是你想要的嗎？請說「確認」或補充說明。"
+            if goal
+            else "請告訴我：**你今天想要達成什麼目標？**\n\n例如：\n- 「幫我做一個用戶登入功能」\n- 「重構這個模組的架構」\n- 「修復這個 Bug 並加測試」\n- 「審查這份代碼並提供改進建議」"
+        )
+
+    @mcp.prompt(
+        name="vibe_session_continue",
+        description="繼續已暫停的 Vibe Session",
+    )
+    def vibe_session_continue() -> str:
+        """Continue a paused Vibe Session."""
+        return """# 🔄 繼續 Vibe Session
+
+讓我查看上次的進度...
+
+1. 執行 `boring_load_context(context_name='vibe_session')`
+2. 顯示上次的狀態：
+   - 目標
+   - 當前階段
+   - 已完成的步驟
+   - 待處理的步驟
+
+請確認是否繼續，或者你想調整計劃？
+"""
+
+    @mcp.prompt(
+        name="vibe_session_status",
+        description="查看當前 Vibe Session 進度",
+    )
+    def vibe_session_status() -> str:
+        """Check Vibe Session status."""
+        return """# 📊 Vibe Session 狀態
+
+```
+┌─────────────────────────────────────────────────┐
+│  🎯 當前目標: [從上下文載入]                      │
+├─────────────────────────────────────────────────┤
+│  📍 當前階段: [Phase X]                          │
+│  📈 進度: [████████░░░░░░░░] X/Y (XX%)           │
+├─────────────────────────────────────────────────┤
+│  ✅ 已完成:                                      │
+│    • Step 1: ...                                │
+│    • Step 2: ...                                │
+│  🔄 進行中:                                      │
+│    • Step 3: ...                                │
+│  ⏳ 待處理:                                      │
+│    • Step 4: ...                                │
+│    • Step 5: ...                                │
+├─────────────────────────────────────────────────┤
+│  📊 品質分數: 8.5/10                             │
+│  🧠 已學習模式: 2 個                             │
+└─────────────────────────────────────────────────┘
+```
+
+**可用指令**: `繼續` | `修改計劃` | `暫停` | `結束`
+"""
+
+    # ==========================================================================
+    # V10.27: Dynamic Prompts with Contextual Embedding
+    # Based on NotebookLM research - embed context only when needed
+    # ==========================================================================
+
+    @mcp.prompt(
+        name="debug_with_logs",
+        description="Debug with embedded log context (Dynamic Prompt). Embeds log content directly for comprehensive debugging.",
+    )
+    def debug_with_logs(
+        error_message: str = Field(
+            default="Error: ...",
+            description="The error message or stack trace to debug",
+        ),
+        log_content: str = Field(
+            default="",
+            description="Paste relevant log output here (optional - embeds directly into prompt)",
+        ),
+        file_path: str = Field(
+            default="",
+            description="Path to the file where error occurred (optional)",
+        ),
+    ) -> str:
+        """Dynamic debug prompt with embedded log context."""
+        log_section = ""
+        if log_content.strip():
+            log_section = f"""
+### 📋 Log Context (Embedded)
+```
+{log_content[:2000]}
+```
+"""
+
+        file_section = ""
+        if file_path.strip():
+            file_section = f"""
+### 📄 Source File
+`{file_path}` - Please read this file for context.
+"""
+
+        return f"""# 🔍 Debug Session (Dynamic Context)
+
+## Error
+```
+{error_message}
+```
+{log_section}{file_section}
+## Analysis Required
+
+1. **Root Cause**: Identify the exact failure point
+2. **Context Correlation**: Match error with log timestamps
+3. **Fix Strategy**: Provide code changes with line numbers
+4. **Prevention**: Suggest logging/monitoring improvements
+
+💡 **Tip**: Use `boring_rag_search` to find related code patterns.
+"""
+
+    @mcp.prompt(
+        name="review_diff",
+        description="Code review with embedded git diff (Dynamic Prompt). Paste diff content for targeted review.",
+    )
+    def review_diff(
+        diff_content: str = Field(
+            default="",
+            description="Paste `git diff` output here for review",
+        ),
+        review_focus: str = Field(
+            default="all",
+            description="Focus: 'all', 'security', 'performance', 'logic'",
+        ),
+    ) -> str:
+        """Dynamic code review with embedded diff context."""
+        if not diff_content.strip():
+            return """# 📝 Diff Review
+
+Please provide the diff content:
+1. Run `git diff` or `git diff --staged`
+2. Copy the output
+3. Call this prompt again with the diff_content parameter
+"""
+
+        focus_instructions = {
+            "security": "Focus on: injection vulnerabilities, auth issues, data exposure",
+            "performance": "Focus on: N+1 queries, inefficient loops, memory leaks",
+            "logic": "Focus on: edge cases, null checks, race conditions",
+            "all": "Comprehensive review covering security, performance, and logic",
+        }
+
+        return f"""# 📝 Diff Code Review (Dynamic Context)
+
+## Review Focus: {review_focus.upper()}
+{focus_instructions.get(review_focus, focus_instructions['all'])}
+
+## Changes to Review
+```diff
+{diff_content[:5000]}
+```
+
+## Required Analysis
+
+### 🔴 Critical Issues (Must Fix)
+- Security vulnerabilities
+- Logic errors
+
+### 🟡 Warnings (Should Fix)
+- Performance concerns
+- Code style issues
+
+### 🟢 Suggestions (Nice to Have)
+- Refactoring opportunities
+- Documentation improvements
+
+**Output Format**: Use line numbers from the diff. Example: `+L45: Missing null check`
+"""
+
+    @mcp.prompt(
+        name="analyze_error_context",
+        description="Analyze error with surrounding code context (Dynamic Prompt). Embeds code snippet for precise debugging.",
+    )
+    def analyze_error_context(
+        error_type: str = Field(
+            default="Exception",
+            description="Type of error (e.g., TypeError, ValueError, ImportError)",
+        ),
+        error_line: int = Field(
+            default=0,
+            description="Line number where error occurred",
+        ),
+        code_context: str = Field(
+            default="",
+            description="Paste the code surrounding the error (20-30 lines)",
+        ),
+        stack_trace: str = Field(
+            default="",
+            description="Full stack trace (optional)",
+        ),
+    ) -> str:
+        """Dynamic error analysis with embedded code context."""
+        code_section = ""
+        if code_context.strip():
+            code_section = f"""
+### 💻 Code Context (Line {error_line})
+```python
+{code_context}
+```
+"""
+
+        stack_section = ""
+        if stack_trace.strip():
+            stack_section = f"""
+### 📚 Stack Trace
+```
+{stack_trace[:1500]}
+```
+"""
+
+        return f"""# 🎯 Precise Error Analysis (Dynamic Context)
+
+## Error Details
+- **Type**: `{error_type}`
+- **Line**: {error_line if error_line > 0 else "Unknown"}
+{code_section}{stack_section}
+## Analysis Steps
+
+1. **Pinpoint**: Identify exact expression causing `{error_type}`
+2. **Trace**: Follow data flow to error origin
+3. **Fix**: Provide inline code fix with explanation
+4. **Test**: Suggest test case to prevent regression
+
+### 🧠 PREPAIR Cache Check
+If available, use `boring_evaluate` with cached reasoning for similar patterns.
+
+### 📊 Theme-Tips Output
+- **Theme: Root Cause** → Tip: [specific cause]
+- **Theme: Fix** → Tip: [code change]
+- **Theme: Prevention** → Tip: [test/guard]
+"""

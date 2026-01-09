@@ -1,4 +1,5 @@
 {
   "first_error": true,
-  "mcp_intro": true
+  "mcp_intro": true,
+  "loop_start": true
 }

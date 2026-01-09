@@ -80,15 +80,15 @@ class TestExperience:
 class TestVectorMemory:
     """Tests for VectorMemory class."""
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", False)
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", False)
     def test_vector_memory_init_no_chromadb(self, temp_persist_dir):
         """Test VectorMemory initialization without ChromaDB."""
         memory = VectorMemory(persist_dir=temp_persist_dir)
         assert memory.enabled is False
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
-    @patch("boring.vector_memory.chromadb")
-    @patch("boring.vector_memory.ChromaSettings")
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", True)
+    @patch("boring.intelligence.vector_memory.chromadb")
+    @patch("boring.intelligence.vector_memory.ChromaSettings")
     def test_vector_memory_init_with_persist_dir(
         self, mock_settings, mock_chromadb, temp_persist_dir
     ):
@@ -103,9 +103,9 @@ class TestVectorMemory:
         assert memory.enabled is True
         mock_chromadb.PersistentClient.assert_called_once()
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
-    @patch("boring.vector_memory.chromadb")
-    @patch("boring.vector_memory.ChromaSettings")
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", True)
+    @patch("boring.intelligence.vector_memory.chromadb")
+    @patch("boring.intelligence.vector_memory.ChromaSettings")
     def test_vector_memory_init_in_memory(self, mock_settings, mock_chromadb):
         """Test VectorMemory initialization in-memory mode."""
         mock_client = MagicMock()
@@ -118,8 +118,8 @@ class TestVectorMemory:
         assert memory.enabled is True
         mock_chromadb.EphemeralClient.assert_called_once()
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
-    @patch("boring.vector_memory.chromadb")
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", True)
+    @patch("boring.intelligence.vector_memory.chromadb")
     def test_vector_memory_init_error(self, mock_chromadb, temp_persist_dir):
         """Test VectorMemory initialization error handling."""
         mock_chromadb.PersistentClient.side_effect = Exception("Init error")
@@ -127,9 +127,9 @@ class TestVectorMemory:
         memory = VectorMemory(persist_dir=temp_persist_dir)
         assert memory.enabled is False
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
-    @patch("boring.vector_memory.chromadb")
-    @patch("boring.vector_memory.ChromaSettings")
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", True)
+    @patch("boring.intelligence.vector_memory.chromadb")
+    @patch("boring.intelligence.vector_memory.ChromaSettings")
     def test_vector_memory_add_experience(
         self, mock_settings, mock_chromadb, temp_persist_dir, sample_experience
     ):
@@ -151,15 +151,15 @@ class TestVectorMemory:
         assert success is True
         mock_collection.add.assert_called_once()
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", False)
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", False)
     def test_vector_memory_add_experience_disabled(self, temp_persist_dir):
         """Test adding experience when disabled."""
         memory = VectorMemory(persist_dir=temp_persist_dir)
         success = memory.add_experience("Error", "message", "solution")
         assert success is False
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
-    @patch("boring.vector_memory.chromadb")
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", True)
+    @patch("boring.intelligence.vector_memory.chromadb")
     def test_vector_memory_add_experience_error(self, mock_chromadb, temp_persist_dir):
         """Test add_experience error handling."""
         mock_client = MagicMock()
@@ -172,9 +172,9 @@ class TestVectorMemory:
         success = memory.add_experience("Error", "message", "solution")
         assert success is False
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
-    @patch("boring.vector_memory.chromadb")
-    @patch("boring.vector_memory.ChromaSettings")
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", True)
+    @patch("boring.intelligence.vector_memory.chromadb")
+    @patch("boring.intelligence.vector_memory.ChromaSettings")
     def test_vector_memory_retrieve_similar(self, mock_settings, mock_chromadb, temp_persist_dir):
         """Test retrieving similar experiences."""
         mock_client = MagicMock()
@@ -195,9 +195,9 @@ class TestVectorMemory:
         assert results[0]["error_type"] == "TypeError"
         assert "similarity" in results[0]
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
-    @patch("boring.vector_memory.chromadb")
-    @patch("boring.vector_memory.ChromaSettings")
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", True)
+    @patch("boring.intelligence.vector_memory.chromadb")
+    @patch("boring.intelligence.vector_memory.ChromaSettings")
     def test_vector_memory_retrieve_similar_empty(
         self, mock_settings, mock_chromadb, temp_persist_dir
     ):
@@ -212,16 +212,16 @@ class TestVectorMemory:
         results = memory.retrieve_similar("test error")
         assert results == []
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", False)
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", False)
     def test_vector_memory_retrieve_similar_disabled(self, temp_persist_dir):
         """Test retrieve_similar when disabled."""
         memory = VectorMemory(persist_dir=temp_persist_dir)
         results = memory.retrieve_similar("test error")
         assert results == []
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
-    @patch("boring.vector_memory.chromadb")
-    @patch("boring.vector_memory.ChromaSettings")
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", True)
+    @patch("boring.intelligence.vector_memory.chromadb")
+    @patch("boring.intelligence.vector_memory.ChromaSettings")
     def test_vector_memory_retrieve_similar_min_similarity(
         self, mock_settings, mock_chromadb, temp_persist_dir
     ):
@@ -243,9 +243,9 @@ class TestVectorMemory:
         # Should filter out low similarity results
         assert len(results) == 0
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
-    @patch("boring.vector_memory.chromadb")
-    @patch("boring.vector_memory.ChromaSettings")
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", True)
+    @patch("boring.intelligence.vector_memory.chromadb")
+    @patch("boring.intelligence.vector_memory.ChromaSettings")
     def test_vector_memory_get_solution_for_error(
         self, mock_settings, mock_chromadb, temp_persist_dir
     ):
@@ -265,9 +265,9 @@ class TestVectorMemory:
         solution = memory.get_solution_for_error("test error")
         assert solution == "fix it"
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
-    @patch("boring.vector_memory.chromadb")
-    @patch("boring.vector_memory.ChromaSettings")
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", True)
+    @patch("boring.intelligence.vector_memory.chromadb")
+    @patch("boring.intelligence.vector_memory.ChromaSettings")
     def test_vector_memory_get_solution_for_error_no_match(
         self, mock_settings, mock_chromadb, temp_persist_dir
     ):
@@ -287,9 +287,9 @@ class TestVectorMemory:
         solution = memory.get_solution_for_error("test error")
         assert solution is None
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
-    @patch("boring.vector_memory.chromadb")
-    @patch("boring.vector_memory.ChromaSettings")
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", True)
+    @patch("boring.intelligence.vector_memory.chromadb")
+    @patch("boring.intelligence.vector_memory.ChromaSettings")
     def test_vector_memory_generate_context_injection(
         self, mock_settings, mock_chromadb, temp_persist_dir
     ):
@@ -311,16 +311,16 @@ class TestVectorMemory:
         assert "Relevant Past Experiences" in context
         assert "Error Type" in context
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", False)
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", False)
     def test_vector_memory_generate_context_injection_disabled(self, temp_persist_dir):
         """Test generate_context_injection when disabled."""
         memory = VectorMemory(persist_dir=temp_persist_dir)
         context = memory.generate_context_injection("test error")
         assert context == ""
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", True)
-    @patch("boring.vector_memory.chromadb")
-    @patch("boring.vector_memory.ChromaSettings")
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", True)
+    @patch("boring.intelligence.vector_memory.chromadb")
+    @patch("boring.intelligence.vector_memory.ChromaSettings")
     def test_vector_memory_clear(self, mock_settings, mock_chromadb, temp_persist_dir):
         """Test clearing vector memory."""
         mock_client = MagicMock()
@@ -337,7 +337,7 @@ class TestVectorMemory:
         assert success is True
         mock_client.delete_collection.assert_called_once()
 
-    @patch("boring.vector_memory.CHROMADB_AVAILABLE", False)
+    @patch("boring.intelligence.vector_memory.CHROMADB_AVAILABLE", False)
     def test_vector_memory_clear_disabled(self, temp_persist_dir):
         """Test clear when disabled."""
         memory = VectorMemory(persist_dir=temp_persist_dir)
@@ -353,7 +353,7 @@ class TestVectorMemory:
 class TestCreateVectorMemory:
     """Tests for create_vector_memory function."""
 
-    @patch("boring.vector_memory.VectorMemory")
+    @patch("boring.intelligence.vector_memory.VectorMemory")
     def test_create_vector_memory_with_project_root(self, mock_memory_class, tmp_path):
         """Test create_vector_memory with project root."""
         mock_instance = MagicMock()
@@ -364,7 +364,7 @@ class TestCreateVectorMemory:
         mock_memory_class.assert_called_once()
         assert memory == mock_instance
 
-    @patch("boring.vector_memory.VectorMemory")
+    @patch("boring.intelligence.vector_memory.VectorMemory")
     def test_create_vector_memory_without_project_root(self, mock_memory_class):
         """Test create_vector_memory without project root."""
         mock_instance = MagicMock()

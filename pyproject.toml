@@ -1,6 +1,6 @@
 [project]
 name = "boring-aicoding"
-version = "10.25.0"
+version = "10.27.0"
 description = "Boring Vibecoder Assistant: An AI-powered development support tool handling project planning, logic verification, and knowledge management. Works alongside Cursor, Copilot, and others to ensure rigorous, efficient workflows."
 authors = [
     { name = "Boring206", email = "C112156246@nkust.edu.tw" }
@@ -135,8 +135,50 @@ lint.ignore = [
 # Mypy type checker configuration
 [tool.mypy]
 python_version = "3.9"
+
+# Strictness flags
+strict = true
 warn_return_any = true
+warn_unused_configs = true
 warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unreachable = true
+disallow_untyped_defs = true
+disallow_any_unimported = false
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+strict_equality = true
+strict_concatenate = true
+
+# Error output
+show_error_context = true
+show_column_numbers = true
+show_error_codes = true
+pretty = true
+color_output = true
+
+# Import discovery
+namespace_packages = true
+explicit_package_bases = true
+
+# Plugins
+plugins = ["pydantic.mypy"]
+
+# Per-module options
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = [
+    "chromadb.*",
+    "sentence_transformers.*",
+    "tree_sitter_languages.*",
+    "duckduckgo_search.*",
+    "streamlit.*",
+    "google.genai.*",
+]
 ignore_missing_imports = true
 
 # Pytest configuration

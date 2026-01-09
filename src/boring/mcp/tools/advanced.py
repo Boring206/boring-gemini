@@ -115,7 +115,7 @@ def boring_transaction(
     - rollback: Revert code to checkpoint
     - status: Check if a transaction is active
     """
-    from boring.transactions import (
+    from boring.loop.transactions import (
         commit_transaction,
         rollback_transaction,
         start_transaction,
@@ -171,7 +171,7 @@ def boring_task(
     - status: Check task progress (requires task_id)
     - list: List all tasks
     """
-    from boring.background_agent import (
+    from boring.loop.background_agent import (
         get_task_status,
         list_background_tasks,
         submit_background_task,

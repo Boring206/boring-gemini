@@ -136,7 +136,7 @@ class TestWorkflowManager:
 
     def test_workflow_manager_init(self, temp_project):
         """Test WorkflowManager initialization."""
-        with patch("boring.workflow_manager.settings") as mock_settings:
+        with patch("boring.loop.workflow_manager.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = WorkflowManager(temp_project)
             assert manager.project_root == temp_project
@@ -145,7 +145,7 @@ class TestWorkflowManager:
         """Test WorkflowManager with default project root."""
         default_root = tmp_path / "default"
         default_root.mkdir()
-        with patch("boring.workflow_manager.settings") as mock_settings:
+        with patch("boring.loop.workflow_manager.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = default_root
             manager = WorkflowManager()
             assert manager.project_root == default_root
@@ -157,7 +157,7 @@ class TestWorkflowManager:
         (workflows_dir / "workflow1.md").write_text("# Workflow 1")
         (workflows_dir / "workflow2.md").write_text("# Workflow 2")
 
-        with patch("boring.workflow_manager.settings") as mock_settings:
+        with patch("boring.loop.workflow_manager.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = WorkflowManager(temp_project)
 
@@ -172,7 +172,7 @@ class TestWorkflowManager:
         workflow_file = workflows_dir / "test_workflow.md"
         workflow_file.write_text("# Test Workflow")
 
-        with patch("boring.workflow_manager.settings") as mock_settings:
+        with patch("boring.loop.workflow_manager.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = WorkflowManager(temp_project)
 
@@ -191,7 +191,7 @@ class TestWorkflowManager:
         package_file = temp_project / "test.bwf.json"
         package_file.write_text(package.to_json())
 
-        with patch("boring.workflow_manager.settings") as mock_settings:
+        with patch("boring.loop.workflow_manager.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = WorkflowManager(temp_project)
 
@@ -201,7 +201,7 @@ class TestWorkflowManager:
 
     def test_workflow_manager_install_workflow_from_url(self, temp_project):
         """Test WorkflowManager.install_workflow from URL."""
-        with patch("boring.workflow_manager.settings") as mock_settings:
+        with patch("boring.loop.workflow_manager.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = WorkflowManager(temp_project)
 
@@ -215,7 +215,7 @@ class TestWorkflowManager:
 
     def test_workflow_manager_parse_frontmatter(self, temp_project):
         """Test WorkflowManager._parse_frontmatter method."""
-        with patch("boring.workflow_manager.settings") as mock_settings:
+        with patch("boring.loop.workflow_manager.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = WorkflowManager(temp_project)
 
@@ -225,7 +225,7 @@ class TestWorkflowManager:
 
     def test_workflow_manager_fetch_url(self, temp_project):
         """Test WorkflowManager._fetch_url method."""
-        with patch("boring.workflow_manager.settings") as mock_settings:
+        with patch("boring.loop.workflow_manager.settings") as mock_settings:
             mock_settings.PROJECT_ROOT = temp_project
             manager = WorkflowManager(temp_project)
 

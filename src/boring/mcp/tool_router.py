@@ -690,14 +690,19 @@ class ToolRouter:
         }
 
     def get_categories_summary(self) -> str:
-        """Get a summary of all categories for help."""
+        """Get a summary of all categories in Theme-Tips format (V10.27)."""
         lines = ["## 🛠️ Boring Tool Categories\n"]
+        lines.append("> 💡 Use `boring('<your request>')` to route to any tool.\n")
 
         for _, cat in sorted(self.categories.items()):
-            lines.append(f"### {cat.name}")
-            lines.append(f"{cat.description}")
-            lines.append(f"Keywords: {', '.join(cat.keywords[:5])}")
-            lines.append(f"Tools: {len(cat.tools)}")
+            # Theme: Category name with emoji
+            lines.append(f"### 📁 Theme: {cat.name}")
+            lines.append(f"  └─ {cat.description}")
+            # Tips: Actionable keywords and tools
+            if cat.keywords:
+                lines.append(f"  ├─ Tip: Say '{cat.keywords[0]}' or '{cat.keywords[1] if len(cat.keywords) > 1 else cat.keywords[0]}'")
+            if cat.tools:
+                lines.append(f"  └─ Tools: {', '.join(cat.tools[:3])}{'...' if len(cat.tools) > 3 else ''}")
             lines.append("")
 
         return "\n".join(lines)

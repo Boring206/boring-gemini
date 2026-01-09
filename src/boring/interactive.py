@@ -409,7 +409,7 @@ class MainMenu:
 
     def _action_status(self) -> None:
         """Show project status."""
-        from .memory import MemoryManager
+        from .intelligence import MemoryManager
 
         try:
             memory = MemoryManager(self.project_root)

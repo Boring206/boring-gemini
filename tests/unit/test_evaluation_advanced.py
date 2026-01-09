@@ -3,12 +3,11 @@ Unit tests for boring.mcp.tools.evaluation - Advanced Evaluation Tools.
 
 Tests for:
 - boring_evaluation_metrics
-- boring_bias_report  
+- boring_bias_report
 - boring_generate_rubric
 """
 
 import shutil
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
