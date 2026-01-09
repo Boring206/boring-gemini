@@ -72,11 +72,11 @@ def test_core_models_import():
 def test_exceptions_import():
     """Test exceptions can be imported."""
     from boring.core.exceptions import (
-        BudgetExceededError,
-        CircuitBreakerError,
+        CircuitBreakerOpenError,
+        MaxLoopsExceededError,
         RateLimitError,
     )
 
-    assert BudgetExceededError is not None
-    assert CircuitBreakerError is not None
+    assert CircuitBreakerOpenError is not None
+    assert MaxLoopsExceededError is not None
     assert RateLimitError is not None
