@@ -1,23 +1,29 @@
-# Release Notes: Boring v10.28.0
+# Release Notes: Boring v10.28.1
 
-## 🚀 Performance & Architecture Optimization
-This release focuses on modularity and speed, reducing core startup latency and separating MCP tools into logical layers.
+## � PyPI Hotfix & CI Stability
+This release resolves a critical version conflict on PyPI and integrates major stability improvements for the CI/CD pipeline.
 
-### 🏠 Key Improvements
-- **Startup Latency**: Optimized lazy loading for heavy dependencies (RAG, Gemini SDK).
-- **Tool Routing**: Improved Natural Language Routing for evaluation and intelligence tools.
-- **Dependency Isolation**: Moved vector-search dependencies to optional `[vector]` extra for lighter deployments.
-- **Deep Thinking**: Enhanced the PREPAIR reasoning cache and LLM-as-a-Judge evaluation techniques.
+### 🏠 Key Improvements (since v10.28.0)
+- **PyPI Hotfix**: Synchronized local and remote versions to `10.28.1` to ensure successful deployment.
+- **CI Stability**: Resolved `AttributeError` in MCP instance tests and fixed `publish.yml` dependency order.
+- **Test Coverage Boost**: Added comprehensive unit test suites for `AgentProtocol`, `WorkspaceManager`, and `Core MCP Tools`, increasing project coverage.
+- **Linting & Formatting**: 100% compliance with `ruff` check and `ruff format` policies.
 
-### 🧪 Stability & Quality
-- **100% Quality Gate Pass**: Project-wide linting and test coverage compliance.
-- **Refactored Verification**: Robust unit tests for CLI versioning and RAG retrieval.
-- **CI Readiness**: Strictly validated against 900+ tests and comprehensive security scans.
+---
+
+## 🚀 Version 10.28.0 Features (Included)
+This version introduces the **"The Diet Update"**, focusing on modularity and speed.
+
+### 🏠 Architecture & Performance
+- **Startup Latency**: Optimized CLI startup to ~575ms via lazy loading.
+- **Dependency Separation**: Split heavy dependencies (ChromaDB, Torch, Streamlit) into optional extras.
+    - `pip install boring-aicoding[vector]`
+    - `pip install boring-aicoding[gui]`
+- **Structural Refactoring**: Reorganized internal modules into `core`, `services`, `cli`, and `tools`.
 
 ### 🛠️ Fixed Issues
-- Corrected version reporting in CLI `version` command.
-- Removed trailing whitespace and addressed import sorting project-wide.
-- Manually fixed line-length violations in test files.
+- Corrected version reporting in CLI `version` command and synced across `smithery.yaml`.
+- Resolved import sorting and whitespace violations project-wide.
 
 ---
 *Proudly built with AI-Human Collaboration.*
