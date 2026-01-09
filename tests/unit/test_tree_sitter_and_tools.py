@@ -11,8 +11,7 @@ from boring.verification import CodeVerifier
 
 
 @pytest.mark.skipif(
-    not TreeSitterParser().is_available(),
-    reason="tree-sitter-languages not installed"
+    not TreeSitterParser().is_available(), reason="tree-sitter-languages not installed"
 )
 def test_parser_init():
     parser = TreeSitterParser()
@@ -24,19 +23,19 @@ def test_parser_init():
 def test_parser_extract_chunks_mocked():
     """Test that parser can extract chunks when tree-sitter is available."""
     parser = TreeSitterParser()
-    
+
     # Simple test with actual parsing (not mocked)
     # If tree-sitter is available, this should work
     code = """
 def hello():
     print("world")
-    
+
 class MyClass:
     pass
 """
-    
+
     chunks = parser.extract_chunks(code, "python")
-    
+
     # Should extract at least the function and class
     assert len(chunks) >= 2
     chunk_types = {c.type for c in chunks}
