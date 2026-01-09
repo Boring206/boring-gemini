@@ -1,5 +1,10 @@
 # Changelog
 
+## [10.25.1] - 2026-01-09
+
+### Fixed
+- Fixed linting errors (trailing whitespace, unused imports) in evaluation tests
+
 ## [10.25.0] - 2026-01-09 - Advanced Evaluation V10.25 📊🎯
 
 ### Added
