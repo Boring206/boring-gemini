@@ -15,14 +15,18 @@ from boring.mcp.core_tools import register_core_tools
 @pytest.fixture
 def mcp_mock():
     mcp = MagicMock()
+
     # Mock the @mcp.tool decorator
     def tool_decorator(**kwargs):
         def wrapper(func):
             return func
+
         return wrapper
+
     mcp.tool = tool_decorator
     mcp.resource = tool_decorator
     return mcp
+
 
 @pytest.fixture
 def helpers_mock():
@@ -34,6 +38,7 @@ def helpers_mock():
         "check_project_root": MagicMock(return_value=True),
     }
 
+
 def test_register_core_tools(mcp_mock, helpers_mock):
     tools = register_core_tools(mcp_mock, lambda x: x, helpers_mock)
     assert "boring_quickstart" in tools
@@ -41,11 +46,13 @@ def test_register_core_tools(mcp_mock, helpers_mock):
     assert "boring_status" in tools
     assert "boring_skills_browse" in tools
 
+
 def test_boring_quickstart(mcp_mock, helpers_mock):
     tools = register_core_tools(mcp_mock, lambda x: x, helpers_mock)
     result = tools["boring_quickstart"]()
     assert result["welcome"] == "Welcome to Boring for Gemini!"
     assert result["project_detected"] is True
+
 
 def test_boring_health_check(mcp_mock, helpers_mock):
     # Mock the underlying service that the relative import eventually reaches
@@ -73,17 +80,21 @@ def test_boring_health_check(mcp_mock, helpers_mock):
         assert len(result["checks"]) == 1
         assert result["checks"][0]["status"] == "passed"
 
+
 def test_boring_status(mcp_mock, helpers_mock):
     # Mock the underlying module
     with patch("boring.intelligence.MemoryManager") as mock_memory:
         mock_memory.return_value.get_project_state.return_value = {
-            "loop_count": 5, "files_modified": 2, "failed_loops": 0
+            "loop_count": 5,
+            "files_modified": 2,
+            "failed_loops": 0,
         }
 
         tools = register_core_tools(mcp_mock, lambda x: x, helpers_mock)
         result = tools["boring_status"]()
         assert result["status"] == "SUCCESS"
         assert result["loop_count"] == 5
+
 
 def test_boring_skills_browse(mcp_mock, helpers_mock):
     # Mock the underlying module
