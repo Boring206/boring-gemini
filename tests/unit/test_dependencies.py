@@ -18,7 +18,9 @@ class TestDependencyManager:
         DependencyManager._mcp_available = None
 
     def test_check_chroma_success(self):
-        with patch.dict("sys.modules", {"chromadb": MagicMock(), "sentence_transformers": MagicMock()}):
+        with patch.dict(
+            "sys.modules", {"chromadb": MagicMock(), "sentence_transformers": MagicMock()}
+        ):
             assert DependencyManager.check_chroma() is True
             assert DependencyManager._chroma_available is True
 

@@ -41,7 +41,10 @@ class TestInteractiveSession:
         """Test showing header."""
         session = InteractiveSession(reason="Test", project_root=temp_project)
 
-        with patch("boring.cli.interactive.console") as mock_console, patch("boring.cli.interactive.Panel"):
+        with (
+            patch("boring.cli.interactive.console") as mock_console,
+            patch("boring.cli.interactive.Panel"),
+        ):
             session._show_header()
 
             mock_console.print.assert_called()

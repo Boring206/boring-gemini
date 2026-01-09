@@ -347,7 +347,12 @@ class TestReviewerSubmodules:
     def test_extract_issues_logic(self):
         from boring.agents.reviewer.parsers import extract_issues
 
-        text = "[🟡 MINOR] Issue 1\n[🔴 CRITICAL] Fatal Error\n### Security Concerns\n- Buffer overflow"
+        text = (
+            "[🟡 MINOR] Issue 1\n"
+            "[🔴 CRITICAL] Fatal Error\n"
+            "### Security Concerns\n"
+            "- Buffer overflow"
+        )
         issues = extract_issues(text)
         assert "Issue 1" in issues["minor"]
         assert "Fatal Error" in issues["critical"]

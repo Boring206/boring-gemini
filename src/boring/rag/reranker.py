@@ -75,11 +75,14 @@ class CrossEncoderReranker:
         self._initialized = True
 
         if not DependencyManager.check_chroma():
-            logger.debug("CrossEncoder not available (sentence-transformers missing), using heuristic reranking")
+            logger.debug(
+                "CrossEncoder not available (sentence-transformers missing), using heuristic reranking"
+            )
             return False
 
         try:
             from sentence_transformers import CrossEncoder
+
             self._model = CrossEncoder(self.model_name, device=self.device)
             logger.info(f"CrossEncoder initialized: {self.model_name}")
             return True

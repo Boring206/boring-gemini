@@ -28,10 +28,7 @@ def mock_chroma_env():
     mock_client = MagicMock()
     mock_chromadb.PersistentClient.return_value = mock_client
 
-    with patch.dict("sys.modules", {
-        "chromadb": mock_chromadb,
-        "chromadb.config": mock_settings
-    }):
+    with patch.dict("sys.modules", {"chromadb": mock_chromadb, "chromadb.config": mock_settings}):
         yield mock_chromadb, mock_settings, mock_client
 
 
