@@ -2,6 +2,7 @@
 Tests for vector_memory.py - VectorMemory class with mocked ChromaDB.
 """
 
+import contextlib
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -23,7 +24,7 @@ def mock_chroma_env():
     mock_client = MagicMock()
     mock_chromadb.PersistentClient.return_value = mock_client
     mock_chromadb.EphemeralClient.return_value = mock_client
-    
+
     with (
         patch.dict("sys.modules", {"chromadb": mock_chromadb, "chromadb.config": mock_settings}),
         patch("boring.intelligence.vector_memory.DependencyManager.check_chroma", return_value=True)
@@ -31,7 +32,7 @@ def mock_chroma_env():
         yield mock_chromadb, mock_settings, mock_client
 
 
-import contextlib
+
 
 @contextlib.contextmanager
 def disabled_chroma():
@@ -162,7 +163,7 @@ class TestVectorMemoryWithChromaDB:
         _, _, mock_client = mock_chroma_env
         mock_collection = MagicMock()
         mock_client.get_or_create_collection.return_value = mock_collection
-        
+
         memory = VectorMemory(persist_dir=tmp_path / "db", log_dir=tmp_path)
 
         # Add experience

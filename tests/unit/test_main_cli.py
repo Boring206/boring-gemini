@@ -337,9 +337,10 @@ def test_health_check_unhealthy(mock_dependencies):
 
 def test_version_command(mock_dependencies):
     mocks = mock_dependencies
-    mocks["version"].return_value = "1.2.3"
 
-    result = runner.invoke(app, ["version"])
+    with patch("boring.__version__", "1.2.3"):
+        mocks["version"].return_value = "1.2.3"
+        result = runner.invoke(app, ["version"])
 
     assert result.exit_code == 0
     assert "Boring v1.2.3" in result.stdout
@@ -352,7 +353,7 @@ def test_version_command_fallback(mock_dependencies):
     result = runner.invoke(app, ["version"])
 
     assert result.exit_code == 0
-    assert "Boring v10.9.0" in result.stdout
+    assert "Boring v10.28.0" in result.stdout
 
 
 # --- Workflow Commands ---

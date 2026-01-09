@@ -27,7 +27,7 @@ def mock_chroma_env():
     # Mock the classes/methods needed by RAGRetriever
     mock_client = MagicMock()
     mock_chromadb.PersistentClient.return_value = mock_client
-    
+
     with patch.dict("sys.modules", {
         "chromadb": mock_chromadb,
         "chromadb.config": mock_settings
