@@ -31,9 +31,9 @@ jobs:
 
       - name: Verify package version
         run: |
+          pip install tomli
           VERSION=$(python -c "import tomli; print(tomli.load(open('pyproject.toml', 'rb'))['project']['version'])")
           echo "Building version: $VERSION"
-          pip install tomli
 
       - name: Build package
         run: python -m build
