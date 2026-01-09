@@ -1,0 +1,17 @@
+# Production dependencies lock file
+# Generated from pyproject.toml [project.dependencies]
+# To update: pip-compile pyproject.toml -o requirements.txt
+
+typer[all]>=0.9.0
+rich>=13.0.0
+python-dotenv>=1.0.0
+google-genai>=1.0.0
+python-dateutil>=2.8.2
+gitpython>=3.1.40
+pydantic-settings>=2.0.0
+structlog>=24.0.0
+tenacity>=8.0.0
+duckduckgo-search>=5.0.0
+tree-sitter-languages>=1.10.0
+requests>=2.31.0
+tomli>=2.0.0; python_version<'3.11'

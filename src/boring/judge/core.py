@@ -336,8 +336,12 @@ class LLMJudge:
             return {
                 "formatted": format_bias_report(report),
                 "position_bias": {
-                    "detected": report.position_bias.bias_detected if report.position_bias else False,
-                    "first_position_win_rate": report.position_bias.first_position_win_rate if report.position_bias else 0,
+                    "detected": report.position_bias.bias_detected
+                    if report.position_bias
+                    else False,
+                    "first_position_win_rate": report.position_bias.first_position_win_rate
+                    if report.position_bias
+                    else 0,
                 },
                 "length_bias": {
                     "detected": report.length_bias.bias_detected if report.length_bias else False,
@@ -380,4 +384,3 @@ class LLMJudge:
                 )
         except Exception as e:
             logger.debug(f"Failed to record evaluation: {e}")
-

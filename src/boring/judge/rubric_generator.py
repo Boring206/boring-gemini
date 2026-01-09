@@ -378,7 +378,9 @@ def generate_rubric(
         levels = []
         if scale == "1-5":
             for score in [1, 2, 3, 4, 5]:
-                template = levels_template.get(score, {"label": f"Level {score}", "description": "", "characteristics": []})
+                template = levels_template.get(
+                    score, {"label": f"Level {score}", "description": "", "characteristics": []}
+                )
                 levels.append(
                     RubricLevel(
                         score=score,
@@ -389,7 +391,10 @@ def generate_rubric(
                 )
         elif scale == "1-3":
             for score, template_score in [(1, 1), (2, 3), (3, 5)]:
-                template = levels_template.get(template_score, {"label": f"Level {score}", "description": "", "characteristics": []})
+                template = levels_template.get(
+                    template_score,
+                    {"label": f"Level {score}", "description": "", "characteristics": []},
+                )
                 levels.append(
                     RubricLevel(
                         score=score,
@@ -402,7 +407,10 @@ def generate_rubric(
             for score in range(1, 11):
                 # Map to 1-5 templates
                 template_score = min(5, max(1, (score + 1) // 2))
-                template = levels_template.get(template_score, {"label": f"Level {score}", "description": "", "characteristics": []})
+                template = levels_template.get(
+                    template_score,
+                    {"label": f"Level {score}", "description": "", "characteristics": []},
+                )
                 levels.append(
                     RubricLevel(
                         score=score,
@@ -442,7 +450,12 @@ def generate_code_quality_rubric(strictness: str = "balanced") -> DetailedRubric
         criteria_names=["Readability", "Documentation", "Modularity", "Error Handling"],
         scale="1-5",
         strictness=strictness,
-        weights={"Readability": 1.2, "Documentation": 0.8, "Modularity": 1.0, "Error Handling": 1.0},
+        weights={
+            "Readability": 1.2,
+            "Documentation": 0.8,
+            "Modularity": 1.0,
+            "Error Handling": 1.0,
+        },
     )
 
 
@@ -525,6 +538,8 @@ def format_rubric_json(rubric: DetailedRubric) -> dict:
             }
             for c in rubric.criteria
         ],
-        "edge_cases": [{"situation": e.situation, "guidance": e.guidance} for e in rubric.general_edge_cases],
+        "edge_cases": [
+            {"situation": e.situation, "guidance": e.guidance} for e in rubric.general_edge_cases
+        ],
         "scoring_guidelines": rubric.scoring_guidelines,
     }

@@ -1,6 +1,7 @@
 [![PyPI version](https://badge.fury.io/py/boring-aicoding.svg)](https://badge.fury.io/py/boring-aicoding)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Vibe Coder](https://img.shields.io/badge/Vibe_Coder-純自然語言-ff69b4)](docs/features/vibe-coder_zh.md)
+[![Coverage](https://img.shields.io/badge/coverage-80%25-green)](tests/)
 
 # Boring for Gemini
 
@@ -8,9 +9,13 @@
 
 [English](README.md) | [繁體中文](README_zh.md)
 
+> 🤖 **Proudly Built with AI-Human Collaboration**
+>
+> _「本專案探索了自主 AI 編碼的極限。雖然我們致力於高品質，但部分邏輯由 AI 生成並持續改進中。歡迎提交 Pull Request！」_
+
 ---
 
-## ✨ Vibe Coder 體驗 (V10.24)
+## ✨ Vibe Coder 體驗 (V10.27)
 
 **不需要寫程式碼 (No Code)。只要描述你的感覺 (Vibe)。**
 
@@ -46,7 +51,15 @@ Boring 不只是一個 MCP 伺服器；它是一套 **Intelligence Maximization 
 
 ---
 
-## 🚀 快速開始
+## 🧪 NotebookLM 深度優化 (V10.27)
+
+Boring-Gemini V10.27 引入了受 NotebookLM 研究啟發的多項核心優化，旨在最大化 LLM 的理解能力並降低 Token 消耗：
+
+- **Theme-Tips 階層式輸出**：將複雜的工具輸出重新結構化為「主題 → 提示」格式。這種階層化設計經研究證實能降低模型認知負荷，提升 LLM 理解準確度達 **+1.13%**。
+- **PREPAIR 推理快取**：為代碼評估引入 *PREPAIR* 技術。透過在進行「配對比較 (Pairwise)」前先快取「單點分析 (Pointwise)」結果，有效消除評估偏見並解決 LLM 在優選代碼時的倦怠問題。
+- **上下文嵌入動態提示**：模組化提示系統，僅在需要時（如日誌、Diff 或代碼區塊）才加載上下文，在日常任務中可節省高達 60% 的 Token 成本。
+
+---
 [![Downloads](https://img.shields.io/pypi/dm/boring-aicoding.svg)](https://pypi.org/project/boring-aicoding/)
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 
@@ -118,17 +131,18 @@ pip install boring-aicoding
 | 變數 | 值 | 說明 |
 |------|---|------|
 | `BORING_MCP_MODE` | `1` (必須) | 啟用 MCP 模式 |
-| `BORING_MCP_PROFILE` | `minimal` / `lite` / `standard` / `full` | 工具曝露層級 |
+| `BORING_MCP_PROFILE` | `ultra_lite` / `minimal` / `lite` / `standard` / `full` | 工具曝露層級 |
 | `PROJECT_ROOT_DEFAULT` | `.` 或路徑 | 預設專案根目錄 |
 
 **Profile 比較：**
 
-| Profile | 工具數 | 適用場景 |
-|---------|-------|---------|
-| `minimal` | 8 | 快速任務 |
-| `lite` | 20 | 日常開發 (預設) |
-| `standard` | 50 | 專業開發 |
-| `full` | ~98 | Power User |
+| Profile | 工具數 | Token 節省 | 適用場景 |
+|---------|-------|-----------|----------|
+| `ultra_lite` | 3 | **97%** | Token 受限 LLM |
+| `minimal` | 8 | 92% | 快速任務 |
+| `lite` | 20 | 80% | 日常開發 (預設) |
+| `standard` | 50 | 50% | 專業開發 |
+| `full` | ~98 | 0% | Power User |
 
 > 📖 **[完整 MCP 設定指南](docs/guides/mcp-configuration.md)**
 

@@ -82,7 +82,57 @@ Boring doesn't just read files; it maintains "state":
 - **Learnings (`learnings.json`)**: Error patterns and successful fixes.
 - **RAG Index (ChromaDB)**: Vector embeddings of the codebase for semantic search.
 
-### 3. Verification Engine (`src/boring/verification/`)
+#### 🕵️ Hybrid RAG Workflow
+
+Boring employs a multi-tiered retrieval strategy to ensure context precision:
+
+```mermaid
+graph LR
+    Query[User Query] --> HybridSearch
+    
+    subgraph "Hybrid Search Engine"
+        HybridSearch --> Keyword[Keyword Search (BM25)]
+        HybridSearch --> Vector[Vector Search (ChromaDB)]
+        
+        Keyword --> Merger[Merge & Rerank Results]
+        Vector --> Merger
+    end
+    
+    Merger --> TopK[Top-K Candidates]
+    
+    subgraph "Graph Expansion"
+        TopK --> DepGraph[Dependency Graph Analysis]
+        DepGraph --> Callers[Callers]
+        DepGraph --> Callees[Callees]
+    end
+    
+    Callers --> FinalContext[Final Context]
+    Callees --> FinalContext
+    TopK --> FinalContext
+```
+
+### 3. Evaluation & Judgment (`src/boring/judge/`)
+
+Boring includes a built-in **LLM-as-a-Judge** system for self-evaluation and quality control:
+
+```mermaid
+sequenceDiagram
+    participant Agent as Agent
+    participant Judge as Judge Engine
+    participant Rubric as Dynamic Rubric Generator
+    participant LLM as Evaluator Model
+    
+    Agent->>Judge: Request Evaluation (Code/Plan)
+    Judge->>Rubric: Generate/Load Scoring Rubric
+    Judge->>LLM: Perform Direct Scoring / Pairwise Comparison
+    loop Bias Mitigation
+        LLM->>LLM: Self-Reflection (Score Calibration)
+    end
+    LLM-->>Judge: Evaluation Result + Improvement Suggestions
+    Judge-->>Agent: Structured Report (JSON)
+```
+
+### 4. Verification Engine (`src/boring/verification/`)
 
 Unlike typical agents that just generate code, Boring **verifies** it.
 
@@ -93,7 +143,7 @@ Unlike typical agents that just generate code, Boring **verifies** it.
   - **Dynamic**: Unit tests (pytest).
   - **Security**: Vulnerability scans (bandit).
 
-### 4. Circuit Breaker (`src/boring/util/circuit_breaker.py`)
+### 5. Circuit Breaker (`src/boring/util/circuit_breaker.py`)
 
 Prevents the "Infinite Loop of Doom" where an agent repeatedly tries and fails.
 

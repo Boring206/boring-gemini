@@ -527,4 +527,4 @@ You just tell Boring **what you want**, and leave the rest to it.
 
 ---
 
-*Last updated: V10.24.0*
+*Last updated: V10.26.0*

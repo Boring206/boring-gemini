@@ -273,9 +273,7 @@ def weighted_kappa(judge1: list[int], judge2: list[int], weights: str = "quadrat
         confusion[i1][i2] += 1
 
     # Calculate observed disagreement
-    observed = sum(
-        weight_matrix[i][j] * confusion[i][j] for i in range(k) for j in range(k)
-    ) / n
+    observed = sum(weight_matrix[i][j] * confusion[i][j] for i in range(k) for j in range(k)) / n
 
     # Calculate expected disagreement
     row_marginals = [sum(confusion[i]) / n for i in range(k)]
