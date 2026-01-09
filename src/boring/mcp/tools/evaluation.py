@@ -353,9 +353,7 @@ def boring_evaluation_metrics(
 
 @audited
 def boring_bias_report(
-    days: Annotated[
-        int, Field(description="Number of days to analyze (default: 30)")
-    ] = 30,
+    days: Annotated[int, Field(description="Number of days to analyze (default: 30)")] = 30,
     project_path: Annotated[
         str, Field(description="Optional explicit path to project root")
     ] = None,
@@ -398,9 +396,7 @@ def boring_generate_rubric(
     strictness: Annotated[
         str, Field(description="Strictness: lenient, balanced, strict")
     ] = "balanced",
-    criteria: Annotated[
-        str, Field(description="Comma-separated criterion names")
-    ] = "",
+    criteria: Annotated[str, Field(description="Comma-separated criterion names")] = "",
     project_path: Annotated[
         str, Field(description="Optional explicit path to project root")
     ] = None,
@@ -480,4 +476,3 @@ if MCP_AVAILABLE and mcp is not None:
         description="Generate detailed evaluation rubric with level descriptions",
         annotations={"readOnlyHint": True},
     )(boring_generate_rubric)
-

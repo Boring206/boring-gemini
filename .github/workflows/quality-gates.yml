@@ -21,14 +21,19 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install linters
-        run: pip install ruff mypy
+      - name: Install dependencies
+        run: |
+          pip install ruff mypy types-python-dateutil pydantic
+          pip install -e .
 
       - name: Python Lint (ruff)
         run: ruff check src/ tests/ --output-format=github
 
       - name: Python Format Check
         run: ruff format --check src/ tests/
+
+      - name: Type Check (mypy)
+        run: mypy src/boring/ --config-file=pyproject.toml
 
   # =============================================================================
   # TIER 2: Security Scan
@@ -45,13 +50,22 @@ jobs:
           python-version: '3.11'
 
       - name: Install security tools
-        run: pip install bandit safety
+        run: pip install bandit safety pip-audit
 
       - name: Bandit Security Scan
-        run: bandit -r src/ -ll -ii --format json --output bandit-report.json || true
+        run: bandit -r src/ -ll -ii --format json --output bandit-report.json
 
       - name: Dependency Vulnerability Check
-        run: pip install -e . && safety check --json || true
+        run: |
+          pip install -e .
+          pip-audit --desc --strict
+
+      - name: Upload Security Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-reports
+          path: bandit-report.json
 
   # =============================================================================
   # TIER 3: Unit Tests with Coverage (Blocking)
@@ -78,6 +92,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
+          pip install radon interrogate
+
+      - name: Check Code Complexity
+        run: |
+          radon cc src/boring/ -a -nb --total-average
+          radon mi src/boring/ -nb
+
+      - name: Check Docstring Coverage
+        run: |
+          interrogate -vv --fail-under=80 src/boring/ --ignore-init-module --ignore-magic
 
       - name: Run Unit Tests with Coverage
         run: |
@@ -85,14 +109,22 @@ jobs:
             --cov=src/boring \
             --cov-report=xml \
             --cov-report=term-missing \
-            --cov-fail-under=39 \
-            -v
+            --cov-report=html \
+            --cov-fail-under=80 \
+            -v --tb=short
 
-      - name: Upload Coverage to Codecov
+      - name: Upload Coverage Reports
         uses: codecov/codecov-action@v4
         with:
           files: ./coverage.xml
-          fail_ci_if_error: false
+          fail_ci_if_error: true
+
+      - name: Upload HTML Coverage Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: htmlcov/
 
   # =============================================================================
   # TIER 4: Integration Tests

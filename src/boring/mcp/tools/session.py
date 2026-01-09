@@ -41,12 +41,12 @@ logger = logging.getLogger(__name__)
 class SessionPhase(str, Enum):
     """Vibe Session phases."""
 
-    ALIGNMENT = "alignment"      # Phase 1: Requirement gathering
-    PLANNING = "planning"        # Phase 2: Plan creation
+    ALIGNMENT = "alignment"  # Phase 1: Requirement gathering
+    PLANNING = "planning"  # Phase 2: Plan creation
     IMPLEMENTATION = "implementation"  # Phase 3: Step-by-step coding
     VERIFICATION = "verification"  # Phase 4: Final verification
-    COMPLETED = "completed"      # Session done
-    PAUSED = "paused"           # Session paused
+    COMPLETED = "completed"  # Session done
+    PAUSED = "paused"  # Session paused
 
 
 @dataclass
@@ -169,13 +169,17 @@ class VibeSessionManager:
             try:
                 with open(path, encoding="utf-8") as f:
                     data = json.load(f)
-                sessions.append({
-                    "session_id": data["session_id"],
-                    "goal": data["goal"][:50] + "..." if len(data["goal"]) > 50 else data["goal"],
-                    "phase": data["phase"],
-                    "created_at": data["created_at"][:10],
-                    "updated_at": data["updated_at"][:10],
-                })
+                sessions.append(
+                    {
+                        "session_id": data["session_id"],
+                        "goal": data["goal"][:50] + "..."
+                        if len(data["goal"]) > 50
+                        else data["goal"],
+                        "phase": data["phase"],
+                        "created_at": data["created_at"][:10],
+                        "updated_at": data["updated_at"][:10],
+                    }
+                )
             except Exception:
                 continue
         return sorted(sessions, key=lambda x: x["created_at"], reverse=True)
@@ -221,11 +225,12 @@ def boring_session_start(
         str, PydanticField(description="你想達成什麼目標？例如：'建立用戶登入功能'")
     ] = "",
     quality_level: Annotated[
-        str, PydanticField(description="品質等級: prototype(快速原型), production(生產級), enterprise(企業級)")
+        str,
+        PydanticField(
+            description="品質等級: prototype(快速原型), production(生產級), enterprise(企業級)"
+        ),
     ] = "production",
-    project_path: Annotated[
-        str, PydanticField(description="專案路徑（選填）")
-    ] = None,
+    project_path: Annotated[str, PydanticField(description="專案路徑（選填）")] = None,
 ) -> str:
     """
     🎯 啟動 Vibe Session - 完整的 AI 協作流程。
@@ -270,7 +275,7 @@ def boring_session_start(
 為了確保我 100% 理解你的需求，請回答以下問題：
 
 ### 1️⃣ 核心目標
-{f'你說想要「{goal}」，可以更具體描述嗎？例如：' if goal else '你今天想達成什麼？例如：'}
+{f"你說想要「{goal}」，可以更具體描述嗎？例如：" if goal else "你今天想達成什麼？例如："}
 - 要解決什麼問題？
 - 預期的結果是什麼？
 
@@ -304,12 +309,8 @@ def boring_session_start(
 
 @audited
 def boring_session_confirm(
-    notes: Annotated[
-        str, PydanticField(description="補充說明或確認訊息")
-    ] = "",
-    project_path: Annotated[
-        str, PydanticField(description="專案路徑（選填）")
-    ] = None,
+    notes: Annotated[str, PydanticField(description="補充說明或確認訊息")] = "",
+    project_path: Annotated[str, PydanticField(description="專案路徑（選填）")] = None,
 ) -> str:
     """
     ✅ 確認當前階段並進入下一階段。
@@ -363,9 +364,7 @@ def boring_session_confirm(
 
 @audited
 def boring_session_status(
-    project_path: Annotated[
-        str, PydanticField(description="專案路徑（選填）")
-    ] = None,
+    project_path: Annotated[str, PydanticField(description="專案路徑（選填）")] = None,
 ) -> str:
     """
     📊 查看當前 Vibe Session 狀態。
@@ -391,10 +390,9 @@ def boring_session_status(
             if not sessions:
                 return "📭 沒有任何 Session 記錄。使用 `boring_session_start` 開始新的 Session。"
 
-            session_list = "\n".join([
-                f"  • `{s['session_id']}` - {s['goal']} ({s['phase']})"
-                for s in sessions[:5]
-            ])
+            session_list = "\n".join(
+                [f"  • `{s['session_id']}` - {s['goal']} ({s['phase']})" for s in sessions[:5]]
+            )
             return f"""# 📊 Vibe Session 列表
 
 最近的 Sessions:
@@ -436,15 +434,15 @@ def boring_session_status(
 
 ```
 ┌─────────────────────────────────────────────────┐
-│  🎯 目標: {session.goal[:40]}{'...' if len(session.goal) > 40 else ''}
+│  🎯 目標: {session.goal[:40]}{"..." if len(session.goal) > 40 else ""}
 ├─────────────────────────────────────────────────┤
-│  {phase_emoji.get(session.phase, '❓')} 當前階段: {session.phase.value.upper()}
+│  {phase_emoji.get(session.phase, "❓")} 當前階段: {session.phase.value.upper()}
 │  📈 進度: [{progress_bar}] {progress}%
 ├─────────────────────────────────────────────────┤
 │  📅 創建時間: {session.created_at[:10]}
 │  🔄 更新時間: {session.updated_at[:16]}
 │  🎚️ 品質等級: {session.quality_level}
-│  🤖 自動模式: {'開啟' if session.auto_mode else '關閉'}
+│  🤖 自動模式: {"開啟" if session.auto_mode else "關閉"}
 └─────────────────────────────────────────────────┘
 ```
 
@@ -465,12 +463,8 @@ def boring_session_status(
 
 @audited
 def boring_session_load(
-    session_id: Annotated[
-        str, PydanticField(description="要載入的 Session ID")
-    ],
-    project_path: Annotated[
-        str, PydanticField(description="專案路徑（選填）")
-    ] = None,
+    session_id: Annotated[str, PydanticField(description="要載入的 Session ID")],
+    project_path: Annotated[str, PydanticField(description="專案路徑（選填）")] = None,
 ) -> str:
     """
     📂 載入之前的 Vibe Session。
@@ -513,9 +507,7 @@ def boring_session_load(
 
 @audited
 def boring_session_pause(
-    project_path: Annotated[
-        str, PydanticField(description="專案路徑（選填）")
-    ] = None,
+    project_path: Annotated[str, PydanticField(description="專案路徑（選填）")] = None,
 ) -> str:
     """
     ⏸️ 暫停當前 Vibe Session。
@@ -560,12 +552,8 @@ boring_session_load(session_id='{session.session_id}')
 
 @audited
 def boring_session_auto(
-    enable: Annotated[
-        bool, PydanticField(description="是否啟用自動模式")
-    ] = True,
-    project_path: Annotated[
-        str, PydanticField(description="專案路徑（選填）")
-    ] = None,
+    enable: Annotated[bool, PydanticField(description="是否啟用自動模式")] = True,
+    project_path: Annotated[str, PydanticField(description="專案路徑（選填）")] = None,
 ) -> str:
     """
     🤖 切換自動模式 - 自動確認並執行所有步驟。
@@ -648,7 +636,7 @@ def _get_implementation_prompt(session: VibeSession) -> str:
 
 **目標**: {session.goal}
 **步驟數**: {total_steps}
-**自動模式**: {'開啟' if session.auto_mode else '關閉'}
+**自動模式**: {"開啟" if session.auto_mode else "關閉"}
 
 ---
 
@@ -657,14 +645,14 @@ def _get_implementation_prompt(session: VibeSession) -> str:
 每個步驟我會：
 1. 📋 說明這一步要做什麼
 2. 👁️ 預覽變更
-3. {'✅ 自動執行' if session.auto_mode else '⏸️ 等待你確認'}
+3. {"✅ 自動執行" if session.auto_mode else "⏸️ 等待你確認"}
 4. 📊 自動評分
 
 **品質閘門**: 評分 < 7 時會暫停並報告問題
 
 ---
 
-準備開始實作。{'自動模式已開啟，我會持續執行直到完成或遇到問題。' if session.auto_mode else '每步完成後請說「確認」繼續，或「修改」調整。'}
+準備開始實作。{"自動模式已開啟，我會持續執行直到完成或遇到問題。" if session.auto_mode else "每步完成後請說「確認」繼續，或「修改」調整。"}
 """
 
 
@@ -703,14 +691,14 @@ def _get_completion_prompt(session: VibeSession) -> str:
 (根據實際執行結果填充)
 
 ### 📈 品質指標
-- 最終評分: {session.final_score or 'N/A'}/10
+- 最終評分: {session.final_score or "N/A"}/10
 - 學習模式數: {len(session.learned_patterns)}
 
 ### 🏛️ 架構決策記錄
-{chr(10).join(['- ' + note for note in session.architecture_notes]) if session.architecture_notes else '- 無特殊架構決策'}
+{chr(10).join(["- " + note for note in session.architecture_notes]) if session.architecture_notes else "- 無特殊架構決策"}
 
 ### 📚 已記錄到 Brain
-{chr(10).join(['- ' + p for p in session.learned_patterns]) if session.learned_patterns else '- 無新模式'}
+{chr(10).join(["- " + p for p in session.learned_patterns]) if session.learned_patterns else "- 無新模式"}
 
 ---
 

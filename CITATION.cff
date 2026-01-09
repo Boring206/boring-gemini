@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Boring"
+  given-names: "Team"
+title: "Boring-Gemini: An Autonomous AI Coding Assistant"
+version: 10.26.0
+date-released: 2026-01-09
+url: "https://github.com/Boring206/boring-gemini"
+license: Apache-2.0

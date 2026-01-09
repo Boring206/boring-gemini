@@ -1,11 +1,12 @@
 # Copyright 2026 Boring for Gemini Authors
 # SPDX-License-Identifier: Apache-2.0
 """
-MCP Tool Profiles - Configurable Tool Exposure (V10.24)
+MCP Tool Profiles - Configurable Tool Exposure (V10.26)
 
-Problem: 98 tools overwhelms LLM context window.
+Problem: 98 tools overwhelms LLM context window (~5000 tokens).
 
 Solution: Provide different profiles for different use cases:
+- ULTRA_LITE: 3 essential tools (router + help + discover) - 97% token savings
 - MINIMAL: 8 essential tools only
 - LITE: 15-20 commonly used tools
 - STANDARD: 40-50 balanced toolset
@@ -13,10 +14,10 @@ Solution: Provide different profiles for different use cases:
 
 Configure via .boring.toml:
     [mcp]
-    profile = "lite"  # Options: minimal, lite, standard, full
+    profile = "ultra_lite"  # Options: ultra_lite, minimal, lite, standard, full
 
 Or environment variable:
-    BORING_MCP_PROFILE=lite
+    BORING_MCP_PROFILE=ultra_lite
 """
 
 import os
@@ -28,6 +29,7 @@ from typing import Optional
 class ToolProfile(Enum):
     """Available tool exposure profiles."""
 
+    ULTRA_LITE = "ultra_lite"  # 3 essentials only (router + help + discover)
     MINIMAL = "minimal"  # 8 essentials
     LITE = "lite"  # 15-20 common
     STANDARD = "standard"  # 40-50 balanced
@@ -46,6 +48,16 @@ class ProfileConfig:
 
 # Profile definitions
 PROFILES = {
+    ToolProfile.ULTRA_LITE: ProfileConfig(
+        name="Ultra Lite",
+        description="Absolute minimum - router + discovery only (97% token savings)",
+        max_tools=3,
+        tools=[
+            "boring",  # Universal NL router
+            "boring_help",  # Category discovery
+            "boring_discover",  # On-demand tool schema (progressive disclosure)
+        ],
+    ),
     ToolProfile.MINIMAL: ProfileConfig(
         name="Minimal",
         description="Essential tools only - for simple workflows",

@@ -1,0 +1,24 @@
+---
+name: Documentation Issue
+about: Report issues with documentation or suggest improvements
+title: '[DOCS] '
+labels: ['documentation', 'needs-triage']
+assignees: ''
+---
+
+## 📚 Documentation Issue
+<!-- What's wrong with the current documentation? -->
+
+## 📍 Location
+<!-- Which document(s) are affected? -->
+- File/Page: 
+- Section: 
+- URL (if applicable): 
+
+## 🎯 Suggestion
+<!-- What should be changed or added? -->
+
+## ✅ Checklist
+- [ ] I have checked the latest documentation
+- [ ] I have provided specific suggestions
+- [ ] I am willing to submit a PR to fix this

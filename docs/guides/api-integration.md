@@ -1,97 +1,149 @@
-# API Integration Guide
+# Python API Integration Guide (V10.26)
 
-> Directly embed Boring's intelligence into your Python scripts and pipelines.
+> Embed Boring's Intelligence, Judge, and Shadow Mode directly into your Python apps.
 
----
+Boring-Gemini is not just a CLI tool; it's a modular Python library. You can import its core modules into your own AI applications or automation scripts.
 
-## 🛠️ Basic Imports
+## 📦 Installation
 
-All of Boring's core logic is accessible via the `boring` package. 
+```bash
+pip install boring-aicoding
+```
 
-### Core Modules
-| Module | Purpose | Key Classes |
-|--------|---------|-------------|
-| `boring.rag` | Codebase understanding | `RAGRetriever`, `IndexManager` |
-| `boring.agents` | Autonomous logic | `StatefulAgentLoop`, `CoderAgent` |
-| `boring.security` | Safety intercepts | `ShadowInterceptor` |
-| `boring.mcp` | Ecosystem tools | `SpeckitManager`, `McpServer` |
+## 🧠 Intelligence API (Brain & Memory)
 
----
+The `boring.intelligence` module provides knowledge management, pattern learning, and vector memory capabilities.
 
-## 🚀 Practical Example: Automated Project Summarizer
+### 1. Knowledge Base Management (BrainManager)
 
-This script uses the RAG API to scan your project and generate a high-level summary.
-
-### `summarize_project.py`
+Use `BrainManager` to access or update long-term memory and learned patterns in `.boring_brain`.
 
 ```python
-import os
-from boring.rag.retriever import RAGRetriever
+from boring.intelligence.brain_manager import BrainManager, LearnedPattern
 
-def generate_report(project_dir: str):
-    # 1. Initialize RAG (Uses existing index or builds one)
-    retriever = RAGRetriever(project_path=project_dir)
-    
-    # 2. Query major components
-    print(f"🔍 Analyzing project at: {project_dir}...")
-    
-    # Ask Boring about the core features
-    queries = [
-        "What are the main entry points of this application?",
-        "What external dependencies are used for networking or database?",
-        "How is the authentication logic implemented?"
+# Initialize (automatically loads .boring_brain)
+brain = BrainManager(project_path="./my_project")
+
+# 1. Query learned patterns (Pattern Mining)
+patterns = brain.get_patterns(category="error_handling")
+for p in patterns:
+    print(f"Pattern [{p.confidence}]: {p.description}")
+
+# 2. Record new knowledge
+new_pattern = LearnedPattern(
+    trigger="ConnectionError",
+    solution="Implement exponential backoff in retry logic",
+    confidence=0.9
+)
+brain.learn_pattern(new_pattern)
+```
+
+### 2. Vector Memory (VectorMemory)
+
+If your environment supports ChromaDB, use `VectorMemory` for semantic search.
+
+```python
+from boring.intelligence.vector_memory import VectorMemory
+
+memory = VectorMemory(persist_path="./.boring_brain/vector_store")
+
+# Store experience
+memory.add_experience(
+    text="Use Context Managers for file I/O to ensure closure",
+    metadata={"tag": "best_practice", "lang": "python"}
+)
+
+# Semantic Search (RAG)
+results = memory.search("safe file handling", n_results=3)
+for res in results:
+    print(f"Found: {res.text}")
+```
+
+---
+
+## ⚖️ Judge API (Evaluation & Rubrics)
+
+The `boring.judge` module provides a structured evaluation framework, perfect for controlling LLM output quality.
+
+### Defining Rubrics
+
+You can define your own `Rubric` and apply it to evaluation processes.
+
+```python
+from boring.judge.rubrics import Rubric, Criterion
+
+# 1. Define Rubric
+security_rubric = Rubric(
+    name="API Security",
+    criteria=[
+        Criterion(name="Auth", description="Standard OIDC/OAuth2 usage", weight=1.0),
+        Criterion(name="Validation", description="Input sanitization", weight=0.8),
+        Criterion(name="Logging", description="No secrets in logs", weight=1.0),
     ]
-    
-    report_content = "# Project AI Summary\n\n"
-    
-    for q in queries:
-        report_content += f"### {q}\n"
-        results = retriever.search(q, max_results=2)
-        
-        if not results:
-            report_content += "_No specific code found._\n\n"
-            continue
-            
-        for doc in results:
-            report_content += f"- **File**: `{doc.file_path}`\n"
-            # In a real app, you would pass doc.content to an LLM here for a summary
-            report_content += f"  - Context: {doc.content[:150].strip()}...\n\n"
+)
 
-    # 3. Save the report
-    with open("PROJECT_SUMMARY.md", "w", encoding="utf-8") as f:
-        f.write(report_content)
-    
-    print("✅ Report generated: PROJECT_SUMMARY.md")
+# 2. Export to Markdown (for LLM context)
+print(security_rubric.to_markdown())
 
-if __name__ == "__main__":
-    generate_report(".")
+# 3. Programmatic scoring usage
+# score = evaluator.evaluate(code, security_rubric)
 ```
 
 ---
 
-## ⚙️ Advanced Integration: Adding Quality Gates to CI
+## 🛡️ Loop API (Workflow & Security)
 
-You can use the `Verifier` API to fail a build if codes don't meet your standards.
+The `boring.loop` module provides security guards and atomic operations, ideal for building robust automation scripts.
+
+### 1. Shadow Mode Protection (ShadowModeGuard)
+
+Wrap your scripts in Shadow Mode to prevent accidental destructive operations.
 
 ```python
-from boring.core.verifier import ParallelVerifier
+from boring.loop.shadow_mode import ShadowModeGuard, OperationSeverity, ShadowModeLevel
 
-verifier = ParallelVerifier(project_path=".")
-results = verifier.verify_all()
+# Initialize Guard (Strict Mode)
+guard = ShadowModeGuard(level=ShadowModeLevel.STRICT)
 
-if not results.passed:
-    print(f"❌ Verification Failed: {len(results.issues)} issues found.")
-    for issue in results.issues:
-        print(f"  - [{issue.category}] {issue.message}")
-    exit(1)
+# Attempt operation
+def delete_database():
+    op = guard.create_operation(
+        type="delete",
+        target="./data.db",
+        severity=OperationSeverity.CRITICAL
+    )
+    
+    if guard.allow(op):
+        print("Deleting...")
+        # os.remove("./data.db")
+    else:
+        print(f"Operation blocked: {op.reason}")
 
-print("🚀 All quality gates passed!")
+delete_database()
+# Output: Operation blocked: High severity requires approval in STRICT mode
 ```
 
----
+### 2. Atomic Transactions (TransactionManager)
 
-## 💡 Pro Tips
+Ensure a set of file operations either all succeed or all roll back.
 
-1.  **Environment Variables**: Many APIs respect variables like `BORING_LOG_LEVEL` or `SHADOW_MODE_LEVEL`.
-2.  **Singleton Pattern**: Most managers (like `RAGRetriever`) handle indexing internally, so you don't need to worry about redundant scans.
-3.  **Async Support**: For high-performance integrations, look for `async` methods in the `boring.agents` module.
+```python
+from boring.loop.transactions import TransactionManager
+
+tx = TransactionManager(project_path=".")
+
+with tx.begin() as transaction:
+    try:
+        # Operations are staged first
+        transaction.write("config.py", "DEBUG = False")
+        transaction.write("src/main.py", "import config")
+        
+        # Commit (Atomic Write)
+        transaction.commit()
+        print("Update successful")
+        
+    except Exception as e:
+        # Auto-rollback (No files modified)
+        transaction.rollback()
+        print(f"Update failed, rolled back: {e}")
+```

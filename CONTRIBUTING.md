@@ -20,31 +20,226 @@
 git clone https://github.com/Boring206/boring-gemini.git
 cd boring-gemini
 
-# 安裝開發依賴
+# 安裝開發依賴（包含所有質量工具）
 pip install -e ".[dev]"
 
-# 執行測試 (含覆蓋率)
-pytest
+# 設置 pre-commit hooks（重要！）
+pre-commit install
+pre-commit install --hook-type commit-msg
 
-# 執行 Linter
-ruff check src/
+# 首次運行所有 hooks
+pre-commit run --all-files
+
+# 運行完整質量檢查
+./scripts/quality-check.sh    # Linux/macOS
+# 或
+.\scripts\quality-check.ps1   # Windows
 ```
 
 ## 程式碼規範 (Code Standards)
 
-- **型別提示 (Type Hints)**：所有公開函數必須包含型別提示。
-- **文件字串 (Docstrings)**：使用 Google 風格的文件字串。
-- **測試 (Testing)**：維持 80%+ 的測試覆蓋率。
-- **Linting**：程式碼必須通過 ruff 檢查且無錯誤。
+### 必須遵守的質量標準
+
+我們維持 **100 分可維護性標準**。所有貢獻必須滿足：
+
+#### 代碼質量
+- ✅ **型別提示 (Type Hints)**：所有公開函數必須包含完整型別提示
+- ✅ **文件字串 (Docstrings)**：使用 Google 風格，包含參數、返回值、範例
+- ✅ **代碼風格**：通過 Ruff linting 和 formatting
+- ✅ **類型檢查**：通過 Mypy 嚴格模式檢查
+- ✅ **代碼複雜度**：Cyclomatic Complexity < 10
+
+#### 測試要求
+- ✅ **測試覆蓋率**：≥ 80%（新代碼應該 100%）
+- ✅ **單元測試**：所有新功能必須有對應測試
+- ✅ **集成測試**：複雜功能需要集成測試
+- ✅ **所有測試通過**：本地和 CI 都要通過
+
+#### 文檔要求
+- ✅ **文檔覆蓋率**：≥ 80%
+- ✅ **API 文檔**：公開 API 必須有完整文檔
+- ✅ **代碼註釋**：複雜邏輯需要解釋性註釋
+- ✅ **更新 CHANGELOG**：記錄所有變更
+
+#### 安全要求
+- ✅ **無硬編碼密鑰**：使用環境變量或配置文件
+- ✅ **Bandit 掃描**：通過安全掃描（無高/中危漏洞）
+- ✅ **依賴安全**：通過 pip-audit 檢查
+- ✅ **輸入驗證**：所有外部輸入都要驗證
+
+### 快速檢查指令
+
+```bash
+# 代碼風格和 linting
+ruff check src/ tests/ --fix
+ruff format src/ tests/
+
+# 類型檢查
+mypy src/boring/
+
+# 測試覆蓋率
+pytest tests/unit/ --cov=src/boring --cov-report=html
+
+# 文檔覆蓋率
+interrogate -vv src/boring/
+
+# 代碼複雜度
+radon cc src/boring/ -a
+
+# 安全掃描
+bandit -r src/
+pip-audit
+
+# 或一次性運行所有檢查
+./scripts/quality-check.sh
+```
 
 ## Pull Request 流程
 
-1. Fork 此儲存庫
-2. 建立功能分支 (`git checkout -b feature/amazing-feature`)
-3. 進行修改並撰寫測試
-4. 執行 `pytest` 和 `ruff check` 確保通過
-5. 使用 Conventional Commits 提交 (`feat:`, `fix:`, `docs:`)
-6. 推送並建立 Pull Request
+### 1. 準備工作
+
+```bash
+# Fork 並克隆倉庫
+git clone https://github.com/YOUR_USERNAME/boring-gemini.git
+cd boring-gemini
+
+# 添加上游倉庫
+git remote add upstream https://github.com/Boring206/boring-gemini.git
+
+# 安裝依賴和 hooks
+pip install -e ".[dev]"
+pre-commit install
+```
+
+### 2. 創建功能分支
+
+```bash
+# 與 main 同步
+git checkout main
+git pull upstream main
+
+# 創建描述性分支名
+git checkout -b feature/your-feature-name
+# 或
+git checkout -b fix/issue-123
+# 或
+git checkout -b docs/improve-readme
+```
+
+### 3. 開發和測試
+
+```bash
+# 進行修改
+# ...編寫代碼...
+
+# 添加測試
+# ...編寫測試...
+
+# 添加文檔
+# ...更新 docstrings 和文檔...
+
+# 本地驗證
+./scripts/quality-check.sh
+
+# 運行測試
+pytest -v
+```
+
+### 4. 提交代碼
+
+使用 [Conventional Commits](https://www.conventionalcommits.org/) 格式：
+
+```bash
+# 提交格式：<type>(<scope>): <subject>
+git add .
+git commit -m "feat(mcp): add new tool for code analysis"
+
+# 類型 (type):
+# - feat: 新功能
+# - fix: 錯誤修復
+# - docs: 文檔更新
+# - style: 代碼格式（不影響功能）
+# - refactor: 代碼重構
+# - test: 測試相關
+# - chore: 構建/工具變更
+# - perf: 性能改進
+```
+
+### 5. 推送並創建 PR
+
+```bash
+# 推送到你的 fork
+git push origin feature/your-feature-name
+
+# 在 GitHub 上創建 Pull Request
+# 使用提供的 PR 模板填寫所有信息
+```
+
+### 6. PR 審查流程
+
+- ✅ **自動 CI 檢查**：所有檢查必須通過
+- ✅ **代碼審查**：CODEOWNERS 會自動分配審查者
+- ✅ **回應反饋**：及時回應審查意見
+- ✅ **保持更新**：與 main 分支保持同步
+
+```bash
+# 與 main 同步
+git fetch upstream
+git rebase upstream/main
+
+# 如果有衝突，解決後：
+git rebase --continue
+git push -f origin feature/your-feature-name
+```
+
+### 7. 合併後清理
+
+```bash
+# PR 合併後，刪除本地分支
+git checkout main
+git pull upstream main
+git branch -d feature/your-feature-name
+```
+
+## 質量門檻說明
+
+### CI/CD 流程
+
+所有 PR 會經過 4 層質量檢查：
+
+1. **Tier 1: 快速檢查** (< 2 分鐘)
+   - Ruff linting
+   - Code formatting
+   - Mypy type checking
+
+2. **Tier 2: 安全掃描**
+   - Bandit 安全掃描
+   - pip-audit 依賴檢查
+
+3. **Tier 3: 測試和質量**
+   - 單元測試（80% 覆蓋率）
+   - 代碼複雜度檢查
+   - 文檔覆蓋率檢查
+
+4. **Tier 4: 集成測試**
+   - 多組件集成測試
+
+**所有層級必須通過才能合併。**
+
+### 如何查看 CI 失敗
+
+1. 點擊 PR 頁面的 "Details"
+2. 查看失敗的作業日誌
+3. 在本地重現問題
+4. 修復後推送更新
+
+## 完整可維護性指南
+
+詳細的可維護性要求和最佳實踐，請參閱：
+
+- 📖 [可維護性指南](docs/MAINTAINABILITY.md)
+- 📋 [可維護性檢查清單](docs/MAINTAINABILITY_CHECKLIST.md)
+- 🏗️ [架構決策記錄 (ADR)](docs/adr/README.md)
 
 ## 專案結構 (V10.24 - Vibe Coder Architecture)
 

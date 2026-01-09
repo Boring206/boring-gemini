@@ -30,6 +30,7 @@ nav:
     - Architect Mode: guides/architect_mode.md
     - Human Alignment: guides/human-alignment_zh.md
     - Plugins: guides/plugins_zh.md
+    - Python API Dev: guides/api-integration_zh.md
   - Features:
     - MCP Toolset: features/mcp-tools.md
     - Shadow Mode: features/shadow-mode.md
@@ -45,8 +46,13 @@ nav:
     - Prompt Philosophy: reference/APPENDIX_C_PROMPT_PHILOSOPHY.md
     - Contributing: reference/contributing.md
   - API Reference:
-    - mcp_server: api/mcp_server.md
-    - verification: api/verification.md
+    - Intelligence: api/intelligence_zh.md
+    - Loop & Workflows: api/loop_zh.md
+    - Judge & Evaluation: api/judge_zh.md
+    - Security: api/security_zh.md
+    - Agents: api/agents_zh.md
+    - MCP Server: api/mcp_server_zh.md
+    - Verification: api/verification.md
 
 markdown_extensions:
   - admonition
