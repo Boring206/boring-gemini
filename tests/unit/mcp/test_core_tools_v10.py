@@ -4,10 +4,13 @@
 Unit tests for core_tools.py and speckit_tools.py.
 """
 
-import pytest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 from boring.mcp.core_tools import register_core_tools
+
 
 @pytest.fixture
 def mcp_mock():
@@ -53,17 +56,17 @@ def test_boring_health_check(mcp_mock, helpers_mock):
         mock_report.passed = 1
         mock_report.failed = 0
         mock_report.warnings = 0
-        
+
         # Create a mock check that has a status with a value attribute
         mock_check = MagicMock()
         mock_check.name = "Test Check"
         mock_check.status.value = "passed"
         mock_check.message = "OK"
         mock_check.suggestion = "None"
-        
+
         mock_report.checks = [mock_check]
         mock_health.return_value = mock_report
-        
+
         tools = register_core_tools(mcp_mock, lambda x: x, helpers_mock)
         result = tools["boring_health_check"]()
         assert result["healthy"] is True
@@ -76,7 +79,7 @@ def test_boring_status(mcp_mock, helpers_mock):
         mock_memory.return_value.get_project_state.return_value = {
             "loop_count": 5, "files_modified": 2, "failed_loops": 0
         }
-        
+
         tools = register_core_tools(mcp_mock, lambda x: x, helpers_mock)
         result = tools["boring_status"]()
         assert result["status"] == "SUCCESS"
@@ -92,7 +95,7 @@ def test_boring_skills_browse(mcp_mock, helpers_mock):
         skill.description_zh = "測試"
         skill.install_command = "pip install test"
         mock_search.return_value = [skill]
-        
+
         tools = register_core_tools(mcp_mock, lambda x: x, helpers_mock)
         result = tools["boring_skills_browse"]("test")
         assert result["status"] == "SUCCESS"

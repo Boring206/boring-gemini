@@ -2,7 +2,8 @@
 Unit tests for boring.mcp.instance module.
 """
 
-from unittest.mock import MagicMock, patch
+import importlib
+from unittest.mock import patch
 
 import pytest
 
@@ -13,11 +14,10 @@ class TestMCPInstance:
     def test_mcp_available(self):
         """Test when FastMCP is available."""
         with patch("boring.core.dependencies.DependencyManager.check_mcp", return_value=True):
-            import importlib
             import boring.mcp.instance as instance_module
-            
+
             # Use create=True to ensure we can patch it even if not imported
-            with patch("boring.mcp.instance.FastMCP", create=True) as mock_fastmcp:
+            with patch("boring.mcp.instance.FastMCP", create=True) as _:
                 importlib.reload(instance_module)
                 assert instance_module.MCP_AVAILABLE
                 assert instance_module.mcp is not None
@@ -25,7 +25,6 @@ class TestMCPInstance:
     def test_mcp_not_available(self):
         """Test when FastMCP is not available."""
         with patch("boring.core.dependencies.DependencyManager.check_mcp", return_value=False):
-            import importlib
             import boring.mcp.instance as instance_module
             importlib.reload(instance_module)
 
