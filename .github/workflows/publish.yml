@@ -29,14 +29,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install build twine
 
+      - name: Verify package version
+        run: |
+          VERSION=$(python -c "import tomli; print(tomli.load(open('pyproject.toml', 'rb'))['project']['version'])")
+          echo "Building version: $VERSION"
+          pip install tomli
+
       - name: Build package
         run: python -m build
+
+      - name: Check package
+        run: twine check dist/*
 
       - name: Publish to PyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: twine upload dist/*
+        run: twine upload dist/* --verbose
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1

@@ -1,5 +1,7 @@
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from boring.judge import LLMJudge
 from boring.rag.parser import TreeSitterParser
 from boring.rubrics import CODE_QUALITY_RUBRIC
@@ -8,14 +10,22 @@ from boring.verification import CodeVerifier
 # --- Tree-sitter Tests ---
 
 
+@pytest.mark.skipif(
+    not TreeSitterParser().is_available(),
+    reason="tree-sitter-languages not installed"
+)
 def test_parser_init():
     parser = TreeSitterParser()
     assert parser.is_available() is True  # Assuming installed in this env
     # If not installed, it should be False, but we installed it.
 
 
-@patch("boring.rag.parser.get_language")
-@patch("boring.rag.parser.get_parser")
+@pytest.mark.skipif(
+    not TreeSitterParser().is_available(),
+    reason="tree-sitter-languages not installed"
+)
+@patch("boring.rag.parser.TreeSitterParser.get_language")
+@patch("boring.rag.parser.TreeSitterParser.get_parser")
 def test_parser_extract_chunks_mocked(mock_get_parser, mock_get_curr_lang):
     """Test chunk extraction logic with mocked tree-sitter bindings."""
     parser = TreeSitterParser()

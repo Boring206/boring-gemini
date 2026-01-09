@@ -360,7 +360,7 @@ class TestTransactionManager:
 class TestConvenienceFunctions:
     """Tests for convenience functions."""
 
-    @patch("boring.transactions.TransactionManager")
+    @patch("boring.loop.transactions.TransactionManager")
     def test_start_transaction(self, mock_manager_class, tmp_path):
         """Test start_transaction function."""
         mock_manager = MagicMock()
