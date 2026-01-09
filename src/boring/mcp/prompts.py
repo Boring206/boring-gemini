@@ -1251,3 +1251,181 @@ Step 2: ... (預估 10 分鐘)
 
 **可用指令**: `繼續` | `修改計劃` | `暫停` | `結束`
 """
+
+    # ==========================================================================
+    # V10.27: Dynamic Prompts with Contextual Embedding
+    # Based on NotebookLM research - embed context only when needed
+    # ==========================================================================
+
+    @mcp.prompt(
+        name="debug_with_logs",
+        description="Debug with embedded log context (Dynamic Prompt). Embeds log content directly for comprehensive debugging.",
+    )
+    def debug_with_logs(
+        error_message: str = Field(
+            default="Error: ...",
+            description="The error message or stack trace to debug",
+        ),
+        log_content: str = Field(
+            default="",
+            description="Paste relevant log output here (optional - embeds directly into prompt)",
+        ),
+        file_path: str = Field(
+            default="",
+            description="Path to the file where error occurred (optional)",
+        ),
+    ) -> str:
+        """Dynamic debug prompt with embedded log context."""
+        log_section = ""
+        if log_content.strip():
+            log_section = f"""
+### 📋 Log Context (Embedded)
+```
+{log_content[:2000]}
+```
+"""
+
+        file_section = ""
+        if file_path.strip():
+            file_section = f"""
+### 📄 Source File
+`{file_path}` - Please read this file for context.
+"""
+
+        return f"""# 🔍 Debug Session (Dynamic Context)
+
+## Error
+```
+{error_message}
+```
+{log_section}{file_section}
+## Analysis Required
+
+1. **Root Cause**: Identify the exact failure point
+2. **Context Correlation**: Match error with log timestamps
+3. **Fix Strategy**: Provide code changes with line numbers
+4. **Prevention**: Suggest logging/monitoring improvements
+
+💡 **Tip**: Use `boring_rag_search` to find related code patterns.
+"""
+
+    @mcp.prompt(
+        name="review_diff",
+        description="Code review with embedded git diff (Dynamic Prompt). Paste diff content for targeted review.",
+    )
+    def review_diff(
+        diff_content: str = Field(
+            default="",
+            description="Paste `git diff` output here for review",
+        ),
+        review_focus: str = Field(
+            default="all",
+            description="Focus: 'all', 'security', 'performance', 'logic'",
+        ),
+    ) -> str:
+        """Dynamic code review with embedded diff context."""
+        if not diff_content.strip():
+            return """# 📝 Diff Review
+
+Please provide the diff content:
+1. Run `git diff` or `git diff --staged`
+2. Copy the output
+3. Call this prompt again with the diff_content parameter
+"""
+
+        focus_instructions = {
+            "security": "Focus on: injection vulnerabilities, auth issues, data exposure",
+            "performance": "Focus on: N+1 queries, inefficient loops, memory leaks",
+            "logic": "Focus on: edge cases, null checks, race conditions",
+            "all": "Comprehensive review covering security, performance, and logic",
+        }
+
+        return f"""# 📝 Diff Code Review (Dynamic Context)
+
+## Review Focus: {review_focus.upper()}
+{focus_instructions.get(review_focus, focus_instructions['all'])}
+
+## Changes to Review
+```diff
+{diff_content[:5000]}
+```
+
+## Required Analysis
+
+### 🔴 Critical Issues (Must Fix)
+- Security vulnerabilities
+- Logic errors
+
+### 🟡 Warnings (Should Fix)
+- Performance concerns
+- Code style issues
+
+### 🟢 Suggestions (Nice to Have)
+- Refactoring opportunities
+- Documentation improvements
+
+**Output Format**: Use line numbers from the diff. Example: `+L45: Missing null check`
+"""
+
+    @mcp.prompt(
+        name="analyze_error_context",
+        description="Analyze error with surrounding code context (Dynamic Prompt). Embeds code snippet for precise debugging.",
+    )
+    def analyze_error_context(
+        error_type: str = Field(
+            default="Exception",
+            description="Type of error (e.g., TypeError, ValueError, ImportError)",
+        ),
+        error_line: int = Field(
+            default=0,
+            description="Line number where error occurred",
+        ),
+        code_context: str = Field(
+            default="",
+            description="Paste the code surrounding the error (20-30 lines)",
+        ),
+        stack_trace: str = Field(
+            default="",
+            description="Full stack trace (optional)",
+        ),
+    ) -> str:
+        """Dynamic error analysis with embedded code context."""
+        code_section = ""
+        if code_context.strip():
+            code_section = f"""
+### 💻 Code Context (Line {error_line})
+```python
+{code_context}
+```
+"""
+
+        stack_section = ""
+        if stack_trace.strip():
+            stack_section = f"""
+### 📚 Stack Trace
+```
+{stack_trace[:1500]}
+```
+"""
+
+        return f"""# 🎯 Precise Error Analysis (Dynamic Context)
+
+## Error Details
+- **Type**: `{error_type}`
+- **Line**: {error_line if error_line > 0 else "Unknown"}
+{code_section}{stack_section}
+## Analysis Steps
+
+1. **Pinpoint**: Identify exact expression causing `{error_type}`
+2. **Trace**: Follow data flow to error origin
+3. **Fix**: Provide inline code fix with explanation
+4. **Test**: Suggest test case to prevent regression
+
+### 🧠 PREPAIR Cache Check
+If available, use `boring_evaluate` with cached reasoning for similar patterns.
+
+### 📊 Theme-Tips Output
+- **Theme: Root Cause** → Tip: [specific cause]
+- **Theme: Fix** → Tip: [code change]
+- **Theme: Prevention** → Tip: [test/guard]
+"""

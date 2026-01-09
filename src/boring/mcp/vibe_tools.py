@@ -89,10 +89,7 @@ def register_vibe_tools(mcp, audited, helpers):
 
     # === boring_test_gen ===
     @mcp.tool(
-        description="自動生成單元測試 (Auto-generate unit tests). "
-        "說: '幫我寫測試', '生成 auth.py 的測試', 'Generate tests for api.ts'. "
-        "我會分析程式碼並生成 pytest/jest 測試案例！支援 Python, JS, TS. "
-        "🆕 V10.21: 整合 RAG 參考現有測試風格！",
+        description="Generate unit tests for a file (pytest/jest).",
         annotations={"readOnlyHint": False, "openWorldHint": False, "idempotentHint": False},
     )
     @audited
@@ -208,10 +205,7 @@ def register_vibe_tools(mcp, audited, helpers):
 
     # === boring_code_review ===
     @mcp.tool(
-        description="AI 程式碼審查 (AI Code Review). "
-        "說: '審查我的程式碼', 'Review my code', '幫我看看哪裡可以改進'. "
-        "我會分析程式碼品質並給出改善建議！支援 Python, JS, TS. "
-        "🆕 V10.21: 整合 BrainManager 參考已學習的 Pattern！",
+        description="AI code review with improvement suggestions.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
@@ -284,21 +278,36 @@ def register_vibe_tools(mcp, audited, helpers):
             # 按嚴重程度排序
             result.issues.sort(key=lambda x: {"high": 0, "medium": 1, "low": 2}.get(x.severity, 3))
 
-            summary_lines = [f"🔍 Code Review: `{target_file.name}`", ""]
-            for i, issue in enumerate(result.issues[:10], 1):
+            # V10.27: Theme-Tips format for better LLM comprehension
+            summary_lines = [f"## 🔍 Code Review: `{target_file.name}`\n"]
+
+            # Group issues by category (Theme)
+            issues_by_category: dict = {}
+            for issue in result.issues:
+                cat = issue.category
+                if cat not in issues_by_category:
+                    issues_by_category[cat] = []
+                issues_by_category[cat].append(issue)
+
+            # Output as Theme-Tips
+            for category, issues in issues_by_category.items():
                 severity_icon = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(
-                    issue.severity, "⚪"
+                    issues[0].severity, "⚪"
                 )
-                summary_lines.append(f"{i}. {severity_icon} **{issue.category}**: {issue.message}")
-                if issue.suggestion:
-                    summary_lines.append(f"   💡 建議: {issue.suggestion}")
+                summary_lines.append(f"### {severity_icon} Theme: {category}")
+                for issue in issues[:3]:  # Limit to 3 tips per theme
+                    summary_lines.append(f"  └─ Tip: {issue.message}")
+                    if issue.suggestion:
+                        summary_lines.append(f"      └─ 💡 {issue.suggestion}")
+                if len(issues) > 3:
+                    summary_lines.append(f"  └─ ... and {len(issues) - 3} more")
+                summary_lines.append("")
 
             # V10.21: 加入 Brain Pattern 建議
             if brain_patterns:
-                summary_lines.append("")
-                summary_lines.append("🧠 **專案 Pattern 建議**:")
+                summary_lines.append("### 🧠 Theme: Project Patterns")
                 for bp in brain_patterns[:2]:
-                    summary_lines.append(f"   - {bp['description']}: {bp['suggestion']}")
+                    summary_lines.append(f"  └─ Tip: {bp['description']}: {bp['suggestion']}")
 
             # Generate Fix Prompt
             fix_prompt = f"Please review `{target_file.name}` and fix the following {len(result.issues)} issues:\n"
@@ -344,9 +353,7 @@ def register_vibe_tools(mcp, audited, helpers):
 
     # === boring_perf_tips ===
     @mcp.tool(
-        description="效能分析提示 (Performance Tips). "
-        "說: '分析效能', '效能優化建議', 'Check performance of api.py'. "
-        "我會專注檢查效能瓶頸 (如 N+1 query, I/O in loop) 並提供優化建議！支援 Py, JS, TS.",
+        description="Detect performance bottlenecks in code.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
@@ -416,9 +423,7 @@ def register_vibe_tools(mcp, audited, helpers):
 
     # === boring_arch_check ===
     @mcp.tool(
-        description="架構分析 (Architecture Analysis). "
-        "說: '分析專案架構', 'Show me the dependencies', '看看誰引用誰', '該如何重構'. "
-        "我會生成 Mermaid 依賴圖，讓你一目了然專案結構！",
+        description="Analyze dependencies and generate Mermaid graph.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
@@ -523,9 +528,7 @@ def register_vibe_tools(mcp, audited, helpers):
 
     # === boring_doc_gen ===
     @mcp.tool(
-        description="自動生成文檔 (Auto-generate Documentation). "
-        "說: '幫我寫文檔', 'Generate docs for api.py', 'API 文檔', '自動註解'. "
-        "我會擷取 Docstrings/JSDoc 並生成 Markdown 參考文檔！",
+        description="Extract docstrings and generate Markdown docs.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
@@ -610,10 +613,7 @@ def register_vibe_tools(mcp, audited, helpers):
 
     # === boring_vibe_check ===
     @mcp.tool(
-        description="Vibe Score 健檢 (Gamified Health Check). "
-        "說: 'Vibe Check my project', '健檢 utils.py', 'Give me a vibe score'. "
-        "我會整合 Lint, Security, Doc 檢查，計算 0-100 分數，並提供一鍵修復 Prompt！ "
-        "🆕 V10.21: 整合 Storage 記錄歷史分數趨勢！",
+        description="Gamified health check with 0-100 score and fix prompt.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
@@ -792,6 +792,33 @@ def register_vibe_tools(mcp, audited, helpers):
 
         storage_status = "✅ 分數已記錄" if storage else "⚠️ Storage 未啟用"
 
+        # V10.27: Theme-Tips format for better LLM comprehension
+        vibe_summary = f"## 📊 Vibe Score: {final_score}/100 {score_trend}\n"
+        vibe_summary += f"**Tier:** {tier}\n\n"
+
+        if issues_found or doc_missing > 0 or security_issues:
+            vibe_summary += "### 🔍 Findings (Theme-Tips)\n\n"
+
+            if issues_found:
+                vibe_summary += "**📁 Theme: Code Quality**\n"
+                for issue in issues_found[:5]:
+                    vibe_summary += f"  └─ Tip: {issue}\n"
+                if len(issues_found) > 5:
+                    vibe_summary += f"  └─ ... and {len(issues_found) - 5} more\n"
+                vibe_summary += "\n"
+
+            if doc_missing > 0:
+                vibe_summary += "**📁 Theme: Documentation**\n"
+                vibe_summary += f"  └─ Tip: Add docstrings to {doc_missing} functions/classes\n\n"
+
+            if security_issues:
+                vibe_summary += "**📁 Theme: Security**\n"
+                for sec in security_issues[:3]:
+                    vibe_summary += f"  └─ Tip: {sec}\n"
+                vibe_summary += "\n"
+
+        vibe_summary += f"💾 {storage_status}"
+
         return {
             "status": "SUCCESS",
             "score": final_score,
@@ -802,21 +829,13 @@ def register_vibe_tools(mcp, audited, helpers):
             "previous_score": previous_score,
             "score_trend": score_trend,
             "storage_enhanced": storage is not None,
-            "vibe_summary": f"📊 **Vibe Score**: {final_score} / 100 {score_trend}\n"
-            f"🏅 **Tier**: {tier}\n"
-            f"🐛 **Issues**: {len(issues_found)}\n"
-            f"📝 **Missing Docs**: {doc_missing}\n"
-            f"🔒 **Security Issues**: {len(security_issues)}\n"
-            f"💾 {storage_status}",
+            "vibe_summary": vibe_summary,
             "suggested_fix_prompt": fix_prompt,
         }
 
     # === boring_impact_check ===
     @mcp.tool(
-        description="衝擊分析 (Impact Analysis). "
-        "說: 'Check impact of modifying utils.py', '改這隻檔案會影響誰', 'Impact check'. "
-        "我會分析反向依賴 (支援多層追蹤)，告訴你修改此檔案會影響哪些模組，並給出驗證 Prompt！ "
-        "🆕 V10.21: 整合 RAG 語義分析更精準！",
+        description="Analyze reverse dependencies for impact assessment.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
@@ -1061,9 +1080,7 @@ def register_vibe_tools(mcp, audited, helpers):
     # =========================================================================
 
     @mcp.tool(
-        description="🔮 預測可能的錯誤 (Predict likely errors before running). "
-        "說: '預測這個檔案會有什麼錯誤', 'predict errors for auth.py'. "
-        "我會分析歷史模式，預測最可能發生的錯誤並提供預防建議！",
+        description="Predict likely errors before running code.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
