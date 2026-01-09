@@ -64,6 +64,23 @@ def _configure_logging():
     yield
 
 
+def _get_tools_robust(mcp):
+    """Robustly extract the tools dictionary from various FastMCP/MCP server versions."""
+    # FastMCP 2.x often uses _tools or tools directly on the instance
+    for attr in ["_tools", "tools"]:
+        val = getattr(mcp, attr, None)
+        if isinstance(val, dict):
+            return val
+    # Newer FastMCP hides it in _tool_manager
+    if hasattr(mcp, "_tool_manager"):
+        tm = mcp._tool_manager
+        for attr in ["_tools", "tools"]:
+            val = getattr(tm, attr, None)
+            if isinstance(val, dict):
+                return val
+    return {}
+
+
 def get_server_instance():
     """
     Get the configured FastMCP server instance (raw).
@@ -249,7 +266,9 @@ def run_server():
             similar = [t for t in all_tools.keys() if tool_name.lower() in t.lower()]
             if similar:
                 return f"❌ Tool `{tool_name}` not found. Did you mean: {', '.join(similar[:5])}?"
-            return f"❌ Tool `{tool_name}` not found. Use `boring_help` to see available categories."
+            return (
+                f"❌ Tool `{tool_name}` not found. Use `boring_help` to see available categories."
+            )
 
         tool = all_tools[tool_name]
         # Extract schema information
@@ -272,7 +291,9 @@ def run_server():
         )
 
     # V10.26: Cache all tools BEFORE filtering for boring_discover
-    instance._all_tools_cache = dict(instance.mcp._tools)
+    # FastMCP 2.x uses various internal structures; use robust accessor
+    tools_dict = _get_tools_robust(instance.mcp)
+    instance._all_tools_cache = dict(tools_dict)
 
     # V10.26: Post-registration tool filtering based on profile
     # This removes tools not in the profile to reduce context window usage
@@ -282,14 +303,13 @@ def run_server():
         allowed_tools = set(profile.tools) | essential_tools
 
         # Get current tools and filter
-        original_count = len(instance.mcp._tools)
-        tools_to_remove = [
-            name for name in instance.mcp._tools.keys() if name not in allowed_tools
-        ]
+        original_count = len(tools_dict)
+        tools_to_remove = [name for name in tools_dict.keys() if name not in allowed_tools]
         for tool_name in tools_to_remove:
-            del instance.mcp._tools[tool_name]
+            if tool_name in tools_dict:
+                del tools_dict[tool_name]
 
-        filtered_count = len(instance.mcp._tools)
+        filtered_count = len(_get_tools_robust(instance.mcp))
         sys.stderr.write(
             f"[boring-mcp] 🎛️ Profile Filter: {original_count} → {filtered_count} tools "
             f"(saved ~{(original_count - filtered_count) * 50} tokens)\n"
