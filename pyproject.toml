@@ -1,6 +1,6 @@
 [project]
 name = "boring-aicoding"
-version = "10.27.3"
+version = "10.27.4"
 description = "Boring Vibecoder Assistant: An AI-powered development support tool handling project planning, logic verification, and knowledge management. Works alongside Cursor, Copilot, and others to ensure rigorous, efficient workflows."
 authors = [
     { name = "Boring206", email = "C112156246@nkust.edu.tw" }
@@ -104,7 +104,7 @@ where = ["src"]
 include = ["boring*"]
 
 [tool.setuptools.package-data]
-boring = ["templates/**/*", "templates/workflows/*", "templates/specs/*"]
+boring = ["py.typed", "templates/**/*", "templates/workflows/*", "templates/specs/*"]
 
 # Ruff linter configuration
 [tool.ruff]
@@ -178,6 +178,19 @@ module = [
     "duckduckgo_search.*",
     "streamlit.*",
     "google.genai.*",
+    "requests.*",
+    "win10toast.*",
+    "plyer.*",
+    "sklearn.*",
+    "boring.intelligence.*",
+    "boring.judge.*",
+    "boring.loop.*",
+    "boring.rag.*",
+    "boring.storage.*",
+    "boring.config.*",
+    "boring.security.*",
+    "boring.context_sync.*",
+    "boring.trust_rules.*",
 ]
 ignore_missing_imports = true
 
