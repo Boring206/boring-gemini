@@ -20,6 +20,7 @@ class TestMCPInstance:
             sys.modules["fastmcp"] = mock_fastmcp_mod
 
             import boring.mcp.instance as instance_module
+
             importlib.reload(instance_module)
 
             try:
@@ -34,6 +35,7 @@ class TestMCPInstance:
         """Test when FastMCP is not available."""
         with patch("boring.core.dependencies.DependencyManager.check_mcp", return_value=False):
             import boring.mcp.instance as instance_module
+
             importlib.reload(instance_module)
 
             assert not instance_module.MCP_AVAILABLE
@@ -42,12 +44,14 @@ class TestMCPInstance:
     def test_mcp_available_flag(self):
         """Test MCP_AVAILABLE flag."""
         import boring.mcp.instance as instance_module
+
         assert isinstance(instance_module.MCP_AVAILABLE, bool)
 
     def test_fastmcp_import_success(self):
         """Test successful FastMCP import."""
         try:
             from boring.mcp.instance import MCP_AVAILABLE, mcp
+
             assert isinstance(MCP_AVAILABLE, bool)
             assert mcp is None or hasattr(mcp, "name")
         except ImportError:
