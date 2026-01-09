@@ -22,14 +22,22 @@ This document explains all environment variables and configuration options for t
 
 Controls how many tools are exposed to the AI.
 
-| Profile | Tool Count | Description | Use Case |
-|---------|------------|-------------|----------|
-| `minimal` | 8 | Essential only | Quick tasks |
-| `lite` | 20 | Daily development | **Default** |
-| `standard` | 50 | Balanced | Professional dev |
-| `full` | ~98 | All tools | Power User |
+| Profile | Tool Count | Token Savings | Description | Use Case |
+|---------|------------|---------------|-------------|----------|
+| `ultra_lite` | 3 | **97%** | Minimal | Token-constrained LLMs |
+| `minimal` | 8 | 92% | Essential only | Quick tasks |
+| `lite` | 20 | 80% | Daily development | **Default** |
+| `standard` | 50 | 50% | Balanced | Professional dev |
+| `full` | ~98 | 0% | All tools | Power User |
 
 **Tools included in each profile:**
+
+#### Ultra Lite (3 tools) - V10.26 NEW
+- `boring` (universal router)
+- `boring_help` (category discovery)
+- `boring_discover` (on-demand tool schema)
+
+> 💡 **Workflow**: Use `boring` to route natural language requests, `boring_discover` to fetch full schema for a specific tool, then call the target tool.
 
 #### Minimal (8 tools)
 - `boring` (router)
@@ -160,7 +168,7 @@ Smithery defaults to `mcp-lite` + `lite` profile. For more features:
 ### Q: What is the `pro` profile?
 
 `pro` is not a valid value and falls back to `lite`. Valid values are:
-- `minimal`, `lite`, `standard`, `full`
+- `ultra_lite`, `minimal`, `lite`, `standard`, `full`
 
 ### Q: How do I see all available tools?
 

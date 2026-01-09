@@ -40,9 +40,7 @@ def register_workspace_tools(mcp, audited, helpers: dict[str, Any]) -> int:
     def boring_workspace_add(
         name: Annotated[
             str,
-            Field(
-                description="Unique project name identifier. Used for switching contexts."
-            ),
+            Field(description="Unique project name identifier. Used for switching contexts."),
         ],
         path: Annotated[
             str,

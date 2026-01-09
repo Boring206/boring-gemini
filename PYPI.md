@@ -63,13 +63,19 @@ Add to your IDE's MCP configuration:
 }
 ```
 
-### CLI Tools
+### CLI Tools (Run in Terminal/CMD)
+
+> **Note**: These are standalone CLI commands. Run them in your terminal, not in MCP client.
 
 ```bash
-boring-monitor      # TUI Dashboard
-boring-dashboard    # Web Dashboard  
-boring-route "query"  # Natural Language Router
+boring-monitor           # TUI Dashboard (Terminal UI)
+boring-dashboard         # Web Dashboard (Opens browser)
+boring-route "query"     # Shows which tool would be used (demo only, doesn't execute)
+python -m boring status  # Health check
+python -m boring verify  # Code verification
 ```
+
+**About `boring-route`**: This command only **shows** which MCP tool would be selected for your query. To actually execute the tool, use it in your MCP client (Cursor/Claude Desktop).
 
 ---
 

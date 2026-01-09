@@ -64,6 +64,23 @@ def _configure_logging():
     yield
 
 
+def _get_tools_robust(mcp):
+    """Robustly extract the tools dictionary from various FastMCP/MCP server versions."""
+    # FastMCP 2.x often uses _tools or tools directly on the instance
+    for attr in ["_tools", "tools"]:
+        val = getattr(mcp, attr, None)
+        if isinstance(val, dict):
+            return val
+    # Newer FastMCP hides it in _tool_manager
+    if hasattr(mcp, "_tool_manager"):
+        tm = mcp._tool_manager
+        for attr in ["_tools", "tools"]:
+            val = getattr(tm, attr, None)
+            if isinstance(val, dict):
+                return val
+    return {}
+
+
 def get_server_instance():
     """
     Get the configured FastMCP server instance (raw).
@@ -218,6 +235,85 @@ def run_server():
             f"\n## 🎛️ Current Profile: **{profile.name}** ({len(profile.tools) or 'all'} tools)\n"
         )
         return summary + profile_info
+
+    @instance.mcp.tool(
+        description="Get full schema for a tool (progressive disclosure).",
+        annotations={"readOnlyHint": True},
+    )
+    def boring_discover(tool_name: str) -> str:
+        """
+        Progressive Disclosure: Get full schema for a specific tool.
+
+        Use this in ULTRA_LITE mode to fetch tool details on-demand,
+        saving ~97% token overhead compared to loading all schemas upfront.
+
+        Args:
+            tool_name: Name of the tool to discover (e.g., 'boring_rag_search')
+
+        Returns:
+            Full JSON schema for the tool, or error if not found
+        """
+        import json
+
+        # Access all registered tools (before filtering)
+        all_tools = getattr(instance, "_all_tools_cache", None)
+        if all_tools is None:
+            # Cache wasn't set, use current tools
+            all_tools = instance.mcp._tools
+
+        if tool_name not in all_tools:
+            # Try to find similar tools
+            similar = [t for t in all_tools.keys() if tool_name.lower() in t.lower()]
+            if similar:
+                return f"❌ Tool `{tool_name}` not found. Did you mean: {', '.join(similar[:5])}?"
+            return (
+                f"❌ Tool `{tool_name}` not found. Use `boring_help` to see available categories."
+            )
+
+        tool = all_tools[tool_name]
+        # Extract schema information
+        schema_info = {
+            "name": tool_name,
+            "description": getattr(tool, "description", str(tool)),
+        }
+
+        # Try to get input schema if available
+        if hasattr(tool, "inputSchema"):
+            schema_info["input_schema"] = tool.inputSchema
+        elif hasattr(tool, "parameters"):
+            schema_info["parameters"] = tool.parameters
+
+        return (
+            f"## 🔍 Tool: `{tool_name}`\n\n"
+            f"**Description:** {schema_info.get('description', 'N/A')}\n\n"
+            f"**Schema:**\n```json\n{json.dumps(schema_info, indent=2, default=str)}\n```\n\n"
+            f"💡 You can now call `{tool_name}` with the parameters above."
+        )
+
+    # V10.26: Cache all tools BEFORE filtering for boring_discover
+    # FastMCP 2.x uses various internal structures; use robust accessor
+    tools_dict = _get_tools_robust(instance.mcp)
+    instance._all_tools_cache = dict(tools_dict)
+
+    # V10.26: Post-registration tool filtering based on profile
+    # This removes tools not in the profile to reduce context window usage
+    if profile.tools:  # Non-empty means we should filter (empty = FULL profile)
+        # Always keep these essential tools regardless of profile
+        essential_tools = {"boring", "boring_help"}
+        allowed_tools = set(profile.tools) | essential_tools
+
+        # Get current tools and filter
+        original_count = len(tools_dict)
+        tools_to_remove = [name for name in tools_dict.keys() if name not in allowed_tools]
+        for tool_name in tools_to_remove:
+            if tool_name in tools_dict:
+                del tools_dict[tool_name]
+
+        filtered_count = len(_get_tools_robust(instance.mcp))
+        sys.stderr.write(
+            f"[boring-mcp] 🎛️ Profile Filter: {original_count} → {filtered_count} tools "
+            f"(saved ~{(original_count - filtered_count) * 50} tokens)\n"
+        )
 
     # Vibe Coder Tutorial Hook - Show MCP intro on first launch
     try:

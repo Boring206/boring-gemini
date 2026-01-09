@@ -21,12 +21,12 @@ logger = logging.getLogger(__name__)
 # MCP Server Card - metadata for Smithery discovery
 MCP_SERVER_CARD = {
     "name": "boring-gemini",
-    "version": "10.18.3",
-    "description": "Boring MCP Server - Autonomous AI development loop with SpecKit workflows",
+    "version": "10.27.0",
+    "description": "Boring Vibecoder Assistant: An AI-powered development support tool with NotebookLM optimizations.",
     "vendor": {"name": "Boring for Gemini"},
-    "capabilities": {"tools": True, "resources": True, "prompts": False},
+    "capabilities": {"tools": True, "resources": True, "prompts": True},
     "authentication": {"type": "none"},
-    "documentation": "https://github.com/user/boring-gemini#readme",
+    "documentation": "https://github.com/Boring206/boring-gemini#readme",
 }
 
 # Configuration schema (matches smithery.yaml)
@@ -38,6 +38,21 @@ MCP_CONFIG_SCHEMA = {
     "properties": {},
     "additionalProperties": False,
 }
+
+
+def _get_tools_robust(mcp):
+    """Robustly extract the tools dictionary from various FastMCP/MCP server versions."""
+    for attr in ["_tools", "tools"]:
+        val = getattr(mcp, attr, None)
+        if isinstance(val, dict):
+            return val
+    if hasattr(mcp, "_tool_manager"):
+        tm = mcp._tool_manager
+        for attr in ["_tools", "tools"]:
+            val = getattr(tm, attr, None)
+            if isinstance(val, dict):
+                return val
+    return {}
 
 
 def create_app():
@@ -55,8 +70,9 @@ def create_app():
 
     mcp = get_server_instance()
 
-    # Safe tool count
-    tool_count = len(getattr(mcp, "_tools", getattr(mcp, "tools", {})))
+    # Safe tool count (FastMCP 2.x uses various internal structures)
+    tools_dict = _get_tools_robust(mcp)
+    tool_count = len(tools_dict)
     logger.info(f"Registered tools: {tool_count}")
 
     # .well-known endpoints

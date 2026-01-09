@@ -700,9 +700,13 @@ class ToolRouter:
             lines.append(f"  └─ {cat.description}")
             # Tips: Actionable keywords and tools
             if cat.keywords:
-                lines.append(f"  ├─ Tip: Say '{cat.keywords[0]}' or '{cat.keywords[1] if len(cat.keywords) > 1 else cat.keywords[0]}'")
+                lines.append(
+                    f"  ├─ Tip: Say '{cat.keywords[0]}' or '{cat.keywords[1] if len(cat.keywords) > 1 else cat.keywords[0]}'"
+                )
             if cat.tools:
-                lines.append(f"  └─ Tools: {', '.join(cat.tools[:3])}{'...' if len(cat.tools) > 3 else ''}")
+                lines.append(
+                    f"  └─ Tools: {', '.join(cat.tools[:3])}{'...' if len(cat.tools) > 3 else ''}"
+                )
             lines.append("")
 
         return "\n".join(lines)

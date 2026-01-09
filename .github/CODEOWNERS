@@ -1,0 +1,56 @@
+# Code Owners
+# This file defines individuals or teams responsible for code in this repository.
+# Code owners are automatically requested for review when someone opens a pull request.
+#
+# More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+* @Boring206
+
+# Core modules
+/src/boring/core.py @Boring206
+/src/boring/gemini_client.py @Boring206
+/src/boring/config.py @Boring206
+
+# Agent system
+/src/boring/agents/ @Boring206
+/src/boring/loop/ @Boring206
+
+# MCP server
+/src/boring/mcp/ @Boring206
+
+# RAG and memory
+/src/boring/rag/ @Boring206
+/src/boring/vector_memory.py @Boring206
+/src/boring/memory.py @Boring206
+
+# Vibe coder and intelligence
+/src/boring/vibe/ @Boring206
+/src/boring/intelligence/ @Boring206
+
+# Security and verification
+/src/boring/security.py @Boring206
+/src/boring/shadow_mode.py @Boring206
+/src/boring/verification/ @Boring206
+
+# Quality and monitoring
+/src/boring/quality_tracker.py @Boring206
+/src/boring/monitor.py @Boring206
+/src/boring/health.py @Boring206
+
+# CI/CD and workflows
+/.github/ @Boring206
+/.github/workflows/ @Boring206
+
+# Documentation
+/docs/ @Boring206
+/*.md @Boring206
+
+# Configuration files
+/pyproject.toml @Boring206
+/requirements*.txt @Boring206
+/.pre-commit-config.yaml @Boring206
+/Dockerfile @Boring206
+
+# Tests
+/tests/ @Boring206

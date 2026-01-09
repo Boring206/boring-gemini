@@ -1,97 +1,149 @@
-# API 整合指南
+# Boring Python API 開發與整合指南 (V10.26)
 
-> 將 Boring 的智慧直接嵌入您的 Python 腳本與工作流程中。
+> 將 Boring 的智慧 (Intelligence)、評估 (Judge) 與安全 (Shadow Mode) 直接嵌入您的 Python 應用程式中。
 
----
+Boring-Gemini 不僅僅是一個 CLI 工具，它也是一個模組化的 Python 庫。您可以將其核心模組導入到您自己的 AI 應用程式或自動化腳本中。
 
-## 🛠️ 基礎引用 (Imports)
+## 📦 安裝
 
-Boring 的所有核心邏輯都可以透過 `boring` 套件存取。
+```bash
+pip install boring-aicoding
+```
 
-### 核心模組
-| 模組路徑 | 用途 | 關鍵類別 (Classes) |
-|----------|------|--------------------|
-| `boring.rag` | 理解代碼庫內容 | `RAGRetriever`, `IndexManager` |
-| `boring.agents` | 自主執行邏輯 | `StatefulAgentLoop`, `CoderAgent` |
-| `boring.security` | 安全與攔截 | `ShadowInterceptor` |
-| `boring.mcp` | 生態系工具整合 | `SpeckitManager`, `McpServer` |
+## 🧠 Intelligence API (大腦與記憶)
 
----
+`boring.intelligence` 模組提供了知識管理、模式學習和向量記憶功能。
 
-## 🚀 實戰範例：自動化專案摘要生成器
+### 1. 管理知識庫 (BrainManager)
 
-此腳本展示如何使用 RAG API 掃描專案並生成一份高階摘要文件。
-
-### `summarize_project.py`
+使用 `BrainManager` 來存取或更新 `.boring_brain` 中的長期記憶與學習模式。
 
 ```python
-import os
-from boring.rag.retriever import RAGRetriever
+from boring.intelligence.brain_manager import BrainManager, LearnedPattern
 
-def generate_report(project_dir: str):
-    # 1. 初始化 RAG（會使用現有索引或自動掃描）
-    retriever = RAGRetriever(project_path=project_dir)
-    
-    print(f"🔍 正在分析專案路徑: {project_dir}...")
-    
-    # 向 Boring 詢問核心功能
-    queries = [
-        "這個應用程式的主要入口點在哪裡？",
-        "使用了哪些外部套件來處理網路或資料庫？",
-        "驗證 (Authentication) 邏輯是如何實作的？"
+# 初始化 (自動載入 .boring_brain)
+brain = BrainManager(project_path="./my_project")
+
+# 1. 查詢已學習的模式 (Pattern Mining)
+patterns = brain.get_patterns(category="error_handling")
+for p in patterns:
+    print(f"Pattern [{p.confidence}]: {p.description}")
+
+# 2. 記錄新學到的知識
+new_pattern = LearnedPattern(
+    trigger="ConnectionError",
+    solution="Implement exponential backoff in retry logic",
+    confidence=0.9
+)
+brain.learn_pattern(new_pattern)
+```
+
+### 2. 向量記憶 (VectorMemory)
+
+如果您的環境支援 ChromaDB，可以使用 `VectorMemory` 進行語義搜索。
+
+```python
+from boring.intelligence.vector_memory import VectorMemory
+
+memory = VectorMemory(persist_path="./.boring_brain/vector_store")
+
+# 儲存經驗
+memory.add_experience(
+    text="Use Context Managers for file I/O to ensure closure",
+    metadata={"tag": "best_practice", "lang": "python"}
+)
+
+# 語義搜索 (RAG)
+results = memory.search("safe file handling", n_results=3)
+for res in results:
+    print(f"Found: {res.text}")
+```
+
+---
+
+## ⚖️ Judge API (評估與準則)
+
+`boring.judge` 模組提供了結構化的評估框架，適合用於 LLM 輸出的品質控管。
+
+### 定義評估準則 (Rubric)
+
+您可以定義自己的 `Rubric` 並將其應用於評估流程。
+
+```python
+from boring.judge.rubrics import Rubric, Criterion
+
+# 1. 定義準則
+security_rubric = Rubric(
+    name="API Security",
+    criteria=[
+        Criterion(name="Auth", description="Standard OIDC/OAuth2 usage", weight=1.0),
+        Criterion(name="Validation", description="Input sanitization", weight=0.8),
+        Criterion(name="Logging", description="No secrets in logs", weight=1.0),
     ]
-    
-    report_content = "# Project AI 專案分析報告\n\n"
-    
-    for q in queries:
-        report_content += f"### {q}\n"
-        # 這裡就是 API 的威力：語意搜尋
-        results = retriever.search(q, max_results=2)
-        
-        if not results:
-            report_content += "_找不到相關代碼。_\n\n"
-            continue
-            
-        for doc in results:
-            report_content += f"- **檔案**: `{doc.file_path}`\n"
-            # 在實際應用中，您可以將 doc.content 傳送給 LLM 進行總結
-            report_content += f"  - 相關內容摘要: {doc.content[:150].strip()}...\n\n"
+)
 
-    # 3. 儲存報告
-    with open("PROJECT_SUMMARY.md", "w", encoding="utf-8") as f:
-        f.write(report_content)
-    
-    print("✅ 報告已生成: PROJECT_SUMMARY.md")
+# 2. 導出為 Markdown (供 LLM 使用)
+print(security_rubric.to_markdown())
 
-if __name__ == "__main__":
-    generate_report(".")
+# 3. 程式化評分 (如果已有 Score 物件)
+# score = evaluator.evaluate(code, security_rubric)
 ```
 
 ---
 
-## ⚙️ 進階應用：在 CI 中加入品質閘道 (Quality Gates)
+## 🛡️ Loop API (工作流與安全)
 
-您可以使用 `Verifier` API，在程式碼不符規範時自動讓 CI 失敗。
+`boring.loop` 模組提供了安全防護和原子操作，非常適合構建強健的自動化腳本。
+
+### 1. Shadow Mode 保護 (ShadowModeGuard)
+
+將您的腳本包裹在 Shadow Mode 中，防止意外的毀滅性操作。
 
 ```python
-from boring.core.verifier import ParallelVerifier
+from boring.loop.shadow_mode import ShadowModeGuard, OperationSeverity, ShadowModeLevel
 
-verifier = ParallelVerifier(project_path=".")
-results = verifier.verify_all()
+# 初始化守衛 (嚴格模式)
+guard = ShadowModeGuard(level=ShadowModeLevel.STRICT)
 
-if not results.passed:
-    print(f"❌ 驗證失敗：發現 {len(results.issues)} 個問題。")
-    for issue in results.issues:
-        print(f"  - [{issue.category}] {issue.message}")
-    exit(1)
+# 嘗試執行操作
+def delete_database():
+    op = guard.create_operation(
+        type="delete",
+        target="./data.db",
+        severity=OperationSeverity.CRITICAL
+    )
+    
+    if guard.allow(op):
+        print("Deleting...")
+        # os.remove("./data.db")
+    else:
+        print(f"Operation blocked: {op.reason}")
 
-print("🚀 所有品質檢查均已通過！")
+delete_database()
+# Output: Operation blocked: High severity requires approval in STRICT mode
 ```
 
----
+### 2. 原子交易 (TransactionManager)
 
-## 💡 專家建議
+確保一組檔案操作要麼全部成功，要麼全部回滾。
 
-1.  **環境變數**：許多 API 會尊重 `BORING_LOG_LEVEL` 或 `SHADOW_MODE_LEVEL` 等環境變數設定。
-2.  **單例模式 (Singleton)**：像是 `RAGRetriever` 會在內部處理索引快取，因此您不需要擔心重複掃描造成的效能損失。
-3.  **非同步支援**：對於需要高性能的整合，可以查看 `boring.agents` 模組中的 `async` 方法。
+```python
+from boring.loop.transactions import TransactionManager
+
+tx = TransactionManager(project_path=".")
+
+with tx.begin() as transaction:
+    try:
+        # 這些操作會先寫入暫存區
+        transaction.write("config.py", "DEBUG = False")
+        transaction.write("src/main.py", "import config")
+        
+        # 提交 (原子寫入)
+        transaction.commit()
+        print("原子更新成功")
+        
+    except Exception as e:
+        # 自動回滾 (不修改任何檔案)
+        transaction.rollback()
+        print(f"更新失敗，已回滾: {e}")
+```

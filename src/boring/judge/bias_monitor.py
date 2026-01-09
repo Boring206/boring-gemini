@@ -269,9 +269,11 @@ class BiasMonitor:
 
         if bias_detected:
             if z_score > 0:
-                interpretation = f"First-position bias detected: {win_rate:.1%} win rate (expected 50%)"
+                interpretation = (
+                    f"First-position bias detected: {win_rate:.1%} win rate (expected 50%)"
+                )
             else:
-                interpretation = f"Second-position bias detected: {1-win_rate:.1%} win rate for second position"
+                interpretation = f"Second-position bias detected: {1 - win_rate:.1%} win rate for second position"
         else:
             interpretation = f"No significant position bias: {win_rate:.1%} first-position win rate"
 
