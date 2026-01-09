@@ -152,7 +152,7 @@ class ContextOptimizer:
         normalized = re.sub(r"[^a-z0-9 ]", "", normalized)
         # Take key ngrams
         words = normalized.split()[:50]  # First 50 words
-        return hashlib.md5(" ".join(words).encode()).hexdigest()
+        return hashlib.sha256(" ".join(words).encode()).hexdigest()
 
     def _detect_importance_markers(self, content: str) -> list[str]:
         """Detect importance markers in content."""
@@ -203,7 +203,7 @@ class ContextOptimizer:
         if not content or not content.strip():
             return
 
-        content_hash = hashlib.md5(content.encode()).hexdigest()
+        content_hash = hashlib.sha256(content.encode()).hexdigest()
         token_count = len(content) // CHARS_PER_TOKEN
 
         # V10.23: Compute semantic hash and detect importance
@@ -774,7 +774,7 @@ class ReasoningCache:
 
     def _compute_key(self, content: str) -> str:
         """Compute cache key from content."""
-        return hashlib.md5(content.encode()).hexdigest()
+        return hashlib.sha256(content.encode()).hexdigest()
 
     def get(self, content: str) -> Optional[ReasoningEntry]:
         """

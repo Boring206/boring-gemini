@@ -280,8 +280,8 @@ class PredictionTracker:
             params.append(prediction_type)
 
         # Get totals
-        row = conn.execute(
-            f"""
+        # nosec B608: static table/column names, safe
+        query_total = f"""
             SELECT
                 COUNT(*) as total,
                 SUM(CASE WHEN was_correct IS NOT NULL THEN 1 ELSE 0 END) as resolved,
@@ -289,9 +289,8 @@ class PredictionTracker:
                 AVG(confidence) as avg_conf
             FROM predictions
             WHERE {where_clause}
-        """,
-            params,
-        ).fetchone()
+        """
+        row = conn.execute(query_total, params).fetchone()
 
         total = row["total"] or 0
         resolved = row["resolved"] or 0
@@ -302,8 +301,8 @@ class PredictionTracker:
 
         # Get by type
         by_type = {}
-        for type_row in conn.execute(
-            f"""
+        # nosec B608: static table/column names, safe
+        query = f"""
             SELECT
                 prediction_type,
                 COUNT(*) as total,
@@ -311,9 +310,8 @@ class PredictionTracker:
             FROM predictions
             WHERE {where_clause} AND was_correct IS NOT NULL
             GROUP BY prediction_type
-        """,
-            params,
-        ):
+        """
+        for type_row in conn.execute(query, params):
             t_total = type_row["total"]
             t_correct = type_row["correct"]
             by_type[type_row["prediction_type"]] = {
@@ -517,9 +515,7 @@ class PredictionTracker:
             FROM calibration_data
             WHERE {where}
             ORDER BY bucket
-        """,
-            params,
-        ).fetchall()
+        """, params).fetchall()  # nosec B608: static table/column names, safe
 
         buckets = []
         expected = []

@@ -116,7 +116,7 @@ class PluginLoader:
     def _compute_hash(self, file_path: Path) -> str:
         """Compute MD5 hash of a file for change detection."""
         content = file_path.read_bytes()
-        return hashlib.md5(content).hexdigest()
+        return hashlib.sha256(content).hexdigest()
 
     def load_plugin_file(self, file_path: Path) -> list[BoringPlugin]:
         """Load plugins from a Python file."""

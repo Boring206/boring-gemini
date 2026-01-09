@@ -168,7 +168,7 @@ class TestPluginLoader:
         hash2 = loader._compute_hash(temp_plugin_file)
 
         assert hash1 == hash2
-        assert len(hash1) == 32  # MD5 hash length
+        assert len(hash1) == 64  # SHA256 hash length
 
     def test_plugin_loader_load_plugin_file(self, temp_plugin_file):
         """Test PluginLoader.load_plugin_file method."""

@@ -30,7 +30,7 @@ Backward compatibility is maintained - old import paths still work.
 # limitations under the License.
 # =============================================================================
 
-__version__ = "10.27.2"
+__version__ = "10.27.3"
 
 # =============================================================================
 # Backward Compatibility Layer (V10.26)

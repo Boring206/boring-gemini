@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 # MCP Server Card - metadata for Smithery discovery
 MCP_SERVER_CARD = {
     "name": "boring-gemini",
-    "version": "10.27.2",
+    "version": "10.27.3",
     "description": "Boring Vibecoder Assistant: An AI-powered development support tool with NotebookLM optimizations.",
     "vendor": {"name": "Boring for Gemini"},
     "capabilities": {"tools": True, "resources": True, "prompts": True},
@@ -122,7 +122,7 @@ def main():
 
     # Get port from environment (Smithery sets this)
     port = int(os.environ.get("PORT", 8000))
-    host = os.environ.get("HOST", "0.0.0.0")
+    host = os.environ.get("HOST", "0.0.0.0")  # nosec B104: Intended for container binding
 
     logger.info(f"Starting Boring MCP HTTP server on {host}:{port}")
 

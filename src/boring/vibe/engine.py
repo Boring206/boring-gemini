@@ -83,7 +83,8 @@ class VibeEngine:
 
     def _cache_key(self, file_path: str, source_code: str, operation: str) -> str:
         """V10.23: Generate cache key from file and content."""
-        content_hash = hashlib.md5(source_code.encode()).hexdigest()[:16]
+        # Use sha256 for cache key (non-security)
+        content_hash = hashlib.sha256(source_code.encode()).hexdigest()[:16]
         return f"{operation}:{file_path}:{content_hash}"
 
     def _get_cached(self, cache: dict, key: str):
