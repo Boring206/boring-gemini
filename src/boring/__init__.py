@@ -35,7 +35,7 @@ Backward compatibility is maintained - old import paths still work.
 import importlib
 from typing import TYPE_CHECKING
 
-__version__ = "10.28.0"
+__version__ = "10.28.1"
 
 # =============================================================================
 # Lazy Loading Configuration
