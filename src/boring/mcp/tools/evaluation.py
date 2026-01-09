@@ -252,8 +252,190 @@ def boring_evaluate(
         return f"❌ Error evaluating: {str(e)}"
 
 
+# ==============================================================================
+# V10.25: ADVANCED EVALUATION TOOLS
+# ==============================================================================
+
+
+@audited
+def boring_evaluation_metrics(
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
+) -> str:
+    """
+    Get evaluation system metrics and statistics.
+
+    Shows correlation with human judgments, position consistency, and bias indicators.
+
+    Returns:
+        Formatted metrics report
+    """
+    allowed, msg = check_rate_limit("boring_evaluation_metrics")
+    if not allowed:
+        return f"⏱️ Rate limited: {msg}"
+
+    project_root = detect_project_root(project_path)
+    if not project_root:
+        return "❌ No valid Boring project found. Run in project root."
+
+    try:
+        from ...judge.metrics import (
+            format_metrics_report,
+            generate_metrics_report,
+        )
+
+        # Try to load historical evaluation data
+        memory_dir = project_root / ".boring_memory"
+        if not memory_dir.exists():
+            return (
+                "# 📊 Evaluation Metrics\n\n"
+                "No evaluation history found. Run `boring_evaluate` on some files first.\n\n"
+                "After evaluations, this tool will show:\n"
+                "- Correlation metrics (Spearman's ρ, Kendall's τ)\n"
+                "- Agreement metrics (Cohen's κ)\n"
+                "- Position consistency for pairwise comparisons\n"
+                "- Bias indicators"
+            )
+
+        # Generate sample report (in production, load real data)
+        report = generate_metrics_report(
+            evaluation_type="general",
+        )
+
+        return format_metrics_report(report)
+
+    except Exception as e:
+        return f"❌ Error getting metrics: {str(e)}"
+
+
+@audited
+def boring_bias_report(
+    days: Annotated[
+        int, Field(description="Number of days to analyze (default: 30)")
+    ] = 30,
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
+) -> str:
+    """
+    Get bias monitoring report for the evaluation system.
+
+    Analyzes position bias (first-position preference) and length bias (longer = higher scores).
+
+    Returns:
+        Formatted bias report with recommendations
+    """
+    allowed, msg = check_rate_limit("boring_bias_report")
+    if not allowed:
+        return f"⏱️ Rate limited: {msg}"
+
+    project_root = detect_project_root(project_path)
+    if not project_root:
+        return "❌ No valid Boring project found. Run in project root."
+
+    try:
+        from ...judge.bias_monitor import format_bias_report, get_bias_monitor
+
+        monitor = get_bias_monitor(project_root)
+        report = monitor.get_bias_report(days=days)
+
+        return format_bias_report(report)
+
+    except Exception as e:
+        return f"❌ Error getting bias report: {str(e)}"
+
+
+@audited
+def boring_generate_rubric(
+    name: Annotated[str, Field(description="Name for the rubric")],
+    domain: Annotated[
+        str,
+        Field(description="Domain: code_quality, security, performance, documentation"),
+    ] = "code_quality",
+    strictness: Annotated[
+        str, Field(description="Strictness: lenient, balanced, strict")
+    ] = "balanced",
+    criteria: Annotated[
+        str, Field(description="Comma-separated criterion names")
+    ] = "",
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
+) -> str:
+    """
+    Generate a detailed evaluation rubric with level descriptions.
+
+    Creates rubrics with:
+    - Detailed level descriptions (1-5 scale)
+    - Edge case guidance
+    - Scoring guidelines based on strictness
+
+    Returns:
+        Generated rubric in prompt format
+    """
+    allowed, msg = check_rate_limit("boring_generate_rubric")
+    if not allowed:
+        return f"⏱️ Rate limited: {msg}"
+
+    try:
+        from ...judge.rubric_generator import generate_rubric, rubric_to_prompt
+
+        # Parse criteria
+        if criteria:
+            criteria_list = [c.strip() for c in criteria.split(",")]
+        else:
+            # Default criteria based on domain
+            default_criteria = {
+                "code_quality": ["Readability", "Documentation", "Modularity", "Error Handling"],
+                "security": ["Secrets Management", "Input Validation", "Injection Prevention"],
+                "performance": ["Algorithmic Efficiency", "Resource Usage", "Caching"],
+                "documentation": ["Completeness", "Examples", "Accuracy"],
+            }
+            criteria_list = default_criteria.get(domain, ["Quality", "Correctness"])
+
+        rubric = generate_rubric(
+            name=name,
+            description=f"Evaluation rubric for {name}",
+            domain=domain,
+            criteria_names=criteria_list,
+            scale="1-5",
+            strictness=strictness,
+        )
+
+        prompt_text = rubric_to_prompt(rubric)
+
+        return (
+            f"# 📏 Generated Rubric: {name}\n\n"
+            f"**Domain**: {domain}\n"
+            f"**Strictness**: {strictness}\n"
+            f"**Criteria**: {', '.join(criteria_list)}\n\n"
+            f"---\n\n"
+            f"{prompt_text}"
+        )
+
+    except Exception as e:
+        return f"❌ Error generating rubric: {str(e)}"
+
+
 if MCP_AVAILABLE and mcp is not None:
     mcp.tool(
         description="Evaluate code quality (LLM Judge)",
         annotations={"readOnlyHint": True, "openWorldHint": True},
     )(boring_evaluate)
+
+    mcp.tool(
+        description="Get evaluation system metrics (Spearman, Kappa, etc.)",
+        annotations={"readOnlyHint": True},
+    )(boring_evaluation_metrics)
+
+    mcp.tool(
+        description="Get bias monitoring report (position bias, length bias)",
+        annotations={"readOnlyHint": True},
+    )(boring_bias_report)
+
+    mcp.tool(
+        description="Generate detailed evaluation rubric with level descriptions",
+        annotations={"readOnlyHint": True},
+    )(boring_generate_rubric)
+

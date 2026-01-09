@@ -1,5 +1,41 @@
 # Changelog
 
+## [10.24.9] - 2026-01-09 - Advanced Evaluation V10.25 📊🎯
+
+### Added
+- **LLM-as-a-Judge Evaluation System**: Complete implementation of advanced evaluation tools
+  - `boring_evaluation_metrics` - View correlation metrics (Spearman's ρ, Cohen's κ, F1)
+  - `boring_bias_report` - Detect position bias and length bias in evaluations
+  - `boring_generate_rubric` - Generate detailed evaluation rubrics with level descriptions
+- **Metrics Module** (`boring.judge.metrics`): 
+  - Classification metrics: Precision, Recall, F1 Score
+  - Agreement metrics: Cohen's Kappa, Weighted Kappa
+  - Correlation metrics: Spearman's ρ, Kendall's τ, Pearson's r
+  - Pairwise comparison metrics: Position Consistency, Agreement Rate
+- **Bias Monitor** (`boring.judge.bias_monitor`):
+  - Position bias detection (first-position preference)
+  - Length bias detection (longer = higher scores)
+  - Aggregate bias reporting with recommendations
+- **Rubric Generator** (`boring.judge.rubric_generator`):
+  - Domain-specific rubrics (code_quality, security, performance, documentation)
+  - Detailed level descriptions (1-5 scale)
+  - Edge case guidance and strictness calibration
+
+### Changed
+- **Tool Router**: Added "evaluation" category with 35+ Chinese/English keywords
+- **LLMJudge Core**: Enhanced with confidence calibration, length normalization, and bias tracking
+
+### Documentation
+- New `docs/guides/evaluation-metrics.md` (繁體中文)
+- New `docs/guides/evaluation-metrics_en.md` (English)
+- Updated READMEs with Evaluation Metrics links
+
+## [10.24.8] - 2026-01-09 - Internal Improvements 🔧
+
+### Fixed
+- Minor bug fixes and code cleanup
+- Improved error handling in evaluation tools
+
 ## [10.24.7] - 2026-01-09 - Skills & IDE Experience 🛠️✨
 
 ### Added

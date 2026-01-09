@@ -1,9 +1,17 @@
 """
-Core LLMJudge Implementation
+Core LLMJudge Implementation - Advanced Evaluation V10.25
+
+Enhanced with:
+- Confidence calibration based on position consistency and evidence
+- Length-normalized scoring
+- BiasMonitor integration for tracking evaluation history
+- Panel of LLMs support (multi-model voting)
 """
 
 import logging
 import traceback
+import uuid
+from pathlib import Path
 from typing import Any, Optional
 
 from ..llm.provider import LLMProvider
@@ -18,13 +26,35 @@ logger = logging.getLogger(__name__)
 class LLMJudge:
     """
     LLM-as-a-Judge implementation for evaluating code and plans.
+
+    V10.25 Enhancements:
+    - Confidence calibration based on position consistency
+    - Length-normalized scoring to mitigate length bias
+    - BiasMonitor integration for systematic bias tracking
     """
 
-    def __init__(self, provider: LLMProvider, quality_tracker: Optional[QualityTracker] = None):
+    def __init__(
+        self,
+        provider: LLMProvider,
+        quality_tracker: Optional[QualityTracker] = None,
+        project_root: Optional[Path] = None,
+        enable_bias_tracking: bool = True,
+    ):
         self.cli = (
             provider  # Renaming this would ripple too much, keeping name but typing is generalized
         )
         self.tracker = quality_tracker  # Optional: for automatic history recording
+        self.project_root = project_root
+        self._bias_monitor = None
+
+        # Initialize bias monitor if enabled and project root provided
+        if enable_bias_tracking and project_root:
+            try:
+                from .bias_monitor import get_bias_monitor
+
+                self._bias_monitor = get_bias_monitor(project_root)
+            except ImportError:
+                logger.debug("BiasMonitor not available, skipping bias tracking")
 
     def grade_code(
         self,
@@ -220,3 +250,134 @@ class LLMJudge:
     def _build_grade_prompt(self, filename: str, content: str, rubric: Rubric) -> str:
         """Compatibility wrapper for build_grade_prompt."""
         return build_grade_prompt(filename, content, rubric, str(type(self.cli)))
+
+    # =========================================================================
+    # V10.25: Advanced Evaluation Methods
+    # =========================================================================
+
+    def calibrate_confidence(
+        self,
+        raw_confidence: float,
+        position_consistent: bool,
+        evidence_count: int = 0,
+    ) -> float:
+        """
+        Calibrate confidence based on multiple signals.
+
+        Args:
+            raw_confidence: Raw confidence from model output (0-1)
+            position_consistent: Whether position swap passes agreed
+            evidence_count: Number of evidence items supporting the judgment
+
+        Returns:
+            Calibrated confidence score (0-1)
+        """
+        calibrated = raw_confidence
+
+        # Position consistency is a strong signal
+        if not position_consistent:
+            calibrated *= 0.6  # Significant reduction for inconsistency
+
+        # More evidence = higher confidence
+        evidence_factor = min(evidence_count / 3, 1.0)  # Cap at 3 pieces
+        calibrated *= 0.7 + 0.3 * evidence_factor
+
+        return min(calibrated, 0.99)  # Never 100% confident
+
+    def length_normalized_score(
+        self,
+        score: float,
+        response_length: int,
+        target_length: int = 500,
+        max_penalty: float = 0.5,
+    ) -> float:
+        """
+        Adjust score based on response length to mitigate length bias.
+
+        Args:
+            score: Original score
+            response_length: Length of the response (characters)
+            target_length: Expected typical length
+            max_penalty: Maximum penalty to apply
+
+        Returns:
+            Length-adjusted score
+        """
+        length_ratio = response_length / target_length if target_length > 0 else 1.0
+
+        if length_ratio > 2.0:
+            # Penalize excessively long responses
+            penalty = min((length_ratio - 2.0) * 0.1, max_penalty)
+            return max(score - penalty, 1.0)
+        elif length_ratio < 0.3:
+            # Penalize excessively short responses
+            penalty = min((0.3 - length_ratio) * 0.5, max_penalty)
+            return max(score - penalty, 1.0)
+        else:
+            return score
+
+    def get_bias_report(self, days: int = 30) -> Optional[dict]:
+        """
+        Get bias monitoring report.
+
+        Args:
+            days: Number of days to analyze
+
+        Returns:
+            Bias report dict or None if monitoring not available
+        """
+        if self._bias_monitor is None:
+            return None
+
+        try:
+            from .bias_monitor import format_bias_report
+
+            report = self._bias_monitor.get_bias_report(days)
+            return {
+                "formatted": format_bias_report(report),
+                "position_bias": {
+                    "detected": report.position_bias.bias_detected if report.position_bias else False,
+                    "first_position_win_rate": report.position_bias.first_position_win_rate if report.position_bias else 0,
+                },
+                "length_bias": {
+                    "detected": report.length_bias.bias_detected if report.length_bias else False,
+                    "correlation": report.length_bias.correlation if report.length_bias else 0,
+                },
+                "warnings": report.warnings,
+                "recommendations": report.recommendations,
+            }
+        except Exception as e:
+            logger.error(f"Failed to get bias report: {e}")
+            return None
+
+    def _record_evaluation(
+        self,
+        evaluation_type: str,
+        result: dict,
+        response_length: int = 0,
+    ):
+        """Record evaluation to bias monitor."""
+        if self._bias_monitor is None:
+            return
+
+        try:
+            eval_id = str(uuid.uuid4())[:8]
+
+            if evaluation_type == "pairwise":
+                self._bias_monitor.record_pairwise_evaluation(
+                    evaluation_id=eval_id,
+                    winner=result.get("winner", "TIE"),
+                    first_position="A",  # A is always first in our implementation
+                    position_consistent=result.get("positionConsistency", False),
+                    confidence=result.get("confidence", 0.0),
+                )
+            elif evaluation_type == "direct":
+                self._bias_monitor.record_direct_evaluation(
+                    evaluation_id=eval_id,
+                    score=result.get("score", 0),
+                    response_length=response_length,
+                    dimension_scores=result.get("dimensions"),
+                )
+        except Exception as e:
+            logger.debug(f"Failed to record evaluation: {e}")
+

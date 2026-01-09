@@ -44,6 +44,7 @@ Practical how-to content.
 | [🚀 YOLO + Boring](./guides/yolo-boring-integration.md) | **NEW**: Maximum automation guide ([中文](./guides/yolo-boring-integration.md)) |
 | [⚙️ MCP Configuration](./guides/mcp-configuration.md) | **NEW**: Profiles, ENV vars, Smithery vs Local ([中文](./guides/mcp-configuration.md)) |
 | [🛠️ Tool Manual](./guides/tool-manual.md) | **NEW**: Complete tool usage guide ([English](./guides/tool-manual_en.md)) |
+| [📊 Evaluation Metrics](./guides/evaluation-metrics.md) | **NEW**: Kappa, Spearman, F1, Bias Monitoring ([English](./guides/evaluation-metrics_en.md)) |
 | [Vibe Coder Guide](./guides/vibe-coder.md) | For description-based developers |
 | [Quick Tutorials](./guides/quick-tutorials.md) | 5-minute step-by-step guides |
 | [Cookbook](./guides/cookbook.md) | Ready-to-use recipes for all features |
@@ -116,7 +117,6 @@ Deep dive technical documentation.
 | [知識系統](./guides/knowledge-system_zh.md) | Brain、RAG 與 Patterns - 儲存與遷移 |
 | [插件開發指南](./guides/plugins_zh.md) | 使用自定義 Python 工具擴充 Boring |
 | [知識與大腦管理](./guides/knowledge-management_zh.md) | **進階**：備份與分享學習成果 |
-| [人類對齊指南](./guides/human-alignment_zh.md) | **進階**：使用 Rubrics 與記憶引導 AI |
 | [人類對齊指南](./guides/human-alignment_zh.md) | **進階**：使用 Rubrics 與記憶引導 AI |
 | [API 整合指南](./guides/api-integration_zh.md) | 將 Boring 作為 Python 函式庫使用 |
 | [技能指南](./guides/skills_guide.md) | 掌握 Boring 技能樹 |
