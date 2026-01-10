@@ -359,7 +359,7 @@ def test_version_command_fallback(mock_dependencies):
     # In this mock setup, side_effect=Exception means it falls back to hardcoded or pkg_resources.
     # If using importlib.metadata.version which is mocked to fail, code typically keeps going?
     # Let's see main.py. But for now, let's just make the test flexible or match current output.
-    assert "10.31.0" in result.stdout or ("10" in result.stdout and "31" in result.stdout)
+    assert "10.32.0" in result.stdout or ("10" in result.stdout and "32" in result.stdout)
 
 
 # --- Workflow Commands ---

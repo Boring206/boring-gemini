@@ -1,6 +1,11 @@
 """
 Boring for Gemini - AI Coding Assistant
 
+V10.32.1 "Visual Identity & Stability Update":
+- Overhauled README.md and README_zh.md with modern header/logo
+- Fixed version command fallback in unit tests
+- Verified 52% coverage gate compliance
+
 V10.32.0 "Dependency Fix Release":
 - Added psutil dependency for performance benchmarks
 - Fixed ModuleNotFoundError in tests/performance module
@@ -51,7 +56,7 @@ Backward compatibility is maintained - old import paths still work.
 import importlib
 from typing import TYPE_CHECKING
 
-__version__ = "10.32.0"
+__version__ = "10.32.1"
 
 # =============================================================================
 # Lazy Loading Configuration

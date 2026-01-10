@@ -1,6 +1,6 @@
 [project]
 name = "boring-aicoding"
-version = "10.32.0"
+version = "10.32.1"
 description = "Boring Vibecoder Assistant: An AI-powered development support tool handling project planning, logic verification, and knowledge management. Works alongside Cursor, Copilot, and others to ensure rigorous, efficient workflows."
 authors = [
     { name = "Boring206", email = "C112156246@nkust.edu.tw" }
@@ -56,6 +56,7 @@ dev = [
     "bandit>=1.7.0",
     "pip-audit>=2.7.0",
     "mkdocs>=1.5.0",
+    "mkdocs-material>=9.5.0",
     "mkdocstrings[python]>=0.24.0",
     "psutil>=5.9.0",
 ]

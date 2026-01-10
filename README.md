@@ -1,580 +1,117 @@
-[![Smithery Badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
-[![PyPI version](https://badge.fury.io/py/boring-aicoding.svg)](https://badge.fury.io/py/boring-aicoding)
-[![Downloads](https://static.pepy.tech/badge/boring-aicoding)](https://pepy.tech/project/boring-aicoding)
-[![Python Versions](https://img.shields.io/pypi/pyversions/boring-aicoding.svg)](https://pypi.org/project/boring-aicoding/)
+<p align="center">
+  <img src="docs/assets/logo.png" width="200" alt="Boring for Gemini Logo">
+</p>
 
-### 🛠️ The Autonomous Development Agent for Vibe Coders
+<h1 align="center">Boring for Gemini</h1>
 
-[**Explore Documentation**](https://boring206.github.io/boring-gemini/) | [**Smithery Registry**](https://smithery.ai/server/boring) | [**PyPI**](https://pypi.org/project/boring-aicoding/)
-[![Vibe Coder](https://img.shields.io/badge/Vibe_Coder-Pure_Natural_Language-ff69b4)](docs/features/vibe-coder.md)
+<p align="center">
+  <strong>The Autonomous AI Development Engine for Vibe Coders</strong>
+</p>
 
-# Boring for Gemini
+<p align="center">
+  <a href="https://smithery.ai/server/boring/boring"><img src="https://smithery.ai/badge/boring/boring" alt="Smithery Badge"></a>
+  <a href="https://badge.fury.io/py/boring-aicoding"><img src="https://badge.fury.io/py/boring-aicoding" alt="PyPI version"></a>
+  <a href="https://pepy.tech/project/boring-aicoding"><img src="https://static.pepy.tech/badge/boring-aicoding" alt="Downloads"></a>
+  <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/pyversions/boring-aicoding.svg" alt="Python Versions"></a>
+</p>
 
-**Autonomous AI Agent Loop with VibeCoder Experience**
+<p align="center">
+  <a href="README.md">English</a> | <a href="README_zh.md">繁體中文</a> | <a href="https://boring206.github.io/boring-gemini/">Documentation</a>
+</p>
 
-[English](README.md) | [繁體中文](README_zh.md)
+---
 
-> 🤖 **Proudly Built with AI-Human Collaboration**
+### 🧞‍♂️ The Vibe Coder Experience
+> **"Don't write code. Describe the vibe."**
 >
-> _"This project explores the limits of autonomous AI coding. While we strive for quality, some logic is AI-generated and subject to continuous improvement. Pull Requests are welcome!"_
+> Boring-Gemini is an autonomous AI agent loop designed to turn natural language into high-quality software. It deeply integrates with **Gemini**, **Claude**, and your favorite IDEs (Cursor/VS Code) to automate the heavy lifting of development.
 
 ---
 
-## ✨ The Vibe Coder Experience (V10.31)
+## 🚀 Core Capabilities
 
-**No Code Needed.** Just describe the vibe.
-
-Boring-Gemini now features a **Universal Natural Language Router**. You don't need to remember 98+ complex tools. Just say what you want in English or Chinese:
-
-> "Search for authentication logic"
->
-> "Review my code for security issues"
->
-> "幫我寫測試" (Help me write tests)
->
-> "我想做登入功能" (I want to build login feature)
-
-**Try it in your terminal:**
-```bash
-boring-route "review my code"
-# 🎯 Routes to boring_code_review (100%)
-```
-
-[👉 Learn more about Vibe Coder Experience](docs/features/vibe-coder.md)
+| | Feature | Description |
+| :--- | :--- | :--- |
+| 🧠 | **Active Recall** | Automatically learns from errors and applies past solutions to fix "stuck loops". |
+| 🛡️ | **Safety Net** | Automatic Git checkpoints before risky operations. Roll back instantly if AI goes wild. |
+| 🕵️ | **Hybrid RAG** | Advanced semantic search using vectors + dependency graphs to find hidden logic. |
+| 🧪 | **Vibe Check** | One-click project health scan (Coverage, Security, Documentation) with an AI Fix Prompt. |
+| 🔌 | **MCP Native** | 98+ specialized tools for every DevOps task, optimized for IDE context windows. |
 
 ---
 
-## 🚀 What's New in V10.31?
+## ⚡ Why Boring?
 
-Boring continues to evolve into a fully **Agentic AI Partner**:
+Boring isn't just a tool; it's a **collaborative intelligence system** that follows a rigorous development lifecycle:
 
-1.  **🧠 Brain Reflex (Active Recall)**: When the Agent encounters an error (like a failed test), it automatically queries the Global Brain for past solutions and fixes it. No more "stuck loops".
-2.  **🛡️ Safety Net (Git Checkpoints)**: Fearlessly let the AI refactor your code. The new `boring_checkpoint` tool creates safe-points before risky operations, allowing instant rollback if things go wrong.
-3.  **⚡ Architecture Decoupling**: We've split the "Brain" from the core, resulting in a system that is significantly more stable, testable, and faster to boot.
+1.  **Planning**: AI analyzes requirements and creates a technical specification.
+2.  **Execution**: Code is implemented with precision using specialized agents.
+3.  **Verification**: Every change is automatically verified through tests and quality gates.
 
----
-
-## ⚡ boring 的厲害 (Why Boring?)
-
-Boring isn't just an MCP server; it's a **Intelligence Maximization System**:
-
-1.  **🤝 Vibe Session**: Replaces the old `boring start`. This is a structured AI collaboration workflow (`boring_session_start`) that deeply integrates **Sequential Thinking (Deep Thinking)** and **Critical Thinking**, breaking development into "Planning, Implementation, Verification" phases. This is Boring's unique selling point!
-    - **Default Mode**: Waits for your confirmation (`boring_session_confirm`) after each phase, ensuring you have total control.
-    - **Auto Mode**: Switch to autonomous agent mode (`boring_session_auto`) to progress automatically until completion.
-2.  **🕵️ Hybrid RAG**: Advanced code search combining keywords, vectors, and dependency graphs (HyDE + Cross-Encoder). It finds code you didn't even know existed.
-3.  **🛡️ Security Shadow Mode**: Safe execution sandbox. It catches dangerous operations *before* they happen.
-4.  **⚡ 30% Faster**: Smart caching and optimized router reduce context usage by 80% (from 98 tools to 19).
-5.  **🧩 Vibe Coder**: The most human-friendly AI coding interface. Zero friction between thought and code.
+> [!TIP]
+> **Universal Natural Language Router**: You don't need to learn 98 tool names. Just say:
+> *"Review my code for security issues"* or *"Add a Google login feature"* — Boring handles the routing.
 
 ---
 
-## 🧪 NotebookLM Optimizations (V10.28+)
+## 📦 Getting Started
 
-Boring-Gemini V10.28 introduced critical optimizations inspired by NotebookLM research:
-
-- **Theme-Tips Hierarchical Output**: Restructures complex tool outputs into a "Theme → Tips" format (+1.13% comprehension).
-- **PREPAIR Reasoning Cache**: Caches logic before comparison to eliminate bias.
-- **Dynamic Prompts**: Modular prompts load only on-demand, saving 60% token costs.
-
----
-> **Boring is now primarily an MCP tool (used via Cursor / Claude Desktop / IDE)**
-> 
-> - ❌ **Not recommended to run `boring start` directly in CMD/terminal**: Gemini CLI no longer supports free authorization (unless using API, which is not well-tested)
-> - ✅ **Recommended usage**: Use Boring tools through Smithery or MCP config in your IDE or Client
-> - ✅ **Monitoring tools still work**: `boring-monitor`, `boring-dashboard` can be run locally
-> 
-> Most features are optimized for the MCP environment. CLI mode is no longer the primary supported method.
-
----
-
-## 🚀 Quick Start
-
-## 📦 Installation
-
-### Option 1: Smithery (✅ Recommended)
+### Quick Install (Smithery)
 
 ```bash
 npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ```
 
-> 📋 **Smithery Deployment Info**
-> - **Profile Level**: `lite` (default, adjustable to `dev` or `pro` in config)
-> - **Installation Type**: `[mcp-lite]` lightweight (~500MB, no RAG vector DB)
-> - **RAG Capability**: ⚠️ Degraded to keyword search (no ChromaDB/Torch)
-> - **Best For**: Daily development, fast response
-> - **For Full RAG**: Use Option 2 local install `[all]`
-
-> ⚠️ **Gemini Client Users**: If you encounter issues installing via Smithery, please use **Option 2 (Local pip)**. Direct Smithery integration on Gemini Client can be intermittent.
-
-### Option 2: Local pip Installation
+### Power User Install (pip)
 
 ```bash
-# Install with all features (Recommended for Vibe Coder)
 pip install "boring-aicoding[all]"
-
-# Modular Installation (The "Diet" Update):
-pip install boring-aicoding           # Minimal Core (<50MB)
-pip install "boring-aicoding[vector]" # Adds RAG (ChromaDB + Torch)
-pip install "boring-aicoding[gui]"    # Adds Dashboard (Streamlit)
-pip install "boring-aicoding[mcp]"    # Adds MCP Server (FastMCP)
 ```
-
-### Option 2.5: uv Installation (⚡ Ultra-Fast)
-
-> **New!** Install with [uv](https://github.com/astral-sh/uv) - 10-100x faster than pip!
-
-```bash
-# Install uv first (if not already installed)
-curl -LsSf https://astral.sh/uv/install.sh | sh  # Linux/Mac
-powershell -c "irm https://astral.sh/uv/install.ps1 | iex"  # Windows
-
-# Install boring-aicoding with uv
-uv pip install "boring-aicoding[all]"
-
-# Or use uv to manage the entire project
-uv venv                                    # Create virtual environment
-source .venv/bin/activate                  # Linux/Mac
-.venv\Scripts\activate                     # Windows
-uv pip install "boring-aicoding[all]"     # Install in venv
-```
-
-**Why uv?**
-- ⚡ **10-100x faster** than pip (Rust-based)
-- 🎯 **Better dependency resolution** (no conflicts)
-- 🔒 **Deterministic builds** (lockfile support)
-- 📦 **Smaller cache** (optimized storage)
-
-**🤔 Which one should I choose?**
-
-| Feature | `[all]` (Full / Local) | `Lite` (Basic / Smithery Default) |
-| :--- | :--- | :--- |
-| **RAG Memory** | ✅ Vector + Semantic | ⚠️ Keyword only (No vector DB) |
-| **Self-Verify** | ✅ Can run tests (`boring verify`) | ❌ Cannot verify (Missing pytest) |
-| **Dashboard** | ✅ GUI Available | ❌ None |
-| **Vibe Coding**| ✅ **Full Experience** (Think + Fix) | ⚠️ **Lite** (Write code only) |
-
-### ⚙️ MCP Environment Variables & Profiles
-
-Boring-Gemini uses **Profiles** to balance between **Tool Richness** and **Token Economy**. Your installation type determines which profiles are most effective.
-
-| Variable | Values | Description |
-|----------|--------|-------------|
-| `BORING_MCP_MODE` | `1` (required) | Enable MCP mode |
-| `BORING_MCP_PROFILE` | `ultra_lite` / `minimal` / `lite` / `standard` / `full` | Tool exposure level |
-| `PROJECT_ROOT_DEFAULT` | `.` or path | Default project root |
-
-**Profile vs. Installation Mapping:**
-
-| Profile | Recommended Install | Key Features | Memory Type |
-| :--- | :--- | :--- | :--- |
-| `ultra_lite` | `pip install boring-aicoding` | Gateway only | None |
-| `minimal` | `pip install boring-aicoding` | Basic Ops / Read-only | Keyword |
-| `lite` | `pip install boring-aicoding` | Daily Dev (Default) | Keyword |
-| `standard` | `pip install "boring[mcp,vector]"` | Pro Dev / Architecture | Vector (ChromaDB) |
-| `full` | `pip install "boring[all]"` | Power User / God Mode | Vector + GUI |
-
-> 📖 **[Full MCP Configuration Guide](docs/guides/mcp-configuration_en.md)** | **[Profile Comparison Guide](docs/guides/mcp-profiles-comparison.md)**
-
-### Option 3: Clone from GitHub (Fallback)
-
-> **Best for: Developers or if pip install fails**
-
-```bash
-git clone https://github.com/Boring206/boring-gemini.git
-cd boring-gemini
-pip install -e .
-```
-
----
-
----
-
-## 🚀 Usage
-
-### 1️⃣ MCP Mode (Recommended)
-Add Boring to your **Cursor** or **VS Code** config. The Agent will become an autonomous engineer in your IDE.
-
-- **Prompts**: Click the ✨ button or use `Cmd+I` to select a prompt.
-- **Workflows**: Type `/` in Chat to trigger a workflow.
-
-#### 💎 Top 5 Most Used Functions
-
-**[👉 View Complete Reference Manual (All 30+ Functions)](docs/reference/prompts.md)**
-
-| Command | Type | Description |
-| :--- | :--- | :--- |
-| **`vibe_start`** | Prompt | **One-click project kick-off**. From idea to architecture plan. |
-| **`quick_fix`** | Prompt | **Auto-fix everything**. Repairs lint errors and bugs. |
-| **`/speckit-plan`** | Workflow | **Technical Planning**. Creates a detailed implementation plan. |
-| **`smart_commit`** | Prompt | **Auto Commit**. Generates commit message from progress. |
-| **`review_code`** | Prompt | **Architect Review**. Deep code analysis for issues. |
-
-
-### 2️⃣ Maintenance Commands
-Run these commands in your terminal:
-
-```bash
-# Install Git Hooks (Auto-verify commits)
-python -m boring hooks install
-
-# Open Dashboard (Web UI)
-python -m boring dashboard
-
-# Check Health
-python -m boring status
-```
-
-### 3️⃣ LSP Server (Optional - For VS Code / Neovim Only)
-
-> [!NOTE]
-> **Cursor users: You DON'T need LSP!** Cursor has built-in AI features. Just use MCP config above.
->
-> LSP is for: VS Code (without AI), Neovim, and other terminal editors.
-
-**What's the difference?**
-| | MCP | LSP |
-|---|-----|-----|
-| **Purpose** | AI Agent tools (chat commands) | Editor syntax services |
-| **Interaction** | Chat: "Review my code" | Auto-complete, diagnostics |
-| **Required?** | ✅ **Yes** | ⚠️ Optional |
 
 <details>
-<summary>🔧 <b>LSP Configuration (click to expand)</b></summary>
+<summary><b>🔧 Advanced Installation (uv, modular)</b></summary>
 
-1. **Install**:
-   ```bash
-   pip install "boring-aicoding[all]"
-   ```
+**Using [uv](https://github.com/astral-sh/uv) (Recommended for Speed):**
+```bash
+uv pip install "boring-aicoding[all]"
+```
 
-2. **VS Code** (`settings.json`):
-   ```json
-   {
-     "boring.lsp.enabled": true,
-     "boring.lsp.command": "python",
-     "boring.lsp.args": ["-m", "boring", "lsp", "start"]
-   }
-   ```
-
-3. **Neovim** (`nvim-lspconfig` - for Linux/Mac terminal users):
-   ```lua
-   require('lspconfig').boring.setup {
-     cmd = { "python", "-m", "boring", "lsp", "start" },
-     filetypes = { "python", "javascript", "typescript" },
-   }
-   ```
+**Modular Components:**
+```bash
+pip install "boring-aicoding[vector]" # RAG Support
+pip install "boring-aicoding[gui]"    # Dashboard
+pip install "boring-aicoding[mcp]"    # MCP Server
+```
 </details>
 
-> [!CAUTION]
-> **DO NOT run `python -m boring lsp start` directly in terminal.**
-> This command is for editor configuration only. The LSP server communicates via stdin/stdout.
-
 ---
 
-## ⚙️ MCP Configuration
+## 🛠️ Usage & Workflows
 
-### For Smithery
+### 💎 Top Interaction Triggers
+Just say these phrases to the AI in your IDE (Cursor/Claude):
 
-```json
-{
-  "mcpServers": {
-    "boring": {
-      "command": "npx",
-      "args": ["-y", "@smithery/cli", "run", "@boring/boring", "--config", "{}"]
-    }
-  }
-}
-```
-
-### For Local pip
-
-```json
-{
-  "mcpServers": {
-    "boring": {
-      "command": "python",
-      "args": ["-m", "boring.mcp.server"],
-      "env": {
-        "BORING_MCP_MODE": "1",
-        "PROJECT_ROOT_DEFAULT": ".",
-        "BORING_MCP_PROFILE": "lite"
-      }
-    }
-  }
-}
-```
-
-### For uv (Recommended for Performance)
-
-> **New!** Use uv for faster startup and better dependency isolation.
-
-```json
-{
-  "mcpServers": {
-    "boring": {
-      "command": "uvx",
-      "args": ["--from", "boring-aicoding[all]", "python", "-m", "boring.mcp.server"],
-      "env": {
-        "BORING_MCP_MODE": "1",
-        "PROJECT_ROOT_DEFAULT": ".",
-        "BORING_MCP_PROFILE": "lite"
-      }
-    }
-  }
-}
-```
-
-**Or if you have uv project with venv:**
-
-```json
-{
-  "mcpServers": {
-    "boring": {
-      "command": "uv",
-      "args": ["run", "python", "-m", "boring.mcp.server"],
-      "env": {
-        "BORING_MCP_MODE": "1",
-        "PROJECT_ROOT_DEFAULT": ".",
-        "BORING_MCP_PROFILE": "lite",
-        "VIRTUAL_ENV": "/path/to/your/.venv"  
-      }
-    }
-  }
-}
-```
-
-**Benefits of uv for MCP:**
-- ⚡ Faster server startup (~30% reduction)
-- 🔒 Isolated dependencies per project
-- 📦 Automatic environment management
-- 🎯 No global package pollution
-
-### 🎛️ Tool Profiles (V10.24)
-
-> **Problem**: 98 tools can overwhelm LLM context windows.
-> **Solution**: Choose a profile to expose only the tools you need.
-
-| Profile | Tools | Best For |
-|---------|-------|----------|
-| `minimal` | 8 | Simple workflows, minimal context |
-| `lite` | 20 | **Recommended** - everyday development |
-| `standard` | 50 | Full-featured projects |
-| `full` | 98+ | Power users who need everything |
-
-**Configure in `.boring.toml`:**
-```toml
-[boring.mcp]
-profile = "lite"  # Options: minimal, lite, standard, full
-```
-
-**Or via environment variable:**
-```bash
-export BORING_MCP_PROFILE=lite
-```
-
-**🎯 Universal Router**: With `lite` profile, use `boring("search for auth code")` - the router automatically directs to the right tool!
+- **`/vibe_start`**: Kick off a new project from scratch.
+- **`quick_fix`**: Automatically repair all linting and formatting errors.
+- **`review_code`**: Request a technical audit of your current file.
+- **`smart_commit`**: Generate a semantic commit message from your progress.
+- **`boring_vibe_check`**: Run a comprehensive health scan of the project.
 
 ---
-
-## 🎛️ Token Optimization (V10.28+)
-> **Save 60-94% on LLM Token Costs**
-
-### 📉 Token Optimization (V10.28+)
-
-> **Save 60-94% of LLM Token Costs**
-
-Boring MCP supports **Verbosity Control** (`minimal`, `standard`, `verbose`) and **Prompt Caching** to minimize context usage.
-
-| Level | Tokens | Use Case |
-|-------|--------|----------|
-| `minimal` | ~50 | Quick scans / CI |
-| `standard`| ~400 | Daily Dev (Default) |
-| `verbose` | ~1k+ | Debugging |
-
-**Quick Config**:
-```bash
-export BORING_MCP_VERBOSITY=minimal
-```
-
-👉 **[Read Full Guide: Token Optimization](./docs/features/token-optimization.md)** for detailed usage, tool behaviors, and prompt caching setup.
-
----
-
-## 🎯 Quick Start Prompts
-
-| Prompt | Usage |
-|--------|-------|
-| `/vibe_start` | Start a new project with AI guidance |
-| `boring_session_start` | **Start Vibe Session** (AI Collaboration Workflow) |
-| `/full_stack_dev` | Build a complete full-stack application |
-| `/release-prep`| **Turbo**: Auto-bump version & git tag |
-| `/quick_fix` | Auto-fix all linting and formatting errors |
-| `/smart_commit` | Generate semantic commit messages |
-
----
-
-## 📚 Documentation
-
-| Category | Links |
-|----------|-------|
-| **Getting Started** | [Vibe Coder Guide](docs/guides/vibe-coder.md) · [**🗣️ Natural Language Prompts**](docs/guides/vibe-coder-prompts.md) · [Quick Tutorials](docs/guides/quick-tutorials.md) |
-| **Features** | [MCP Tools (55+)](docs/features/mcp-tools.md) · [Shadow Mode](docs/features/shadow-mode.md) · [Quality Gates](docs/features/quality-gates.md) · [Monitoring](docs/features/monitor.md) · **[📊 Evaluation Metrics](docs/guides/evaluation-metrics.md)** |
-| **Guides** | [Cookbook](docs/guides/cookbook.md) · [Pro Tips](docs/guides/pro-tips.md) · [Git Hooks](docs/guides/git-hooks.md) · [Workflows](docs/guides/workflows.md) |
-| **Learning** | [Tutorials](docs/tutorials/TUTORIAL.md) · [Skills Guide](docs/guides/skills_guide.md) · [Knowledge Mgmt](docs/guides/knowledge-management.md) |
-| **Advanced** | [Plugins](docs/guides/plugins.md) · [API Integration](docs/guides/api-integration.md) · [Human Alignment](docs/guides/human-alignment.md) |
-| **Reference** | [Architecture](docs/reference/architecture.md) · [Security & Privacy](docs/reference/security-privacy.md) · [Agent Comparison](docs/reference/comparison.md) · [V10 Changelog](docs/changelog/v10.md) |
-
----
-
-## ✨ Vibe Coder Pro Toolset
-> **🎉 Interactive Tutorial on Startup!**
-> First-time MCP connection triggers `mcp_intro` to guide new users.
-
-### 🗣️ Natural Language Triggers (No Code Required!)
-**Just say these to Boring:**
-
-| Goal | Just Say |
-|------|----------|
-| Write Tests | `Help me write tests for auth.py` |
-| Review Code | `Review my code` |
-| Health Check | `Vibe Check my project` |
-| Check Impact | `Check impact of utils.py` |
-| Plan Feature | `I want to add login`, `Plan this feature` |
-
-👉 **[Full Prompt Guide](docs/guides/vibe-coder-prompts.md)**
-
-### 🧰 Core Tools
-| Tool | Description | Example |
-|------|-------------|---------|
-| 🧪 `boring_vibe_check` | **Project Health Scan** - Coverage, Docs, Security (S-F Grade) | `boring_vibe_check(project_path=".")` |
-| 📊 `boring_impact_check` | **Impact Analysis** - Trace reverse dependencies (L1/L2/L3) | `boring_impact_check(file_path="core.py")` |
-| 🧪 `boring_test_gen` | **Smart Test Gen** - Auto-generate simple tests (Py/JS/TS) | `boring_test_gen(file_path="utils.py")` |
-| 📝 `boring_review` | **Friendly Review** - Constructive feedback & suggestions | `boring_review(file_path="app.py")` |
-| 🚀 `boring_perf` | **Perf Tips** - Identify bottlenecks | `boring_perf(file_path="main.py")` |
-| 📐 `boring_arch` | **Arch Check** - Visualize module structure | `boring_arch(project_path=".")` |
-| 📄 `boring_doc_gen` | **Doc Gen** - Auto-generate docstrings | `boring_doc_gen(file_path="api.py")` |
-| 🔍 `boring_skills_browse` | **Skills Discovery** - Find and install MCP skills | `boring_skills_browse(query="web")` |
-
-### 🔐 Security Scan Integration
-Vibe Coder Pro includes built-in Token detection for:
-- **Python**: PyPI, AWS, GCP, Azure, etc.
-- **JS/Node.js**: NPM, Vercel, Supabase, Firebase, Stripe.
-- **General**: GitHub, GitLab, Slack, SendGrid (20+ types).
-
-```python
-# Health check triggers security scan automatically
-result = boring_vibe_check(project_path=".", max_files=100)
-print(result["security_issues"])
-```
-
 
 ## 🧠 External Intelligence
-
-Boring integrates the most powerful external MCP tools by default, turning the Agent into a super engineer.
-
-| Tool | Function | How to Use |
-|------|----------|------------|
-| **Context7** | 📚 **Real-time Docs**<br>Query latest library usage, solving stale training data issues. | `context7_query_docs` |
-| **Sequential Thinking** | 🤔 **Deep Thinking**<br>Force Agent into a full chain of thought from analysis to verification before coding. | `sequentialthinking` |
-| **Critical Thinking** | 🧐 **Critical Thinking**<br>Self-reflection and blind spot detection for high-quality Code Review. | `boring-route "think deeper"` |
-| **Boring Monitor** | 🖥️ **TUI Dashboard**<br>Real-time terminal view of status, logs (v10.23+). | `boring-monitor` / `python -m boring.monitor` |
-| **Boring Dashboard**| 🎨 **GUI Dashboard**<br>Comprehensive web view with Brain Explorer. | `boring-dashboard` / `python -m boring dashboard` / `python -m boring.monitor --web` |
-
-## 🧩 Capabilities Matrix
-> **Everything you need to know about what Boring can do.**
-
-| Capability | Description | Documentation |
-| :--- | :--- | :-- |
-| **Vibe Coder** | Pure natural language coding experience. No tool learning curve. | [Guide](./docs/features/vibe-coder.md) |
-| **External Intelligence** | **Context7** (Real-time Docs) & **Thinking Mode** (Reasoning). | [Guide](./docs/features/external-intelligence.md) |
-| **Hybrid RAG** | Advanced Search (Vector + Key + Graph) for large codebases. | [Guide](./docs/features/rag.md) |
-| **Token Optimization** | **Save 90% Costs**. Verbosity control & Prompt Caching. | [Guide](./docs/features/token-optimization.md) |
-| **Shadow Mode** | Security Sandbox. Prevents AI from breaking things. | [Guide](./docs/features/shadow-mode.md) |
-| **Agentic Safety** | **Checkpoints** & **Auto-Rollback**. Explore code fearlessly. | [Guide](./docs/features/safety.md) |
-| **Boring Monitor** | Real-time TUI & Web Dashboard for visibility. | [Guide](./docs/features/monitor.md) |
-| **Global Brain** | **Active Recall** & Persistent project memory for patterns. | [Guide](./docs/features/memory.md) |
-| **Agents Squad** | Planner, Coder, Reviewer agents working together. | [Guide](./docs/features/agents.md) |
-| **MCP Toolset** | 55+ Specialized tools for every DevOps task. | [Reference](./docs/features/mcp-tools.md) |
-| **Quality Gates** | CI/CD verification levels & "Definition of Done". | [Guide](./docs/features/quality-gates.md) |
-| **Performance** | WAL mode, Parallel verification. | [Guide](./docs/features/performance.md) |
-| **Hidden Gems** | Power user tips & Easter eggs. | [Guide](./docs/features/hidden-gems.md) |
-
-## 🚀 Performance (v10.31.0)
-- **Startup time < 600ms**: Optimized lazy loading.
-- **Thread-local SQLite**: Zero-overhead DB connections.
-- **WAL Mode**: 50% faster concurrent reads.
-- **Smart Caching**: 30s query cache & Pattern cache for instant RAG.
+Boring comes bundled with elite tools to boost AI performance:
+- **Context7**: Real-time documentation querying for the latest libraries.
+- **Thinking Mode**: Forces the agent into deep analytical reasoning (Sequential Thinking).
+- **Security Shadow Mode**: A safety sandbox that intercepts dangerous AI operations.
 
 ---
 
-## 🛡️ Shadow Mode
+## 📄 License & Links
+- **License**: [MIT](LICENSE)
+- **Repository**: [GitHub](https://github.com/Boring206/boring-gemini)
+- **Smithery**: [Boring Server](https://smithery.ai/server/boring/boring)
 
-Shadow mode protects you from destructive AI operations:
-
-```
-DISABLED  ⚠️  No protection (Container only)
-ENABLED   🛡️  Auto-approve safe, Block risky (Default)
-STRICT    🔒  Approve all writes (Production)
-```
-
-```python
-boring_shadow_mode(action="set_level", level="STRICT")
-```
-
----
-
-
-## 🔧 Troubleshooting & Environment
-
-### Common Issues
-
-**1. "Command not found" or Wrong Python Version**
-If running `boring` commands fails or uses the wrong Python environment (e.g., system Python instead of venv), use `python -m`:
-
-```bash
-# ✅ Recommended usage for reliability
-python -m boring --help
-python -m boring hooks install
-```
-
-**2. "tree-sitter-languages not installed" Warning**
-This means the advanced code parser is missing. RAG features will be limited to keyword search only.
-
-**Fix**:
-```bash
-pip install tree-sitter-languages
-# Or update all dependencies
-pip install "boring-aicoding[all]"
-```
-
----
-
-## 🎯 Future Vision
-
-**Note: The following features require server support (not yet implemented)**
-
-- **🌐 Boring Cloud**: Cloud collaboration and team sharing
-- **🤝 Team Workflows**: Multi-person workflow synchronization
-- **🔐 Enterprise SSO**: Enterprise-grade identity authentication
-
-
----
-
-## 🙏 Acknowledgments
-
-- [Google Gemini](https://ai.google.dev/) - AI Engine
-- [Anthropic Claude](https://anthropic.com/) - MCP Protocol
-- [Smithery](https://smithery.ai/) - Deployment Platform
-
----
-
-## 📄 License
-
-[MIT License](LICENSE) - Open source and free to use
-
----
-
-## 🔗 Links
-
-[![GitHub](https://img.shields.io/badge/GitHub-Boring206%2Fboring--gemini-blue?logo=github)](https://github.com/Boring206/boring-gemini)
-[![PyPI](https://img.shields.io/badge/PyPI-boring--aicoding-orange?logo=pypi)](https://pypi.org/project/boring-aicoding/)
-[![Smithery](https://img.shields.io/badge/Smithery-boring%2Fboring-green)](https://smithery.ai/server/boring/boring)
+<p align="center">
+  <sub>Built by <strong>Boring206</strong> with 🤖 AI-Human Collaboration</sub>
+</p>
