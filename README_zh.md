@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="docs/assets/logo.png" width="200" alt="Boring for Gemini Logo">
+  <img src="docs/assets/logo.png" width="180" alt="Boring for Gemini Logo">
 </p>
 
 <h1 align="center">Boring for Gemini</h1>
 
 <p align="center">
-  <strong>為 Vibe Coder 打造的自主 AI 開發引擎</strong>
+  <strong>為自主開發打造的「代理式認知」推理引擎</strong>
 </p>
 
 <p align="center">
@@ -21,10 +21,75 @@
 
 ---
 
-### 🧞‍♂️ Vibe Coder 開發體驗
-> **「別寫程式，描述你的 Vibe。」**
+## ⚡ 超越生成式 AI：代理式認知 (Agentic Cognition)
+
+Boring-Gemini 不僅僅是一組工具的集合；它是你 AI 開發工作流中的 **「大腦與思考層」**。當一般的 AI 模型還在「建議」程式碼時，Boring 已經在進行 **「推理、驗證與學習」**。
+
+### 🧞‍♂️ Vibe Coder 開發哲學
+> **「意圖 (Intent) 即實作。」**
 >
-> Boring-Gemini 是一個自主 AI 代理循環，旨在將自然語言轉化為高品質軟體。它與 **Gemini**、**Claude** 以及你最喜歡的 IDE（Cursor / VS Code）深度整合，自動化開發中的繁重工作。
+> 在 Vibe Coding 的時代，開發者的角色從編寫語法轉向定義 **意圖**。Boring-Gemini 作為你的代理夥伴，填補了「感性描述 (Vibe)」與「生產級程式碼 (Verified Code)」之間的鴻溝。
+
+---
+
+## 🚀 自主開發的三大支柱
+
+### 🧠 支柱一：認知推理 (Agentic Loop)
+Boring 實作了嚴謹的 **「規劃 -> 執行 -> 驗證」** 循環。它不只是執行指令，而是透過 `sequentialthinking` 與 `criticalthinking` 來分析每一個步驟，並在程式碼落地前進行邏輯審核。
+
+### 🛡️ 支柱二：韌性自主 (Active Recall)
+這是業界首創具備 **「全域大腦」** 的代理人。當 Boring 遇到失敗時，它會檢索持久化知識庫 (`.boring/brain`)，回憶過去如何解決類似問題。它從錯誤中精進，讓你無需重複面對相同的挑戰。
+
+### ⚓ 支柱三：生產級安全 (Safety Net)
+信任建立在安全之上。Boring 在執行任何風險操作前都會自動建立 **Git 檢查點**。結合 **影子模式 (Shadow Mode)**，你擁有了 AI 代理行為的「後悔藥」，確保即使在複雜的重構過程中，程式碼庫依然穩如泰山。
+
+---
+
+## 🛠️ 核心能力一覽
+
+| | 功能 | 描述 |
+| :--- | :--- | :--- |
+| 🕵️ | **混合 RAG** | 結合向量搜尋與「依賴圖」擴展，深度理解程式碼的底層上下文。 |
+| 🧪 | **Vibe Check** | 遊戲化的健康評分系統，掃描 Lint、安全性與文件，並生成「一鍵修復提示詞」。 |
+| 🔌 | **全能路由** | 透過自然語言調用 100+ 個專業工具。不再需要死背 CLI 參數。 |
+| 🚢 | **零設定 Smithery** | 秒級部署 Boring 作為遠端 MCP 伺服器，將你的 IDE 連接至雲端智能。 |
+
+---
+
+## 📦 快速上手
+
+### 1. 極速模式 (Smithery)
+適合想快速在 `gemini-cli` 或 `Claude Desktop` 測試 Boring 的用戶，無需污染本地環境。
+```bash
+npx -y @smithery/cli@latest install boring/boring --client gemini-cli
+```
+
+### 2. 專業模式 (uv / pip)
+推薦用於需要完整 RAG、儀表板與本地 LLM 整合的場景。
+```bash
+# 推薦：現代化且極速
+uv pip install "boring-aicoding[all]"
+
+# 標準安裝
+pip install "boring-aicoding[all]"
+```
+
+---
+
+## 💎 工作流觸發詞
+嘗試在 IDE (Cursor / VS Code / Claude) 中對 AI 說：
+
+- **「根據 [連結] 的規格書啟動新專案」** → 啟動 `/vibe_start`。
+- **「執行健康檢查 (Vibe Check) 並修復所有問題」** → 觸發 `boring_vibe_check` + 自動修復。
+- **「修改這個函式的全域影響是什麼？」** → 觸發 `boring_impact_check`。
+- **「幫我檢查程式碼的安全性」** → 觸發 `boring_security_scan`。
+
+---
+
+<p align="center">
+  <b>為重視推理而非重複勞動的開發者而生。</b><br>
+  <sub>由 AI 與人類協作榮譽出品。</sub>
+</p>
 
 ---
 

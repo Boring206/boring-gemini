@@ -1,7 +1,7 @@
 # Copyright 2026 Boring for Gemini Authors
 # SPDX-License-Identifier: Apache-2.0
 """
-Unified Path Management for Boring (V10.31.0)
+Unified Path Management for Boring (V10.32.1)
 
 Problem: Multiple scattered hidden directories (.boring_memory, .boring_brain, etc.)
 Solution: Consolidate to single .boring/ directory with backward compatibility.
