@@ -1,6 +1,18 @@
 # Changelog
 
-## [10.31.0] - 2026-01-11 - The Cognitive Reflex Update 🧠✨
+## [10.31.1] - 2026-01-11
+### ✨ Highlights
+- **Vibe Session Evolution**: Highlights the integration of **Deep Thinking** (Sequential & Critical Thinking) as the core selling point of Boring's collaboration engine.
+- **Robust NL Routing**: Significantly improved natural language understanding for safety checkpoints and evaluation tools across English and Traditional Chinese.
+- **CI Optimization**: Stabilized code coverage and test suites to ensure 100% compliance with CI/CD quality gates.
+
+### 🚀 Enhancements & Fixes
+- **ToolRouter**: Expanded keywords for `boring_checkpoint` (還原, 存檔, 標記, etc.) and refined scoring to prevent category overlaps.
+- **Documentation**: Synchronized symmetry between the English and Chinese READMEs regarding the "Deep Thinking" selling point.
+- **Test Suite**: Added `test_router_checkpoints_expanded.py` for comprehensive NL routing verification.
+
+## [10.31.0] - 2026-01-10
+The Cognitive Reflex Update 🧠✨
 
 ### 🚀 Major Features
 - **Agentic Safety Net (Git Checkpoints)**: New `boring_checkpoint` tool allows the Agent to create restore points before risky refactors. If things go wrong, `restore` brings you back instantly.
