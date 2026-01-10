@@ -1,78 +1,53 @@
-# Quick Start Guide
+# 快速入門 (Quick Start)
 
-> Start building with Boring in 5 minutes.
+> **🎉 恭喜！您離 AI 全自動開發只差一步。**
+> 這裡沒有複雜指令，只有簡單的對話。
 
 ---
 
-## 🎯 Choose Your Path
+## 🚀 選擇您的環境 (Choose Your Environment)
 
-### For Vibe Coders (Natural Language)
+### 情境 A：您正在使用 Cursor 或 Claude Desktop 📝
+這是最推薦的方式！您只需要像聊天一樣。
 
-Just describe what you want:
+1.  確認您已設定好 Boring MCP Server。
+2.  打開對話視窗 (Chat)。
+3.  **直接輸入想要的指令** (不用背指令，用口語就行)：
 
-```
-/vibe_start Build a weather dashboard with city search
+| 您想做什麼 | 輸入範例 |
+|-----------|---------|
+| **開始新專案** | 「幫我初始化一個新專案，我要做一個食譜網站」 |
+| **修復錯誤** | 「幫我修這個 bug (並貼上錯誤訊息)」 |
+| **理解程式碼** | 「解釋一下這段扣是幹嘛的？」 |
+| **健檢專案** | 「Vibe Check! 幫我看程式碼品質」 |
 
-# OR from terminal
-boring-route "Build a weather dashboard with city search"
+> **💡 小撇步**: 您甚至不用說是哪個檔案，Boring AI 會自己去翻找。
 
-```
+---
 
-AI will ask clarifying questions and build it for you.
-
-### For Developers (Hands-On)
+### 情境 B：您喜歡終端機 (Terminal Power User) 💻
+如果您是駭客風格，喜歡在終端機操作：
 
 ```bash
-# Create new project
-boring-setup my-project
-cd my-project
+# 1. 建立專案
+boring-setup my-cool-project
+cd my-cool-project
 
-# Start development loop
+# 2. 啟動互動模式
 boring start
 ```
 
----
-
-## 🚀 Quick Commands
-
-| Command | What It Does |
-|---------|--------------|
-| `/vibe_start [idea]` | Start a new project with AI guidance |
-| `/quick_fix` | Fix all linting/formatting errors |
-| `/smart_commit` | Generate semantic commit message |
-| `boring-route "help me"` | Natural language routing |
+進入互動介面後，一樣用自然語言跟它聊天即可！
 
 ---
 
-## 🛠️ MCP Tools
+## 🎯 常見起手式 (Cheat Sheet)
 
-All tools are available via MCP:
+不管您用哪個環境，這些話都很好用：
 
-```python
-# Verify code quality
-boring_verify(level="FULL")
+- **「幫我規劃功能...」** (Plan feature)
+- **「做一次安全掃描」** (Security Scan)
+- **「審查我的程式碼」** (Code Review)
+- **「這裡有沒有效能問題？」** (Perf Check)
 
-# Search codebase semantically
-boring_rag_search(query="authentication")
-
-# Security scan
-boring_security_scan(scan_type="all")
-```
-
----
-
-## 📚 Learn More
-
-| Topic | Guide |
-|-------|-------|
-| **Beginners** | [Vibe Coder Guide](../guides/vibe-coder.md) |
-| **Tutorials** | [Quick Tutorials](../guides/quick-tutorials.md) |
-| **All Features** | [Cookbook](../guides/cookbook.md) |
-| **Best Practices** | [Pro Tips](../guides/pro-tips.md) |
-
----
-
-## 🆘 Need Help?
-
-- [FAQ](../APPENDIX_B_FAQ.md)
-- [GitHub Issues](https://github.com/Boring206/boring-gemini/issues)
+👉 **下一步**：看看我們的 [Vibe Coder 食譜](../guides/cookbook_zh.md) 學習更多咒語！

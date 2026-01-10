@@ -16,12 +16,12 @@ The `boring.intelligence` module provides knowledge management, pattern learning
 
 ### 1. Knowledge Base Management (BrainManager)
 
-Use `BrainManager` to access or update long-term memory and learned patterns in `.boring_brain`.
+Use `BrainManager` to access or update long-term memory and learned patterns in `.boring/brain`.
 
 ```python
 from boring.intelligence.brain_manager import BrainManager, LearnedPattern
 
-# Initialize (automatically loads .boring_brain)
+# Initialize (automatically loads .boring/brain)
 brain = BrainManager(project_path="./my_project")
 
 # 1. Query learned patterns (Pattern Mining)
@@ -45,7 +45,7 @@ If your environment supports ChromaDB, use `VectorMemory` for semantic search.
 ```python
 from boring.intelligence.vector_memory import VectorMemory
 
-memory = VectorMemory(persist_path="./.boring_brain/vector_store")
+memory = VectorMemory(persist_path="./.boring/brain/vector_store")
 
 # Store experience
 memory.add_experience(

@@ -21,9 +21,10 @@
 
 | Tool | Description | Key Parameters |
 |------|-------------|----------------|
-| `boring_security_scan` | SAST + secret detection + dependency scan | `project_path`, `scan_type` |
+| `boring_security_scan` | SAST + secret detection + dependency scan | `project_path`, `scan_type`, `verbosity` |
 
 **Scan Types**: `secrets`, `vulnerabilities`, `dependencies`, `all`
+**Verbosity**: `minimal`, `standard`, `verbose`
 
 ---
 
@@ -66,7 +67,7 @@
 | Tool | Description | Key Parameters |
 |------|-------------|----------------|
 | `boring_rag_index` | Index codebase | `force`, `project_path` (Requires `chromadb`) |
-| `boring_rag_search` | Semantic code search | `query`, `max_results`, `expand_graph` (Requires `chromadb`) |
+| `boring_rag_search` | Semantic code search | `query`, `max_results`, `verbosity` |
 | `boring_rag_context` | Get code context | `file_path`, `function_name` |
 | `boring_rag_expand` | Expand dependency graph | `chunk_id`, `depth` |
 | `boring_rag_status` | Check index health | - |
@@ -139,7 +140,33 @@
 
 ---
 
-## 13. Knowledge Base Tools
+### 13. Evaluation (`boring_evaluate`)
+
+Run LLM Judge evaluation.
+
+```python
+boring_evaluate(
+    target="src/main.py",
+    level="DIRECT",         # DIRECT|PAIRWISE|RUBRIC
+    criteria=["correctness", "readability"],
+    verbosity="standard"    # minimal|standard|verbose
+)
+```
+
+### 14. Code Health (`boring_vibe_check`)
+
+Comprehensive project health check.
+
+```python
+boring_vibe_check(
+    target_path=".",
+    verbosity="minimal"     # minimal|standard|verbose
+)
+```
+
+---
+
+## 15. Knowledge Base Tools
 
 | Tool | Description | Key Parameters |
 |------|-------------|----------------|
@@ -149,11 +176,11 @@
 
 ---
 
-## 14. Evaluation Tools
+## 16. Evaluation Tools
 
 | Tool | Description | Key Parameters |
 |------|-------------|----------------|
-| `boring_evaluate` | Run LLM Judge evaluation | `target`, `rubric` |
+| `boring_evaluate` | Run LLM Judge evaluation | `target`, `rubric`, `verbosity` |
 
 ---
 

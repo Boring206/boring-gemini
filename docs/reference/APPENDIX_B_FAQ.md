@@ -166,7 +166,7 @@ Use `multi_agent` for features, `delegate` for atomic tasks.
    boring_rag_search(query="authentication middleware")
    ```
 
-Index is stored in `.boring_brain/` and persists between sessions.
+Index is stored in `.boring/brain/` and persists between sessions.
 
 ---
 

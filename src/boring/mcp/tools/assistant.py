@@ -18,7 +18,7 @@ Performance optimizations:
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Annotated, Any, Optional
 
 from pydantic import Field
 
@@ -65,21 +65,39 @@ def _check_git_changes(project_root: Path) -> list[dict[str, Any]]:
     return enhancements
 
 
-def _check_learned_patterns(project_root: Path) -> list[dict[str, Any]]:
+def _check_learned_patterns(args: tuple[Path, Optional[str]]) -> list[dict[str, Any]]:
     """Check learned patterns from brain (runs in thread)."""
+    project_root, error_message = args
     enhancements = []
     try:
-        from ...brain_manager import BrainManager
+        from ...intelligence.brain_manager import BrainManager
 
         brain = BrainManager(project_root)
-        patterns = brain.get_relevant_patterns("next steps recommendations", limit=3)
+
+        # V10.32: Reflexive Retrieval
+        # If error_message is provided, search for THAT specific error.
+        # Otherwise, search for generic next steps.
+        query = error_message if error_message else "next steps recommendations"
+        limit = 5 if error_message else 3
+
+        patterns = brain.get_relevant_patterns(query, limit=limit)
+
         for p in patterns:
+            # Calculate relevance label
+            if error_message:
+                label = "💡 Proven Fix"
+                priority = "critical"
+            else:
+                label = "🧠 Learned Pattern"
+                priority = "medium"
+
             enhancements.append(
                 {
                     "type": "learned_pattern",
                     "action": p.get("solution", "")[:100],
-                    "priority": "medium",
-                    "details": f"From: {p.get('description', 'Unknown')}",
+                    "priority": priority,
+                    "details": f"{label}: {p.get('description', 'Unknown')}",
+                    "confidence": p.get("success_count", 0),
                 }
             )
     except Exception:
@@ -126,6 +144,52 @@ def _check_task_progress(project_root: Path) -> list[dict[str, Any]]:
                         "details": "Found incomplete tasks",
                     }
                 )
+    except Exception:
+        pass
+    return enhancements
+
+
+def _check_project_context(project_root: Path) -> list[dict[str, Any]]:
+    """Check project context for missing setup steps (Action 1: Smart Suggestions)."""
+    enhancements = []
+    try:
+        from ..utils import detect_context_capabilities
+
+        context = detect_context_capabilities(project_root)
+
+        # 1. Missing Git
+        if not context["has_git"]:
+            enhancements.append(
+                {
+                    "type": "context_missing_setup",
+                    "action": "Initialize Git Repository (`git init`)",
+                    "priority": "critical",
+                    "details": "No version control detected",
+                }
+            )
+
+        # 2. Missing Node Dependencies
+        if context["has_node"] and not context["has_node_modules"]:
+            enhancements.append(
+                {
+                    "type": "context_missing_setup",
+                    "action": "Install Dependencies (`npm install` or `pnpm install`)",
+                    "priority": "high",
+                    "details": "package.json exists but node_modules is missing",
+                }
+            )
+
+        # 3. Missing Python Environment
+        if context["has_python"] and not context["has_venv"]:
+            enhancements.append(
+                {
+                    "type": "context_missing_setup",
+                    "action": "Setup Virtual Environment (`python -m venv venv`)",
+                    "priority": "medium",
+                    "details": "Python project detected but no venv found",
+                }
+            )
+
     except Exception:
         pass
     return enhancements
@@ -179,7 +243,7 @@ def register_assistant_tools(mcp, audited, helpers: dict[str, Any]) -> int:
             Field(description="Verification strictness: 'BASIC', 'STANDARD', or 'FULL'."),
         ] = "STANDARD",
         project_path: Annotated[
-            str,
+            Optional[str],
             Field(description="Optional explicit path to project root."),
         ] = None,
     ) -> dict:
@@ -255,14 +319,23 @@ Requirements:
     @audited
     def boring_suggest_next(
         limit: Annotated[int, Field(description="Maximum suggestions to return")] = 3,
-        project_path: Annotated[str, Field(description="Optional project root path")] = None,
+        error_message: Annotated[
+            Optional[str],
+            Field(
+                description="The specific error message or context to find a solution for. Pass this to trigger Active Recall."
+            ),
+        ] = None,
+        project_path: Annotated[
+            Optional[str], Field(description="Optional project root path")
+        ] = None,
     ) -> dict:
         """
         Suggest next actions based on project state and learned patterns.
 
         Enhanced with:
+        - 🧠 **Reflexive Brain**: If `error_message` is passed, actively searches for known solutions.
         - Git change analysis (uncommitted files)
-        - Learned patterns from brain
+        - Learned patterns (generic or specific)
         - RAG index freshness check
         - Task.md progress detection
 
@@ -272,6 +345,11 @@ Requirements:
         if error:
             return error
 
+        # V10.30: Profile-Aware Suggestions
+        from ..tool_profiles import get_profile, should_register_prompt, should_register_tool
+
+        profile = get_profile()
+
         miner = get_pattern_miner(project_root)
         base_suggestions = miner.suggest_next(project_root, limit)
         project_state = miner.analyze_project_state(project_root)
@@ -280,10 +358,11 @@ Requirements:
 
         check_functions = [
             (_check_git_changes, project_root),
-            (_check_learned_patterns, project_root),
+            (_check_learned_patterns, (project_root, error_message)),
             (_check_rag_index, project_root),
             (_check_task_progress, project_root),
             (_check_project_empty, project_root),
+            (_check_project_context, project_root),
         ]
 
         with ThreadPoolExecutor(max_workers=4, thread_name_prefix="suggest-") as executor:
@@ -293,7 +372,33 @@ Requirements:
                 try:
                     results = future.result(timeout=2)
                     if results:
-                        enhancements.extend(results)
+                        # V10.30: Filter enhancements based on Profile Capabilities
+                        filtered_results = []
+                        for item in results:
+                            # 1. Check if recommended action involves a tool we don't have
+                            action_text = item.get("action", "").lower()
+
+                            if item.get("type") == "rag_not_indexed":
+                                if not should_register_tool("boring_rag_index", profile):
+                                    # Suggest switching profile instead of running missing tool
+                                    item["action"] = (
+                                        "Switch to STANDARD profile to enable RAG Code Search"
+                                    )
+                                    item["priority"] = "low"
+
+                            if item.get("type") == "prompt_recommendation":
+                                # Check if prompt is available (e.g. /vibe_start, /smart_commit)
+                                import re
+
+                                match = re.search(r"/(\w+)", action_text)
+                                if match:
+                                    prompt_name = match.group(1)
+                                    if not should_register_prompt(prompt_name, profile):
+                                        continue  # Skip this recommendation
+
+                            filtered_results.append(item)
+
+                        enhancements.extend(filtered_results)
                 except Exception:
                     pass
 

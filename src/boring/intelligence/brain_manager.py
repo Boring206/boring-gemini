@@ -95,7 +95,10 @@ class BrainManager:
 
     def __init__(self, project_root: Path, log_dir: Optional[Path] = None):
         self.project_root = Path(project_root)
-        self.brain_dir = self.project_root / ".boring_brain"
+        # Use unified paths with fallback to legacy
+        from boring.paths import get_boring_path
+
+        self.brain_dir = get_boring_path(self.project_root, "brain")
         self.log_dir = log_dir or self.project_root / "logs"
 
         # Subdirectories
@@ -303,10 +306,16 @@ class BrainManager:
             p.get("solution", "").lower()
 
             # Substring match (high weight)
+            # 1. Query is substring of Pattern (e.g. query="auth", pattern="auth error")
             if context_lower in pattern_context:
                 score += 3.0
             if context_lower in pattern_desc:
                 score += 2.0
+
+            # 2. Pattern is substring of Query (e.g. query="Error: Connection refused at...", pattern="Connection refused")
+            # This is critical for "Reflexive Brain" where query is a full error message
+            if pattern_context and len(pattern_context) > 5 and pattern_context in context_lower:
+                score += 3.0
 
             # Word overlap (medium weight)
             pattern_words = set(pattern_context.split() + pattern_desc.split())
@@ -376,6 +385,12 @@ class BrainManager:
             for p in patterns:
                 score = 0
                 if context_lower in p.get("context", "").lower():
+                    score += 2
+                if (
+                    p.get("context", "")
+                    and len(p.get("context", "")) > 5
+                    and p.get("context", "").lower() in context_lower
+                ):
                     score += 2
                 if context_lower in p.get("description", "").lower():
                     score += 1
@@ -643,7 +658,9 @@ class GlobalKnowledgeStore:
     """
 
     def __init__(self):
-        self.global_dir = Path.home() / ".boring_brain"
+        from boring.paths import get_boring_path
+
+        self.global_dir = get_boring_path(Path.home(), "brain")
         self.global_patterns_file = self.global_dir / "global_patterns.json"
         self.global_dir.mkdir(parents=True, exist_ok=True)
 

@@ -25,7 +25,8 @@ class TestBrainManager:
         manager = BrainManager(temp_project)
 
         assert manager.project_root == temp_project
-        assert manager.brain_dir == temp_project / ".boring_brain"
+        # V10.29: brain_dir can be new path (.boring/brain) or legacy (.boring_brain)
+        assert manager.brain_dir.name in ["brain", ".boring_brain"]
         assert manager.adaptations_dir.exists()
         assert manager.patterns_dir.exists()
         assert manager.rubrics_dir.exists()

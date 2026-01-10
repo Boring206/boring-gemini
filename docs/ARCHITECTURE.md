@@ -193,7 +193,7 @@ src/boring/
 │   │   ├── verification.py       # 驗證工具
 │   │   └── ...                   # 更多工具模組
 │   │
-│   ├── v9_tools.py               # ⚠️ DEPRECATED (re-export wrapper)
+│   ├── tools/assistant.py               # ⚠️ DEPRECATED (re-export wrapper)
 │   ├── v10_tools.py              # Registry hub
 │   └── vibe_tools.py             # ⚠️ DEPRECATED (re-export wrapper)
 │

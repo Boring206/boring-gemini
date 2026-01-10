@@ -342,6 +342,121 @@ def boring_visualize(
     }
 
 
+@audited
+def boring_checkpoint(
+    action: Annotated[str, Field(description="Action to perform: create, restore, list")] = "list",
+    name: Annotated[
+        str, Field(description="Name of the checkpoint (required for create/restore)")
+    ] = None,
+    stash_changes: Annotated[
+        bool, Field(description="Whether to stash changes before restoring (default: True)")
+    ] = True,
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
+) -> dict:
+    """
+    Manage project checkpoints (save states) via Git tags.
+
+    Use this to save your work before risky operations and restore it if things go wrong.
+
+    Actions:
+    - create: Create a new checkpoint (git tag checkpoint/{name})
+    - restore: Restore a checkpoint (git reset --hard checkpoint/{name})
+    - list: List all available checkpoints
+
+    Args:
+        action: create, restore, or list
+        name: Name of the checkpoint (e.g. 'refactor-auth', 'pre-migration')
+        stash_changes: If restoring, stash current changes first (default: True)
+        project_path: Optional project root
+    """
+    project_root, error = get_project_root_or_error(project_path)
+    if error:
+        return error
+
+    configure_runtime_for_project(project_root)
+
+    import subprocess
+
+    def git_cmd(args):
+        try:
+            result = subprocess.run(
+                ["git"] + args, cwd=project_root, capture_output=True, text=True, check=True
+            )
+            return True, result.stdout.strip()
+        except subprocess.CalledProcessError as e:
+            err = e.stderr.strip() if e.stderr else str(e)
+            return False, err
+
+    # Validate inputs
+    if action in ["create", "restore"] and not name:
+        return {"status": "ERROR", "message": "Checkpoint name is required for create/restore"}
+
+    prefix = "checkpoint/"
+
+    if action == "create":
+        tag_name = f"{prefix}{name}"
+        # Check if exists
+        ok, _ = git_cmd(["rev-parse", tag_name])
+        if ok:
+            return {
+                "status": "ERROR",
+                "message": f"Checkpoint '{name}' already exists. Choose a different name.",
+            }
+
+        success, output = git_cmd(["tag", tag_name])
+        if success:
+            return {
+                "status": "SUCCESS",
+                "message": f"Checkpoint '{name}' created.",
+                "details": f"Created git tag {tag_name}. Use action='restore' name='{name}' to revert matching state.",
+            }
+        return {"status": "ERROR", "message": f"Failed to create checkpoint: {output}"}
+
+    elif action == "restore":
+        tag_name = f"{prefix}{name}"
+        # detailed check
+        ok, _ = git_cmd(["rev-parse", tag_name])
+        if not ok:
+            return {"status": "NOT_FOUND", "message": f"Checkpoint '{name}' not found."}
+
+        # Stash if requested
+        stash_msg = ""
+        if stash_changes:
+            # check for modifications
+            ok, status = git_cmd(["status", "--porcelain"])
+            if ok and status:
+                ok_stash, out_stash = git_cmd(
+                    ["stash", "save", f"Auto-stash before restore {name}"]
+                )
+                if ok_stash:
+                    stash_msg = " (Current changes stashed)"
+                else:
+                    return {"status": "ERROR", "message": f"Failed to stash changes: {out_stash}"}
+
+        # Reset hard
+        success, output = git_cmd(["reset", "--hard", tag_name])
+        if success:
+            return {
+                "status": "SUCCESS",
+                "message": f"Restored to checkpoint '{name}'{stash_msg}.",
+                "details": output,
+            }
+        return {"status": "ERROR", "message": f"Failed to restore: {output}"}
+
+    elif action == "list":
+        success, output = git_cmd(["tag", "-l", f"{prefix}*"])
+        if not success:
+            return {"status": "ERROR", "message": f"Failed to list checkpoints: {output}"}
+
+        tags = output.splitlines()
+        checkpoints = [t[len(prefix) :] for t in tags if t.strip() and t.startswith(prefix)]
+        return {"status": "SUCCESS", "checkpoints": checkpoints, "count": len(checkpoints)}
+
+    return {"status": "ERROR", "message": f"Unknown action: {action}"}
+
+
 # ==============================================================================
 # TOOL REGISTRATION
 # ==============================================================================
@@ -364,3 +479,7 @@ if MCP_AVAILABLE and mcp is not None:
         description="Generate architecture diagram from codebase",
         annotations={"readOnlyHint": True},
     )(boring_visualize)
+    mcp.tool(
+        description="Create or restore project checkpoints (save states)",
+        annotations={"readOnlyHint": False, "destructiveHint": True},
+    )(boring_checkpoint)

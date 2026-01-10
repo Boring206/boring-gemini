@@ -229,6 +229,12 @@ def register_rag_tools(mcp, helpers: dict):
                 description="Minimum relevance score (0.0 to 1.0) for results. Higher values return only highly relevant matches. Default: 0.0 (all results). Recommended: 0.3-0.5 for quality filtering."
             ),
         ] = 0.0,
+        verbosity: Annotated[
+            str,
+            Field(
+                description="Output verbosity level. 'minimal': only file paths and scores (~20 tokens/result), 'standard': paths + truncated code snippets (~125 tokens/result), 'verbose': full code snippets (~200-500 tokens/result). Default: 'standard'."
+            ),
+        ] = "standard",
         project_path: Annotated[
             str,
             Field(
@@ -248,6 +254,7 @@ def register_rag_tools(mcp, helpers: dict):
             expand_graph: Include related code via dependency graph (default True)
             file_filter: Filter by file path substring (e.g., "auth" or "src/api")
             threshold: Minimum relevance score (0.0 to 1.0)
+            verbosity: Output detail level (minimal/standard/verbose)
             project_path: Optional explicit path to project root
 
         Returns:
@@ -305,6 +312,10 @@ def register_rag_tools(mcp, helpers: dict):
                 f"- Run `boring_rag_status` to verify index health"
             )
 
+        # Import verbosity helpers
+        from boring.mcp.verbosity import Verbosity, get_verbosity
+
+        verb_level = get_verbosity(verbosity)
         parts = [f"🔍 Found {len(results)} results for: **{query}**\n"]
 
         for i, result in enumerate(results, 1):
@@ -312,11 +323,27 @@ def register_rag_tools(mcp, helpers: dict):
             method = result.retrieval_method.upper()
             score = f"{result.score:.2f}"
 
-            parts.append(
-                f"### {i}. [{method}] `{chunk.file_path}` → `{chunk.name}` (score: {score})\n"
-                f"Lines {chunk.start_line}-{chunk.end_line} | Type: {chunk.chunk_type}\n"
-                f"```python\n{chunk.content[:500]}{'...' if len(chunk.content) > 500 else ''}\n```\n"
-            )
+            if verb_level == Verbosity.MINIMAL:
+                # MINIMAL: Only file path, function name, and score
+                parts.append(f"{i}. `{chunk.file_path}::{chunk.name}` (score: {score})\n")
+            elif verb_level == Verbosity.STANDARD:
+                # STANDARD: Current behavior (truncated at 500 chars)
+                parts.append(
+                    f"### {i}. [{method}] `{chunk.file_path}` → `{chunk.name}` (score: {score})\n"
+                    f"Lines {chunk.start_line}-{chunk.end_line} | Type: {chunk.chunk_type}\n"
+                    f"```python\n{chunk.content[:500]}{'...' if len(chunk.content) > 500 else ''}\n```\n"
+                )
+            else:  # VERBOSE
+                # VERBOSE: Full code snippet (no truncation)
+                parts.append(
+                    f"### {i}. [{method}] `{chunk.file_path}` → `{chunk.name}` (score: {score})\n"
+                    f"Lines {chunk.start_line}-{chunk.end_line} | Type: {chunk.chunk_type}\n"
+                    f"**Full Code:**\n```python\n{chunk.content}\n```\n"
+                )
+
+        # Add verbosity hint for minimal mode
+        if verb_level == Verbosity.MINIMAL:
+            parts.append("\n💡 Use verbosity='standard' or 'verbose' to see code snippets.")
 
         return "\n".join(parts)
 

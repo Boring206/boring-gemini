@@ -79,7 +79,7 @@ boring_shadow_mode(action="set_level", level="STRICT")
 
 ### Cross-Session Persistence
 
-Shadow Mode settings persist across sessions in `~/.boring_brain/shadow_config.json`:
+Shadow Mode settings persist across sessions in `~/.boring/brain/shadow_config.json`:
 
 ```json
 {
@@ -161,6 +161,31 @@ boring_read_file(path="src/main.py")
 ```
 
 > ⚠️ **Warning**: Native MCP tools like `write_file` (from some clients) may NOT be intercepted by Shadow Mode. Always use `boring_write_file` for secure operations.
+
+---
+
+## 🛡️ Safety Net (Git Checkpoints) (V10.31)
+
+While Shadow Mode intercepts individual operations, **Safety Net** protects your entire codebase during complex refactoring.
+
+### How it Works
+It creates a lightweight Git tag (checkpoint) before you start. If the AI messes up, you can instantly revert to that checkpoint.
+
+### Usage
+
+```python
+# 1. Create a checkpoint
+boring_checkpoint(action="save", message="Before refactoring auth")
+# Returns: "Checkpoint 'checkpoint_20240101_120000' created"
+
+# 2. Do risky stuff...
+# ...
+
+# 3. If it fails, restore!
+boring_checkpoint(action="restore", checkpoint_id="checkpoint_20240101_120000")
+```
+
+> **Note**: This feature requires a clean working directory (committed changes).
 
 ---
 

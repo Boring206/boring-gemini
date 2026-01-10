@@ -345,7 +345,7 @@ boring_delegate(
 ---
 
 ## 13. Team Knowledge & Portability (Brain)
-### The `.boring_brain/` Directory
+### The `.boring/brain/` Directory
 The "Shared Brain" of your project. It contains portable knowledge that can be committed to Git and shared across your team.
 
 | Subdirectory/File | Content | Portable? | Purpose |
@@ -356,8 +356,8 @@ The "Shared Brain" of your project. It contains portable knowledge that can be c
 
 ### Porting Knowledge
 To transfer AI knowledge to a new project:
-1. **Copy** `.boring_brain/patterns.json`
-2. **Copy** `.boring_brain/rubrics/`
+1. **Copy** `.boring/brain/patterns.json`
+2. **Copy** `.boring/brain/rubrics/`
 3. **Commit** to the new repo
 4. **Result**: AI immediately adopts your team's coding style and review standards.
 

@@ -1,38 +1,32 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 from pydantic import Field
 
 from ...audit import audited
 from ..instance import MCP_AVAILABLE, mcp
-from ..utils import configure_runtime_for_project, get_project_root_or_error
-
-# ==============================================================================
-# KNOWLEDGE TOOLS
-# ==============================================================================
+from ..utils import (
+    configure_runtime_for_project,
+    detect_context_capabilities,
+    get_project_root_or_error,
+)
 
 
 @audited
 def boring_learn(
     project_path: Annotated[
-        str, Field(description="Optional explicit path to project root")
+        Optional[str], Field(description="Optional explicit path to project root")
     ] = None,
 ) -> dict:
     """
-    Trigger learning from .boring_memory to .boring_brain.
+    Trigger learning from .boring/memory to .boring/brain.
 
     Extracts successful patterns from loop history and error solutions,
     storing them in learned_patterns/ for future reference.
-
-    Args:
-        project_path: Optional explicit path to project root
-
-    Returns:
-        Learning result with patterns extracted
     """
     try:
-        from ...brain_manager import BrainManager
         from ...config import settings
-        from ...storage import SQLiteStorage
+        from ...intelligence.brain_manager import BrainManager
+        from ...services.storage import SQLiteStorage
 
         project_root, error = get_project_root_or_error(project_path)
         if error:
@@ -41,7 +35,7 @@ def boring_learn(
         configure_runtime_for_project(project_root)
 
         # Initialize storage and brain
-        storage = SQLiteStorage(project_root / ".boring_memory", settings.LOG_DIR)
+        storage = SQLiteStorage(project_root / ".boring/memory", settings.LOG_DIR)
         brain = BrainManager(project_root, settings.LOG_DIR)
 
         # Learn from memory
@@ -54,24 +48,15 @@ def boring_learn(
 @audited
 def boring_create_rubrics(
     project_path: Annotated[
-        str, Field(description="Optional explicit path to project root")
+        Optional[str], Field(description="Optional explicit path to project root")
     ] = None,
 ) -> dict:
     """
-    Create default evaluation rubrics in .boring_brain/rubrics/.
-
-    Creates rubrics for: implementation_plan, task_list, code_quality.
-    These are used for LLM-as-Judge evaluation.
-
-    Args:
-        project_path: Optional explicit path to project root
-
-    Returns:
-        List of rubrics created
+    Create default evaluation rubrics in .boring/brain/rubrics/.
     """
     try:
-        from ...brain_manager import BrainManager
         from ...config import settings
+        from ...intelligence.brain_manager import BrainManager
 
         project_root, error = get_project_root_or_error(project_path)
         if error:
@@ -87,25 +72,20 @@ def boring_create_rubrics(
 
 
 @audited
-def boring_brain_summary(
+def boring_brain_status(
     project_path: Annotated[
-        str, Field(description="Optional explicit path to project root")
+        Optional[str], Field(description="Optional explicit path to project root")
     ] = None,
 ) -> dict:
     """
-    Get summary of .boring_brain knowledge base.
+    Get status of .boring/brain and detected Project Context.
 
-    Shows counts of patterns, rubrics, and adaptations.
-
-    Args:
-        project_path: Optional explicit path to project root
-
-    Returns:
-        Brain summary
+    Action 3: Brain Visualization
+    Action 2: Dynamic Discovery (Context Reporting)
     """
     try:
-        from ...brain_manager import BrainManager
         from ...config import settings
+        from ...intelligence.brain_manager import BrainManager
 
         project_root, error = get_project_root_or_error(project_path)
         if error:
@@ -114,19 +94,38 @@ def boring_brain_summary(
         configure_runtime_for_project(project_root)
 
         brain = BrainManager(project_root, settings.LOG_DIR)
-        return brain.get_brain_summary()
+        summary = brain.get_brain_summary()
+
+        # Action 2: Add Context Capabilities
+        context = detect_context_capabilities(project_root)
+
+        return {
+            "status": "SUCCESS",
+            "brain_health": "Active" if context["has_boring_brain"] else "Not Initialized",
+            "stats": summary,
+            "context": context,
+            "location": str(project_root / ".boring/brain"),
+        }
 
     except Exception as e:
         return {"status": "ERROR", "error": str(e)}
 
 
+# ==============================================================================
+# TOOL REGISTRATION
+# ==============================================================================
+
 if MCP_AVAILABLE and mcp is not None:
-    mcp.tool(description="Learn patterns from memory", annotations={"readOnlyHint": False})(
-        boring_learn
-    )
-    mcp.tool(description="Create evaluation rubrics", annotations={"readOnlyHint": False})(
+    mcp.tool(
+        description="Learn patterns from memory (brain).",
+        annotations={"readOnlyHint": False, "destructiveHint": False},
+    )(boring_learn)
+
+    mcp.tool(description="Create evaluation rubrics.", annotations={"readOnlyHint": False})(
         boring_create_rubrics
     )
-    mcp.tool(description="Show knowledge base summary", annotations={"readOnlyHint": True})(
-        boring_brain_summary
-    )
+
+    mcp.tool(
+        description="Get Brain Status & Context (Visualization).",
+        annotations={"readOnlyHint": True},
+    )(boring_brain_status)

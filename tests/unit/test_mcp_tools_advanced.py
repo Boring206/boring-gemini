@@ -39,7 +39,7 @@ class TestAdvancedTools:
 
             result = advanced.boring_security_scan(project_path=str(temp_project), scan_type="full")
 
-            assert result["passed"] is True
+            assert result["status"] == "passed"
             assert result["total_issues"] == 0
             mock_scanner.full_scan.assert_called_once()
 
@@ -102,6 +102,59 @@ class TestAdvancedTools:
             advanced.boring_security_scan(scan_type="dependencies")
 
             mock_scanner.scan_dependencies.assert_called_once()
+
+    def test_boring_security_scan_verbosity(self, temp_project):
+        """Test boring_security_scan with different verbosity levels."""
+        mock_scanner = MagicMock()
+        mock_report = MagicMock()
+        mock_report.passed = False
+        mock_report.total_issues = 3
+        mock_report.secrets_found = ["secret1"]
+        mock_report.vulnerabilities_found = ["vuln1"]
+        mock_report.dependency_issues = ["dep1"]
+        # Create a mock issue
+        issue = MagicMock()
+        issue.severity = "high"
+        issue.category = "security"
+        issue.file_path = "test.py"
+        issue.line_number = 1
+        issue.description = "Test issue"
+        issue.recommendation = "Fix it"
+        mock_report.issues = [issue] * 3
+        mock_scanner.report = mock_report
+
+        with (
+            patch("boring.security.SecurityScanner", return_value=mock_scanner),
+            patch("boring.config.settings") as mock_settings,
+        ):
+            mock_settings.PROJECT_ROOT = temp_project
+
+            # 1. Minimal: Expect status, summary, hint
+            res_min = advanced.boring_security_scan(
+                project_path=str(temp_project), verbosity="minimal"
+            )
+            assert res_min["status"] == "failed"
+            assert "summary" in res_min
+            assert "hint" in res_min
+            assert "top_issues" not in res_min
+
+            # 2. Standard: Expect breakdown, top_issues
+            res_std = advanced.boring_security_scan(
+                project_path=str(temp_project), verbosity="standard"
+            )
+            assert res_std["status"] == "failed"
+            assert res_std["total_issues"] == 3
+            assert "top_issues" in res_std
+            assert len(res_std["top_issues"]) == 3
+
+            # 3. Verbose: Expect full legacy dict (checked_categories, etc.)
+            res_verb = advanced.boring_security_scan(
+                project_path=str(temp_project), verbosity="verbose"
+            )
+            assert res_verb["total_issues"] == 3
+            assert "checked_categories" in res_verb
+            assert "issues" in res_verb
+            assert len(res_verb["issues"]) == 3
 
     def test_boring_transaction_start(self, temp_project):
         """Test boring_transaction start action."""

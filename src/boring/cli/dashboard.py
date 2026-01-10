@@ -7,11 +7,14 @@ from pathlib import Path
 # Streamlit placeholder for test patching and lazy loading
 st = None
 
+from boring.paths import get_boring_path, get_state_file
+
 # Paths
+PROJECT_ROOT = Path.cwd()
 STATUS_FILE = Path("status.json")
 LOG_FILE = Path("logs/boring.log")
-BRAIN_DIR = Path(".boring_brain")
-CIRCUIT_FILE = Path(".circuit_breaker_state")
+BRAIN_DIR = get_boring_path(PROJECT_ROOT, "brain", create=False)
+CIRCUIT_FILE = get_state_file(PROJECT_ROOT, "circuit_breaker_state")
 
 
 def load_json(path: Path):

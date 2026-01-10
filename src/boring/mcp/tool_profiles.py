@@ -42,142 +42,251 @@ class ProfileConfig:
 
     name: str
     description: str
-    tools: list[str]
-    max_tools: int
+    tools: list[str] | None = None  # None means all tools
+    prompts: list[str] | None = None  # None means all prompts
 
 
-# Profile definitions
+# --- Helper lists for tool definitions ---
+# These are inferred from the original structure and the new definitions
+ULTRA_LITE_TOOLS_LIST = [
+    "boring",  # Universal NL router
+    "boring_help",  # Category discovery
+    "boring_discover",  # On-demand tool schema (progressive disclosure)
+]
+
+GIT_TOOLS = [
+    "boring_commit",
+    "boring_checkpoint",
+    "boring_hooks_install",
+    "boring_hooks_status",
+]
+
+REVIEW_TOOLS = [
+    "boring_code_review",
+    "boring_perf_tips",
+    "boring_arch_check",
+]
+
+SECURITY_TOOLS = [
+    "boring_security_scan",
+]
+
+DEV_TOOLS = [
+    "boring_test_gen",
+    "boring_doc_gen",
+    "boring_prompt_plan",
+    "boring_prompt_fix",
+]
+
+RAG_TOOLS = [
+    "boring_rag_search",
+    "boring_rag_index",
+    "boring_rag_context",
+    "boring_rag_expand",
+    "boring_rag_status",
+]
+
+VERIFY_TOOLS = [
+    "boring_verify",
+    "boring_verify_file",
+]
+
+VIBE_TOOLS = [
+    "boring_vibe_check",
+]
+
+SHADOW_TOOLS = [
+    "boring_shadow_status",
+    "boring_shadow_mode",
+    "boring_shadow_approve",
+]
+
+SUGGEST_TOOLS = [
+    "boring_suggest_next",
+]
+
+IMPACT_TOOLS = [
+    "boring_impact_check",
+    "boring_predict_impact",
+]
+
+CONTEXT_TOOLS = [
+    "boring_context",
+]
+
+BRAIN_TOOLS = [
+    "boring_brain_health",
+    "boring_incremental_learn",
+]
+
+WORKSPACE_TOOLS = [
+    "boring_workspace_list",
+    "boring_workspace_add",
+    "boring_workspace_switch",
+]
+
+AGENT_TOOLS = [
+    "boring_multi_agent",
+    "boring_agent_review",
+]
+
+VISUALIZATION_TOOLS = [
+    "boring_visualize",
+]
+
+DELEGATION_TOOLS = [
+    "boring_delegate",
+]
+
+TRANSACTION_TOOLS = [
+    "boring_transaction",
+]
+
+TASK_TOOLS = [
+    "boring_task",
+    "boring_get_progress",
+]
+
+SPECKIT_TOOLS = [
+    "boring_speckit_clarify",
+    "boring_speckit_checklist",
+]
+
+# New tools introduced in the user's MINIMAL_TOOLS list
+NEW_MINIMAL_TOOLS_ADDITIONS = [
+    "boring_status",
+    "boring_list_tasks",
+    "boring_get_progress",
+    "boring_health",
+    "boring_brain_summary",
+    "boring_get_relevant_patterns",
+]
+
+# New tools introduced in the user's STANDARD_TOOLS list
+EVAL_TOOLS = [
+    "boring_evaluate_code",
+]
+
+
+# --- 2. Profile Definitions ---
+
+# 1. Ultra Lite (Token Saver) - Only Router
+# 97% Token Savings. For "Reasoning Models" that know how to ask.
+ULTRA_LITE = ProfileConfig(
+    name="ultra_lite",
+    description="Minimal token footprint (Router only). Best for Reasoning Models.",
+    tools=ULTRA_LITE_TOOLS_LIST,
+    prompts=[],  # No prompts to maximize savings. Use tools directly.
+)
+
+# 2. Minimal (Read-Only / Context)
+# For "Context Gathering" or "Chat".
+MINIMAL_TOOLS = (
+    ULTRA_LITE.tools
+    + NEW_MINIMAL_TOOLS_ADDITIONS
+    + RAG_TOOLS[:1]  # Only boring_rag_search
+    + GIT_TOOLS[:1]  # Only boring_commit
+    + VERIFY_TOOLS[:1]  # Only boring_verify
+    + VIBE_TOOLS[:1]  # Only boring_vibe_check
+    + SHADOW_TOOLS[:1]  # Only boring_shadow_status
+    + SUGGEST_TOOLS[:1]  # Only boring_suggest_next
+)
+MINIMAL = ProfileConfig(
+    name="minimal",
+    description="Read-only context & git status.",
+    tools=MINIMAL_TOOLS,
+    prompts=[
+        "system_status",
+        "project_brain",
+        "semantic_search",
+        "vibe_check",  # New diagnostic
+    ],
+)
+
+# 3. Lite (Daily Driver) - Safe, Common Actions
+# For "Junior Dev" or "Quick Fixes".
+LITE_TOOLS = (
+    MINIMAL_TOOLS
+    + RAG_TOOLS[1:]  # Remaining RAG tools
+    + REVIEW_TOOLS
+    + DEV_TOOLS
+    + SECURITY_TOOLS
+    + IMPACT_TOOLS[:1]  # Only boring_impact_check
+    + CONTEXT_TOOLS
+    + ["boring_checkpoint"]  # Safe checkpointing for daily work
+)
+LITE = ProfileConfig(
+    name="lite",
+    description="Daily driver for code improvements & fixes.",
+    tools=LITE_TOOLS,
+    prompts=MINIMAL.prompts
+    + [
+        "quick_fix",
+        "smart_commit",
+        "review_code",
+        "debug_error",
+        "refactor_code",
+        "explain_code",
+        "save_session",
+        "load_session",
+    ],
+)
+
+# 4. Standard (Vibe Coder / Architect) - The Power Suite
+# Includes Agents, Speckit (Planning), and Heavy Analysis.
+STANDARD_TOOLS = (
+    LITE_TOOLS
+    + GIT_TOOLS[1:]  # Remaining Git tools
+    + VERIFY_TOOLS[1:]  # Remaining Verify tools
+    + VIBE_TOOLS[1:]  # Remaining Vibe tools (if any)
+    + SHADOW_TOOLS[1:]  # Remaining Shadow tools
+    + SUGGEST_TOOLS[1:]  # Remaining Suggest tools
+    + IMPACT_TOOLS[1:]  # Remaining Impact tools
+    + BRAIN_TOOLS
+    + WORKSPACE_TOOLS
+    + AGENT_TOOLS
+    + VISUALIZATION_TOOLS
+    + DELEGATION_TOOLS
+    + TRANSACTION_TOOLS
+    + TASK_TOOLS
+    + SPECKIT_TOOLS
+    + EVAL_TOOLS
+)
+STANDARD = ProfileConfig(
+    name="standard",
+    description="Full power for Vibe Coders & Architects.",
+    tools=STANDARD_TOOLS,
+    prompts=LITE.prompts
+    + [
+        "vibe_start",  # The Ultimate Vibe Coder Prompt
+        "plan_feature",
+        "verify_work",
+        "manage_memory",
+        "evaluate_architecture",
+        "run_agent",
+        "safe_refactor",
+        "rollback",
+        "evaluate_code",
+        "visualize",
+        "roadmap",
+    ],
+)
+
+# 5. Full (Everything)
+FULL = ProfileConfig(
+    name="full",
+    description="All available tools and prompts (Max Context).",
+    tools=None,  # All
+    prompts=None,  # All
+)
+
+# Profile definitions (using the new ToolProfile dataclass instances)
 PROFILES = {
-    ToolProfile.ULTRA_LITE: ProfileConfig(
-        name="Ultra Lite",
-        description="Absolute minimum - router + discovery only (97% token savings)",
-        max_tools=3,
-        tools=[
-            "boring",  # Universal NL router
-            "boring_help",  # Category discovery
-            "boring_discover",  # On-demand tool schema (progressive disclosure)
-        ],
-    ),
-    ToolProfile.MINIMAL: ProfileConfig(
-        name="Minimal",
-        description="Essential tools only - for simple workflows",
-        max_tools=10,
-        tools=[
-            # Universal
-            "boring",  # Router
-            "boring_help",  # Discovery
-            # Core workflow
-            "boring_rag_search",  # Search code
-            "boring_commit",  # Git commit
-            "boring_verify",  # Verify code
-            # Quality
-            "boring_vibe_check",  # Health check
-            # Safety
-            "boring_shadow_status",  # Shadow mode
-            # Intelligence
-            "boring_suggest_next",  # AI suggestions
-        ],
-    ),
-    ToolProfile.LITE: ProfileConfig(
-        name="Lite",
-        description="Common tools for everyday development",
-        max_tools=20,
-        tools=[
-            # From MINIMAL
-            "boring",
-            "boring_help",
-            "boring_rag_search",
-            "boring_commit",
-            "boring_verify",
-            "boring_vibe_check",
-            "boring_shadow_status",
-            "boring_suggest_next",
-            # RAG extended
-            "boring_rag_index",
-            "boring_rag_context",
-            # Review
-            "boring_code_review",
-            "boring_perf_tips",
-            # Testing
-            "boring_test_gen",
-            # Docs
-            "boring_doc_gen",
-            # Security
-            "boring_security_scan",
-            # Planning
-            "boring_prompt_plan",
-            "boring_prompt_fix",
-            # Impact
-            "boring_impact_check",
-            # Context
-            "boring_context",
-        ],
-    ),
-    ToolProfile.STANDARD: ProfileConfig(
-        name="Standard",
-        description="Balanced toolset for most projects",
-        max_tools=50,
-        tools=[
-            # All from LITE
-            "boring",
-            "boring_help",
-            "boring_rag_search",
-            "boring_rag_index",
-            "boring_rag_context",
-            "boring_rag_expand",
-            "boring_rag_status",
-            "boring_commit",
-            "boring_verify",
-            "boring_verify_file",
-            "boring_vibe_check",
-            "boring_shadow_status",
-            "boring_shadow_mode",
-            "boring_shadow_approve",
-            "boring_suggest_next",
-            "boring_code_review",
-            "boring_perf_tips",
-            "boring_arch_check",
-            "boring_test_gen",
-            "boring_doc_gen",
-            "boring_security_scan",
-            "boring_prompt_plan",
-            "boring_prompt_fix",
-            "boring_impact_check",
-            "boring_context",
-            # Git extended
-            "boring_hooks_install",
-            "boring_hooks_status",
-            # Intelligence
-            "boring_predict_impact",
-            "boring_brain_health",
-            "boring_incremental_learn",
-            # Workspace
-            "boring_workspace_list",
-            "boring_workspace_add",
-            "boring_workspace_switch",
-            # Planning extended
-            "boring_multi_agent",
-            "boring_agent_review",
-            # Visualization
-            "boring_visualize",
-            # Delegation
-            "boring_delegate",
-            # Transactions
-            "boring_transaction",
-            # Tasks
-            "boring_task",
-            "boring_get_progress",
-            # Speckit core
-            "boring_speckit_clarify",
-            "boring_speckit_checklist",
-        ],
-    ),
-    ToolProfile.FULL: ProfileConfig(
-        name="Full",
-        description="All tools - for power users",
-        max_tools=200,
-        tools=[],  # Empty means all tools
-    ),
+    ToolProfile.ULTRA_LITE: ULTRA_LITE,
+    ToolProfile.MINIMAL: MINIMAL,
+    ToolProfile.LITE: LITE,
+    ToolProfile.STANDARD: STANDARD,
+    ToolProfile.FULL: FULL,
 }
 
 
@@ -190,12 +299,6 @@ def get_profile(profile_name: Optional[str] = None) -> ProfileConfig:
     2. BORING_MCP_PROFILE environment variable
     3. Config from .boring.toml
     4. Default to LITE
-
-    Args:
-        profile_name: Optional profile name override
-
-    Returns:
-        ProfileConfig for the selected profile
     """
     # Check parameter
     if profile_name:
@@ -218,9 +321,10 @@ def get_profile(profile_name: Optional[str] = None) -> ProfileConfig:
     try:
         profile_enum = ToolProfile(name)
     except ValueError:
+        # Fallback to defaults if name doesn't match an enum value
         profile_enum = ToolProfile.LITE
 
-    return PROFILES[profile_enum]
+    return PROFILES.get(profile_enum, PROFILES[ToolProfile.LITE])
 
 
 def should_register_tool(tool_name: str, profile: Optional[ProfileConfig] = None) -> bool:
@@ -237,11 +341,32 @@ def should_register_tool(tool_name: str, profile: Optional[ProfileConfig] = None
     if profile is None:
         profile = get_profile()
 
-    # FULL profile includes everything
-    if not profile.tools:
+    # FULL profile includes everything (tools=None)
+    if profile.tools is None:
         return True
 
     return tool_name in profile.tools
+
+
+def should_register_prompt(prompt_name: str, profile: Optional[ProfileConfig] = None) -> bool:
+    """
+    Check if a prompt should be registered based on current profile.
+
+    Args:
+        prompt_name: Name of the prompt to check
+        profile: Optional profile config (uses current if None)
+
+    Returns:
+        True if prompt should be registered
+    """
+    if profile is None:
+        profile = get_profile()
+
+    # FULL profile includes everything (prompts=None)
+    if profile.prompts is None:
+        return True
+
+    return prompt_name in profile.prompts
 
 
 def get_profile_summary() -> str:

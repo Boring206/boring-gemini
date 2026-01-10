@@ -47,7 +47,7 @@ def full_stack_dev(...):
 
 - **代碼位置**: `session.py` (Line 223)
 - **作用**: 它啟動一個由 Python 代碼管理的 **狀態機 (State Machine)**。
-- **持久性**: 它將狀態保存到 `.boring_memory/sessions/{id}.json`。這意味著即使對話崩潰，也可以通過 `vibe_session_continue` 完美恢復。
+- **持久性**: 它將狀態保存到 `.boring/memory/sessions/{id}.json`。這意味著即使對話崩潰，也可以通過 `vibe_session_continue` 完美恢復。
 - **強制性**: 它明確定義了 `SessionPhase` (Alignment, Planning, Implementation...)。如果沒有呼叫 `boring_session_confirm()`，程式邏輯將**強制禁止**你進入實作階段。
 
 ```python

@@ -144,7 +144,7 @@ sequenceDiagram
 與只生成代碼的典型 Agent 不同，Boring 會 **驗證** 它。
 
 - **平行執行**：使用 `ThreadPoolExecutor` 並發執行 linter/測試。
-- **快取**：對檔案內容進行雜湊，以跳過未變更檔案的重複驗證 (`.boring_cache`)。
+- **快取**：對檔案內容進行雜湊，以跳過未變更檔案的重複驗證 (`.boring/cache`)。
 - **層級**：
   - **靜態**：語法檢查、linting (ruff, eslint)。
   - **動態**：單元測試 (pytest)。

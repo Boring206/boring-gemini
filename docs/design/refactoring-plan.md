@@ -13,7 +13,7 @@
 ```
 src/boring/mcp/
 ├── server.py              # MCP Server 主入口 (已更新 imports)
-├── v9_tools.py           # ⚠️ DEPRECATED - 添加棄用警告
+├── tools/assistant.py           # ⚠️ DEPRECATED - 添加棄用警告
 ├── v10_tools.py          # Registry hub ✅
 ├── vibe_tools.py         # ⚠️ DEPRECATED - 添加棄用警告
 ├── core_tools.py         # 核心工具
@@ -43,7 +43,7 @@ src/boring/mcp/
 
 | 當前命名 | 狀態 | 結果 |
 |----------|------|------|
-| `v9_tools.py` | ✅ Re-export wrapper | 660 → 53 行 (92%↓) |
+| `tools/assistant.py` | ✅ Re-export wrapper | 660 → 53 行 (92%↓) |
 | `v10_tools.py` | ✅ 保留 | 作為 registry hub |
 | `vibe_tools.py` | ✅ Re-export wrapper | 1319 → 25 行 (98%↓) |
 
@@ -62,7 +62,7 @@ src/boring/mcp/
 ### Phase B: Deprecation Warnings ✅
 
 ```python
-# v9_tools.py - 已添加
+# tools/assistant.py - 已添加
 import warnings
 warnings.warn(
     "v9_tools is deprecated since V10.26.0. "
@@ -87,14 +87,14 @@ warnings.warn(
 
 | 新模組 | 工具數 | 來源 |
 |--------|--------|------|
-| `tools/plugins.py` | 3 | v9_tools.py |
-| `tools/workspace.py` | 4 | v9_tools.py |
-| `tools/assistant.py` | 3 | v9_tools.py |
+| `tools/plugins.py` | 3 | tools/assistant.py |
+| `tools/workspace.py` | 4 | tools/assistant.py |
+| `tools/assistant.py` | 3 | tools/assistant.py |
 | `tools/vibe.py` | 10 | vibe_tools.py |
 
 ---
 
-## 📋 v9_tools.py 遷移清單 ✅
+## 📋 tools/assistant.py 遷移清單 ✅
 
 | Tool | 類別 | 目標位置 | 狀態 |
 |------|------|----------|------|

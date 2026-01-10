@@ -11,20 +11,19 @@
 │                 KNOWLEDGE SYSTEM                        │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
-│  ~/.boring_brain/          (Global - All Projects)     │
+│  ~/.boring/brain/          (Global - All Projects)     │
 │  ├── patterns/             Learned error solutions     │
 │  ├── rubrics/              Evaluation criteria         │
 │  ├── shadow_config.json    Shadow Mode settings        │
 │  └── quality_history.json  Score trends                │
 │                                                         │
-│  .boring_memory/           (Project-Specific)          │
-│  ├── context.json          Session context             │
-│  ├── decisions.json        Architecture decisions      │
-│  └── learnings.json        Project learnings           │
+│  .boring/memory/           (Project-Specific)          │
+│  ├── sessions/             Session history             │
+│  ├── db.sqlite             Structured memory           │
+│  └── rag_index/            Web/Doc embeddings          │
 │                                                         │
-│  .boring_cache/            (Ephemeral - Temp)          │
-│  ├── verification.json     Cached verification         │
-│  └── rag_index/            Vector embeddings           │
+│  .boring/cache/            (Ephemeral - Temp)          │
+│  └── rag_cache/            Code embeddings             │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -35,17 +34,17 @@
 
 | Directory | Scope | Purpose | Migration |
 |-----------|-------|---------|-----------|
-| `~/.boring_brain/` | Global | Cross-project knowledge | Copy to new machine |
-| `.boring_memory/` | Project | Project-specific context | Commit to repo |
-| `.boring_cache/` | Temp | Ephemeral cache | Regenerated |
+| `~/.boring/brain/` | Global | Cross-project knowledge | Copy to new machine |
+| `.boring/memory/` | Project | Project-specific context | Commit to repo |
+| `.boring/cache/` | Temp | Ephemeral cache | Regenerated |
 
 ---
 
-## 🧠 .boring_brain (Global Knowledge)
+## 🧠 .boring/brain (Global Knowledge)
 
 ### Location
-- **Linux/macOS**: `~/.boring_brain/`
-- **Windows**: `C:\Users\<username>\.boring_brain\`
+- **Linux/macOS**: `~/.boring/brain/`
+- **Windows**: `C:\Users\<username>\.boring\brain\`
 
 ### Contents
 
@@ -91,61 +90,32 @@ Persistent across sessions.
 
 ```bash
 # Backup
-cp -r ~/.boring_brain ~/boring_brain_backup
+cp -r ~/.boring/brain ~/boring_brain_backup
 
 # Restore on new machine
-cp -r ~/boring_brain_backup ~/.boring_brain
+cp -r ~/boring_brain_backup ~/.boring/brain
 ```
 
 ---
 
-## 📂 .boring_memory (Project Knowledge)
+## 📂 .boring/memory (Project Knowledge)
 
 ### Location
-- In your project root: `.boring_memory/`
+- In your project root: `.boring/memory/`
 
 ### Contents
 
-#### context.json - Session Context
-```json
-{
-  "architecture": "microservices",
-  "tech_stack": ["FastAPI", "PostgreSQL", "Redis"],
-  "current_focus": "authentication module"
-}
-```
+#### db.sqlite - Structured Data
+Contains session logs, tool outputs, and project context.
 
-#### decisions.json - Architecture Decisions
-```json
-{
-  "decisions": [
-    {
-      "date": "2024-01-15",
-      "topic": "Database choice",
-      "decision": "PostgreSQL over MySQL",
-      "rationale": "Better JSON support, pg_vector for RAG"
-    }
-  ]
-}
-```
-
-#### learnings.json - Project Learnings
-```json
-{
-  "error_solutions": [
-    {
-      "error": "Connection timeout in production",
-      "solution": "Increase pool_size in database config"
-    }
-  ]
-}
-```
+#### sessions/ - Conversation History
+JSON files storing raw conversation logs for context restoration.
 
 ### Best Practice
 
 ```bash
 # Commit to repo for team sharing
-git add .boring_memory/
+git add .boring/memory/
 git commit -m "docs: project context and decisions"
 ```
 
@@ -196,20 +166,30 @@ boring_rag_reload(project_path=".")
 
 ### Storage
 
-- **Index location**: `.boring_cache/rag_index/`
+- **Index location**: `.boring/memory/rag_index/`
 - **Size**: ~1MB per 1000 files
 - **Regeneration**: Automatic if missing
 
 ---
 
-## 📚 Patterns & AutoLearner
+## 📚 Patterns, AutoLearner & Active Recall
+
+### Cognitive Reflexes (Active Recall)
+
+Starting in **V10.31**, the Agent possesses **Active Recall**. When it encounters an error (e.g., `pytest` failure), it doesn't just "try again." It queries the global Brain for similar past errors and retrieves proven solutions.
+
+**Flow:**
+1.  **Error Occurs**: Agent captures `ModuleNotFoundError`.
+2.  **Reflex Query**: Agent calls `boring_suggest_next(error_message="...")`.
+3.  **Brain Retrieval**: Brain scans `patterns.json` for semantic matches.
+4.  **Solution Injection**: If a high-confidence match (e.g., 95%) is found, the solution is injected directly into the Agent's context.
 
 ### How Patterns Are Learned
 
 ```
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
 │ AI Response  │ ──▶ │ AutoLearner  │ ──▶ │ Pattern DB   │
-│ "Fixed by X" │     │ (extraction) │     │ (.boring_brain)│
+│ "Fixed by X" │     │ (extraction) │     │ (.boring/brain)│
 └──────────────┘     └──────────────┘     └──────────────┘
                              │
                              ▼
@@ -242,9 +222,9 @@ boring_learn(
 
 ```bash
 # 1. Copy global knowledge
-scp -r ~/.boring_brain user@newmachine:~/
+scp -r ~/.boring/brain user@newmachine:~/
 
-# 2. Clone project (includes .boring_memory)
+# 2. Clone project (includes .boring/memory)
 git clone your-repo
 
 # 3. Rebuild cache (automatic on first use)
@@ -255,10 +235,10 @@ boring rag index
 
 ```bash
 # In .gitignore
-.boring_cache/          # Don't commit cache
+.boring/cache/          # Don't commit cache
 
 # Commit project knowledge
-git add .boring_memory/
+git add .boring/memory/
 git add .boring.toml    # Project config
 ```
 

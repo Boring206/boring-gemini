@@ -1,341 +1,105 @@
-# Cookbook - 完整功能食譜
+# 🍳 Vibe Coder 食譜 (The Cookbook)
 
-> 每個 Boring 功能的即用食譜。複製、貼上、自訂。
-
----
-
-## 📚 食譜索引
-
-### 🚀 入門
-- [食譜 1：首次專案設定](#食譜-1首次專案設定)
-- [食譜 2：MCP 伺服器配置](#食譜-2mcp-伺服器配置)
-
-### 🔧 日常工作流程
-- [食譜 3：快速修復錯誤](#食譜-3快速修復錯誤)
-- [食譜 4：功能開發](#食譜-4功能開發)
-- [食譜 5：代碼審查](#食譜-5代碼審查)
-
-### 🔒 安全
-- [食譜 6：安全審計](#食譜-6安全審計)
-- [食譜 7：影子模式設定](#食譜-7影子模式設定)
-
-### 🧠 進階
-- [食譜 8：多代理工作流程](#食譜-8多代理工作流程)
-- [食譜 9：RAG 知識庫](#食譜-9rag-知識庫)
-- [食譜 10：CI/CD 整合](#食譜-10cicd-整合)
+> **這不是一般的程式設計書。**
+> 這裡沒有繁瑣的 API 呼叫，只有 **「如何用一句話讓 AI 幫你寫出好程式」**。
 
 ---
 
-## 食譜 1：首次專案設定
+## 🥗 前菜：快速修復 (Quick Fixes)
 
-### 材料
-- 空目錄或現有專案
-- Python 3.9+
-- pip
+當你看到紅色的 Error，或是想做點小修改時。
 
-### 步驟
+### 食譜 1：一鍵修 bug
+**情境**：終端機噴出 `IndexError: list index out of range`。
+**做法**：
+1. 直接把 Error Log 貼給 Vibe Coder。
+2. 說：
+   > 「幫我修這個錯誤」
+   > 或
+   > 「Fix this error」
 
-```bash
-# 1. 安裝 Boring
-pip install boring-aicoding
+**背後原理**：AI 會呼叫 `boring_apply_patch` 或 `boring_suggest_next` 找出問題檔案並修正。
 
-# 2. 初始化專案（如果是新專案）
-boring-setup my-project
-cd my-project
+### 食譜 2：整理亂糟糟的程式碼 (Refactoring)
+**情境**：你剛寫完一段功能，但程式碼醜得像義大利麵。
+**做法**：打開那隻檔案，然後說：
+> 「幫我重構這段程式碼，讓它更好讀」
+> 「Refactor this function to be cleaner」
 
-# 3. 開始開發
-boring start
-```
-
-### 預期輸出
-```
-🚀 Boring v10.18.3 已啟動
-📁 專案：my-project
-🔍 監控變更中...
-```
+**主廚秘訣** 🧂：加上「保持邏輯不變 (Keep logic same)」，AI 會更小心。
 
 ---
 
-## 食譜 2：MCP 伺服器配置
+## 🥩 主菜：功能開發 (Feature Development)
 
-### Claude Desktop
+這是 Vibe Coder 最強大的地方：**SpecKit 流程**。
 
-編輯 `~/Library/Application Support/Claude/claude_desktop_config.json`（macOS）或 `%APPDATA%\Claude\claude_desktop_config.json`（Windows）：
+### 食譜 3：從零開始做新功能
+**情境**：老闆說「我們要加一個 OAuth 登入功能」。
+**做法**：不要急著寫 code！
 
-```json
-{
-  "mcpServers": {
-    "boring": {
-      "command": "python",
-      "args": ["-m", "boring.mcp.server"],
-      "env": {
-        "PROJECT_ROOT_DEFAULT": "/path/to/your/project",
-        "SHADOW_MODE_LEVEL": "ENABLED"
-      }
-    }
-  }
-}
-```
+**步驟 1：點餐 (規劃)**
+> 「我想做 Google 登入功能，幫我規劃一下 (Plan this)」
 
-### Cursor
+**步驟 2：確認菜單 (SpecKit)**
+AI 會生成一個計畫 (`.boring/plans/google-auth.md`)。
+> 「把這個計畫拆成任務清單 (Break into tasks)」
 
-在 Settings → MCP Servers：
-```json
-{
-  "boring": {
-    "command": "boring-mcp",
-    "args": [],
-    "env": {
-      "PROJECT_ROOT_DEFAULT": "."
-    }
-  }
-}
-```
+**步驟 3：開火 (實作)**
+> 「好，開始做第一個任務」
+> 「Implement task 1」
 
-### Smithery（雲端）
-```
-npx -y @anthropic-ai/mcp install @boring/boring
-```
+### 食譜 4：寫測試不求人
+**情境**：功能寫完了，但你懶得寫單元測試。
+**做法**：
+> 「幫我為 `auth.py` 寫測試」
+> 「Generate unit tests for this file」
+
+**預期結果**：AI 會自動呼叫 `boring_test_gen`，在 `tests/` 目錄下生出完整的測試檔。
 
 ---
 
-## 食譜 3：快速修復錯誤
+## 🍰 甜點：品質與安全 (Quality & Security)
 
-### 問題
-你有一個錯誤，想讓 AI 修復它。
+上線前的最後檢查。
 
-### 步驟
+### 食譜 5：Vibe Check (專案健檢)
+**情境**：你想知道專案現在健不健康。
+**做法**：
+> 「Vibe Check!」
+> 「幫我健檢一下專案」
 
-```python
-# 選項 1：描述錯誤
-boring_apply_patch(
-    project_path=".",
-    description="修復登入函數 - 密碼為空時會崩潰"
-)
+**結果**：你會得到一個 **Vibe Score (0-100)**。
+- **90+**: 米其林三星 🌟
+- **60-**: 需要進廚房重練 🧹
 
-# 選項 2：使用 quick_fix 提示
-# 只需說：/quick_fix
-```
+### 食譜 6：安全掃描
+**情境**：怕把 API Key 推到 GitHub。
+**做法**：
+> 「做一次安全掃描」
+> 「Scan for secrets」
 
-### 驗證
-```python
-boring_verify(level="FULL")
-```
-
----
-
-## 食譜 4：功能開發
-
-### 使用 SpecKit 工作流程
-
-```python
-# 步驟 1：建立原則
-speckit_constitution(project_path=".")
-
-# 步驟 2：澄清需求
-speckit_clarify(
-    feature="使用 OAuth 的使用者認證",
-    questions=["providers", "storage", "session"]
-)
-
-# 步驟 3：建立實作計畫
-speckit_plan(feature="user-auth")
-
-# 步驟 4：生成檢查清單
-speckit_checklist(plan_path=".boring/plans/user-auth.md")
-
-# 步驟 5：實作
-boring_multi_agent(
-    workflow="plan_and_implement",
-    context={"feature": "user-auth"}
-)
-```
+**主廚秘訣** 🧂：加上 `fix_mode=True` (或是說「順便幫我修」)，AI 會自動把 Key 換成環境變數。
 
 ---
 
-## 食譜 5：代碼審查
+## 🍹 特調：進階技巧 (Pro Tips)
 
-### 直接評估
-```python
-boring_evaluate(
-    target="src/main.py",
-    level="DIRECT",
-    criteria=["correctness", "security", "performance", "maintainability"]
-)
-```
+### 食譜 7：RAG 知識庫查詢
+**情境**：接手別人的專案，看不懂這是幹嘛的。
+**做法**：
+> 「解釋一下這邊的 DB 連線是怎麼處理的？」
+> 「Where is the authentication logic?」
 
-### 配對比較
-```python
-boring_evaluate(
-    level="PAIRWISE",
-    target_a="src/auth_v1.py",
-    target_b="src/auth_v2.py"
-)
-```
+**背後原理**：AI 會用 `boring_rag_search` 去翻閱整個專案的知識庫，把相關的程式碼片段找出來解釋給你聽。
 
-### 基於評分標準的評分
-```python
-boring_evaluate(
-    target="src/",
-    level="RUBRIC",
-    rubric_path=".boring/rubrics/production-ready.md"
-)
-```
+### 食譜 8：影子模式 (Shadow Mode)
+**情境**：你信任 AI，但不想讓它亂改重要檔案。
+**做法**：
+> 「開啟 Shadow Mode」
+
+從此之後，AI 對 **敏感檔案** (如 `.env`, 配置檔) 的修改，都需要你點頭批准才會生效。就像廚房裡的「主廚審核」機制。
 
 ---
 
-## 食譜 6：安全審計
-
-### 完整安全掃描
-```python
-boring_security_scan(
-    project_path=".",
-    scan_type="all"  # sast + secrets + dependencies
-)
-```
-
-### 僅密鑰
-```python
-boring_security_scan(
-    project_path=".",
-    scan_type="secrets"
-)
-```
-
-### 帶自動修復
-```python
-boring_security_scan(
-    project_path=".",
-    scan_type="all",
-    fix_mode=True
-)
-```
-
----
-
-## 食譜 7：影子模式設定
-
-### 為生產環境啟用
-```python
-# 設定 STRICT 模式
-boring_shadow_mode(action="set_level", level="STRICT")
-
-# 驗證狀態
-boring_shadow_mode(action="status")
-```
-
-### 配置模式
-編輯 `~/.boring_brain/shadow_config.json`：
-```json
-{
-  "level": "STRICT",
-  "auto_approve_patterns": ["*.md", "docs/*"],
-  "always_block_patterns": ["*.env", "secrets/*", ".git/*"]
-}
-```
-
----
-
-## 食譜 8：多代理工作流程
-
-### 計畫並實作
-```python
-boring_multi_agent(
-    workflow="plan_and_implement",
-    context={
-        "feature": "即時通知",
-        "tech_stack": ["WebSockets", "Redis", "FastAPI"]
-    },
-    execute=True  # 實際執行，而非只生成提示
-)
-```
-
-### 審查並修復
-```python
-boring_multi_agent(
-    workflow="review_and_fix",
-    context={
-        "target": "src/",
-        "focus": ["security", "performance"]
-    }
-)
-```
-
----
-
-## 食譜 9：RAG 知識庫
-
-### 建立索引
-```python
-boring_rag_index(
-    project_path=".",
-    force=False  # 增量
-)
-```
-
-### 搜尋代碼
-```python
-boring_rag_search(
-    query="認證中介軟體",
-    project_path=".",
-    top_k=10,
-    expand_deps=True
-)
-```
-
-### 多專案搜尋
-```python
-boring_rag_search(
-    query="錯誤處理模式",
-    additional_roots=[
-        "/path/to/shared-libs",
-        "/path/to/reference-project"
-    ]
-)
-```
-
----
-
-## 食譜 10：CI/CD 整合
-
-### GitHub Actions
-
-```yaml
-# .github/workflows/quality-gates.yml
-name: Quality Gates
-
-on: [push, pull_request]
-
-jobs:
-  verify:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - run: pip install boring-aicoding
-      - run: boring verify --level FULL
-      
-  security:
-    runs-on: ubuntu-latest
-    needs: verify
-    steps:
-      - uses: actions/checkout@v4
-      - run: pip install boring-aicoding
-      - run: |
-          python -c "
-          from boring.mcp.tools import boring_security_scan
-          result = boring_security_scan('.', 'all')
-          if result.get('critical_count', 0) > 0:
-              exit(1)
-          "
-```
-
----
-
-## 另請參閱
-
-- [Vibe Coder 指南](./vibe-coder_zh.md) - 適合視覺化/描述式開發者
-- [快速教學](./quick-tutorials_zh.md) - 逐步指南
-- [MCP 工具](../features/mcp-tools_zh.md) - 完整工具參考
+> 👨‍🍳 **祝您烹飪愉快！ (Happy Coding!)**

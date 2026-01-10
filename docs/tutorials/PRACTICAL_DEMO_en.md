@@ -486,7 +486,7 @@ my-awesome-app/
 ├── PROMPT.md      # ✅ Required - Your task Instructions
 ├── @fix_plan.md   # Task Checklist
 ├── GEMINI.md      # Project Context
-└── .boring_brain/ # AI Knowledge Base
+└── .boring/brain/ # AI Knowledge Base
 ```
 
 ---

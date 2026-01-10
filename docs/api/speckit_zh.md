@@ -1,6 +1,6 @@
 # SpecKit API 參考
 
-::: boring.mcp.tools.speckit
+::: boring.mcp.speckit_tools
     options:
       show_root_heading: true
       members_order: source

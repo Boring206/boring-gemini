@@ -32,6 +32,10 @@ def boring_security_scan(
             description="Scan type: 'full', 'secrets', 'vulnerabilities', 'dependencies'",
         ),
     ] = "full",
+    verbosity: Annotated[
+        str,
+        Field(description="Output detail level: 'minimal', 'standard' (default), 'verbose'"),
+    ] = "standard",
 ) -> dict:
     """
     Run comprehensive security scan.
@@ -44,7 +48,11 @@ def boring_security_scan(
     from pathlib import Path
 
     from boring.config import settings
+    from boring.mcp.verbosity import get_verbosity, is_minimal, is_standard
     from boring.security import SecurityScanner
+
+    # Resolve verbosity
+    verbosity_level = get_verbosity(verbosity)
 
     path = Path(project_path) if project_path else settings.PROJECT_ROOT
     scanner = SecurityScanner(path)
@@ -59,6 +67,50 @@ def boring_security_scan(
         scanner.full_scan()
 
     report = scanner.report
+
+    # --- Verbosity Logic ---
+
+    # 1. MINIMAL: Just summary counts
+    if is_minimal(verbosity_level):
+        return {
+            "status": "passed" if report.passed else "failed",
+            "summary": (
+                f"🛡️ Scan completed. Found {report.total_issues} issues. "
+                f"(Secrets: {report.secrets_found}, SAST: {report.vulnerabilities_found}, "
+                f"Deps: {report.dependency_issues})"
+            ),
+            "hint": "💡 Use `verbosity='standard'` to see critical issues.",
+        }
+
+    # 2. STANDARD: Summary + Top 5 Issues
+    if is_standard(verbosity_level):
+        top_issues = report.issues[:5]
+        return {
+            "status": "passed" if report.passed else "failed",
+            "total_issues": report.total_issues,
+            "breakdown": {
+                "secrets": report.secrets_found,
+                "sast": report.vulnerabilities_found,
+                "dependencies": report.dependency_issues,
+            },
+            "top_issues": [
+                {
+                    "severity": i.severity,
+                    "category": i.category,
+                    "file": f"{i.file_path}:{i.line_number}",
+                    "description": i.description,
+                }
+                for i in top_issues
+            ],
+            "message": (
+                f"Found {report.total_issues} issues. Showing top {len(top_issues)}."
+                if report.issues
+                else "No issues found."
+            ),
+            "hint": "💡 Use `verbosity='verbose'` for full report and recommendations.",
+        }
+
+    # 3. VERBOSE: Full Report (Legacy Format)
     return {
         "passed": report.passed,
         "checked_categories": [
@@ -79,7 +131,8 @@ def boring_security_scan(
                 "description": i.description,
                 "recommendation": i.recommendation,
             }
-            for i in report.issues[:20]
+            # Still cap at 50 for safety, but effectively "all" for most cases
+            for i in report.issues[:50]
         ],
         "message": "Scan completed. No issues found."
         if report.passed

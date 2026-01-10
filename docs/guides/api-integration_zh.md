@@ -16,12 +16,12 @@ pip install boring-aicoding
 
 ### 1. 管理知識庫 (BrainManager)
 
-使用 `BrainManager` 來存取或更新 `.boring_brain` 中的長期記憶與學習模式。
+使用 `BrainManager` 來存取或更新 `.boring/brain` 中的長期記憶與學習模式。
 
 ```python
 from boring.intelligence.brain_manager import BrainManager, LearnedPattern
 
-# 初始化 (自動載入 .boring_brain)
+# 初始化 (自動載入 .boring/brain)
 brain = BrainManager(project_path="./my_project")
 
 # 1. 查詢已學習的模式 (Pattern Mining)
@@ -45,7 +45,7 @@ brain.learn_pattern(new_pattern)
 ```python
 from boring.intelligence.vector_memory import VectorMemory
 
-memory = VectorMemory(persist_path="./.boring_brain/vector_store")
+memory = VectorMemory(persist_path="./.boring/brain/vector_store")
 
 # 儲存經驗
 memory.add_experience(

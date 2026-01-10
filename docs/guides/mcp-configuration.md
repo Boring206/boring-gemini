@@ -1,8 +1,10 @@
-# Boring MCP 設定指南
+# 進階 MCP 設定與 Profile 指南
 
-本文件說明 Boring MCP Server 的所有環境變數和設定選項。
+> **新手請注意**：如果您只是想快速設定，請先看 [🔰 配置參考手冊](../reference/configuration_zh.md)。這份文件是給想了解底層原理或 Smithery 部署的進階使用者。
 
-## 環境變數
+本文件深入說明 Boring MCP Server 的 **Profile 機制** 和 **安裝模式差異**。
+
+## 環境變數 (進階)
 
 ### `BORING_MCP_MODE`
 
