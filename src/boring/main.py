@@ -21,7 +21,7 @@ from rich.console import Console
 from boring.core.config import settings
 
 HELP_TEXT = """
-[bold blue]Boring v10.28.0 - Enterprise AI Development Agent (MCP)[/bold blue]
+[bold blue]Boring v10.28.2 - Enterprise AI Development Agent (MCP)[/bold blue]
 
 A powerful AI coding assistant designed for IDEs (Cursor, VS Code) and Gemini.
 
@@ -441,7 +441,7 @@ def version():
         try:
             ver = pkg_version("boring")
         except Exception:
-            ver = "10.28.0"
+            ver = "10.28.2"
 
     console.print(f"[bold blue]Boring[/bold blue] v{ver}")
     console.print(f"  Model: {settings.DEFAULT_MODEL}")
