@@ -26,7 +26,9 @@ Automatically fixes all linting errors, import sorting, and formatting issues.
 ### Let AI Read Your Errors
 ```
 You: I'm getting "ModuleNotFoundError: No module named 'foo'"
-Boring: Running boring_diagnose... 
+Boring: Encountered ❌ ModuleNotFoundError.
+        Running Active Recall...
+        Found pattern: "Missing dependency"
         Solution: pip install foo
 ```
 
@@ -53,9 +55,9 @@ graph LR
 | Task Type | Recommended Approach |
 |-----------|---------------------|
 | Small bug fixes | `boring_apply_patch` |
-| New features | `boring_multi_agent` + SpecKit |
-| Code review | `boring_evaluate` |
-| Refactoring | `boring run "Refactor X"` |
+| New features | `boring start` + SpecKit |
+| Code review | `boring_code_review` |
+| Refactoring | `boring_checkpoint` + `boring run` |
 
 ### Tip 3: Incremental Verification
 
@@ -169,10 +171,10 @@ jobs:
 
 ```bash
 # On project completion
-boring_learn --topics "error-handling,testing,patterns"
+boring_global_export --all
 
 # Knowledge saved to ~/.boring/brain/
-# Available for all future projects
+# Available for all future projects via Active Recall
 ```
 
 ---
