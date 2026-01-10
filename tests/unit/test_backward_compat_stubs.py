@@ -4,7 +4,6 @@ These modules are re-exports for backward compatibility.
 """
 
 
-
 def test_auto_learner_import():
     """Test backward compatibility import for auto_learner."""
     from boring.auto_learner import AutoLearner, ErrorSolutionPair

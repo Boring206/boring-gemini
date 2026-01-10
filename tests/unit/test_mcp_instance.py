@@ -18,6 +18,7 @@ class TestMCPInstance:
 
             # If fastmcp is installed, test the import
             import boring.mcp.instance as instance_module
+
             assert isinstance(instance_module.MCP_AVAILABLE, bool)
         except ImportError:
             # If fastmcp is not installed, skip the test

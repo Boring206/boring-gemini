@@ -19,7 +19,7 @@ class TestProgressStage:
             ProgressStage.EXECUTING,
             ProgressStage.VERIFYING,
             ProgressStage.COMPLETED,
-            ProgressStage.FAILED
+            ProgressStage.FAILED,
         ]
 
         assert len(stages) == 6
@@ -40,9 +40,7 @@ class TestProgressEvent:
     def test_event_initialization(self):
         """測試事件初始化"""
         event = ProgressEvent(
-            stage=ProgressStage.EXECUTING,
-            message="Processing files...",
-            percentage=50.0
+            stage=ProgressStage.EXECUTING, message="Processing files...", percentage=50.0
         )
 
         assert event.stage == ProgressStage.EXECUTING
@@ -57,7 +55,7 @@ class TestProgressEvent:
             stage=ProgressStage.VERIFYING,
             message="Running tests",
             percentage=75.0,
-            metadata=metadata
+            metadata=metadata,
         )
 
         assert event.metadata == metadata
@@ -65,19 +63,11 @@ class TestProgressEvent:
 
     def test_event_timestamp_auto_generated(self):
         """測試時間戳自動生成"""
-        event1 = ProgressEvent(
-            stage=ProgressStage.INITIALIZING,
-            message="Start",
-            percentage=0.0
-        )
+        event1 = ProgressEvent(stage=ProgressStage.INITIALIZING, message="Start", percentage=0.0)
 
         time.sleep(0.01)
 
-        event2 = ProgressEvent(
-            stage=ProgressStage.PLANNING,
-            message="Planning",
-            percentage=10.0
-        )
+        event2 = ProgressEvent(stage=ProgressStage.PLANNING, message="Planning", percentage=10.0)
 
         assert event2.timestamp > event1.timestamp
 
@@ -95,10 +85,7 @@ class TestProgressReporter:
 
     def test_reporter_custom_stages(self):
         """測試自定義階段數"""
-        reporter = ProgressReporter(
-            task_id="custom-task",
-            total_stages=6
-        )
+        reporter = ProgressReporter(task_id="custom-task", total_stages=6)
 
         assert reporter.total_stages == 6
 
@@ -106,10 +93,7 @@ class TestProgressReporter:
         """測試報告簡單事件"""
         reporter = ProgressReporter(task_id="test")
 
-        reporter.report(
-            stage=ProgressStage.INITIALIZING,
-            message="Starting..."
-        )
+        reporter.report(stage=ProgressStage.INITIALIZING, message="Starting...")
 
         assert len(reporter.events) == 1
         assert reporter.events[0].stage == ProgressStage.INITIALIZING
@@ -117,26 +101,15 @@ class TestProgressReporter:
 
     def test_report_percentage_calculation(self):
         """測試百分比計算"""
-        reporter = ProgressReporter(
-            task_id="test",
-            total_stages=4
-        )
+        reporter = ProgressReporter(task_id="test", total_stages=4)
 
         # 第一階段開始（0%）
-        reporter.report(
-            stage=ProgressStage.INITIALIZING,
-            message="Init",
-            sub_percentage=0.0
-        )
+        reporter.report(stage=ProgressStage.INITIALIZING, message="Init", sub_percentage=0.0)
 
         assert reporter.events[0].percentage == 0.0
 
         # 第二階段開始（25%）
-        reporter.report(
-            stage=ProgressStage.PLANNING,
-            message="Plan",
-            sub_percentage=0.0
-        )
+        reporter.report(stage=ProgressStage.PLANNING, message="Plan", sub_percentage=0.0)
 
         # 百分比應該大於等於 25%
         assert reporter.events[1].percentage >= 20.0
@@ -148,15 +121,9 @@ class TestProgressReporter:
         def callback(event: ProgressEvent):
             callback_events.append(event)
 
-        reporter = ProgressReporter(
-            task_id="test",
-            callback=callback
-        )
+        reporter = ProgressReporter(task_id="test", callback=callback)
 
-        reporter.report(
-            stage=ProgressStage.EXECUTING,
-            message="Working..."
-        )
+        reporter.report(stage=ProgressStage.EXECUTING, message="Working...")
 
         assert len(callback_events) == 1
         assert callback_events[0].message == "Working..."
@@ -165,18 +132,12 @@ class TestProgressReporter:
         """測試文件輸出"""
         output_file = tmp_path / "progress.json"
 
-        reporter = ProgressReporter(
-            task_id="test",
-            output_file=output_file
-        )
+        reporter = ProgressReporter(task_id="test", output_file=output_file)
 
-        reporter.report(
-            stage=ProgressStage.PLANNING,
-            message="Planning task"
-        )
+        reporter.report(stage=ProgressStage.PLANNING, message="Planning task")
 
         # 如果實現了文件寫入
-        if hasattr(reporter, '_write_to_file'):
+        if hasattr(reporter, "_write_to_file"):
             # _write_to_file 可能需要 event 參數
             pass
 
@@ -189,7 +150,7 @@ class TestProgressReporter:
             (ProgressStage.PLANNING, "Plan"),
             (ProgressStage.EXECUTING, "Execute"),
             (ProgressStage.VERIFYING, "Verify"),
-            (ProgressStage.COMPLETED, "Done")
+            (ProgressStage.COMPLETED, "Done"),
         ]
 
         for stage, message in stages:
@@ -202,29 +163,20 @@ class TestProgressReporter:
         """測試百分比不超過 100"""
         reporter = ProgressReporter(task_id="test", total_stages=2)
 
-        reporter.report(
-            stage=ProgressStage.COMPLETED,
-            message="Done",
-            sub_percentage=100.0
-        )
+        reporter.report(stage=ProgressStage.COMPLETED, message="Done", sub_percentage=100.0)
 
         assert reporter.events[0].percentage <= 100.0
 
     def test_callback_error_handling(self):
         """測試回調錯誤處理"""
+
         def failing_callback(event):
             raise ValueError("Callback error")
 
-        reporter = ProgressReporter(
-            task_id="test",
-            callback=failing_callback
-        )
+        reporter = ProgressReporter(task_id="test", callback=failing_callback)
 
         # 即使回調失敗，報告也應該繼續
-        reporter.report(
-            stage=ProgressStage.EXECUTING,
-            message="Working"
-        )
+        reporter.report(stage=ProgressStage.EXECUTING, message="Working")
 
         assert len(reporter.events) == 1
 
@@ -254,16 +206,8 @@ class TestProgressReporter:
         metadata1 = {"step": 1, "file": "a.py"}
         metadata2 = {"step": 2, "file": "b.py"}
 
-        reporter.report(
-            ProgressStage.EXECUTING,
-            "Step 1",
-            metadata=metadata1
-        )
-        reporter.report(
-            ProgressStage.EXECUTING,
-            "Step 2",
-            metadata=metadata2
-        )
+        reporter.report(ProgressStage.EXECUTING, "Step 1", metadata=metadata1)
+        reporter.report(ProgressStage.EXECUTING, "Step 2", metadata=metadata2)
 
         assert reporter.events[0].metadata == metadata1
         assert reporter.events[1].metadata == metadata2

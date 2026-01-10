@@ -20,9 +20,7 @@ def mock_llm():
 @pytest.fixture
 def orchestrator(mock_llm, tmp_path):
     """Create an AgentOrchestrator instance."""
-    return AgentOrchestrator(
-        llm_client=mock_llm, project_root=tmp_path, auto_approve_plans=True
-    )
+    return AgentOrchestrator(llm_client=mock_llm, project_root=tmp_path, auto_approve_plans=True)
 
 
 def test_orchestrator_init(mock_llm, tmp_path):
@@ -38,18 +36,14 @@ def test_orchestrator_init(mock_llm, tmp_path):
 def test_orchestrator_with_callback(mock_llm, tmp_path):
     """Test orchestrator with human approval callback."""
     callback = AsyncMock()
-    orch = AgentOrchestrator(
-        llm_client=mock_llm, project_root=tmp_path, human_callback=callback
-    )
+    orch = AgentOrchestrator(llm_client=mock_llm, project_root=tmp_path, human_callback=callback)
 
     assert orch.human_callback is callback
 
 
 def test_orchestrator_auto_approve(mock_llm, tmp_path):
     """Test orchestrator with auto-approve enabled."""
-    orch = AgentOrchestrator(
-        llm_client=mock_llm, project_root=tmp_path, auto_approve_plans=True
-    )
+    orch = AgentOrchestrator(llm_client=mock_llm, project_root=tmp_path, auto_approve_plans=True)
 
     assert orch.auto_approve_plans is True
 
@@ -57,9 +51,7 @@ def test_orchestrator_auto_approve(mock_llm, tmp_path):
 def test_orchestrator_with_shadow_guard(mock_llm, tmp_path):
     """Test orchestrator with shadow guard."""
     shadow_guard = MagicMock()
-    orch = AgentOrchestrator(
-        llm_client=mock_llm, project_root=tmp_path, shadow_guard=shadow_guard
-    )
+    orch = AgentOrchestrator(llm_client=mock_llm, project_root=tmp_path, shadow_guard=shadow_guard)
 
     assert orch.shadow_guard is shadow_guard
     assert orch.coder.shadow_guard is shadow_guard
