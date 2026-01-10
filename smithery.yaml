@@ -3,13 +3,13 @@
 
 runtime: "container"
 displayName: "Boring Gemini Agent"
-description: "Boring Vibecoder Assistant: An AI-powered development support tool handling project planning, logic verification, and knowledge management. Works alongside Cursor, Copilot, and others to ensure rigorous, efficient workflows, letting developers focus on architecture and decision-making."
+description: "Boring Vibecoder Assistant: An AI-powered development support tool handling project planning, logic verification, and knowledge management. Supports both remote deployment (via Smithery, no local installation) and local installation (via pip). Works alongside Cursor, Copilot, and others to ensure rigorous, efficient workflows, letting developers focus on architecture and decision-making."
 version: 10.28.3
 repository: "https://github.com/Boring206/boring-gemini"
 homepage: "https://github.com/Boring206/boring-gemini"
 documentation: "https://github.com/Boring206/boring-gemini/blob/main/README.md"
 icon: "https://avatars.githubusercontent.com/u/156481716?s=200&v=4"
-tags: ["ai", "agent", "gemini", "autonomous", "devops", "local", "quality-gates", "polyglot"]
+tags: ["ai", "agent", "gemini", "autonomous", "devops", "remote", "quality-gates", "polyglot"]
 
 build:
   dockerfile: "Dockerfile"
