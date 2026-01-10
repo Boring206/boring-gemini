@@ -3,8 +3,7 @@ Unit tests for boring.mcp.instance module.
 """
 
 import importlib
-import sys
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -15,7 +14,8 @@ class TestMCPInstance:
     def test_mcp_available(self):
         """Test when FastMCP is available."""
         try:
-            import fastmcp
+            import fastmcp  # noqa: F401
+
             # If fastmcp is installed, test the import
             import boring.mcp.instance as instance_module
             assert isinstance(instance_module.MCP_AVAILABLE, bool)
