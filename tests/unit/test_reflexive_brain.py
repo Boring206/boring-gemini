@@ -5,7 +5,10 @@ from boring.mcp.tools.assistant import _check_learned_patterns, register_assista
 
 # Mock Objects
 mock_mcp = MagicMock()
-mock_audited = lambda x: x
+
+
+def mock_audited(x):
+    return x
 
 
 def get_boring_suggest_next_function():
@@ -87,7 +90,7 @@ def test_boring_suggest_next_propagates_error():
 
     with (
         patch("boring.mcp.tools.assistant._check_learned_patterns") as mock_check,
-        patch("boring.mcp.tools.assistant.get_pattern_miner") as mock_miner,
+        patch("boring.mcp.tools.assistant.get_pattern_miner"),
         patch("boring.mcp.tool_profiles.get_profile"),
         patch("boring.mcp.tools.assistant._check_git_changes") as mock_git,
         patch("boring.mcp.tools.assistant._check_rag_index") as mock_rag,
