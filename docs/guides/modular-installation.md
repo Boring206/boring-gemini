@@ -28,6 +28,31 @@ Boring-Gemini v10.28.0 introduces the **"Boring Diet"** optimization. While the 
 | `pip install "boring-aicoding[mcp]"` | + FastMCP | `standard` / `full` | Professional IDE integration. |
 | `pip install "boring-aicoding[all]"` | **Complete Experience** | `full` | **Vibe Coders** (Power Users). |
 
+### ⚡ Ultra-Fast Installation with uv
+
+> **New!** Install 10-100x faster with [uv](https://github.com/astral-sh/uv)
+
+```bash
+# Install uv first (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh  # Linux/Mac
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"  # Windows
+
+# Install boring-aicoding with uv
+uv pip install "boring-aicoding[all]"
+
+# Or use uv to manage the entire project
+uv venv
+source .venv/bin/activate  # Linux/Mac
+.venv\Scripts\activate      # Windows
+uv pip install "boring-aicoding[all]"
+```
+
+**Why uv?**
+- ⚡ **10-100x faster** than pip (Rust-based)
+- 🎯 **Better dependency resolution** (no conflicts)
+- 🔒 **Deterministic builds** (lockfile support)
+- 📦 **Smaller cache** (optimized storage)
+
 ---
 
 ## ⚡ Quick Reference: Installation vs. Profile

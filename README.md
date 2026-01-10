@@ -5,7 +5,7 @@
 
 ### 🛠️ The Autonomous Development Agent for Vibe Coders
 
-[**Explore Documentation**](https://boring206.github.io/boring-gemini/) | [**Smithery Registry**](https://smithery.ai/server/boring-aicoding) | [**PyPI**](https://pypi.org/project/boring-aicoding/)
+[**Explore Documentation**](https://boring206.github.io/boring-gemini/) | [**Smithery Registry**](https://smithery.ai/server/boring) | [**PyPI**](https://pypi.org/project/boring-aicoding/)
 [![Vibe Coder](https://img.shields.io/badge/Vibe_Coder-Pure_Natural_Language-ff69b4)](docs/features/vibe-coder.md)
 
 # Boring for Gemini
@@ -118,6 +118,31 @@ pip install "boring-aicoding[vector]" # Adds RAG (ChromaDB + Torch)
 pip install "boring-aicoding[gui]"    # Adds Dashboard (Streamlit)
 pip install "boring-aicoding[mcp]"    # Adds MCP Server (FastMCP)
 ```
+
+### Option 2.5: uv Installation (⚡ Ultra-Fast)
+
+> **New!** Install with [uv](https://github.com/astral-sh/uv) - 10-100x faster than pip!
+
+```bash
+# Install uv first (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh  # Linux/Mac
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"  # Windows
+
+# Install boring-aicoding with uv
+uv pip install "boring-aicoding[all]"
+
+# Or use uv to manage the entire project
+uv venv                                    # Create virtual environment
+source .venv/bin/activate                  # Linux/Mac
+.venv\Scripts\activate                     # Windows
+uv pip install "boring-aicoding[all]"     # Install in venv
+```
+
+**Why uv?**
+- ⚡ **10-100x faster** than pip (Rust-based)
+- 🎯 **Better dependency resolution** (no conflicts)
+- 🔒 **Deterministic builds** (lockfile support)
+- 📦 **Smaller cache** (optimized storage)
 
 **🤔 Which one should I choose?**
 
@@ -277,6 +302,51 @@ python -m boring status
   }
 }
 ```
+
+### For uv (Recommended for Performance)
+
+> **New!** Use uv for faster startup and better dependency isolation.
+
+```json
+{
+  "mcpServers": {
+    "boring": {
+      "command": "uvx",
+      "args": ["--from", "boring-aicoding[all]", "python", "-m", "boring.mcp.server"],
+      "env": {
+        "BORING_MCP_MODE": "1",
+        "PROJECT_ROOT_DEFAULT": ".",
+        "BORING_MCP_PROFILE": "lite"
+      }
+    }
+  }
+}
+```
+
+**Or if you have uv project with venv:**
+
+```json
+{
+  "mcpServers": {
+    "boring": {
+      "command": "uv",
+      "args": ["run", "python", "-m", "boring.mcp.server"],
+      "env": {
+        "BORING_MCP_MODE": "1",
+        "PROJECT_ROOT_DEFAULT": ".",
+        "BORING_MCP_PROFILE": "lite",
+        "VIRTUAL_ENV": "/path/to/your/.venv"  
+      }
+    }
+  }
+}
+```
+
+**Benefits of uv for MCP:**
+- ⚡ Faster server startup (~30% reduction)
+- 🔒 Isolated dependencies per project
+- 📦 Automatic environment management
+- 🎯 No global package pollution
 
 ### 🎛️ Tool Profiles (V10.24)
 

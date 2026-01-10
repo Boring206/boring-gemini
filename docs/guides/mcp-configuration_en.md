@@ -2,6 +2,31 @@
 
 This document explains all environment variables and configuration options for the Boring MCP Server.
 
+---
+
+## 📑 Table of Contents
+
+- [Environment Variables](#environment-variables)
+  - [BORING_MCP_MODE](#boring_mcp_mode)
+  - [BORING_MCP_PROFILE](#boring_mcp_profile)
+    - [Ultra Lite (3 tools)](#ultra-lite-3-tools---v1026-new)
+    - [Minimal (8 tools)](#minimal-8-tools)
+    - [Lite (20 tools)](#lite-20-tools)
+    - [Standard (50 tools)](#standard-50-tools)
+    - [Full (~98 tools)](#full-98-tools)
+  - [PROJECT_ROOT_DEFAULT](#project_root_default)
+  - [BORING_LLM_PROVIDER](#boring_llm_provider)
+- [MCP Configuration Examples](#mcp-configuration-examples)
+  - [Local Full Version (Recommended)](#local-full-version-recommended)
+  - [Smithery Cloud Version](#smithery-cloud-version)
+  - [Hybrid (Local + Cloud)](#hybrid-local--cloud)
+- [Version Differences](#version-differences)
+  - [Installation Options](#installation-options)
+  - [Smithery vs Local](#smithery-vs-local)
+- [FAQ](#faq)
+
+---
+
 ## Environment Variables
 
 ### `BORING_MCP_MODE`

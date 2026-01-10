@@ -1,18 +1,17 @@
 [project]
 name = "boring-aicoding"
-version = "10.31.1"
+version = "10.32.0"
 description = "Boring Vibecoder Assistant: An AI-powered development support tool handling project planning, logic verification, and knowledge management. Works alongside Cursor, Copilot, and others to ensure rigorous, efficient workflows."
 authors = [
     { name = "Boring206", email = "C112156246@nkust.edu.tw" }
 ]
 readme = "PYPI.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 keywords = ["gemini", "ai", "autonomous-agent", "devops"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -58,6 +57,7 @@ dev = [
     "pip-audit>=2.7.0",
     "mkdocs>=1.5.0",
     "mkdocstrings[python]>=0.24.0",
+    "psutil>=5.9.0",
 ]
 vector = [
     "chromadb>=0.4.0",
@@ -232,3 +232,8 @@ exclude_lines = [
 # Smithery configuration for MCP server deployment
 [tool.smithery]
 server = "boring.mcp.server:create_server"
+
+[dependency-groups]
+dev = [
+    "psutil>=7.2.1",
+]
