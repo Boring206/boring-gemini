@@ -60,13 +60,18 @@ async def test_coder_execute_with_plan(coder_agent, mock_llm, tmp_path):
     context.set_resource("implementation_plan", "Create a new file test.py", AgentRole.ARCHITECT)
 
     # Mock the _generate method directly
-    coder_agent._generate = AsyncMock(return_value=("""
+    coder_agent._generate = AsyncMock(
+        return_value=(
+            """
 ### File: `test.py`
 ```python
 def hello():
     return "world"
 ```
-""", True))
+""",
+            True,
+        )
+    )
 
     message = await coder_agent.execute(context)
 

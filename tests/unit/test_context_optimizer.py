@@ -2,7 +2,6 @@
 精準測試 Context Optimizer - 智能上下文優化
 """
 
-
 from boring.intelligence.context_optimizer import ContextOptimizer, ContextSection, ContextStats
 
 
@@ -17,7 +16,7 @@ class TestContextSection:
             priority=0.8,
             token_count=10,
             content_hash="abc123",
-            section_type="code"
+            section_type="code",
         )
 
         assert section.content == "def test():\n    pass"
@@ -34,7 +33,7 @@ class TestContextSection:
             priority=1.0,
             token_count=5,
             content_hash="err",
-            section_type="error"
+            section_type="error",
         )
 
         low_priority = ContextSection(
@@ -43,7 +42,7 @@ class TestContextSection:
             priority=0.1,
             token_count=100,
             content_hash="doc",
-            section_type="doc"
+            section_type="doc",
         )
 
         assert high_priority.priority == 1.0
@@ -60,7 +59,7 @@ class TestContextSection:
                 priority=0.5,
                 token_count=10,
                 content_hash=section_type,
-                section_type=section_type
+                section_type=section_type,
             )
             assert section.section_type == section_type
 
@@ -76,7 +75,7 @@ class TestContextStats:
             compression_ratio=0.6,
             sections_removed=3,
             duplicates_merged=2,
-            total_sections=10
+            total_sections=10,
         )
 
         assert stats.original_tokens == 1000
@@ -93,7 +92,7 @@ class TestContextStats:
             compression_ratio=0.5,
             sections_removed=5,
             duplicates_merged=3,
-            total_sections=15
+            total_sections=15,
         )
 
         # 驗證壓縮率
@@ -109,7 +108,7 @@ class TestContextOptimizer:
         optimizer = ContextOptimizer(max_tokens=8000)
 
         assert optimizer.max_tokens == 8000
-        assert hasattr(optimizer, 'sections')
+        assert hasattr(optimizer, "sections")
 
     def test_optimizer_custom_max_tokens(self):
         """測試自定義 token 限制"""
@@ -123,12 +122,8 @@ class TestContextOptimizer:
         """測試添加 section"""
         optimizer = ContextOptimizer(max_tokens=8000)
 
-        if hasattr(optimizer, 'add_section'):
-            optimizer.add_section(
-                content="def hello(): pass",
-                source="hello.py",
-                priority=0.8
-            )
+        if hasattr(optimizer, "add_section"):
+            optimizer.add_section(content="def hello(): pass", source="hello.py", priority=0.8)
 
             assert len(optimizer.sections) >= 1
 
@@ -136,13 +131,13 @@ class TestContextOptimizer:
         """測試基於優先級的選擇"""
         optimizer = ContextOptimizer(max_tokens=100)
 
-        if hasattr(optimizer, 'add_section'):
+        if hasattr(optimizer, "add_section"):
             # 添加不同優先級的 sections
             optimizer.add_section("High priority", "error", priority=1.0)
             optimizer.add_section("Low priority", "doc", priority=0.1)
             optimizer.add_section("Medium priority", "code", priority=0.5)
 
-            if hasattr(optimizer, 'optimize'):
+            if hasattr(optimizer, "optimize"):
                 result, stats = optimizer.optimize()
 
                 # 高優先級內容應該被保留
@@ -153,13 +148,13 @@ class TestContextOptimizer:
         """測試內容去重"""
         optimizer = ContextOptimizer(max_tokens=8000)
 
-        if hasattr(optimizer, 'add_section'):
+        if hasattr(optimizer, "add_section"):
             # 添加重複內容
             optimizer.add_section("Same content", "file1.py", priority=0.5)
             optimizer.add_section("Same content", "file2.py", priority=0.5)
             optimizer.add_section("Different content", "file3.py", priority=0.5)
 
-            if hasattr(optimizer, 'optimize'):
+            if hasattr(optimizer, "optimize"):
                 result, stats = optimizer.optimize()
 
                 # 驗證去重
@@ -170,16 +165,16 @@ class TestContextOptimizer:
         """測試 token 限制強制執行"""
         optimizer = ContextOptimizer(max_tokens=50)
 
-        if hasattr(optimizer, 'add_section'):
+        if hasattr(optimizer, "add_section"):
             # 添加超過限制的內容
             for i in range(10):
                 optimizer.add_section(
                     content="x" * 100,  # 大量內容
                     source=f"file{i}.py",
-                    priority=0.5
+                    priority=0.5,
                 )
 
-            if hasattr(optimizer, 'optimize'):
+            if hasattr(optimizer, "optimize"):
                 result, stats = optimizer.optimize()
 
                 # 優化後應該在限制內
@@ -190,7 +185,7 @@ class TestContextOptimizer:
         """測試不同 section 類型的處理"""
         optimizer = ContextOptimizer(max_tokens=8000)
 
-        if hasattr(optimizer, 'add_section'):
+        if hasattr(optimizer, "add_section"):
             section_types = ["code", "error", "doc", "rag"]
 
             for section_type in section_types:
@@ -198,7 +193,7 @@ class TestContextOptimizer:
                     content=f"{section_type} content",
                     source=f"{section_type}.txt",
                     priority=0.7,
-                    section_type=section_type
+                    section_type=section_type,
                 )
 
     def test_importance_keywords_detection(self):
@@ -206,21 +201,15 @@ class TestContextOptimizer:
         optimizer = ContextOptimizer(max_tokens=8000)
 
         # 驗證重要關鍵字定義
-        assert hasattr(optimizer, 'IMPORTANCE_KEYWORDS')
+        assert hasattr(optimizer, "IMPORTANCE_KEYWORDS")
         assert "error" in optimizer.IMPORTANCE_KEYWORDS
         assert "critical" in optimizer.IMPORTANCE_KEYWORDS
 
     def test_semantic_deduplication_option(self):
         """測試語義去重選項"""
-        optimizer_with_semantic = ContextOptimizer(
-            max_tokens=8000,
-            enable_semantic_dedup=True
-        )
+        optimizer_with_semantic = ContextOptimizer(max_tokens=8000, enable_semantic_dedup=True)
 
-        optimizer_without_semantic = ContextOptimizer(
-            max_tokens=8000,
-            enable_semantic_dedup=False
-        )
+        optimizer_without_semantic = ContextOptimizer(max_tokens=8000, enable_semantic_dedup=False)
 
         assert optimizer_with_semantic.enable_semantic_dedup is True
         assert optimizer_without_semantic.enable_semantic_dedup is False
@@ -229,7 +218,7 @@ class TestContextOptimizer:
         """測試空內容優化"""
         optimizer = ContextOptimizer(max_tokens=8000)
 
-        if hasattr(optimizer, 'optimize'):
+        if hasattr(optimizer, "optimize"):
             result, stats = optimizer.optimize()
 
             # 空內容應該返回空結果
@@ -240,12 +229,8 @@ class TestContextOptimizer:
         """測試單個 section 優化"""
         optimizer = ContextOptimizer(max_tokens=1000)
 
-        if hasattr(optimizer, 'add_section') and hasattr(optimizer, 'optimize'):
-            optimizer.add_section(
-                content="print('Hello, World!')",
-                source="main.py",
-                priority=0.8
-            )
+        if hasattr(optimizer, "add_section") and hasattr(optimizer, "optimize"):
+            optimizer.add_section(content="print('Hello, World!')", source="main.py", priority=0.8)
 
             result, stats = optimizer.optimize()
 
@@ -255,14 +240,10 @@ class TestContextOptimizer:
         """測試壓縮率計算"""
         optimizer = ContextOptimizer(max_tokens=100)
 
-        if hasattr(optimizer, 'add_section') and hasattr(optimizer, 'optimize'):
+        if hasattr(optimizer, "add_section") and hasattr(optimizer, "optimize"):
             # 添加大量內容
             for i in range(5):
-                optimizer.add_section(
-                    content="x" * 200,
-                    source=f"file{i}.py",
-                    priority=0.5
-                )
+                optimizer.add_section(content="x" * 200, source=f"file{i}.py", priority=0.5)
 
             result, stats = optimizer.optimize()
 

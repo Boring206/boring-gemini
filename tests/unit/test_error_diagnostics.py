@@ -2,7 +2,6 @@
 Tests for error diagnostics module.
 """
 
-
 from boring.error_diagnostics import DiagnosticResult, ErrorDiagnostics
 
 
@@ -52,7 +51,7 @@ def test_error_diagnostics_init():
 def test_error_diagnostics_analyze_syntax_error():
     """Test analyzing Python syntax error."""
     diagnostics = ErrorDiagnostics()
-    error_output = "  File \"test.py\", line 5\n    if True\nSyntaxError: invalid syntax"
+    error_output = '  File "test.py", line 5\n    if True\nSyntaxError: invalid syntax'
 
     results = diagnostics.analyze_error(error_output)
 

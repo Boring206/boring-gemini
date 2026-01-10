@@ -18,7 +18,7 @@ class TestFixAttempt:
             issues_after=2,
             fix_description="Fixed syntax errors",
             success=True,
-            duration_seconds=1.5
+            duration_seconds=1.5,
         )
 
         assert attempt.iteration == 1
@@ -35,7 +35,7 @@ class TestFixAttempt:
             issues_after=5,
             fix_description="No improvements",
             success=False,
-            duration_seconds=2.0
+            duration_seconds=2.0,
         )
 
         assert attempt.success is False
@@ -49,7 +49,7 @@ class TestFixAttempt:
             issues_after=3,
             fix_description="Reduced errors",
             success=True,
-            duration_seconds=3.2
+            duration_seconds=3.2,
         )
 
         # 問題減少但未完全解決
@@ -63,9 +63,7 @@ class TestAutoFixPipeline:
     def test_pipeline_initialization(self, tmp_path):
         """測試 pipeline 初始化"""
         pipeline = AutoFixPipeline(
-            project_root=tmp_path,
-            max_iterations=3,
-            verification_level="STANDARD"
+            project_root=tmp_path, max_iterations=3, verification_level="STANDARD"
         )
 
         assert pipeline.project_root == tmp_path
@@ -76,9 +74,7 @@ class TestAutoFixPipeline:
     def test_pipeline_custom_settings(self, tmp_path):
         """測試自定義設置"""
         pipeline = AutoFixPipeline(
-            project_root=tmp_path,
-            max_iterations=5,
-            verification_level="STRICT"
+            project_root=tmp_path, max_iterations=5, verification_level="STRICT"
         )
 
         assert pipeline.max_iterations == 5
@@ -105,7 +101,7 @@ class TestAutoFixPipeline:
         # Mock 驗證：第一次失敗，第二次成功
         verify_results = [
             {"passed": False, "issues": ["error1", "error2"], "error_count": 2},
-            {"passed": True, "issues": []}
+            {"passed": True, "issues": []},
         ]
         mock_verify = MagicMock(side_effect=verify_results)
 
@@ -123,11 +119,9 @@ class TestAutoFixPipeline:
         pipeline = AutoFixPipeline(project_root=tmp_path, max_iterations=2)
 
         # Mock 驗證：始終失敗
-        mock_verify = MagicMock(return_value={
-            "passed": False,
-            "issues": ["persistent_error"],
-            "error_count": 1
-        })
+        mock_verify = MagicMock(
+            return_value={"passed": False, "issues": ["persistent_error"], "error_count": 1}
+        )
 
         mock_boring = MagicMock(return_value={"success": False})
 
@@ -143,7 +137,7 @@ class TestAutoFixPipeline:
         # Mock 驗證：問題數量不減少
         verify_results = [
             {"passed": False, "issues": ["e1", "e2", "e3"], "error_count": 3},
-            {"passed": False, "issues": ["e1", "e2", "e3"], "error_count": 3}
+            {"passed": False, "issues": ["e1", "e2", "e3"], "error_count": 3},
         ]
         mock_verify = MagicMock(side_effect=verify_results)
         mock_boring = MagicMock()
@@ -161,7 +155,7 @@ class TestAutoFixPipeline:
             {"passed": False, "issues": list(range(10)), "error_count": 10},
             {"passed": False, "issues": list(range(5)), "error_count": 5},
             {"passed": False, "issues": list(range(2)), "error_count": 2},
-            {"passed": True, "issues": []}
+            {"passed": True, "issues": []},
         ]
         mock_verify = MagicMock(side_effect=verify_results)
         mock_boring = MagicMock(return_value={"success": True})
@@ -177,7 +171,7 @@ class TestAutoFixPipeline:
 
         verify_results = [
             {"passed": False, "issues": ["e1", "e2"], "error_count": 2},
-            {"passed": True, "issues": []}
+            {"passed": True, "issues": []},
         ]
         mock_verify = MagicMock(side_effect=verify_results)
         mock_boring = MagicMock()
@@ -197,7 +191,7 @@ class TestAutoFixPipeline:
 
         verify_results = [
             {"passed": False, "issues": ["e1"], "error_count": 1},
-            {"passed": True, "issues": []}
+            {"passed": True, "issues": []},
         ]
         mock_verify = MagicMock(side_effect=verify_results)
         mock_boring = MagicMock()
@@ -210,10 +204,7 @@ class TestAutoFixPipeline:
 
     def test_verification_level_passed(self, tmp_path):
         """測試驗證級別正確傳遞"""
-        pipeline = AutoFixPipeline(
-            project_root=tmp_path,
-            verification_level="STRICT"
-        )
+        pipeline = AutoFixPipeline(project_root=tmp_path, verification_level="STRICT")
 
         mock_verify = MagicMock(return_value={"passed": True, "issues": []})
         mock_boring = MagicMock()

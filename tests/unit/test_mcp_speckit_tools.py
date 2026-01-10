@@ -40,18 +40,14 @@ def test_register_speckit_tools(mock_mcp, mock_audited, mock_helpers, mock_execu
     # The function doesn't return anything, it just registers tools
     # So we check that it doesn't raise an exception
     try:
-        register_speckit_tools(
-            mock_mcp, mock_audited, mock_helpers, mock_execute_workflow
-        )
+        register_speckit_tools(mock_mcp, mock_audited, mock_helpers, mock_execute_workflow)
         # If we get here without exception, the test passes
         assert True
     except Exception as e:
         pytest.fail(f"register_speckit_tools raised an exception: {e}")
 
 
-def test_speckit_plan_default_params(
-    mock_mcp, mock_audited, mock_helpers, mock_execute_workflow
-):
+def test_speckit_plan_default_params(mock_mcp, mock_audited, mock_helpers, mock_execute_workflow):
     """Test speckit_plan with default parameters."""
     register_speckit_tools(mock_mcp, mock_audited, mock_helpers, mock_execute_workflow)
 
@@ -80,9 +76,7 @@ def test_speckit_plan_default_params(
     mock_execute_workflow.assert_called_with("speckit-plan", None, None)
 
 
-def test_speckit_tasks_with_context(
-    mock_mcp, mock_audited, mock_helpers, mock_execute_workflow
-):
+def test_speckit_tasks_with_context(mock_mcp, mock_audited, mock_helpers, mock_execute_workflow):
     """Test speckit_tasks with context."""
     mcp = MagicMock()
     registered_tools = {}
@@ -128,9 +122,7 @@ def test_speckit_analyze_with_project_path(
     mock_execute_workflow.assert_called_with("speckit-analyze", None, "/test/path")
 
 
-def test_all_speckit_tools_registered(
-    mock_mcp, mock_audited, mock_helpers, mock_execute_workflow
-):
+def test_all_speckit_tools_registered(mock_mcp, mock_audited, mock_helpers, mock_execute_workflow):
     """Test that all SpecKit tools are registered."""
     mcp = MagicMock()
     registered_tools = {}
