@@ -4,6 +4,32 @@
 
 本文件深入說明 Boring MCP Server 的 **Profile 機制** 和 **安裝模式差異**。
 
+## 📑 目錄
+
+- [環境變數 (進階)](#環境變數-進階)
+  - [BORING_MCP_MODE](#boring_mcp_mode)
+  - [BORING_MCP_PROFILE](#boring_mcp_profile)
+    - [Ultra Lite (3 個)](#ultra-lite-3-個---v1026-新增)
+    - [Minimal (8 個)](#minimal-8-個)
+    - [Lite (20 個)](#lite-20-個)
+    - [Standard (50 個)](#standard-50-個)
+    - [Full (~98 個)](#full-98-個)
+  - [PROJECT_ROOT_DEFAULT](#project_root_default)
+  - [BORING_LLM_PROVIDER](#boring_llm_provider)
+- [MCP 設定範例](#mcp-設定範例)
+  - [本地完整版 (推薦)](#本地完整版-推薦)
+  - [uv 安裝版（⚡ 超快速）](#uv-安裝版-超快速)
+    - [方法 1: uvx（無需本地安裝）](#方法-1-uvx-無需本地安裝)
+    - [方法 2: uv run（使用 venv）](#方法-2-uv-run-使用-venv)
+  - [Smithery 雲端版](#smithery-雲端版)
+  - [混合版 (本地 + 雲端)](#混合版-本地--雲端)
+- [版本差異](#版本差異)
+  - [安裝選項](#安裝選項)
+  - [Smithery vs 本地](#smithery-vs-本地)
+- [常見問題](#常見問題)
+
+---
+
 ## 環境變數 (進階)
 
 ### `BORING_MCP_MODE`
@@ -121,6 +147,55 @@
 }
 ```
 
+### uv 安裝版（⚡ 超快速）
+
+> **新功能！** 使用 [uv](https://github.com/astral-sh/uv) 可獲得更快的啟動速度和更好的依賴隔離。
+
+#### 方法 1: uvx （無需本地安裝）
+
+```json
+{
+  "mcpServers": {
+    "boring": {
+      "command": "uvx",
+      "args": ["--from", "boring-aicoding[all]", "python", "-m", "boring.mcp.server"],
+      "env": {
+        "BORING_MCP_MODE": "1",
+        "BORING_MCP_PROFILE": "lite",
+        "PROJECT_ROOT_DEFAULT": "."
+      }
+    }
+  }
+}
+```
+
+#### 方法 2: uv run （使用 venv）
+
+```json
+{
+  "mcpServers": {
+    "boring": {
+      "command": "uv",
+      "args": ["run", "python", "-m", "boring.mcp.server"],
+      "env": {
+        "BORING_MCP_MODE": "1",
+        "BORING_MCP_PROFILE": "lite",
+        "PROJECT_ROOT_DEFAULT": ".",
+        "VIRTUAL_ENV": "/path/to/your/.venv"
+      }
+    }
+  }
+}
+```
+
+**使用 uv 的優點：**
+- ⚡ **伺服器啟動快 30%** - Rust 原生效能
+- 🔒 **獨立的依賴隔離** - 每個專案互不影響
+- 📦 **自動環境管理** - 無需手動建立 venv
+- 🎯 **不污染全域套件** - 保持系統整潔
+
+> 💡 **提示**: 如果你已經有 uv 專案，推薦使用方法 2；如果想快速測試，使用方法 1 無需任何安裝。
+
 ### Smithery 雲端版
 
 ```json
@@ -167,10 +242,12 @@
 
 ### 安裝選項
 
-| 安裝方式 | RAG 功能 | Docker 大小 |
-|----------|---------|------------|
-| `pip install boring-aicoding[mcp-lite]` | ❌ 退化版 | ~500MB |
-| `pip install boring-aicoding[mcp]` | ✅ 完整版 | ~4GB |
+| 安裝方式 | RAG 功能 | Docker 大小 | 啟動速度 |
+|----------|---------|------------|----------|
+| `pip install boring-aicoding[mcp-lite]` | ❌ 退化版 | ~500MB | 標準 |
+| `pip install boring-aicoding[mcp]` | ✅ 完整版 | ~4GB | 標準 |
+| `uv pip install boring-aicoding[all]` | ✅ 完整版 | ~4GB | **快 30%** |
+| `uvx --from boring-aicoding[all]` | ✅ 完整版 | - | **快 30%** |
 
 ### Smithery vs 本地
 

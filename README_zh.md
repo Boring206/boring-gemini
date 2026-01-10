@@ -76,7 +76,7 @@ Boring-Gemini V10.28 持續優化受 NotebookLM 研究啟發的多項核心功�
 ---
 ### 🛠️ 專為 Vibe Coder 打造的自主開發代理
 
-[**探索官方文檔**](https://boring206.github.io/boring-gemini/) | [**Smithery 註冊表**](https://smithery.ai/server/boring-aicoding) | [**PyPI**](https://pypi.org/project/boring-aicoding/)
+[**探索官方文檔**](https://boring206.github.io/boring-gemini/) | [**Smithery 註冊表**](https://smithery.ai/server/boring) | [**PyPI**](https://pypi.org/project/boring-aicoding/)
 [![Downloads](https://img.shields.io/pypi/dm/boring-aicoding.svg)](https://pypi.org/project/boring-aicoding/)
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 
@@ -143,6 +143,31 @@ pip install "boring-aicoding[vector]" # 增加 RAG (ChromaDB + Torch)
 pip install "boring-aicoding[gui]"    # 增加 Dashboard (Streamlit)
 pip install "boring-aicoding[mcp]"    # 增加 MCP Server (FastMCP)
 ```
+
+### 選項 2.5：uv 安裝（⚡ 超快速）
+
+> **新功能！** 使用 [uv](https://github.com/astral-sh/uv) 安裝 - 比 pip 快 10-100 倍！
+
+```bash
+# 先安裝 uv（如果還沒有）
+curl -LsSf https://astral.sh/uv/install.sh | sh  # Linux/Mac
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"  # Windows
+
+# 使用 uv 安裝 boring-aicoding
+uv pip install "boring-aicoding[all]"
+
+# 或使用 uv 管理整個專案
+uv venv                                    # 建立虛擬環境
+source .venv/bin/activate                  # Linux/Mac
+.venv\Scripts\activate                     # Windows
+uv pip install "boring-aicoding[all]"     # 在虛擬環境中安裝
+```
+
+**為什麼選 uv？**
+- ⚡ **快 10-100 倍**（基於 Rust 建構）
+- 🎯 **更好的依賴解析**（無衝突）
+- 🔒 **確定性構建**（支援 lockfile）
+- 📦 **更小的快取**（優化儲存）
 
 **🤔 我該選哪一個？**
 
@@ -300,6 +325,51 @@ python -m boring status
   }
 }
 ```
+
+### uv 安裝（推薦，效能更佳）
+
+> **新功能！** 使用 uv 可獲得更快的啟動速度和更好的依賴隔離。
+
+```json
+{
+  "mcpServers": {
+    "boring": {
+      "command": "uvx",
+      "args": ["--from", "boring-aicoding[all]", "python", "-m", "boring.mcp.server"],
+      "env": {
+        "BORING_MCP_MODE": "1",
+        "PROJECT_ROOT_DEFAULT": ".",
+        "BORING_MCP_PROFILE": "lite"
+      }
+    }
+  }
+}
+```
+
+**或者如果你的 uv 專案有 venv：**
+
+```json
+{
+  "mcpServers": {
+    "boring": {
+      "command": "uv",
+      "args": ["run", "python", "-m", "boring.mcp.server"],
+      "env": {
+        "BORING_MCP_MODE": "1",
+        "PROJECT_ROOT_DEFAULT": ".",
+        "BORING_MCP_PROFILE": "lite",
+        "VIRTUAL_ENV": "/path/to/your/.venv"  
+      }
+    }
+  }
+}
+```
+
+**使用 uv 進行 MCP 的優點：**
+- ⚡ 伺服器啟動更快（約減少 30%）
+- 🔒 每個專案獨立的依賴隔離
+- 📦 自動環境管理
+- 🎯 不污染全域套件
 
 ### 🎛️ 工具配置檔 (V10.24)
 

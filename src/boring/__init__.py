@@ -1,6 +1,11 @@
 """
 Boring for Gemini - AI Coding Assistant
 
+V10.32.0 "Dependency Fix Release":
+- Added psutil dependency for performance benchmarks
+- Fixed ModuleNotFoundError in tests/performance module
+- All 1113 unit tests passing
+
 V10.31.1 "The Cognitive Reflex Update (Patch 1)":
 - Highlighted Deep Thinking (Reasoning & Critical Thinking) in Vibe Sessions
 - Robust NL routing for safety checkpoints and evaluation tools
@@ -46,7 +51,7 @@ Backward compatibility is maintained - old import paths still work.
 import importlib
 from typing import TYPE_CHECKING
 
-__version__ = "10.31.0"
+__version__ = "10.32.0"
 
 # =============================================================================
 # Lazy Loading Configuration

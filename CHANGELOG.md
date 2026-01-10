@@ -1,5 +1,14 @@
 # Changelog
 
+## [10.32.0] - 2026-01-11
+### 🔧 Fixes
+- **Dependencies**: Added `psutil>=5.9.0` to development dependencies for performance benchmarking support.
+- **Tests**: Fixed `ModuleNotFoundError` in `tests/performance/test_benchmarks.py`.
+- **CI/CD**: All 1113 unit tests passing with full coverage compliance.
+
+### 📦 Package Updates
+- Updated minimum Python version requirement to `>=3.10` (aligned with fastmcp dependency).
+
 ## [10.31.1] - 2026-01-11
 ### ✨ Highlights
 - **Vibe Session Evolution**: Highlights the integration of **Deep Thinking** (Sequential & Critical Thinking) as the core selling point of Boring's collaboration engine.
