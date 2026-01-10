@@ -2,7 +2,6 @@
 Tests for AgentOrchestrator.
 """
 
-from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -118,7 +117,7 @@ async def test_orchestrator_execute_basic(orchestrator, mock_llm):
         requires_approval=False,
     )
 
-    result = await orchestrator.execute("Create a test function")
+    await orchestrator.execute("Create a test function")
 
     # Should have called the agents
     assert orchestrator.architect.execute.called
