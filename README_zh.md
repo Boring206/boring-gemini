@@ -2,7 +2,7 @@
   <img src="docs/assets/logo.png" width="180" alt="Boring for Gemini Logo">
 </p>
 
-<h1 align="center">Boring for Gemini</h1>
+<h1 align="center">Boring</h1>
 
 <p align="center">
   <strong>為自主開發打造的「代理式認知」推理引擎</strong>
@@ -40,7 +40,10 @@ Boring 實作了嚴謹的 **「規劃 -> 執行 -> 驗證」** 循環。它不�
 ### 🛡️ 支柱二：韌性自主 (Active Recall)
 這是業界首創具備 **「全域大腦」** 的代理人。當 Boring 遇到失敗時，它會檢索持久化知識庫 (`.boring/brain`)，回憶過去如何解決類似問題。它從錯誤中精進，讓你無需重複面對相同的挑戰。
 
-### ⚓ 支柱三：生產級安全 (Safety Net)
+### ⚡ 支柱三：現代高效生態 (UV 原生支持)
+專為現代 Python 棧設計。Boring 原生支持 **[uv](https://github.com/astral-sh/uv)**，提供極速的套件管理、整合 Lockfile 同步以及隔離環境執行能力。
+
+### ⚓ 支柱四：生產級安全 (Safety Net)
 信任建立在安全之上。Boring 在執行任何風險操作前都會自動建立 **Git 檢查點**。結合 **影子模式 (Shadow Mode)**，你擁有了 AI 代理行為的「後悔藥」，確保即使在複雜的重構過程中，程式碼庫依然穩如泰山。
 
 ---

@@ -2,7 +2,7 @@
   <img src="docs/assets/logo.png" width="180" alt="Boring for Gemini Logo">
 </p>
 
-<h1 align="center">Boring for Gemini</h1>
+<h1 align="center">Boring</h1>
 
 <p align="center">
   <strong>The Cognitive Reasoning Engine for Autonomous Development</strong>
@@ -40,7 +40,10 @@ Boring implements a rigorous **Planning -> Execution -> Verification** loop. It 
 ### 🛡️ Pillar II: Resilient Autonomy (Active Recall)
 The first agent with a **Global Brain**. When Boring encounters a failure, it consults its persistent knowledge base (`.boring/brain`) to recall how similar issues were solved across sessions. It learns from its mistakes so you don't have to.
 
-### ⚓ Pillar III: Production-Grade Safety (Safety Net)
+### ⚡ Pillar III: Ultra-Fast Ecosystem (UV Native)
+Designed for the modern Python stack. Boring natively supports **[uv](https://github.com/astral-sh/uv)** for near-instant package management, lockfile synchronization, and isolated environment execution.
+
+### ⚓ Pillar IV: Production-Grade Safety (Safety Net)
 Trust is built on safety. Boring automatically creates **Git Checkpoints** before any risky operation. Combined with **Shadow Mode**, you have a "undo" button for AI agentic actions, ensuring your repository remains stable even during complex refactors.
 
 ---
