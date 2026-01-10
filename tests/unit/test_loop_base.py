@@ -2,7 +2,6 @@
 精準測試 Loop Base Classes 的核心行為
 """
 
-import pytest
 from enum import Enum
 from unittest.mock import MagicMock
 
@@ -64,7 +63,7 @@ class TestLoopState:
         state = ConcreteState()
         state._next_state_result = None
         context = MagicMock()
-        
+
         next_state = state.next_state(context, StateResult.SUCCESS)
         assert next_state is None
 
@@ -73,10 +72,10 @@ class TestLoopState:
         state1 = ConcreteState(name="State1")
         state2 = ConcreteState(name="State2")
         state1._next_state_result = state2
-        
+
         context = MagicMock()
         next_state = state1.next_state(context, StateResult.SUCCESS)
-        
+
         assert next_state is state2
         assert next_state.name == "State2"
 
@@ -98,20 +97,20 @@ class TestLoopState:
         """模擬完整狀態生命週期"""
         state = ConcreteState(name="Lifecycle")
         context = MagicMock()
-        
+
         # 進入狀態
         state.on_enter(context)
-        
+
         # 執行狀態邏輯
         result = state.handle(context)
         assert result == StateResult.SUCCESS
-        
+
         # 決定下一狀態
-        next_state = state.next_state(context, result)
-        
+        state.next_state(context, result)
+
         # 退出狀態
         state.on_exit(context)
-        
+
         # 整個流程應正常完成
         assert state.name == "Lifecycle"
 
@@ -119,19 +118,19 @@ class TestLoopState:
         """測試不同的 handle() 結果"""
         state = ConcreteState()
         context = MagicMock()
-        
+
         # 測試 SUCCESS
         state._handle_result = StateResult.SUCCESS
         assert state.handle(context) == StateResult.SUCCESS
-        
+
         # 測試 FAILURE
         state._handle_result = StateResult.FAILURE
         assert state.handle(context) == StateResult.FAILURE
-        
+
         # 測試 RETRY
         state._handle_result = StateResult.RETRY
         assert state.handle(context) == StateResult.RETRY
-        
+
         # 測試 EXIT
         state._handle_result = StateResult.EXIT
         assert state.handle(context) == StateResult.EXIT
@@ -141,20 +140,20 @@ class TestLoopState:
         state1 = ConcreteState(name="First")
         state2 = ConcreteState(name="Second")
         state3 = ConcreteState(name="Third")
-        
+
         # 建立鏈: state1 -> state2 -> state3 -> None
         state1._next_state_result = state2
         state2._next_state_result = state3
         state3._next_state_result = None
-        
+
         context = MagicMock()
-        
+
         # 驗證轉換鏈
         next1 = state1.next_state(context, StateResult.SUCCESS)
         assert next1 is state2
-        
+
         next2 = state2.next_state(context, StateResult.SUCCESS)
         assert next2 is state3
-        
+
         next3 = state3.next_state(context, StateResult.SUCCESS)
         assert next3 is None
