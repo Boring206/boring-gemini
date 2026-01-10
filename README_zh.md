@@ -109,6 +109,13 @@ Boring-Gemini V10.28 持續優化受 NotebookLM 研究啟發的多項核心功�
 npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ```
 
+> 📋 **Smithery 部署資訊**
+> - **Profile 等級**: `lite`（默認，可在配置中調整為 `dev` 或 `pro`）
+> - **安裝類型**: `[mcp-lite]` 輕量級（約 500MB，無 RAG 向量庫）
+> - **RAG 功能**: ⚠️ 降級為關鍵字搜尋（無 ChromaDB/Torch）
+> - **適用場景**: 日常開發、快速回應
+> - **如需完整 RAG**: 請使用選項 2 本地安裝 `[all]`
+
 > ⚠️ **Gemini 客戶端使用者注意**：如果您透過 Smithery 安裝失敗，請使用 **選項 2（本地 pip）**。Smithery 在 Gemini 客戶端上的整合可能不穩定。
 
 ### 選項 2：本地 pip 安裝
