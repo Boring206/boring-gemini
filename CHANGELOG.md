@@ -1,4 +1,12 @@
-# Changelog
+## [10.32.1] - 2026-01-11
+### ✨ Highlights
+- **README Redesign**: Completely overhauled both English and Traditional Chinese READMEs with a modern, high-impact visual design.
+- **Logo Integration**: Integrated a new premium, minimalist logo for "Boring for Gemini".
+- **Documentation Parity**: Ensured 100% synchronization and quality for bilingual documentation.
+
+### 🔧 Fixes
+- **CLI Commands**: Fixed version fallback logic in `boring version` to correctly handle version mismatches in unit tests.
+- **Test Suite**: Verified 1194 unit tests passing with full coverage compliance (>50% gate).
 
 ## [10.32.0] - 2026-01-11
 ### 🔧 Fixes

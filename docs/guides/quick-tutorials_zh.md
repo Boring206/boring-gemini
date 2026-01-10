@@ -279,6 +279,6 @@ Boring：多代理工作流程完成！
 
 ## 另請參閱
 
-- [專業技巧](./pro-tips_zh.md) - 專家技巧
-- [Git Hooks](./git-hooks_zh.md) - 本地自動化
+- [專業技巧](../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh.md) - 專家技巧
+- [故障排除](../reference/troubleshooting_zh.md) - 問題解決
 - [MCP 工具](../features/mcp-tools_zh.md) - 完整工具參考

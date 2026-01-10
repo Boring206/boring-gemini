@@ -1,10 +1,36 @@
-site_name: Boring-Gemini API 文檔
+site_name: Boring-Gemini
 site_description: Autonomous AI Development Agent with Vibe Coder
 site_author: Boring206
 repo_url: https://github.com/Boring206/boring-gemini
+edit_uri: edit/main/docs/
 
 theme:
-  name: readthedocs
+  name: material
+  language: zh-Hant
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
 
 plugins:
   - search
@@ -19,51 +45,54 @@ plugins:
 nav:
   - 首頁: index.md
   - 🚀 快速上手:
-    - 既然是用游標 (Quick Start): getting-started/quickstart.md
-    - 安裝指南 (Installation): getting-started/installation.md
-  - 📖 指南 (Guides):
-    - 🍳 Vibe 食譜 (Cookbook): guides/cookbook_zh.md
-    - 🧞‍♂️ Vibe Coder (Router): features/vibe-coder_zh.md
-    - Skills & 擴充: guides/skills_guide.md
-    - 人類對齊 (Alignment): guides/human-alignment_zh.md
-    - 外掛系統 (Plugins): guides/plugins_zh.md
-    - 架構師模式: guides/architect_mode_zh.md
+      - 快速開始 (Quick Start): getting-started/quickstart.md
+      - 安裝指南 (Installation): getting-started/installation.md
   - ✨ 核心功能 (Features):
-    - 🛠️ MCP 工具集: features/mcp-tools_zh.md
-    - 🧛 影子模式 (Shadow Mode): features/shadow-mode_zh.md
-    - RAG 知識庫: features/rag_zh.md
-    - 品質閘門 (Quality Gates): features/quality-gates_zh.md
-    - 💎 隱藏寶石: features/hidden-gems_zh.md
+      - 🧛 影子模式 (Shadow Mode): features/shadow-mode_zh.md
+      - 🧠 RAG 知識庫: features/rag_zh.md
+      - 🧞‍♂️ Vibe Coder: features/vibe-coder_zh.md
+      - 🛡️ 安全掃描: features/security_zh.md
+      - 💎 隱藏寶石: features/hidden-gems_zh.md
+      - 🛠️ MCP 工具集: features/mcp-tools_zh.md
+      - 📈 效能分析: features/performance_zh.md
+      - 🧪 品質閘門: features/quality-gates_zh.md
+  - 📖 指南 (Guides):
+      - 🍳 Vibe 食譜 (Cookbook): guides/cookbook_zh.md
+      - 🧞‍♂️ Vibe Coder (Router): features/vibe-coder_zh.md
+      - 🧩 外掛系統: guides/plugins_zh.md
+      - 🏗️ 架構師模式: guides/architect_mode_zh.md
+      - 🤝 人類對齊: guides/human-alignment_zh.md
+      - 🎓 Skills 指南: guides/skills_guide.md
   - 📚 教學 (Tutorials):
-    - 基礎教學: tutorials/TUTORIAL_en.md
-    - 進階教學: tutorials/ADVANCED_TUTORIAL_zh.md
-    - 實戰演示: tutorials/PRACTICAL_DEMO_en.md
-    - 企業手冊: tutorials/PROFESSIONAL_PLAYBOOK_en.md
+      - 基礎教學: tutorials/TUTORIAL.md
+      - 進階教學: tutorials/ADVANCED_TUTORIAL_zh.md
+      - 實戰演示: tutorials/PRACTICAL_DEMO.md
+      - 專業手冊: tutorials/PROFESSIONAL_PLAYBOOK.md
   - ⚙️ 參考 (Reference):
-    - 🔰 配置手冊 (Config): reference/configuration_zh.md
-    - ❓ 常見問題 (FAQ): reference/APPENDIX_B_FAQ_zh.md
-    - 故障排除: reference/troubleshooting_zh.md
-    - Prompt 哲學: reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh.md
-    - 工具詳細參數: reference/APPENDIX_A_TOOL_REFERENCE_zh.md
-    - 安全與隱私: reference/security-privacy_zh.md
-    - 架構設計: reference/architecture_zh.md
-    - 貢獻指南: reference/contributing_zh.md
-  - 🔌 API 參考 (API Reference):
-    - 索引 (Index): api/index_zh.md
-    - Agents: api/agents_zh.md
-    - Intelligence: api/intelligence_zh.md
-    - Loop & Workflows: api/loop_zh.md
-    - Judge & Evaluation: api/judge_zh.md
-    - Security: api/security_zh.md
-    - MCP Server: api/mcp_server_zh.md
-    - Tools: api/tools_zh.md
-    - Resources: api/resources_zh.md
-    - Vibe Module: api/vibe_zh.md
-    - Git Hooks: api/hooks_zh.md
-    - Utilities: api/utils_zh.md
-    - Verification: api/verification.md
+      - 🔰 配置手冊: reference/configuration_zh.md
+      - 🛠️ 工具參考: reference/APPENDIX_A_TOOL_REFERENCE_zh.md
+      - ❓ 常見問題 (FAQ): reference/APPENDIX_B_FAQ_zh.md
+      - 🧭 故障排除: reference/troubleshooting_zh.md
+      - 🧠 Prompt 哲學: reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh.md
+      - 🏗️ 系統架構: reference/architecture_zh.md
+      - 🤝 貢獻指南: reference/contributing_zh.md
+  - 🔌 API 參考:
+      - 索引: api/index_zh.md
+      - Agents: api/agents_zh.md
+      - Intelligence: api/intelligence_zh.md
+      - Loop: api/loop_zh.md
+      - Judge: api/judge_zh.md
+      - MCP Server: api/mcp_server_zh.md
+      - Tools: api/tools_zh.md
 
 markdown_extensions:
   - admonition
-  - pymdownx.highlight
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
