@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>🔥 Boring 實戰展示：10 分鐘讓你見識 AI 開發的未來 - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\ud83d\udd25 Boring \u5be6\u6230\u5c55\u793a\uff1a10 \u5206\u9418\u8b93\u4f60\u898b\u8b58 AI \u958b\u767c\u7684\u672a\u4f86";
+        var mkdocs_page_input_path = "tutorials\\PRACTICAL_DEMO.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">🔥 Boring 實戰展示：10 分鐘讓你見識 AI 開發的未來</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/tutorials/PRACTICAL_DEMO.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="boring-10-ai">🔥 Boring 實戰展示：10 分鐘讓你見識 AI 開發的未來</h1>
+<blockquote>
+<p><strong>「不會寫程式沒關係，Boring 幫你搞定一切。」</strong></p>
+<p>這不是誇大——這是 Vibe Coding 的真諦。</p>
+</blockquote>
+<hr />
+<h2 id="boring">🎯 什麼是 Boring？</h2>
+<p>想像你有一個<strong>架構師級別的 AI 軍師</strong>，它不只會寫程式碼，還會：</p>
+<div class="highlight"><pre><span></span><code>🏛️ 設計架構      →  在寫程式碼之前，先幫你規劃全局
+🔍 審查代碼      →  像資深工程師一樣 Review 你的代碼  
+🛡️ 保護安全      →  自動檢測安全漏洞和敏感資訊外洩
+🔄 自動修復      →  一鍵解決 Lint、格式、測試問題
+🧠 學習你的風格  →  記住你喜歡怎麼寫程式碼
+</code></pre></div>
+<p><strong>一句話總結</strong>：Boring = 你的 AI 開發團隊（架構師 + 資深工程師 + QA）</p>
+<hr />
+<h2 id="1-0-1">🚀 實戰案例 1：從 0 到 1 建立專案</h2>
+<h3 id="fastapi">場景：你想建立一個 FastAPI 後端</h3>
+<p><strong>傳統方式</strong>：
+<div class="highlight"><pre><span></span><code>1. 手動建立專案目錄
+2. 初始化 Git
+3. 設定虛擬環境
+4. 安裝依賴
+5. 建立檔案結構
+6. 開始寫程式碼...
+（30 分鐘後，你還在設定環境）
+</code></pre></div></p>
+<p><strong>Boring 方式</strong>：
+<div class="highlight"><pre><span></span><code>你: &quot;幫我建立一個 FastAPI 認證服務，要有 JWT 和 OAuth2&quot;
+
+Boring 架構師: 
+  &quot;等等，在開始之前我需要了解幾個問題...&quot;
+
+  🤔 問題 1: 資料庫要用什麼？PostgreSQL 還是 SQLite？
+  🤔 問題 2: 需要支援社交登入嗎（Google/GitHub）？
+  🤔 問題 3: Token 過期時間多久？
+
+你: &quot;PostgreSQL，要 GitHub 登入，Token 24 小時&quot;
+
+Boring: 
+  ✅ 生成架構設計...
+  ✅ 建立專案結構...
+  ✅ 實作認證邏輯...
+  ✅ 撰寫測試...
+  ✅ 驗證通過！
+
+  📁 你的專案已準備就緒：
+  src/
+  ├── main.py           # FastAPI 入口
+  ├── auth/
+  │   ├── jwt.py        # JWT 實作
+  │   ├── oauth.py      # GitHub OAuth
+  │   └── middleware.py # 認證中介軟體
+  ├── models/           # 資料模型
+  └── tests/            # 測試（覆蓋率 85%）
+</code></pre></div></p>
+<p><strong>核心指令 (Vibe Coder Style)</strong>：
+<div class="highlight"><pre><span></span><code>你: &quot;幫我建立一個 FastAPI 認證服務，要有 JWT 和 GitHub OAuth&quot;
+
+# 或使用 CLI
+boring-route &quot;建立 FastAPI 認證服務&quot;
+</code></pre></div></p>
+<hr />
+<h2 id="2">🛠️ 實戰案例 2：自動修復代碼問題</h2>
+<h3 id="lint">場景：你的代碼有一堆 Lint 錯誤</h3>
+<p><strong>傳統方式</strong>：
+<div class="highlight"><pre><span></span><code>$ ruff check src/
+Found 47 errors in 12 files.
+
+（然後你開始一個一個修）
+# 30 分鐘後...
+</code></pre></div></p>
+<p><strong>Boring 方式</strong>：
+<div class="highlight"><pre><span></span><code>你: &quot;/quick_fix&quot;
+
+Boring:
+  🔍 掃描中...
+  📊 發現 47 個問題：
+     - 23 個格式問題
+     - 15 個未使用的 import
+     - 9 個類型問題
+
+  ⚡ 自動修復中...
+  ✅ 47/47 問題已修復
+  ✅ 格式化完成
+  ✅ 所有測試通過
+
+  總耗時：8.3 秒
+</code></pre></div></p>
+<p><strong>這背後發生了什麼</strong>：
+<div class="highlight"><pre><span></span><code>boring-route &quot;/quick_fix&quot;
+    ↓
+boring_verify → 找出所有問題
+    ↓
+boring_auto_fix → 自動修復
+    ↓
+ruff format → 格式化
+    ↓
+pytest → 確認沒壞掉
+</code></pre></div></p>
+<blockquote>
+<p>💡 <strong>V10.24 提示</strong>：使用 <code>boring-route</code> CLI 或自然語言對話，系統會自動路由到正確的工具。</p>
+</blockquote>
+<hr />
+<h2 id="3">🔒 實戰案例 3：安全掃描與防護</h2>
+<h3 id="api-key">場景：你不小心把 API Key 寫死在程式碼裡</h3>
+<p><strong>傳統方式</strong>：
+<div class="highlight"><pre><span></span><code># 你可能到 Push 到 GitHub 後才發現...
+# 然後接到 GitHub Secret Scanning 的警告
+# 接著緊急 Rotate Key、Force Push...
+</code></pre></div></p>
+<p><strong>Boring 方式</strong>：
+<div class="highlight"><pre><span></span><code>你: &quot;/security_scan&quot;
+
+Boring:
+  🔍 安全掃描中...
+
+  🚨 發現 3 個嚴重問題！
+
+  ┌─────────────────────────────────────────────────┐
+  │ HIGH: 發現硬編碼的 API Key                      │
+  │ 位置: src/config.py:23                          │
+  │ 內容: STRIPE_API_KEY = &quot;sk_live_...&quot;            │
+  │ 建議: 使用環境變數 os.getenv(&quot;STRIPE_API_KEY&quot;)  │
+  └─────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────┐
+  │ MEDIUM: 使用已知有漏洞的套件                    │
+  │ 套件: requests==2.25.0 (CVE-2023-32681)         │
+  │ 建議: 升級到 requests&gt;=2.31.0                   │
+  └─────────────────────────────────────────────────┘
+
+  🛡️ 是否自動修復？[Y/n]
+</code></pre></div></p>
+<hr />
+<h2 id="4rag">🧠 實戰案例 4：RAG 語義搜尋</h2>
+<h3 id="10">場景：你接手一個 10 萬行的遺留專案</h3>
+<p><strong>傳統方式</strong>：
+<div class="highlight"><pre><span></span><code>$ grep -r &quot;authentication&quot; src/
+# 得到 500 行結果
+# 然後你開始一行行看...
+</code></pre></div></p>
+<p><strong>Boring 方式</strong>：
+<div class="highlight"><pre><span></span><code>你: &quot;我想找處理 JWT Token 驗證的函數&quot;
+
+Boring (🌟 **Universal Router 自動路由到 `boring_rag_search`**)：:
+
+  🔍 語義搜尋結果：
+
+  1️⃣ src/auth/jwt.py:45 - validate_token()
+     相關度: 98%
+     &quot;驗證 JWT token 的簽名和過期時間&quot;
+
+  2️⃣ src/middleware/auth.py:23 - require_auth()
+     相關度: 87%
+     &quot;裝飾器，確保 request 帶有有效 token&quot;
+
+  3️⃣ src/utils/security.py:78 - decode_jwt()
+     相關度: 82%
+     &quot;解碼 JWT payload，返回 user_id&quot;
+
+  📊 依賴關係圖：
+  decode_jwt() ← validate_token() ← require_auth()
+                                    ↑
+                              routes/users.py
+</code></pre></div></p>
+<hr />
+<h2 id="5transaction">🔄 實戰案例 5：安全重構（Transaction）</h2>
+<h3 id="_1">場景：你要重構核心模組，但怕搞砸</h3>
+<p><strong>傳統方式</strong>：
+<div class="highlight"><pre><span></span><code>1. git checkout -b refactor-auth
+2. 開始改...
+3. 改到一半發現思路錯了
+4. 手動 git reset 或 revert
+5. 心累...
+</code></pre></div></p>
+<p><strong>Boring 方式</strong>：
+<div class="highlight"><pre><span></span><code>你: &quot;/safe_refactor 重構認證模組，改用策略模式&quot;
+
+Boring:
+  📦 開始事務...
+
+  💾 已建立還原點 [txn-a8f3c2]
+
+  🏛️ 架構師分析:
+     &quot;策略模式很適合這個場景，因為...&quot;
+
+  💻 Coder 開始重構...
+
+  🔍 Reviewer 審查中...
+     ⚠️ 發現潛在問題: 缺少向後兼容
+     💡 建議: 保留舊函數作為 alias
+
+  🧪 驗證結果:
+     ✅ 測試通過 (58/58)
+     ✅ Lint 通過
+     ✅ 類型檢查通過
+
+  ✅ 重構完成！
+
+  是否提交？[Y/n/rollback]
+
+你: &quot;rollback&quot;  # 如果後悔了
+
+Boring:
+  ⏪ 已回滾到 [txn-a8f3c2]
+  📄 所有檔案已還原
+</code></pre></div></p>
+<hr />
+<h2 id="7-auto-learning-v1018">🧠 實戰案例 7：自動學習與進化 (Auto-Learning v10.18)</h2>
+<h3 id="ai">場景：AI 老是犯同樣的錯</h3>
+<p><strong>傳統方式</strong>：
+<div class="highlight"><pre><span></span><code>你: &quot;這不對，這裡要用 `check_password_hash` 不是 `check_password`&quot;
+AI: &quot;抱歉我改...&quot;
+(第二天，新的對話)
+AI: &quot;我又用了 `check_password`...&quot;
+(你崩潰...)
+</code></pre></div></p>
+<p><strong>Boring 方式 (Auto-Sense Mode)</strong>：
+<div class="highlight"><pre><span></span><code>你: &quot;這不對，這裡要用 `check_password_hash`&quot;
+Boring: (修正代碼)
+
+[系統背景運作]:
+🔍 偵測到用戶修正 -&gt; 提取模式 -&gt; 存入知識庫
+
+(第二天，新的對話)
+你: &quot;幫我寫登入功能&quot;
+Boring: 
+  ✅ 讀取專案記憶...
+  💡 發現學習模式: &quot;Password Hashing Preference&quot;
+
+  &quot;好的，我會使用 `check_password_hash` 進行驗證...&quot;
+</code></pre></div></p>
+<p><strong>主動教學</strong>：
+你也可以主動教它：
+<div class="highlight"><pre><span></span><code>你: &quot;/learn 這裡的 API 回傳格式必須包在 `data` 欄位裡&quot;
+Boring: ✅ 已學習規則：[API Response Format]
+</code></pre></div></p>
+<hr />
+<h2 id="8multi-agent">🤖 實戰案例 8：Multi-Agent 協作</h2>
+<h3 id="_2">場景：複雜任務需要多個角色</h3>
+<div class="highlight"><pre><span></span><code>你: &quot;建立一個完整的用戶管理系統，包含 CRUD、權限控制和 Audit Log&quot;
+
+Boring:
+  ═══════════════════════════════════════
+  🏛️ ARCHITECT PHASE
+  ═══════════════════════════════════════
+
+  設計決策:
+  • 採用 RBAC 權限模型
+  • Audit Log 使用 Event Sourcing
+  • 用戶資料採用軟刪除
+
+  生成文件:
+  • implementation_plan.md
+  • database_schema.sql
+  • api_spec.yaml
+
+  ═══════════════════════════════════════
+  💻 CODER PHASE
+  ═══════════════════════════════════════
+
+  實作進度:
+  [████████░░] 80%
+
+  已完成:
+  ✅ User CRUD endpoints
+  ✅ Role model &amp; permissions
+  ✅ Audit event dispatcher
+
+  進行中:
+  🔄 Permission decorator
+
+  ═══════════════════════════════════════
+  🔍 REVIEWER PHASE  
+  ═══════════════════════════════════════
+
+  審查報告:
+  ┌──────────────────────────────────────┐
+  │ 程式碼品質: ⭐⭐⭐⭐☆ (4.2/5)          │
+  │ 測試覆蓋率: 78%                       │
+  │ 安全評估: 通過                        │
+  │ 效能評估: 良好                        │
+  └──────────────────────────────────────┘
+
+  建議:
+  • 考慮加入 rate limiting
+  • 建議對敏感操作加入 2FA
+</code></pre></div>
+<hr />
+<h2 id="_3">⚡ 常用快捷指令速查表</h2>
+<table>
+<thead>
+<tr>
+<th>想做什麼</th>
+<th>輸入</th>
+<th>Boring 會做什麼</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🚀 新專案開發</td>
+<td><code>/vibe_start</code></td>
+<td>完整 Spec-Driven 流程</td>
+</tr>
+<tr>
+<td>🔧 修復所有問題</td>
+<td><code>/quick_fix</code></td>
+<td>Lint + Format + Test</td>
+</tr>
+<tr>
+<td>🛡️ 安全掃描</td>
+<td><code>/security_scan</code></td>
+<td>SAST + Secret Detection</td>
+</tr>
+<tr>
+<td>🔍 搜尋代碼</td>
+<td><code>/semantic_search</code></td>
+<td>RAG 語義搜尋</td>
+</tr>
+<tr>
+<td>🔄 安全重構</td>
+<td><code>/safe_refactor</code></td>
+<td>Transaction + Verify</td>
+</tr>
+<tr>
+<td>📊 品質評估</td>
+<td><code>/evaluate_code</code></td>
+<td>LLM Judge 評分</td>
+</tr>
+<tr>
+<td>💾 智能提交</td>
+<td><code>/smart_commit</code></td>
+<td>Auto-generate commit msg</td>
+</tr>
+<tr>
+<td>🗺️ 查看進度</td>
+<td><code>/roadmap</code></td>
+<td>生成甘特圖</td>
+</tr>
+<tr>
+<td>🧠 學習風格</td>
+<td><code>/learn_patterns</code></td>
+<td>AI 學習你的寫法</td>
+</tr>
+<tr>
+<td>❓ 健康檢查</td>
+<td><code>/vibe_check</code></td>
+<td>專案健康度評分</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_4">🎮 互動式對話範例</h2>
+<h3 id="1debug-bug">範例 1：Debug 一個詭異的 Bug</h3>
+<div class="highlight"><pre><span></span><code>你: 我的 API 回傳 500，錯誤是 &quot;TypeError: &#39;NoneType&#39; object is not iterable&quot;
+
+Boring:
+  🔍 分析錯誤...
+
+  📍 Root Cause 定位:
+  位置: src/services/user.py:67
+  函數: get_user_orders()
+
+  問題:
+    orders = db.query(Order).filter_by(user_id=user_id).all()
+    return [order.to_dict() for order in orders]  # ← 這裡爆了
+
+  原因: 
+    當 user_id 不存在時，返回 None 而非空列表
+
+  🏛️ 架構師建議:
+    這是典型的「Null Object Pattern」缺失。
+    建議永遠返回空列表 [] 而非 None，
+    讓調用方可以安全地遍歷。
+
+  修復:
+    orders = db.query(Order).filter_by(user_id=user_id).all() or []
+
+  是否自動修復？[Y/n]
+</code></pre></div>
+<h3 id="2_1">範例 2：效能優化建議</h3>
+<div class="highlight"><pre><span></span><code>你: &quot;/optimize_performance&quot;
+
+Boring:
+  🔍 掃描效能問題...
+
+  ⚠️ 發現 N+1 Query 問題
+
+  位置: src/routes/users.py:34
+
+  問題程式碼:
+    users = User.query.all()
+    for user in users:
+        orders = user.orders  # 每個 user 都觸發一次 DB query
+
+  建議:
+    users = User.query.options(
+        joinedload(User.orders)
+    ).all()
+
+  預估效能提升: 10x (100 users → 1 query vs 101 queries)
+</code></pre></div>
+<hr />
+<h2 id="boring_1">🏆 為什麼選擇 Boring？</h2>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>傳統 AI 助手</th>
+<th>Boring</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>代碼生成</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>架構設計</td>
+<td>❌</td>
+<td>✅ 架構師人設</td>
+</tr>
+<tr>
+<td>需求釐清</td>
+<td>❌</td>
+<td>✅ SpecKit 五部曲</td>
+</tr>
+<tr>
+<td>安全掃描</td>
+<td>❌</td>
+<td>✅ SAST + Secret Detection</td>
+</tr>
+<tr>
+<td>自動修復</td>
+<td>❌</td>
+<td>✅ 一鍵修復</td>
+</tr>
+<tr>
+<td>代碼審查</td>
+<td>❌</td>
+<td>✅ Multi-Agent Review</td>
+</tr>
+<tr>
+<td>風險控制</td>
+<td>❌</td>
+<td>✅ Shadow Mode</td>
+</tr>
+<tr>
+<td>可回滾</td>
+<td>❌</td>
+<td>✅ Transaction</td>
+</tr>
+<tr>
+<td>語義搜尋</td>
+<td>❌</td>
+<td>✅ RAG Vector Search</td>
+</tr>
+<tr>
+<td>學習適應</td>
+<td>❌</td>
+<td>✅ 知識庫持久化</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_5">🚀 馬上開始</h2>
+<h3 id="1mcpsmithery">🎮 方式 1：MCP/Smithery（推薦！最簡單）</h3>
+<p>直接在 <strong>Gemini CLI</strong> 或 <strong>Cursor</strong> 中使用，無需額外設定：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 安裝到 Gemini CLI</span>
+npx<span class="w"> </span>-y<span class="w"> </span>@smithery/cli@latest<span class="w"> </span>install<span class="w"> </span>boring/boring<span class="w"> </span>--client<span class="w"> </span>gemini-cli
+</code></pre></div>
+<p>然後在 Gemini CLI 中直接對話：
+<div class="highlight"><pre><span></span><code>你: &quot;幫我建立一個 FastAPI 認證服務&quot;
+Boring: 「好的，讓我先問你幾個問題...」
+</code></pre></div></p>
+<p>✅ <strong>不需要</strong> <code>PROMPT.md</code><br />
+✅ <strong>不需要</strong> <code>boring-setup</code><br />
+✅ 互動式對話，隨時可停</p>
+<hr />
+<h3 id="2_2">🤖 方式 2：自主循環模式（進階用戶）</h3>
+<p>用於 <strong>全自動、長時間</strong> 開發任務，在 CMD/PowerShell 中執行：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Step 1: 安裝 (只需一次)</span>
+pip<span class="w"> </span>install<span class="w"> </span>boring-aicoding
+
+<span class="c1"># Step 2: 建立專案結構 (只有這種模式需要 boring-setup！)</span>
+<span class="c1"># 注意：在 CMD 執行 boring start 前，*必須* 先執行 boring-setup 初始化專案！</span>
+boring-setup<span class="w"> </span>my-awesome-app
+<span class="nb">cd</span><span class="w"> </span>my-awesome-app
+
+<span class="c1"># Step 3: 編輯 PROMPT.md，告訴 AI 要做什麼</span>
+<span class="c1"># Step 4: 啟動自主循環</span>
+boring<span class="w"> </span>start<span class="w">                         </span><span class="c1"># 使用自動偵測的 CLI</span>
+boring<span class="w"> </span>start<span class="w"> </span>--provider<span class="w"> </span>claude-code<span class="w">  </span><span class="c1"># 使用 Claude Code CLI</span>
+boring<span class="w"> </span>start<span class="w"> </span>--provider<span class="w"> </span>gemini-cli<span class="w">   </span><span class="c1"># 使用 Gemini CLI</span>
+</code></pre></div>
+<p><strong><code>boring-setup</code> 做了什麼？</strong>
+<div class="highlight"><pre><span></span><code>my-awesome-app/
+├── PROMPT.md      # ✅ 必要 - 你要寫的任務說明
+├── @fix_plan.md   # 任務清單
+├── GEMINI.md      # 專案說明
+└── .boring/brain/ # AI 知識庫
+</code></pre></div></p>
+<hr />
+<h3 id="_6">📊 兩種方式比較</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>MCP/Smithery</th>
+<th><code>boring start</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>安裝方式</strong></td>
+<td><code>npx @smithery/cli ...</code></td>
+<td><strong><code>pip install boring-aicoding</code></strong> (必須)</td>
+</tr>
+<tr>
+<td>需要 <code>boring-setup</code></td>
+<td>❌ 不需要</td>
+<td>✅ 需要</td>
+</tr>
+<tr>
+<td>需要 <code>PROMPT.md</code></td>
+<td>❌ 不需要</td>
+<td>✅ 需要</td>
+</tr>
+<tr>
+<td>運行方式</td>
+<td>對話式</td>
+<td>全自動循環</td>
+</tr>
+<tr>
+<td>適合場景</td>
+<td>互動開發</td>
+<td>長時間自動開發</td>
+</tr>
+<tr>
+<td>中斷方式</td>
+<td>隨時</td>
+<td>Ctrl+C</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>注意</strong>：如果你只使用 Smithery 安裝，是無法在終端機執行 <code>boring start</code> 的！只有 pip 安裝才會提供 <code>boring</code> 指令。</p>
+</blockquote>
+<hr />
+<h2 id="_7">🎯 記住這句話</h2>
+<blockquote>
+<p><strong>「專業玩家不記 Tool 名稱，因為 Prompt 已經幫你準備好所有戰術組合。」</strong></p>
+</blockquote>
+<p>你只需要告訴 Boring <strong>你想要什麼</strong>，剩下的交給它。</p>
+<hr />
+<p><em>Built with ❤️ by the Boring206</em></p>
+<hr />
+<h2 id="_8">📚 延伸閱讀</h2>
+<ul>
+<li><a href="../TUTORIAL/">完整教程</a> — 詳細的功能介紹</li>
+<li><a href="../ADVANCED_TUTORIAL_zh/">進階開發者指南</a> — 架構與內部機制</li>
+<li><a href="../PROFESSIONAL_PLAYBOOK/">專業實戰指南</a> — 18 個專家工作流</li>
+<li><a href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具清單</a> — 所有 55+ 個工具</li>
+</ul>
+<hr />
+<p><em>最後更新: V10.26.0</em></p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

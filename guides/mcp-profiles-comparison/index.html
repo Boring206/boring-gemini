@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>🎛️ MCP Profiles Deep Dive: Choosing the Right Mode - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\ud83c\udf9b\ufe0f MCP Profiles Deep Dive: Choosing the Right Mode";
+        var mkdocs_page_input_path = "guides\\mcp-profiles-comparison.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">🎛️ MCP Profiles Deep Dive: Choosing the Right Mode</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/guides/mcp-profiles-comparison.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="mcp-profiles-deep-dive-choosing-the-right-mode">🎛️ MCP Profiles Deep Dive: Choosing the Right Mode</h1>
+<blockquote>
+<p><strong>Deep Thinking Analysis</strong>: MCP Profiles are not just about "hiding" tools; they are about <strong>Context Budget Management</strong>. 
+LLMs have fixed attention spans. Feeding 100+ tools (~10k tokens) to a model distracts it. 
+Profiles allow you to match the <strong>Tool Density</strong> to the <strong>Task Complexity</strong> and <strong>Model Capability</strong>.</p>
+</blockquote>
+<p>This guide provides a detailed breakdown of each profile, its ideal usage points, and trade-offs.</p>
+<hr />
+<h2 id="quick-comparison">📊 Quick Comparison</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Profile</th>
+<th style="text-align: left;">Tools</th>
+<th style="text-align: left;">Use Case</th>
+<th style="text-align: left;">Ideal Model Tier</th>
+<th style="text-align: left;">Token Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>ultra_lite</code></strong></td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;"><strong>Gateway</strong> / Chat-heavy</td>
+<td style="text-align: left;">Low (e.g., Llama 3 8B)</td>
+<td style="text-align: left;">🟢 Extremely Low</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>minimal</code></strong></td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;"><strong>Safety Ops</strong> / CI</td>
+<td style="text-align: left;">Medium</td>
+<td style="text-align: left;">🟢 Low</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>lite</code></strong></td>
+<td style="text-align: left;">20</td>
+<td style="text-align: left;"><strong>Daily Coding</strong> (Recommended)</td>
+<td style="text-align: left;">High (Claude 3.5, Gemini 1.5)</td>
+<td style="text-align: left;">🟡 Balanced</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>standard</code></strong></td>
+<td style="text-align: left;">50</td>
+<td style="text-align: left;"><strong>Architecture</strong> / Management</td>
+<td style="text-align: left;">Very High</td>
+<td style="text-align: left;">🟠 High</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>full</code></strong></td>
+<td style="text-align: left;">All</td>
+<td style="text-align: left;"><strong>Unified Intelligence</strong> / Debug</td>
+<td style="text-align: left;">Ultra (Gemini 1.5 Pro, Opus)</td>
+<td style="text-align: left;">🔴 Very High</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="deep-dive-by-profile">🛠️ Deep Dive by Profile</h2>
+<h3 id="1-ultra_lite-the-gateway">1. <code>ultra_lite</code> (The Gateway)</h3>
+<p><strong>Concept</strong>: "Progressive Disclosure".
+The agent knows <em>nothing</em> initially except how to discover tools. It asks for tool definitions only when it needs them.</p>
+<ul>
+<li><strong>✅ Usage Point</strong>: <ul>
+<li><strong>Cost Optimization</strong>: When you are paying per input token and want to minimize prompt size.</li>
+<li><strong>Small Models</strong>: Using local 7B/8B models that get confused by large tool definitions.</li>
+<li><strong>Chat Focus</strong>: When the session is 90% discussion and only 10% action.</li>
+</ul>
+</li>
+<li><strong>❌ Limitations</strong>: <ul>
+<li><strong>High Latency</strong>: Every tool use requires 2 steps (Discover -&gt; Execute).</li>
+<li><strong>No Spontaneity</strong>: The agent won't "accidentally" use a helpful tool it doesn't know exists.</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-minimal-the-guard">2. <code>minimal</code> (The Guard)</h3>
+<p><strong>Concept</strong>: "Read-Only / Safety First".
+Provides enough tools to <em>see</em> and <em>verify</em> the project, but limits generative capabilities.</p>
+<ul>
+<li><strong>✅ Usage Point</strong>:<ul>
+<li><strong>Project Auditing</strong>: "Read the code and tell me if it's safe."</li>
+<li><strong>CI/CD Pipelines</strong>: Automated checks where you don't want the agent getting creative.</li>
+<li><strong>Quick Fixes</strong>: Simple git commits or vibe checks.</li>
+</ul>
+</li>
+<li><strong>❌ Limitations</strong>:<ul>
+<li>Cannot review code (no <code>code_review</code>).</li>
+<li>Cannot write tests (no <code>test_gen</code>).</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-lite-the-daily-driver">3. <code>lite</code> (The Daily Driver) 🌟</h3>
+<p><strong>Concept</strong>: "The Pareto Optimal".
+Contains the 20 tools that do 80% of the work. Designed to fit comfortably in a 128k context window while leaving space for files.</p>
+<ul>
+<li><strong>✅ Usage Point</strong>:<ul>
+<li><strong>Feature Development</strong>: "Add a login page." (Uses <code>write_file</code>, <code>rag_context</code>, <code>code_review</code>).</li>
+<li><strong>Refactoring</strong>: "Clean up this class."</li>
+<li><strong>TDD</strong>: "Write tests for this function."</li>
+<li><strong>Default Choice</strong>: Start here. Only switch if you hit a limit.</li>
+</ul>
+</li>
+<li><strong>❌ Limitations</strong>:<ul>
+<li>Lacks administrative tools (workspace management, git hooks).</li>
+<li>Lacks multi-agent simulation.</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-standard-the-architect">4. <code>standard</code> (The Architect)</h3>
+<p><strong>Concept</strong>: "Project Manager".
+Expands scope to include repository management, security administration, and deeper analysis.</p>
+<ul>
+<li><strong>✅ Usage Point</strong>:<ul>
+<li><strong>Repository Setup</strong>: Installing Git hooks, configuring Shadow Mode.</li>
+<li><strong>Deep Research</strong>: Using full RAG expansion (<code>rag_expand</code>) to understand complex dependencies.</li>
+<li><strong>Multi-Agent Flows</strong>: Running <code>boring_multi_agent</code> to simulate user behaviors.</li>
+<li><strong>Spec Writing</strong>: Using <code>speckit_*</code> tools to clarify requirements.</li>
+</ul>
+</li>
+<li><strong>❌ Limitations</strong>:<ul>
+<li>Significantly higher token usage.</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-full-god-mode">5. <code>full</code> (God Mode)</h3>
+<p><strong>Concept</strong>: "Raw Unfiltered Access".
+Exposes <strong>EVERY</strong> registered tool in the system, including experimental, legacy, and debugging tools. nothing is hidden.</p>
+<ul>
+<li><strong>✅ Usage Point</strong>:<ul>
+<li><strong>Maximum Context Models</strong>: When using <strong>Gemini 1.5 Pro (2M)</strong> or <strong>Claude 3 Opus</strong> where 50k tokens of system prompt is negligible.</li>
+<li><strong>Plugin Development</strong>: When you are developing <em>new</em> Boring tools and want to test them immediately without configuring a profile.</li>
+<li><strong>Experimental Features</strong>: Accessing bleeding-edge tools that haven't graduated to <code>Standard</code> yet.</li>
+<li><strong>"I Can't Find It"</strong>: When you know a tool exists but isn't in your profile, switch to Full to find it.</li>
+</ul>
+</li>
+<li><strong>⚠️ Critical Warning</strong>:<ul>
+<li><strong>Hallucinations</strong>: 100+ tools increase the chance of the LLM picking the wrong one (e.g., confusing <code>verify</code> with <code>verify_file</code>).</li>
+<li><strong>Cost</strong>: Extremely expensive on per-token billing models.</li>
+<li><strong>Performance</strong>: Slower "Thinking" (preprocessing large tool definitions).</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="configuration">⚙️ Configuration</h2>
+<h3 id="switching-profiles">Switching Profiles</h3>
+<p>You can switch profiles dynamically based on your current task's needs.</p>
+<h4 id="1-environment-variable-global">1. Environment Variable (Global)</h4>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">BORING_MCP_PROFILE</span><span class="o">=</span>lite
+</code></pre></div>
+<h4 id="2-project-config-boringtoml">2. Project Config (<code>.boring.toml</code>)</h4>
+<div class="highlight"><pre><span></span><code><span class="k">[boring]</span>
+<span class="c1"># Persist the setting for this project</span>
+<span class="n">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;standard&quot;</span>
+</code></pre></div>
+<h4 id="3-runtime-switch-vs-code-cursor">3. Runtime Switch (VS Code / Cursor)</h4>
+<ol>
+<li>Open User Settings (JSON).</li>
+<li>Find <code>"mcpServers"</code>.</li>
+<li>Edit the <code>env</code> section for <code>boring</code>.</li>
+<li><strong>Restart</strong> the MCP server (Developer: Reload Window).</li>
+</ol>
+<hr />
+<h2 id="recommendation">💡 Recommendation</h2>
+<p>Start with <strong><code>lite</code></strong>.
+- If you find the model "hallucinating" tools that don't exist -&gt; Switch to <strong><code>standard</code></strong>.
+- If you find the model is "slow" or "expensive" -&gt; Switch to <strong><code>minimal</code></strong> or <strong><code>ultra_lite</code></strong>.
+- If you are doing deep R&amp;D or using Gemini 1.5 Pro -&gt; Switch to <strong><code>full</code></strong>.</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

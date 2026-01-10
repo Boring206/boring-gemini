@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>⚡ Prompts 與工作流參考手冊 - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u26a1 Prompts \u8207\u5de5\u4f5c\u6d41\u53c3\u8003\u624b\u518a";
+        var mkdocs_page_input_path = "reference\\prompts_zh.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">⚡ Prompts 與工作流參考手冊</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/reference/prompts_zh.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="prompts">⚡ Prompts 與工作流參考手冊</h1>
+<p>這是 Boring 中所有可用 MCP Prompts 和 Workflows 的 <strong>完整參考手冊</strong>。</p>
+<ul>
+<li><strong>Prompts</strong>: 透過 IDE 的 Prompt 選擇器使用（例如 <code>Cmd+I</code> 或 ✨ 按鈕）。</li>
+<li><strong>Workflows</strong>: 透過 Chat 中的斜線指令使用（例如 <code>/release-prep</code>）。</li>
+</ul>
+<hr />
+<h2 id="startup-planning">🚀 專案啟動與規劃 (Startup &amp; Planning)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">指令 / Prompt</th>
+<th style="text-align: left;">類型</th>
+<th style="text-align: left;">說明</th>
+<th style="text-align: left;">最佳使用情境</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>vibe_start</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>一鍵專案啟動</strong>。引導式架構流程，帶領您從模糊的想法到結構化的專案計畫。</td>
+<td style="text-align: left;">開啟新專案或開發大型複雜功能時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>setup_project</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>專案初始化</strong>。引導您執行快速啟動、安裝 Git hooks 和健康檢查。</td>
+<td style="text-align: left;">第一次設定新的 Repository 時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>/speckit-constitution</code></strong></td>
+<td style="text-align: left;">Workflow</td>
+<td style="text-align: left;"><strong>建立原則</strong>。建立 <code>constitution.md</code> 以定義專案中不可妥協的規則。</td>
+<td style="text-align: left;">任何新儲存庫的第一步，用於確立編碼標準。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>/speckit-clarify</code></strong></td>
+<td style="text-align: left;">Workflow</td>
+<td style="text-align: left;"><strong>需求釐清</strong>。分析您的請求並提出 3-5 個關鍵問題以消除歧義。</td>
+<td style="text-align: left;">當需求模糊不清，或不確定從何開始時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>/speckit-plan</code></strong></td>
+<td style="text-align: left;">Workflow</td>
+<td style="text-align: left;"><strong>技術規劃</strong>。將需求轉換為詳細的技術實作計畫。</td>
+<td style="text-align: left;">需求確認後，開始寫程式碼之前。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>plan_feature</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>功能規格產生器</strong>。為特定的新功能生成詳細的實作計畫。</td>
+<td style="text-align: left;">在現有專案中增加單一功能時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>/speckit-tasks</code></strong></td>
+<td style="text-align: left;">Workflow</td>
+<td style="text-align: left;"><strong>任務拆解</strong>。將實作計畫轉換為 <code>task.md</code> 中的檢查清單。</td>
+<td style="text-align: left;">準備好開始寫程式了嗎？執行此指令生成待辦事項。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>roadmap</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>路線圖視覺化</strong>。分析 <code>task.md</code> 並生成進度的 Mermaid 甘特圖或流程圖。</td>
+<td style="text-align: left;">檢視專案時間軸和下一個主要里程碑時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>suggest_roadmap</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>下一步建議</strong>。AI 建議接下來應該開發的功能或是技術改進。</td>
+<td style="text-align: left;">當您卡住或在尋找下一個開發目標時。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="development-building">🏗️ 開發與建置 (Development &amp; Building)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">指令 / Prompt</th>
+<th style="text-align: left;">類型</th>
+<th style="text-align: left;">說明</th>
+<th style="text-align: left;">最佳使用情境</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>full_stack_dev</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>全棧開發工作流</strong>。針對建置 前端 + 後端 + 資料庫 應用程式的專用指南。</td>
+<td style="text-align: left;">從頭開始建置 Web 應用程式時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>run_agent</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>多智能體任務</strong>。協調多個 AI 代理（架構師、工程師、審查員）解決複雜任務。</td>
+<td style="text-align: left;">將大型、獨立的任務移交給 AI 處理時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>smart_commit</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>智能提交</strong>。根據 <code>task.md</code> 的進度自動生成符合規範的 Commit 訊息。</td>
+<td style="text-align: left;">準備儲存變更時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>vibe_check</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>專案健康檢查</strong>。分析專案結構、文件和「氛圍」(Vibe)，給出 0-100 的評分。</td>
+<td style="text-align: left;">想要快速了解專案狀態時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>system_status</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>系統狀態</strong>。顯示目前的迴圈狀態、活躍的背景任務和整體健康狀況。</td>
+<td style="text-align: left;">偵錯 Agent 為何忙碌或檢查進度時。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="quality-verification">🛡️ 品質與驗證 (Quality &amp; Verification)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">指令 / Prompt</th>
+<th style="text-align: left;">類型</th>
+<th style="text-align: left;">說明</th>
+<th style="text-align: left;">最佳使用情境</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>review_code</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>架構師審查</strong>。深度代碼審查，專注於架構、安全性和效能細節。</td>
+<td style="text-align: left;">合併代碼前，或完成一個模組後。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>/speckit-checklist</code></strong></td>
+<td style="text-align: left;">Workflow</td>
+<td style="text-align: left;"><strong>品質檢查清單</strong>。生成特定的檢查清單，以驗證實作是否符合需求。</td>
+<td style="text-align: left;">將任務標記為「完成」之前。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>/speckit-analyze</code></strong></td>
+<td style="text-align: left;">Workflow</td>
+<td style="text-align: left;"><strong>一致性檢查</strong>。確保您的代碼、計畫和規格彼此一致。</td>
+<td style="text-align: left;">當需求變更或重大重構之後。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>security_scan</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>安全審計</strong>。掃描機密洩露、漏洞 (SAST) 和不良依賴項。</td>
+<td style="text-align: left;">發布前，或開發過程中定期執行。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>evaluate_architecture</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>嚴厲架構師</strong>。嚴格的審查，僅專注於可擴展性、耦合和設計風險。</td>
+<td style="text-align: left;">設計階段早期或重大重構期間。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>evaluate_code</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>LLM 評審</strong>。根據特定標準（正確性、可讀性等）對代碼品質進行評分。</td>
+<td style="text-align: left;">客觀品質評估。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>compare_implementations</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>A/B 測試</strong>。比較兩個不同的代碼路徑/版本並宣布優勝者。</td>
+<td style="text-align: left;">在兩種重構方案之間做決策時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>audit_quality</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>全系統審計</strong>。一次性執行健康檢查 + 安全掃描 + 驗證。</td>
+<td style="text-align: left;">重大部署前的最終檢查。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="maintenance-refactoring">🔧 維護與重構 (Maintenance &amp; Refactoring)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">指令 / Prompt</th>
+<th style="text-align: left;">類型</th>
+<th style="text-align: left;">說明</th>
+<th style="text-align: left;">最佳使用情境</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>quick_fix</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>一鍵修復</strong>。自動診斷並修復 Lint 錯誤、格式問題和簡單 Bug。</td>
+<td style="text-align: left;">出現紅色波浪線或 lint 檢查失敗時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>debug_error</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>根本原因分析</strong>。分析錯誤訊息/堆疊追蹤，找出根本原因並建議修正。</td>
+<td style="text-align: left;">遇到 Bug 或崩潰時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>refactor_code</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>代碼重構</strong>。建議改進代碼清晰度、效能和結構。</td>
+<td style="text-align: left;">當代碼能跑但看起來很亂 ("Code Smell") 時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>/release-prep</code></strong></td>
+<td style="text-align: left;">Workflow</td>
+<td style="text-align: left;"><strong>發布協議</strong>。處理版本升級、更新變更日誌和發布檢查。</td>
+<td style="text-align: left;">準備發布新版本時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>safe_refactor</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>交易式重構</strong>。在「沙箱」中執行變更，如果驗證失敗可自動復原。</td>
+<td style="text-align: left;">執行高風險變更並希望有安全網時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>rollback</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>復原變更</strong>。將代碼庫復原到最後一個安全狀態（需要配合 Transaction 使用）。</td>
+<td style="text-align: left;">當 <code>safe_refactor</code> 嘗試失敗時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>verify_work</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>手動驗證</strong>。明確觸發驗證工作流（測試 + Linting）。</td>
+<td style="text-align: left;">當您想再次確認所有檢查都是綠燈時。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="knowledge-context">🧠 知識與上下文 (Knowledge &amp; Context)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">指令 / Prompt</th>
+<th style="text-align: left;">類型</th>
+<th style="text-align: left;">說明</th>
+<th style="text-align: left;">最佳使用情境</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>explain_code</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>代碼導師</strong>。用通俗語言解釋特定檔案或函式的運作方式。</td>
+<td style="text-align: left;">熟悉新代碼庫時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>visualize</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>圖表生成</strong>。生成代碼的 Mermaid.js 圖表（類別圖、序列圖、流程圖）。</td>
+<td style="text-align: left;">視覺化複雜依賴關係時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>visualize_architecture</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>架構視覺化</strong>。生成高層次的模組依賴圖表。</td>
+<td style="text-align: left;">了解系統的大局觀。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>semantic_search</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>深度搜尋</strong>。使用 RAG 基於語意而非僅關鍵字來尋找代碼。</td>
+<td style="text-align: left;">「認證邏輯在哪裡？」</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>project_brain</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>知識庫</strong>。總結 AI 對此專案的學習內容（模式、規則）。</td>
+<td style="text-align: left;">檢查 AI 對您專案背景的了解程度。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>manage_memory</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>記憶管理</strong>。整理已學習的模式並更新評估標準。</td>
+<td style="text-align: left;">在長時間的編碼工作後「儲存」學習成果。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="workspace-session-management">⚙️ 工作區與會話管理 (Workspace &amp; Session Management)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">指令 / Prompt</th>
+<th style="text-align: left;">類型</th>
+<th style="text-align: left;">說明</th>
+<th style="text-align: left;">最佳使用情境</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>save_session</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>儲存上下文</strong>。將當前工作檔案和對話狀態儲存到命名插槽中。</td>
+<td style="text-align: left;">切換上下文或休息時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>load_session</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>載入上下文</strong>。還原之前儲存的會話。</td>
+<td style="text-align: left;">恢復特定功能的開發工作時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>switch_project</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>切換專案</strong>。將活躍的 Boring 工作區切換到另一個已註冊的專案。</td>
+<td style="text-align: left;">在多個 Repo 配置中工作時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>add_project</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>註冊專案</strong>。將新目錄加入 Boring 工作區註冊表。</td>
+<td style="text-align: left;">將現有專案匯入 Boring 時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>shadow_review</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>影子模式管理</strong>。審查/批准/拒絕待處理的高風險操作。</td>
+<td style="text-align: left;">當影子模式阻擋了您需要執行的操作時。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="advanced-plugins">🧩 進階 / 擴充功能 (Advanced / Plugins)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">指令 / Prompt</th>
+<th style="text-align: left;">類型</th>
+<th style="text-align: left;">說明</th>
+<th style="text-align: left;">最佳使用情境</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>run_plugin</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>執行插件</strong>。執行特定的 Boring 插件。</td>
+<td style="text-align: left;">使用第三方擴充時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>create_plugin</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>插件開發</strong>。生成新 Boring 插件的模板代碼。</td>
+<td style="text-align: left;">擴充 Boring 的功能時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>background_verify</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>背景驗證</strong>。在背景執行驗證（返回 Task ID）。</td>
+<td style="text-align: left;">驗證大型代碼庫而不阻塞對話視窗時。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>background_test</code></strong></td>
+<td style="text-align: left;">Prompt</td>
+<td style="text-align: left;"><strong>背景測試</strong>。在背景執行測試。</td>
+<td style="text-align: left;">執行長時間的測試套件時。</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

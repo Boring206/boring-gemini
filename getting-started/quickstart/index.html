@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>既然是用游標 (Quick Start) - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u65e2\u7136\u662f\u7528\u6e38\u6a19 (Quick Start)";
+        var mkdocs_page_input_path = "getting-started\\quickstart.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">既然是用游標 (Quick Start)</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#choose-your-environment">🚀 選擇您的環境 (Choose Your Environment)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#a-cursor-claude-desktop">情境 A：您正在使用 Cursor 或 Claude Desktop 📝</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#b-terminal-power-user">情境 B：您喜歡終端機 (Terminal Power User) 💻</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#cheat-sheet">🎯 常見起手式 (Cheat Sheet)</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">🚀 快速上手</li>
+      <li class="breadcrumb-item active">既然是用游標 (Quick Start)</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/getting-started/quickstart.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="quick-start">快速入門 (Quick Start)</h1>
+<blockquote>
+<p><strong>🎉 恭喜！您離 AI 全自動開發只差一步。</strong>
+這裡沒有複雜指令，只有簡單的對話。</p>
+</blockquote>
+<hr />
+<h2 id="choose-your-environment">🚀 選擇您的環境 (Choose Your Environment)</h2>
+<h3 id="a-cursor-claude-desktop">情境 A：您正在使用 Cursor 或 Claude Desktop 📝</h3>
+<p>這是最推薦的方式！您只需要像聊天一樣。</p>
+<ol>
+<li>確認您已設定好 Boring MCP Server。</li>
+<li>打開對話視窗 (Chat)。</li>
+<li><strong>直接輸入想要的指令</strong> (不用背指令，用口語就行)：</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>您想做什麼</th>
+<th>輸入範例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>開始新專案</strong></td>
+<td>「幫我初始化一個新專案，我要做一個食譜網站」</td>
+</tr>
+<tr>
+<td><strong>修復錯誤</strong></td>
+<td>「幫我修這個 bug (並貼上錯誤訊息)」</td>
+</tr>
+<tr>
+<td><strong>理解程式碼</strong></td>
+<td>「解釋一下這段扣是幹嘛的？」</td>
+</tr>
+<tr>
+<td><strong>健檢專案</strong></td>
+<td>「Vibe Check! 幫我看程式碼品質」</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>💡 小撇步</strong>: 您甚至不用說是哪個檔案，Boring AI 會自己去翻找。</p>
+</blockquote>
+<hr />
+<h3 id="b-terminal-power-user">情境 B：您喜歡終端機 (Terminal Power User) 💻</h3>
+<p>如果您是駭客風格，喜歡在終端機操作：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 1. 建立專案</span>
+boring-setup<span class="w"> </span>my-cool-project
+<span class="nb">cd</span><span class="w"> </span>my-cool-project
+
+<span class="c1"># 2. 啟動互動模式</span>
+boring<span class="w"> </span>start
+</code></pre></div>
+<p>進入互動介面後，一樣用自然語言跟它聊天即可！</p>
+<hr />
+<h2 id="cheat-sheet">🎯 常見起手式 (Cheat Sheet)</h2>
+<p>不管您用哪個環境，這些話都很好用：</p>
+<ul>
+<li><strong>「幫我規劃功能...」</strong> (Plan feature)</li>
+<li><strong>「做一次安全掃描」</strong> (Security Scan)</li>
+<li><strong>「審查我的程式碼」</strong> (Code Review)</li>
+<li><strong>「這裡有沒有效能問題？」</strong> (Perf Check)</li>
+</ul>
+<p>👉 <strong>下一步</strong>：看看我們的 <a href="../../guides/cookbook_zh/">Vibe Coder 食譜</a> 學習更多咒語！</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../.." class="btn btn-neutral float-left" title="首頁"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../installation/" class="btn btn-neutral float-right" title="安裝指南 (Installation)">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../.." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../installation/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

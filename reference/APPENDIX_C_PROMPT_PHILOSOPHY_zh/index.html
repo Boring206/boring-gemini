@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Prompt 哲學 - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Prompt \u54f2\u5b78";
+        var mkdocs_page_input_path = "reference\\APPENDIX_C_PROMPT_PHILOSOPHY_zh.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Prompt 哲學</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#ai-coding">傳統 AI Coding 的問題</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#the-architect-first-approach">架構師優先的方法 (The Architect-First Approach)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prompt">Prompt 工程原則</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-prompts-persona-based-prompts">1. 基於人設的 Prompts (Persona-Based Prompts)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-proactive-guidance-rules">2. 主動引導規則 (Proactive Guidance Rules)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-structured-output-requirements">3. 結構化輸出要求 (Structured Output Requirements)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-checkpoint-architecture">4. 檢查點架構 (Checkpoint Architecture)</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_1">四種架構師人設</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-chief-architect-">1. 首席架構師 (Chief Architect) - 代碼審查</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-senior-architect-">2. 資深架構師 (Senior Architect) - 除錯</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-principal-architect-">3. 原則架構師 (Principal Architect) - 評估</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-mentor-architect-vibe-coding">4. 導師架構師 (Mentor Architect) - Vibe Coding</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">關鍵設計模式</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#pattern-1">Pattern 1: "不要只說修好它"</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#pattern-2">Pattern 2: 架構課程區塊</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#pattern-3">Pattern 3: 表情符號視覺階層</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#pattern-4">Pattern 4: 雙語支援</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">實作檢查清單</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">衡量成功</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">⚙️ 參考 (Reference)</li>
+      <li class="breadcrumb-item active">Prompt 哲學</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="c-prompt-appendix-c-architect-prompt-design-philosophy">附錄 C：架構師 Prompt 設計哲學 (Appendix C: Architect Prompt Design Philosophy)</h1>
+<blockquote>
+<p><strong>核心原則</strong>：Boring 不是一個代碼生成器——它是你的<strong>資深架構師導師</strong>，能在技術債發生前就阻止它。</p>
+</blockquote>
+<hr />
+<h2 id="ai-coding">傳統 AI Coding 的問題</h2>
+<p>大多數 AI coding 助手都遵循這個模式：</p>
+<div class="highlight"><pre><span></span><code>用戶: &quot;寫一個抓取使用者的函數&quot;
+AI: *寫出代碼*
+用戶: &quot;它跑很慢&quot;
+AI: *修補症狀*
+</code></pre></div>
+<p><strong>結果</strong>：累積的技術債、OK 繃式的修補、沒有任何學習成長。</p>
+<hr />
+<h2 id="the-architect-first-approach">架構師優先的方法 (The Architect-First Approach)</h2>
+<p>Boring 反轉了這個模式：</p>
+<div class="highlight"><pre><span></span><code>用戶: &quot;寫一個抓取使用者的函數&quot;
+架構師: &quot;在寫代碼之前，讓我先問幾個問題：
+  - 有多少使用者？(10個？還是1000萬個？)
+  - 需要即時性還是可以快取？
+  - 你的一致性需求是什麼？&quot;
+
+*在了解上下文之後*
+
+架構師: &quot;我建議：
+  1. 分頁查詢 (不要用 SELECT *)
+  2. 加入 Redis 快取並設定 TTL
+  3. 為 DB 故障加入斷路器 (Circuit Breaker)
+
+這是我實作的代碼...&quot;
+</code></pre></div>
+<p><strong>結果</strong>：從第一天開始就是生產等級 (Production-Ready) 的代碼。</p>
+<hr />
+<h2 id="prompt">Prompt 工程原則</h2>
+<h3 id="1-prompts-persona-based-prompts">1. 基於人設的 Prompts (Persona-Based Prompts)</h3>
+<p>每個 Prompt 都定義了一個<strong>強烈的人設</strong>來形塑行為：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 不要這樣寫:</span>
+<span class="s2">&quot;Please help debug this error&quot;</span>
+
+<span class="c1"># 我們這樣寫:</span>
+<span class="s2">&quot;你是協助除錯的資深架構師 (Senior Architect)。</span>
+<span class="n">你的分析必須包含</span><span class="err">：</span>
+<span class="mf">1.</span> <span class="n">根本原因</span> <span class="p">(</span><span class="n">Root</span> <span class="n">Cause</span><span class="p">)</span>
+<span class="mf">2.</span> <span class="n">可能的罪魁禍首</span> <span class="p">(</span><span class="n">Likely</span> <span class="n">Culprits</span><span class="p">)</span>
+<span class="mf">3.</span> <span class="n">建議修復</span> <span class="p">(</span><span class="n">Suggested</span> <span class="n">Fix</span><span class="p">)</span>
+<span class="mf">4.</span> <span class="err">🏛️</span> <span class="n">架構課程</span> <span class="p">(</span><span class="n">Architecture</span> <span class="n">Lesson</span><span class="p">):</span>
+   <span class="o">-</span> <span class="n">為什麼會發生這種事</span><span class="err">？</span><span class="p">(</span><span class="n">設計缺陷</span><span class="err">？</span><span class="p">)</span>
+   <span class="o">-</span> <span class="n">如何永久防止這類錯誤</span><span class="err">？</span><span class="s2">&quot;</span>
+</code></pre></div>
+<p>人設創造了<strong>一致性</strong>與<strong>深度</strong>。</p>
+<hr />
+<h3 id="2-proactive-guidance-rules">2. 主動引導規則 (Proactive Guidance Rules)</h3>
+<p>Prompts 包含明確的指令要求必須「主動」：</p>
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;**主動建議規則 (Proactive Advice Rule)**:</span>
+<span class="n">如果你看到天真的實作</span> <span class="p">(</span><span class="n">例如</span><span class="err">：</span><span class="n">用</span> <span class="nb">list</span> <span class="n">做查找</span><span class="p">)</span><span class="err">，</span>
+<span class="n">不要只說</span><span class="err">「</span><span class="n">修復它</span><span class="err">」。</span>
+
+<span class="n">要說</span><span class="err">：</span><span class="s1">&#39;⚠️ **架構風險 (Architecture Risk)**: 這是 O(N)。在生產環境，這會</span>
+<span class="n">拖垮</span> <span class="n">CPU</span><span class="err">。</span><span class="o">**</span><span class="n">強制重構</span> <span class="p">(</span><span class="n">Mandatory</span> <span class="n">Refactor</span><span class="p">)</span><span class="o">**</span><span class="p">:</span> <span class="n">請使用</span> <span class="n">Set</span> <span class="n">或</span> <span class="n">HashMap</span> <span class="p">(</span><span class="n">O</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="err">。</span><span class="s1">&#39;</span>
+
+<span class="n">要直接</span><span class="err">。</span><span class="n">要嚴格</span><span class="err">。</span><span class="n">拯救用戶免於未來的痛苦</span><span class="err">。</span><span class="s2">&quot;</span>
+</code></pre></div>
+<p>這能防止 AI 變得太客氣或被動。</p>
+<hr />
+<h3 id="3-structured-output-requirements">3. 結構化輸出要求 (Structured Output Requirements)</h3>
+<p>每個 Prompt 都定義了輸出必須包含什麼：</p>
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;完成後提供摘要報告，包含：</span>
+<span class="o">-</span> <span class="n">已實作功能清單</span>
+<span class="o">-</span> <span class="err">🏛️</span> <span class="n">架構決策記錄</span> <span class="p">(</span><span class="n">ADR</span><span class="p">)</span>
+<span class="o">-</span> <span class="n">潛在改進建議</span><span class="s2">&quot;</span>
+</code></pre></div>
+<p>這確保了 <strong>可操作、完整的回應</strong>。</p>
+<hr />
+<h3 id="4-checkpoint-architecture">4. 檢查點架構 (Checkpoint Architecture)</h3>
+<p>複雜的工作流擁有明確的檢查點：</p>
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;**Phase 2: 架構規劃 (Architect Checkpoint ✅)**</span>
+<span class="mf">3.</span> <span class="n">使用</span> <span class="err">`</span><span class="n">speckit_plan</span><span class="err">`</span> <span class="n">根據需求生成實作計畫</span>
+<span class="mf">4.</span> <span class="err">🏛️</span> <span class="o">**</span><span class="n">架構審查</span><span class="o">**</span><span class="err">：</span><span class="n">我會檢查計畫中的潛在設計問題</span><span class="err">（</span><span class="n">如過度耦合</span><span class="err">、</span><span class="n">缺少抽象層</span><span class="err">）</span><span class="s2">&quot;</span>
+</code></pre></div>
+<p>檢查點強迫在行動前進行<strong>反思</strong>。</p>
+<hr />
+<h2 id="_1">四種架構師人設</h2>
+<h3 id="1-chief-architect-">1. 首席架構師 (Chief Architect) - 代碼審查</h3>
+<p><strong>用於</strong>: <code>review_code</code> prompt</p>
+<p><strong>特質</strong>:
+- 尋找架構異味 (Architecture Smells)，而不僅僅是 Bug
+- 辨識 God Classes, 高耦合
+- 建議模式 (Circuit Breaker, DI)</p>
+<p><strong>輸出範例</strong>:
+<div class="highlight"><pre><span></span><code>⚠️ **Architecture Risk**: 迴圈中的同步 API 呼叫。
+在高負載下這會導致 Timeout。請使用 async/batch 處理。
+</code></pre></div></p>
+<hr />
+<h3 id="2-senior-architect-">2. 資深架構師 (Senior Architect) - 除錯</h3>
+<p><strong>用於</strong>: <code>debug_error</code> prompt</p>
+<p><strong>特質</strong>:
+- 尋找根本原因，而非症狀
+- 提供架構課程
+- 教導預防策略</p>
+<p><strong>輸出範例</strong>:
+<div class="highlight"><pre><span></span><code>🏛️ Architecture Lesson:
+這個錯誤是因為你沒有使用依賴注入 (Dependency Injection)。
+DB 連線被寫死了，導致無法 Mock。
+請重構，透過建構函數注入連線。
+</code></pre></div></p>
+<hr />
+<h3 id="3-principal-architect-">3. 原則架構師 (Principal Architect) - 評估</h3>
+<p><strong>用於</strong>: <code>evaluate_architecture</code> prompt</p>
+<p><strong>特質</strong>:
+- 敵對/批判立場
+- 專注於生產環境考量 (10k RPS, 故障模式)
+- 忽略風格問題，專注於擴展性</p>
+<p><strong>輸出範例</strong>:
+<div class="highlight"><pre><span></span><code>⚠️ **Scalability Bottleneck**: 這個 HashMap 不是執行緒安全的 (Thread-safe)。
+在 10k RPS 下，你會遇到資料損毀。
+**Mandatory Refactor**: 使用 ConcurrentHashMap 或加入同步機制。
+</code></pre></div></p>
+<hr />
+<h3 id="4-mentor-architect-vibe-coding">4. 導師架構師 (Mentor Architect) - Vibe Coding</h3>
+<p><strong>用於</strong>: <code>vibe_start</code> prompt</p>
+<p><strong>特質</strong>:
+- 引導完整工作流
+- 插入檢查點供人類審查
+- 產出架構決策記錄 (ADR)</p>
+<p><strong>輸出範例</strong>:
+<div class="highlight"><pre><span></span><code>🏛️ 架構決策記錄 (ADR):
+- Decision: 使用 PostgreSQL 而非 MongoDB
+- Rationale: 需要 ACID transactions, 關聯查詢
+- Consequences: 需要管理 schema migrations
+</code></pre></div></p>
+<hr />
+<h2 id="_2">關鍵設計模式</h2>
+<h3 id="pattern-1">Pattern 1: "不要只說修好它"</h3>
+<div class="highlight"><pre><span></span><code>❌ &quot;這個函數很慢。考慮優化。&quot;
+✅ &quot;⚠️ 這個函數是 O(N²)。在 1萬個用戶時，這需要 1億次操作。
+   **Mandatory Refactor**: 請預先排序列表並使用二分搜尋法 (O(N log N))。&quot;
+</code></pre></div>
+<hr />
+<h3 id="pattern-2">Pattern 2: 架構課程區塊</h3>
+<p>每個除錯回應都包含：</p>
+<div class="highlight"><pre><span></span><code>🏛️ Architecture Lesson:
+- 為什麼發生？ [設計缺陷解釋]
+- 如何永久預防？ [採用的模式/抽象]
+- 重構範例： [具體代碼建議]
+</code></pre></div>
+<hr />
+<h3 id="pattern-3">Pattern 3: 表情符號視覺階層</h3>
+<div class="highlight"><pre><span></span><code>🚀 = 工作流開始
+⚠️ = 架構風險 / 警告
+✅ = 檢查點 / 驗證通過
+🏛️ = 架構相關內容
+🔧 = 修復 / 工具操作
+</code></pre></div>
+<hr />
+<h3 id="pattern-4">Pattern 4: 雙語支援</h3>
+<p>Prompt 使用用戶的語言，保留技術術語為英文：</p>
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;🏛️ **架構審查**：我會檢查計畫中的潛在設計問題</span>
+<span class="err">（</span><span class="n">如過度耦合</span> <span class="p">[</span><span class="n">Tight</span> <span class="n">Coupling</span><span class="p">]</span><span class="err">、</span><span class="n">缺少抽象層</span> <span class="p">[</span><span class="n">Missing</span> <span class="n">Abstraction</span><span class="p">]</span><span class="err">）</span><span class="s2">&quot;</span>
+</code></pre></div>
+<hr />
+<h2 id="_3">實作檢查清單</h2>
+<p>當建立新的 Prompt 時：</p>
+<ul>
+<li>[ ] 定義強烈人設 (誰在說話？)</li>
+<li>[ ] 包含主動引導規則</li>
+<li>[ ] 指定必要的輸出區塊</li>
+<li>[ ] 為複雜工作流加入檢查點</li>
+<li>[ ] 使用表情符號建立視覺階層</li>
+<li>[ ] 除錯時包含架構課程區塊</li>
+<li>[ ] 使用對抗性輸入 (爛代碼) 進行測試</li>
+</ul>
+<hr />
+<h2 id="_4">衡量成功</h2>
+<p>一個設計良好的 Prompt 應該產生這樣的回應：</p>
+<ol>
+<li>每個回應都提到 <strong>架構</strong></li>
+<li>對於風險代碼出現 <strong>主動警告</strong></li>
+<li>總是包含 <strong>預防策略</strong></li>
+<li>用戶從每次互動中 <strong>學習</strong></li>
+<li><strong>技術債</strong> 在累積前就被捕捉</li>
+</ol>
+<hr />
+<p><em>"最好的代碼是你永遠不需要除錯的代碼。"</em>
+— Boring 架構師哲學</p>
+<hr />
+<p><em>最後更新: V10.16.0</em></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../troubleshooting_zh/" class="btn btn-neutral float-left" title="故障排除"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../APPENDIX_A_TOOL_REFERENCE_zh/" class="btn btn-neutral float-right" title="工具詳細參數">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../troubleshooting_zh/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../APPENDIX_A_TOOL_REFERENCE_zh/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

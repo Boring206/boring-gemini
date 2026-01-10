@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Token Optimization 實用指南 - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Token Optimization \u5be6\u7528\u6307\u5357";
+        var mkdocs_page_input_path = "features\\token-optimization_zh.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Token Optimization 實用指南</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/features/token-optimization_zh.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="token-optimization">Token Optimization 實用指南</h1>
+<blockquote>
+<p><strong>版本需求</strong>: Boring V10.28+</p>
+</blockquote>
+<p>Boring MCP 引入了全新的 Token 優化機制，旨在解決長上下文視窗帶來的成本與延遲問題。通過智能的 <code>verbosity</code> 控制和 Prompt Caching，我們可以節省高達 <strong>90%</strong> 的 Token 消耗。</p>
+<hr />
+<h2 id="_1">核心概念</h2>
+<h3 id="1-verbosity">1. Verbosity 級別</h3>
+<p>所有主要工具現在都支持 <code>verbosity</code> 參數，提供三個級別的輸出：</p>
+<table>
+<thead>
+<tr>
+<th>級別</th>
+<th>關鍵字</th>
+<th>Token 消耗</th>
+<th>適用場景</th>
+<th>回傳內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>極簡</strong></td>
+<td><code>minimal</code></td>
+<td>~20-100</td>
+<td>自動化掃描、初步檢查</td>
+<td>僅狀態、分數、統計摘要</td>
+</tr>
+<tr>
+<td><strong>標準</strong> (預設)</td>
+<td><code>standard</code></td>
+<td>~500</td>
+<td>日常開發、互動式查詢</td>
+<td>重點摘要、Top 5 問題、關鍵代碼段</td>
+</tr>
+<tr>
+<td><strong>詳細</strong></td>
+<td><code>verbose</code></td>
+<td>~1000+</td>
+<td>深度除錯、完整審查</td>
+<td>完整報告、所有問題列表、修復建議</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-prompt-caching">2. Prompt Caching</h3>
+<p>對於靜態內容（如工具發現 <code>boring_discover</code>），我們加入了特殊的緩存標記：
+<code>&lt;!-- CACHEABLE_CONTENT_START --&gt;</code> ... <code>&lt;!-- CACHEABLE_CONTENT_END --&gt;</code></p>
+<p>這允許 Claude 和 Gemini 的 Prompt Caching 機制自動識別並緩存這些常數內容，大幅降低重複請求的 Token 計費。</p>
+<hr />
+<h2 id="_2">🛠️ 配置指南</h2>
+<h3 id="_3">全局設定 (推薦)</h3>
+<p>你可以通過環境變數全局設定所有工具的預設詳細度。</p>
+<p><strong>Unix/Mac</strong>:
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">BORING_MCP_VERBOSITY</span><span class="o">=</span>minimal
+</code></pre></div></p>
+<p><strong>Windows (PowerShell)</strong>:
+<div class="highlight"><pre><span></span><code><span class="nv">$env:BORING_MCP_VERBOSITY</span><span class="p">=</span><span class="s2">&quot;minimal&quot;</span>
+</code></pre></div></p>
+<p><strong>MCP Config (<code>claude_desktop_config.json</code> 或 <code>smithery.yaml</code>)</strong>:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;boring&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boring-mcp&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;BORING_MCP_VERBOSITY&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;minimal&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;BORING_MCP_PROFILE&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ultra_lite&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="override">單次調用覆寫 (Override)</h3>
+<p>在調用特定工具時，你可以隨時通過參數覆寫全局設定。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 即使全局是 minimal，這裡仍會返回詳細報告</span>
+<span class="n">boring_security_scan</span><span class="p">(</span><span class="n">project_path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="s2">&quot;verbose&quot;</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="_4">📊 工具行為詳解</h2>
+<h3 id="1-boring_security_scan">1. 安全掃描 (<code>boring_security_scan</code>)</h3>
+<ul>
+<li><strong>Minimal</strong>: <code>{"status": "failed", "summary": "Found 3 issues (Secrets: 1, ...)", "hint": "..."}</code></li>
+<li><strong>Standard</strong>: 包含 <code>top_issues</code> (前 5 個問題摘要) 和詳細分類統計。</li>
+<li><strong>Verbose</strong>: 完整包含所有問題的 <code>issues</code> 列表，含檔案路徑、行號、修復建議和完整描述。</li>
+</ul>
+<h3 id="2-rag-boring_rag_search">2. RAG 搜尋 (<code>boring_rag_search</code>)</h3>
+<ul>
+<li><strong>Minimal</strong>: 僅列出檔案名稱和匹配分數 (<code>path/to/file.py (0.95)</code>)。</li>
+<li><strong>Standard</strong>: 顯示匹配的檔案及關鍵的 <strong>代碼片段</strong> (Function/Class 定義)。</li>
+<li><strong>Verbose</strong>: 顯示完整的函數/類別實作內容。</li>
+</ul>
+<h3 id="3-boring_code_review">3. 代碼審查 (<code>boring_code_review</code>)</h3>
+<ul>
+<li><strong>Minimal</strong>: 僅顯示問題總數和嚴重程度分佈 (<code>High: 2, Low: 5</code>)。</li>
+<li><strong>Standard</strong>: 顯示前 10 個問題摘要及 AI 識別的主要模式。</li>
+<li><strong>Verbose</strong>: 列出所有具體問題、修改建議 (diff) 和完整的優化策略。</li>
+</ul>
+<h3 id="4-boring_perf_tips">4. 性能建議 (<code>boring_perf_tips</code>)</h3>
+<ul>
+<li><strong>Minimal</strong>: 僅顯示優化機會數量。</li>
+<li><strong>Standard</strong>: 前 3 個最重要的性能優化建議。</li>
+<li><strong>Verbose</strong>: 完整分析報告，包括複雜度分析和重構建議。</li>
+</ul>
+<hr />
+<h2 id="best-practices">💡 最佳實踐 (Best Practices)</h2>
+<ol>
+<li><strong>日常開發</strong>: 使用 <strong>Standard</strong> (預設)。它提供了足夠的上下文供 LLM 理解，同時保持合理的 Token 用量。</li>
+<li><strong>自動化/CI</strong>: 使用 <strong>Minimal</strong>。如果你是編寫腳本來檢查 CI 狀態，Minimal 模式最快且最省錢。</li>
+<li><strong>遇到困難時</strong>: 切換到 <strong>Verbose</strong>。當 AI 無法根據摘要理解問題時，顯式調用 <code>verbosity="verbose"</code> 提供完整上下文。</li>
+<li><strong>極致省錢</strong>: 配合 <code>BORING_MCP_PROFILE="ultra_lite"</code> 使用。這會隱藏大部分工具描述，結合 <code>verbosity="minimal"</code> 可實現 95% 以上的 Token 節省。</li>
+</ol>
+<hr />
+<h2 id="_5">常見問題</h2>
+<p><strong>Q: Prompt Caching 需要額外配置嗎？</strong>
+A: 不需要。只要你的 LLM 客戶端 (Claude/Gemini) 支援並啟用了 Caching，Boring MCP 輸出的標記會自動生效。</p>
+<p><strong>Q: 為什麼 Minimal 模式沒有返回具體代碼行？</strong>
+A: 為了極致壓縮。Minimal 模式假設你只關心「有沒有問題」或「在哪個檔案」。如果需要具體位置，請使用 Standard。</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

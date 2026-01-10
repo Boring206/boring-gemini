@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>V10 Changelog - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "V10 Changelog";
+        var mkdocs_page_input_path = "changelog\\v10.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">V10 Changelog</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/changelog/v10.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="v10-changelog">V10 Changelog</h1>
+<blockquote>
+<p>All features and improvements in the V10.x series.</p>
+</blockquote>
+<hr />
+<h2 id="10270-notebooklm-optimizations">[10.27.0] - NotebookLM Optimizations 🎯🧠</h2>
+<p><strong>Optimizing for LLM Comprehension &amp; Efficiency</strong>
+- <strong>Theme-Tips Output</strong>: Hierarchical formatting for complex tool results (+1.13% accuracy).
+- <strong>PREPAIR Cache</strong>: Cached pointwise analysis for unbiased pairwise selection.
+- <strong>Dynamic Prompts</strong>: On-demand context embedding for debug/review/analysis.
+- <strong>Verification</strong>: New <code>ReasoningCache</code> unit tests (100% pass).</p>
+<h2 id="10247-skills-ide-experience">[10.24.7] - Skills &amp; IDE Experience 🛠️✨</h2>
+<ul>
+<li><strong>Interactive Skills</strong>: New <code>boring_skills_install</code> tool for one-click installation</li>
+<li><strong>Universal IDE Setup</strong>: Enhanced <code>setup_ide</code> with auto-detected Python paths (Cursor/Neovim/Zed)</li>
+<li><strong>Docs</strong>: Added <code>boring_skills_browse</code> to core tools list</li>
+</ul>
+<h2 id="10246-documentation-harmony">[10.24.6] - Documentation Harmony 📚✨</h2>
+<h3 id="v10246">V10.24.6</h3>
+<p><strong>Documentation &amp; Localization</strong>
+- Comprehensive Prompt/Workflow Reference Docs
+- README Synchronization (En/Zh)
+- Fixed Encoding &amp; LSP Instructions</p>
+<h3 id="v10245">V10.24.5</h3>
+<p><strong>Global Brain</strong>
+- Cross-Project Knowledge Sharing
+- Pattern Export/Import</p>
+<hr />
+<h2 id="v1021x-performance">V10.21.x - Performance</h2>
+<h3 id="v10210-latest">V10.21.0 (Latest)</h3>
+<p><strong>Performance Optimization</strong>
+- Thread-local SQLite Connection Pool
+- SQLite WAL Mode
+- Query Result Caching</p>
+<hr />
+<h2 id="v1020x-vibe-engineer">V10.20.x - Vibe Engineer</h2>
+<h3 id="v10200">V10.20.0</h3>
+<p><strong>Vibe Score &amp; Impact Analysis</strong>
+- Vibe Score (<code>boring_vibe_check</code>)
+- Impact Analysis (<code>boring_impact_check</code>)
+- One-Click Fix Prompt</p>
+<hr />
+<h2 id="v1019x-vibe-coder">V10.19.x - Vibe Coder</h2>
+<h3 id="v10190">V10.19.0</h3>
+<p><strong>Vibe Coder Edition</strong>
+- Vibe Coder Pro Toolset
+- Multi-Language Expansion
+- Interactive Tutorials</p>
+<hr />
+<h2 id="v1018x-ai-feedback-loops">V10.18.x - AI Feedback Loops</h2>
+<h3 id="v10183-latest">V10.18.3 (Latest)</h3>
+<p><strong>RAG Watcher &amp; AutoLearner Integration</strong></p>
+<ul>
+<li><strong>RAGWatcher</strong> - Automatic re-indexing on file changes</li>
+<li><strong>AutoLearner</strong> - Captures error-solution patterns from AI responses</li>
+<li>Continuous knowledge accumulation</li>
+<li>Zero-config integration</li>
+</ul>
+<h3 id="v10182">V10.18.2</h3>
+<ul>
+<li>Bug fixes and stability improvements</li>
+<li>MCP tool parameter refinements</li>
+</ul>
+<h3 id="v10181">V10.18.1</h3>
+<ul>
+<li>Improved Cursor testing compatibility</li>
+<li>Better error messages for missing Git repos</li>
+<li>Dependency updates</li>
+</ul>
+<hr />
+<h2 id="v1017x-security-rag">V10.17.x - Security &amp; RAG</h2>
+<h3 id="v10175">V10.17.5</h3>
+<p><strong>Protected File Tools</strong>
+- <code>boring_write_file</code> and <code>boring_read_file</code> always respect Shadow Mode
+- Guaranteed interception for all file operations</p>
+<h3 id="v10170">V10.17.0</h3>
+<p><strong>Hybrid RAG &amp; Security Guard</strong>
+- Combined Vector + Keyword search
+- Dependency graph expansion for related code
+- Cross-session persistent Shadow Mode
+- Multi-file-type security scanning</p>
+<hr />
+<h2 id="v1016x-speckit-workflows">V10.16.x - SpecKit Workflows</h2>
+<h3 id="v10163">V10.16.3</h3>
+<p><strong>SpecKit Slash Commands</strong>
+- <code>/speckit-constitution</code> - Establish project principles
+- <code>/speckit-clarify</code> - Interactive requirements clarification
+- <code>/speckit-plan</code> - Generate implementation plans
+- <code>/speckit-checklist</code> - Build acceptance criteria
+- <code>/speckit-analyze</code> - Verify cross-artifact consistency</p>
+<h3 id="v10160">V10.16.0</h3>
+<p><strong>MCP Configuration Schema</strong>
+- Rich <code>configSchema</code> in smithery.yaml
+- Environment variable documentation
+- Default value specifications</p>
+<hr />
+<h2 id="v1015x-polyglot-cli">V10.15.x - Polyglot CLI</h2>
+<h3 id="v10150">V10.15.0</h3>
+<p><strong>Boring Polyglot</strong>
+- Zero-API-Key switching between providers
+- Gemini CLI, Claude Code CLI, Ollama support
+- Native protocol awareness
+- Automatic provider detection</p>
+<hr />
+<h2 id="v1014x-multi-agent">V10.14.x - Multi-Agent</h2>
+<h3 id="v10140">V10.14.0</h3>
+<p><strong>Multi-Agent Workflows</strong>
+- <code>plan_and_implement</code> - End-to-end development
+- <code>review_and_fix</code> - Code review with auto-fix
+- <code>debug_and_test</code> - Debugging with test generation
+- Agent orchestration framework</p>
+<hr />
+<h2 id="v1013x-performance">V10.13.x - Performance</h2>
+<h3 id="v10130">V10.13.0</h3>
+<p><strong>Parallel Verification</strong>
+- ThreadPoolExecutor for concurrent checks
+- Up to 4x speedup on large projects
+- Incremental file change detection
+- Smart caching system</p>
+<hr />
+<h2 id="v1012x-quality">V10.12.x - Quality</h2>
+<h3 id="v10120">V10.12.0</h3>
+<p><strong>LLM-as-Judge Evaluation</strong>
+- DIRECT, PAIRWISE, RUBRIC evaluation modes
+- Bias mitigation techniques
+- Customizable rubrics
+- Quality trend tracking</p>
+<hr />
+<h2 id="v1011x-knowledge">V10.11.x - Knowledge</h2>
+<h3 id="v10110">V10.11.0</h3>
+<p><strong>Knowledge Base (.boring_brain)</strong>
+- Persistent storage for learned patterns
+- Workflow adaptations
+- Evaluation rubrics
+- Cross-project knowledge sharing</p>
+<hr />
+<h2 id="migration-guide">Migration Guide</h2>
+<h3 id="from-v9x-to-v10x">From V9.x to V10.x</h3>
+<ol>
+<li>
+<p><strong>Update installation</strong>:
+   <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>boring-aicoding
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>New optional dependencies</strong>:
+   <div class="highlight"><pre><span></span><code><span class="c1"># For RAG features</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;boring-aicoding[mcp]&quot;</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Shadow Mode is now default</strong>:</p>
+</li>
+<li>Set <code>SHADOW_MODE_LEVEL=DISABLED</code> to opt-out</li>
+<li>
+<p>Recommended: Keep ENABLED for safety</p>
+</li>
+<li>
+<p><strong>New directory structure</strong>:
+   <div class="highlight"><pre><span></span><code>~/.boring_brain/     # Global knowledge
+.boring_memory/      # Project memory
+.boring_cache/       # Verification cache
+</code></pre></div></p>
+</li>
+</ol>
+<hr />
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="../releases/">Release Notes</a> - Detailed release notes</li>
+<li><a href="../features/">Features</a> - Feature documentation</li>
+<li><a href="../../features/mcp-tools/">MCP Tools</a> - Tool reference</li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

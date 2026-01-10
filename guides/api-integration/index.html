@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Python API Integration Guide (V10.26) - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Python API Integration Guide (V10.26)";
+        var mkdocs_page_input_path = "guides\\api-integration.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Python API Integration Guide (V10.26)</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/guides/api-integration.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="python-api-integration-guide-v1026">Python API Integration Guide (V10.26)</h1>
+<blockquote>
+<p>Embed Boring's Intelligence, Judge, and Shadow Mode directly into your Python apps.</p>
+</blockquote>
+<p>Boring-Gemini is not just a CLI tool; it's a modular Python library. You can import its core modules into your own AI applications or automation scripts.</p>
+<h2 id="installation">📦 Installation</h2>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>boring-aicoding
+</code></pre></div>
+<h2 id="intelligence-api-brain-memory">🧠 Intelligence API (Brain &amp; Memory)</h2>
+<p>The <code>boring.intelligence</code> module provides knowledge management, pattern learning, and vector memory capabilities.</p>
+<h3 id="1-knowledge-base-management-brainmanager">1. Knowledge Base Management (BrainManager)</h3>
+<p>Use <code>BrainManager</code> to access or update long-term memory and learned patterns in <code>.boring/brain</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">boring.intelligence.brain_manager</span> <span class="kn">import</span> <span class="n">BrainManager</span><span class="p">,</span> <span class="n">LearnedPattern</span>
+
+<span class="c1"># Initialize (automatically loads .boring/brain)</span>
+<span class="n">brain</span> <span class="o">=</span> <span class="n">BrainManager</span><span class="p">(</span><span class="n">project_path</span><span class="o">=</span><span class="s2">&quot;./my_project&quot;</span><span class="p">)</span>
+
+<span class="c1"># 1. Query learned patterns (Pattern Mining)</span>
+<span class="n">patterns</span> <span class="o">=</span> <span class="n">brain</span><span class="o">.</span><span class="n">get_patterns</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="s2">&quot;error_handling&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pattern [</span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">confidence</span><span class="si">}</span><span class="s2">]: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2. Record new knowledge</span>
+<span class="n">new_pattern</span> <span class="o">=</span> <span class="n">LearnedPattern</span><span class="p">(</span>
+    <span class="n">trigger</span><span class="o">=</span><span class="s2">&quot;ConnectionError&quot;</span><span class="p">,</span>
+    <span class="n">solution</span><span class="o">=</span><span class="s2">&quot;Implement exponential backoff in retry logic&quot;</span><span class="p">,</span>
+    <span class="n">confidence</span><span class="o">=</span><span class="mf">0.9</span>
+<span class="p">)</span>
+<span class="n">brain</span><span class="o">.</span><span class="n">learn_pattern</span><span class="p">(</span><span class="n">new_pattern</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="2-vector-memory-vectormemory">2. Vector Memory (VectorMemory)</h3>
+<p>If your environment supports ChromaDB, use <code>VectorMemory</code> for semantic search.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">boring.intelligence.vector_memory</span> <span class="kn">import</span> <span class="n">VectorMemory</span>
+
+<span class="n">memory</span> <span class="o">=</span> <span class="n">VectorMemory</span><span class="p">(</span><span class="n">persist_path</span><span class="o">=</span><span class="s2">&quot;./.boring/brain/vector_store&quot;</span><span class="p">)</span>
+
+<span class="c1"># Store experience</span>
+<span class="n">memory</span><span class="o">.</span><span class="n">add_experience</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Use Context Managers for file I/O to ensure closure&quot;</span><span class="p">,</span>
+    <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tag&quot;</span><span class="p">:</span> <span class="s2">&quot;best_practice&quot;</span><span class="p">,</span> <span class="s2">&quot;lang&quot;</span><span class="p">:</span> <span class="s2">&quot;python&quot;</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># Semantic Search (RAG)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">memory</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;safe file handling&quot;</span><span class="p">,</span> <span class="n">n_results</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found: </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="judge-api-evaluation-rubrics">⚖️ Judge API (Evaluation &amp; Rubrics)</h2>
+<p>The <code>boring.judge</code> module provides a structured evaluation framework, perfect for controlling LLM output quality.</p>
+<h3 id="defining-rubrics">Defining Rubrics</h3>
+<p>You can define your own <code>Rubric</code> and apply it to evaluation processes.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">boring.judge.rubrics</span> <span class="kn">import</span> <span class="n">Rubric</span><span class="p">,</span> <span class="n">Criterion</span>
+
+<span class="c1"># 1. Define Rubric</span>
+<span class="n">security_rubric</span> <span class="o">=</span> <span class="n">Rubric</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;API Security&quot;</span><span class="p">,</span>
+    <span class="n">criteria</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">Criterion</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Auth&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Standard OIDC/OAuth2 usage&quot;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">1.0</span><span class="p">),</span>
+        <span class="n">Criterion</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Validation&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Input sanitization&quot;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">0.8</span><span class="p">),</span>
+        <span class="n">Criterion</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Logging&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;No secrets in logs&quot;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">1.0</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># 2. Export to Markdown (for LLM context)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">security_rubric</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">())</span>
+
+<span class="c1"># 3. Programmatic scoring usage</span>
+<span class="c1"># score = evaluator.evaluate(code, security_rubric)</span>
+</code></pre></div>
+<hr />
+<h2 id="loop-api-workflow-security">🛡️ Loop API (Workflow &amp; Security)</h2>
+<p>The <code>boring.loop</code> module provides security guards and atomic operations, ideal for building robust automation scripts.</p>
+<h3 id="1-shadow-mode-protection-shadowmodeguard">1. Shadow Mode Protection (ShadowModeGuard)</h3>
+<p>Wrap your scripts in Shadow Mode to prevent accidental destructive operations.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">boring.loop.shadow_mode</span> <span class="kn">import</span> <span class="n">ShadowModeGuard</span><span class="p">,</span> <span class="n">OperationSeverity</span><span class="p">,</span> <span class="n">ShadowModeLevel</span>
+
+<span class="c1"># Initialize Guard (Strict Mode)</span>
+<span class="n">guard</span> <span class="o">=</span> <span class="n">ShadowModeGuard</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">ShadowModeLevel</span><span class="o">.</span><span class="n">STRICT</span><span class="p">)</span>
+
+<span class="c1"># Attempt operation</span>
+<span class="k">def</span> <span class="nf">delete_database</span><span class="p">():</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">guard</span><span class="o">.</span><span class="n">create_operation</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">target</span><span class="o">=</span><span class="s2">&quot;./data.db&quot;</span><span class="p">,</span>
+        <span class="n">severity</span><span class="o">=</span><span class="n">OperationSeverity</span><span class="o">.</span><span class="n">CRITICAL</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">guard</span><span class="o">.</span><span class="n">allow</span><span class="p">(</span><span class="n">op</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Deleting...&quot;</span><span class="p">)</span>
+        <span class="c1"># os.remove(&quot;./data.db&quot;)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Operation blocked: </span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">delete_database</span><span class="p">()</span>
+<span class="c1"># Output: Operation blocked: High severity requires approval in STRICT mode</span>
+</code></pre></div>
+<h3 id="2-atomic-transactions-transactionmanager">2. Atomic Transactions (TransactionManager)</h3>
+<p>Ensure a set of file operations either all succeed or all roll back.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">boring.loop.transactions</span> <span class="kn">import</span> <span class="n">TransactionManager</span>
+
+<span class="n">tx</span> <span class="o">=</span> <span class="n">TransactionManager</span><span class="p">(</span><span class="n">project_path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">tx</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">transaction</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Operations are staged first</span>
+        <span class="n">transaction</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;config.py&quot;</span><span class="p">,</span> <span class="s2">&quot;DEBUG = False&quot;</span><span class="p">)</span>
+        <span class="n">transaction</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;src/main.py&quot;</span><span class="p">,</span> <span class="s2">&quot;import config&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Commit (Atomic Write)</span>
+        <span class="n">transaction</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Update successful&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># Auto-rollback (No files modified)</span>
+        <span class="n">transaction</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Update failed, rolled back: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

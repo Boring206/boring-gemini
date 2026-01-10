@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>評估指標指南 (Evaluation Metrics Guide) - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u8a55\u4f30\u6307\u6a19\u6307\u5357 (Evaluation Metrics Guide)";
+        var mkdocs_page_input_path = "guides\\evaluation-metrics.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">評估指標指南 (Evaluation Metrics Guide)</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/guides/evaluation-metrics.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="evaluation-metrics-guide">評估指標指南 (Evaluation Metrics Guide)</h1>
+<p>boring-gemini V10.25 新增的 LLM-as-a-Judge 評估系統，提供完整的統計指標來驗證評估品質。</p>
+<hr />
+<h2 id="_1">📊 核心指標總覽</h2>
+<table>
+<thead>
+<tr>
+<th>指標</th>
+<th>測量什麼</th>
+<th>適用場景</th>
+<th>範圍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cohen's κ (Kappa)</strong></td>
+<td>兩個評審者的<strong>一致性</strong></td>
+<td>AI 評分 vs 人類評審</td>
+<td>-1 ~ 1</td>
+</tr>
+<tr>
+<td><strong>Spearman's ρ (Rho)</strong></td>
+<td>兩組排名的<strong>相關性</strong></td>
+<td>分數的排序是否一致</td>
+<td>-1 ~ 1</td>
+</tr>
+<tr>
+<td><strong>F1 Score</strong></td>
+<td>分類的<strong>準確度</strong></td>
+<td>通過/不通過 等二分類</td>
+<td>0 ~ 1</td>
+</tr>
+<tr>
+<td><strong>Position Consistency</strong></td>
+<td>成對比較的<strong>穩定性</strong></td>
+<td>A vs B 比較是否有偏見</td>
+<td>0 ~ 1</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_2">🎯 詳細說明</h2>
+<h3 id="1-cohens-kappa">1️⃣ Cohen's Kappa (一致性指標)</h3>
+<p><strong>問題</strong>：「AI 評分跟人類專家一致嗎？」</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">boring.judge.metrics</span> <span class="kn">import</span> <span class="n">cohens_kappa</span>
+
+<span class="n">human_scores</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">ai_scores</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>  <span class="c1"># 第3個不同 (5 vs 4)</span>
+
+<span class="n">kappa</span> <span class="o">=</span> <span class="n">cohens_kappa</span><span class="p">(</span><span class="n">ai_scores</span><span class="p">,</span> <span class="n">human_scores</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Kappa: </span><span class="si">{</span><span class="n">kappa</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 0.71 - 高度一致</span>
+</code></pre></div>
+<p><strong>解讀標準</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>κ 值</th>
+<th>解讀</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&gt; 0.8</td>
+<td>幾乎完美一致</td>
+</tr>
+<tr>
+<td>0.6-0.8</td>
+<td><strong>高度一致</strong> ✅</td>
+</tr>
+<tr>
+<td>0.4-0.6</td>
+<td>中等一致</td>
+</tr>
+<tr>
+<td>0.2-0.4</td>
+<td>一般一致</td>
+</tr>
+<tr>
+<td>&lt; 0.2</td>
+<td>微弱一致</td>
+</tr>
+</tbody>
+</table>
+<p><strong>用途</strong>：驗證 AI 評估系統是否可以<strong>取代人類審查</strong></p>
+<hr />
+<h3 id="2-spearmans">2️⃣ Spearman's ρ (相關性指標)</h3>
+<p><strong>問題</strong>：「AI 排名順序跟人類一樣嗎？」</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">boring.judge.metrics</span> <span class="kn">import</span> <span class="n">spearmans_rho</span>
+
+<span class="n">human_ranks</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="n">ai_ranks</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>  <span class="c1"># 排名完全一致</span>
+
+<span class="n">rho</span><span class="p">,</span> <span class="n">p_value</span> <span class="o">=</span> <span class="n">spearmans_rho</span><span class="p">(</span><span class="n">ai_ranks</span><span class="p">,</span> <span class="n">human_ranks</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Spearman ρ: </span><span class="si">{</span><span class="n">rho</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 1.0 - 完美相關</span>
+</code></pre></div>
+<p><strong>解讀標準</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>ρ 值</th>
+<th>解讀</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&gt; 0.9</td>
+<td><strong>強相關</strong> ✅</td>
+</tr>
+<tr>
+<td>0.7-0.9</td>
+<td>中相關</td>
+</tr>
+<tr>
+<td>0.5-0.7</td>
+<td>弱相關</td>
+</tr>
+<tr>
+<td>&lt; 0.5</td>
+<td>無顯著相關</td>
+</tr>
+</tbody>
+</table>
+<p><strong>用途</strong>：即使分數數值不同，驗證<strong>排序是否正確</strong></p>
+<blockquote>
+<p>[!TIP]
+Spearman 適合序數資料（如 1-5 分評分），因為它只看排名順序，不受分數絕對值影響。</p>
+</blockquote>
+<hr />
+<h3 id="3-f1-score">3️⃣ F1 Score (分類準確度)</h3>
+<p><strong>問題</strong>：「AI 判斷通過/不通過準確嗎？」</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">boring.judge.metrics</span> <span class="kn">import</span> <span class="n">f1_score</span>
+
+<span class="n">actual</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>    <span class="c1"># 1=通過, 0=不通過</span>
+<span class="n">predicted</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># AI 預測</span>
+
+<span class="n">f1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">predicted</span><span class="p">,</span> <span class="n">actual</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F1: </span><span class="si">{</span><span class="n">f1</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 0.80</span>
+</code></pre></div>
+<p><strong>公式</strong>：</p>
+<div class="highlight"><pre><span></span><code>F1 = 2 × (Precision × Recall) / (Precision + Recall)
+</code></pre></div>
+<p><strong>用途</strong>：評估<strong>二分類判斷</strong>的準確性</p>
+<hr />
+<h3 id="4-position-consistency">4️⃣ Position Consistency (位置一致性)</h3>
+<p><strong>問題</strong>：「成對比較有沒有位置偏見？」</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">boring.judge.metrics</span> <span class="kn">import</span> <span class="n">pairwise_metrics</span>
+
+<span class="n">comparisons</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;winner&quot;</span><span class="p">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;position_consistent&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;winner&quot;</span><span class="p">:</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;position_consistent&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;winner&quot;</span><span class="p">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;position_consistent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>  <span class="c1"># 位置不一致</span>
+<span class="p">]</span>
+
+<span class="n">metrics</span> <span class="o">=</span> <span class="n">pairwise_metrics</span><span class="p">(</span><span class="n">comparisons</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Position Consistency: </span><span class="si">{</span><span class="n">metrics</span><span class="o">.</span><span class="n">position_consistency</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 67%</span>
+</code></pre></div>
+<p><strong>用途</strong>：檢測<strong>位置偏見</strong>（第一個選項被偏好的傾向）</p>
+<hr />
+<h2 id="_3">📈 何時使用哪個指標？</h2>
+<table>
+<thead>
+<tr>
+<th>你的評估任務</th>
+<th>推薦指標</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>給程式碼打 1-5 分</td>
+<td><strong>Kappa</strong> + <strong>Spearman</strong></td>
+</tr>
+<tr>
+<td>判斷程式碼 好/壞</td>
+<td><strong>F1 Score</strong></td>
+</tr>
+<tr>
+<td>比較兩段程式碼誰更好</td>
+<td><strong>Position Consistency</strong></td>
+</tr>
+<tr>
+<td>檢查 AI 評分有沒有偏見</td>
+<td><strong>Bias Report</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="mcp">🔧 MCP 工具使用</h2>
+<h3 id="_4">查看評估指標</h3>
+<div class="highlight"><pre><span></span><code>boring_evaluation_metrics
+</code></pre></div>
+<h3 id="_5">查看偏見報告</h3>
+<div class="highlight"><pre><span></span><code>boring_bias_report
+</code></pre></div>
+<h3 id="_6">自然語言觸發</h3>
+<div class="highlight"><pre><span></span><code>boring &quot;show evaluation metrics&quot;
+boring &quot;評估指標&quot;
+boring &quot;show me the bias report&quot;
+boring &quot;查看偏見報告&quot;
+</code></pre></div>
+<hr />
+<h2 id="_7">📚 進階資源</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2306.05685">LLM-as-a-Judge 論文</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Cohen%27s_kappa">Cohen's Kappa 詳解</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient">Spearman 相關係數</a></li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Global Brain - Cross-Project Knowledge Sharing - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Global Brain - Cross-Project Knowledge Sharing";
+        var mkdocs_page_input_path = "features\\global-brain.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Global Brain - Cross-Project Knowledge Sharing</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/features/global-brain.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="global-brain-cross-project-knowledge-sharing">Global Brain - Cross-Project Knowledge Sharing</h1>
+<h2 id="overview">🌐 Overview</h2>
+<p><strong>Global Brain</strong> is Boring's cross-project knowledge sharing system, allowing you to share best practices, error solutions, and code patterns across different projects.</p>
+<h3 id="core-concepts">Core Concepts</h3>
+<ul>
+<li><strong>Project Brain</strong> (<code>.boring/brain/</code>): Each project's own knowledge base</li>
+<li><strong>Global Brain</strong> (<code>~/.boring/brain/</code>): Global knowledge base across all projects</li>
+<li><strong>Knowledge Flow</strong>: Project → Global → Other Projects</li>
+</ul>
+<h2 id="storage-location">📂 Storage Location</h2>
+<p>Global Brain is stored in your <strong>user home directory</strong>:</p>
+<ul>
+<li><strong>Windows</strong>: <code>C:\Users\{YourName}\.boring/brain\global_patterns.json</code></li>
+<li><strong>Linux/Mac</strong>: <code>/home/{username}/.boring/brain/global_patterns.json</code></li>
+</ul>
+<p><strong>Benefits</strong>: 
+- ✅ Independent from projects, won't be accidentally deleted
+- ✅ Not managed by Git, protects privacy
+- ✅ Automatically shared across all projects</p>
+<h2 id="available-tools">🧰 Available Tools</h2>
+<h3 id="1-boring_global_export">1. <code>boring_global_export</code></h3>
+<p><strong>Export</strong> high-quality patterns from current project to Global Brain</p>
+<div class="highlight"><pre><span></span><code><span class="n">boring_global_export</span><span class="p">(</span><span class="n">min_success_count</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>Parameters</strong>:
+- <code>min_success_count</code>: Minimum success count (default: 2)
+  - Only export verified patterns
+  - Higher = better quality</p>
+<p><strong>Use Cases</strong>:
+- ✅ Project ending, want to preserve knowledge
+- ✅ Solved important bug, want to share with other projects
+- ✅ Accumulated sufficient experience, export best practices</p>
+<hr />
+<h3 id="2-boring_global_import">2. <code>boring_global_import</code></h3>
+<p><strong>Import</strong> patterns from Global Brain to current project</p>
+<div class="highlight"><pre><span></span><code><span class="n">boring_global_import</span><span class="p">()</span>  <span class="c1"># Import all types</span>
+<span class="n">boring_global_import</span><span class="p">(</span><span class="n">pattern_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;error_solution&quot;</span><span class="p">])</span>  <span class="c1"># Only error solutions</span>
+</code></pre></div>
+<p><strong>Parameters</strong>:
+- <code>pattern_types</code>: Filter by type (optional)
+  - <code>["error_solution"]</code> - Only error solutions
+  - <code>["code_style", "performance"]</code> - Multiple types</p>
+<p><strong>Use Cases</strong>:
+- ✅ Starting new project, want quick experience boost
+- ✅ Facing similar issues, import known solutions
+- ✅ Sync best practices across multiple projects</p>
+<hr />
+<h3 id="3-boring_global_list">3. <code>boring_global_list</code></h3>
+<p>View all knowledge in Global Brain</p>
+<div class="highlight"><pre><span></span><code><span class="n">boring_global_list</span><span class="p">()</span>
+</code></pre></div>
+<p><strong>Returns</strong>:
+- Total pattern count
+- Type distribution (error_solution, code_style, etc.)
+- Each pattern's source project and success count</p>
+<p><strong>Use Cases</strong>:
+- ✅ Want to know what's in Global Brain
+- ✅ Decide which project to export from
+- ✅ Understand accumulated experience</p>
+<h2 id="typical-workflows">🎯 Typical Workflows</h2>
+<h3 id="scenario-1-share-knowledge-from-old-to-new-project">Scenario 1: Share Knowledge from Old to New Project</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># In old project (Project A)</span>
+<span class="nb">cd</span><span class="w"> </span>~/project-a
+boring_global_export<span class="o">(</span><span class="nv">min_success_count</span><span class="o">=</span><span class="m">3</span><span class="o">)</span><span class="w">  </span><span class="c1"># Export quality patterns</span>
+
+<span class="c1"># Switch to new project (Project B)</span>
+<span class="nb">cd</span><span class="w"> </span>~/project-b
+boring_global_import<span class="o">()</span><span class="w">  </span><span class="c1"># Import all knowledge</span>
+</code></pre></div>
+<h3 id="scenario-2-team-best-practices-sharing">Scenario 2: Team Best Practices Sharing</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Team member A exports from their project</span>
+boring_global_export<span class="o">(</span><span class="nv">min_success_count</span><span class="o">=</span><span class="m">5</span><span class="o">)</span><span class="w">  </span><span class="c1"># Only best patterns</span>
+
+<span class="c1"># Team member B imports to their project</span>
+boring_global_import<span class="o">(</span><span class="nv">pattern_types</span><span class="o">=[</span><span class="s2">&quot;code_style&quot;</span>,<span class="w"> </span><span class="s2">&quot;performance&quot;</span><span class="o">])</span>
+</code></pre></div>
+<h3 id="scenario-3-personal-knowledge-base">Scenario 3: Personal Knowledge Base</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Regular knowledge review</span>
+boring_global_list<span class="o">()</span>
+
+<span class="c1"># Export from multiple projects</span>
+boring_global_export<span class="o">()</span><span class="w">  </span><span class="c1"># Run in each project</span>
+
+<span class="c1"># One-click import for new projects</span>
+boring_global_import<span class="o">()</span>
+</code></pre></div>
+<h2 id="pattern-types">📊 Pattern Types</h2>
+<p>Global Brain supports these pattern types:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error_solution</code></td>
+<td>Error solutions</td>
+<td>"How to fix ModuleNotFoundError"</td>
+</tr>
+<tr>
+<td><code>code_style</code></td>
+<td>Code style preferences</td>
+<td>"Use dataclass instead of dict"</td>
+</tr>
+<tr>
+<td><code>performance</code></td>
+<td>Performance optimizations</td>
+<td>"Use LRU cache for queries"</td>
+</tr>
+<tr>
+<td><code>security</code></td>
+<td>Security best practices</td>
+<td>"Never hardcode API keys"</td>
+</tr>
+<tr>
+<td><code>workflow_tip</code></td>
+<td>Workflow suggestions</td>
+<td>"Write tests before code"</td>
+</tr>
+</tbody>
+</table>
+<h2 id="advanced-usage">⚙️ Advanced Usage</h2>
+<h3 id="selective-import">Selective Import</h3>
+<p>Import only specific knowledge types:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Only error solutions</span>
+<span class="n">boring_global_import</span><span class="p">(</span><span class="n">pattern_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;error_solution&quot;</span><span class="p">])</span>
+
+<span class="c1"># Style and performance</span>
+<span class="n">boring_global_import</span><span class="p">(</span><span class="n">pattern_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;code_style&quot;</span><span class="p">,</span> <span class="s2">&quot;performance&quot;</span><span class="p">])</span>
+</code></pre></div>
+<h3 id="quality-control">Quality Control</h3>
+<p>Export only well-verified patterns:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Only patterns with 5+ successes</span>
+<span class="n">boring_global_export</span><span class="p">(</span><span class="n">min_success_count</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="view-details">View Details</h3>
+<div class="highlight"><pre><span></span><code><span class="n">result</span> <span class="o">=</span> <span class="n">boring_global_list</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;patterns&quot;</span><span class="p">])</span>  <span class="c1"># Detailed info for each pattern</span>
+</code></pre></div>
+<h2 id="privacy-security">🔒 Privacy &amp; Security</h2>
+<h3 id="auto-filtering">Auto-Filtering</h3>
+<ul>
+<li>❌ <strong>Not exported</strong>: API Keys, passwords, sensitive paths</li>
+<li>✅ <strong>Only exported</strong>: Abstract patterns and solutions</li>
+</ul>
+<h3 id="local-storage">Local Storage</h3>
+<ul>
+<li>Data stored only on your computer</li>
+<li>No cloud upload</li>
+<li>No automatic sharing with others</li>
+</ul>
+<h3 id="manual-sharing">Manual Sharing</h3>
+<p>To share with team:</p>
+<ol>
+<li>Copy <code>~/.boring/brain/global_patterns.json</code></li>
+<li>Share through secure channel</li>
+<li>Colleagues place in their <code>~/.boring/brain/</code> directory</li>
+</ol>
+<h2 id="best-practices">💡 Best Practices</h2>
+<h3 id="do">✅ Do</h3>
+<ul>
+<li>Regularly export knowledge from completed projects</li>
+<li>Import global knowledge when starting new projects</li>
+<li>Use <code>min_success_count</code> to ensure quality</li>
+<li>Regularly review Global Brain content</li>
+</ul>
+<h3 id="dont">❌ Don't</h3>
+<ul>
+<li>Export low-quality, unverified patterns</li>
+<li>Commit <code>.boring/brain/</code> to Git</li>
+<li>Import all patterns without reviewing</li>
+</ul>
+<h2 id="faq">🐛 FAQ</h2>
+<h3 id="q-global-brain-is-empty">Q: Global Brain is empty?</h3>
+<p><strong>A</strong>: Run <code>boring_global_export</code> from any project first</p>
+<h3 id="q-no-changes-after-import">Q: No changes after import?</h3>
+<p><strong>A</strong>: Use <code>boring_brain_summary</code> to view project Brain</p>
+<h3 id="q-how-to-delete-a-pattern">Q: How to delete a pattern?</h3>
+<p><strong>A</strong>: Manually edit <code>~/.boring/brain/global_patterns.json</code></p>
+<h3 id="q-can-teams-share">Q: Can teams share?</h3>
+<p><strong>A</strong>: Yes, but requires manual JSON file copying</p>
+<h2 id="related-tools">🔗 Related Tools</h2>
+<ul>
+<li><code>boring_learn</code> - Learn patterns from current project</li>
+<li><code>boring_brain_summary</code> - View project knowledge base</li>
+<li><code>boring_brain_health</code> - Brain health report</li>
+<li><code>boring_pattern_stats</code> - Pattern statistics</li>
+</ul>
+<h2 id="references">📚 References</h2>
+<ul>
+<li><a href="knowledge.md">Knowledge System Guide</a></li>
+<li><a href="../api/brain_manager.md">Brain Manager API</a></li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>知識系統 - Brain、RAG 與 Patterns - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u77e5\u8b58\u7cfb\u7d71 - Brain\u3001RAG \u8207 Patterns";
+        var mkdocs_page_input_path = "guides\\knowledge-system_zh.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">知識系統 - Brain、RAG 與 Patterns</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/guides/knowledge-system_zh.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="-brainrag-patterns">知識系統 - Brain、RAG 與 Patterns</h1>
+<blockquote>
+<p>Boring 的智能記憶系統，跨專案學習與記憶。</p>
+</blockquote>
+<hr />
+<h2 id="_1">🧠 架構概覽</h2>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────┐
+│                    知識系統                              │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  ~/.boring/brain/          （全域 - 所有專案）           │
+│  ├── patterns/             學習的錯誤解決方案            │
+│  ├── rubrics/              評估標準                     │
+│  ├── shadow_config.json    影子模式設定                 │
+│  └── quality_history.json  分數趨勢                     │
+│                                                         │
+│  .boring/memory/           （專案專屬）                  │
+│  ├── sessions/             會話歷史                     │
+│  ├── db.sqlite             結構化記憶                   │
+│  └── rag_index/            Web/Doc 嵌入向量             │
+│                                                         │
+│  .boring/cache/            （暫時性 - 快取）             │
+│  └── rag_cache/            代碼嵌入向量                 │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+</code></pre></div>
+<hr />
+<h2 id="_2">📁 目錄參考</h2>
+<table>
+<thead>
+<tr>
+<th>目錄</th>
+<th>範圍</th>
+<th>用途</th>
+<th>遷移方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>~/.boring/brain/</code></td>
+<td>全域</td>
+<td>跨專案知識</td>
+<td>複製到新機器</td>
+</tr>
+<tr>
+<td><code>.boring/memory/</code></td>
+<td>專案</td>
+<td>專案專屬上下文</td>
+<td>提交到 repo</td>
+</tr>
+<tr>
+<td><code>.boring/cache/</code></td>
+<td>暫時</td>
+<td>短暫快取</td>
+<td>自動重建</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="boringbrain">🧠 .boring/brain（全域知識）</h2>
+<h3 id="_3">位置</h3>
+<ul>
+<li><strong>Linux/macOS</strong>：<code>~/.boring/brain/</code></li>
+<li><strong>Windows</strong>：<code>C:\Users\&lt;username&gt;\.boring\brain\</code></li>
+</ul>
+<h3 id="_4">內容</h3>
+<h4 id="patterns-">patterns/ - 學習的模式</h4>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;error_patterns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ModuleNotFoundError: No module named &#39;foo&#39;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;solution&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pip install foo&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;confidence&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;occurrences&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>AI 從你的錯誤-解決方案配對中學習，並自動應用。</p>
+<h4 id="rubrics-">rubrics/ - 評估標準</h4>
+<div class="highlight"><pre><span></span><code><span class="gh"># production-ready.md</span>
+<span class="k">- [ ]</span> 所有測試通過（100%）
+<span class="k">- [ ]</span> 無安全漏洞
+<span class="k">- [ ]</span> 文檔完整
+<span class="k">- [ ]</span> 效能已基準測試
+</code></pre></div>
+<p>用於 <code>boring_evaluate</code> 的自訂標準。</p>
+<h4 id="shadow_configjson-">shadow_config.json - 安全設定</h4>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;STRICT&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;auto_approve_patterns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*.md&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;docs/*&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;always_block_patterns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*.env&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;secrets/*&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>跨會話持久保存。</p>
+<h3 id="_5">遷移</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 備份</span>
+cp<span class="w"> </span>-r<span class="w"> </span>~/.boring/brain<span class="w"> </span>~/boring_brain_backup
+
+<span class="c1"># 在新機器上還原</span>
+cp<span class="w"> </span>-r<span class="w"> </span>~/boring_brain_backup<span class="w"> </span>~/.boring/brain
+</code></pre></div>
+<hr />
+<h2 id="boringmemory">📂 .boring/memory（專案知識）</h2>
+<h3 id="_6">位置</h3>
+<ul>
+<li>在你的專案根目錄：<code>.boring/memory/</code></li>
+</ul>
+<h3 id="_7">內容</h3>
+<h4 id="dbsqlite-">db.sqlite - 結構化資料</h4>
+<p>包含會話日誌、工具輸出與專案上下文。</p>
+<h4 id="sessions-">sessions/ - 會話歷史</h4>
+<p>儲存原始對話日誌以供上下文還原。</p>
+<h3 id="_8">最佳實踐</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 提交到 repo 與團隊分享</span>
+git<span class="w"> </span>add<span class="w"> </span>.boring/memory/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;docs: 專案上下文和決策&quot;</span>
+</code></pre></div>
+<hr />
+<h2 id="rag">🔍 RAG 系統</h2>
+<h3 id="_9">運作原理</h3>
+<div class="highlight"><pre><span></span><code>┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│   你的代碼   │ ──▶ │    索引器    │ ──▶ │  向量資料庫  │
+│  (src/*.py)  │     │  (嵌入向量)  │     │  (ChromaDB)  │
+└──────────────┘     └──────────────┘     └──────────────┘
+                                                 │
+                                                 ▼
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│     結果     │ ◀── │    排序器    │ ◀── │  混合搜尋    │
+│  (top_k=10)  │     │  (重新排序)  │     │ 向量+BM25    │
+└──────────────┘     └──────────────┘     └──────────────┘
+</code></pre></div>
+<h3 id="_10">功能</h3>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>混合搜尋</strong></td>
+<td>向量（語意）+ BM25（關鍵字）</td>
+</tr>
+<tr>
+<td><strong>依賴擴展</strong></td>
+<td>透過 import 圖包含相關檔案</td>
+</tr>
+<tr>
+<td><strong>增量索引</strong></td>
+<td>只重新索引變更的檔案</td>
+</tr>
+<tr>
+<td><strong>自動更新</strong></td>
+<td>RAGWatcher 偵測檔案變更（V10.18.3+）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_11">命令</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 建立索引</span>
+<span class="n">boring_rag_index</span><span class="p">(</span><span class="n">project_path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># 搜尋</span>
+<span class="n">boring_rag_search</span><span class="p">(</span>
+    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;authentication middleware&quot;</span><span class="p">,</span>
+    <span class="n">top_k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">expand_deps</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># 重新載入</span>
+<span class="n">boring_rag_reload</span><span class="p">(</span><span class="n">project_path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="_12">儲存</h3>
+<ul>
+<li><strong>索引位置</strong>：<code>.boring/memory/rag_index/</code></li>
+<li><strong>大小</strong>：每 1000 個檔案約 1MB</li>
+<li><strong>重建</strong>：如果缺失則自動建立</li>
+</ul>
+<hr />
+<h2 id="patterns-autolearner-active-recall">📚 Patterns, AutoLearner 與 Active Recall</h2>
+<h3 id="active-recall">認知反射 (Active Recall)</h3>
+<p>從 <strong>V10.31</strong> 開始，Agent 具備了 <strong>Active Recall（主動回想）</strong> 能力。當遇到錯誤（如 <code>pytest</code> 失敗）時，它不會只是「重試」，而是會查詢全域 Brain 尋找類似的過去錯誤並檢索已驗證的解決方案。</p>
+<p><strong>流程:</strong>
+1.  <strong>錯誤發生</strong>: Agent 捕捉到 <code>ModuleNotFoundError</code>。
+2.  <strong>反射查詢</strong>: Agent 呼叫 <code>boring_suggest_next(error_message="...")</code>。
+3.  <strong>大腦檢索</strong>: Brain 掃描 <code>patterns.json</code> 尋找語意匹配。
+4.  <strong>解決方案注入</strong>: 如果找到高信心的匹配（如 95%），解決方案將直接注入 Agent 上下文中。</p>
+<h3 id="patterns">Patterns 如何學習</h3>
+<div class="highlight"><pre><span></span><code>┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│  AI 回應     │ ──▶ │ AutoLearner  │ ──▶ │  Pattern DB  │
+│ &quot;透過 X 修復&quot; │     │   (提取)     │     │(.boring/brain)│
+└──────────────┘     └──────────────┘     └──────────────┘
+                             │
+                             ▼
+                    下次：自動應用！
+</code></pre></div>
+<h3 id="pattern">Pattern 類型</h3>
+<table>
+<thead>
+<tr>
+<th>類型</th>
+<th>範例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>錯誤解決方案</strong></td>
+<td><code>ImportError</code> → <code>pip install X</code></td>
+</tr>
+<tr>
+<td><strong>代碼模式</strong></td>
+<td>Auth middleware 結構</td>
+</tr>
+<tr>
+<td><strong>重構</strong></td>
+<td>提取函數模式</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_13">手動學習</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 從會話觸發學習</span>
+<span class="n">boring_learn</span><span class="p">(</span>
+    <span class="n">project_path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
+    <span class="n">topics</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;error-handling&quot;</span><span class="p">,</span> <span class="s2">&quot;testing&quot;</span><span class="p">,</span> <span class="s2">&quot;patterns&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="_14">🚚 遷移指南</h2>
+<h3 id="_15">到新機器</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 1. 複製全域知識</span>
+scp<span class="w"> </span>-r<span class="w"> </span>~/.boring/brain<span class="w"> </span>user@newmachine:~/
+
+<span class="c1"># 2. Clone 專案（包含 .boring/memory）</span>
+git<span class="w"> </span>clone<span class="w"> </span>your-repo
+
+<span class="c1"># 3. 重建快取（首次使用時自動）</span>
+boring<span class="w"> </span>rag<span class="w"> </span>index
+</code></pre></div>
+<h3 id="_16">給團隊成員</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 在 .gitignore 中</span>
+.boring/cache/<span class="w">          </span><span class="c1"># 不要提交快取</span>
+
+<span class="c1"># 提交專案知識</span>
+git<span class="w"> </span>add<span class="w"> </span>.boring/memory/
+git<span class="w"> </span>add<span class="w"> </span>.boring.toml<span class="w">    </span><span class="c1"># 專案配置</span>
+</code></pre></div>
+<h3 id="_17">環境變數</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 自訂 brain 位置</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">BORING_BRAIN_PATH</span><span class="o">=</span><span class="s2">&quot;/path/to/shared/brain&quot;</span>
+
+<span class="c1"># 自訂快取位置</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">BORING_CACHE_PATH</span><span class="o">=</span><span class="s2">&quot;/tmp/boring_cache&quot;</span>
+</code></pre></div>
+<hr />
+<h2 id="_18">另請參閱</h2>
+<ul>
+<li><a href="./mcp-tools_zh.md#6-rag-記憶-boring_rag_search">MCP 工具 - RAG</a></li>
+<li><a href="../pro-tips_zh/#技巧-11跨專案知識分享">專業技巧 - 知識</a></li>
+<li><a href="../cookbook_zh/#食譜-9rag-知識庫">Cookbook - 食譜 9</a></li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

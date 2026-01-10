@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Cookbook - Complete Feature Recipes - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Cookbook - Complete Feature Recipes";
+        var mkdocs_page_input_path = "guides\\cookbook.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Cookbook - Complete Feature Recipes</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/guides/cookbook.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="cookbook-complete-feature-recipes">Cookbook - Complete Feature Recipes</h1>
+<blockquote>
+<p>Ready-to-use recipes for every Boring feature. Copy, paste, and customize.</p>
+</blockquote>
+<hr />
+<h2 id="recipe-index">📚 Recipe Index</h2>
+<h3 id="getting-started">🚀 Getting Started</h3>
+<ul>
+<li><a href="#recipe-1-first-project-setup">Recipe 1: First Project Setup</a></li>
+<li><a href="#recipe-2-mcp-server-configuration">Recipe 2: MCP Server Configuration</a></li>
+</ul>
+<h3 id="daily-workflows">🔧 Daily Workflows</h3>
+<ul>
+<li><a href="#recipe-3-quick-bug-fix">Recipe 3: Quick Bug Fix</a></li>
+<li><a href="#recipe-4-feature-development">Recipe 4: Feature Development</a></li>
+<li><a href="#recipe-5-code-review">Recipe 5: Code Review</a></li>
+</ul>
+<h3 id="security">🔒 Security</h3>
+<ul>
+<li><a href="#recipe-6-security-audit">Recipe 6: Security Audit</a></li>
+<li><a href="#recipe-7-shadow-mode-setup">Recipe 7: Shadow Mode Setup</a></li>
+</ul>
+<h3 id="advanced">🧠 Advanced</h3>
+<ul>
+<li><a href="#recipe-8-multi-agent-workflow">Recipe 8: Multi-Agent Workflow</a></li>
+<li><a href="#recipe-9-rag-knowledge-base">Recipe 9: RAG Knowledge Base</a></li>
+<li><a href="#recipe-10-cicd-integration">Recipe 10: CI/CD Integration</a></li>
+</ul>
+<hr />
+<h2 id="recipe-1-first-project-setup">Recipe 1: First Project Setup</h2>
+<h3 id="ingredients">Ingredients</h3>
+<ul>
+<li>Empty directory or existing project</li>
+<li>Python 3.9+</li>
+<li>pip</li>
+</ul>
+<h3 id="steps">Steps</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 1. Install Boring</span>
+pip<span class="w"> </span>install<span class="w"> </span>boring-aicoding
+
+<span class="c1"># 2. Initialize project (if new)</span>
+boring-setup<span class="w"> </span>my-project
+<span class="nb">cd</span><span class="w"> </span>my-project
+
+<span class="c1"># 3. Start development</span>
+<span class="c1"># 3. Start development</span>
+boring<span class="w"> </span>start
+
+<span class="c1"># Or use Vibe Coder CLI directly</span>
+boring-route<span class="w"> </span><span class="s2">&quot;Initialize a new project called my-project&quot;</span>
+</code></pre></div>
+<h3 id="expected-output">Expected Output</h3>
+<div class="highlight"><pre><span></span><code>🚀 Boring v10.18.3 started
+📁 Project: my-project
+🔍 Monitoring for changes...
+</code></pre></div>
+<hr />
+<h2 id="recipe-2-mcp-server-configuration">Recipe 2: MCP Server Configuration</h2>
+<h3 id="for-claude-desktop">For Claude Desktop</h3>
+<p>Edit <code>~/Library/Application Support/Claude/claude_desktop_config.json</code> (macOS) or <code>%APPDATA%\Claude\claude_desktop_config.json</code> (Windows):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;boring&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;python&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-m&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;boring.mcp.server&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;PROJECT_ROOT_DEFAULT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/path/to/your/project&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;SHADOW_MODE_LEVEL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ENABLED&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="for-cursor">For Cursor</h3>
+<p>In Settings → MCP Servers:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;boring&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boring-mcp&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">    </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;PROJECT_ROOT_DEFAULT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;.&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="for-smithery-cloud">For Smithery (Cloud)</h3>
+<div class="highlight"><pre><span></span><code>npx -y @anthropic-ai/mcp install @boring/boring
+</code></pre></div>
+<hr />
+<h2 id="recipe-3-quick-bug-fix">Recipe 3: Quick Bug Fix</h2>
+<h3 id="problem">Problem</h3>
+<p>You have a bug and want AI to fix it.</p>
+<h3 id="steps_1">Steps</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Option 1: Vibe Coder (Recommended)</span>
+<span class="c1"># You: &quot;Fix the login function - it crashes when password is empty&quot;</span>
+
+<span class="c1"># Option 2: CLI</span>
+<span class="c1"># $ boring-route &quot;Fix the login bug&quot;</span>
+
+<span class="c1"># Option 3: Python Tool</span>
+<span class="n">boring_apply_patch</span><span class="p">(</span>
+    <span class="n">project_path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Fix the login function - it crashes when password is empty&quot;</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="verification">Verification</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_verify</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;FULL&quot;</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="recipe-4-feature-development">Recipe 4: Feature Development</h2>
+<h3 id="using-speckit-workflow">Using SpecKit Workflow</h3>
+<h3 id="vibe-coder-prompt">Vibe Coder Prompt</h3>
+<blockquote>
+<p><strong>You</strong>: "Deeply analyze the user authentication requirements, then create a detailed checklist and implement it."</p>
+</blockquote>
+<h3 id="python-workflow-speckit">Python Workflow (SpecKit)</h3>
+<h3 id="vibe-coder-prompt_1">Vibe Coder Prompt</h3>
+<blockquote>
+<p><strong>You</strong>: "Deeply analyze the user authentication requirements, then create a detailed checklist and implement it."</p>
+</blockquote>
+<h3 id="python-workflow-speckit_1">Python Workflow (SpecKit)</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Step 1: Establish principles</span>
+<span class="n">speckit_constitution</span><span class="p">(</span><span class="n">project_path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+<span class="c1"># ... (rest of manual steps)</span>
+</code></pre></div>
+<hr />
+<h2 id="recipe-5-code-review">Recipe 5: Code Review</h2>
+<h3 id="direct-evaluation">Direct Evaluation</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_evaluate</span><span class="p">(</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;src/main.py&quot;</span><span class="p">,</span>
+    <span class="n">level</span><span class="o">=</span><span class="s2">&quot;DIRECT&quot;</span><span class="p">,</span>
+    <span class="n">criteria</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;correctness&quot;</span><span class="p">,</span> <span class="s2">&quot;security&quot;</span><span class="p">,</span> <span class="s2">&quot;performance&quot;</span><span class="p">,</span> <span class="s2">&quot;maintainability&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="pairwise-comparison">Pairwise Comparison</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_evaluate</span><span class="p">(</span>
+    <span class="n">level</span><span class="o">=</span><span class="s2">&quot;PAIRWISE&quot;</span><span class="p">,</span>
+    <span class="n">target_a</span><span class="o">=</span><span class="s2">&quot;src/auth_v1.py&quot;</span><span class="p">,</span>
+    <span class="n">target_b</span><span class="o">=</span><span class="s2">&quot;src/auth_v2.py&quot;</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="rubric-based-scoring">Rubric-Based Scoring</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_evaluate</span><span class="p">(</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;src/&quot;</span><span class="p">,</span>
+    <span class="n">level</span><span class="o">=</span><span class="s2">&quot;RUBRIC&quot;</span><span class="p">,</span>
+    <span class="n">rubric_path</span><span class="o">=</span><span class="s2">&quot;.boring/rubrics/production-ready.md&quot;</span>
+<span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="recipe-6-security-audit">Recipe 6: Security Audit</h2>
+<h3 id="full-security-scan">Full Security Scan</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_security_scan</span><span class="p">(</span>
+    <span class="n">project_path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
+    <span class="n">scan_type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span>  <span class="c1"># sast + secrets + dependencies</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="secrets-only">Secrets Only</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_security_scan</span><span class="p">(</span>
+    <span class="n">project_path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
+    <span class="n">scan_type</span><span class="o">=</span><span class="s2">&quot;secrets&quot;</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="with-auto-fix">With Auto-Fix</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_security_scan</span><span class="p">(</span>
+    <span class="n">project_path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
+    <span class="n">scan_type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+    <span class="n">fix_mode</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="recipe-7-shadow-mode-setup">Recipe 7: Shadow Mode Setup</h2>
+<h3 id="enable-for-production">Enable for Production</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Set STRICT mode</span>
+<span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;set_level&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;STRICT&quot;</span><span class="p">)</span>
+
+<span class="c1"># Verify status</span>
+<span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;status&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="configure-patterns">Configure Patterns</h3>
+<p>Edit <code>~/.boring/brain/shadow_config.json</code>:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;STRICT&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;auto_approve_patterns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*.md&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;docs/*&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;always_block_patterns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*.env&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;secrets/*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;.git/*&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<hr />
+<h2 id="recipe-8-multi-agent-workflow">Recipe 8: Multi-Agent Workflow</h2>
+<h3 id="plan-and-implement">Plan and Implement</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_multi_agent</span><span class="p">(</span>
+    <span class="n">workflow</span><span class="o">=</span><span class="s2">&quot;plan_and_implement&quot;</span><span class="p">,</span>
+    <span class="n">context</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;feature&quot;</span><span class="p">:</span> <span class="s2">&quot;Real-time notifications&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tech_stack&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;WebSockets&quot;</span><span class="p">,</span> <span class="s2">&quot;Redis&quot;</span><span class="p">,</span> <span class="s2">&quot;FastAPI&quot;</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="n">execute</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># Actually run, not just generate prompt</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="review-and-fix">Review and Fix</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_multi_agent</span><span class="p">(</span>
+    <span class="n">workflow</span><span class="o">=</span><span class="s2">&quot;review_and_fix&quot;</span><span class="p">,</span>
+    <span class="n">context</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="s2">&quot;src/&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;focus&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;security&quot;</span><span class="p">,</span> <span class="s2">&quot;performance&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="recipe-9-rag-knowledge-base">Recipe 9: RAG Knowledge Base</h2>
+<h3 id="build-index">Build Index</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_rag_index</span><span class="p">(</span>
+    <span class="n">project_path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
+    <span class="n">force</span><span class="o">=</span><span class="kc">False</span>  <span class="c1"># Incremental</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="search-code">Search Code</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_rag_search</span><span class="p">(</span>
+    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;authentication middleware&quot;</span><span class="p">,</span>
+    <span class="n">project_path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
+    <span class="n">top_k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">expand_deps</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="multi-project-search">Multi-Project Search</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_rag_search</span><span class="p">(</span>
+    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;error handling patterns&quot;</span><span class="p">,</span>
+    <span class="n">additional_roots</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;/path/to/shared-libs&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;/path/to/reference-project&quot;</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="recipe-10-cicd-integration">Recipe 10: CI/CD Integration</h2>
+<h3 id="github-actions">GitHub Actions</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># .github/workflows/quality-gates.yml</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Quality Gates</span>
+
+<span class="nt">on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">push</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">pull_request</span><span class="p p-Indicator">]</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">verify</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v5</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.11&#39;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install boring-aicoding</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">boring verify --level FULL</span>
+
+<span class="w">  </span><span class="nt">security</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">verify</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install boring-aicoding</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">python -c &quot;</span>
+<span class="w">          </span><span class="no">from boring.mcp.tools import boring_security_scan</span>
+<span class="w">          </span><span class="no">result = boring_security_scan(&#39;.&#39;, &#39;all&#39;)</span>
+<span class="w">          </span><span class="no">if result.get(&#39;critical_count&#39;, 0) &gt; 0:</span>
+<span class="w">              </span><span class="no">exit(1)</span>
+<span class="w">          </span><span class="no">&quot;</span>
+</code></pre></div>
+<hr />
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="../vibe-coder/">Vibe Coder Guide</a> - For visual/description-based developers</li>
+<li><a href="../quick-tutorials/">Quick Tutorials</a> - Step-by-step guides</li>
+<li><a href="../../features/mcp-tools/">MCP Tools</a> - Complete tool reference</li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

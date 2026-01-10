@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>🛠️ Boring MCP Tool Manual - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\ud83d\udee0\ufe0f Boring MCP Tool Manual";
+        var mkdocs_page_input_path = "guides\\tool-manual_en.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">🛠️ Boring MCP Tool Manual</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/guides/tool-manual_en.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="boring-mcp-tool-manual">🛠️ Boring MCP Tool Manual</h1>
+<p>This manual explains how to use Boring MCP tools in real development.</p>
+<hr />
+<h2 id="quick-reference">📋 Quick Reference</h2>
+<h3 id="most-used-tools-top-10">Most Used Tools (Top 10)</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>boring</code></td>
+<td>🎯 Universal router</td>
+<td><code>"review my code"</code> → auto routes</td>
+</tr>
+<tr>
+<td><code>boring_rag_search</code></td>
+<td>🔍 Search code</td>
+<td><code>query="authentication"</code></td>
+</tr>
+<tr>
+<td><code>boring_code_review</code></td>
+<td>📝 Code review</td>
+<td><code>file_path="src/api.py"</code></td>
+</tr>
+<tr>
+<td><code>boring_vibe_check</code></td>
+<td>✅ Health check</td>
+<td><code>target_path="src/"</code></td>
+</tr>
+<tr>
+<td><code>boring_verify</code></td>
+<td>🧪 Run verification</td>
+<td><code>level="FULL"</code></td>
+</tr>
+<tr>
+<td><code>boring_test_gen</code></td>
+<td>🧪 Generate tests</td>
+<td><code>file_path="src/utils.py"</code></td>
+</tr>
+<tr>
+<td><code>boring_commit</code></td>
+<td>📦 Smart commit</td>
+<td>Auto-generates commit message</td>
+</tr>
+<tr>
+<td><code>boring_security_scan</code></td>
+<td>🔒 Security scan</td>
+<td><code>scan_type="full"</code></td>
+</tr>
+<tr>
+<td><code>boring_impact_check</code></td>
+<td>💥 Impact analysis</td>
+<td><code>target_path="src/core.py"</code></td>
+</tr>
+<tr>
+<td><code>boring_suggest_next</code></td>
+<td>💡 Next step suggestion</td>
+<td>Based on project state</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="code-search-rag">🔍 Code Search (RAG)</h2>
+<h3 id="basic-search">Basic Search</h3>
+<div class="highlight"><pre><span></span><code>boring_rag_search query=&quot;user authentication logic&quot;
+boring_rag_search query=&quot;database connection&quot;
+boring_rag_search query=&quot;error handling&quot;
+</code></pre></div>
+<h3 id="advanced-search">Advanced Search</h3>
+<div class="highlight"><pre><span></span><code># Limit search scope
+boring_rag_search query=&quot;login&quot; file_filter=&quot;auth&quot;
+
+# Adjust result count
+boring_rag_search query=&quot;API endpoints&quot; max_results=20
+
+# Expand dependency graph
+boring_rag_expand chunk_id=&quot;chunk_123&quot; depth=3
+</code></pre></div>
+<h3 id="first-use-build-index">First Use - Build Index</h3>
+<div class="highlight"><pre><span></span><code>boring_rag_index project_path=&quot;.&quot;
+boring_rag_status  # Check index status
+</code></pre></div>
+<hr />
+<h2 id="code-review">📝 Code Review</h2>
+<h3 id="single-file-review">Single File Review</h3>
+<div class="highlight"><pre><span></span><code>boring_code_review file_path=&quot;src/api/auth.py&quot;
+boring_code_review file_path=&quot;src/components/Login.tsx&quot;
+</code></pre></div>
+<h3 id="specify-review-focus">Specify Review Focus</h3>
+<div class="highlight"><pre><span></span><code># Focus options: all, naming, error_handling, performance, security
+boring_code_review file_path=&quot;src/api.py&quot; focus=&quot;security&quot;
+boring_code_review file_path=&quot;src/utils.py&quot; focus=&quot;performance&quot;
+</code></pre></div>
+<hr />
+<h2 id="health-check-vibe-check">✅ Health Check (Vibe Check)</h2>
+<h3 id="quick-check">Quick Check</h3>
+<div class="highlight"><pre><span></span><code># Check single file
+boring_vibe_check target_path=&quot;src/main.py&quot;
+
+# Check entire directory
+boring_vibe_check target_path=&quot;src/&quot;
+
+# Check entire project
+boring_vibe_check target_path=&quot;.&quot;
+</code></pre></div>
+<h3 id="output-includes">Output Includes</h3>
+<ul>
+<li>🎯 Vibe Score (0-100)</li>
+<li>📋 Lint issues list</li>
+<li>🔒 Security issues</li>
+<li>📚 Documentation coverage</li>
+<li>🔧 One-click fix prompt</li>
+</ul>
+<hr />
+<h2 id="test-generation">🧪 Test Generation</h2>
+<h3 id="auto-generate-unit-tests">Auto-generate Unit Tests</h3>
+<div class="highlight"><pre><span></span><code># Python files
+boring_test_gen file_path=&quot;src/utils.py&quot;
+
+# TypeScript files
+boring_test_gen file_path=&quot;src/services/auth.ts&quot;
+
+# Specify output directory
+boring_test_gen file_path=&quot;src/api.py&quot; output_dir=&quot;tests/&quot;
+</code></pre></div>
+<h3 id="supported-languages">Supported Languages</h3>
+<ul>
+<li>✅ Python (pytest)</li>
+<li>✅ JavaScript/TypeScript (jest)</li>
+</ul>
+<hr />
+<h2 id="security-scanning">🔒 Security Scanning</h2>
+<h3 id="full-scan">Full Scan</h3>
+<div class="highlight"><pre><span></span><code>boring_security_scan scan_type=&quot;full&quot;
+</code></pre></div>
+<h3 id="specific-scan-types">Specific Scan Types</h3>
+<div class="highlight"><pre><span></span><code># Secrets only
+boring_security_scan scan_type=&quot;secrets&quot;
+
+# Vulnerabilities only
+boring_security_scan scan_type=&quot;vulnerabilities&quot;
+
+# Dependencies only
+boring_security_scan scan_type=&quot;dependencies&quot;
+</code></pre></div>
+<hr />
+<h2 id="git-operations">📦 Git Operations</h2>
+<h3 id="smart-commit">Smart Commit</h3>
+<div class="highlight"><pre><span></span><code># Auto-analyze changes and generate semantic commit message
+boring_commit
+boring_commit commit_type=&quot;feat&quot; scope=&quot;auth&quot;
+</code></pre></div>
+<h3 id="git-hooks">Git Hooks</h3>
+<div class="highlight"><pre><span></span><code># Install hooks (auto-verify before commit)
+boring_hooks_install
+
+# Check hooks status
+boring_hooks_status
+
+# Remove hooks
+boring_hooks_uninstall
+</code></pre></div>
+<hr />
+<h2 id="impact-analysis">💥 Impact Analysis</h2>
+<h3 id="pre-modification-analysis">Pre-modification Analysis</h3>
+<div class="highlight"><pre><span></span><code># See what modules would be affected by modifying this file
+boring_impact_check target_path=&quot;src/core/database.py&quot;
+boring_impact_check target_path=&quot;src/utils/helpers.ts&quot; max_depth=3
+</code></pre></div>
+<h3 id="output-includes_1">Output Includes</h3>
+<ul>
+<li>📊 List of modules depending on this file</li>
+<li>⚠️ Risk level</li>
+<li>🧪 Tests that need verification</li>
+</ul>
+<hr />
+<h2 id="shadow-mode-safety-mode">🛡️ Shadow Mode (Safety Mode)</h2>
+<h3 id="check-status">Check Status</h3>
+<div class="highlight"><pre><span></span><code>boring_shadow_status
+</code></pre></div>
+<h3 id="switch-modes">Switch Modes</h3>
+<div class="highlight"><pre><span></span><code># Normal mode (low-risk auto-executes)
+boring_shadow_mode mode=&quot;ENABLED&quot;
+
+# Strict mode (all writes need approval)
+boring_shadow_mode mode=&quot;STRICT&quot;
+
+# Disabled (not recommended)
+boring_shadow_mode mode=&quot;DISABLED&quot;
+</code></pre></div>
+<h3 id="review-operations">Review Operations</h3>
+<div class="highlight"><pre><span></span><code>boring_shadow_approve operation_id=&quot;xxx&quot;
+boring_shadow_reject operation_id=&quot;xxx&quot;
+</code></pre></div>
+<hr />
+<h2 id="architecture-analysis">📐 Architecture Analysis</h2>
+<h3 id="generate-dependency-graph">Generate Dependency Graph</h3>
+<div class="highlight"><pre><span></span><code>boring_arch_check target_path=&quot;src/&quot;
+boring_visualize scope=&quot;module&quot;
+</code></pre></div>
+<h3 id="output-formats">Output Formats</h3>
+<div class="highlight"><pre><span></span><code># Mermaid diagram
+boring_arch_check output_format=&quot;mermaid&quot;
+
+# JSON
+boring_arch_check output_format=&quot;json&quot;
+</code></pre></div>
+<hr />
+<h2 id="smart-suggestions">💡 Smart Suggestions</h2>
+<h3 id="get-next-step-suggestions">Get Next Step Suggestions</h3>
+<div class="highlight"><pre><span></span><code>boring_suggest_next
+boring_suggest_next limit=5
+</code></pre></div>
+<h3 id="output-includes_2">Output Includes</h3>
+<ul>
+<li>🎯 Recommended next actions</li>
+<li>📊 Project state analysis</li>
+<li>⚠️ Potential issues</li>
+</ul>
+<hr />
+<h2 id="workflow-examples">🚀 Workflow Examples</h2>
+<h3 id="new-feature-development">New Feature Development</h3>
+<div class="highlight"><pre><span></span><code>1. boring_rag_search query=&quot;related feature&quot;    # Search existing code
+2. boring_impact_check target_path=&quot;...&quot;        # Analyze modification impact
+3. [Develop code]
+4. boring_code_review file_path=&quot;...&quot;           # Review code
+5. boring_test_gen file_path=&quot;...&quot;              # Generate tests
+6. boring_vibe_check target_path=&quot;...&quot;          # Health check
+7. boring_verify level=&quot;FULL&quot;                   # Run verification
+8. boring_commit                                # Smart commit
+</code></pre></div>
+<h3 id="bug-fix">Bug Fix</h3>
+<div class="highlight"><pre><span></span><code>1. boring_rag_search query=&quot;error message&quot;      # Search related code
+2. [Fix code]
+3. boring_security_scan                         # Ensure no security issues
+4. boring_vibe_check                            # Health check
+5. boring_commit commit_type=&quot;fix&quot;              # Commit fix
+</code></pre></div>
+<h3 id="code-review_1">Code Review</h3>
+<div class="highlight"><pre><span></span><code>1. boring_code_review file_path=&quot;...&quot; focus=&quot;all&quot;
+2. boring_security_scan scan_type=&quot;secrets&quot;
+3. boring_arch_check target_path=&quot;...&quot;
+</code></pre></div>
+<hr />
+<h2 id="environment-variables">⚙️ Environment Variables</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Values</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BORING_MCP_MODE</code></td>
+<td><code>1</code></td>
+<td>Enable MCP mode (required)</td>
+</tr>
+<tr>
+<td><code>BORING_MCP_PROFILE</code></td>
+<td><code>lite</code>/<code>standard</code>/<code>full</code></td>
+<td>Tool level</td>
+</tr>
+<tr>
+<td><code>PROJECT_ROOT_DEFAULT</code></td>
+<td><code>.</code></td>
+<td>Default project path</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="further-reading">📚 Further Reading</h2>
+<ul>
+<li><a href="../mcp-configuration_en/">MCP Configuration Guide</a></li>
+<li><a href="../usage-modes_en/">Usage Modes</a></li>
+<li><a href="../yolo-boring-integration_en/">YOLO Mode Integration</a></li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

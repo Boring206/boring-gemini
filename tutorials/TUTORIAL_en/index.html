@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>基礎教學 - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u57fa\u790e\u6559\u5b78";
+        var mkdocs_page_input_path = "tutorials\\TUTORIAL_en.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">基礎教學</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#part-1-quick-start-5-minutes">Part 1: Quick Start (5 Minutes)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#11-what-is-boring">1.1 What is Boring?</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#12-installation-guide">1.2 Installation Guide</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#method-1-pip-install-recommended">Method 1: pip install (Recommended)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#method-2-install-from-source">Method 2: Install from Source</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#13-ide-integration">1.3 IDE Integration</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#cursor-windsurf">Cursor / Windsurf</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#claude-desktop">Claude Desktop</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#14-first-project">1.4 First Project</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#part-2-core-workflows">Part 2: Core Workflows</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#21-vibe-start-complete-flow">2.1 Vibe Start Complete Flow</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#22-quick-fix-auto-repair">2.2 Quick Fix Auto-Repair</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#23-multi-agent-collaboration">2.3 Multi-Agent Collaboration</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#part-3-advanced-features">Part 3: Advanced Features</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#31-rag-semantic-search">3.1 RAG Semantic Search</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#32-shadow-mode-safe-execution">3.2 Shadow Mode Safe Execution</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#33-transaction-rollback">3.3 Transaction &amp; Rollback</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#34-background-tasks">3.4 Background Tasks</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#35-auto-learning-v1018">3.5 Auto-Learning (v10.18)</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#part-4-ide-integration">Part 4: IDE Integration</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#41-cursorwindsurf-mcp-config">4.1 Cursor/Windsurf MCP Config</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#42-smithery-cloud-deployment">4.2 Smithery Cloud Deployment</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#43-dynamic-discovery">4.3 Dynamic Discovery</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#part-5-practical-cases">Part 5: Practical Cases</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#51-demo-build-rest-api">5.1 Demo: Build REST API</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#52-demo-refactor-legacy-code">5.2 Demo: Refactor Legacy Code</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#53-demo-debugging">5.3 Demo: Debugging</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#part-6-customization-extension">Part 6: Customization &amp; Extension</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#61-create-custom-plugin">6.1 Create Custom Plugin</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#62-speckit-workflows">6.2 SpecKit Workflows</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#63-scoring-rubrics">6.3 Scoring Rubrics</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">📚 教學 (Tutorials)</li>
+      <li class="breadcrumb-item active">基礎教學</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/tutorials/TUTORIAL_en.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="boring-for-gemini-complete-tutorial">Boring for Gemini: Complete Tutorial</h1>
+<blockquote>
+<p><strong>From Zero to Hero: 5 Minutes to Vibe Coding with Architect Backend</strong></p>
+</blockquote>
+<hr />
+<h2 id="part-1-quick-start-5-minutes">Part 1: Quick Start (5 Minutes)</h2>
+<h3 id="11-what-is-boring">1.1 What is Boring?</h3>
+<p><strong>Boring</strong> is not just an AI code generator—it is your <strong>Senior Architect Mentor</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Traditional AI Assistant</th>
+<th>Boring Architect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Generates Code</td>
+<td>Asks requirements first, then designs architecture</td>
+</tr>
+<tr>
+<td>Fixes Errors</td>
+<td>Explains why errors happened</td>
+</tr>
+<tr>
+<td>Passive Response</td>
+<td>Proactively warns about potential risks</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Core Advantages</strong>:
+- 🏛️ <strong>Architect Persona</strong>: Every interaction includes architecture advice
+- 🔄 <strong>Auto-Repair Loop</strong>: One-click fix for Lint/Test/Format
+- 🛡️ <strong>Shadow Mode</strong>: Security audit for high-risk operations
+- 🔍 <strong>RAG Semantic Search</strong>: Find code using natural language</p>
+<hr />
+<h3 id="12-installation-guide">1.2 Installation Guide</h3>
+<h4 id="method-1-pip-install-recommended">Method 1: pip install (Recommended)</h4>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>boring-aicoding
+</code></pre></div>
+<h4 id="method-2-install-from-source">Method 2: Install from Source</h4>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Boring206/boring-gemini.git
+<span class="nb">cd</span><span class="w"> </span>boring-gemini
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[mcp]&quot;</span>
+</code></pre></div>
+<hr />
+<h3 id="13-ide-integration">1.3 IDE Integration</h3>
+<h4 id="cursor-windsurf">Cursor / Windsurf</h4>
+<p>Create <code>.cursor/mcp.json</code>:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;boring&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;python&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-m&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;boring.mcp.server&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;GOOGLE_API_KEY&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;your-api-key&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h4 id="claude-desktop">Claude Desktop</h4>
+<p>Add to <code>claude_desktop_config.json</code>:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;boring&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;python&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-m&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;boring.mcp.server&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<hr />
+<h3 id="14-first-project">1.4 First Project</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Create New Project (Must do this before boring start!)</span>
+boring-setup<span class="w"> </span>my-app
+<span class="nb">cd</span><span class="w"> </span>my-app
+
+<span class="c1"># Check Status</span>
+boring<span class="w"> </span>status
+
+<span class="c1"># Install Git hooks</span>
+boring_hooks_install
+</code></pre></div>
+<p><strong>Project Structure</strong>:
+<div class="highlight"><pre><span></span><code>my-app/
+├── src/
+├── tests/
+├── PROMPT.md          # AI Instructions
+├── @fix_plan.md       # Task Checklist
+└── .boring/brain/     # Knowledge Base
+</code></pre></div></p>
+<hr />
+<h2 id="part-2-core-workflows">Part 2: Core Workflows</h2>
+<h3 id="21-vibe-start-complete-flow">2.1 Vibe Start Complete Flow</h3>
+<p>Use <code>vibe_start</code> prompt to launch fully automated dev flow:</p>
+<div class="highlight"><pre><span></span><code>You: &quot;Build a REST API for user management&quot;
+
+Boring:
+1️⃣ **Foundation** (Constitution &amp; Clarify) → Establish principles &amp; clarify needs
+2️⃣ **Spec &amp; Plan** (Plan, Checklist) → Generate implementation plan &amp; criteria
+3️⃣ **Pre-Analysis** (SpecKit Analyze) → Ensure plan consistency
+4️⃣ **Implementation** (Multi-Agent) → Collaborative development
+5️⃣ **Verification** (Verify &amp; Fix) → Quality verification &amp; fixing
+</code></pre></div>
+<p><strong>Conversation Example</strong>:</p>
+<blockquote>
+<p><strong>You</strong>: "Build a REST API for user management"</p>
+<p><strong>Boring</strong>: (Thinking...) I will start the Vibe Coder workflow.
+<em>Calling tool: <code>boring_multi_agent</code> or <code>vibe_start</code></em></p>
+</blockquote>
+<hr />
+<h3 id="22-quick-fix-auto-repair">2.2 Quick Fix Auto-Repair</h3>
+<p>One-click fix for all code issues:</p>
+<p><strong>Conversation Example</strong>:</p>
+<blockquote>
+<p><strong>You</strong>: "Fix all the linting errors"
+<strong>Boring</strong>: I'll run the quick fix loop.
+<em>Calling tool: <code>boring_auto_fix</code></em></p>
+</blockquote>
+<p><strong>Or via CLI</strong>:
+<div class="highlight"><pre><span></span><code>boring-route<span class="w"> </span><span class="s2">&quot;Fix the lint errors&quot;</span>
+</code></pre></div></p>
+<p><strong>Execution Flow</strong>:
+1. <code>boring_verify(level='FULL')</code> — Find all issues
+2. <code>boring_auto_fix(max_iterations=3)</code> — Auto repair
+3. Verify again to confirm success</p>
+<hr />
+<h3 id="23-multi-agent-collaboration">2.3 Multi-Agent Collaboration</h3>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Role</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🏛️ Architect</td>
+<td>Planner</td>
+<td>Design architecture, create plan</td>
+</tr>
+<tr>
+<td>💻 Coder</td>
+<td>Executor</td>
+<td>Write code, implement features</td>
+</tr>
+<tr>
+<td>🔍 Reviewer</td>
+<td>Auditor</td>
+<td>Code review, quality gate</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Conversation Example</strong>:</p>
+<blockquote>
+<p><strong>You</strong>: "Implement user authentication with JWT"</p>
+<p><strong>Boring</strong>: I'll assign this to the Coder agent.
+<em>Calling tool: <code>boring_multi_agent</code></em></p>
+</blockquote>
+<hr />
+<h2 id="part-3-advanced-features">Part 3: Advanced Features</h2>
+<h3 id="31-rag-semantic-search">3.1 RAG Semantic Search</h3>
+<p>Search code using natural language:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Create Index (First run only, needs chromadb)</span>
+<span class="n">boring_rag_index</span><span class="p">()</span>
+
+<span class="c1"># Search</span>
+<span class="n">boring_rag_search</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;Function validating JWT token&quot;</span><span class="p">)</span>
+<span class="c1"># Returns: Related files, function definitions, call graph</span>
+
+<span class="c1"># Get Context for Specific Function</span>
+<span class="n">boring_rag_context</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="s2">&quot;src/auth/jwt.py&quot;</span><span class="p">,</span> <span class="n">function_name</span><span class="o">=</span><span class="s2">&quot;validate&quot;</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h3 id="32-shadow-mode-safe-execution">3.2 Shadow Mode Safe Execution</h3>
+<p>Enable human review for high-risk operations:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Enable Strict Mode</span>
+<span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;STRICT&quot;</span><span class="p">)</span>
+
+<span class="c1"># Execute High-Risk Op (Captured, will not run directly)</span>
+<span class="n">boring_multi_agent</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="s2">&quot;Delete all test files&quot;</span><span class="p">)</span>
+<span class="c1"># Returns: pending_approval</span>
+
+<span class="c1"># View Pending Ops</span>
+<span class="n">boring_shadow_status</span><span class="p">()</span>
+
+<span class="c1"># Approve or Reject</span>
+<span class="n">boring_shadow_approve</span><span class="p">(</span><span class="n">operation_id</span><span class="o">=</span><span class="s2">&quot;op-xyz&quot;</span><span class="p">)</span>
+<span class="n">boring_shadow_reject</span><span class="p">(</span><span class="n">operation_id</span><span class="o">=</span><span class="s2">&quot;op-xyz&quot;</span><span class="p">,</span> <span class="n">note</span><span class="o">=</span><span class="s2">&quot;Too dangerous&quot;</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h3 id="33-transaction-rollback">3.3 Transaction &amp; Rollback</h3>
+<p>Git-based atomic operations, rollback anytime:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Start Transaction (Create Savepoint)</span>
+<span class="n">boring_transaction_start</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;Refactoring auth&quot;</span><span class="p">)</span>
+
+<span class="c1"># Make Changes...</span>
+<span class="n">boring_multi_agent</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="s2">&quot;Refactor authentication module&quot;</span><span class="p">)</span>
+
+<span class="c1"># Verify</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">boring_verify</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;FULL&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;passed&quot;</span><span class="p">]:</span>
+    <span class="n">boring_transaction_commit</span><span class="p">()</span>  <span class="c1"># Confirm changes</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">boring_rollback</span><span class="p">()</span>  <span class="c1"># Rollback to savepoint</span>
+</code></pre></div>
+<hr />
+<h3 id="34-background-tasks">3.4 Background Tasks</h3>
+<p>Run long-running tasks in background:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Submit Background Task</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">boring_background_task</span><span class="p">(</span><span class="n">task_type</span><span class="o">=</span><span class="s2">&quot;verify&quot;</span><span class="p">,</span> <span class="n">task_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;FULL&quot;</span><span class="p">})</span>
+<span class="n">task_id</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;task_id&quot;</span><span class="p">]</span>
+
+<span class="c1"># Check Progress (Non-blocking)</span>
+<span class="n">status</span> <span class="o">=</span> <span class="n">boring_task_status</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="n">task_id</span><span class="p">)</span>
+<span class="c1"># {&quot;status&quot;: &quot;running&quot;, &quot;progress&quot;: 60}</span>
+
+<span class="c1"># List All Tasks</span>
+<span class="n">boring_list_tasks</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<h3 id="35-auto-learning-v1018">3.5 Auto-Learning (v10.18)</h3>
+<p>Boring observes your fixes and evolves automatically:</p>
+<ol>
+<li><strong>Passive Learning</strong>: When you reject AI changes and manually fix code, Boring analyzes diffs and learns.</li>
+<li><strong>Active Learning</strong>:
+   <div class="highlight"><pre><span></span><code><span class="c1"># Teach AI a new rule</span>
+<span class="n">boring_learn_pattern</span><span class="p">(</span>
+    <span class="n">pattern_type</span><span class="o">=</span><span class="s2">&quot;code_style&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Always use UTC for datetimes&quot;</span><span class="p">,</span>
+    <span class="n">context</span><span class="o">=</span><span class="s2">&quot;When handling time&quot;</span><span class="p">,</span>
+    <span class="n">solution</span><span class="o">=</span><span class="s2">&quot;datetime.now(timezone.utc)&quot;</span>
+<span class="p">)</span>
+</code></pre></div></li>
+<li><strong>View Knowledge</strong>:
+   <div class="highlight"><pre><span></span><code><span class="n">boring_brain_summary</span><span class="p">()</span>
+</code></pre></div></li>
+</ol>
+<hr />
+<h2 id="part-4-ide-integration">Part 4: IDE Integration</h2>
+<h3 id="41-cursorwindsurf-mcp-config">4.1 Cursor/Windsurf MCP Config</h3>
+<p>Complete Config:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;boring&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;python&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-m&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;boring.mcp.server&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;GOOGLE_API_KEY&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;your-key&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;BORING_MCP_DEBUG&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<hr />
+<h3 id="42-smithery-cloud-deployment">4.2 Smithery Cloud Deployment</h3>
+<p>Visit <a href="https://smithery.ai/server/boring/boring">Smithery</a>:</p>
+<ol>
+<li>Connect your GitHub account</li>
+<li>Set <code>GOOGLE_API_KEY</code></li>
+<li>Use in any MCP client</li>
+</ol>
+<hr />
+<h3 id="43-dynamic-discovery">4.3 Dynamic Discovery</h3>
+<p>AI automatically discovers available tools:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># List all capability categories</span>
+<span class="n">boring</span><span class="p">:</span><span class="o">//</span><span class="n">capabilities</span>
+
+<span class="c1"># Get detailed usage for specific category</span>
+<span class="n">boring</span><span class="p">:</span><span class="o">//</span><span class="n">tools</span><span class="o">/</span><span class="n">security</span>
+<span class="n">boring</span><span class="p">:</span><span class="o">//</span><span class="n">tools</span><span class="o">/</span><span class="n">rag_search</span>
+</code></pre></div>
+<hr />
+<h2 id="part-5-practical-cases">Part 5: Practical Cases</h2>
+<h3 id="51-demo-build-rest-api">5.1 Demo: Build REST API</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Step 1: Start Vibe Coding</span>
+<span class="n">vibe_start</span><span class="p">(</span><span class="n">idea</span><span class="o">=</span><span class="s2">&quot;Build a FastAPI REST API for todo management&quot;</span><span class="p">)</span>
+
+<span class="c1"># Boring will:</span>
+<span class="c1"># 1. Ask you: Auth needed? Database choice?</span>
+<span class="c1"># 2. Generate Plan: API endpoints, Data models</span>
+<span class="c1"># 3. Execute Dev: Create files, Write tests</span>
+<span class="c1"># 4. Verify: Run tests, Security scan</span>
+</code></pre></div>
+<p><strong>Expected Output</strong>:
+<div class="highlight"><pre><span></span><code>src/
+├── main.py          # FastAPI entry
+├── models.py        # Pydantic models
+├── routes/
+│   └── todos.py     # CRUD routes
+└── tests/
+    └── test_todos.py # Tests
+</code></pre></div></p>
+<hr />
+<h3 id="52-demo-refactor-legacy-code">5.2 Demo: Refactor Legacy Code</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Step 1: Architect Evaluation (Hostile Architect Mode)</span>
+<span class="n">evaluate_architecture</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="s2">&quot;src/legacy/&quot;</span><span class="p">)</span>
+
+<span class="c1"># Boring will point out:</span>
+<span class="c1"># ⚠️ God class detected in UserManager</span>
+<span class="c1"># ⚠️ N+1 query in get_users()</span>
+<span class="c1"># ⚠️ Missing error handling</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># Step 2: Execute Refactor</span>
+<span class="n">boring_multi_agent</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="s2">&quot;Refactor UserManager into smaller services&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 3: Verify</span>
+<span class="n">boring_verify</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;FULL&quot;</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h3 id="53-demo-debugging">5.3 Demo: Debugging</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Step 1: Debug Error</span>
+<span class="n">debug_error</span><span class="p">(</span><span class="n">error_message</span><span class="o">=</span><span class="s2">&quot;TypeError: &#39;NoneType&#39; object is not iterable&quot;</span><span class="p">)</span>
+
+<span class="c1"># Boring Architect analyzes:</span>
+<span class="c1"># 1. Root Cause: get_users() returns None when DB is empty</span>
+<span class="c1"># 2. Likely Culprit: src/services/user.py:45</span>
+<span class="c1"># 3. Suggested Fix: Return empty list instead of None</span>
+<span class="c1"># 4. 🏛️ Architecture Lesson: Missing Null Object Pattern...</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># Step 2: Auto Fix</span>
+<span class="n">boring_auto_fix</span><span class="p">(</span><span class="n">max_iterations</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># Step 3: Verify</span>
+<span class="n">boring_verify</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;STANDARD&quot;</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="part-6-customization-extension">Part 6: Customization &amp; Extension</h2>
+<h3 id="61-create-custom-plugin">6.1 Create Custom Plugin</h3>
+<p><strong>Directory Structure</strong>:
+<div class="highlight"><pre><span></span><code>.boring_plugins/
+└── my_analyzer/
+    ├── plugin.yaml
+    └── __init__.py
+</code></pre></div></p>
+<p><strong>plugin.yaml</strong>:
+<div class="highlight"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my_analyzer</span>
+<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Custom code analyzer</span>
+<span class="nt">hooks</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pre_verify</span>
+</code></pre></div></p>
+<p><strong><strong>init</strong>.py</strong>:
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">pre_verify</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run before every verification&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Analyzing: </span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">project_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># Your custom logic</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;skip&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Usage</strong>:
+<div class="highlight"><pre><span></span><code><span class="n">boring_run_plugin</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_analyzer&quot;</span><span class="p">)</span>
+</code></pre></div></p>
+<hr />
+<h3 id="62-speckit-workflows">6.2 SpecKit Workflows</h3>
+<table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/speckit-clarify</code></td>
+<td>Generate clarifying questions</td>
+</tr>
+<tr>
+<td><code>/speckit-plan</code></td>
+<td>Create implementation plan</td>
+</tr>
+<tr>
+<td><code>/speckit-tasks</code></td>
+<td>Break down into task list</td>
+</tr>
+<tr>
+<td><code>/speckit-analyze</code></td>
+<td>Cross-document consistency check</td>
+</tr>
+<tr>
+<td><code>/speckit-checklist</code></td>
+<td>Generate quality checklist</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example</strong>:
+<div class="highlight"><pre><span></span><code>You: /speckit-plan
+Boring: Please provide requirement description...
+You: I need a user auth system
+Boring: [Generates detailed implementation plan]
+</code></pre></div></p>
+<hr />
+<h3 id="63-scoring-rubrics">6.3 Scoring Rubrics</h3>
+<p>Customize code quality rules:</p>
+<p><strong>.boring/brain/rubrics/my_rules.yaml</strong>:
+<div class="highlight"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my_coding_standards</span>
+<span class="nt">rules</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">no_print_statements</span>
+<span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warning</span>
+<span class="w">    </span><span class="nt">pattern</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;print\\(&quot;</span>
+<span class="w">    </span><span class="nt">message</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Use</span><span class="nv"> </span><span class="s">logging</span><span class="nv"> </span><span class="s">instead</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">print&quot;</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">require_docstrings</span>
+<span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error</span>
+<span class="w">    </span><span class="nt">check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">functions_have_docstrings</span>
+</code></pre></div></p>
+<p><strong>Usage</strong>:
+<div class="highlight"><pre><span></span><code><span class="n">boring_evaluate</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="s2">&quot;src/&quot;</span><span class="p">,</span> <span class="n">rubric</span><span class="o">=</span><span class="s2">&quot;my_rules&quot;</span><span class="p">)</span>
+</code></pre></div></p>
+<hr />
+<h2 id="next-steps">Next Steps</h2>
+<ul>
+<li>📖 <a href="../ADVANCED_TUTORIAL/">Advanced Developer Guide</a> — Architecture &amp; Internals</li>
+<li>📚 <a href="../../reference/APPENDIX_A_TOOL_REFERENCE/">Full Tool Reference</a> — All 55+ Tools</li>
+<li>❓ <a href="../../reference/APPENDIX_B_FAQ/">FAQ</a> — Troubleshooting</li>
+<li>🏛️ <a href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY/">Prompt Philosophy</a> — Architect Persona Design</li>
+</ul>
+<hr />
+<p><em>Built with ❤️ by the Boring for Gemini team</em></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../features/hidden-gems_zh/" class="btn btn-neutral float-left" title="💎 隱藏寶石"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../ADVANCED_TUTORIAL_zh/" class="btn btn-neutral float-right" title="進階教學">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../../features/hidden-gems_zh/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../ADVANCED_TUTORIAL_zh/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

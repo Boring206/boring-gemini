@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Git Hooks - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Git Hooks";
+        var mkdocs_page_input_path = "api\\hooks_zh.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Git Hooks</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#boring.hooks">hooks</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#boring.hooks.HooksManager">HooksManager</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#boring.hooks.HooksManager.is_git_repo">is_git_repo</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#boring.hooks.HooksManager.install_hook">install_hook</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#boring.hooks.HooksManager.install_all">install_all</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#boring.hooks.HooksManager.uninstall_hook">uninstall_hook</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#boring.hooks.HooksManager.uninstall_all">uninstall_all</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#boring.hooks.HooksManager.status">status</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">🔌 API 參考 (API Reference)</li>
+      <li class="breadcrumb-item active">Git Hooks</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/api/hooks_zh.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="git-hooks-api">Git Hooks API 參考</h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="boring.hooks" class="doc doc-heading">
+            <code>boring.hooks</code>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Git Hooks Module for Boring Local Teams.</p>
+<p>Provides pre-commit and pre-push hooks that run Boring verification
+before allowing commits/pushes. This implements a local version of
+"Boring for Teams" without requiring server infrastructure.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="boring.hooks.HooksManager" class="doc doc-heading">
+            <code>HooksManager</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Manages Git hooks installation and removal.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src\boring\hooks.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">HooksManager</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Manages Git hooks installation and removal.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project_root</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">=</span> <span class="n">project_root</span> <span class="ow">or</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">git_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;.git&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hooks_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">git_dir</span> <span class="o">/</span> <span class="s2">&quot;hooks&quot;</span>
+
+    <span class="k">def</span> <span class="nf">is_git_repo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if current directory is a Git repository.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">git_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">git_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">install_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hook_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Install a single Git hook.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_git_repo</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Not a Git repository. Run &#39;git init&#39; first.&quot;</span>
+
+        <span class="c1"># Ensure hooks directory exists</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hooks_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">hook_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hooks_dir</span> <span class="o">/</span> <span class="n">hook_name</span>
+
+        <span class="c1"># Check for existing hook</span>
+        <span class="k">if</span> <span class="n">hook_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="c1"># Backup existing hook</span>
+            <span class="n">backup_path</span> <span class="o">=</span> <span class="n">hook_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.backup&quot;</span><span class="p">)</span>
+            <span class="n">hook_path</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">backup_path</span><span class="p">)</span>
+            <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[yellow]Backed up existing </span><span class="si">{</span><span class="n">hook_name</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">hook_name</span><span class="si">}</span><span class="s2">.backup[/yellow]&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Get absolute path to current python executable</span>
+        <span class="c1"># Ensure forward slashes for shell script compatibility (even on Windows)</span>
+        <span class="n">python_exe</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Replace &#39;boring&#39; command with explicit python module invocation</span>
+        <span class="c1"># This ensures the hook runs in the same environment where it was installed</span>
+        <span class="n">final_content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;boring verify&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">python_exe</span><span class="si">}</span><span class="s1">&quot; -m boring verify&#39;</span><span class="p">)</span>
+        <span class="n">final_content</span> <span class="o">=</span> <span class="n">final_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+            <span class="s2">&quot;boring speckit-analyze&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">python_exe</span><span class="si">}</span><span class="s1">&quot; -m boring speckit-analyze&#39;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Replace existence check</span>
+        <span class="n">check_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">python_exe</span><span class="si">}</span><span class="s1">&quot; -m boring --help&#39;</span>
+        <span class="n">final_content</span> <span class="o">=</span> <span class="n">final_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;command -v boring&quot;</span><span class="p">,</span> <span class="n">check_cmd</span><span class="p">)</span>
+
+        <span class="c1"># Write new hook</span>
+        <span class="n">hook_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">final_content</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Make executable (Unix systems)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">current_mode</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">hook_path</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">hook_path</span><span class="p">,</span> <span class="n">current_mode</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IXUSR</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IXGRP</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IXOTH</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># Windows doesn&#39;t need this</span>
+
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Installed </span><span class="si">{</span><span class="n">hook_name</span><span class="si">}</span><span class="s2"> hook.&quot;</span>
+
+    <span class="k">def</span> <span class="nf">install_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Install all Boring hooks.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_git_repo</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Not a Git repository. Run &#39;git init&#39; first.&quot;</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Install pre-commit</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_hook</span><span class="p">(</span><span class="s2">&quot;pre-commit&quot;</span><span class="p">,</span> <span class="n">PRE_COMMIT_HOOK</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c1"># Install pre-push</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_hook</span><span class="p">(</span><span class="s2">&quot;pre-push&quot;</span><span class="p">,</span> <span class="n">PRE_PUSH_HOOK</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">uninstall_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hook_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a Boring hook (restores backup if exists).&quot;&quot;&quot;</span>
+        <span class="n">hook_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hooks_dir</span> <span class="o">/</span> <span class="n">hook_name</span>
+        <span class="n">backup_path</span> <span class="o">=</span> <span class="n">hook_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.backup&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">hook_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;No </span><span class="si">{</span><span class="n">hook_name</span><span class="si">}</span><span class="s2"> hook found.&quot;</span>
+
+        <span class="n">hook_path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+
+        <span class="c1"># Restore backup if exists</span>
+        <span class="k">if</span> <span class="n">backup_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">backup_path</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">hook_path</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Removed Boring </span><span class="si">{</span><span class="n">hook_name</span><span class="si">}</span><span class="s2"> and restored backup.&quot;</span>
+
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Removed Boring </span><span class="si">{</span><span class="n">hook_name</span><span class="si">}</span><span class="s2"> hook.&quot;</span>
+
+    <span class="k">def</span> <span class="nf">uninstall_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all Boring hooks.&quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">hook_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pre-commit&quot;</span><span class="p">,</span> <span class="s2">&quot;pre-push&quot;</span><span class="p">]:</span>
+            <span class="n">success</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uninstall_hook</span><span class="p">(</span><span class="n">hook_name</span><span class="p">)</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get status of installed hooks.&quot;&quot;&quot;</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;is_git_repo&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_git_repo</span><span class="p">(),</span> <span class="s2">&quot;hooks&quot;</span><span class="p">:</span> <span class="p">{}}</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_git_repo</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">status</span>
+
+        <span class="k">for</span> <span class="n">hook_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pre-commit&quot;</span><span class="p">,</span> <span class="s2">&quot;pre-push&quot;</span><span class="p">]:</span>
+            <span class="n">hook_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hooks_dir</span> <span class="o">/</span> <span class="n">hook_name</span>
+            <span class="k">if</span> <span class="n">hook_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">content</span> <span class="o">=</span> <span class="n">hook_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+                <span class="n">is_boring</span> <span class="o">=</span> <span class="s2">&quot;Boring&quot;</span> <span class="ow">in</span> <span class="n">content</span>
+                <span class="n">status</span><span class="p">[</span><span class="s2">&quot;hooks&quot;</span><span class="p">][</span><span class="n">hook_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;installed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;is_boring_hook&quot;</span><span class="p">:</span> <span class="n">is_boring</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">status</span><span class="p">[</span><span class="s2">&quot;hooks&quot;</span><span class="p">][</span><span class="n">hook_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;installed&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;is_boring_hook&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">status</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="boring.hooks.HooksManager.is_git_repo" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">is_git_repo</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Check if current directory is a Git repository.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\hooks.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">is_git_repo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if current directory is a Git repository.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">git_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">git_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="boring.hooks.HooksManager.install_hook" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">install_hook</span><span class="p">(</span><span class="n">hook_name</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Install a single Git hook.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\hooks.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">install_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hook_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Install a single Git hook.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_git_repo</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Not a Git repository. Run &#39;git init&#39; first.&quot;</span>
+
+    <span class="c1"># Ensure hooks directory exists</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">hooks_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">hook_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hooks_dir</span> <span class="o">/</span> <span class="n">hook_name</span>
+
+    <span class="c1"># Check for existing hook</span>
+    <span class="k">if</span> <span class="n">hook_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="c1"># Backup existing hook</span>
+        <span class="n">backup_path</span> <span class="o">=</span> <span class="n">hook_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.backup&quot;</span><span class="p">)</span>
+        <span class="n">hook_path</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">backup_path</span><span class="p">)</span>
+        <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[yellow]Backed up existing </span><span class="si">{</span><span class="n">hook_name</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">hook_name</span><span class="si">}</span><span class="s2">.backup[/yellow]&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Get absolute path to current python executable</span>
+    <span class="c1"># Ensure forward slashes for shell script compatibility (even on Windows)</span>
+    <span class="n">python_exe</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Replace &#39;boring&#39; command with explicit python module invocation</span>
+    <span class="c1"># This ensures the hook runs in the same environment where it was installed</span>
+    <span class="n">final_content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;boring verify&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">python_exe</span><span class="si">}</span><span class="s1">&quot; -m boring verify&#39;</span><span class="p">)</span>
+    <span class="n">final_content</span> <span class="o">=</span> <span class="n">final_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+        <span class="s2">&quot;boring speckit-analyze&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">python_exe</span><span class="si">}</span><span class="s1">&quot; -m boring speckit-analyze&#39;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Replace existence check</span>
+    <span class="n">check_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">python_exe</span><span class="si">}</span><span class="s1">&quot; -m boring --help&#39;</span>
+    <span class="n">final_content</span> <span class="o">=</span> <span class="n">final_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;command -v boring&quot;</span><span class="p">,</span> <span class="n">check_cmd</span><span class="p">)</span>
+
+    <span class="c1"># Write new hook</span>
+    <span class="n">hook_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">final_content</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Make executable (Unix systems)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">current_mode</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">hook_path</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">hook_path</span><span class="p">,</span> <span class="n">current_mode</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IXUSR</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IXGRP</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IXOTH</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>  <span class="c1"># Windows doesn&#39;t need this</span>
+
+    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Installed </span><span class="si">{</span><span class="n">hook_name</span><span class="si">}</span><span class="s2"> hook.&quot;</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="boring.hooks.HooksManager.install_all" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">install_all</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Install all Boring hooks.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\hooks.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">install_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Install all Boring hooks.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_git_repo</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Not a Git repository. Run &#39;git init&#39; first.&quot;</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Install pre-commit</span>
+    <span class="n">success</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_hook</span><span class="p">(</span><span class="s2">&quot;pre-commit&quot;</span><span class="p">,</span> <span class="n">PRE_COMMIT_HOOK</span><span class="p">)</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="c1"># Install pre-push</span>
+    <span class="n">success</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_hook</span><span class="p">(</span><span class="s2">&quot;pre-push&quot;</span><span class="p">,</span> <span class="n">PRE_PUSH_HOOK</span><span class="p">)</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="boring.hooks.HooksManager.uninstall_hook" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">uninstall_hook</span><span class="p">(</span><span class="n">hook_name</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Remove a Boring hook (restores backup if exists).</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\hooks.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">uninstall_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hook_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove a Boring hook (restores backup if exists).&quot;&quot;&quot;</span>
+    <span class="n">hook_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hooks_dir</span> <span class="o">/</span> <span class="n">hook_name</span>
+    <span class="n">backup_path</span> <span class="o">=</span> <span class="n">hook_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.backup&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">hook_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;No </span><span class="si">{</span><span class="n">hook_name</span><span class="si">}</span><span class="s2"> hook found.&quot;</span>
+
+    <span class="n">hook_path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+
+    <span class="c1"># Restore backup if exists</span>
+    <span class="k">if</span> <span class="n">backup_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">backup_path</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">hook_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Removed Boring </span><span class="si">{</span><span class="n">hook_name</span><span class="si">}</span><span class="s2"> and restored backup.&quot;</span>
+
+    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Removed Boring </span><span class="si">{</span><span class="n">hook_name</span><span class="si">}</span><span class="s2"> hook.&quot;</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="boring.hooks.HooksManager.uninstall_all" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">uninstall_all</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Remove all Boring hooks.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\hooks.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">uninstall_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove all Boring hooks.&quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">hook_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pre-commit&quot;</span><span class="p">,</span> <span class="s2">&quot;pre-push&quot;</span><span class="p">]:</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uninstall_hook</span><span class="p">(</span><span class="n">hook_name</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="boring.hooks.HooksManager.status" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">status</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get status of installed hooks.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\hooks.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get status of installed hooks.&quot;&quot;&quot;</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;is_git_repo&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_git_repo</span><span class="p">(),</span> <span class="s2">&quot;hooks&quot;</span><span class="p">:</span> <span class="p">{}}</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_git_repo</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">status</span>
+
+    <span class="k">for</span> <span class="n">hook_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pre-commit&quot;</span><span class="p">,</span> <span class="s2">&quot;pre-push&quot;</span><span class="p">]:</span>
+        <span class="n">hook_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hooks_dir</span> <span class="o">/</span> <span class="n">hook_name</span>
+        <span class="k">if</span> <span class="n">hook_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">hook_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+            <span class="n">is_boring</span> <span class="o">=</span> <span class="s2">&quot;Boring&quot;</span> <span class="ow">in</span> <span class="n">content</span>
+            <span class="n">status</span><span class="p">[</span><span class="s2">&quot;hooks&quot;</span><span class="p">][</span><span class="n">hook_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;installed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;is_boring_hook&quot;</span><span class="p">:</span> <span class="n">is_boring</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">status</span><span class="p">[</span><span class="s2">&quot;hooks&quot;</span><span class="p">][</span><span class="n">hook_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;installed&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;is_boring_hook&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">status</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../vibe_zh/" class="btn btn-neutral float-left" title="Vibe Module"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../utils_zh/" class="btn btn-neutral float-right" title="Utilities">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../vibe_zh/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../utils_zh/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

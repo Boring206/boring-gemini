@@ -1,0 +1,2405 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>gemini_client - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "gemini_client";
+        var mkdocs_page_input_path = "api\\gemini_client.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">gemini_client</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/api/gemini_client.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="gemini_client">gemini_client</h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="boring.gemini_client" class="doc doc-heading">
+            <code>boring.gemini_client</code>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Gemini SDK Client for Boring (V10.1 - Modular)</p>
+<p>This module now re-exports from the modular boring.llm package
+for backwards compatibility with existing code.</p>
+<p>The actual implementation is in:
+- boring.llm.sdk: GeminiClient core
+- boring.llm.tools: Function calling definitions
+- boring.llm.executor: Tool execution logic</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="boring.gemini_client.ToolExecutor" class="doc doc-heading">
+            <code>ToolExecutor</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Executes function calls from LLM responses.</p>
+<p>Handles:
+- File writes with security checks
+- Search/replace operations
+- Status reporting</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src\boring\llm\executor.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ToolExecutor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes function calls from LLM responses.</span>
+
+<span class="sd">    Handles:</span>
+<span class="sd">    - File writes with security checks</span>
+<span class="sd">    - Search/replace operations</span>
+<span class="sd">    - Status reporting</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project_root</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">log_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_root</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span> <span class="o">=</span> <span class="n">log_dir</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;logs&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">process_function_calls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function_calls</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Process and execute function calls returned by the model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            function_calls: List of function call dicts with &#39;name&#39; and &#39;args&#39;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict with:</span>
+<span class="sd">            - files_written: List of files created/modified</span>
+<span class="sd">            - search_replaces: List of search/replace operations performed</span>
+<span class="sd">            - status: Status report if provided</span>
+<span class="sd">            - errors: List of any errors encountered</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;files_written&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;search_replaces&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+
+        <span class="k">for</span> <span class="n">fc</span> <span class="ow">in</span> <span class="n">function_calls</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;args&quot;</span><span class="p">,</span> <span class="p">{})</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;write_file&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_write_file</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;search_replace&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_search_replace</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;report_status&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_report_status</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;WARN&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Unknown function: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Function call error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">_handle_write_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle write_file function call.&quot;&quot;&quot;</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;file_path&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">file_path</span> <span class="ow">and</span> <span class="n">content</span><span class="p">:</span>
+            <span class="c1"># Security check</span>
+            <span class="k">if</span> <span class="s2">&quot;..&quot;</span> <span class="ow">in</span> <span class="n">file_path</span> <span class="ow">or</span> <span class="n">file_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)):</span>
+                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Suspicious path: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="n">full_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="n">file_path</span>
+            <span class="n">full_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">full_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[</span><span class="s2">&quot;files_written&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;SUCCESS&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;✏️ Wrote file: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_handle_search_replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle search_replace function call.&quot;&quot;&quot;</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;file_path&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">search</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">replace</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;replace&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">file_path</span> <span class="ow">and</span> <span class="n">search</span><span class="p">:</span>
+            <span class="n">full_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="n">file_path</span>
+            <span class="k">if</span> <span class="n">full_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">content</span> <span class="o">=</span> <span class="n">full_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">search</span> <span class="ow">in</span> <span class="n">content</span><span class="p">:</span>
+                    <span class="n">new_content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">search</span><span class="p">,</span> <span class="n">replace</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">full_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">new_content</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+                    <span class="n">result</span><span class="p">[</span><span class="s2">&quot;search_replaces&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="n">file_path</span><span class="p">,</span>
+                            <span class="s2">&quot;search&quot;</span><span class="p">:</span> <span class="n">search</span><span class="p">[:</span><span class="mi">50</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">search</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">50</span> <span class="k">else</span> <span class="n">search</span><span class="p">,</span>
+                        <span class="p">}</span>
+                    <span class="p">)</span>
+                    <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;SUCCESS&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;🔄 Search/Replace in: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">result</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Search text not found in </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_handle_report_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle report_status function call.&quot;&quot;&quot;</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;IN_PROGRESS&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;tasks_completed&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tasks_completed&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;files_modified&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;files_modified&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;exit_signal&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;exit_signal&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="n">log_status</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span>
+            <span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Status: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, Exit: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">][</span><span class="s1">&#39;exit_signal&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="boring.gemini_client.ToolExecutor.process_function_calls" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">process_function_calls</span><span class="p">(</span><span class="n">function_calls</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Process and execute function calls returned by the model.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>function_calls</code></b>
+                  (<code><span title="list">list</span>[<span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]]</code>)
+              –
+              <div class="doc-md-description">
+                <p>List of function call dicts with 'name' and 'args'</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
+              –
+              <div class="doc-md-description">
+                <p>Dict with:</p>
+              </div>
+            </li>
+            <li>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
+              –
+              <div class="doc-md-description">
+                <ul>
+<li>files_written: List of files created/modified</li>
+</ul>
+              </div>
+            </li>
+            <li>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
+              –
+              <div class="doc-md-description">
+                <ul>
+<li>search_replaces: List of search/replace operations performed</li>
+</ul>
+              </div>
+            </li>
+            <li>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
+              –
+              <div class="doc-md-description">
+                <ul>
+<li>status: Status report if provided</li>
+</ul>
+              </div>
+            </li>
+            <li>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
+              –
+              <div class="doc-md-description">
+                <ul>
+<li>errors: List of any errors encountered</li>
+</ul>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\llm\executor.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">process_function_calls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function_calls</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Process and execute function calls returned by the model.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        function_calls: List of function call dicts with &#39;name&#39; and &#39;args&#39;</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dict with:</span>
+<span class="sd">        - files_written: List of files created/modified</span>
+<span class="sd">        - search_replaces: List of search/replace operations performed</span>
+<span class="sd">        - status: Status report if provided</span>
+<span class="sd">        - errors: List of any errors encountered</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;files_written&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;search_replaces&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+
+    <span class="k">for</span> <span class="n">fc</span> <span class="ow">in</span> <span class="n">function_calls</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;args&quot;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;write_file&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_handle_write_file</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;search_replace&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_handle_search_replace</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;report_status&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_handle_report_status</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;WARN&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Unknown function: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Function call error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="boring.gemini_client.GeminiClient" class="doc doc-heading">
+            <code>GeminiClient</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Lightweight wrapper around the Google Gen AI SDK.</p>
+<p>V10 Changes:
+- Modular architecture (tools and executor separate)
+- Stateless client pattern
+- Updated for google-genai SDK</p>
+<p>Handles:
+- API key configuration
+- Content generation
+- Rate limit handling
+- Error recovery</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src\boring\llm\sdk.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GeminiClient</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Lightweight wrapper around the Google Gen AI SDK.</span>
+
+<span class="sd">    V10 Changes:</span>
+<span class="sd">    - Modular architecture (tools and executor separate)</span>
+<span class="sd">    - Stateless client pattern</span>
+<span class="sd">    - Updated for google-genai SDK</span>
+
+<span class="sd">    Handles:</span>
+<span class="sd">    - API key configuration</span>
+<span class="sd">    - Content generation</span>
+<span class="sd">    - Rate limit handling</span>
+<span class="sd">    - Error recovery</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_MODEL</span><span class="p">,</span>
+        <span class="n">log_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;logs&quot;</span><span class="p">),</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the Gemini client.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            api_key: Google API key. If None, reads from GOOGLE_API_KEY env var.</span>
+<span class="sd">            model_name: Gemini model to use.</span>
+<span class="sd">            log_dir: Directory for logging.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span> <span class="o">=</span> <span class="n">log_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span> <span class="o">=</span> <span class="n">model_name</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">GENAI_AVAILABLE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s2">&quot;google-genai package not installed. Install with: pip install google-genai&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Get API key (Prioritize arg -&gt; settings -&gt; env)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">api_key</span> <span class="ow">or</span> <span class="n">settings</span><span class="o">.</span><span class="n">GOOGLE_API_KEY</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;GOOGLE_API_KEY&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;sdk&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cli_adapter</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="p">:</span>
+            <span class="c1"># Fallback to CLI if possible</span>
+            <span class="kn">from</span> <span class="nn">..cli_client</span> <span class="kn">import</span> <span class="n">GeminiCLIAdapter</span><span class="p">,</span> <span class="n">check_cli_available</span>
+
+            <span class="k">if</span> <span class="n">check_cli_available</span><span class="p">():</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No API key found. Falling back to Gemini CLI backend.&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;cli&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cli_adapter</span> <span class="o">=</span> <span class="n">GeminiCLIAdapter</span><span class="p">(</span>
+                    <span class="n">model_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span> <span class="n">log_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;GOOGLE_API_KEY not set and Gemini CLI not found. &quot;</span>
+                    <span class="s2">&quot;Please set GOOGLE_API_KEY or install @google/gemini-cli.&quot;</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Initialize SDK client if using SDK backend</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;sdk&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">genai</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Get tools for function calling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tools</span> <span class="o">=</span> <span class="n">get_boring_tools</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_function_calling</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+        <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Gemini SDK V10 initialized with model: </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_function_calling</span><span class="p">:</span>
+            <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;Function Calling enabled&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">system_instruction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">timeout_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">TIMEOUT_MINUTES</span> <span class="o">*</span> <span class="mi">60</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate content using Gemini.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            prompt: The main prompt/instructions</span>
+<span class="sd">            context: Additional context to prepend</span>
+<span class="sd">            system_instruction: System-level instructions</span>
+<span class="sd">            timeout_seconds: Request timeout</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple of (response_text, success_flag)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Build the full prompt</span>
+        <span class="n">full_prompt_parts</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
+            <span class="n">full_prompt_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Context</span><span class="se">\n</span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">full_prompt_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Task</span><span class="se">\n</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">full_prompt</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">---</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">full_prompt_parts</span><span class="p">)</span>
+
+        <span class="c1"># Build contents with proper Part objects</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">Content</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">parts</span><span class="o">=</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">full_prompt</span><span class="p">)])]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;cli&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cli_adapter</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
+            <span class="c1"># Generate content using stateless client</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
+                    <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span>
+                    <span class="n">contents</span><span class="o">=</span><span class="n">contents</span><span class="p">,</span>
+                    <span class="n">config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">GenerateContentConfig</span><span class="p">(</span>
+                        <span class="n">system_instruction</span><span class="o">=</span><span class="n">system_instruction</span> <span class="ow">or</span> <span class="n">SYSTEM_INSTRUCTION_OPTIMIZED</span><span class="p">,</span>
+                        <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+                        <span class="n">max_output_tokens</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c1"># Handle Model Not Found (404) with fallback</span>
+                <span class="k">if</span> <span class="s2">&quot;404&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;not found&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                    <span class="n">fallback_model</span> <span class="o">=</span> <span class="s2">&quot;gemini-1.5-flash&quot;</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span> <span class="o">!=</span> <span class="n">fallback_model</span><span class="p">:</span>
+                        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="si">}</span><span class="s2"> not found. Falling back to </span><span class="si">{</span><span class="n">fallback_model</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="p">)</span>
+                        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
+                            <span class="n">model</span><span class="o">=</span><span class="n">fallback_model</span><span class="p">,</span>
+                            <span class="n">contents</span><span class="o">=</span><span class="n">contents</span><span class="p">,</span>
+                            <span class="n">config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">GenerateContentConfig</span><span class="p">(</span>
+                                <span class="n">system_instruction</span><span class="o">=</span><span class="n">system_instruction</span>
+                                <span class="ow">or</span> <span class="n">SYSTEM_INSTRUCTION_OPTIMIZED</span><span class="p">,</span>
+                                <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+                                <span class="n">max_output_tokens</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span>
+                            <span class="p">),</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">e</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">e</span>
+
+            <span class="c1"># Extract text from response (Pydantic model)</span>
+            <span class="k">if</span> <span class="n">response</span> <span class="ow">and</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;WARN&quot;</span><span class="p">,</span> <span class="s2">&quot;Empty response from Gemini&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">False</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">error_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot;429&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;resource_exhausted&quot;</span> <span class="ow">in</span> <span class="n">error_str</span><span class="p">:</span>
+                <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Rate limit exceeded: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;RATE_LIMIT_ERROR: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="s2">&quot;deadline&quot;</span> <span class="ow">in</span> <span class="n">error_str</span> <span class="ow">or</span> <span class="s2">&quot;timeout&quot;</span> <span class="ow">in</span> <span class="n">error_str</span><span class="p">:</span>
+                <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Request timeout: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;TIMEOUT_ERROR: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Unexpected error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;UNEXPECTED_ERROR: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">generate_with_retry</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">system_instruction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="n">base_delay</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate content with exponential backoff retry.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_retries</span><span class="p">):</span>
+            <span class="n">response</span><span class="p">,</span> <span class="n">success</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">system_instruction</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">response</span><span class="p">,</span> <span class="kc">True</span>
+
+            <span class="c1"># Check if it&#39;s a rate limit error or server overloaded</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="s2">&quot;RATE_LIMIT_ERROR&quot;</span> <span class="ow">in</span> <span class="n">response</span>
+                <span class="ow">or</span> <span class="s2">&quot;503&quot;</span> <span class="ow">in</span> <span class="n">response</span>
+                <span class="ow">or</span> <span class="s2">&quot;overloaded&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="p">):</span>
+                <span class="n">delay</span> <span class="o">=</span> <span class="n">base_delay</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">attempt</span><span class="p">)</span>
+                <span class="n">log_status</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span>
+                    <span class="s2">&quot;WARN&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;Rate limited/Overloaded, retrying in </span><span class="si">{</span><span class="n">delay</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s (attempt </span><span class="si">{</span><span class="n">attempt</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">max_retries</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># For other errors, don&#39;t retry</span>
+            <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">response</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">generate_with_tools</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">timeout_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">TIMEOUT_MINUTES</span> <span class="o">*</span> <span class="mi">60</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate content using Gemini with Function Calling.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple of (text_response, function_calls, success_flag)</span>
+<span class="sd">            - text_response: Any text content from the response</span>
+<span class="sd">            - function_calls: List of dicts with &#39;name&#39; and &#39;args&#39; keys</span>
+<span class="sd">            - success_flag: Whether generation succeeded</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">full_prompt_parts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
+            <span class="n">full_prompt_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Context</span><span class="se">\n</span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">full_prompt_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Task</span><span class="se">\n</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">full_prompt</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">---</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">full_prompt_parts</span><span class="p">)</span>
+
+        <span class="c1"># Build contents</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">Content</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">parts</span><span class="o">=</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">full_prompt</span><span class="p">)])]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;cli&quot;</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cli_adapter</span><span class="o">.</span><span class="n">generate_with_tools</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">function_calls</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">success</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
+                    <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span>
+                    <span class="n">contents</span><span class="o">=</span><span class="n">contents</span><span class="p">,</span>
+                    <span class="n">config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">GenerateContentConfig</span><span class="p">(</span>
+                        <span class="n">system_instruction</span><span class="o">=</span><span class="n">SYSTEM_INSTRUCTION_OPTIMIZED</span><span class="p">,</span>
+                        <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+                        <span class="n">max_output_tokens</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span>
+                        <span class="n">tools</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tools</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_function_calling</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c1"># Handle Model Not Found (404) with fallback</span>
+                <span class="k">if</span> <span class="s2">&quot;404&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;not found&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                    <span class="n">fallback_model</span> <span class="o">=</span> <span class="s2">&quot;gemini-1.5-flash&quot;</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span> <span class="o">!=</span> <span class="n">fallback_model</span><span class="p">:</span>
+                        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="si">}</span><span class="s2"> not found in tools call. Falling back to </span><span class="si">{</span><span class="n">fallback_model</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="p">)</span>
+                        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
+                            <span class="n">model</span><span class="o">=</span><span class="n">fallback_model</span><span class="p">,</span>
+                            <span class="n">contents</span><span class="o">=</span><span class="n">contents</span><span class="p">,</span>
+                            <span class="n">config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">GenerateContentConfig</span><span class="p">(</span>
+                                <span class="n">system_instruction</span><span class="o">=</span><span class="n">SYSTEM_INSTRUCTION_OPTIMIZED</span><span class="p">,</span>
+                                <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+                                <span class="n">max_output_tokens</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span>
+                                <span class="n">tools</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tools</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_function_calling</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="p">),</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">e</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">e</span>
+
+            <span class="c1"># Extract function calls and text</span>
+            <span class="n">function_calls</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">text_parts</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">candidates</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">candidates</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">candidate</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">candidate</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">candidate</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+                            <span class="c1"># Check for function call</span>
+                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="s2">&quot;function_call&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">part</span><span class="o">.</span><span class="n">function_call</span><span class="p">:</span>
+                                <span class="n">fc</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">function_call</span>
+                                <span class="c1"># Use model_dump() for Pydantic models</span>
+                                <span class="n">args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">args</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
+                                <span class="n">function_calls</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">fc</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="n">args</span><span class="p">})</span>
+                            <span class="c1"># Check for text</span>
+                            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">part</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                                <span class="n">text_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="n">text_response</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text_parts</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">function_calls</span><span class="p">:</span>
+                <span class="n">log_status</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span>
+                    <span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;Received </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">function_calls</span><span class="p">)</span><span class="si">}</span><span class="s2"> function call(s): </span><span class="si">{</span><span class="p">[</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">fc</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">function_calls</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">text_response</span><span class="p">,</span> <span class="n">function_calls</span><span class="p">,</span> <span class="kc">True</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">error_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot;429&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;resource_exhausted&quot;</span> <span class="ow">in</span> <span class="n">error_str</span><span class="p">:</span>
+                <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Rate limit exceeded: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;RATE_LIMIT_ERROR: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="s2">&quot;deadline&quot;</span> <span class="ow">in</span> <span class="n">error_str</span> <span class="ow">or</span> <span class="s2">&quot;timeout&quot;</span> <span class="ow">in</span> <span class="n">error_str</span><span class="p">:</span>
+                <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Request timeout: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;TIMEOUT_ERROR: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Unexpected error in generate_with_tools: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;UNEXPECTED_ERROR: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="kc">False</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="boring.gemini_client.GeminiClient.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">model_name</span><span class="o">=</span><span class="n">DEFAULT_MODEL</span><span class="p">,</span> <span class="n">log_dir</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="s1">&#39;logs&#39;</span><span class="p">))</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the Gemini client.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>api_key</code></b>
+                  (<code><span title="typing.Optional">Optional</span>[<span title="str">str</span>]</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Google API key. If None, reads from GOOGLE_API_KEY env var.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>model_name</code></b>
+                  (<code><span title="str">str</span></code>, default:
+                      <code><span title="boring.llm.sdk.DEFAULT_MODEL">DEFAULT_MODEL</span></code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Gemini model to use.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>log_dir</code></b>
+                  (<code><span title="pathlib.Path">Path</span></code>, default:
+                      <code><span title="pathlib.Path">Path</span>(&#39;logs&#39;)</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Directory for logging.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\llm\sdk.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_MODEL</span><span class="p">,</span>
+    <span class="n">log_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;logs&quot;</span><span class="p">),</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initialize the Gemini client.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        api_key: Google API key. If None, reads from GOOGLE_API_KEY env var.</span>
+<span class="sd">        model_name: Gemini model to use.</span>
+<span class="sd">        log_dir: Directory for logging.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span> <span class="o">=</span> <span class="n">log_dir</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span> <span class="o">=</span> <span class="n">model_name</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">GENAI_AVAILABLE</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s2">&quot;google-genai package not installed. Install with: pip install google-genai&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Get API key (Prioritize arg -&gt; settings -&gt; env)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">api_key</span> <span class="ow">or</span> <span class="n">settings</span><span class="o">.</span><span class="n">GOOGLE_API_KEY</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;GOOGLE_API_KEY&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;sdk&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">cli_adapter</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="p">:</span>
+        <span class="c1"># Fallback to CLI if possible</span>
+        <span class="kn">from</span> <span class="nn">..cli_client</span> <span class="kn">import</span> <span class="n">GeminiCLIAdapter</span><span class="p">,</span> <span class="n">check_cli_available</span>
+
+        <span class="k">if</span> <span class="n">check_cli_available</span><span class="p">():</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No API key found. Falling back to Gemini CLI backend.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;cli&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cli_adapter</span> <span class="o">=</span> <span class="n">GeminiCLIAdapter</span><span class="p">(</span>
+                <span class="n">model_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span> <span class="n">log_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;GOOGLE_API_KEY not set and Gemini CLI not found. &quot;</span>
+                <span class="s2">&quot;Please set GOOGLE_API_KEY or install @google/gemini-cli.&quot;</span>
+            <span class="p">)</span>
+
+    <span class="c1"># Initialize SDK client if using SDK backend</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;sdk&quot;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">genai</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Get tools for function calling</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tools</span> <span class="o">=</span> <span class="n">get_boring_tools</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">use_function_calling</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+    <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Gemini SDK V10 initialized with model: </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_function_calling</span><span class="p">:</span>
+        <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;Function Calling enabled&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="boring.gemini_client.GeminiClient.generate" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">system_instruction</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">timeout_seconds</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">TIMEOUT_MINUTES</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Generate content using Gemini.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>prompt</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>The main prompt/instructions</p>
+              </div>
+            </li>
+            <li>
+              <b><code>context</code></b>
+                  (<code><span title="str">str</span></code>, default:
+                      <code>&#39;&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Additional context to prepend</p>
+              </div>
+            </li>
+            <li>
+              <b><code>system_instruction</code></b>
+                  (<code><span title="str">str</span></code>, default:
+                      <code>&#39;&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>System-level instructions</p>
+              </div>
+            </li>
+            <li>
+              <b><code>timeout_seconds</code></b>
+                  (<code><span title="int">int</span></code>, default:
+                      <code><span title="boring.config.settings.TIMEOUT_MINUTES">TIMEOUT_MINUTES</span> * 60</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Request timeout</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="tuple">tuple</span>[<span title="str">str</span>, <span title="bool">bool</span>]</code>
+              –
+              <div class="doc-md-description">
+                <p>Tuple of (response_text, success_flag)</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\llm\sdk.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">generate</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">system_instruction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">timeout_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">TIMEOUT_MINUTES</span> <span class="o">*</span> <span class="mi">60</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate content using Gemini.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        prompt: The main prompt/instructions</span>
+<span class="sd">        context: Additional context to prepend</span>
+<span class="sd">        system_instruction: System-level instructions</span>
+<span class="sd">        timeout_seconds: Request timeout</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple of (response_text, success_flag)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Build the full prompt</span>
+    <span class="n">full_prompt_parts</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
+        <span class="n">full_prompt_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Context</span><span class="se">\n</span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">full_prompt_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Task</span><span class="se">\n</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">full_prompt</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">---</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">full_prompt_parts</span><span class="p">)</span>
+
+    <span class="c1"># Build contents with proper Part objects</span>
+    <span class="n">contents</span> <span class="o">=</span> <span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">Content</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">parts</span><span class="o">=</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">full_prompt</span><span class="p">)])]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;cli&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cli_adapter</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
+        <span class="c1"># Generate content using stateless client</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span>
+                <span class="n">contents</span><span class="o">=</span><span class="n">contents</span><span class="p">,</span>
+                <span class="n">config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">GenerateContentConfig</span><span class="p">(</span>
+                    <span class="n">system_instruction</span><span class="o">=</span><span class="n">system_instruction</span> <span class="ow">or</span> <span class="n">SYSTEM_INSTRUCTION_OPTIMIZED</span><span class="p">,</span>
+                    <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+                    <span class="n">max_output_tokens</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># Handle Model Not Found (404) with fallback</span>
+            <span class="k">if</span> <span class="s2">&quot;404&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;not found&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="n">fallback_model</span> <span class="o">=</span> <span class="s2">&quot;gemini-1.5-flash&quot;</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span> <span class="o">!=</span> <span class="n">fallback_model</span><span class="p">:</span>
+                    <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="si">}</span><span class="s2"> not found. Falling back to </span><span class="si">{</span><span class="n">fallback_model</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
+                        <span class="n">model</span><span class="o">=</span><span class="n">fallback_model</span><span class="p">,</span>
+                        <span class="n">contents</span><span class="o">=</span><span class="n">contents</span><span class="p">,</span>
+                        <span class="n">config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">GenerateContentConfig</span><span class="p">(</span>
+                            <span class="n">system_instruction</span><span class="o">=</span><span class="n">system_instruction</span>
+                            <span class="ow">or</span> <span class="n">SYSTEM_INSTRUCTION_OPTIMIZED</span><span class="p">,</span>
+                            <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+                            <span class="n">max_output_tokens</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span>
+                        <span class="p">),</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">e</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">e</span>
+
+        <span class="c1"># Extract text from response (Pydantic model)</span>
+        <span class="k">if</span> <span class="n">response</span> <span class="ow">and</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;WARN&quot;</span><span class="p">,</span> <span class="s2">&quot;Empty response from Gemini&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">False</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">error_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;429&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;resource_exhausted&quot;</span> <span class="ow">in</span> <span class="n">error_str</span><span class="p">:</span>
+            <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Rate limit exceeded: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;RATE_LIMIT_ERROR: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="s2">&quot;deadline&quot;</span> <span class="ow">in</span> <span class="n">error_str</span> <span class="ow">or</span> <span class="s2">&quot;timeout&quot;</span> <span class="ow">in</span> <span class="n">error_str</span><span class="p">:</span>
+            <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Request timeout: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;TIMEOUT_ERROR: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Unexpected error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;UNEXPECTED_ERROR: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">False</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="boring.gemini_client.GeminiClient.generate_with_retry" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">generate_with_retry</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">system_instruction</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">base_delay</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Generate content with exponential backoff retry.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\llm\sdk.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">generate_with_retry</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">system_instruction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="n">base_delay</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate content with exponential backoff retry.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_retries</span><span class="p">):</span>
+        <span class="n">response</span><span class="p">,</span> <span class="n">success</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">system_instruction</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">response</span><span class="p">,</span> <span class="kc">True</span>
+
+        <span class="c1"># Check if it&#39;s a rate limit error or server overloaded</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="s2">&quot;RATE_LIMIT_ERROR&quot;</span> <span class="ow">in</span> <span class="n">response</span>
+            <span class="ow">or</span> <span class="s2">&quot;503&quot;</span> <span class="ow">in</span> <span class="n">response</span>
+            <span class="ow">or</span> <span class="s2">&quot;overloaded&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="p">):</span>
+            <span class="n">delay</span> <span class="o">=</span> <span class="n">base_delay</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">attempt</span><span class="p">)</span>
+            <span class="n">log_status</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span>
+                <span class="s2">&quot;WARN&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;Rate limited/Overloaded, retrying in </span><span class="si">{</span><span class="n">delay</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s (attempt </span><span class="si">{</span><span class="n">attempt</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">max_retries</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># For other errors, don&#39;t retry</span>
+        <span class="k">break</span>
+
+    <span class="k">return</span> <span class="n">response</span><span class="p">,</span> <span class="kc">False</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="boring.gemini_client.GeminiClient.generate_with_tools" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">generate_with_tools</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">timeout_seconds</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">TIMEOUT_MINUTES</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Generate content using Gemini with Function Calling.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="str">str</span></code>
+              –
+              <div class="doc-md-description">
+                <p>Tuple of (text_response, function_calls, success_flag)</p>
+              </div>
+            </li>
+            <li>
+                  <code><span title="list">list</span>[<span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]]</code>
+              –
+              <div class="doc-md-description">
+                <ul>
+<li>text_response: Any text content from the response</li>
+</ul>
+              </div>
+            </li>
+            <li>
+                  <code><span title="bool">bool</span></code>
+              –
+              <div class="doc-md-description">
+                <ul>
+<li>function_calls: List of dicts with 'name' and 'args' keys</li>
+</ul>
+              </div>
+            </li>
+            <li>
+                  <code><span title="tuple">tuple</span>[<span title="str">str</span>, <span title="list">list</span>[<span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]], <span title="bool">bool</span>]</code>
+              –
+              <div class="doc-md-description">
+                <ul>
+<li>success_flag: Whether generation succeeded</li>
+</ul>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\llm\sdk.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">generate_with_tools</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">timeout_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">TIMEOUT_MINUTES</span> <span class="o">*</span> <span class="mi">60</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate content using Gemini with Function Calling.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple of (text_response, function_calls, success_flag)</span>
+<span class="sd">        - text_response: Any text content from the response</span>
+<span class="sd">        - function_calls: List of dicts with &#39;name&#39; and &#39;args&#39; keys</span>
+<span class="sd">        - success_flag: Whether generation succeeded</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">full_prompt_parts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
+        <span class="n">full_prompt_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Context</span><span class="se">\n</span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">full_prompt_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Task</span><span class="se">\n</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">full_prompt</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">---</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">full_prompt_parts</span><span class="p">)</span>
+
+    <span class="c1"># Build contents</span>
+    <span class="n">contents</span> <span class="o">=</span> <span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">Content</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">parts</span><span class="o">=</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">full_prompt</span><span class="p">)])]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;cli&quot;</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cli_adapter</span><span class="o">.</span><span class="n">generate_with_tools</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">function_calls</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">success</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span>
+                <span class="n">contents</span><span class="o">=</span><span class="n">contents</span><span class="p">,</span>
+                <span class="n">config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">GenerateContentConfig</span><span class="p">(</span>
+                    <span class="n">system_instruction</span><span class="o">=</span><span class="n">SYSTEM_INSTRUCTION_OPTIMIZED</span><span class="p">,</span>
+                    <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+                    <span class="n">max_output_tokens</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span>
+                    <span class="n">tools</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tools</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_function_calling</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># Handle Model Not Found (404) with fallback</span>
+            <span class="k">if</span> <span class="s2">&quot;404&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;not found&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="n">fallback_model</span> <span class="o">=</span> <span class="s2">&quot;gemini-1.5-flash&quot;</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span> <span class="o">!=</span> <span class="n">fallback_model</span><span class="p">:</span>
+                    <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="si">}</span><span class="s2"> not found in tools call. Falling back to </span><span class="si">{</span><span class="n">fallback_model</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
+                        <span class="n">model</span><span class="o">=</span><span class="n">fallback_model</span><span class="p">,</span>
+                        <span class="n">contents</span><span class="o">=</span><span class="n">contents</span><span class="p">,</span>
+                        <span class="n">config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">GenerateContentConfig</span><span class="p">(</span>
+                            <span class="n">system_instruction</span><span class="o">=</span><span class="n">SYSTEM_INSTRUCTION_OPTIMIZED</span><span class="p">,</span>
+                            <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+                            <span class="n">max_output_tokens</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span>
+                            <span class="n">tools</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tools</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_function_calling</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="p">),</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">e</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">e</span>
+
+        <span class="c1"># Extract function calls and text</span>
+        <span class="n">function_calls</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">text_parts</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">candidates</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">candidates</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">candidate</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">candidate</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">candidate</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+                        <span class="c1"># Check for function call</span>
+                        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="s2">&quot;function_call&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">part</span><span class="o">.</span><span class="n">function_call</span><span class="p">:</span>
+                            <span class="n">fc</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">function_call</span>
+                            <span class="c1"># Use model_dump() for Pydantic models</span>
+                            <span class="n">args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">args</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
+                            <span class="n">function_calls</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">fc</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="n">args</span><span class="p">})</span>
+                        <span class="c1"># Check for text</span>
+                        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">part</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                            <span class="n">text_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="n">text_response</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text_parts</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">function_calls</span><span class="p">:</span>
+            <span class="n">log_status</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span>
+                <span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;Received </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">function_calls</span><span class="p">)</span><span class="si">}</span><span class="s2"> function call(s): </span><span class="si">{</span><span class="p">[</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">fc</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">function_calls</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">text_response</span><span class="p">,</span> <span class="n">function_calls</span><span class="p">,</span> <span class="kc">True</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">error_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;429&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;resource_exhausted&quot;</span> <span class="ow">in</span> <span class="n">error_str</span><span class="p">:</span>
+            <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Rate limit exceeded: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;RATE_LIMIT_ERROR: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="s2">&quot;deadline&quot;</span> <span class="ow">in</span> <span class="n">error_str</span> <span class="ow">or</span> <span class="s2">&quot;timeout&quot;</span> <span class="ow">in</span> <span class="n">error_str</span><span class="p">:</span>
+            <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Request timeout: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;TIMEOUT_ERROR: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Unexpected error in generate_with_tools: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;UNEXPECTED_ERROR: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="kc">False</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.gemini_client.create_gemini_client" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">create_gemini_client</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="s1">&#39;logs&#39;</span><span class="p">),</span> <span class="n">model_name</span><span class="o">=</span><span class="n">DEFAULT_MODEL</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Factory function to create a GeminiClient.</p>
+<p>Returns None if initialization fails (missing API key, etc.)</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\llm\sdk.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_gemini_client</span><span class="p">(</span>
+    <span class="n">log_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;logs&quot;</span><span class="p">),</span> <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_MODEL</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GeminiClient</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Factory function to create a GeminiClient.</span>
+
+<span class="sd">    Returns None if initialization fails (missing API key, etc.)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">GeminiClient</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">log_dir</span><span class="p">,</span> <span class="n">model_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">log_status</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Failed to initialize Gemini client: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.gemini_client.get_boring_tools" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_boring_tools</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return tool definitions compatible with google-genai SDK.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\llm\tools.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_boring_tools</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return tool definitions compatible with google-genai SDK.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">GENAI_AVAILABLE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">types</span><span class="o">.</span><span class="n">Tool</span><span class="p">(</span>
+            <span class="n">function_declarations</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">types</span><span class="o">.</span><span class="n">FunctionDeclaration</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;write_file&quot;</span><span class="p">,</span>
+                    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Writes complete code to a file. Use this for new files or complete rewrites.&quot;</span><span class="p">,</span>
+                    <span class="n">parameters</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Schema</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">OBJECT</span><span class="p">,</span>
+                        <span class="n">properties</span><span class="o">=</span><span class="p">{</span>
+                            <span class="s2">&quot;file_path&quot;</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Schema</span><span class="p">(</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span>
+                                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Relative path to the file, e.g., src/main.py&quot;</span><span class="p">,</span>
+                            <span class="p">),</span>
+                            <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Schema</span><span class="p">(</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span>
+                                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The complete code content to write.&quot;</span><span class="p">,</span>
+                            <span class="p">),</span>
+                        <span class="p">},</span>
+                        <span class="n">required</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;file_path&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">],</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+                <span class="n">types</span><span class="o">.</span><span class="n">FunctionDeclaration</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;search_replace&quot;</span><span class="p">,</span>
+                    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Perform a targeted search-and-replace on an existing file. More efficient than rewriting entire files.&quot;</span><span class="p">,</span>
+                    <span class="n">parameters</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Schema</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">OBJECT</span><span class="p">,</span>
+                        <span class="n">properties</span><span class="o">=</span><span class="p">{</span>
+                            <span class="s2">&quot;file_path&quot;</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Schema</span><span class="p">(</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span>
+                                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Relative path to the file to modify&quot;</span><span class="p">,</span>
+                            <span class="p">),</span>
+                            <span class="s2">&quot;search&quot;</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Schema</span><span class="p">(</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span>
+                                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The exact text to search for (must match exactly)&quot;</span><span class="p">,</span>
+                            <span class="p">),</span>
+                            <span class="s2">&quot;replace&quot;</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Schema</span><span class="p">(</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span>
+                                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The text to replace the search text with&quot;</span><span class="p">,</span>
+                            <span class="p">),</span>
+                        <span class="p">},</span>
+                        <span class="n">required</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;file_path&quot;</span><span class="p">,</span> <span class="s2">&quot;search&quot;</span><span class="p">,</span> <span class="s2">&quot;replace&quot;</span><span class="p">],</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+                <span class="n">types</span><span class="o">.</span><span class="n">FunctionDeclaration</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;report_status&quot;</span><span class="p">,</span>
+                    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Report the current task status. Call this at the end of every response.&quot;</span><span class="p">,</span>
+                    <span class="n">parameters</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Schema</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">OBJECT</span><span class="p">,</span>
+                        <span class="n">properties</span><span class="o">=</span><span class="p">{</span>
+                            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Schema</span><span class="p">(</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span>
+                                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Current status of the task (IN_PROGRESS or COMPLETE)&quot;</span><span class="p">,</span>
+                            <span class="p">),</span>
+                            <span class="s2">&quot;tasks_completed&quot;</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Schema</span><span class="p">(</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span>
+                                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of tasks completed in this loop&quot;</span><span class="p">,</span>
+                            <span class="p">),</span>
+                            <span class="s2">&quot;files_modified&quot;</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Schema</span><span class="p">(</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of files modified&quot;</span>
+                            <span class="p">),</span>
+                            <span class="s2">&quot;exit_signal&quot;</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Schema</span><span class="p">(</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">BOOLEAN</span><span class="p">,</span>
+                                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;True only if ALL tasks in @fix_plan.md are marked [x]&quot;</span><span class="p">,</span>
+                            <span class="p">),</span>
+                        <span class="p">},</span>
+                        <span class="n">required</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;tasks_completed&quot;</span><span class="p">,</span> <span class="s2">&quot;files_modified&quot;</span><span class="p">,</span> <span class="s2">&quot;exit_signal&quot;</span><span class="p">],</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

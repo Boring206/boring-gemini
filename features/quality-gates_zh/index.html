@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>品質閘門 (Quality Gates) - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u54c1\u8cea\u9598\u9580 (Quality Gates)";
+        var mkdocs_page_input_path = "features\\quality-gates_zh.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">品質閘門 (Quality Gates)</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_1">🚦 閘道架構</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">📋 層級細分</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#lint-10">第一層：Lint 與格式（約 10 秒）</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#30">第二層：安全掃描（約 30 秒）</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-5">第三層：單元測試（約 2-5 分鐘）</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#main">第四層：整合測試（僅 main 分支）</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">⚙️ 配置</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#boringtoml">專案設定（.boring.toml）</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#github-actionsgithubworkflowsquality-gatesyml">GitHub Actions（.github/workflows/quality-gates.yml）</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mcp">🛠️ MCP 工具整合</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_4">驗證命令</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#vibe-coder-cli">✨ Vibe Coder CLI</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_5">背景任務</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#git-hooks">🔄 Git Hooks</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">安裝</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hook">Hook 級別</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_7">📊 品質趨勢</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_8">查看歷史</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_9">回歸時失敗</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_10">🏢 企業模式</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_11">分支保護規則</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_12">多環境閘道</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_13">另請參閱</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">✨ 核心功能 (Features)</li>
+      <li class="breadcrumb-item active">品質閘門 (Quality Gates)</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/features/quality-gates_zh.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="-cicd">品質閘道 - CI/CD 整合</h1>
+<blockquote>
+<p>內建多層驗證閘道，適用於 CI/CD 管道。快速失敗，安全失敗。</p>
+</blockquote>
+<hr />
+<h2 id="_1">🚦 閘道架構</h2>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────┐
+│                   品質閘道                               │
+├─────────────────────────────────────────────────────────┤
+│  第一層：Lint 與格式    ━━━━▶ 快速回饋（~10秒）         │
+│  第二層：安全掃描       ━━━━▶ 漏洞檢查                  │
+│  第三層：單元測試       ━━━━▶ 覆蓋率驗證                │
+│  第四層：整合測試       ━━━━▶ 完整系統測試              │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+    ✅ 部署 或 ❌ 阻擋
+</code></pre></div>
+<hr />
+<h2 id="_2">📋 層級細分</h2>
+<h3 id="lint-10">第一層：Lint 與格式（約 10 秒）</h3>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Lint &amp; Format</span>
+<span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">    </span><span class="no">ruff check --output-format=github .</span>
+<span class="w">    </span><span class="no">ruff format --check .</span>
+</code></pre></div>
+<p><strong>工具</strong>：Ruff（Python）、ESLint（JS/TS）、golangci-lint（Go）</p>
+<h3 id="30">第二層：安全掃描（約 30 秒）</h3>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Security Scan</span>
+<span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">    </span><span class="no">bandit -r src/ --severity-level medium</span>
+<span class="w">    </span><span class="no">pip-audit --strict</span>
+</code></pre></div>
+<p><strong>工具</strong>：Bandit（SAST）、pip-audit（依賴）、Safety</p>
+<h3 id="2-5">第三層：單元測試（約 2-5 分鐘）</h3>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Unit Tests</span>
+<span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">    </span><span class="no">pytest --cov=src --cov-fail-under=40</span>
+</code></pre></div>
+<p><strong>閾值</strong>：預設最低 40% 覆蓋率</p>
+<h3 id="main">第四層：整合測試（僅 main 分支）</h3>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Integration Tests</span>
+<span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.ref == &#39;refs/heads/main&#39;</span>
+<span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">    </span><span class="no">pytest tests/integration/ -v</span>
+</code></pre></div>
+<hr />
+<h2 id="_3">⚙️ 配置</h2>
+<h3 id="boringtoml">專案設定（.boring.toml）</h3>
+<div class="highlight"><pre><span></span><code><span class="k">[boring.quality_gates]</span>
+<span class="n">min_coverage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40</span><span class="w">           </span><span class="c1"># 最低測試覆蓋率 %</span>
+<span class="n">max_complexity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">15</span><span class="w">         </span><span class="c1"># 最大圈複雜度</span>
+<span class="n">max_file_lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500</span><span class="w">        </span><span class="c1"># 每個檔案最大行數</span>
+<span class="n">max_function_lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span><span class="w">     </span><span class="c1"># 每個函數最大行數</span>
+
+<span class="k">[boring.linter_configs]</span>
+<span class="n">ruff_line_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span>
+<span class="n">eslint_max_warnings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+
+<span class="k">[boring.security]</span>
+<span class="n">bandit_severity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;medium&quot;</span><span class="w">  </span><span class="c1"># low|medium|high</span>
+<span class="n">dependency_scan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="n">secret_scan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+</code></pre></div>
+<h3 id="github-actionsgithubworkflowsquality-gatesyml">GitHub Actions（.github/workflows/quality-gates.yml）</h3>
+<div class="highlight"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Quality Gates</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">develop</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">lint</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v5</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.11&#39;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install ruff</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ruff check --output-format=github .</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ruff format --check .</span>
+
+<span class="w">  </span><span class="nt">security</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lint</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install bandit pip-audit</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bandit -r src/ -ll</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip-audit</span>
+
+<span class="w">  </span><span class="nt">test</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">security</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install -e &quot;.[dev]&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pytest --cov=src --cov-fail-under=40</span>
+
+<span class="w">  </span><span class="nt">integration</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test</span>
+<span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.ref == &#39;refs/heads/main&#39;</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install -e &quot;.[dev]&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pytest tests/integration/ -v</span>
+</code></pre></div>
+<hr />
+<h2 id="mcp">🛠️ MCP 工具整合</h2>
+<h3 id="_4">驗證命令</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 快速語法檢查</span>
+<span class="n">boring_verify</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;BASIC&quot;</span><span class="p">)</span>
+
+<span class="c1"># 標準含 Lint</span>
+<span class="n">boring_verify</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;STANDARD&quot;</span><span class="p">,</span> <span class="n">incremental</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># 完整含測試</span>
+<span class="n">boring_verify</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;FULL&quot;</span><span class="p">)</span>
+
+<span class="c1"># AI 語意審查</span>
+<span class="n">boring_verify</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;SEMANTIC&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h4 id="vibe-coder-cli">✨ Vibe Coder CLI</h4>
+<div class="highlight"><pre><span></span><code><span class="c1"># 自然語言驗證</span>
+boring-route<span class="w"> </span><span class="s2">&quot;幫我驗證程式碼&quot;</span>
+<span class="c1"># 🎯 boring_verify (STANDARD)</span>
+
+boring-route<span class="w"> </span><span class="s2">&quot;做一次完整檢查&quot;</span>
+<span class="c1"># 🎯 boring_verify (FULL)</span>
+</code></pre></div>
+<h3 id="_5">背景任務</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 在背景執行驗證</span>
+<span class="n">task_id</span> <span class="o">=</span> <span class="n">boring_task</span><span class="p">(</span>
+    <span class="n">action</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">,</span>
+    <span class="n">task_type</span><span class="o">=</span><span class="s2">&quot;verify&quot;</span><span class="p">,</span>
+    <span class="n">level</span><span class="o">=</span><span class="s2">&quot;FULL&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># 檢查狀態</span>
+<span class="n">boring_task</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="n">task_id</span><span class="o">=</span><span class="n">task_id</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="git-hooks">🔄 Git Hooks</h2>
+<h3 id="_6">安裝</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 安裝所有 hooks</span>
+boring<span class="w"> </span>hooks<span class="w"> </span>install
+
+<span class="c1"># 檢查狀態</span>
+boring<span class="w"> </span>hooks<span class="w"> </span>status
+
+<span class="c1"># 解除安裝</span>
+boring<span class="w"> </span>hooks<span class="w"> </span>uninstall
+</code></pre></div>
+<h3 id="hook">Hook 級別</h3>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>觸發時機</th>
+<th>級別</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pre-commit</td>
+<td>每次提交</td>
+<td>STANDARD</td>
+</tr>
+<tr>
+<td>pre-push</td>
+<td>每次推送</td>
+<td>FULL</td>
+</tr>
+<tr>
+<td>quick-check</td>
+<td>儲存時（可選）</td>
+<td>BASIC</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_7">📊 品質趨勢</h2>
+<h3 id="_8">查看歷史</h3>
+<div class="highlight"><pre><span></span><code>boring_quality_trend<span class="w"> </span>--days<span class="w"> </span><span class="m">30</span>
+</code></pre></div>
+<h3 id="_9">回歸時失敗</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 在 CI 中</span>
+<span class="k">if</span> <span class="n">current_score</span> <span class="o">&lt;</span> <span class="n">historical_average</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">:</span>
+    <span class="n">fail</span><span class="p">(</span><span class="s2">&quot;偵測到品質回歸&quot;</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="_10">🏢 企業模式</h2>
+<h3 id="_11">分支保護規則</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># GitHub 分支保護</span>
+<span class="nt">required_status_checks</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">strict</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">checks</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lint</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">security</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test</span>
+</code></pre></div>
+<h3 id="_12">多環境閘道</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 每個環境不同的閘道</span>
+<span class="nt">staging</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">min_coverage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
+<span class="w">  </span><span class="nt">security_level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high</span>
+
+<span class="nt">production</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">min_coverage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<span class="w">  </span><span class="nt">security_level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">critical</span>
+<span class="w">  </span><span class="nt">require_integration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<hr />
+<h2 id="_13">另請參閱</h2>
+<ul>
+<li><a href="../performance_zh/">效能</a> - 優化</li>
+<li><a href="../../guides/git-hooks_zh/">Git Hooks</a> - 本地 hooks</li>
+<li><a href="../../guides/pro-tips_zh/">專業技巧</a> - 最佳實踐</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../rag_zh/" class="btn btn-neutral float-left" title="RAG 知識庫"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../hidden-gems_zh/" class="btn btn-neutral float-right" title="💎 隱藏寶石">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../rag_zh/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../hidden-gems_zh/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

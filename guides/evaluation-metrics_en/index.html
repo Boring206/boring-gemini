@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Evaluation Metrics Guide - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Evaluation Metrics Guide";
+        var mkdocs_page_input_path = "guides\\evaluation-metrics_en.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Evaluation Metrics Guide</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/guides/evaluation-metrics_en.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="evaluation-metrics-guide">Evaluation Metrics Guide</h1>
+<p>boring-gemini V10.25 introduces a comprehensive LLM-as-a-Judge evaluation system with statistical metrics to verify evaluation quality.</p>
+<hr />
+<h2 id="core-metrics-overview">📊 Core Metrics Overview</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>What It Measures</th>
+<th>Use Case</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cohen's κ (Kappa)</strong></td>
+<td>Agreement between two raters</td>
+<td>AI vs Human scoring</td>
+<td>-1 ~ 1</td>
+</tr>
+<tr>
+<td><strong>Spearman's ρ (Rho)</strong></td>
+<td>Rank correlation</td>
+<td>Are rankings consistent?</td>
+<td>-1 ~ 1</td>
+</tr>
+<tr>
+<td><strong>F1 Score</strong></td>
+<td>Classification accuracy</td>
+<td>Pass/Fail decisions</td>
+<td>0 ~ 1</td>
+</tr>
+<tr>
+<td><strong>Position Consistency</strong></td>
+<td>Pairwise comparison stability</td>
+<td>Is there position bias?</td>
+<td>0 ~ 1</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="detailed-explanations">🎯 Detailed Explanations</h2>
+<h3 id="1-cohens-kappa-agreement-metric">1️⃣ Cohen's Kappa (Agreement Metric)</h3>
+<p><strong>Question</strong>: "Does AI scoring agree with human experts?"</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">boring.judge.metrics</span> <span class="kn">import</span> <span class="n">cohens_kappa</span>
+
+<span class="n">human_scores</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">ai_scores</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>  <span class="c1"># 3rd differs (5 vs 4)</span>
+
+<span class="n">kappa</span> <span class="o">=</span> <span class="n">cohens_kappa</span><span class="p">(</span><span class="n">ai_scores</span><span class="p">,</span> <span class="n">human_scores</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Kappa: </span><span class="si">{</span><span class="n">kappa</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 0.71 - Substantial agreement</span>
+</code></pre></div>
+<p><strong>Interpretation</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>κ Value</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&gt; 0.8</td>
+<td>Almost perfect agreement</td>
+</tr>
+<tr>
+<td>0.6-0.8</td>
+<td><strong>Substantial agreement</strong> ✅</td>
+</tr>
+<tr>
+<td>0.4-0.6</td>
+<td>Moderate agreement</td>
+</tr>
+<tr>
+<td>0.2-0.4</td>
+<td>Fair agreement</td>
+</tr>
+<tr>
+<td>&lt; 0.2</td>
+<td>Slight agreement</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Purpose</strong>: Validate if AI evaluation can <strong>replace human review</strong></p>
+<hr />
+<h3 id="2-spearmans-correlation-metric">2️⃣ Spearman's ρ (Correlation Metric)</h3>
+<p><strong>Question</strong>: "Is AI ranking order same as human ranking?"</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">boring.judge.metrics</span> <span class="kn">import</span> <span class="n">spearmans_rho</span>
+
+<span class="n">human_ranks</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="n">ai_ranks</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>  <span class="c1"># Perfect match</span>
+
+<span class="n">rho</span><span class="p">,</span> <span class="n">p_value</span> <span class="o">=</span> <span class="n">spearmans_rho</span><span class="p">(</span><span class="n">ai_ranks</span><span class="p">,</span> <span class="n">human_ranks</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Spearman ρ: </span><span class="si">{</span><span class="n">rho</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 1.0 - Perfect correlation</span>
+</code></pre></div>
+<p><strong>Interpretation</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>ρ Value</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&gt; 0.9</td>
+<td><strong>Strong correlation</strong> ✅</td>
+</tr>
+<tr>
+<td>0.7-0.9</td>
+<td>Moderate correlation</td>
+</tr>
+<tr>
+<td>0.5-0.7</td>
+<td>Weak correlation</td>
+</tr>
+<tr>
+<td>&lt; 0.5</td>
+<td>No significant correlation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Purpose</strong>: Verify <strong>ranking is correct</strong> even if absolute scores differ</p>
+<blockquote>
+<p>[!TIP]
+Spearman is ideal for ordinal data (like 1-5 ratings) because it only considers rank order, not absolute values.</p>
+</blockquote>
+<hr />
+<h3 id="3-f1-score-classification-accuracy">3️⃣ F1 Score (Classification Accuracy)</h3>
+<p><strong>Question</strong>: "Is AI pass/fail judgment accurate?"</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">boring.judge.metrics</span> <span class="kn">import</span> <span class="n">f1_score</span>
+
+<span class="n">actual</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>    <span class="c1"># 1=pass, 0=fail</span>
+<span class="n">predicted</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># AI predictions</span>
+
+<span class="n">f1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">predicted</span><span class="p">,</span> <span class="n">actual</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F1: </span><span class="si">{</span><span class="n">f1</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 0.80</span>
+</code></pre></div>
+<p><strong>Formula</strong>:</p>
+<div class="highlight"><pre><span></span><code>F1 = 2 × (Precision × Recall) / (Precision + Recall)
+</code></pre></div>
+<p><strong>Purpose</strong>: Evaluate <strong>binary classification</strong> accuracy</p>
+<hr />
+<h3 id="4-position-consistency">4️⃣ Position Consistency</h3>
+<p><strong>Question</strong>: "Is there position bias in pairwise comparison?"</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">boring.judge.metrics</span> <span class="kn">import</span> <span class="n">pairwise_metrics</span>
+
+<span class="n">comparisons</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;winner&quot;</span><span class="p">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;position_consistent&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;winner&quot;</span><span class="p">:</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;position_consistent&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;winner&quot;</span><span class="p">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;position_consistent&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>  <span class="c1"># Inconsistent</span>
+<span class="p">]</span>
+
+<span class="n">metrics</span> <span class="o">=</span> <span class="n">pairwise_metrics</span><span class="p">(</span><span class="n">comparisons</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Position Consistency: </span><span class="si">{</span><span class="n">metrics</span><span class="o">.</span><span class="n">position_consistency</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 67%</span>
+</code></pre></div>
+<p><strong>Purpose</strong>: Detect <strong>position bias</strong> (preference for first option)</p>
+<hr />
+<h2 id="when-to-use-which-metric">📈 When to Use Which Metric?</h2>
+<table>
+<thead>
+<tr>
+<th>Your Evaluation Task</th>
+<th>Recommended Metric</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rate code 1-5</td>
+<td><strong>Kappa</strong> + <strong>Spearman</strong></td>
+</tr>
+<tr>
+<td>Judge code Good/Bad</td>
+<td><strong>F1 Score</strong></td>
+</tr>
+<tr>
+<td>Compare two code snippets</td>
+<td><strong>Position Consistency</strong></td>
+</tr>
+<tr>
+<td>Check for AI bias</td>
+<td><strong>Bias Report</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="mcp-tool-usage">🔧 MCP Tool Usage</h2>
+<h3 id="view-evaluation-metrics">View Evaluation Metrics</h3>
+<div class="highlight"><pre><span></span><code>boring_evaluation_metrics
+</code></pre></div>
+<h3 id="view-bias-report">View Bias Report</h3>
+<div class="highlight"><pre><span></span><code>boring_bias_report
+</code></pre></div>
+<h3 id="natural-language-triggers">Natural Language Triggers</h3>
+<div class="highlight"><pre><span></span><code>boring &quot;show evaluation metrics&quot;
+boring &quot;評估指標&quot;
+boring &quot;show me the bias report&quot;
+boring &quot;查看偏見報告&quot;
+</code></pre></div>
+<hr />
+<h2 id="further-reading">📚 Further Reading</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2306.05685">LLM-as-a-Judge Paper</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Cohen%27s_kappa">Cohen's Kappa Explained</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient">Spearman Correlation</a></li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

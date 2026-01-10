@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>進階 MCP 設定與 Profile 指南 - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u9032\u968e MCP \u8a2d\u5b9a\u8207 Profile \u6307\u5357";
+        var mkdocs_page_input_path = "guides\\mcp-configuration.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">進階 MCP 設定與 Profile 指南</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/guides/mcp-configuration.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="mcp-profile">進階 MCP 設定與 Profile 指南</h1>
+<blockquote>
+<p><strong>新手請注意</strong>：如果您只是想快速設定，請先看 <a href="../../reference/configuration_zh/">🔰 配置參考手冊</a>。這份文件是給想了解底層原理或 Smithery 部署的進階使用者。</p>
+</blockquote>
+<p>本文件深入說明 Boring MCP Server 的 <strong>Profile 機制</strong> 和 <strong>安裝模式差異</strong>。</p>
+<h2 id="_1">環境變數 (進階)</h2>
+<h3 id="boring_mcp_mode"><code>BORING_MCP_MODE</code></h3>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>1</code></td>
+<td>✅ <strong>啟用 MCP 模式</strong> - 必須設定</td>
+</tr>
+<tr>
+<td><code>0</code> 或未設定</td>
+<td>⚠️ 測試/CLI 模式，MCP 工具可能無法正常運作</td>
+</tr>
+</tbody>
+</table>
+<p><strong>影響範圍：</strong>
+- Shadow Mode 攔截
+- 工具初始化
+- 日誌輸出格式</p>
+<hr />
+<h3 id="boring_mcp_profile"><code>BORING_MCP_PROFILE</code></h3>
+<p>控制曝露給 AI 的工具數量。</p>
+<table>
+<thead>
+<tr>
+<th>Profile</th>
+<th>工具數</th>
+<th>Token 節省</th>
+<th>說明</th>
+<th>適用場景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ultra_lite</code></td>
+<td>3 個</td>
+<td><strong>97%</strong></td>
+<td>極簡版</td>
+<td>Token 受限 LLM</td>
+</tr>
+<tr>
+<td><code>minimal</code></td>
+<td>8 個</td>
+<td>92%</td>
+<td>最基本</td>
+<td>快速任務</td>
+</tr>
+<tr>
+<td><code>lite</code></td>
+<td>20 個</td>
+<td>80%</td>
+<td>日常開發</td>
+<td><strong>預設值</strong></td>
+</tr>
+<tr>
+<td><code>standard</code></td>
+<td>50 個</td>
+<td>50%</td>
+<td>平衡版</td>
+<td>專業開發</td>
+</tr>
+<tr>
+<td><code>full</code></td>
+<td>~98 個</td>
+<td>0%</td>
+<td>全部工具</td>
+<td>Power User</td>
+</tr>
+</tbody>
+</table>
+<p><strong>各 Profile 包含的工具：</strong></p>
+<h4 id="ultra-lite-3-v1026">Ultra Lite (3 個) - V10.26 新增</h4>
+<ul>
+<li><code>boring</code> (通用路由器)</li>
+<li><code>boring_help</code> (分類說明)</li>
+<li><code>boring_discover</code> (按需取得工具 Schema)</li>
+</ul>
+<blockquote>
+<p>💡 <strong>工作流程</strong>: 用 <code>boring</code> 路由自然語言請求，用 <code>boring_discover</code> 獲取特定工具的完整 Schema，然後呼叫目標工具。</p>
+</blockquote>
+<h4 id="minimal-8">Minimal (8 個)</h4>
+<ul>
+<li><code>boring</code> (路由器)</li>
+<li><code>boring_help</code></li>
+<li><code>boring_rag_search</code></li>
+<li><code>boring_commit</code></li>
+<li><code>boring_verify</code></li>
+<li><code>boring_vibe_check</code></li>
+<li><code>boring_shadow_status</code></li>
+<li><code>boring_suggest_next</code></li>
+</ul>
+<h4 id="lite-20">Lite (20 個)</h4>
+<p>包含 Minimal 全部，加上：
+- <code>boring_rag_index</code>, <code>boring_rag_context</code>
+- <code>boring_code_review</code>, <code>boring_perf_tips</code>
+- <code>boring_test_gen</code>, <code>boring_doc_gen</code>
+- <code>boring_security_scan</code>
+- <code>boring_prompt_plan</code>, <code>boring_prompt_fix</code>
+- <code>boring_impact_check</code>, <code>boring_context</code></p>
+<h4 id="standard-50">Standard (50 個)</h4>
+<p>包含 Lite 全部，加上：
+- RAG 完整套件 (<code>boring_rag_expand</code>, <code>boring_rag_status</code>)
+- Shadow Mode 控制 (<code>boring_shadow_mode</code>, <code>boring_shadow_approve</code>)
+- Git Hooks (<code>boring_hooks_install</code>, <code>boring_hooks_status</code>)
+- Intelligence (<code>boring_predict_impact</code>, <code>boring_brain_health</code>)
+- Workspace 管理
+- Multi-agent 規劃
+- Speckit 核心工具</p>
+<h4 id="full-98">Full (~98 個)</h4>
+<p>所有已註冊的工具。</p>
+<hr />
+<h3 id="project_root_default"><code>PROJECT_ROOT_DEFAULT</code></h3>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.</code></td>
+<td>使用當前工作目錄</td>
+</tr>
+<tr>
+<td><code>/path/to/project</code></td>
+<td>指定專案路徑</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="boring_llm_provider"><code>BORING_LLM_PROVIDER</code></h3>
+<p>選擇使用的模型提供者。</p>
+<table>
+<thead>
+<tr>
+<th>提供者</th>
+<th>值</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Gemini</strong></td>
+<td><code>gemini-cli</code></td>
+<td>預設。需安裝 <code>gemini-cli</code>。</td>
+</tr>
+<tr>
+<td><strong>Claude</strong></td>
+<td><code>claude-code</code></td>
+<td>需安裝 <code>claude</code> CLI。</td>
+</tr>
+<tr>
+<td><strong>Ollama</strong></td>
+<td><code>ollama</code></td>
+<td>本地模型 (實驗性)。</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>[!CAUTION]
+<strong>Ollama 限制</strong>: 目前的 Ollama 實作 <strong>不支援</strong> Function Calling (工具使用)。
+若使用 <code>ollama</code>，<code>boring</code> 無法執行編輯檔案、運行測試等操作。它僅能作為純文字聊天機器人使用。
+若要使用 Vibe Coder 自動化流程，請使用 Gemini 或 Claude。</p>
+</blockquote>
+<hr />
+<h2 id="mcp">MCP 設定範例</h2>
+<h3 id="_2">本地完整版 (推薦)</h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;boring&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boring-mcp&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">      </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;BORING_MCP_MODE&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;BORING_MCP_PROFILE&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;standard&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;PROJECT_ROOT_DEFAULT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;.&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="smithery">Smithery 雲端版</h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;boring&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://server.smithery.ai/@boring/boring-mcp/mcp&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<blockquote>
+<p>📋 <strong>Smithery 部署資訊</strong>
+- <strong>默認 Profile</strong>: <code>lite</code>（~20 個工具）
+- <strong>安裝類型</strong>: <code>[mcp-lite]</code> 輕量級
+- <strong>RAG 功能</strong>: 降級為關鍵字搜尋（無向量庫）
+- <strong>可調整</strong>: 在配置中設置 <code>BORING_MCP_PROFILE: "dev"</code> 或 <code>"pro"</code>
+- <strong>完整 RAG</strong>: 需本地安裝 <code>pip install "boring-aicoding[all]"</code></p>
+</blockquote>
+<h3 id="_3">混合版 (本地 + 雲端)</h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;boring-cloud&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://server.smithery.ai/@boring/boring-mcp/mcp&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;boring-local&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boring-mcp&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">      </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;BORING_MCP_MODE&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;BORING_MCP_PROFILE&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;full&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;PROJECT_ROOT_DEFAULT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;.&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="_4">版本差異</h2>
+<h3 id="_5">安裝選項</h3>
+<table>
+<thead>
+<tr>
+<th>安裝方式</th>
+<th>RAG 功能</th>
+<th>Docker 大小</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pip install boring-aicoding[mcp-lite]</code></td>
+<td>❌ 退化版</td>
+<td>~500MB</td>
+</tr>
+<tr>
+<td><code>pip install boring-aicoding[mcp]</code></td>
+<td>✅ 完整版</td>
+<td>~4GB</td>
+</tr>
+</tbody>
+</table>
+<h3 id="smithery-vs">Smithery vs 本地</h3>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>Smithery (mcp-lite)</th>
+<th>本地 (mcp)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>基本工具</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>RAG 語意搜尋</td>
+<td>⚠️ keyword fallback</td>
+<td>✅ 向量搜尋</td>
+</tr>
+<tr>
+<td>本地通知</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>離線使用</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_6">常見問題</h2>
+<h3 id="q-smithery">Q: Smithery 工具比較少怎麼辦？</h3>
+<p>Smithery 預設使用 <code>mcp-lite</code> + <code>lite</code> profile。如果需要更多功能：
+1. 本地安裝完整版：<code>pip install "boring-aicoding[mcp]"</code>
+2. 設定 <code>BORING_MCP_PROFILE=full</code></p>
+<h3 id="q-pro-profile">Q: <code>pro</code> profile 是什麼？</h3>
+<p><code>pro</code> 不是有效值，會退回到 <code>lite</code>。有效值只有：
+- <code>ultra_lite</code>, <code>minimal</code>, <code>lite</code>, <code>standard</code>, <code>full</code></p>
+<h3 id="q">Q: 如何知道目前有哪些工具？</h3>
+<p>呼叫：
+<div class="highlight"><pre><span></span><code>boring_help
+</code></pre></div>
+或設定 <code>BORING_MCP_PROFILE=full</code> 查看全部。</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

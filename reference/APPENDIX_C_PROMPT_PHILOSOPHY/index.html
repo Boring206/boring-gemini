@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Appendix C: Architect Prompt Design Philosophy - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Appendix C: Architect Prompt Design Philosophy";
+        var mkdocs_page_input_path = "reference\\APPENDIX_C_PROMPT_PHILOSOPHY.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Appendix C: Architect Prompt Design Philosophy</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/reference/APPENDIX_C_PROMPT_PHILOSOPHY.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="appendix-c-architect-prompt-design-philosophy">Appendix C: Architect Prompt Design Philosophy</h1>
+<blockquote>
+<p><strong>Core Principle</strong>: Boring is not a code generator—it's a <strong>Senior Architect Mentor</strong> that prevents technical debt before it happens.</p>
+</blockquote>
+<hr />
+<h2 id="the-problem-with-traditional-ai-coding">The Problem with Traditional AI Coding</h2>
+<p>Most AI coding assistants follow this pattern:</p>
+<div class="highlight"><pre><span></span><code>User: &quot;Write a function to fetch users&quot;
+AI: *writes code*
+User: &quot;It&#39;s slow&quot;
+AI: *patches the symptom*
+</code></pre></div>
+<p><strong>Result</strong>: Accumulated technical debt, band-aid fixes, no learning.</p>
+<hr />
+<h2 id="the-architect-first-approach">The Architect-First Approach</h2>
+<p>Boring inverts this pattern:</p>
+<div class="highlight"><pre><span></span><code>User: &quot;Write a function to fetch users&quot;
+Architect: &quot;Before I write code, let me ask:
+  - How many users? (10? 10M?)
+  - Real-time or cached?
+  - What&#39;s your consistency requirement?&quot;
+
+*After understanding context*
+
+Architect: &quot;I recommend:
+  1. Paginated queries (not SELECT *)
+  2. Redis cache with TTL
+  3. Circuit breaker for DB failures
+
+Here&#39;s the implementation...&quot;
+</code></pre></div>
+<p><strong>Result</strong>: Production-ready code from day one.</p>
+<hr />
+<h2 id="prompt-engineering-principles">Prompt Engineering Principles</h2>
+<h3 id="1-persona-based-prompts">1. Persona-Based Prompts</h3>
+<p>Each prompt defines a <strong>strong persona</strong> that shapes behavior:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Instead of:</span>
+<span class="s2">&quot;Please help debug this error&quot;</span>
+
+<span class="c1"># We use:</span>
+<span class="s2">&quot;You are a Senior Architect helping debug an issue.</span>
+<span class="n">Your</span> <span class="n">Analysis</span> <span class="n">Must</span> <span class="n">Include</span><span class="p">:</span>
+<span class="mf">1.</span> <span class="n">Root</span> <span class="n">Cause</span>
+<span class="mf">2.</span> <span class="n">Likely</span> <span class="n">Culprits</span>
+<span class="mf">3.</span> <span class="n">Suggested</span> <span class="n">Fix</span>
+<span class="mf">4.</span> <span class="err">🏛️</span> <span class="n">Architecture</span> <span class="n">Lesson</span><span class="p">:</span>
+   <span class="o">-</span> <span class="n">Why</span> <span class="n">did</span> <span class="n">this</span> <span class="n">happen</span><span class="err">?</span> <span class="p">(</span><span class="n">Design</span> <span class="n">flaw</span><span class="err">?</span><span class="p">)</span>
+   <span class="o">-</span> <span class="n">How</span> <span class="n">to</span> <span class="n">prevent</span> <span class="n">this</span> <span class="k">class</span> <span class="nc">of</span> <span class="n">errors</span> <span class="n">permanently</span><span class="err">?</span><span class="s2">&quot;</span>
+</code></pre></div>
+<p>The persona creates <strong>consistency</strong> and <strong>depth</strong>.</p>
+<hr />
+<h3 id="2-proactive-guidance-rules">2. Proactive Guidance Rules</h3>
+<p>Prompts include explicit instructions to be proactive:</p>
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;**Proactive Advice Rule**:</span>
+<span class="n">If</span> <span class="n">you</span> <span class="n">see</span> <span class="n">a</span> <span class="n">naive</span> <span class="n">implementation</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">,</span> <span class="n">using</span> <span class="n">a</span> <span class="nb">list</span> <span class="k">for</span> <span class="n">lookups</span><span class="p">),</span> 
+<span class="n">DON</span><span class="s1">&#39;T just say &#39;</span><span class="n">fix</span> <span class="n">it</span><span class="s1">&#39;.</span>
+
+<span class="n">Say</span><span class="p">:</span> <span class="s1">&#39;⚠️ **Architecture Risk**: This is O(N). In production, this will </span>
+<span class="n">kill</span> <span class="n">the</span> <span class="n">CPU</span><span class="o">.</span> <span class="o">**</span><span class="n">Mandatory</span> <span class="n">Refactor</span><span class="o">**</span><span class="p">:</span> <span class="n">Use</span> <span class="n">a</span> <span class="n">Set</span> <span class="ow">or</span> <span class="n">HashMap</span> <span class="p">(</span><span class="n">O</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="s1">&#39;</span>
+
+<span class="n">Be</span> <span class="n">direct</span><span class="o">.</span> <span class="n">Be</span> <span class="n">strict</span><span class="o">.</span> <span class="n">Save</span> <span class="n">the</span> <span class="n">user</span> <span class="kn">from</span> <span class="nn">future</span> <span class="n">pain</span><span class="o">.</span><span class="s2">&quot;</span>
+</code></pre></div>
+<p>This prevents the AI from being too polite or passive.</p>
+<hr />
+<h3 id="3-structured-output-requirements">3. Structured Output Requirements</h3>
+<p>Every prompt defines what the output MUST include:</p>
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;完成後提供摘要報告，包含：</span>
+<span class="o">-</span> <span class="n">已實作功能清單</span>
+<span class="o">-</span> <span class="err">🏛️</span> <span class="n">架構決策記錄</span> <span class="p">(</span><span class="n">ADR</span><span class="p">)</span>
+<span class="o">-</span> <span class="n">潛在改進建議</span><span class="s2">&quot;</span>
+</code></pre></div>
+<p>This ensures <strong>actionable, complete responses</strong>.</p>
+<hr />
+<h3 id="4-checkpoint-architecture">4. Checkpoint Architecture</h3>
+<p>Complex workflows have explicit checkpoints:</p>
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;**Phase 2: 架構規劃 (Architect Checkpoint ✅)**</span>
+<span class="mf">3.</span> <span class="n">使用</span> <span class="err">`</span><span class="n">speckit_plan</span><span class="err">`</span> <span class="n">根據需求生成實作計畫</span>
+<span class="mf">4.</span> <span class="err">🏛️</span> <span class="o">**</span><span class="n">架構審查</span><span class="o">**</span><span class="err">：</span><span class="n">我會檢查計畫中的潛在設計問題</span><span class="err">（</span><span class="n">如過度耦合</span><span class="err">、</span><span class="n">缺少抽象層</span><span class="err">）</span><span class="s2">&quot;</span>
+</code></pre></div>
+<p>Checkpoints force <strong>reflection before action</strong>.</p>
+<hr />
+<h2 id="the-four-architect-personas">The Four Architect Personas</h2>
+<h3 id="1-chief-architect-code-review">1. Chief Architect (Code Review)</h3>
+<p><strong>Used in</strong>: <code>review_code</code> prompt</p>
+<p><strong>Traits</strong>:
+- Looks for Architecture Smells, not just bugs
+- Identifies God classes, tight coupling
+- Suggests patterns (Circuit Breaker, DI)</p>
+<p><strong>Example Output</strong>:
+<div class="highlight"><pre><span></span><code>⚠️ **Architecture Risk**: Synchronous API call in loop.
+This will timeout under load. Use async/batch processing.
+</code></pre></div></p>
+<hr />
+<h3 id="2-senior-architect-debugging">2. Senior Architect (Debugging)</h3>
+<p><strong>Used in</strong>: <code>debug_error</code> prompt</p>
+<p><strong>Traits</strong>:
+- Finds root cause, not just symptoms
+- Provides Architecture Lesson
+- Teaches prevention strategies</p>
+<p><strong>Example Output</strong>:
+<div class="highlight"><pre><span></span><code>🏛️ Architecture Lesson:
+This error happens because you&#39;re not using Dependency Injection.
+The DB connection is hardcoded, making it impossible to mock.
+Refactor to inject the connection via constructor.
+</code></pre></div></p>
+<hr />
+<h3 id="3-principal-architect-evaluation">3. Principal Architect (Evaluation)</h3>
+<p><strong>Used in</strong>: <code>evaluate_architecture</code> prompt</p>
+<p><strong>Traits</strong>:
+- Hostile/Critical stance
+- Focuses on production concerns (10k RPS, failure modes)
+- Ignores style issues, focuses on scalability</p>
+<p><strong>Example Output</strong>:
+<div class="highlight"><pre><span></span><code>⚠️ **Scalability Bottleneck**: This HashMap is not thread-safe.
+At 10k RPS, you&#39;ll see data corruption.
+**Mandatory Refactor**: Use ConcurrentHashMap or add synchronization.
+</code></pre></div></p>
+<hr />
+<h3 id="4-mentor-architect-vibe-coding">4. Mentor Architect (Vibe Coding)</h3>
+<p><strong>Used in</strong>: <code>vibe_start</code> prompt</p>
+<p><strong>Traits</strong>:
+- Guides through full workflow
+- Inserts checkpoints for human review
+- Produces Architecture Decision Records (ADR)</p>
+<p><strong>Example Output</strong>:
+<div class="highlight"><pre><span></span><code>🏛️ 架構決策記錄 (ADR):
+- Decision: 使用 PostgreSQL 而非 MongoDB
+- Rationale: 需要 ACID transactions, 關聯查詢
+- Consequences: 需要管理 schema migrations
+</code></pre></div></p>
+<hr />
+<h2 id="key-design-patterns">Key Design Patterns</h2>
+<h3 id="pattern-1-dont-just-say-fix-it">Pattern 1: "Don't Just Say Fix It"</h3>
+<div class="highlight"><pre><span></span><code>❌ &quot;This function is slow. Consider optimizing.&quot;
+✅ &quot;⚠️ This function is O(N²). At 10k users, this takes 100M operations.
+   **Mandatory Refactor**: Pre-sort the list and use binary search (O(N log N)).&quot;
+</code></pre></div>
+<hr />
+<h3 id="pattern-2-architecture-lesson-block">Pattern 2: Architecture Lesson Block</h3>
+<p>Every debugging response includes:</p>
+<div class="highlight"><pre><span></span><code>🏛️ Architecture Lesson:
+- Why did this happen? [Design flaw explanation]
+- How to prevent permanently? [Pattern/abstraction to adopt]
+- Example refactor: [Concrete code suggestion]
+</code></pre></div>
+<hr />
+<h3 id="pattern-3-emoji-visual-hierarchy">Pattern 3: Emoji Visual Hierarchy</h3>
+<div class="highlight"><pre><span></span><code>🚀 = Workflow start
+⚠️ = Architecture Risk / Warning
+✅ = Checkpoint / Verification passed
+🏛️ = Architecture-related content
+🔧 = Fix / Tool action
+</code></pre></div>
+<hr />
+<h3 id="pattern-4-bilingual-support">Pattern 4: Bilingual Support</h3>
+<p>Prompts use the user's language but keep technical terms in English:</p>
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;🏛️ **架構審查**：我會檢查計畫中的潛在設計問題</span>
+<span class="err">（</span><span class="n">如過度耦合</span> <span class="p">[</span><span class="n">Tight</span> <span class="n">Coupling</span><span class="p">]</span><span class="err">、</span><span class="n">缺少抽象層</span> <span class="p">[</span><span class="n">Missing</span> <span class="n">Abstraction</span><span class="p">]</span><span class="err">）</span><span class="s2">&quot;</span>
+</code></pre></div>
+<hr />
+<h2 id="implementation-checklist">Implementation Checklist</h2>
+<p>When creating new prompts:</p>
+<ul>
+<li>[ ] Define a strong persona (who is speaking?)</li>
+<li>[ ] Include proactive guidance rules</li>
+<li>[ ] Specify required output sections</li>
+<li>[ ] Add checkpoints for complex workflows</li>
+<li>[ ] Use emoji for visual hierarchy</li>
+<li>[ ] Include Architecture Lesson block for debugging</li>
+<li>[ ] Test with adversarial inputs (bad code)</li>
+</ul>
+<hr />
+<h2 id="example-full-prompt-transformation">Example: Full Prompt Transformation</h2>
+<h3 id="before-generic">Before (Generic)</h3>
+<div class="highlight"><pre><span></span><code><span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Please debug: </span><span class="si">{</span><span class="n">error_message</span><span class="si">}</span><span class="s2">&quot;</span>
+</code></pre></div>
+<h3 id="after-architect-first">After (Architect-First)</h3>
+<p><div class="highlight"><pre><span></span><code><span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;You are a Senior Architect helping debug an issue.</span>
+
+<span class="s2">**Error:**</span>
+</code></pre></div>
+{error_message}
+<div class="highlight"><pre><span></span><code>**Your Analysis Must Include:**
+1. **Root Cause**: What exactly failed?
+2. **Likely Culprits**: Pinpoint the file/function.
+3. **Suggested Fix**: Provide exact code changes.
+4. **🏛️ Architecture Lesson**: 
+   - Why did this happen? (Design flaw? Missing abstraction?)
+   - How to prevent this class of errors permanently?
+   - Example: &quot;This error happens because you&#39;re not using 
+     Dependency Injection. Refactor to inject the DB connection.&quot;
+
+Don&#39;t just fix the symptom—fix the root design issue.&quot;&quot;&quot;
+</code></pre></div></p>
+<hr />
+<h2 id="measuring-success">Measuring Success</h2>
+<p>A well-designed prompt should produce responses where:</p>
+<ol>
+<li><strong>Architecture is mentioned</strong> in every response</li>
+<li><strong>Proactive warnings</strong> appear for risky code</li>
+<li><strong>Prevention strategies</strong> are always included</li>
+<li><strong>Users learn</strong> from each interaction</li>
+<li><strong>Technical debt</strong> is caught before it accumulates</li>
+</ol>
+<hr />
+<p><em>"The best code is the code you never have to debug."</em>
+— The Boring Architect Philosophy</p>
+<hr />
+<p><em>Last updated: V10.16.0</em></p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

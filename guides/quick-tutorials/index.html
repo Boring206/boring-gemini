@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Quick Start Tutorials - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Quick Start Tutorials";
+        var mkdocs_page_input_path = "guides\\quick-tutorials.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Quick Start Tutorials</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/guides/quick-tutorials.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="quick-start-tutorials">Quick Start Tutorials</h1>
+<blockquote>
+<p>Learn Boring by doing. 5-minute tutorials for common workflows.</p>
+</blockquote>
+<hr />
+<h2 id="tutorial-index">📚 Tutorial Index</h2>
+<table>
+<thead>
+<tr>
+<th>Tutorial</th>
+<th>Time</th>
+<th>Skill Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#1-your-first-vibe-project">1. Your First Vibe Project</a></td>
+<td>5 min</td>
+<td>Beginner</td>
+</tr>
+<tr>
+<td><a href="#2-fix-all-errors-instantly">2. Fix All Errors Instantly</a></td>
+<td>3 min</td>
+<td>Beginner</td>
+</tr>
+<tr>
+<td><a href="#3-add-a-new-feature">3. Add a New Feature</a></td>
+<td>10 min</td>
+<td>Intermediate</td>
+</tr>
+<tr>
+<td><a href="#4-code-review-with-ai">4. Code Review with AI</a></td>
+<td>5 min</td>
+<td>Intermediate</td>
+</tr>
+<tr>
+<td><a href="#5-set-up-quality-gates">5. Set Up Quality Gates</a></td>
+<td>10 min</td>
+<td>Advanced</td>
+</tr>
+<tr>
+<td><a href="#6-multi-agent-development">6. Multi-Agent Development</a></td>
+<td>15 min</td>
+<td>Advanced</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="1-your-first-vibe-project">1. Your First Vibe Project</h2>
+<p><strong>Goal</strong>: Create a working app from a simple description.</p>
+<h3 id="step-1-start-the-conversation">Step 1: Start the conversation</h3>
+<div class="highlight"><pre><span></span><code>You: /vibe_start Build a simple REST API with FastAPI
+</code></pre></div>
+<h3 id="step-2-answer-the-clarifying-questions">Step 2: Answer the clarifying questions</h3>
+<div class="highlight"><pre><span></span><code>Boring: Great! Let me ask a few questions:
+        1. What resources should the API manage?
+        2. Need authentication?
+        3. Database preference?
+
+You: 1. Users and posts
+     2. No auth for now
+     3. SQLite
+</code></pre></div>
+<h3 id="step-3-review-the-generated-plan">Step 3: Review the generated plan</h3>
+<div class="highlight"><pre><span></span><code>Boring: Here&#39;s my plan:
+        1. Create project structure
+        2. Set up FastAPI application
+        3. Define User and Post models
+        4. Create CRUD endpoints
+        5. Add SQLite database
+
+        Shall I proceed?
+
+You: Yes, go ahead!
+</code></pre></div>
+<h3 id="step-4-get-your-working-app">Step 4: Get your working app</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Run your new API</span>
+uvicorn<span class="w"> </span>main:app<span class="w"> </span>--reload
+</code></pre></div>
+<p><strong>Done!</strong> You now have a working FastAPI application.</p>
+<hr />
+<h2 id="2-fix-all-errors-instantly">2. Fix All Errors Instantly</h2>
+<p><strong>Goal</strong>: Clear all linting and formatting errors in one command.</p>
+<h3 id="step-1-run-quick-fix">Step 1: Run quick fix</h3>
+<div class="highlight"><pre><span></span><code>You: /quick_fix
+</code></pre></div>
+<h3 id="step-2-watch-the-magic">Step 2: Watch the magic</h3>
+<div class="highlight"><pre><span></span><code>Boring: Scanning for issues...
+        ✅ Fixed 12 import sorting issues
+        ✅ Fixed 8 formatting issues
+        ✅ Fixed 3 unused variables
+
+        All issues resolved!
+</code></pre></div>
+<p><strong>Done!</strong> All code quality issues are fixed.</p>
+<hr />
+<h2 id="3-add-a-new-feature">3. Add a New Feature</h2>
+<p><strong>Goal</strong>: Add authentication to an existing project.</p>
+<h3 id="step-1-describe-the-feature">Step 1: Describe the feature</h3>
+<div class="highlight"><pre><span></span><code>You: Add JWT authentication to my FastAPI project
+</code></pre></div>
+<h3 id="step-2-ai-creates-the-plan">Step 2: AI creates the plan</h3>
+<div class="highlight"><pre><span></span><code>Boring: I&#39;ll add authentication with these steps:
+
+        1. Install dependencies (pyjwt, passlib)
+        2. Create auth/models.py - User model
+        3. Create auth/utils.py - Password hashing
+        4. Create auth/routes.py - Login/register
+        5. Update main.py - Add auth router
+
+        Shall I proceed?
+</code></pre></div>
+<h3 id="step-3-review-the-diff">Step 3: Review the diff</h3>
+<div class="highlight"><pre><span></span><code>Boring: Here&#39;s what I&#39;ll change:
+
+        + auth/models.py (new)
+        + auth/utils.py (new)
+        + auth/routes.py (new)
+        ~ main.py (modified)
+        ~ requirements.txt (modified)
+
+        Approve?
+
+You: Yes, apply the changes
+</code></pre></div>
+<p><strong>Done!</strong> Your app now has authentication.</p>
+<hr />
+<h2 id="4-code-review-with-ai">4. Code Review with AI</h2>
+<p><strong>Goal</strong>: Get expert-level code review feedback.</p>
+<h3 id="step-1-request-a-review">Step 1: Request a review</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_evaluate</span><span class="p">(</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;src/main.py&quot;</span><span class="p">,</span>
+    <span class="n">level</span><span class="o">=</span><span class="s2">&quot;DIRECT&quot;</span><span class="p">,</span>
+    <span class="n">criteria</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;correctness&quot;</span><span class="p">,</span> <span class="s2">&quot;security&quot;</span><span class="p">,</span> <span class="s2">&quot;performance&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="step-2-review-the-feedback">Step 2: Review the feedback</h3>
+<div class="highlight"><pre><span></span><code>Boring: Code Review for src/main.py
+
+        Overall Score: 7.5/10
+
+        ✅ Strengths:
+        - Clean function signatures
+        - Good error handling
+
+        ⚠️ Issues:
+        1. SQL injection risk on line 45
+        2. N+1 query pattern in get_posts()
+        3. Missing input validation
+
+        📝 Suggestions:
+        - Use parameterized queries
+        - Add eager loading for posts
+        - Add Pydantic validation
+</code></pre></div>
+<p><strong>Done!</strong> You have actionable feedback.</p>
+<hr />
+<h2 id="5-set-up-quality-gates">5. Set Up Quality Gates</h2>
+<p><strong>Goal</strong>: Add automated quality checks to your CI pipeline.</p>
+<h3 id="step-1-install-hooks-locally">Step 1: Install hooks locally</h3>
+<div class="highlight"><pre><span></span><code>boring<span class="w"> </span>hooks<span class="w"> </span>install
+</code></pre></div>
+<h3 id="step-2-create-github-actions-workflow">Step 2: Create GitHub Actions workflow</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># .github/workflows/quality-gates.yml</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Quality Gates</span>
+
+<span class="nt">on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">push</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">pull_request</span><span class="p p-Indicator">]</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">verify</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v5</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install &quot;boring-aicoding[all]&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">boring verify --level FULL</span>
+</code></pre></div>
+<h3 id="step-3-test-locally">Step 3: Test locally</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Run verification</span>
+boring<span class="w"> </span>verify<span class="w"> </span>--level<span class="w"> </span>FULL
+
+<span class="c1"># Expected output:</span>
+✅<span class="w"> </span>Syntax<span class="w"> </span>Check:<span class="w"> </span>Passed
+✅<span class="w"> </span>Linting:<span class="w"> </span>Passed
+✅<span class="w"> </span>Security<span class="w"> </span>Scan:<span class="w"> </span>Passed
+✅<span class="w"> </span>Tests:<span class="w"> </span><span class="m">42</span><span class="w"> </span>passed,<span class="w"> </span><span class="m">0</span><span class="w"> </span>failed
+</code></pre></div>
+<p><strong>Done!</strong> Your repo now has quality gates.</p>
+<hr />
+<h2 id="6-multi-agent-development">6. Multi-Agent Development</h2>
+<p><strong>Goal</strong>: Use specialized agents for complex tasks.</p>
+<h3 id="step-1-start-the-workflow">Step 1: Start the workflow</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_multi_agent</span><span class="p">(</span>
+    <span class="n">workflow</span><span class="o">=</span><span class="s2">&quot;plan_and_implement&quot;</span><span class="p">,</span>
+    <span class="n">context</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;feature&quot;</span><span class="p">:</span> <span class="s2">&quot;Real-time notifications with WebSockets&quot;</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="step-2-agents-collaborate">Step 2: Agents collaborate</h3>
+<div class="highlight"><pre><span></span><code>🧠 Planner Agent:
+   Creating implementation plan...
+   - WebSocket server setup
+   - Event system design
+   - Client integration
+
+📝 Coder Agent:
+   Implementing changes...
+   - src/websocket.py (new)
+   - src/events.py (new)
+   - src/main.py (modified)
+
+🔍 Reviewer Agent:
+   Reviewing changes...
+   - ✅ No security issues
+   - ⚠️ Consider rate limiting
+   - ✅ Tests passing
+</code></pre></div>
+<h3 id="step-3-review-final-output">Step 3: Review final output</h3>
+<div class="highlight"><pre><span></span><code>Boring: Multi-agent workflow complete!
+
+        Created files:
+        - src/websocket.py
+        - src/events.py
+
+        Modified files:
+        - src/main.py
+        - requirements.txt
+
+        All tests passing. Ready for deployment.
+</code></pre></div>
+<p><strong>Done!</strong> Complex feature implemented with AI collaboration.</p>
+<hr />
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="../pro-tips/">Pro Tips</a> - Expert tips</li>
+<li><a href="../git-hooks/">Git Hooks</a> - Local automation</li>
+<li><a href="../../features/mcp-tools/">MCP Tools</a> - Full tool reference</li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

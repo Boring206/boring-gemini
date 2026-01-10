@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Gemini YOLO + Boring 最大化利用指南 - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Gemini YOLO + Boring \u6700\u5927\u5316\u5229\u7528\u6307\u5357";
+        var mkdocs_page_input_path = "guides\\yolo-boring-integration.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Gemini YOLO + Boring 最大化利用指南</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/guides/yolo-boring-integration.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="gemini-yolo-boring">Gemini YOLO + Boring 最大化利用指南</h1>
+<p>本指南說明如何結合 Gemini CLI 的 YOLO 模式與 Boring MCP 工具，達成最高效率的自主開發(自動化迴圈)。</p>
+<h2 id="_1">核心概念</h2>
+<div class="highlight"><pre><span></span><code>Gemini YOLO = 引擎（執行力）
+Boring MCP  = 工具箱（專業技能）
+</code></pre></div>
+<p>當兩者結合，AI 可以自動使用 Boring 的 50+ 工具來完成複雜任務。</p>
+<hr />
+<h2 id="_2">前置設定</h2>
+<h3 id="1-boring-mcp">1. 安裝 Boring MCP</h3>
+<p>確保 <code>~/.gemini/settings.json</code> 包含：</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;boring&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uvx&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;boring-aicoding&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="2">2. 驗證設定</h3>
+<div class="highlight"><pre><span></span><code>gemini<span class="w"> </span><span class="s2">&quot;列出所有可用的 boring 工具&quot;</span>
+</code></pre></div>
+<hr />
+<h2 id="yolo">常用 YOLO 指令</h2>
+<h3 id="_3">🔍 程式碼搜尋 + 修改</h3>
+<div class="highlight"><pre><span></span><code>gemini<span class="w"> </span>--yolo<span class="w"> </span><span class="s2">&quot;使用 boring_rag_search 找到 auth 相關程式碼，然後修復登入 bug&quot;</span>
+</code></pre></div>
+<h3 id="_4">🧪 自動測試 + 修復</h3>
+<div class="highlight"><pre><span></span><code>gemini<span class="w"> </span>--yolo<span class="w"> </span><span class="s2">&quot;執行 boring_verify，如果失敗就修復問題，重複直到通過&quot;</span>
+</code></pre></div>
+<h3 id="_5">📝 程式碼審查 + 重構</h3>
+<div class="highlight"><pre><span></span><code>gemini<span class="w"> </span>--yolo<span class="w"> </span><span class="s2">&quot;對 src/ 下所有 Python 檔案執行 boring_code_review，然後修復所有建議&quot;</span>
+</code></pre></div>
+<h3 id="_6">🚀 發布流程</h3>
+<div class="highlight"><pre><span></span><code>gemini<span class="w"> </span>--yolo<span class="w"> </span><span class="s2">&quot;執行 /release-prep 工作流程，完成所有步驟&quot;</span>
+</code></pre></div>
+<hr />
+<h2 id="_7">進階組合技</h2>
+<h3 id="_8">全自動開發迴圈</h3>
+<div class="highlight"><pre><span></span><code>gemini<span class="w"> </span>--yolo<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">1. 使用 boring_rag_search 理解程式碼結構</span>
+<span class="s2">2. 讀取 @fix_plan.md 找到下一個任務</span>
+<span class="s2">3. 實作該任務</span>
+<span class="s2">4. 使用 boring_verify 驗證</span>
+<span class="s2">5. 如果通過，在 @fix_plan.md 標記 [x]</span>
+<span class="s2">6. 重複直到所有任務完成</span>
+<span class="s2">&quot;</span>
+</code></pre></div>
+<h3 id="_9">品質把關迴圈</h3>
+<div class="highlight"><pre><span></span><code>gemini<span class="w"> </span>--yolo<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">對每個修改的檔案：</span>
+<span class="s2">1. boring_code_review 審查</span>
+<span class="s2">2. boring_perf_tips 效能檢查  </span>
+<span class="s2">3. boring_vibe_check 健康評分</span>
+<span class="s2">修復所有問題直到 vibe score &gt; 80</span>
+<span class="s2">&quot;</span>
+</code></pre></div>
+<hr />
+<h2 id="boring">Boring 工具速查表</h2>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>用途</th>
+<th>YOLO 搭配範例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>boring_rag_search</code></td>
+<td>語意搜尋程式碼</td>
+<td>理解專案結構</td>
+</tr>
+<tr>
+<td><code>boring_code_review</code></td>
+<td>AI 程式碼審查</td>
+<td>自動修復建議</td>
+</tr>
+<tr>
+<td><code>boring_vibe_check</code></td>
+<td>專案健康評分</td>
+<td>品質把關</td>
+</tr>
+<tr>
+<td><code>boring_verify</code></td>
+<td>執行驗證</td>
+<td>CI/CD 自動化</td>
+</tr>
+<tr>
+<td><code>boring_impact_check</code></td>
+<td>影響分析</td>
+<td>安全重構</td>
+</tr>
+<tr>
+<td><code>boring_security_scan</code></td>
+<td>安全掃描</td>
+<td>防止洩密</td>
+</tr>
+<tr>
+<td><code>boring_test_gen</code></td>
+<td>自動生成測試</td>
+<td>提高覆蓋率</td>
+</tr>
+<tr>
+<td><code>boring_doc_gen</code></td>
+<td>自動生成文件</td>
+<td>保持文件同步</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_10">自動化腳本</h2>
+<h3 id="windows-powershell">Windows PowerShell</h3>
+<div class="highlight"><pre><span></span><code><span class="c"># yolo_loop.ps1 - 自動化 YOLO 迴圈</span>
+<span class="nv">$MAX_LOOPS</span> <span class="p">=</span> <span class="n">5</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="nv">$i</span> <span class="p">=</span> <span class="n">1</span><span class="p">;</span> <span class="nv">$i</span> <span class="o">-le</span> <span class="nv">$MAX_LOOPS</span><span class="p">;</span> <span class="nv">$i</span><span class="p">++)</span> <span class="p">{</span>
+    <span class="nb">Write-Host</span> <span class="s2">&quot;=== Loop $i / $MAX_LOOPS ===&quot;</span> <span class="n">-ForegroundColor</span> <span class="n">Cyan</span>
+
+    <span class="c"># 執行一輪</span>
+    <span class="n">gemini</span> <span class="p">-</span><span class="n">-yolo</span> <span class="s2">&quot;完成 @fix_plan.md 中的下一個 [ ] 任務，完成後標記 [x]&quot;</span>
+
+    <span class="c"># 驗證</span>
+    <span class="n">boring</span> <span class="n">verify</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$LASTEXITCODE</span> <span class="o">-eq</span> <span class="n">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nb">Write-Host</span> <span class="s2">&quot;✅ 驗證通過&quot;</span> <span class="n">-ForegroundColor</span> <span class="n">Green</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nb">Write-Host</span> <span class="s2">&quot;❌ 需要修復&quot;</span> <span class="n">-ForegroundColor</span> <span class="n">Red</span>
+    <span class="p">}</span>
+
+    <span class="nb">Start-Sleep</span> <span class="n">-Seconds</span> <span class="n">5</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="linuxmac-bash">Linux/Mac Bash</h3>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+<span class="c1"># yolo_loop.sh - 自動化 YOLO 迴圈</span>
+
+<span class="nv">MAX_LOOPS</span><span class="o">=</span><span class="m">5</span>
+<span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>seq<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="nv">$MAX_LOOPS</span><span class="k">)</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;=== Loop </span><span class="nv">$i</span><span class="s2"> / </span><span class="nv">$MAX_LOOPS</span><span class="s2"> ===&quot;</span>
+
+<span class="w">    </span><span class="c1"># 執行一輪（加上 timeout 避免無限跑）</span>
+<span class="w">    </span>timeout<span class="w"> </span>5m<span class="w"> </span>gemini<span class="w"> </span>--yolo<span class="w"> </span><span class="s2">&quot;完成 @fix_plan.md 中的下一個任務&quot;</span>
+
+<span class="w">    </span><span class="c1"># 驗證</span>
+<span class="w">    </span>boring<span class="w"> </span>verify
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="nv">$?</span><span class="w"> </span>-eq<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;✅ 驗證通過&quot;</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;❌ 需要修復&quot;</span>
+<span class="w">    </span><span class="k">fi</span>
+
+<span class="w">    </span>sleep<span class="w"> </span><span class="m">5</span>
+<span class="k">done</span>
+</code></pre></div>
+<hr />
+<h2 id="_11">常見情境指令</h2>
+<table>
+<thead>
+<tr>
+<th>情境</th>
+<th>推薦指令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>理解新專案</td>
+<td><code>gemini --yolo "boring_rag_search 分析整個程式碼庫"</code></td>
+</tr>
+<tr>
+<td>修 Bug</td>
+<td><code>gemini --yolo "找到並修復 XXX 問題"</code></td>
+</tr>
+<tr>
+<td>重構</td>
+<td><code>gemini --yolo "boring_impact_check + 安全重構"</code></td>
+</tr>
+<tr>
+<td>發布</td>
+<td><code>gemini --yolo "/release-prep"</code></td>
+</tr>
+<tr>
+<td>寫測試</td>
+<td><code>gemini --yolo "boring_test_gen 為 src/ 生成測試"</code></td>
+</tr>
+<tr>
+<td>安全檢查</td>
+<td><code>gemini --yolo "boring_security_scan 掃描並修復"</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_12">注意事項</h2>
+<blockquote>
+<p>⚠️ <strong>警告</strong>：YOLO 模式會跳過所有確認！AI 可以直接修改檔案、執行指令。</p>
+</blockquote>
+<h3 id="_13">安全建議</h3>
+<ol>
+<li><strong>使用 Git</strong>：確保所有修改都可以回滾</li>
+<li><strong>設定邊界</strong>：明確告訴 AI 哪些檔案不能動</li>
+<li><strong>分段執行</strong>：大任務分成小步驟</li>
+<li><strong>定期檢查</strong>：每隔幾輪手動審查變更</li>
+</ol>
+<h3 id="_14">推薦環境</h3>
+<ul>
+<li>Docker 容器</li>
+<li>虛擬機</li>
+<li>獨立的測試專案</li>
+<li>有完整備份的專案</li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

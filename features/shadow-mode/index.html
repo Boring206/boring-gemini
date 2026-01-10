@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Shadow Mode - Security Sandbox - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Shadow Mode - Security Sandbox";
+        var mkdocs_page_input_path = "features\\shadow-mode.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Shadow Mode - Security Sandbox</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/features/shadow-mode.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="shadow-mode-security-sandbox">Shadow Mode - Security Sandbox</h1>
+<blockquote>
+<p>Shadow Mode is Boring's security core, providing human-in-the-loop protection for all potentially destructive operations.</p>
+</blockquote>
+<hr />
+<blockquote>
+<p><strong>✨ Vibe Coder Compatible</strong>: Shadow Mode intercepts <strong>ALL</strong> tools, including those called via Vibe Coder (<code>boring()</code>) or CLI (<code>boring-route</code>).</p>
+</blockquote>
+<h2 id="what-is-shadow-mode">🛡️ What is Shadow Mode?</h2>
+<p>Shadow Mode acts as a <strong>mandatory interception layer</strong> between AI and your file system. When enabled, it:</p>
+<ol>
+<li><strong>Intercepts</strong> all destructive operations (file writes, deletions, command execution)</li>
+<li><strong>Evaluates</strong> the impact of each operation</li>
+<li><strong>Queues</strong> high-risk operations for approval</li>
+<li><strong>Requires</strong> human confirmation before execution</li>
+</ol>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────┐
+│                     AI Agent                            │
+│                        │                                │
+│                        ▼                                │
+│  ┌──────────────────────────────────────────────────┐  │
+│  │              🛡️ SHADOW MODE                      │  │
+│  │  ┌────────────────────────────────────────────┐  │  │
+│  │  │  Risk Evaluator                            │  │  │
+│  │  │  ├─ Low Risk → Auto-approve               │  │  │
+│  │  │  ├─ Medium Risk → Log &amp; Execute           │  │  │
+│  │  │  └─ High Risk → 🚨 REQUIRE APPROVAL      │  │  │
+│  │  └────────────────────────────────────────────┘  │  │
+│  │                     │                            │  │
+│  │        Pending Queue (High Risk Only)           │  │
+│  └──────────────────────────────────────────────────┘  │
+│                        │                                │
+│                        ▼                                │
+│                 File System                             │
+└─────────────────────────────────────────────────────────┘
+</code></pre></div>
+<hr />
+<h2 id="three-protection-levels">📊 Three Protection Levels</h2>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Symbol</th>
+<th>Behavior</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DISABLED</code></td>
+<td>⚠️</td>
+<td>No interception</td>
+<td>Isolated containers only</td>
+</tr>
+<tr>
+<td><code>ENABLED</code></td>
+<td>🛡️</td>
+<td>Auto-approve low-risk, block high-risk</td>
+<td><strong>Default - Balanced</strong></td>
+</tr>
+<tr>
+<td><code>STRICT</code></td>
+<td>🔒</td>
+<td>Intercept ALL write operations</td>
+<td>Production environments</td>
+</tr>
+</tbody>
+</table>
+<h3 id="level-details">Level Details</h3>
+<h4 id="disabled-use-with-caution">DISABLED (⚠️ Use with Caution)</h4>
+<p><div class="highlight"><pre><span></span><code><span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;set_level&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;DISABLED&quot;</span><span class="p">)</span>
+</code></pre></div>
+- No operations are intercepted
+- All writes execute immediately
+- <strong>Only use in isolated containers or sandboxes</strong></p>
+<h4 id="enabled-recommended-default">ENABLED (🛡️ Recommended Default)</h4>
+<p><div class="highlight"><pre><span></span><code><span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;set_level&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ENABLED&quot;</span><span class="p">)</span>
+</code></pre></div>
+- <strong>Auto-approved</strong>: Read operations, small file edits
+- <strong>Logged</strong>: Medium-risk changes (new files &lt; 1KB)
+- <strong>Blocked</strong>: Deletions, system files, large rewrites</p>
+<h4 id="strict-maximum-security">STRICT (🔒 Maximum Security)</h4>
+<p><div class="highlight"><pre><span></span><code><span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;set_level&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;STRICT&quot;</span><span class="p">)</span>
+</code></pre></div>
+- <strong>ALL</strong> write operations require approval
+- Perfect for production code review
+- Cannot be bypassed via agent patches</p>
+<hr />
+<h2 id="configuration-persistence">🔧 Configuration &amp; Persistence</h2>
+<h3 id="cross-session-persistence">Cross-Session Persistence</h3>
+<p>Shadow Mode settings persist across sessions in <code>~/.boring/brain/shadow_config.json</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;STRICT&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;auto_approve_patterns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*.md&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;docs/*&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;always_block_patterns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*.env&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;secrets/*&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;last_updated&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T12:00:00Z&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="mcp-configuration">MCP Configuration</h3>
+<p>In <code>smithery.yaml</code> or MCP config:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">SHADOW_MODE_LEVEL</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;STRICT&quot;</span><span class="w">    </span><span class="c1"># DISABLED|ENABLED|STRICT</span>
+<span class="nt">BORING_ALLOW_DANGEROUS</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">  </span><span class="c1"># Never set to true in production</span>
+</code></pre></div>
+<hr />
+<h2 id="tool-reference">💻 Tool Reference</h2>
+<h3 id="check-status">Check Status</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;status&quot;</span><span class="p">)</span>
+<span class="c1"># Returns: {&quot;level&quot;: &quot;ENABLED&quot;, &quot;pending_count&quot;: 2}</span>
+</code></pre></div>
+<h3 id="set-level">Set Level</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;set_level&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;STRICT&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="view-pending-operations">View Pending Operations</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;list_pending&quot;</span><span class="p">)</span>
+<span class="c1"># Returns list of operations awaiting approval</span>
+</code></pre></div>
+<h3 id="approvereject">Approve/Reject</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;approve&quot;</span><span class="p">,</span> <span class="n">operation_id</span><span class="o">=</span><span class="s2">&quot;op_123&quot;</span><span class="p">)</span>
+<span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;reject&quot;</span><span class="p">,</span> <span class="n">operation_id</span><span class="o">=</span><span class="s2">&quot;op_123&quot;</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="risk-classification">🎯 Risk Classification</h2>
+<h3 id="low-risk-auto-approved-in-enabled-mode">Low Risk (Auto-approved in ENABLED mode)</h3>
+<ul>
+<li>Reading files</li>
+<li>Listing directories</li>
+<li>Viewing git status</li>
+<li>Running read-only commands</li>
+</ul>
+<h3 id="medium-risk-logged-executed">Medium Risk (Logged, executed)</h3>
+<ul>
+<li>Creating small files (&lt; 1KB)</li>
+<li>Appending to existing files</li>
+<li>Running tests</li>
+</ul>
+<h3 id="high-risk-requires-approval">High Risk (Requires approval)</h3>
+<ul>
+<li>❌ Deleting files</li>
+<li>❌ Modifying system files (<code>.env</code>, <code>config/*</code>)</li>
+<li>❌ Large file rewrites (&gt; 50% content change)</li>
+<li>❌ Executing shell commands with side effects</li>
+<li>❌ Git operations (push, force operations)</li>
+</ul>
+<hr />
+<h2 id="protected-file-tools-v10175">🔐 Protected File Tools (V10.17.5+)</h2>
+<p>For guaranteed Shadow Mode protection, use Boring's file tools:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># These ALWAYS respect Shadow Mode</span>
+<span class="n">boring_write_file</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;config.py&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+<span class="n">boring_read_file</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;src/main.py&quot;</span><span class="p">)</span>
+</code></pre></div>
+<blockquote>
+<p>⚠️ <strong>Warning</strong>: Native MCP tools like <code>write_file</code> (from some clients) may NOT be intercepted by Shadow Mode. Always use <code>boring_write_file</code> for secure operations.</p>
+</blockquote>
+<hr />
+<h2 id="safety-net-git-checkpoints-v1031">🛡️ Safety Net (Git Checkpoints) (V10.31)</h2>
+<p>While Shadow Mode intercepts individual operations, <strong>Safety Net</strong> protects your entire codebase during complex refactoring.</p>
+<h3 id="how-it-works">How it Works</h3>
+<p>It creates a lightweight Git tag (checkpoint) before you start. If the AI messes up, you can instantly revert to that checkpoint.</p>
+<h3 id="usage">Usage</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 1. Create a checkpoint</span>
+<span class="n">boring_checkpoint</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;save&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Before refactoring auth&quot;</span><span class="p">)</span>
+<span class="c1"># Returns: &quot;Checkpoint &#39;checkpoint_20240101_120000&#39; created&quot;</span>
+
+<span class="c1"># 2. Do risky stuff...</span>
+<span class="c1"># ...</span>
+
+<span class="c1"># 3. If it fails, restore!</span>
+<span class="n">boring_checkpoint</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;restore&quot;</span><span class="p">,</span> <span class="n">checkpoint_id</span><span class="o">=</span><span class="s2">&quot;checkpoint_20240101_120000&quot;</span><span class="p">)</span>
+</code></pre></div>
+<blockquote>
+<p><strong>Note</strong>: This feature requires a clean working directory (committed changes).</p>
+</blockquote>
+<hr />
+<h2 id="enterprise-use-cases">🏢 Enterprise Use Cases</h2>
+<h3 id="code-review-workflow">Code Review Workflow</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Reviewer sets STRICT mode</span>
+<span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;set_level&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;STRICT&quot;</span><span class="p">)</span>
+
+<span class="c1"># AI proposes changes, all queued for review</span>
+<span class="c1"># Reviewer inspects each pending operation</span>
+<span class="c1"># Approve only verified changes</span>
+</code></pre></div>
+<h3 id="cicd-integration">CI/CD Integration</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># In CI pipeline</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Boring with Shadow Mode</span>
+<span class="w">  </span><span class="nt">env</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">SHADOW_MODE_LEVEL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ENABLED</span>
+<span class="w">    </span><span class="nt">BORING_ALLOW_DANGEROUS</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</code></pre></div>
+<hr />
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="../mcp-tools/">MCP Tools</a> - Tool reference</li>
+<li><a href="../quality-gates/">Quality Gates</a> - CI/CD integration</li>
+<li><a href="../../guides/pro-tips/">Pro Tips</a> - Security best practices</li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

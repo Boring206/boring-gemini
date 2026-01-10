@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>實戰演示 - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u5be6\u6230\u6f14\u793a";
+        var mkdocs_page_input_path = "tutorials\\PRACTICAL_DEMO_en.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">實戰演示</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#what-is-boring">🎯 What is Boring?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#use-case-1-building-from-zero-to-one">🚀 Use Case 1: Building from Zero to One</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#scenario-you-want-to-build-a-fastapi-backend">Scenario: You want to build a FastAPI backend</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#use-case-2-auto-fixing-code-issues">🛠️ Use Case 2: Auto-Fixing Code Issues</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#scenario-your-code-has-a-ton-of-lint-errors">Scenario: Your code has a ton of Lint errors</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#use-case-3-security-scan-protection">🔒 Use Case 3: Security Scan &amp; Protection</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#scenario-you-accidentally-hardcoded-an-api-key">Scenario: You accidentally hardcoded an API Key</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#use-case-4-rag-semantic-search">🧠 Use Case 4: RAG Semantic Search</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#scenario-you-take-over-a-100k-line-legacy-project">Scenario: You take over a 100k line legacy project</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#use-case-5-safe-refactoring-transaction">🔄 Use Case 5: Safe Refactoring (Transaction)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#scenario-you-need-to-refactor-a-core-module-but-are-afraid-of-breaking-it">Scenario: You need to refactor a core module but are afraid of breaking it</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#use-case-7-auto-learning-evolution-auto-learning-v1018">🧠 Use Case 7: Auto-Learning &amp; Evolution (Auto-Learning v10.18)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#scenario-ai-keeps-making-the-same-mistake">Scenario: AI keeps making the same mistake</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#use-case-8-multi-agent-collaboration">🤖 Use Case 8: Multi-Agent Collaboration</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#scenario-complex-task-needing-multiple-roles">Scenario: Complex task needing multiple roles</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#quick-shortcut-cheatsheet">⚡ Quick Shortcut Cheatsheet</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#interactive-conversation-example">🎮 Interactive Conversation Example</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#example-1-debugging-a-weird-bug">Example 1: Debugging a Weird Bug</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#example-2-performance-optimization">Example 2: Performance Optimization</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#why-choose-boring">🏆 Why Choose Boring?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#start-now">🚀 Start Now</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#mode-1-mcpsmithery-recommended-easiest">🎮 Mode 1: MCP/Smithery (Recommended! Easiest)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mode-2-autonomous-loop-mode-advanced">🤖 Mode 2: Autonomous Loop Mode (Advanced)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#comparison">📊 Comparison</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#remember-this">🎯 Remember This</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#further-reading">📚 Further Reading</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">📚 教學 (Tutorials)</li>
+      <li class="breadcrumb-item active">實戰演示</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/tutorials/PRACTICAL_DEMO_en.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="boring-practical-demo-see-the-future-of-ai-development-in-10-minutes">🔥 Boring Practical Demo: See the Future of AI Development in 10 Minutes</h1>
+<blockquote>
+<p><strong>"It's okay if you don't know how to code, Boring handles everything."</strong></p>
+<p>This isn't exaggeration—this is the essence of Vibe Coding.</p>
+</blockquote>
+<hr />
+<h2 id="what-is-boring">🎯 What is Boring?</h2>
+<p>Imagine you have an <strong>Architect-level AI strategist</strong> that doesn't just write code, but also:</p>
+<div class="highlight"><pre><span></span><code>🏛️ Designs Architecture  →  Plans the big picture before coding
+🔍 Reviews Code          →  Reviews your code like a senior engineer
+🛡️ Secures System        →  Automatically detects vulnerabilities and secrets
+🔄 Auto-Repairs          →  One-click fix for Lint, Format, and Test issues
+🧠 Learns Your Style     →  Remembers how you like to code
+</code></pre></div>
+<p><strong>In one sentence</strong>: Boring = Your AI Development Team (Architect + Senior Engineer + QA)</p>
+<hr />
+<h2 id="use-case-1-building-from-zero-to-one">🚀 Use Case 1: Building from Zero to One</h2>
+<h3 id="scenario-you-want-to-build-a-fastapi-backend">Scenario: You want to build a FastAPI backend</h3>
+<p><strong>Traditional Way</strong>:
+<div class="highlight"><pre><span></span><code>1. Manually create project directory
+2. Initialize Git
+3. Set up virtual environment
+4. Install dependencies
+5. Create file structure
+6. Start coding...
+(30 minutes later, you&#39;re still setting up env)
+</code></pre></div></p>
+<p><strong>Boring Way</strong>:
+<div class="highlight"><pre><span></span><code>You: &quot;Help me build a FastAPI auth service with JWT and OAuth2&quot;
+
+Boring Architect: 
+  &quot;Hold on, before we start, I need to clarify a few things...&quot;
+
+  🤔 Q1: Which database? PostgreSQL or SQLite?
+  🤔 Q2: Do you need social login (Google/GitHub)?
+  🤔 Q3: Token expiration time?
+
+You: &quot;PostgreSQL, GitHub login, 24 hours token&quot;
+
+Boring: 
+  ✅ Generating architecture design...
+  ✅ Creating project structure...
+  ✅ Implementing auth logic...
+  ✅ Writing tests...
+  ✅ Verification passed!
+
+  📁 Your project is ready:
+  src/
+  ├── main.py           # FastAPI entry point
+  ├── auth/
+  │   ├── jwt.py        # JWT implementation
+  │   ├── oauth.py      # GitHub OAuth
+  │   └── middleware.py # Auth middleware
+  ├── models/           # Data models
+  └── tests/            # Tests (85% coverage)
+</code></pre></div></p>
+<p><strong>Core Command (Vibe Coder Style)</strong>:
+<div class="highlight"><pre><span></span><code>You: &quot;Help me build a FastAPI auth service with JWT and GitHub OAuth&quot;
+
+# Or use CLI
+boring-route &quot;build FastAPI auth service&quot;
+</code></pre></div></p>
+<hr />
+<h2 id="use-case-2-auto-fixing-code-issues">🛠️ Use Case 2: Auto-Fixing Code Issues</h2>
+<h3 id="scenario-your-code-has-a-ton-of-lint-errors">Scenario: Your code has a ton of Lint errors</h3>
+<p><strong>Traditional Way</strong>:
+<div class="highlight"><pre><span></span><code>$ ruff check src/
+Found 47 errors in 12 files.
+
+(Then you fix them one by one...)
+# 30 minutes later...
+</code></pre></div></p>
+<p><strong>Boring Way</strong>:
+<div class="highlight"><pre><span></span><code>You: &quot;/quick_fix&quot;
+
+Boring:
+  🔍 Scanning...
+  📊 Found 47 issues:
+     - 23 formatting issues
+     - 15 unused imports
+     - 9 type issues
+
+  ⚡ Auto-fixing...
+  ✅ 47/47 issues fixed
+  ✅ Formatting complete
+  ✅ All tests passed
+
+  Total time: 8.3 seconds
+</code></pre></div></p>
+<p><strong>What happened behind the scenes</strong>:
+<div class="highlight"><pre><span></span><code>boring_verify → Find all issues
+     ↓
+boring_auto_fix → Auto repair
+     ↓
+ruff format → Formatting
+     ↓
+pytest → Confirm nothing broke
+</code></pre></div></p>
+<hr />
+<h2 id="use-case-3-security-scan-protection">🔒 Use Case 3: Security Scan &amp; Protection</h2>
+<h3 id="scenario-you-accidentally-hardcoded-an-api-key">Scenario: You accidentally hardcoded an API Key</h3>
+<p><strong>Traditional Way</strong>:
+<div class="highlight"><pre><span></span><code># You might discover it only after pushing to GitHub...
+# Then get a warning from GitHub Secret Scanning
+# Then emergency Rotate Key, Force Push...
+</code></pre></div></p>
+<p><strong>Boring Way</strong>:
+<div class="highlight"><pre><span></span><code>You: &quot;/security_scan&quot;
+
+Boring:
+  🔍 Scanning security...
+
+  🚨 Found 3 CRITICAL issues!
+
+  ┌─────────────────────────────────────────────────┐
+  │ HIGH: Hardcoded API Key detected                │
+  │ Location: src/config.py:23                      │
+  │ Content: STRIPE_API_KEY = &quot;sk_live_...&quot;         │
+  │ Suggestion: Use os.getenv(&quot;STRIPE_API_KEY&quot;)     │
+  └─────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────┐
+  │ MEDIUM: Usage of vulnerable package             │
+  │ Package: requests==2.25.0 (CVE-2023-32681)      │
+  │ Suggestion: Upgrade to requests&gt;=2.31.0         │
+  └─────────────────────────────────────────────────┘
+
+  🛡️ Auto-fix? [Y/n]
+</code></pre></div></p>
+<hr />
+<h2 id="use-case-4-rag-semantic-search">🧠 Use Case 4: RAG Semantic Search</h2>
+<h3 id="scenario-you-take-over-a-100k-line-legacy-project">Scenario: You take over a 100k line legacy project</h3>
+<p><strong>Traditional Way</strong>:
+<div class="highlight"><pre><span></span><code>$ grep -r &quot;authentication&quot; src/
+# Get 500 lines of results
+# Then you start reading line by line...
+</code></pre></div></p>
+<p><strong>Boring Way</strong>:
+<div class="highlight"><pre><span></span><code>You: &quot;I want to find the function that handles JWT Token validation&quot;
+
+Boring (🌟 **Universal Router auto-routes to `boring_rag_search`**):
+
+  🔍 Semantic Search Results:
+
+  1️⃣ src/auth/jwt.py:45 - validate_token()
+     Relevance: 98%
+     &quot;Validates JWT token signature and expiration&quot;
+
+  2️⃣ src/middleware/auth.py:23 - require_auth()
+     Relevance: 87%
+     &quot;Decorator, ensures request has valid token&quot;
+
+  3️⃣ src/utils/security.py:78 - decode_jwt()
+     Relevance: 82%
+     &quot;Decodes JWT payload, returns user_id&quot;
+
+  📊 Dependency Graph:
+  decode_jwt() ← validate_token() ← require_auth()
+                                    ↑
+                               routes/users.py
+</code></pre></div></p>
+<hr />
+<h2 id="use-case-5-safe-refactoring-transaction">🔄 Use Case 5: Safe Refactoring (Transaction)</h2>
+<h3 id="scenario-you-need-to-refactor-a-core-module-but-are-afraid-of-breaking-it">Scenario: You need to refactor a core module but are afraid of breaking it</h3>
+<p><strong>Traditional Way</strong>:
+<div class="highlight"><pre><span></span><code>1. git checkout -b refactor-auth
+2. Start changing...
+3. Realize halfway that the approach is wrong
+4. Manual git reset or revert
+5. Tired...
+</code></pre></div></p>
+<p><strong>Boring Way</strong>:
+<div class="highlight"><pre><span></span><code>You: &quot;/safe_refactor Refactor auth module to use Strategy Pattern&quot;
+
+Boring:
+  📦 Starting transaction...
+
+  💾 Savepoint created [txn-a8f3c2]
+
+  🏛️ Architect Analysis:
+     &quot;Strategy pattern fits here because...&quot;
+
+  💻 Coder starts refactoring...
+
+  🔍 Reviewer verifying...
+     ⚠️ Potential issue found: Missing backward compatibility
+     💡 Suggestion: Keep old function as alias
+
+  🧪 Verification Result:
+     ✅ Tests passed (58/58)
+     ✅ Lint passed
+     ✅ Type check passed
+
+  ✅ Refactor complete!
+
+  Commit? [Y/n/rollback]
+
+You: &quot;rollback&quot;  # If you regret it
+
+Boring:
+  ⏪ Rolled back to [txn-a8f3c2]
+  📄 All files restored
+</code></pre></div></p>
+<hr />
+<h2 id="use-case-7-auto-learning-evolution-auto-learning-v1018">🧠 Use Case 7: Auto-Learning &amp; Evolution (Auto-Learning v10.18)</h2>
+<h3 id="scenario-ai-keeps-making-the-same-mistake">Scenario: AI keeps making the same mistake</h3>
+<p><strong>Traditional Way</strong>:
+<div class="highlight"><pre><span></span><code>You: &quot;That&#39;s wrong, use `check_password_hash` here, not `check_password`&quot;
+AI: &quot;Sorry, fixing...&quot;
+(Next day, new conversation)
+AI: &quot;I used `check_password`...&quot;
+(You collapse...)
+</code></pre></div></p>
+<p><strong>Boring Way (Auto-Sense Mode)</strong>:
+<div class="highlight"><pre><span></span><code>You: &quot;That&#39;s wrong, use `check_password_hash` here&quot;
+Boring: (Fixes code)
+
+[System Background]:
+🔍 Detects user correction -&gt; Extracts pattern -&gt; Saves to Brain
+
+(Next day, new conversation)
+You: &quot;Write a login function&quot;
+Boring: 
+  ✅ Reading project memory...
+  💡 Found learned pattern: &quot;Password Hashing Preference&quot;
+
+  &quot;Okay, I will use `check_password_hash` for validation...&quot;
+</code></pre></div></p>
+<p><strong>Active Teaching</strong>:
+You can also teach it actively:
+<div class="highlight"><pre><span></span><code>You: &quot;/learn API response format must be wrapped in `data` field here&quot;
+Boring: ✅ Learned rule: [API Response Format]
+</code></pre></div></p>
+<hr />
+<h2 id="use-case-8-multi-agent-collaboration">🤖 Use Case 8: Multi-Agent Collaboration</h2>
+<h3 id="scenario-complex-task-needing-multiple-roles">Scenario: Complex task needing multiple roles</h3>
+<div class="highlight"><pre><span></span><code>You: &quot;Build a complete user management system, including CRUD, permissions, and Audit Log&quot;
+
+Boring:
+  ═══════════════════════════════════════
+  🏛️ ARCHITECT PHASE
+  ═══════════════════════════════════════
+
+  Design Decisions:
+  • Use RBAC permission model
+  • Audit Log uses Event Sourcing
+  • User data uses soft delete
+
+  Generated Docs:
+  • implementation_plan.md
+  • database_schema.sql
+  • api_spec.yaml
+
+  ═══════════════════════════════════════
+  💻 CODER PHASE
+  ═══════════════════════════════════════
+
+  Implementation Progress:
+  [████████░░] 80%
+
+  Completed:
+  ✅ User CRUD endpoints
+  ✅ Role model &amp; permissions
+  ✅ Audit event dispatcher
+
+  In Progress:
+  🔄 Permission decorator
+
+  ═══════════════════════════════════════
+  🔍 REVIEWER PHASE  
+  ═══════════════════════════════════════
+
+  Review Report:
+  ┌──────────────────────────────────────┐
+  │ Code Quality: ⭐⭐⭐⭐☆ (4.2/5)          │
+  │ Test Coverage: 78%                    │
+  │ Security: Passed                      │
+  │ Performance: Good                     │
+  └──────────────────────────────────────┘
+
+  Suggestions:
+  • Consider adding rate limiting
+  • Suggest adding 2FA for sensitive ops
+</code></pre></div>
+<hr />
+<h2 id="quick-shortcut-cheatsheet">⚡ Quick Shortcut Cheatsheet</h2>
+<table>
+<thead>
+<tr>
+<th>What you want</th>
+<th>Input</th>
+<th>What Boring does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🚀 New Project</td>
+<td><code>/vibe_start</code></td>
+<td>Complete Spec-Driven Flow</td>
+</tr>
+<tr>
+<td>🔧 Fix All Issues</td>
+<td><code>/quick_fix</code></td>
+<td>Lint + Format + Test</td>
+</tr>
+<tr>
+<td>🛡️ Security Scan</td>
+<td><code>/security_scan</code></td>
+<td>SAST + Secret Detection</td>
+</tr>
+<tr>
+<td>🔍 Search Code</td>
+<td><code>/semantic_search</code></td>
+<td>RAG Semantic Search</td>
+</tr>
+<tr>
+<td>🔄 Safe Refactor</td>
+<td><code>/safe_refactor</code></td>
+<td>Transaction + Verify</td>
+</tr>
+<tr>
+<td>📊 Quality Eval</td>
+<td><code>/evaluate_code</code></td>
+<td>LLM Judge Scoring</td>
+</tr>
+<tr>
+<td>💾 Smart Commit</td>
+<td><code>/smart_commit</code></td>
+<td>Auto-generate commit msg</td>
+</tr>
+<tr>
+<td>🗺️ View Roadmap</td>
+<td><code>/roadmap</code></td>
+<td>Generate Gantt Chart</td>
+</tr>
+<tr>
+<td>🧠 Learn Style</td>
+<td><code>/learn_patterns</code></td>
+<td>AI learns your style</td>
+</tr>
+<tr>
+<td>❓ Health Check</td>
+<td><code>/vibe_check</code></td>
+<td>Project Health Score</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="interactive-conversation-example">🎮 Interactive Conversation Example</h2>
+<h3 id="example-1-debugging-a-weird-bug">Example 1: Debugging a Weird Bug</h3>
+<div class="highlight"><pre><span></span><code>You: My API returns 500, error is &quot;TypeError: &#39;NoneType&#39; object is not iterable&quot;
+
+Boring:
+  🔍 Analyzing error...
+
+  📍 Root Cause Locator:
+  Location: src/services/user.py:67
+  Function: get_user_orders()
+
+  Problem:
+    orders = db.query(Order).filter_by(user_id=user_id).all()
+    return [order.to_dict() for order in orders]  # ← Booom here
+
+  Reason: 
+    When user_id doesn&#39;t exist, it returns None instead of empty list
+
+  🏛️ Architect Advice:
+    This is a classic &quot;Null Object Pattern&quot; violation.
+    Suggest always returning empty list [] instead of None,
+    so caller can iterate safely.
+
+  Fix:
+    orders = db.query(Order).filter_by(user_id=user_id).all() or []
+
+  Auto-fix? [Y/n]
+</code></pre></div>
+<h3 id="example-2-performance-optimization">Example 2: Performance Optimization</h3>
+<div class="highlight"><pre><span></span><code>You: &quot;/optimize_performance&quot;
+
+Boring:
+  🔍 Scanning performance issues...
+
+  ⚠️ Found N+1 Query Issue
+
+  Location: src/routes/users.py:34
+
+  Problem Code:
+    users = User.query.all()
+    for user in users:
+        orders = user.orders  # Triggers DB query for every user
+
+  Suggestion:
+    users = User.query.options(
+        joinedload(User.orders)
+    ).all()
+
+  Estimated Gain: 10x (100 users → 1 query vs 101 queries)
+</code></pre></div>
+<hr />
+<h2 id="why-choose-boring">🏆 Why Choose Boring?</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Traditional AI</th>
+<th>Boring</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Code Gen</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Architecture</td>
+<td>❌</td>
+<td>✅ Architect Persona</td>
+</tr>
+<tr>
+<td>Clarification</td>
+<td>❌</td>
+<td>✅ SpecKit 5-Steps</td>
+</tr>
+<tr>
+<td>Security</td>
+<td>❌</td>
+<td>✅ SAST + Secret Detection</td>
+</tr>
+<tr>
+<td>Auto-Fix</td>
+<td>❌</td>
+<td>✅ One-Click Fix</td>
+</tr>
+<tr>
+<td>Code Review</td>
+<td>❌</td>
+<td>✅ Multi-Agent Review</td>
+</tr>
+<tr>
+<td>Risk Control</td>
+<td>❌</td>
+<td>✅ Shadow Mode</td>
+</tr>
+<tr>
+<td>Rollback</td>
+<td>❌</td>
+<td>✅ Transaction</td>
+</tr>
+<tr>
+<td>Semantic Search</td>
+<td>❌</td>
+<td>✅ RAG Vector Search</td>
+</tr>
+<tr>
+<td>Learning</td>
+<td>❌</td>
+<td>✅ Brain Persistence</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="start-now">🚀 Start Now</h2>
+<h3 id="mode-1-mcpsmithery-recommended-easiest">🎮 Mode 1: MCP/Smithery (Recommended! Easiest)</h3>
+<p>Use directly in <strong>Gemini CLI</strong> or <strong>Cursor</strong>, no extra config:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Install to Gemini CLI</span>
+npx<span class="w"> </span>-y<span class="w"> </span>@smithery/cli@latest<span class="w"> </span>install<span class="w"> </span>boring/boring<span class="w"> </span>--client<span class="w"> </span>gemini-cli
+</code></pre></div>
+<p>Then chat in Gemini CLI:
+<div class="highlight"><pre><span></span><code>You: &quot;Help me build a FastAPI auth service&quot;
+Boring: &quot;Sure, let me ask a few questions first...&quot;
+</code></pre></div></p>
+<p>✅ <strong>NO</strong> <code>PROMPT.md</code><br />
+✅ <strong>NO</strong> <code>boring-setup</code><br />
+✅ Interactive conversation, stop anytime</p>
+<hr />
+<h3 id="mode-2-autonomous-loop-mode-advanced">🤖 Mode 2: Autonomous Loop Mode (Advanced)</h3>
+<p>For <strong>fully autonomous, long-running</strong> dev tasks, run in CMD/PowerShell:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Step 1: Install (Once)</span>
+pip<span class="w"> </span>install<span class="w"> </span>boring-aicoding
+
+<span class="c1"># Step 2: Create Project Structure (Only needed for this mode!)</span>
+<span class="c1"># Note: MUST run boring-setup before boring start in CMD!</span>
+boring-setup<span class="w"> </span>my-awesome-app
+<span class="nb">cd</span><span class="w"> </span>my-awesome-app
+
+<span class="c1"># Step 3: Edit PROMPT.md, tell AI what to do</span>
+<span class="c1"># Step 4: Start Loop</span>
+boring<span class="w"> </span>start<span class="w">                         </span><span class="c1"># Auto-detect CLI</span>
+boring<span class="w"> </span>start<span class="w"> </span>--provider<span class="w"> </span>claude-code<span class="w">  </span><span class="c1"># Use Claude Code CLI</span>
+boring<span class="w"> </span>start<span class="w"> </span>--provider<span class="w"> </span>gemini-cli<span class="w">   </span><span class="c1"># Use Gemini CLI</span>
+</code></pre></div>
+<p><strong>What does <code>boring-setup</code> do?</strong>
+<div class="highlight"><pre><span></span><code>my-awesome-app/
+├── PROMPT.md      # ✅ Required - Your task Instructions
+├── @fix_plan.md   # Task Checklist
+├── GEMINI.md      # Project Context
+└── .boring/brain/ # AI Knowledge Base
+</code></pre></div></p>
+<hr />
+<h3 id="comparison">📊 Comparison</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>MCP/Smithery</th>
+<th><code>boring start</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Installation</strong></td>
+<td><code>npx @smithery/cli ...</code></td>
+<td><strong><code>pip install boring-aicoding</code></strong> (Required)</td>
+</tr>
+<tr>
+<td>Need <code>boring-setup</code></td>
+<td>❌ No</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td>Need <code>PROMPT.md</code></td>
+<td>❌ No</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td>Workflow</td>
+<td>Conversational</td>
+<td>Auto-Loop</td>
+</tr>
+<tr>
+<td>Use Case</td>
+<td>Interactive Dev</td>
+<td>Long-running Auto Dev</td>
+</tr>
+<tr>
+<td>Stop</td>
+<td>Anytime</td>
+<td>Ctrl+C</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Note</strong>: If you only use Smithery install, you cannot run <code>boring start</code> in terminal! Only pip install provides <code>boring</code> command.</p>
+</blockquote>
+<hr />
+<h2 id="remember-this">🎯 Remember This</h2>
+<blockquote>
+<p><strong>"Pro players don't memorize Tool names, because Prompts have prepared all tactical combos."</strong></p>
+</blockquote>
+<p>You just tell Boring <strong>what you want</strong>, and leave the rest to it.</p>
+<hr />
+<p><em>Built with ❤️ by the Boring206</em></p>
+<hr />
+<h2 id="further-reading">📚 Further Reading</h2>
+<ul>
+<li><a href="../TUTORIAL_en/">Complete Tutorial</a> — Detailed feature intro</li>
+<li><a href="../ADVANCED_TUTORIAL/">Advanced Developer Guide</a> — Architecture &amp; Internals</li>
+<li><a href="../PROFESSIONAL_PLAYBOOK_en/">Professional Playbook</a> — 18 Expert Workflows</li>
+<li><a href="../../reference/APPENDIX_A_TOOL_REFERENCE/">Tool Reference</a> — All 55+ Tools</li>
+</ul>
+<hr />
+<p><em>Last updated: V10.26.0</em></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../ADVANCED_TUTORIAL_zh/" class="btn btn-neutral float-left" title="進階教學"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../PROFESSIONAL_PLAYBOOK_en/" class="btn btn-neutral float-right" title="企業手冊">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../ADVANCED_TUTORIAL_zh/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../PROFESSIONAL_PLAYBOOK_en/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

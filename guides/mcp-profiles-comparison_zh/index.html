@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>🎛️ MCP Profiles 深度解析：如何選擇合適的模式 - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\ud83c\udf9b\ufe0f MCP Profiles \u6df1\u5ea6\u89e3\u6790\uff1a\u5982\u4f55\u9078\u64c7\u5408\u9069\u7684\u6a21\u5f0f";
+        var mkdocs_page_input_path = "guides\\mcp-profiles-comparison_zh.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">🎛️ MCP Profiles 深度解析：如何選擇合適的模式</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/guides/mcp-profiles-comparison_zh.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="mcp-profiles">🎛️ MCP Profiles 深度解析：如何選擇合適的模式</h1>
+<blockquote>
+<p><strong>深度思考分析 (Deep Thinking Analysis)</strong>：
+MCP Profiles 的設計初衷不僅是為了「隱藏」工具，更是為了 <strong>Context 預算管理 (Context Budget Management)</strong>。
+LLM 的注意力機制是有限的。一次性灌入 100+ 個工具定義（約 1 萬 Tokens）會分散模型的注意力，導致它忘記任務指令。
+Profiles 允許我們根據 <strong>任務複雜度</strong> 和 <strong>模型能力</strong> 來動態調整 <strong>工具密度</strong>。</p>
+</blockquote>
+<p>本指南提供每個 Profile 的詳細拆解、適用場景 (Usage Points) 以及優缺點分析。</p>
+<hr />
+<h2 id="_1">📊 快速比較</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">設定檔 (Profile)</th>
+<th style="text-align: left;">工具數</th>
+<th style="text-align: left;">核心用途</th>
+<th style="text-align: left;">理想模型等級</th>
+<th style="text-align: left;">Token 消耗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>ultra_lite</code></strong></td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;"><strong>閘道器 (Gateway)</strong> / 重度聊天</td>
+<td style="text-align: left;">入門 (如 Llama 3 8B)</td>
+<td style="text-align: left;">🟢 極低</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>minimal</code></strong></td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;"><strong>安全營運 (Ops)</strong> / CI</td>
+<td style="text-align: left;">中階</td>
+<td style="text-align: left;">🟢 低</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>lite</code></strong></td>
+<td style="text-align: left;">20</td>
+<td style="text-align: left;"><strong>日常開發</strong> (官方推薦)</td>
+<td style="text-align: left;">高階 (Claude 3.5, Gemini 1.5)</td>
+<td style="text-align: left;">🟡 平衡</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>standard</code></strong></td>
+<td style="text-align: left;">50</td>
+<td style="text-align: left;"><strong>架構設計</strong> / 專案管理</td>
+<td style="text-align: left;">頂規</td>
+<td style="text-align: left;">🟠 高</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>full</code></strong></td>
+<td style="text-align: left;">All</td>
+<td style="text-align: left;"><strong>全知模式 (God Mode)</strong> / 除錯</td>
+<td style="text-align: left;">超大 Context (Gemini 1.5 Pro)</td>
+<td style="text-align: left;">🔴 極高</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="deep-dive">🛠️ 各模式詳細解析 (Deep Dive)</h2>
+<h3 id="1-ultra_lite-the-gateway">1. <code>ultra_lite</code> (極致輕量 - The Gateway)</h3>
+<p><strong>核心概念</strong>: 「漸進式揭露 (Progressive Disclosure)」。
+Agent 初始狀態下 <strong>一無所知</strong>，只知道如何「發現」工具。只有當它真的需要某個工具時，才會去查詢該工具的定義。</p>
+<ul>
+<li><strong>✅ 適用場景 (Usage Point)</strong>:<ul>
+<li><strong>成本優化</strong>: 當你按 Input Token 付費且希望極小化 Prompt 時。</li>
+<li><strong>小型模型</strong>: 使用本地 7B/8B 模型，這些模型容易被大量工具定義搞混。</li>
+<li><strong>重對話</strong>: 任務內容 90% 是討論需求，只有 10% 需要執行操作。</li>
+</ul>
+</li>
+<li><strong>❌ 限制</strong>:<ul>
+<li><strong>高延遲</strong>: 每次使用新工具都需要 2 個往返 (Discover -&gt; Execute)。</li>
+<li><strong>缺乏主動性</strong>: Agent 不會「意外」發現並使用某個它原本不知道的好用工具。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-minimal-the-guard">2. <code>minimal</code> (極簡 - The Guard)</h3>
+<p><strong>核心概念</strong>: 「唯讀 / 安全優先」。
+提供足夠的工具讓 Agent <strong>看見</strong> 並 <strong>驗證</strong> 專案，但限制其生成與修改代碼的能力。</p>
+<ul>
+<li><strong>✅ 適用場景 (Usage Point)</strong>:<ul>
+<li><strong>專案審計</strong>: 「幫我讀這些代碼，告訴我安不安全。」</li>
+<li><strong>CI/CD 流水線</strong>: 在自動化流程中進行檢查，不希望 Agent 自作聰明修改代碼。</li>
+<li><strong>快速修復</strong>: 簡單的 Git Commit 或 Vibe Check。</li>
+</ul>
+</li>
+<li><strong>❌ 限制</strong>:<ul>
+<li>不能審查代碼 (無 <code>code_review</code>)。</li>
+<li>不能生成測試 (無 <code>test_gen</code>)。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-lite-the-daily-driver">3. <code>lite</code> (輕量開發 - The Daily Driver) 🌟</h3>
+<p><strong>核心概念</strong>: 「帕累托最優 (Pareto Optimal)」。
+包含 <strong>20% 的工具</strong>，卻能完成 <strong>80% 的工作</strong>。專為適應 128k Context Window 設計，預留最大空間給代碼檔案。</p>
+<ul>
+<li><strong>✅ 適用場景 (Usage Point)</strong>:<ul>
+<li><strong>功能開發</strong>: 「幫我新增一個登入頁面。」(會用到 <code>write_file</code>, <code>rag_context</code>, <code>code_review</code>)</li>
+<li><strong>重構</strong>: 「清理這個類別的代碼。」</li>
+<li><strong>TDD</strong>: 「為這個函數寫單元測試。」</li>
+<li><strong>預設選擇</strong>: 絕大多數情況下，請從這裡開始。只有當你覺得工具不夠用時才切換。</li>
+</ul>
+</li>
+<li><strong>❌ 限制</strong>:<ul>
+<li>缺乏管理工具 (Workspace 管理、Git Hooks 安裝)。</li>
+<li>缺乏多智能體模擬能力。</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-standard-the-architect">4. <code>standard</code> (標準 - The Architect)</h3>
+<p><strong>核心概念</strong>: 「專案經理 (Project Manager)」。
+擴展了範圍，包含儲存庫管理、安全管理以及更深度的分析工具。</p>
+<ul>
+<li><strong>✅ 適用場景 (Usage Point)</strong>:<ul>
+<li><strong>環境建置</strong>: 安裝 Git Hooks，配置 Shadow Mode 安全等級。</li>
+<li><strong>深度研究</strong>: 使用完整 RAG 擴展 (<code>rag_expand</code>) 來理解複雜的依賴關係圖。</li>
+<li><strong>多智能體流</strong>: 執行 <code>boring_multi_agent</code> 來模擬使用者行為。</li>
+<li><strong>規格撰寫</strong>: 使用 <code>speckit_*</code> 工具來釐清模糊的需求。</li>
+</ul>
+</li>
+<li><strong>❌ 限制</strong>:<ul>
+<li>Token 消耗顯著增加。</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-full-god-mode">5. <code>full</code> (全知模式 - God Mode)</h3>
+<p><strong>核心概念</strong>: 「原始無過濾存取 (Raw Unfiltered Access)」。
+暴露系統中 <strong>所有</strong> 已註冊的工具，包含實驗性的、舊版的、除錯用的。沒有任何隱藏。</p>
+<ul>
+<li><strong>✅ 適用場景 (Usage Point)</strong>:<ul>
+<li><strong>超大 Context 模型</strong>: 當你使用 <strong>Gemini 1.5 Pro (2M)</strong> 或 <strong>Claude 3 Opus</strong>，且不在乎 50k System Prompt 的消耗時。</li>
+<li><strong>插件開發</strong>: 當你正在開發 <em>新的</em> Boring 工具，並希望在不修改 Profile 的情況下立即測試它。</li>
+<li><strong>使用實驗功能</strong>: 存取那些尚未畢業進入 <code>Standard</code> 的最新工具。</li>
+<li><strong>「我找不到工具」</strong>: 當你確定某個工具存在，但在目前 Profile 找不到時，切到 Full 把它找出來。</li>
+</ul>
+</li>
+<li><strong>⚠️ 嚴重警告</strong>:<ul>
+<li><strong>幻覺風險</strong>: 100+ 個工具會增加 LLM 選錯工具的機率 (例如混淆 <code>verify</code> 和 <code>verify_file</code>)。</li>
+<li><strong>成本</strong>: 在按 Token 計費的模式下非常昂貴。</li>
+<li><strong>效能</strong>: 「思考」速度變慢 (因為需要預處理大量工具定義)。</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="configuration">⚙️ 配置切換 (Configuration)</h2>
+<p>您可以根據當前任務需求動態切換 Profile。</p>
+<h3 id="1">1. 環境變數 (全域)</h3>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">BORING_MCP_PROFILE</span><span class="o">=</span>lite
+</code></pre></div>
+<h3 id="2-boringtoml">2. 專案設定 (<code>.boring.toml</code>)</h3>
+<div class="highlight"><pre><span></span><code><span class="k">[boring]</span>
+<span class="c1"># 為此專案固定設定</span>
+<span class="n">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;standard&quot;</span>
+</code></pre></div>
+<h3 id="3-vs-code-cursor">3. 執行時切換 (VS Code / Cursor)</h3>
+<ol>
+<li>開啟 User Settings (JSON)。</li>
+<li>找到 <code>"mcpServers"</code>。</li>
+<li>編輯 <code>boring</code> 下的 <code>env</code> 區塊。</li>
+<li><strong>重啟</strong> MCP Server (Developer: Reload Window)。</li>
+</ol>
+<hr />
+<h2 id="_2">💡 建議總結</h2>
+<p>請從 <strong><code>lite</code></strong> 開始。
+- 如果發現模型「幻想」出不存在的工具 -&gt; 切換到 <strong><code>standard</code></strong> (可能該工具在那裡)。
+- 如果覺得模型變慢或太貴 -&gt; 切換到 <strong><code>minimal</code></strong> 或 <strong><code>ultra_lite</code></strong>。
+- 如果你在做深度研發或使用 Gemini 1.5 Pro -&gt; 切換到 <strong><code>full</code></strong>。</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

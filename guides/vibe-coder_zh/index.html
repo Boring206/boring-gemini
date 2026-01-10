@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Vibe Coder 指南 - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Vibe Coder \u6307\u5357";
+        var mkdocs_page_input_path = "guides\\vibe-coder_zh.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Vibe Coder 指南</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/guides/vibe-coder_zh.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="vibe-coder">Vibe Coder 指南</h1>
+<blockquote>
+<p><strong>給用描述來寫程式的開發者。</strong> 不需要命令列專業知識。只要告訴 Boring 你想要什麼。</p>
+</blockquote>
+<hr />
+<h2 id="vibe-coding">🎨 什麼是 Vibe Coding？</h2>
+<p>Vibe Coding 是一種開發風格：
+1. <strong>描述</strong> 你用自然語言想要什麼
+2. <strong>讓 AI</strong> 生成實作
+3. <strong>審查</strong> 並精煉輸出</p>
+<p><strong>你專注於「什麼」，AI 處理「如何」。</strong></p>
+<hr />
+<h2 id="vibe">🚀 你的第一個 Vibe 會話</h2>
+<h3 id="1-vibe_start">步驟 1：從 /vibe_start 開始</h3>
+<div class="highlight"><pre><span></span><code>你：You: /vibe_start 我想建立一個深色主題的個人部落格
+
+# 或者使用 boring-route CLI
+$ boring-route &quot;我想建立一個深色主題的個人部落格&quot;
+</code></pre></div>
+<h3 id="2">步驟 2：回答問題</h3>
+<div class="highlight"><pre><span></span><code>Boring：好主意！讓我了解你的願景：
+
+        1. 靜態網站還是有後端？
+        2. 需要哪些功能？（評論、搜尋、標籤）
+        3. 設計風格？（極簡、雜誌風、科技感）
+        4. 目標平台？（桌面、行動優先）
+
+你：1. 靜態網站就好
+    2. 標籤和搜尋
+    3. 極簡乾淨
+    4. 行動優先
+</code></pre></div>
+<h3 id="3">步驟 3：看著你的部落格誕生</h3>
+<div class="highlight"><pre><span></span><code>Boring：完美！這是我會建立的：
+
+        📁 blog/
+        ├── index.html       （首頁）
+        ├── posts/           （部落格文章）
+        ├── styles/          （深色主題 CSS）
+        ├── js/              （搜尋功能）
+        └── tags/            （標籤頁面）
+
+        開始實作...
+        ✅ 建立基礎結構
+        ✅ 實作深色主題
+        ✅ 新增搜尋功能
+        ✅ 建立範例文章
+
+        你的部落格準備好了！開啟 index.html 查看。
+</code></pre></div>
+<hr />
+<h2 id="vibe-coder_1">💡 Vibe Coder 快速提示</h2>
+<table>
+<thead>
+<tr>
+<th>你想要什麼</th>
+<th>只需說</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>建立新東西</td>
+<td><code>/vibe_start [描述你的想法]</code></td>
+</tr>
+<tr>
+<td>修復錯誤</td>
+<td><code>/quick_fix</code> 或 <code>boring-route "修好它"</code></td>
+</tr>
+<tr>
+<td>提交變更</td>
+<td><code>/smart_commit</code> 或 <code>boring-route "提交變更"</code></td>
+</tr>
+<tr>
+<td>全端應用</td>
+<td><code>/full_stack_dev</code> 或 <code>boring-route "建立應用..."</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="_1">範例</h3>
+<div class="highlight"><pre><span></span><code>/vibe_start 建立一個有城市搜尋的天氣儀表板
+
+/vibe_start 建立一個有拖放功能的任務管理器
+
+/vibe_start 為攝影師製作一個作品集網站
+
+/full_stack_dev my-store &quot;Next.js + Stripe + Supabase&quot;
+</code></pre></div>
+<hr />
+<h2 id="vibe-coding_1">🎯 Vibe Coding 模式</h2>
+<h3 id="1">模式 1：描述體驗</h3>
+<p>❌ <strong>不要這樣說：</strong>
+<div class="highlight"><pre><span></span><code>建立一個使用 useState 處理表單的 React 元件
+</code></pre></div></p>
+<p>✅ <strong>這樣說：</strong>
+<div class="highlight"><pre><span></span><code>我想要一個感覺流暢的註冊表單，在使用者輸入時
+即時顯示驗證錯誤
+</code></pre></div></p>
+<h3 id="2_1">模式 2：專注於使用者</h3>
+<p>❌ <strong>不要這樣說：</strong>
+<div class="highlight"><pre><span></span><code>實作帶有刷新令牌的 JWT 認證
+</code></pre></div></p>
+<p>✅ <strong>這樣說：</strong>
+<div class="highlight"><pre><span></span><code>使用者應該能夠保持登入一週，不需要
+重新輸入密碼
+</code></pre></div></p>
+<h3 id="3_1">模式 3：展示，不要告訴</h3>
+<p>❌ <strong>不要這樣說：</strong>
+<div class="highlight"><pre><span></span><code>新增錯誤處理
+</code></pre></div></p>
+<p>✅ <strong>這樣說：</strong>
+<div class="highlight"><pre><span></span><code>當出錯時，顯示一個友善的訊息，解釋
+發生了什麼以及使用者可以做什麼
+</code></pre></div></p>
+<hr />
+<h2 id="vibe_1">🔄 Vibe 工作流程</h2>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────┐
+│                   VIBE 工作流程                          │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│   1. 描述           2. 審查          3. 精煉           │
+│   ──────           ──────          ──────           │
+│   告訴 AI 你       查看結果         「把按鈕           │
+│   的願景                            做大一點」         │
+│                                                         │
+│        ↓                 ↓                 ↓            │
+│                                                         │
+│   「我想要一個     「看起來不錯，   AI 調整            │
+│   很吸睛的         但需要更多       然後你就           │
+│   著陸頁」         顏色」           完成了！🎉          │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+</code></pre></div>
+<hr />
+<h2 id="vibe-coder_2">🛡️ 安全第一（即使對 Vibe Coder 也是）</h2>
+<h3 id="_2">影子模式保護你</h3>
+<p>即使你不是命令列專家，Boring 也會保護你：</p>
+<div class="highlight"><pre><span></span><code>Boring：我想刪除舊的快取檔案。
+
+        ⚠️ 此操作需要你的批准：
+        - 刪除：cache/*.json（15 個檔案）
+
+        [批准] [拒絕] [顯示詳情]
+</code></pre></div>
+<p><strong>你始終掌控一切。</strong> 危險操作需要你的確認。</p>
+<hr />
+<h2 id="_3">📱 給行動/網頁開發者</h2>
+<h3 id="_4">建立行動應用</h3>
+<div class="highlight"><pre><span></span><code>/vibe_start 建立一個 React Native 支出追蹤器：
+- 漂亮的圓餅圖
+- 簡單的收據掃描
+- 月度預算
+</code></pre></div>
+<h3 id="_5">建立網頁應用</h3>
+<div class="highlight"><pre><span></span><code>/vibe_start 我想要一個專案管理的 SaaS 儀表板
+看起來像 Linear 但更簡單
+</code></pre></div>
+<h3 id="api">建立 API</h3>
+<div class="highlight"><pre><span></span><code>/vibe_start 為食譜分享平台建立一個 REST API
+有使用者帳號和食譜評分
+</code></pre></div>
+<hr />
+<h2 id="_6">🎮 給遊戲開發者</h2>
+<div class="highlight"><pre><span></span><code>/vibe_start 建立一個 2D 平台遊戲：
+- 可愛的機器人角色
+- 5 個難度遞增的關卡
+- 收集金幣和高分榜
+</code></pre></div>
+<hr />
+<h2 id="aiml">🤖 給 AI/ML 開發者</h2>
+<div class="highlight"><pre><span></span><code>/vibe_start 建立一個情感分析網頁應用：
+- 接受使用者評論作為輸入
+- 顯示正面/負面/中立及信心度
+- 有漂亮的視覺化
+</code></pre></div>
+<hr />
+<h2 id="_7">💬 常用短語</h2>
+<table>
+<thead>
+<tr>
+<th>短語</th>
+<th>會發生什麼</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「讓它更好」</td>
+<td>AI 改善代碼品質</td>
+</tr>
+<tr>
+<td>「新增測試」</td>
+<td>AI 撰寫測試案例</td>
+</tr>
+<tr>
+<td>「讓它更快」</td>
+<td>AI 優化效能</td>
+</tr>
+<tr>
+<td>「讓它更漂亮」</td>
+<td>AI 改善 UI/設計</td>
+</tr>
+<tr>
+<td>「解釋這個」</td>
+<td>AI 撰寫文檔</td>
+</tr>
+<tr>
+<td>「修復這個」</td>
+<td>AI 除錯問題</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_8">🆘 當你卡住時</h2>
+<h3 id="_9">尋求幫助</h3>
+<div class="highlight"><pre><span></span><code>我對認證的運作方式感到困惑。
+你能像我是 5 歲一樣解釋嗎？
+</code></pre></div>
+<h3 id="_10">重新開始</h3>
+<div class="highlight"><pre><span></span><code>讓我們重新開始。我想採取不同的方法。
+</code></pre></div>
+<h3 id="_11">更具體</h3>
+<div class="highlight"><pre><span></span><code>按鈕在手機上看起來不對。
+你能在小螢幕上讓它全寬嗎？
+</code></pre></div>
+<hr />
+<h2 id="_12">另請參閱</h2>
+<ul>
+<li><a href="../quick-tutorials_zh/">快速教學</a> - 逐步指南</li>
+<li><a href="../cookbook_zh/">Cookbook</a> - 即用食譜</li>
+<li><a href="../pro-tips_zh/">專業技巧</a> - 提升你的技能</li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

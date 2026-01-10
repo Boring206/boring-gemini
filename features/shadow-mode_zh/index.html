@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>🧛 影子模式 (Shadow Mode) - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\ud83e\udddb \u5f71\u5b50\u6a21\u5f0f (Shadow Mode)";
+        var mkdocs_page_input_path = "features\\shadow-mode_zh.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">🧛 影子模式 (Shadow Mode)</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_1">🙋 這是做什麼的？</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">🛡️ 它如何工作？</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">📊 三種保護級別</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_4">級別詳情</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#disabled">DISABLED（⚠️ 謹慎使用）</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#enabled">ENABLED（🛡️ 建議預設值）</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#strict">STRICT（🔒 最高安全性）</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">🔧 配置與持久化</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">跨會話持久化</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mcp">MCP 配置</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_7">💻 工具參考</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_8">檢查狀態</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_9">設定級別</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_10">查看待處理操作</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_11">批准/拒絕</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_12">🎯 風險分類</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#enabled_1">低風險（ENABLED 模式自動批准）</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_13">中風險（記錄並執行）</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_14">高風險（需要批准）</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#v10175">🔐 受保護的檔案工具（V10.17.5+）</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#git-checkpoints-v1031">🛡️ 安全網 (Git Checkpoints) (V10.31)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_15">運作原理</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_16">用法</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_17">🏢 企業使用案例</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_18">代碼審查工作流程</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#cicd">CI/CD 整合</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_19">另請參閱</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">✨ 核心功能 (Features)</li>
+      <li class="breadcrumb-item active">🧛 影子模式 (Shadow Mode)</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/features/shadow-mode_zh.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="-shadow-mode">影子模式 - 安全沙箱 (Shadow Mode)</h1>
+<blockquote>
+<p><strong>簡單說</strong>：這是 AI 的「兒童安全鎖」。防止 AI 意外刪除你的檔案或把你的電腦搞壞。</p>
+</blockquote>
+<hr />
+<h2 id="_1">🙋 這是做什麼的？</h2>
+<p>想像你僱用了一個瘋狂且速度很快的實習生 (AI)。
+*   <strong>沒有影子模式</strong>：他可能會說「我覺得這個資料夾沒用」，然後直接把你的 <code>src/</code> 刪掉。
+*   <strong>有影子模式</strong>：當他想刪除時，系統會暫停並問你：「老闆，他想刪除 <code>src/</code>，是否批准？」</p>
+<p><strong>Boring 預設開啟此功能 (<code>ENABLED</code>)，所以你很安全。</strong></p>
+<hr />
+<h2 id="_2">🛡️ 它如何工作？</h2>
+<p>影子模式就像一個守門員，站在 AI 和你的檔案系統中間：</p>
+<ol>
+<li><strong>AI 說</strong>：「寫入 <code>main.py</code>！」</li>
+<li><strong>影子模式檢查</strong>：<ul>
+<li>如果是小改動 → <strong>放行</strong> (自動批准)。</li>
+<li>如果是刪除檔案 / 大改動 → <strong>攔截</strong> (並再終端機問你)。</li>
+</ul>
+</li>
+<li><strong>你決定</strong>：輸入 <code>y</code> 或 <code>n</code>。</li>
+</ol>
+<div class="highlight"><pre><span></span><code>graph LR
+    AI[AI 代理] --&gt;|寫入請求| Shadow[🛡️ 影子模式]
+    Shadow --&gt;|小風險| Disk[檔案系統]
+    Shadow --&gt;|高風險| Human[👤 你 (人工審核)]
+    Human --&gt;|Yes| Disk
+    Human --&gt;|No| Reject[❌ 拒絕執行]
+</code></pre></div>
+<hr />
+<h2 id="_3">📊 三種保護級別</h2>
+<table>
+<thead>
+<tr>
+<th>級別</th>
+<th>符號</th>
+<th>行為</th>
+<th>最適合</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DISABLED</code></td>
+<td>⚠️</td>
+<td>無攔截</td>
+<td>僅限隔離容器</td>
+</tr>
+<tr>
+<td><code>ENABLED</code></td>
+<td>🛡️</td>
+<td>自動批准低風險，阻擋高風險</td>
+<td><strong>預設 - 平衡</strong></td>
+</tr>
+<tr>
+<td><code>STRICT</code></td>
+<td>🔒</td>
+<td>攔截所有寫入操作</td>
+<td>生產環境</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_4">級別詳情</h3>
+<h4 id="disabled">DISABLED（⚠️ 謹慎使用）</h4>
+<p><div class="highlight"><pre><span></span><code><span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;set_level&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;DISABLED&quot;</span><span class="p">)</span>
+</code></pre></div>
+- 不攔截任何操作
+- 所有寫入立即執行
+- <strong>僅在隔離容器或沙箱中使用</strong></p>
+<h4 id="enabled">ENABLED（🛡️ 建議預設值）</h4>
+<p><div class="highlight"><pre><span></span><code><span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;set_level&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ENABLED&quot;</span><span class="p">)</span>
+</code></pre></div>
+- <strong>自動批准</strong>：讀取操作、小型檔案編輯
+- <strong>記錄</strong>：中風險變更（新檔案 &lt; 1KB）
+- <strong>阻擋</strong>：刪除、系統檔案、大型重寫</p>
+<h4 id="strict">STRICT（🔒 最高安全性）</h4>
+<p><div class="highlight"><pre><span></span><code><span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;set_level&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;STRICT&quot;</span><span class="p">)</span>
+</code></pre></div>
+- <strong>所有</strong>寫入操作都需要批准
+- 適合生產代碼審查
+- 無法透過代理補丁繞過</p>
+<hr />
+<h2 id="_5">🔧 配置與持久化</h2>
+<h3 id="_6">跨會話持久化</h3>
+<p>影子模式設定持久保存在 <code>~/.boring/brain/shadow_config.json</code>：</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;STRICT&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;auto_approve_patterns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*.md&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;docs/*&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;always_block_patterns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*.env&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;secrets/*&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;last_updated&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T12:00:00Z&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="mcp">MCP 配置</h3>
+<p>在 <code>smithery.yaml</code> 或 MCP 配置中：</p>
+<div class="highlight"><pre><span></span><code><span class="nt">SHADOW_MODE_LEVEL</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;STRICT&quot;</span><span class="w">    </span><span class="c1"># DISABLED|ENABLED|STRICT</span>
+<span class="nt">BORING_ALLOW_DANGEROUS</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">  </span><span class="c1"># 生產環境絕不設為 true</span>
+</code></pre></div>
+<hr />
+<h2 id="_7">💻 工具參考</h2>
+<h3 id="_8">檢查狀態</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;status&quot;</span><span class="p">)</span>
+<span class="c1"># 返回: {&quot;level&quot;: &quot;ENABLED&quot;, &quot;pending_count&quot;: 2}</span>
+</code></pre></div>
+<h3 id="_9">設定級別</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;set_level&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;STRICT&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="_10">查看待處理操作</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;list_pending&quot;</span><span class="p">)</span>
+<span class="c1"># 返回等待批准的操作列表</span>
+</code></pre></div>
+<h3 id="_11">批准/拒絕</h3>
+<div class="highlight"><pre><span></span><code><span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;approve&quot;</span><span class="p">,</span> <span class="n">operation_id</span><span class="o">=</span><span class="s2">&quot;op_123&quot;</span><span class="p">)</span>
+<span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;reject&quot;</span><span class="p">,</span> <span class="n">operation_id</span><span class="o">=</span><span class="s2">&quot;op_123&quot;</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="_12">🎯 風險分類</h2>
+<h3 id="enabled_1">低風險（ENABLED 模式自動批准）</h3>
+<ul>
+<li>讀取檔案</li>
+<li>列出目錄</li>
+<li>查看 git 狀態</li>
+<li>執行唯讀命令</li>
+</ul>
+<h3 id="_13">中風險（記錄並執行）</h3>
+<ul>
+<li>建立小型檔案（&lt; 1KB）</li>
+<li>附加到現有檔案</li>
+<li>執行測試</li>
+</ul>
+<h3 id="_14">高風險（需要批准）</h3>
+<ul>
+<li>❌ 刪除檔案</li>
+<li>❌ 修改系統檔案（<code>.env</code>、<code>config/*</code>）</li>
+<li>❌ 大型檔案重寫（&gt; 50% 內容變更）</li>
+<li>❌ 執行有副作用的 shell 命令</li>
+<li>❌ Git 操作（push、強制操作）</li>
+</ul>
+<hr />
+<h2 id="v10175">🔐 受保護的檔案工具（V10.17.5+）</h2>
+<p>為確保影子模式保護，請使用 Boring 的檔案工具：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 這些工具總是遵守影子模式</span>
+<span class="n">boring_write_file</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;config.py&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+<span class="n">boring_read_file</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;src/main.py&quot;</span><span class="p">)</span>
+</code></pre></div>
+<blockquote>
+<p>⚠️ <strong>警告</strong>：原生 MCP 工具如 <code>write_file</code>（部分客戶端提供）可能不會被影子模式攔截。請始終使用 <code>boring_write_file</code> 進行安全操作。</p>
+</blockquote>
+<hr />
+<h2 id="git-checkpoints-v1031">🛡️ 安全網 (Git Checkpoints) (V10.31)</h2>
+<p>雖然影子模式可以攔截個別操作，但 <strong>安全網</strong> 能在進行複雜重構時保護您的整個代碼庫。</p>
+<h3 id="_15">運作原理</h3>
+<p>它會在您開始之前建立一個輕量級的 Git 標籤 (Checkpoint)。如果 AI 搞砸了，您可以瞬間還原到該檢查點。</p>
+<h3 id="_16">用法</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 1. 建立檢查點</span>
+<span class="n">boring_checkpoint</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;save&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;重構 auth 前&quot;</span><span class="p">)</span>
+<span class="c1"># 回傳: &quot;Checkpoint &#39;checkpoint_20240101_120000&#39; created&quot;</span>
+
+<span class="c1"># 2. 執行危險操作...</span>
+<span class="c1"># ...</span>
+
+<span class="c1"># 3. 如果失敗，還原！</span>
+<span class="n">boring_checkpoint</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;restore&quot;</span><span class="p">,</span> <span class="n">checkpoint_id</span><span class="o">=</span><span class="s2">&quot;checkpoint_20240101_120000&quot;</span><span class="p">)</span>
+</code></pre></div>
+<blockquote>
+<p><strong>注意</strong>: 此功能需要乾淨的工作目錄（所有變更已提交）。</p>
+</blockquote>
+<hr />
+<h2 id="_17">🏢 企業使用案例</h2>
+<h3 id="_18">代碼審查工作流程</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 審查者設定 STRICT 模式</span>
+<span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;set_level&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;STRICT&quot;</span><span class="p">)</span>
+
+<span class="c1"># AI 提出變更，全部排隊等待審查</span>
+<span class="c1"># 審查者檢查每個待處理操作</span>
+<span class="c1"># 僅批准已驗證的變更</span>
+</code></pre></div>
+<h3 id="cicd">CI/CD 整合</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 在 CI 管道中</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">使用影子模式執行 Boring</span>
+<span class="w">  </span><span class="nt">env</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">SHADOW_MODE_LEVEL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ENABLED</span>
+<span class="w">    </span><span class="nt">BORING_ALLOW_DANGEROUS</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</code></pre></div>
+<hr />
+<h2 id="_19">另請參閱</h2>
+<ul>
+<li><a href="../mcp-tools_zh/">MCP 工具</a> - 工具參考</li>
+<li><a href="../quality-gates_zh/">品質閘道</a> - CI/CD 整合</li>
+<li><a href="../../guides/pro-tips_zh/">專業技巧</a> - 安全最佳實踐</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../mcp-tools_zh/" class="btn btn-neutral float-left" title="🛠️ MCP 工具集"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../rag_zh/" class="btn btn-neutral float-right" title="RAG 知識庫">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../mcp-tools_zh/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../rag_zh/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Boring 使用模式指南 - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Boring \u4f7f\u7528\u6a21\u5f0f\u6307\u5357";
+        var mkdocs_page_input_path = "guides\\usage-modes.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Boring 使用模式指南</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/guides/usage-modes.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="boring">Boring 使用模式指南</h1>
+<p>本文件說明 Boring 的三種主要使用模式，以及各自需要的設定。</p>
+<h2 id="_1">三種模式比較</h2>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>MCP 工具模式</th>
+<th>Gemini CLI YOLO 模式</th>
+<th>Boring 自主迴圈</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>執行方式</strong></td>
+<td>一問一答</td>
+<td><code>gemini --yolo</code></td>
+<td><code>boring start</code></td>
+</tr>
+<tr>
+<td><strong>需要 API Key</strong></td>
+<td>❌</td>
+<td>❌ (用 Google 帳號)</td>
+<td>✅ <code>GEMINI_API_KEY</code></td>
+</tr>
+<tr>
+<td><strong>需要 PROMPT.md</strong></td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>自動停止</strong></td>
+<td>N/A</td>
+<td>❌ 需手動 Ctrl+C</td>
+<td>✅ 自動偵測完成</td>
+</tr>
+<tr>
+<td><strong>安全保護</strong></td>
+<td>✅</td>
+<td>⚠️ 無確認</td>
+<td>✅ Shadow Mode</td>
+</tr>
+<tr>
+<td><strong>穩定度</strong></td>
+<td>✅ 穩定</td>
+<td>✅ 官方支援</td>
+<td>⚠️ 實驗性</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="mcp">模式一：MCP 工具模式（推薦日常使用）</h2>
+<p>這是最穩定的使用方式，適合日常開發。</p>
+<h3 id="_2">運作方式</h3>
+<div class="highlight"><pre><span></span><code>你 → Gemini CLI → MCP 工具 (boring_rag_search 等) → 結果
+</code></pre></div>
+<h3 id="_3">設定方式</h3>
+<ol>
+<li>
+<p>透過 Smithery 安裝：
+   <div class="highlight"><pre><span></span><code>npx<span class="w"> </span>-y<span class="w"> </span>@smithery/cli@latest<span class="w"> </span>install<span class="w"> </span>@anthropic/boring-mcp<span class="w"> </span>--client<span class="w"> </span>claude
+</code></pre></div></p>
+</li>
+<li>
+<p>或手動設定 <code>~/.gemini/settings.json</code></p>
+</li>
+</ol>
+<h3 id="_4">可用工具</h3>
+<ul>
+<li><code>boring_rag_search</code> - 語意搜尋程式碼</li>
+<li><code>boring_code_review</code> - AI 程式碼審查</li>
+<li><code>boring_vibe_check</code> - 專案健康評分</li>
+<li><code>boring_impact_check</code> - 影響分析</li>
+<li>等 50+ 工具...</li>
+</ul>
+<hr />
+<h2 id="gemini-cli-yolo">模式二：Gemini CLI YOLO 模式（推薦自主開發）</h2>
+<blockquote>
+<p>✅ <strong>推薦</strong>：這是目前最穩定的自主開發方式，由 Google 官方支援。</p>
+</blockquote>
+<p>YOLO (You Only Live Once) 模式讓 Gemini CLI 可以<strong>不需確認</strong>地自動執行工具和指令。</p>
+<h3 id="_5">運作方式</h3>
+<div class="highlight"><pre><span></span><code>gemini --yolo &quot;完成 TODO 清單上的所有任務&quot; → AI 自動執行 → 直到完成或你按 Ctrl+C
+</code></pre></div>
+<h3 id="_6">啟動方式</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 方法一：命令列參數</span>
+gemini<span class="w"> </span>--yolo
+
+<span class="c1"># 方法二：互動中按快捷鍵</span>
+<span class="c1"># 進入 gemini 後按 Ctrl+Y 開啟 YOLO 模式</span>
+</code></pre></div>
+<h3 id="boring-mcp">搭配 Boring MCP 工具</h3>
+<p>YOLO 模式可以呼叫 Boring 的 MCP 工具！</p>
+<ol>
+<li>先設定 MCP（見模式一）</li>
+<li>啟動 YOLO 模式</li>
+<li>AI 會自動呼叫 <code>boring_rag_search</code>、<code>boring_code_review</code> 等</li>
+</ol>
+<h3 id="_7">優點</h3>
+<ul>
+<li>✅ 不需要 API Key（用 Google 帳號登入）</li>
+<li>✅ 官方支援，穩定可靠</li>
+<li>✅ 內建 ReAct Loop（推理 + 執行）</li>
+<li>✅ 可以搭配所有 MCP 工具</li>
+</ul>
+<h3 id="_8">注意事項</h3>
+<blockquote>
+<p>⚠️ <strong>警告</strong>：YOLO 模式會跳過所有確認！AI 可以直接修改檔案、執行指令。
+建議在<strong>可信任的環境</strong>或 <strong>Docker 容器</strong>中使用。</p>
+</blockquote>
+<hr />
+<h2 id="boring_1">模式三：Boring 自主迴圈（實驗性）</h2>
+<blockquote>
+<p>⚠️ <strong>注意</strong>：此功能仍在開發中，尚未有足夠測試。如果你想要自主開發，建議優先使用 Gemini CLI YOLO 模式。</p>
+</blockquote>
+<p>這是讓 AI 完全自主開發的模式。AI 會讀取 <code>PROMPT.md</code>，自動執行任務，直到所有工作完成。</p>
+<h3 id="_9">運作方式</h3>
+<div class="highlight"><pre><span></span><code>boring start → 讀取 PROMPT.md → 呼叫 AI → 解析回應 → 重複直到完成
+</code></pre></div>
+<h3 id="_10">必要條件</h3>
+<ol>
+<li>
+<p><strong>API Key</strong>：設定環境變數
+   <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">GEMINI_API_KEY</span><span class="o">=</span>your_api_key_here
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>專案結構</strong>：
+   <div class="highlight"><pre><span></span><code>your-project/
+├── PROMPT.md      # AI 的工作指令
+├── @fix_plan.md   # 待辦清單
+└── specs/         # 專案規格
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="_11">使用方式</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 建立新專案</span>
+boring-setup<span class="w"> </span>my-project
+<span class="nb">cd</span><span class="w"> </span>my-project
+
+<span class="c1"># 編輯 PROMPT.md 和 @fix_plan.md</span>
+
+<span class="c1"># 啟動自主迴圈</span>
+boring<span class="w"> </span>start<span class="w"> </span>--calls<span class="w"> </span><span class="m">50</span><span class="w"> </span>--timeout<span class="w"> </span><span class="m">30</span>
+</code></pre></div>
+<h3 id="_12">狀態回報格式</h3>
+<p>AI 必須在回應結尾包含狀態區塊：</p>
+<div class="highlight"><pre><span></span><code>---BORING_STATUS---
+STATUS: IN_PROGRESS | COMPLETE | BLOCKED
+EXIT_SIGNAL: false | true
+RECOMMENDATION: 下一步建議
+---END_BORING_STATUS---
+</code></pre></div>
+<hr />
+<h2 id="_13">範本檔案說明</h2>
+<p><code>src/boring/templates/</code> 目錄包含：</p>
+<table>
+<thead>
+<tr>
+<th>檔案</th>
+<th>用途</th>
+<th>使用時機</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PROMPT.md</code></td>
+<td>AI 工作指令</td>
+<td>自主迴圈模式</td>
+</tr>
+<tr>
+<td><code>workflows/*.md</code></td>
+<td>工作流程範本</td>
+<td>兩種模式都可用</td>
+</tr>
+<tr>
+<td><code>specs/</code></td>
+<td>規格文件預留位置</td>
+<td>使用者自行填入</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_14">何時需要這些範本？</h3>
+<table>
+<thead>
+<tr>
+<th>使用模式</th>
+<th>PROMPT.md</th>
+<th>workflows/</th>
+<th>specs/</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MCP 工具</td>
+<td>❌</td>
+<td>✅ (可選)</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>自主迴圈</td>
+<td>✅ 必須</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_15">常見問題</h2>
+<h3 id="q-gemini-cli-api-key">Q: 我只用 Gemini CLI，需要設定 API Key 嗎？</h3>
+<p>不需要。Gemini CLI 使用你的 Google 帳號登入，不需要 API Key。</p>
+<h3 id="q">Q: 自主迴圈模式會不會跑很久？</h3>
+<p>會。建議設定 <code>--calls 50</code> 限制 API 呼叫次數，避免超支。</p>
+<h3 id="q-promptmd">Q: 為什麼自主迴圈需要 PROMPT.md？</h3>
+<p>因為 <code>boring start</code> 需要知道 AI 該做什麼。它會讀取 <code>PROMPT.md</code> 並傳給 AI。</p>
+<h3 id="q-mcp">Q: MCP 模式有什麼限制？</h3>
+<ul>
+<li>每次只能做一件事（你需要手動下一個指令）</li>
+<li>無法自動重試失敗的操作</li>
+<li>需要你持續監督</li>
+</ul>
+<hr />
+<h2 id="_16">選擇建議</h2>
+<table>
+<thead>
+<tr>
+<th>情境</th>
+<th>推薦模式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>日常開發、程式碼搜尋、審查</td>
+<td>MCP 工具模式</td>
+</tr>
+<tr>
+<td>快速原型、自動修復、整晚跑任務</td>
+<td>自主迴圈模式</td>
+</tr>
+<tr>
+<td>穩定性優先</td>
+<td>MCP 工具模式</td>
+</tr>
+<tr>
+<td>想嘗試新功能</td>
+<td>自主迴圈模式</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

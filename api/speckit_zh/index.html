@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>SpecKit API 參考 - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "SpecKit API \u53c3\u8003";
+        var mkdocs_page_input_path = "api\\speckit_zh.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">SpecKit API 參考</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/api/speckit_zh.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="speckit-api">SpecKit API 參考</h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="boring.mcp.speckit_tools" class="doc doc-heading">
+            <code>boring.mcp.speckit_tools</code>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>SpecKit MCP Tools - Spec-Driven Development workflow tools.</p>
+<p>This module contains tools for structured development:
+- speckit_plan: Create implementation plans
+- speckit_tasks: Break plans into tasks
+- speckit_analyze: Consistency analysis
+- speckit_clarify: Requirement clarification
+- speckit_checklist: Quality checklists
+- speckit_constitution: Project principles</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.mcp.speckit_tools.register_speckit_tools" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">register_speckit_tools</span><span class="p">(</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">,</span> <span class="n">execute_workflow</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Register SpecKit tools with the MCP server.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>mcp</code></b>
+              –
+              <div class="doc-md-description">
+                <p>FastMCP server instance</p>
+              </div>
+            </li>
+            <li>
+              <b><code>audited</code></b>
+              –
+              <div class="doc-md-description">
+                <p>Audit decorator function</p>
+              </div>
+            </li>
+            <li>
+              <b><code>helpers</code></b>
+              –
+              <div class="doc-md-description">
+                <p>Dict of helper functions</p>
+              </div>
+            </li>
+            <li>
+              <b><code>execute_workflow</code></b>
+              –
+              <div class="doc-md-description">
+                <p>Function to execute workflows</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\mcp\speckit_tools.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">register_speckit_tools</span><span class="p">(</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">,</span> <span class="n">execute_workflow</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Register SpecKit tools with the MCP server.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        mcp: FastMCP server instance</span>
+<span class="sd">        audited: Audit decorator function</span>
+<span class="sd">        helpers: Dict of helper functions</span>
+<span class="sd">        execute_workflow: Function to execute workflows</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@mcp</span><span class="o">.</span><span class="n">tool</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;規劃怎麼做、設計實作計畫 (Create plan). 適合: &#39;幫我規劃怎麼做&#39;, &#39;Design implementation&#39;, &#39;我想做 XXX 功能&#39;, &#39;Plan this feature&#39;.&quot;</span><span class="p">,</span>
+        <span class="n">annotations</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;readOnlyHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;openWorldHint&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;idempotentHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="p">)</span>
+    <span class="nd">@audited</span>
+    <span class="k">def</span> <span class="nf">speckit_plan</span><span class="p">(</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span>
+            <span class="n">Field</span><span class="p">(</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Additional context or requirements for plan generation. Can include user stories, technical constraints, or specific implementation goals. If not provided, uses existing project specification files.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">project_path</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span>
+            <span class="n">Field</span><span class="p">(</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute SpecKit Plan workflow - Create technical implementation plan from requirements.</span>
+
+<span class="sd">        Analyzes project requirements and generates a structured implementation plan</span>
+<span class="sd">        including file changes, dependencies, and step-by-step instructions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">execute_workflow</span><span class="p">(</span><span class="s2">&quot;speckit-plan&quot;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">project_path</span><span class="p">)</span>
+
+    <span class="nd">@mcp</span><span class="o">.</span><span class="n">tool</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;把計畫拆成具體的任務清單 (Break into tasks). 適合: &#39;拆成步驟&#39;, &#39;Break into tasks&#39;, &#39;給我一個清單&#39;, &#39;What should I do first?&#39;.&quot;</span><span class="p">,</span>
+        <span class="n">annotations</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;readOnlyHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;openWorldHint&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;idempotentHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="p">)</span>
+    <span class="nd">@audited</span>
+    <span class="k">def</span> <span class="nf">speckit_tasks</span><span class="p">(</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span>
+            <span class="n">Field</span><span class="p">(</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Additional context for task generation. Can specify task granularity, priorities, or dependencies. If not provided, uses existing implementation plan.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">project_path</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span>
+            <span class="n">Field</span><span class="p">(</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute SpecKit Tasks workflow - Break implementation plan into actionable tasks.</span>
+
+<span class="sd">        Converts the implementation plan into a prioritized task checklist</span>
+<span class="sd">        with clear acceptance criteria.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">execute_workflow</span><span class="p">(</span><span class="s2">&quot;speckit-tasks&quot;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">project_path</span><span class="p">)</span>
+
+    <span class="nd">@mcp</span><span class="o">.</span><span class="n">tool</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;檢查需求和程式碼是否一致 (Check consistency). 適合: &#39;對照一下需求&#39;, &#39;Check if code matches spec&#39;, &#39;有沒有漏掉什麼&#39;.&quot;</span><span class="p">,</span>
+        <span class="n">annotations</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;readOnlyHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;openWorldHint&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;idempotentHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="p">)</span>
+    <span class="nd">@audited</span>
+    <span class="k">def</span> <span class="nf">speckit_analyze</span><span class="p">(</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span>
+            <span class="n">Field</span><span class="p">(</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Additional context for analysis. Can specify focus areas (specs, code, tests) or specific artifacts to compare. If not provided, analyzes all project artifacts.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">project_path</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span>
+            <span class="n">Field</span><span class="p">(</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute SpecKit Analyze workflow - Analyze consistency between specs and code.</span>
+
+<span class="sd">        Compares specifications against implementation to identify gaps,</span>
+<span class="sd">        inconsistencies, and missing coverage areas.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">execute_workflow</span><span class="p">(</span><span class="s2">&quot;speckit-analyze&quot;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">project_path</span><span class="p">)</span>
+
+    <span class="nd">@mcp</span><span class="o">.</span><span class="n">tool</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;釐清模糊的需求、問我問題 (Clarify requirements). 適合: &#39;有什麼不清楚的嗎&#39;, &#39;Ask me questions&#39;, &#39;釐清需求&#39;, &#39;What do you need to know?&#39;.&quot;</span><span class="p">,</span>
+        <span class="n">annotations</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;readOnlyHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;openWorldHint&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;idempotentHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="p">)</span>
+    <span class="nd">@audited</span>
+    <span class="k">def</span> <span class="nf">speckit_clarify</span><span class="p">(</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span>
+            <span class="n">Field</span><span class="p">(</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Additional context for clarification. Can include specific areas of uncertainty or questions to focus on. If not provided, analyzes entire specification for ambiguities.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">project_path</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span>
+            <span class="n">Field</span><span class="p">(</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute SpecKit Clarify workflow - Identify and clarify ambiguous requirements.</span>
+
+<span class="sd">        Generates targeted questions to resolve ambiguities in requirements</span>
+<span class="sd">        before implementation begins.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">execute_workflow</span><span class="p">(</span><span class="s2">&quot;speckit-clarify&quot;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">project_path</span><span class="p">)</span>
+
+    <span class="nd">@mcp</span><span class="o">.</span><span class="n">tool</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;建立專案的指導原則和規範 (Set project rules). 適合: &#39;定義規範&#39;, &#39;Set coding standards&#39;, &#39;這個專案的規則&#39;.&quot;</span><span class="p">,</span>
+        <span class="n">annotations</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;readOnlyHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;openWorldHint&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;idempotentHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="p">)</span>
+    <span class="nd">@audited</span>
+    <span class="k">def</span> <span class="nf">speckit_constitution</span><span class="p">(</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span>
+            <span class="n">Field</span><span class="p">(</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Additional context for constitution creation. Can include architectural preferences, coding standards, or organizational constraints. If not provided, analyzes existing project patterns.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">project_path</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span>
+            <span class="n">Field</span><span class="p">(</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute SpecKit Constitution workflow - Create project guiding principles.</span>
+
+<span class="sd">        Establishes core principles, architectural decisions, and constraints</span>
+<span class="sd">        that guide all implementation decisions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">execute_workflow</span><span class="p">(</span><span class="s2">&quot;speckit-constitution&quot;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">project_path</span><span class="p">)</span>
+
+    <span class="nd">@mcp</span><span class="o">.</span><span class="n">tool</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;建立品質驗收清單 (Create quality checklist). 適合: &#39;做完要檢查什麼&#39;, &#39;Quality checklist&#39;, &#39;驗收標準&#39;.&quot;</span><span class="p">,</span>
+        <span class="n">annotations</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;readOnlyHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;openWorldHint&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;idempotentHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="p">)</span>
+    <span class="nd">@audited</span>
+    <span class="k">def</span> <span class="nf">speckit_checklist</span><span class="p">(</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span>
+            <span class="n">Field</span><span class="p">(</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Additional context for checklist generation. Can specify quality dimensions (security, performance, maintainability) or specific requirements to validate. If not provided, generates comprehensive default checklist.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">project_path</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span>
+            <span class="n">Field</span><span class="p">(</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute SpecKit Checklist workflow - Generate quality validation checklist.</span>
+
+<span class="sd">        Creates a comprehensive checklist for validating implementation quality</span>
+<span class="sd">        and requirement coverage.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">execute_workflow</span><span class="p">(</span><span class="s2">&quot;speckit-checklist&quot;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">project_path</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;speckit_plan&quot;</span><span class="p">:</span> <span class="n">speckit_plan</span><span class="p">,</span>
+        <span class="s2">&quot;speckit_tasks&quot;</span><span class="p">:</span> <span class="n">speckit_tasks</span><span class="p">,</span>
+        <span class="s2">&quot;speckit_analyze&quot;</span><span class="p">:</span> <span class="n">speckit_analyze</span><span class="p">,</span>
+        <span class="s2">&quot;speckit_clarify&quot;</span><span class="p">:</span> <span class="n">speckit_clarify</span><span class="p">,</span>
+        <span class="s2">&quot;speckit_constitution&quot;</span><span class="p">:</span> <span class="n">speckit_constitution</span><span class="p">,</span>
+        <span class="s2">&quot;speckit_checklist&quot;</span><span class="p">:</span> <span class="n">speckit_checklist</span><span class="p">,</span>
+    <span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

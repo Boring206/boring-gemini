@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>mcp_server - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "mcp_server";
+        var mkdocs_page_input_path = "api\\mcp_server.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">mcp_server</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/api/mcp_server.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="mcp_server">mcp_server</h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="boring.mcp.server" class="doc doc-heading">
+            <code>boring.mcp.server</code>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.mcp.server.get_server_instance" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_server_instance</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the configured FastMCP server instance (raw).
+Use this for direct access without Smithery decorators (e.g. for http.py).</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\mcp\server.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_server_instance</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the configured FastMCP server instance (raw).</span>
+<span class="sd">    Use this for direct access without Smithery decorators (e.g. for http.py).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;BORING_MCP_MODE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">instance</span><span class="o">.</span><span class="n">MCP_AVAILABLE</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;&#39;fastmcp&#39; not found. Install with: pip install boring-aicoding[mcp]&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Register Resources</span>
+    <span class="nd">@instance</span><span class="o">.</span><span class="n">mcp</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s2">&quot;boring://logs&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_logs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get recent server logs.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;Log access not implemented in stdio mode&quot;</span>
+
+    <span class="c1"># Register Modular Tools (formerly V9)</span>
+    <span class="n">helpers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;get_project_root_or_error&quot;</span><span class="p">:</span> <span class="n">get_project_root_or_error</span><span class="p">,</span>
+        <span class="s2">&quot;detect_project_root&quot;</span><span class="p">:</span> <span class="n">detect_project_root</span><span class="p">,</span>
+        <span class="s2">&quot;configure_runtime&quot;</span><span class="p">:</span> <span class="n">configure_runtime_for_project</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="c1"># register_v9_tools(instance.mcp, audited, helpers)</span>
+    <span class="n">register_workspace_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
+    <span class="n">register_plugin_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
+    <span class="n">register_assistant_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
+    <span class="c1"># register_knowledge_tools(instance.mcp, audited, helpers)</span>
+
+    <span class="c1"># Register V10 Tools (RAG, Multi-Agent, Shadow Mode)</span>
+    <span class="n">register_v10_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
+
+    <span class="c1"># Register Advanced Tools (Security, Transactions, Background, Context)</span>
+    <span class="n">register_advanced_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">)</span>
+
+    <span class="c1"># Register Discovery Resources</span>
+    <span class="n">register_discovery_resources</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">)</span>
+
+    <span class="c1"># Register Prompts</span>
+    <span class="n">register_prompts</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">)</span>
+
+    <span class="c1"># Register Vibe Coder Pro Tools</span>
+    <span class="n">register_vibe_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
+
+    <span class="c1"># Register Intelligence Tools (V10.23: PredictiveAnalyzer, AdaptiveCache, Session Context)</span>
+    <span class="n">register_intelligence_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="n">mcp</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.mcp.server.create_server" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">create_server</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create and return a FastMCP server instance for Smithery deployment.</p>
+<p>This function is called by Smithery to get the server instance.
+It must be decorated with @smithery.server() and return a FastMCP instance.</p>
+<p>Note: Smithery uses HTTP transport, not stdio.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\mcp\server.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_server</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create and return a FastMCP server instance for Smithery deployment.</span>
+
+<span class="sd">    This function is called by Smithery to get the server instance.</span>
+<span class="sd">    It must be decorated with @smithery.server() and return a FastMCP instance.</span>
+
+<span class="sd">    Note: Smithery uses HTTP transport, not stdio.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mcp_instance</span> <span class="o">=</span> <span class="n">get_server_instance</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;BORING_MCP_DEBUG&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;[boring-mcp] Creating server for Smithery...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[boring-mcp] Registered tools: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">mcp_instance</span><span class="o">.</span><span class="n">_tools</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mcp_instance</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.mcp.server.run_server" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">run_server</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Main entry point for the Boring MCP server (stdio transport).
+Used for local CLI execution: boring-mcp</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\mcp\server.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span>
+<span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span>
+<span class="normal">402</span>
+<span class="normal">403</span>
+<span class="normal">404</span>
+<span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span>
+<span class="normal">410</span>
+<span class="normal">411</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_server</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main entry point for the Boring MCP server (stdio transport).</span>
+<span class="sd">    Used for local CLI execution: boring-mcp</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 0. Set MCP Mode flag to silence tool outputs (e.g. health check)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;BORING_MCP_MODE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">instance</span><span class="o">.</span><span class="n">MCP_AVAILABLE</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="s2">&quot;Error: &#39;fastmcp&#39; not found. Install with: pip install boring-aicoding[mcp]</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># 1. Install stdout interceptor immediately</span>
+    <span class="c1"># This prevents any print() statement from corrupting the JSON-RPC stream</span>
+    <span class="n">interceptors</span><span class="o">.</span><span class="n">install_interceptors</span><span class="p">()</span>
+
+    <span class="c1"># 2. Register Modular Tools (formerly V9)</span>
+    <span class="n">helpers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;get_project_root_or_error&quot;</span><span class="p">:</span> <span class="n">get_project_root_or_error</span><span class="p">,</span>
+        <span class="s2">&quot;detect_project_root&quot;</span><span class="p">:</span> <span class="n">detect_project_root</span><span class="p">,</span>
+        <span class="s2">&quot;configure_runtime&quot;</span><span class="p">:</span> <span class="n">configure_runtime_for_project</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="c1"># register_v9_tools(instance.mcp, audited, helpers)</span>
+    <span class="n">register_workspace_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
+    <span class="n">register_plugin_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
+    <span class="n">register_assistant_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
+    <span class="c1"># knowledge tools registered via import side-effect (top-level)</span>
+
+    <span class="c1"># 3. Register V10 Tools (RAG, Multi-Agent, Shadow Mode)</span>
+    <span class="n">register_v10_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
+
+    <span class="c1"># 4. Register Advanced Tools (Security, Transactions, Background, Context)</span>
+    <span class="n">register_advanced_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">)</span>
+
+    <span class="c1"># 5. Register Discovery Resources (Capabilities)</span>
+    <span class="n">register_discovery_resources</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">)</span>
+
+    <span class="c1"># Register Prompts</span>
+    <span class="n">register_prompts</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">)</span>
+
+    <span class="c1"># Register Vibe Coder Pro Tools</span>
+    <span class="n">register_vibe_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
+
+    <span class="c1"># Register Intelligence Tools (V10.23: PredictiveAnalyzer, AdaptiveCache, Session Context)</span>
+    <span class="n">register_intelligence_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
+
+    <span class="c1"># V10.24: Register Tool Router (Universal Natural Language Gateway)</span>
+    <span class="n">profile</span> <span class="o">=</span> <span class="n">get_profile</span><span class="p">()</span>
+    <span class="n">router</span> <span class="o">=</span> <span class="n">get_tool_router</span><span class="p">()</span>
+
+    <span class="c1"># V10.29: Post-registration PROMPT filtering based on profile</span>
+    <span class="c1"># FastMCP stores prompts in _prompts dict. We filter it directly.</span>
+    <span class="c1"># This prevents context window bloat (52 prompts -&gt; ~5 in LITE)</span>
+    <span class="kn">from</span> <span class="nn">.tool_profiles</span> <span class="kn">import</span> <span class="n">should_register_prompt</span>
+
+    <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">prompts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># None means FULL profile (all prompts)</span>
+        <span class="c1"># Access internal prompts storage</span>
+        <span class="c1"># FastMCP 2.x usually has _prompts on the instance</span>
+        <span class="n">prompts_dict</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="s2">&quot;_prompts&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">prompts_dict</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prompts_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">original_prompt_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">prompts_dict</span><span class="p">)</span>
+            <span class="n">prompts_to_remove</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">prompts_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">should_register_prompt</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">profile</span><span class="p">)</span>
+            <span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">prompts_to_remove</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">prompts_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+            <span class="n">filtered_prompt_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">prompts_dict</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;[boring-mcp] 📝 Prompt Filter: </span><span class="si">{</span><span class="n">original_prompt_count</span><span class="si">}</span><span class="s2"> → </span><span class="si">{</span><span class="n">filtered_prompt_count</span><span class="si">}</span><span class="s2"> prompts &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(saved context for Vibe Coding)</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s2">&quot;[boring-mcp] ⚠️ Could not filter prompts: internal structure changed</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+    <span class="nd">@instance</span><span class="o">.</span><span class="n">mcp</span><span class="o">.</span><span class="n">tool</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="n">create_router_tool_description</span><span class="p">(),</span>
+        <span class="n">annotations</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;readOnlyHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;openWorldHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">boring</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        🎯 Universal Router - Natural Language Tool Interface</span>
+
+<span class="sd">        Instead of remembering 98+ tool names, just describe what you want:</span>
+<span class="sd">        - &quot;search for authentication code&quot; → boring_rag_search</span>
+<span class="sd">        - &quot;review my code for security&quot; → boring_security_scan</span>
+<span class="sd">        - &quot;generate tests for user.py&quot; → boring_test_gen</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            request: Natural language description of what you want to do</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Routing result with matched tool and suggested parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">router</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;🎯 **Routed to:** `</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">matched_tool</span><span class="si">}</span><span class="s2">`</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;📊 **Confidence:** </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">confidence</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;📁 **Category:** </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">category</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;📝 **Suggested params:** </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">suggested_params</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;🔄 **Alternatives:** </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">alternatives</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">result</span><span class="o">.</span><span class="n">alternatives</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;None&#39;</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;💡 Call `</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">matched_tool</span><span class="si">}</span><span class="s2">` with the suggested parameters.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="nd">@instance</span><span class="o">.</span><span class="n">mcp</span><span class="o">.</span><span class="n">tool</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Show all available tool categories and help.&quot;</span><span class="p">,</span>
+        <span class="n">annotations</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;readOnlyHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">boring_help</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get help on available Boring tools and categories.&quot;&quot;&quot;</span>
+        <span class="n">summary</span> <span class="o">=</span> <span class="n">router</span><span class="o">.</span><span class="n">get_categories_summary</span><span class="p">()</span>
+        <span class="n">profile_info</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">## 🎛️ Current Profile: **</span><span class="si">{</span><span class="n">profile</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">** (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">tools</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;all&#39;</span><span class="si">}</span><span class="s2"> tools)</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">summary</span> <span class="o">+</span> <span class="n">profile_info</span>
+
+    <span class="nd">@instance</span><span class="o">.</span><span class="n">mcp</span><span class="o">.</span><span class="n">tool</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Get full schema for a tool (progressive disclosure).&quot;</span><span class="p">,</span>
+        <span class="n">annotations</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;readOnlyHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">boring_discover</span><span class="p">(</span><span class="n">tool_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Progressive Disclosure: Get full schema for a specific tool.</span>
+
+<span class="sd">        Use this in ULTRA_LITE mode to fetch tool details on-demand,</span>
+<span class="sd">        saving ~97% token overhead compared to loading all schemas upfront.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tool_name: Name of the tool to discover (e.g., &#39;boring_rag_search&#39;)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Full JSON schema for the tool, or error if not found</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">json</span>
+
+        <span class="c1"># Access all registered tools (before filtering)</span>
+        <span class="n">all_tools</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="s2">&quot;_all_tools_cache&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">all_tools</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Cache wasn&#39;t set, use current tools</span>
+            <span class="n">all_tools</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="o">.</span><span class="n">_tools</span>
+
+        <span class="k">if</span> <span class="n">tool_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_tools</span><span class="p">:</span>
+            <span class="c1"># Try to find similar tools</span>
+            <span class="n">similar</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">all_tools</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">tool_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+            <span class="k">if</span> <span class="n">similar</span><span class="p">:</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;❌ Tool `</span><span class="si">{</span><span class="n">tool_name</span><span class="si">}</span><span class="s2">` not found. Did you mean: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">similar</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span><span class="si">}</span><span class="s2">?&quot;</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;❌ Tool `</span><span class="si">{</span><span class="n">tool_name</span><span class="si">}</span><span class="s2">` not found. Use `boring_help` to see available categories.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">tool</span> <span class="o">=</span> <span class="n">all_tools</span><span class="p">[</span><span class="n">tool_name</span><span class="p">]</span>
+        <span class="c1"># Extract schema information</span>
+        <span class="n">schema_info</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">tool_name</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">tool</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">tool</span><span class="p">)),</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Try to get input schema if available</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tool</span><span class="p">,</span> <span class="s2">&quot;inputSchema&quot;</span><span class="p">):</span>
+            <span class="n">schema_info</span><span class="p">[</span><span class="s2">&quot;input_schema&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tool</span><span class="o">.</span><span class="n">inputSchema</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tool</span><span class="p">,</span> <span class="s2">&quot;parameters&quot;</span><span class="p">):</span>
+            <span class="n">schema_info</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tool</span><span class="o">.</span><span class="n">parameters</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;## 🔍 Tool: `</span><span class="si">{</span><span class="n">tool_name</span><span class="si">}</span><span class="s2">`</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;**Description:** </span><span class="si">{</span><span class="n">schema_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;&lt;!-- CACHEABLE_CONTENT_START --&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;**Schema:**</span><span class="se">\n</span><span class="s2">```json</span><span class="se">\n</span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">schema_info</span><span class="p">,</span><span class="w"> </span><span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">```</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;&lt;!-- CACHEABLE_CONTENT_END --&gt;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;💡 You can now call `</span><span class="si">{</span><span class="n">tool_name</span><span class="si">}</span><span class="s2">` with the parameters above.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;ℹ️  This schema is stable and can be cached for the session.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># V10.26: Cache all tools BEFORE filtering for boring_discover</span>
+    <span class="c1"># FastMCP 2.x uses various internal structures; use robust accessor</span>
+    <span class="n">tools_dict</span> <span class="o">=</span> <span class="n">_get_tools_robust</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">)</span>
+    <span class="n">instance</span><span class="o">.</span><span class="n">_all_tools_cache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">tools_dict</span><span class="p">)</span>
+
+    <span class="c1"># V10.26: Post-registration tool filtering based on profile</span>
+    <span class="c1"># This removes tools not in the profile to reduce context window usage</span>
+    <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">tools</span><span class="p">:</span>  <span class="c1"># Non-empty means we should filter (empty = FULL profile)</span>
+        <span class="c1"># Always keep these essential tools regardless of profile</span>
+        <span class="n">essential_tools</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;boring&quot;</span><span class="p">,</span> <span class="s2">&quot;boring_help&quot;</span><span class="p">}</span>
+        <span class="n">allowed_tools</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">tools</span><span class="p">)</span> <span class="o">|</span> <span class="n">essential_tools</span>
+
+        <span class="c1"># Get current tools and filter</span>
+        <span class="n">original_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tools_dict</span><span class="p">)</span>
+        <span class="n">tools_to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">tools_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_tools</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">tool_name</span> <span class="ow">in</span> <span class="n">tools_to_remove</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tool_name</span> <span class="ow">in</span> <span class="n">tools_dict</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">tools_dict</span><span class="p">[</span><span class="n">tool_name</span><span class="p">]</span>
+
+        <span class="n">filtered_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_get_tools_robust</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;[boring-mcp] 🎛️ Profile Filter: </span><span class="si">{</span><span class="n">original_count</span><span class="si">}</span><span class="s2"> → </span><span class="si">{</span><span class="n">filtered_count</span><span class="si">}</span><span class="s2"> tools &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(saved ~</span><span class="si">{</span><span class="p">(</span><span class="n">original_count</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">filtered_count</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">50</span><span class="si">}</span><span class="s2"> tokens)</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Vibe Coder Tutorial Hook - Show MCP intro on first launch</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">..tutorial</span> <span class="kn">import</span> <span class="n">TutorialManager</span>
+
+        <span class="n">TutorialManager</span><span class="p">()</span><span class="o">.</span><span class="n">show_tutorial</span><span class="p">(</span><span class="s2">&quot;mcp_intro&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>  <span class="c1"># Fail silently if tutorial not available</span>
+
+    <span class="c1"># 4. Configured logging</span>
+    <span class="k">with</span> <span class="n">_configure_logging</span><span class="p">():</span>
+        <span class="c1"># Always check for optional RAG dependencies at startup</span>
+        <span class="kn">import</span> <span class="nn">importlib.util</span>
+
+        <span class="n">rag_ok</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;chromadb&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span>
+            <span class="s2">&quot;sentence_transformers&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">rag_ok</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;[boring-mcp] ⚠️ RAG features unavailable: Missing dependencies.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;[boring-mcp] To enable RAG, run:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="si">}</span><span class="s2"> -m pip install boring-aicoding[vector]</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># V10.24: Show profile info</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;[boring-mcp] 🎛️ Tool Profile: </span><span class="si">{</span><span class="n">profile</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">tools</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;all&#39;</span><span class="si">}</span><span class="s2"> tools)</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;BORING_MCP_DEBUG&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;[boring-mcp] Server starting...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[boring-mcp] Python: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[boring-mcp] Registered tools: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="o">.</span><span class="n">_tools</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">rag_ok</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="s2">&quot;[boring-mcp] ✅ RAG dependencies found (chromadb, sentence_transformers)</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+        <span class="c1"># 3. Mark MCP as started (allows JSON-RPC traffic)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="s2">&quot;mark_mcp_started&quot;</span><span class="p">):</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">mark_mcp_started</span><span class="p">()</span>
+
+        <span class="c1"># 4. Run the server</span>
+        <span class="c1"># Explicitly use stdio transport</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">transport</span><span class="o">=</span><span class="s2">&quot;stdio&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[boring-mcp] Critical Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

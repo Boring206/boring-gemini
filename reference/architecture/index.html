@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Architecture &amp; Internals - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Architecture \u0026amp; Internals";
+        var mkdocs_page_input_path = "reference\\architecture.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Architecture &amp; Internals</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/reference/architecture.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="architecture-internals">Architecture &amp; Internals</h1>
+<blockquote>
+<p>Understanding how Boring works under the hood.</p>
+</blockquote>
+<hr />
+<h2 id="system-architecture">🏗️ System Architecture</h2>
+<p>Boring is built on a <strong>Stateful Autonomous Loop</strong> pattern.</p>
+<div class="highlight"><pre><span></span><code>graph TD
+    User[User / CLI] --&gt;|Start| AgentLoop
+
+    subgraph &quot;Boring Engine&quot;
+        AgentLoop[StatefulAgentLoop]
+        Memory[BoringMemory]
+        RAG[RAGRetriever]
+        Verifier[Parallel Verifier]
+        Circuit[Circuit Breaker]
+    end
+
+    AgentLoop --&gt;|Thinking| LLM[Google Gemini / Claude]
+    LLM --&gt;|Tool Calls| AgentLoop
+
+    AgentLoop --&gt;|Read/Write| FS[FileSystem]
+    FS --&gt;|Change Events| RAG
+
+    AgentLoop --&gt;|Verify| Verifier
+    Verifier --&gt;|Result| Circuit
+    Circuit --&gt;|Status| AgentLoop
+
+    style AgentLoop fill:#f9f,stroke:#333,stroke-width:2px
+</code></pre></div>
+<h2 id="the-development-loop-process">🔄 The Development Loop Process</h2>
+<p>Boring follows a continuous feedback loop to ensure code correctness.</p>
+<div class="highlight"><pre><span></span><code>sequenceDiagram
+    participant U as User/CLI
+    participant A as Agent (Thinking)
+    participant E as Executor (Tools)
+    participant V as Verifier (Tests)
+    participant M as Memory (Brain)
+
+    U-&gt;&gt;A: Submit Task
+    loop Until Done or Circuit Open
+        A-&gt;&gt;M: Fetch Context &amp; Learnings
+        M--&gt;&gt;A: Context Data
+        A-&gt;&gt;A: Generate Plan
+        A-&gt;&gt;E: Execute Tool (Edit/Run)
+        E--&gt;&gt;A: Execution Result
+        A-&gt;&gt;V: Trigger Verification
+        V-&gt;&gt;V: Run Lint &amp; Tests
+        V--&gt;&gt;A: Pass/Fail + Logs
+        alt If Fail
+            A-&gt;&gt;M: Record Error Pattern
+            A-&gt;&gt;A: Reason for next Fix
+        else If Pass
+            A-&gt;&gt;M: Update Progress
+        end
+    end
+    A-&gt;&gt;U: Final Report
+</code></pre></div>
+<h3 id="1-modular-core-lazy-loading-srcboring">1. Modular Core &amp; Lazy Loading (<code>src/boring/</code>)</h3>
+<p>Starting from v10.28.0, Boring uses a <strong>Diet Architecture</strong>:
+- <strong>Lazy Loading</strong>: Heavily utilizes <code>__getattr__</code> in <code>__init__.py</code> to import submodules ONLY when accessed. This dropped cold startup time from ~2.5s to <strong>&lt; 600ms</strong>.
+- <strong>Dependency Manager</strong>: A centralized <code>DependencyManager</code> (in <code>core/dependencies.py</code>) handles all optional "Extras" (ChromaDB, FastAPI, Streamlit), ensuring the core CLI remains lightweight (&lt; 50MB).</p>
+<h3 id="2-submodule-reconstruction">2. Submodule Reconstruction</h3>
+<p>The source is organized into specific functional layers:
+- <code>core/</code>: Constants, telemetry, and dependency management.
+- <code>services/</code>: Core logic like health checks and monitoring.
+- <code>cli/</code>: Typer-based interface and command definitions.
+- <code>tools/</code>: Atomic tools for file manipulation and analysis.
+- <code>intelligence/</code>: Memory (Brain), RAG, and pattern learning.
+- <code>loop/</code>: The autonomous state machine.
+- <code>mcp/</code>: Model Context Protocol server and tool exposure.</p>
+<h3 id="3-the-brain-memory-srcboringintelligence">3. The Brain &amp; Memory (<code>src/boring/intelligence/</code>)</h3>
+<p>Boring doesn't just read files; it maintains "state":
+- <strong>Context (<code>context.json</code>)</strong>: Current task, plan, and progress.
+- <strong>Learnings (<code>learnings.json</code>)</strong>: Error patterns and successful fixes.
+- <strong>RAG Index (ChromaDB)</strong>: [OPTIONAL] Vector embeddings of the codebase for semantic search.</p>
+<h4 id="hybrid-rag-workflow">🕵️ Hybrid RAG Workflow</h4>
+<p>Boring employs a multi-tiered retrieval strategy to ensure context precision:</p>
+<div class="highlight"><pre><span></span><code>graph LR
+    Query[User Query] --&gt; HybridSearch
+
+    subgraph &quot;Hybrid Search Engine&quot;
+        HybridSearch --&gt; Keyword[Keyword Search (BM25)]
+        HybridSearch --&gt; Vector[Vector Search (ChromaDB)]
+
+        Keyword --&gt; Merger[Merge &amp; Rerank Results]
+        Vector --&gt; Merger
+    end
+
+    Merger --&gt; TopK[Top-K Candidates]
+
+    subgraph &quot;Graph Expansion&quot;
+        TopK --&gt; DepGraph[Dependency Graph Analysis]
+        DepGraph --&gt; Callers[Callers]
+        DepGraph --&gt; Callees[Callees]
+    end
+
+    Callers --&gt; FinalContext[Final Context]
+    Callees --&gt; FinalContext
+    TopK --&gt; FinalContext
+</code></pre></div>
+<h3 id="3-evaluation-judgment-srcboringjudge">3. Evaluation &amp; Judgment (<code>src/boring/judge/</code>)</h3>
+<p>Boring includes a built-in <strong>LLM-as-a-Judge</strong> system for self-evaluation and quality control:</p>
+<div class="highlight"><pre><span></span><code>sequenceDiagram
+    participant Agent as Agent
+    participant Judge as Judge Engine
+    participant Rubric as Dynamic Rubric Generator
+    participant LLM as Evaluator Model
+
+    Agent-&gt;&gt;Judge: Request Evaluation (Code/Plan)
+    Judge-&gt;&gt;Rubric: Generate/Load Scoring Rubric
+    Judge-&gt;&gt;LLM: Perform Direct Scoring / Pairwise Comparison
+    loop Bias Mitigation
+        LLM-&gt;&gt;LLM: Self-Reflection (Score Calibration)
+    end
+    LLM--&gt;&gt;Judge: Evaluation Result + Improvement Suggestions
+    Judge--&gt;&gt;Agent: Structured Report (JSON)
+</code></pre></div>
+<h3 id="4-verification-engine-srcboringverification">4. Verification Engine (<code>src/boring/verification/</code>)</h3>
+<p>Unlike typical agents that just generate code, Boring <strong>verifies</strong> it.</p>
+<ul>
+<li><strong>Parallel Execution</strong>: Uses <code>ThreadPoolExecutor</code> to run linters/tests concurrently.</li>
+<li><strong>Caching</strong>: Hashes file content to skip re-verification of unchanged files (<code>.boring/cache</code>).</li>
+<li><strong>Layers</strong>:</li>
+<li><strong>Static</strong>: Syntax check, linting (ruff, eslint).</li>
+<li><strong>Dynamic</strong>: Unit tests (pytest).</li>
+<li><strong>Security</strong>: Vulnerability scans (bandit).</li>
+</ul>
+<h3 id="5-circuit-breaker-srcboringutilcircuit_breakerpy">5. Circuit Breaker (<code>src/boring/util/circuit_breaker.py</code>)</h3>
+<p>Prevents the "Infinite Loop of Doom" where an agent repeatedly tries and fails.</p>
+<ul>
+<li><strong>CLOSED</strong>: Normal operation.</li>
+<li><strong>OPEN</strong>: Too many consecutive failures. Stops execution to save tokens/time.</li>
+<li><strong>HALF_OPEN</strong>: Allows one attempt to see if the issue is resolved.</li>
+</ul>
+<hr />
+<h2 id="security-architecture-shadow-mode">🔒 Security Architecture (Shadow Mode)</h2>
+<p>Boring operates in a "Shadow Mode" sandbox for high-risk operations.</p>
+<div class="highlight"><pre><span></span><code>Request (Delete File)
+       │
+       ▼
+[Shadow Interceptor]
+       │
+  Is Safe? (Config) ──▶ YES ──▶ [FileSystem]
+       │
+       ▼
+      NO
+       │
+  [User Approval UI] ──▶ YES ──▶ [FileSystem]
+       │
+       ▼
+      NO ──▶ [Block &amp; Report]
+</code></pre></div>
+<p>This logic exists in <code>src/boring/security/shadow_mode.py</code>.</p>
+<hr />
+<h2 id="mcp-integration">🔌 MCP Integration</h2>
+<p>Boring exposes its internals via the Model Context Protocol (MCP).</p>
+<ul>
+<li><strong>Tools</strong>: exposed as <code>boring_tool_name</code>.</li>
+<li><strong>Resources</strong>: <code>boring://logs</code>, <code>boring://config</code>.</li>
+<li><strong>Prompts</strong>: <code>/vibe_start</code>, <code>/quick_fix</code>.</li>
+</ul>
+<p>This allows Boring to run <em>inside</em> other AI clients like Claude Desktop or Cursor.</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

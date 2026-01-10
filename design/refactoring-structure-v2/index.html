@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Boring-Gemini 專案結構重構計劃 V2 - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Boring-Gemini \u5c08\u6848\u7d50\u69cb\u91cd\u69cb\u8a08\u5283 V2";
+        var mkdocs_page_input_path = "design\\refactoring-structure-v2.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Boring-Gemini 專案結構重構計劃 V2</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/design/refactoring-structure-v2.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="boring-gemini-v2">Boring-Gemini 專案結構重構計劃 V2</h1>
+<blockquote>
+<p><strong>建立日期</strong>: 2026-01-09<br />
+<strong>目標</strong>: 將 <code>src/boring/</code> 頂層 45+ 個檔案精簡至 ~15 個</p>
+</blockquote>
+<hr />
+<h2 id="_1">📊 重構概覽</h2>
+<div class="highlight"><pre><span></span><code>重構前                              重構後
+src/boring/                         src/boring/
+├── 45+ 個 .py 檔案 😵             ├── ~15 個核心 .py 檔案 ✅
+├── 11 個子目錄                    ├── 16 個子目錄
+└── 混合粒度                       └── 清晰分層
+</code></pre></div>
+<hr />
+<h2 id="_2">🎯 階段式重構計劃</h2>
+<h3 id="1">階段 1：移入現有目錄（低風險）⭐ 推薦先做</h3>
+<p><strong>目標：減少 12 個頂層檔案，無需創建新目錄</strong></p>
+<table>
+<thead>
+<tr>
+<th>檔案</th>
+<th>目標目錄</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rubrics.py</code></td>
+<td><code>judge/</code></td>
+<td>評分標準屬於判斷系統</td>
+</tr>
+<tr>
+<td><code>brain_manager.py</code></td>
+<td><code>intelligence/</code></td>
+<td>大腦管理屬於智能模組</td>
+</tr>
+<tr>
+<td><code>feedback_learner.py</code></td>
+<td><code>intelligence/</code></td>
+<td>學習功能</td>
+</tr>
+<tr>
+<td><code>auto_learner.py</code></td>
+<td><code>intelligence/</code></td>
+<td>自動學習</td>
+</tr>
+<tr>
+<td><code>pattern_mining.py</code></td>
+<td><code>intelligence/</code></td>
+<td>模式挖掘</td>
+</tr>
+<tr>
+<td><code>memory.py</code></td>
+<td><code>intelligence/</code></td>
+<td>記憶管理</td>
+</tr>
+<tr>
+<td><code>vector_memory.py</code></td>
+<td><code>intelligence/</code></td>
+<td>向量記憶</td>
+</tr>
+<tr>
+<td><code>shadow_mode.py</code></td>
+<td><code>loop/</code></td>
+<td>影子模式屬於工作流</td>
+</tr>
+<tr>
+<td><code>workflow_manager.py</code></td>
+<td><code>loop/</code></td>
+<td>工作流管理</td>
+</tr>
+<tr>
+<td><code>workflow_evolver.py</code></td>
+<td><code>loop/</code></td>
+<td>工作流演進</td>
+</tr>
+<tr>
+<td><code>background_agent.py</code></td>
+<td><code>loop/</code></td>
+<td>後台代理</td>
+</tr>
+<tr>
+<td><code>transactions.py</code></td>
+<td><code>loop/</code></td>
+<td>事務管理</td>
+</tr>
+</tbody>
+</table>
+<p><strong>執行命令</strong>:
+<div class="highlight"><pre><span></span><code><span class="c"># 在 src/boring/ 目錄下執行</span>
+<span class="c"># 移動到 intelligence/</span>
+<span class="nb">Move-Item</span> <span class="n">brain_manager</span><span class="p">.</span><span class="n">py</span> <span class="n">intelligence</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">feedback_learner</span><span class="p">.</span><span class="n">py</span> <span class="n">intelligence</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">auto_learner</span><span class="p">.</span><span class="n">py</span> <span class="n">intelligence</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">pattern_mining</span><span class="p">.</span><span class="n">py</span> <span class="n">intelligence</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">memory</span><span class="p">.</span><span class="n">py</span> <span class="n">intelligence</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">vector_memory</span><span class="p">.</span><span class="n">py</span> <span class="n">intelligence</span><span class="p">/</span>
+
+<span class="c"># 移動到 loop/</span>
+<span class="nb">Move-Item</span> <span class="n">shadow_mode</span><span class="p">.</span><span class="n">py</span> <span class="n">loop</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">workflow_manager</span><span class="p">.</span><span class="n">py</span> <span class="n">loop</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">workflow_evolver</span><span class="p">.</span><span class="n">py</span> <span class="n">loop</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">background_agent</span><span class="p">.</span><span class="n">py</span> <span class="n">loop</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">transactions</span><span class="p">.</span><span class="n">py</span> <span class="n">loop</span><span class="p">/</span>
+
+<span class="c"># 移動到 judge/</span>
+<span class="nb">Move-Item</span> <span class="n">rubrics</span><span class="p">.</span><span class="n">py</span> <span class="n">judge</span><span class="p">/</span>
+</code></pre></div></p>
+<hr />
+<h3 id="2-infra">階段 2：創建 <code>infra/</code> 目錄</h3>
+<p><strong>目標：減少 7 個頂層檔案</strong></p>
+<table>
+<thead>
+<tr>
+<th>檔案</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>storage.py</code></td>
+<td>存儲管理</td>
+</tr>
+<tr>
+<td><code>cache.py</code></td>
+<td>緩存系統</td>
+</tr>
+<tr>
+<td><code>backup.py</code></td>
+<td>備份功能</td>
+</tr>
+<tr>
+<td><code>logger.py</code></td>
+<td>日誌系統</td>
+</tr>
+<tr>
+<td><code>limiter.py</code></td>
+<td>限流器</td>
+</tr>
+<tr>
+<td><code>streaming.py</code></td>
+<td>流式處理</td>
+</tr>
+<tr>
+<td><code>circuit.py</code></td>
+<td>熔斷器</td>
+</tr>
+</tbody>
+</table>
+<p><strong>執行命令</strong>:
+<div class="highlight"><pre><span></span><code><span class="c"># 創建目錄</span>
+<span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Path</span> <span class="n">infra</span>
+
+<span class="c"># 創建 __init__.py</span>
+<span class="sh">@&quot;</span>
+<span class="sh">&quot;&quot;&quot;基礎設施模組&quot;&quot;&quot;</span>
+<span class="sh">from .storage import *</span>
+<span class="sh">from .cache import *</span>
+<span class="sh">from .logger import *</span>
+<span class="sh">from .limiter import *</span>
+<span class="sh">&quot;@</span> <span class="p">|</span> <span class="nb">Out-File</span> <span class="n">-FilePath</span> <span class="n">infra</span><span class="p">/</span><span class="n">__init__</span><span class="p">.</span><span class="n">py</span> <span class="n">-Encoding</span> <span class="n">utf8</span>
+
+<span class="c"># 移動檔案</span>
+<span class="nb">Move-Item</span> <span class="n">storage</span><span class="p">.</span><span class="n">py</span> <span class="n">infra</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">cache</span><span class="p">.</span><span class="n">py</span> <span class="n">infra</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">backup</span><span class="p">.</span><span class="n">py</span> <span class="n">infra</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">logger</span><span class="p">.</span><span class="n">py</span> <span class="n">infra</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">limiter</span><span class="p">.</span><span class="n">py</span> <span class="n">infra</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">streaming</span><span class="p">.</span><span class="n">py</span> <span class="n">infra</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">circuit</span><span class="p">.</span><span class="n">py</span> <span class="n">infra</span><span class="p">/</span>
+</code></pre></div></p>
+<hr />
+<h3 id="3-monitoring">階段 3：創建 <code>monitoring/</code> 目錄</h3>
+<p><strong>目標：減少 6 個頂層檔案</strong></p>
+<table>
+<thead>
+<tr>
+<th>檔案</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>monitor.py</code></td>
+<td>主監控器</td>
+</tr>
+<tr>
+<td><code>health.py</code></td>
+<td>健康檢查</td>
+</tr>
+<tr>
+<td><code>dashboard.py</code></td>
+<td>儀表板</td>
+</tr>
+<tr>
+<td><code>web_monitor.py</code></td>
+<td>Web 監控</td>
+</tr>
+<tr>
+<td><code>audit.py</code></td>
+<td>審計日誌</td>
+</tr>
+<tr>
+<td><code>quality_tracker.py</code></td>
+<td>品質追蹤</td>
+</tr>
+</tbody>
+</table>
+<p><strong>執行命令</strong>:
+<div class="highlight"><pre><span></span><code><span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Path</span> <span class="n">monitoring</span>
+
+<span class="sh">@&quot;</span>
+<span class="sh">&quot;&quot;&quot;監控與審計模組&quot;&quot;&quot;</span>
+<span class="sh">from .monitor import *</span>
+<span class="sh">from .health import *</span>
+<span class="sh">from .audit import *</span>
+<span class="sh">&quot;@</span> <span class="p">|</span> <span class="nb">Out-File</span> <span class="n">-FilePath</span> <span class="n">monitoring</span><span class="p">/</span><span class="n">__init__</span><span class="p">.</span><span class="n">py</span> <span class="n">-Encoding</span> <span class="n">utf8</span>
+
+<span class="nb">Move-Item</span> <span class="n">monitor</span><span class="p">.</span><span class="n">py</span> <span class="n">monitoring</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">health</span><span class="p">.</span><span class="n">py</span> <span class="n">monitoring</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">dashboard</span><span class="p">.</span><span class="n">py</span> <span class="n">monitoring</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">web_monitor</span><span class="p">.</span><span class="n">py</span> <span class="n">monitoring</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">audit</span><span class="p">.</span><span class="n">py</span> <span class="n">monitoring</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">quality_tracker</span><span class="p">.</span><span class="n">py</span> <span class="n">monitoring</span><span class="p">/</span>
+</code></pre></div></p>
+<hr />
+<h3 id="4-clients">階段 4：創建 <code>clients/</code> 目錄</h3>
+<p><strong>目標：減少 5 個頂層檔案</strong></p>
+<table>
+<thead>
+<tr>
+<th>檔案</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gemini_client.py</code></td>
+<td>Gemini API 客戶端</td>
+</tr>
+<tr>
+<td><code>cli_client.py</code></td>
+<td>CLI 客戶端</td>
+</tr>
+<tr>
+<td><code>interactions_client.py</code></td>
+<td>互動客戶端</td>
+</tr>
+<tr>
+<td><code>interactive.py</code></td>
+<td>互動模式</td>
+</tr>
+<tr>
+<td><code>vscode_server.py</code></td>
+<td>VS Code 服務器</td>
+</tr>
+</tbody>
+</table>
+<p><strong>執行命令</strong>:
+<div class="highlight"><pre><span></span><code><span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Path</span> <span class="n">clients</span>
+
+<span class="sh">@&quot;</span>
+<span class="sh">&quot;&quot;&quot;客戶端連接模組&quot;&quot;&quot;</span>
+<span class="sh">from .gemini_client import *</span>
+<span class="sh">&quot;@</span> <span class="p">|</span> <span class="nb">Out-File</span> <span class="n">-FilePath</span> <span class="n">clients</span><span class="p">/</span><span class="n">__init__</span><span class="p">.</span><span class="n">py</span> <span class="n">-Encoding</span> <span class="n">utf8</span>
+
+<span class="nb">Move-Item</span> <span class="n">gemini_client</span><span class="p">.</span><span class="n">py</span> <span class="n">clients</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">cli_client</span><span class="p">.</span><span class="n">py</span> <span class="n">clients</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">interactions_client</span><span class="p">.</span><span class="n">py</span> <span class="n">clients</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">interactive</span><span class="p">.</span><span class="n">py</span> <span class="n">clients</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">vscode_server</span><span class="p">.</span><span class="n">py</span> <span class="n">clients</span><span class="p">/</span>
+</code></pre></div></p>
+<hr />
+<h3 id="5-patching">階段 5：創建 <code>patching/</code> 目錄</h3>
+<p><strong>目標：減少 6 個頂層檔案</strong></p>
+<table>
+<thead>
+<tr>
+<th>檔案</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>diff_patcher.py</code></td>
+<td>Diff 修補</td>
+</tr>
+<tr>
+<td><code>file_patcher.py</code></td>
+<td>檔案修補</td>
+</tr>
+<tr>
+<td><code>auto_fix.py</code></td>
+<td>自動修復</td>
+</tr>
+<tr>
+<td><code>error_diagnostics.py</code></td>
+<td>錯誤診斷</td>
+</tr>
+<tr>
+<td><code>error_translator.py</code></td>
+<td>錯誤翻譯</td>
+</tr>
+<tr>
+<td><code>debugger.py</code></td>
+<td>調試器</td>
+</tr>
+</tbody>
+</table>
+<p><strong>執行命令</strong>:
+<div class="highlight"><pre><span></span><code><span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Path</span> <span class="n">patching</span>
+
+<span class="sh">@&quot;</span>
+<span class="sh">&quot;&quot;&quot;代碼修補與錯誤處理模組&quot;&quot;&quot;</span>
+<span class="sh">from .diff_patcher import *</span>
+<span class="sh">from .file_patcher import *</span>
+<span class="sh">from .auto_fix import *</span>
+<span class="sh">&quot;@</span> <span class="p">|</span> <span class="nb">Out-File</span> <span class="n">-FilePath</span> <span class="n">patching</span><span class="p">/</span><span class="n">__init__</span><span class="p">.</span><span class="n">py</span> <span class="n">-Encoding</span> <span class="n">utf8</span>
+
+<span class="nb">Move-Item</span> <span class="n">diff_patcher</span><span class="p">.</span><span class="n">py</span> <span class="n">patching</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">file_patcher</span><span class="p">.</span><span class="n">py</span> <span class="n">patching</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">auto_fix</span><span class="p">.</span><span class="n">py</span> <span class="n">patching</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">error_diagnostics</span><span class="p">.</span><span class="n">py</span> <span class="n">patching</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">error_translator</span><span class="p">.</span><span class="n">py</span> <span class="n">patching</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">debugger</span><span class="p">.</span><span class="n">py</span> <span class="n">patching</span><span class="p">/</span>
+</code></pre></div></p>
+<hr />
+<h3 id="6">階段 6：其他整理</h3>
+<div class="highlight"><pre><span></span><code><span class="c"># 移動到 intelligence/</span>
+<span class="nb">Move-Item</span> <span class="n">context_selector</span><span class="p">.</span><span class="n">py</span> <span class="n">intelligence</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">context_sync</span><span class="p">.</span><span class="n">py</span> <span class="n">intelligence</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">response_analyzer</span><span class="p">.</span><span class="n">py</span> <span class="n">intelligence</span><span class="p">/</span>
+
+<span class="c"># 移動到 verification/</span>
+<span class="nb">Move-Item</span> <span class="n">security</span><span class="p">.</span><span class="n">py</span> <span class="n">verification</span><span class="p">/</span>
+<span class="nb">Move-Item</span> <span class="n">trust_rules</span><span class="p">.</span><span class="n">py</span> <span class="n">verification</span><span class="p">/</span>
+</code></pre></div>
+<hr />
+<h2 id="_3">📁 最終目錄結構</h2>
+<div class="highlight"><pre><span></span><code>src/boring/
+├── __init__.py          # 版本 + 向後兼容導出
+├── __main__.py          # 入口點
+├── main.py              # 主程式
+├── config.py            # 配置
+├── constants.py         # 常量
+├── exceptions.py        # 異常
+├── models.py            # 資料模型
+├── interfaces.py        # 介面定義
+├── utils.py             # 工具函數
+├── core.py              # 核心引擎
+├── setup.py             # 設置
+├── quickstart.py        # 快速開始
+├── extensions.py        # 擴展
+├── hooks.py             # 鉤子
+├── workspace.py         # 工作區
+├── skills_catalog.py    # 技能目錄
+├── tutorial.py          # 教程
+│
+├── agents/              # 代理系統 (已存在)
+├── intelligence/        # 智能分析 (擴充)
+│   ├── adaptive_cache.py
+│   ├── brain_manager.py      # 新增
+│   ├── memory.py             # 新增
+│   ├── vector_memory.py      # 新增
+│   └── ...
+├── loop/                # 工作流循環 (擴充)
+│   ├── agent.py
+│   ├── shadow_mode.py        # 新增
+│   ├── workflow_manager.py   # 新增
+│   └── ...
+├── rag/                 # RAG 系統 (已存在)
+├── mcp/                 # MCP 服務 (已存在)
+├── judge/               # 評判系統 (擴充)
+│   ├── rubrics.py            # 新增
+│   └── ...
+├── verification/        # 驗證系統 (擴充)
+│   ├── security.py           # 新增
+│   ├── trust_rules.py        # 新增
+│   └── ...
+├── vibe/                # Vibe 功能 (已存在)
+├── llm/                 # LLM 相關 (已存在)
+├── plugins/             # 插件 (已存在)
+├── templates/           # 模板 (已存在)
+│
+├── infra/               # 基礎設施 (新建)
+│   ├── __init__.py
+│   ├── storage.py
+│   ├── cache.py
+│   ├── backup.py
+│   ├── logger.py
+│   ├── limiter.py
+│   ├── streaming.py
+│   └── circuit.py
+│
+├── monitoring/          # 監控審計 (新建)
+│   ├── __init__.py
+│   ├── monitor.py
+│   ├── health.py
+│   ├── dashboard.py
+│   ├── web_monitor.py
+│   ├── audit.py
+│   └── quality_tracker.py
+│
+├── clients/             # 客戶端 (新建)
+│   ├── __init__.py
+│   ├── gemini_client.py
+│   ├── cli_client.py
+│   ├── interactions_client.py
+│   ├── interactive.py
+│   └── vscode_server.py
+│
+└── patching/            # 修補系統 (新建)
+    ├── __init__.py
+    ├── diff_patcher.py
+    ├── file_patcher.py
+    ├── auto_fix.py
+    ├── error_diagnostics.py
+    ├── error_translator.py
+    └── debugger.py
+</code></pre></div>
+<hr />
+<h2 id="import">🔄 Import 更新指南</h2>
+<h3 id="_4">更新相對導入</h3>
+<p>每個移動的檔案內部的 import 需要更新：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 舊（在頂層時）</span>
+<span class="kn">from</span> <span class="nn">.config</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">.logger</span> <span class="kn">import</span> <span class="n">log_status</span>
+
+<span class="c1"># 新（在子目錄時）</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">..infra.logger</span> <span class="kn">import</span> <span class="n">log_status</span>  <span class="c1"># 如果 logger 在 infra/</span>
+<span class="c1"># 或</span>
+<span class="kn">from</span> <span class="nn">boring.config</span> <span class="kn">import</span> <span class="n">settings</span>     <span class="c1"># 使用絕對導入</span>
+</code></pre></div>
+<h3 id="_5">向後兼容層</h3>
+<p>在 <code>src/boring/__init__.py</code> 添加重新導出：</p>
+<div class="highlight"><pre><span></span><code><span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;10.26.0&quot;</span>
+
+<span class="c1"># 向後兼容 - 保持舊的導入路徑可用</span>
+<span class="c1"># 這些將在 v12.0 中移除</span>
+<span class="kn">from</span> <span class="nn">boring.infra.storage</span> <span class="kn">import</span> <span class="n">StorageManager</span>
+<span class="kn">from</span> <span class="nn">boring.infra.cache</span> <span class="kn">import</span> <span class="n">CacheManager</span>
+<span class="kn">from</span> <span class="nn">boring.infra.logger</span> <span class="kn">import</span> <span class="n">log_status</span><span class="p">,</span> <span class="n">get_logger</span>
+<span class="kn">from</span> <span class="nn">boring.monitoring.monitor</span> <span class="kn">import</span> <span class="n">SystemMonitor</span>
+<span class="kn">from</span> <span class="nn">boring.clients.gemini_client</span> <span class="kn">import</span> <span class="n">GeminiClient</span>
+<span class="c1"># ... 其他需要向後兼容的導出</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;支援舊路徑的動態導入&quot;&quot;&quot;</span>
+    <span class="n">deprecated_modules</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;storage&#39;</span><span class="p">:</span> <span class="s1">&#39;boring.infra.storage&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;cache&#39;</span><span class="p">:</span> <span class="s1">&#39;boring.infra.cache&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;logger&#39;</span><span class="p">:</span> <span class="s1">&#39;boring.infra.logger&#39;</span><span class="p">,</span>
+        <span class="c1"># ...</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">deprecated_modules</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Importing </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> from boring is deprecated. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Use </span><span class="si">{</span><span class="n">deprecated_modules</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="si">}</span><span class="s2"> instead.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span>
+        <span class="p">)</span>
+        <span class="kn">import</span> <span class="nn">importlib</span>
+        <span class="k">return</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">deprecated_modules</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;module &#39;boring&#39; has no attribute &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="_6">✅ 驗證清單</h2>
+<p>每個階段完成後執行：</p>
+<div class="highlight"><pre><span></span><code><span class="c"># 1. 運行測試</span>
+<span class="nb">cd </span><span class="n">d</span><span class="p">:\</span><span class="n">User</span><span class="p">\</span><span class="n">Desktop</span><span class="p">\</span><span class="n">ralphgeminicode</span><span class="p">\</span><span class="n">boring-gemini</span>
+<span class="n">pytest</span> <span class="n">tests</span><span class="p">/</span> <span class="n">-v</span>
+
+<span class="c"># 2. 檢查導入</span>
+<span class="n">python</span> <span class="n">-c</span> <span class="s2">&quot;from boring import *; print(&#39;Import OK&#39;)&quot;</span>
+
+<span class="c"># 3. 運行 linter</span>
+<span class="n">ruff</span> <span class="n">check</span> <span class="n">src</span><span class="p">/</span><span class="n">boring</span><span class="p">/</span>
+
+<span class="c"># 4. 測試 MCP 服務</span>
+<span class="n">python</span> <span class="n">-m</span> <span class="n">boring</span><span class="p">.</span><span class="n">mcp</span><span class="p">.</span><span class="n">server</span> <span class="p">-</span><span class="n">-help</span>
+</code></pre></div>
+<hr />
+<h2 id="_7">📈 預期效果</h2>
+<table>
+<thead>
+<tr>
+<th>指標</th>
+<th>重構前</th>
+<th>重構後</th>
+<th>改善</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>頂層 .py 檔案</td>
+<td>45+</td>
+<td>~17</td>
+<td>-62%</td>
+</tr>
+<tr>
+<td>子目錄數量</td>
+<td>11</td>
+<td>16</td>
+<td>+45%</td>
+</tr>
+<tr>
+<td>平均目錄深度</td>
+<td>1.5</td>
+<td>2.0</td>
+<td>更清晰</td>
+</tr>
+<tr>
+<td>可維護性評分</td>
+<td>★★★★</td>
+<td>★★★★★</td>
+<td>+25%</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_8">⏱️ 時間估算</h2>
+<table>
+<thead>
+<tr>
+<th>階段</th>
+<th>預計時間</th>
+<th>風險等級</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>階段 1</td>
+<td>2-3 小時</td>
+<td>🟢 低</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>1-2 小時</td>
+<td>🟡 中</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>1-2 小時</td>
+<td>🟡 中</td>
+</tr>
+<tr>
+<td>階段 4</td>
+<td>1-2 小時</td>
+<td>🟡 中</td>
+</tr>
+<tr>
+<td>階段 5</td>
+<td>1-2 小時</td>
+<td>🟡 中</td>
+</tr>
+<tr>
+<td>階段 6</td>
+<td>1 小時</td>
+<td>🟢 低</td>
+</tr>
+<tr>
+<td>測試修復</td>
+<td>2-4 小時</td>
+<td>🟠 視情況</td>
+</tr>
+<tr>
+<td>文檔更新</td>
+<td>1 小時</td>
+<td>🟢 低</td>
+</tr>
+<tr>
+<td><strong>總計</strong></td>
+<td><strong>10-17 小時</strong></td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_9">🚀 建議執行順序</h2>
+<ol>
+<li><strong>先做階段 1</strong> - 風險最低，效果明顯</li>
+<li><strong>再做階段 2 (infra/)</strong> - logger.py 被廣泛使用，統一管理</li>
+<li><strong>階段 3-5 可並行規劃</strong></li>
+<li><strong>每階段獨立 PR</strong>，方便 Code Review</li>
+</ol>
+<hr />
+<h2 id="_10">📝 注意事項</h2>
+<ol>
+<li><strong>備份</strong>: 重構前確保 git 狀態乾淨，創建新分支</li>
+<li><strong>測試</strong>: 每移動一批檔案就運行測試</li>
+<li><strong>CI/CD</strong>: 確保 GitHub Actions 通過</li>
+<li><strong>文檔</strong>: 同步更新 ARCHITECTURE.md</li>
+<li><strong>通知</strong>: 如有其他開發者，提前告知結構變更</li>
+</ol>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Configuration Reference - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Configuration Reference";
+        var mkdocs_page_input_path = "reference\\configuration.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Configuration Reference</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/reference/configuration.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="configuration-reference">Configuration Reference</h1>
+<blockquote>
+<p><strong>Simple Guide for Beginners</strong>: Boring has two ways to configure. Choose based on your needs.</p>
+</blockquote>
+<hr />
+<h2 id="quick-start-where-do-i-edit">🚦 Quick Start: Where do I edit?</h2>
+<h3 id="scenario-1-i-am-a-solo-developer-use-cursorclaude">Scenario 1: I am a Solo Developer (Use Cursor/Claude)</h3>
+<p><strong>👉 You should edit <code>mcp.json</code> (or Cursor Settings)</strong>
+This is for preferences that affect <strong>only you</strong>, such as:
+- Cost savings (Token Optimization)
+- Performance tuning
+- Profile Selection (Lite/Standard)</p>
+<h3 id="scenario-2-i-am-a-team-lead">Scenario 2: I am a Team Lead</h3>
+<p><strong>👉 You should create <code>.boring.toml</code> (in Project Root)</strong>
+This is for rules that <strong>the whole team</strong> must follow, such as:
+- Code Quality Standards (Lint/Test)
+- Security Scan Levels
+- CI/CD Rules</p>
+<hr />
+<h2 id="common-scenarios-cookbook">🙋 Common Scenarios (Cookbook)</h2>
+<h3 id="1-i-want-to-save-money-token-optimization">1. I want to Save Money (Token Optimization)</h3>
+<p>Edit your MCP JSON Config:
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;BORING_MCP_VERBOSITY&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;minimal&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1">// Minimized output (Saves 90%)</span>
+<span class="w">  </span><span class="nt">&quot;BORING_MCP_PROFILE&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ultra_lite&quot;</span><span class="w">  </span><span class="c1">// Minimized tools</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="2-i-want-max-performance-parallelism">2. I want Max Performance (Parallelism)</h3>
+<p>Edit your MCP JSON Config:
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;BORING_WORKER_COUNT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;8&quot;</span><span class="w">  </span><span class="c1">// Run 8 threads parallel</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="3-i-want-stricter-security-shadow-mode">3. I want Stricter Security (Shadow Mode)</h3>
+<p>Edit your <code>.boring.toml</code>:
+<div class="highlight"><pre><span></span><code><span class="k">[boring]</span>
+<span class="n">enable_shadow_mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+
+<span class="k">[boring.security]</span>
+<span class="n">secret_scan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">       </span><span class="c1"># Scan for passwords</span>
+<span class="n">dependency_scan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">   </span><span class="c1"># Scan for vulnerabilities</span>
+</code></pre></div></p>
+<hr />
+<h2 id="detailed-reference">🔧 Detailed Reference</h2>
+<h3 id="1-project-config-boringtoml">1. Project Config (<code>.boring.toml</code>)</h3>
+<p>Place this file in your project root.</p>
+<h4 id="boring-global-settings"><code>[boring]</code> Global Settings</h4>
+<div class="highlight"><pre><span></span><code><span class="k">[boring]</span>
+<span class="c1"># Enable debug logs (default: false)</span>
+<span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="c1"># Enable RAG Memory (default: true)</span>
+<span class="n">enable_rag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+</code></pre></div>
+<h4 id="boringquality_gates"><code>[boring.quality_gates]</code></h4>
+<p>Define the "Definition of Done".
+<div class="highlight"><pre><span></span><code><span class="k">[boring.quality_gates]</span>
+<span class="n">min_coverage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40</span><span class="w">        </span><span class="c1"># Minimum Test Coverage %</span>
+<span class="n">max_complexity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">15</span><span class="w">      </span><span class="c1"># Max allowed complexity</span>
+<span class="n">max_file_lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500</span><span class="w">     </span><span class="c1"># Max lines per file</span>
+<span class="n">check_untyped_defs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1"># Strict typing</span>
+</code></pre></div></p>
+<h4 id="boringhooks-git-hooks"><code>[boring.hooks]</code> (Git Hooks)</h4>
+<p>Control behavior on Commit/Push.
+<div class="highlight"><pre><span></span><code><span class="k">[boring.hooks]</span>
+<span class="n">pre_commit_level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;STANDARD&quot;</span><span class="w"> </span><span class="c1"># Check on commit</span>
+<span class="n">pre_push_level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;FULL&quot;</span><span class="w">       </span><span class="c1"># Check on push</span>
+<span class="n">auto_fix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">               </span><span class="c1"># Auto-fix simple errors</span>
+<span class="n">timeout_seconds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">300</span><span class="w">         </span><span class="c1"># Timeout in seconds</span>
+</code></pre></div></p>
+<h3 id="2-environment-variables-mcp-json-env">2. Environment Variables &amp; MCP JSON (<code>env</code>)</h3>
+<p>These are usually set in the <code>env</code> section of your Cursor/Claude MCP config.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Variable Name</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Core Settings</strong></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>BORING_MCP_PROFILE</code></td>
+<td style="text-align: left;"><code>lite</code></td>
+<td style="text-align: left;">Toolset Size (<code>minimal</code>, <code>lite</code>, <code>standard</code>, <code>full</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>BORING_MCP_VERBOSITY</code></td>
+<td style="text-align: left;"><code>standard</code></td>
+<td style="text-align: left;">Output Verbosity (<code>minimal</code>, <code>standard</code>, <code>verbose</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>BORING_LOG_LEVEL</code></td>
+<td style="text-align: left;"><code>INFO</code></td>
+<td style="text-align: left;">Log Level</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Security Settings</strong></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>SHADOW_MODE_LEVEL</code></td>
+<td style="text-align: left;"><code>ENABLED</code></td>
+<td style="text-align: left;">Sandbox Level (<code>DISABLED</code>, <code>ENABLED</code>, <code>STRICT</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>BORING_ALLOW_DANGEROUS</code></td>
+<td style="text-align: left;"><code>false</code></td>
+<td style="text-align: left;">Allow dangerous ops (Not Recommended)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Performance</strong></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>BORING_WORKER_COUNT</code></td>
+<td style="text-align: left;"><code>4</code></td>
+<td style="text-align: left;">Number of parallel workers</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>BORING_CACHE_DIR</code></td>
+<td style="text-align: left;"><code>.boring/cache</code></td>
+<td style="text-align: left;">Cache directory location</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>System</strong></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>BORING_PROJECT_ROOT</code></td>
+<td style="text-align: left;"><code>.</code></td>
+<td style="text-align: left;">Force project path</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>BORING_RAG_ENABLED</code></td>
+<td style="text-align: left;"><code>1</code></td>
+<td style="text-align: left;">Enable RAG (0=Disable)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="complete-example-mcp-json">📝 Complete Example: MCP JSON</h2>
+<p>This is what it looks like in your Cursor Settings:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;boring&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;python&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-m&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;boring.mcp.server&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;BORING_MCP_MODE&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="w">           </span><span class="c1">// REQUIRED: Enable MCP Mode</span>
+<span class="w">        </span><span class="nt">&quot;BORING_MCP_PROFILE&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lite&quot;</span><span class="p">,</span><span class="w">     </span><span class="c1">// RECOMMENDED: For daily dev</span>
+<span class="w">        </span><span class="nt">&quot;BORING_MCP_VERBOSITY&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;minimal&quot;</span><span class="p">,</span><span class="c1">// RECOMMENDED: Save tokens</span>
+<span class="w">        </span><span class="nt">&quot;PROJECT_ROOT_DEFAULT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;.&quot;</span><span class="w">       </span><span class="c1">// Default to current dir</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

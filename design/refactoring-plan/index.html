@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Boring MCP 重構規劃 (V10.26.0) - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Boring MCP \u91cd\u69cb\u898f\u5283 (V10.26.0)";
+        var mkdocs_page_input_path = "design\\refactoring-plan.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Boring MCP 重構規劃 (V10.26.0)</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/design/refactoring-plan.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="boring-mcp-v10260">Boring MCP 重構規劃 (V10.26.0)</h1>
+<blockquote>
+<p><strong>狀態</strong>: ✅ 已完成<br />
+<strong>完成日期</strong>: 2026-01-09<br />
+<strong>測試結果</strong>: 2140 passed, 4 skipped</p>
+</blockquote>
+<hr />
+<h2 id="_1">📊 重構後結構</h2>
+<h3 id="_2">檔案結構</h3>
+<div class="highlight"><pre><span></span><code>src/boring/mcp/
+├── server.py              # MCP Server 主入口 (已更新 imports)
+├── tools/assistant.py           # ⚠️ DEPRECATED - 添加棄用警告
+├── v10_tools.py          # Registry hub ✅
+├── vibe_tools.py         # ⚠️ DEPRECATED - 添加棄用警告
+├── core_tools.py         # 核心工具
+├── brain_tools.py        # 記憶/學習工具
+├── intelligence_tools.py # 智能路由工具
+├── speckit_tools.py      # SpecKit 工具
+├── tool_router.py        # 自然語言路由
+├── tool_profiles.py      # Profile 管理
+├── prompts.py            # Prompt 定義
+└── tools/                # ✅ 模組化工具
+    ├── plugins.py        # ✅ NEW - Plugin 管理 (3 tools)
+    ├── workspace.py      # ✅ NEW - Workspace 管理 (4 tools)
+    ├── assistant.py      # ✅ NEW - AI 助手 (3 tools)
+    ├── vibe.py           # ✅ NEW - Vibe Coder Pro (10 tools)
+    ├── session.py        # Vibe Session (6 tools)
+    ├── core.py           # 核心操作
+    ├── rag.py            # RAG 搜索
+    ├── shadow.py         # Shadow Mode
+    ├── agents.py         # Multi-Agent
+    ├── git.py            # Git 操作
+    ├── quality.py        # 品質檢查
+    ├── workflow.py       # 工作流
+    └── ...
+</code></pre></div>
+<h3 id="_3">遷移完成表</h3>
+<table>
+<thead>
+<tr>
+<th>當前命名</th>
+<th>狀態</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tools/assistant.py</code></td>
+<td>✅ Re-export wrapper</td>
+<td>660 → 53 行 (92%↓)</td>
+</tr>
+<tr>
+<td><code>v10_tools.py</code></td>
+<td>✅ 保留</td>
+<td>作為 registry hub</td>
+</tr>
+<tr>
+<td><code>vibe_tools.py</code></td>
+<td>✅ Re-export wrapper</td>
+<td>1319 → 25 行 (98%↓)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>總代碼減少</strong>: ~1900 行 (消除重複代碼)</p>
+<hr />
+<h2 id="_4">🎯 重構完成摘要</h2>
+<h3 id="phase-a">Phase A: 文檔更新 ✅</h3>
+<ol>
+<li>✅ 精簡 README.md (448 → 181 行)</li>
+<li>✅ 精簡 README_zh.md (451 → 169 行)</li>
+<li>✅ Quick Start 已整合</li>
+</ol>
+<h3 id="phase-b-deprecation-warnings">Phase B: Deprecation Warnings ✅</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># tools/assistant.py - 已添加</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+    <span class="s2">&quot;v9_tools is deprecated since V10.26.0. &quot;</span>
+    <span class="s2">&quot;Use tools/plugins.py, tools/workspace.py, tools/assistant.py instead.&quot;</span><span class="p">,</span>
+    <span class="ne">DeprecationWarning</span><span class="p">,</span>
+    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span>
+<span class="p">)</span>
+
+<span class="c1"># vibe_tools.py - 已添加</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+    <span class="s2">&quot;vibe_tools.py is deprecated since V10.26.0. &quot;</span>
+    <span class="s2">&quot;Use tools/vibe.py instead.&quot;</span><span class="p">,</span>
+    <span class="ne">DeprecationWarning</span><span class="p">,</span>
+    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="phase-c">Phase C: 程式碼移動 ✅</h3>
+<p><strong>已完成！</strong> 建立了向後兼容的模組結構：</p>
+<table>
+<thead>
+<tr>
+<th>新模組</th>
+<th>工具數</th>
+<th>來源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tools/plugins.py</code></td>
+<td>3</td>
+<td>tools/assistant.py</td>
+</tr>
+<tr>
+<td><code>tools/workspace.py</code></td>
+<td>4</td>
+<td>tools/assistant.py</td>
+</tr>
+<tr>
+<td><code>tools/assistant.py</code></td>
+<td>3</td>
+<td>tools/assistant.py</td>
+</tr>
+<tr>
+<td><code>tools/vibe.py</code></td>
+<td>10</td>
+<td>vibe_tools.py</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="toolsassistantpy">📋 tools/assistant.py 遷移清單 ✅</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>類別</th>
+<th>目標位置</th>
+<th>狀態</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>boring_list_plugins</code></td>
+<td>Plugin</td>
+<td><code>tools/plugins.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_run_plugin</code></td>
+<td>Plugin</td>
+<td><code>tools/plugins.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_reload_plugins</code></td>
+<td>Plugin</td>
+<td><code>tools/plugins.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_workspace_add</code></td>
+<td>Workspace</td>
+<td><code>tools/workspace.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_workspace_remove</code></td>
+<td>Workspace</td>
+<td><code>tools/workspace.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_workspace_list</code></td>
+<td>Workspace</td>
+<td><code>tools/workspace.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_workspace_switch</code></td>
+<td>Workspace</td>
+<td><code>tools/workspace.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_prompt_fix</code></td>
+<td>Assistant</td>
+<td><code>tools/assistant.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_suggest_next</code></td>
+<td>Assistant</td>
+<td><code>tools/assistant.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_get_progress</code></td>
+<td>Assistant</td>
+<td><code>tools/assistant.py</code></td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="vibe_toolspy">📋 vibe_tools.py 遷移清單 ✅</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>功能</th>
+<th>目標</th>
+<th>狀態</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>boring_test_gen</code></td>
+<td>測試生成</td>
+<td><code>tools/vibe.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_code_review</code></td>
+<td>程式碼審查</td>
+<td><code>tools/vibe.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_perf_tips</code></td>
+<td>效能建議</td>
+<td><code>tools/vibe.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_arch_check</code></td>
+<td>架構檢查</td>
+<td><code>tools/vibe.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_doc_gen</code></td>
+<td>文檔生成</td>
+<td><code>tools/vibe.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_vibe_check</code></td>
+<td>專案健康度</td>
+<td><code>tools/vibe.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_impact_check</code></td>
+<td>影響分析</td>
+<td><code>tools/vibe.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_predict_errors</code></td>
+<td>錯誤預測</td>
+<td><code>tools/vibe.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_health_score</code></td>
+<td>健康分數</td>
+<td><code>tools/vibe.py</code></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>boring_optimize_context</code></td>
+<td>上下文優化</td>
+<td><code>tools/vibe.py</code></td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_5">🚀 版本歷程</h2>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>完成項目</th>
+<th>日期</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>V10.26.0</td>
+<td>Phase A + B + C 全部完成</td>
+<td>2026-01-09</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_6">測試結果：</h3>
+<div class="highlight"><pre><span></span><code>2140 passed, 4 skipped, 50 warnings
+</code></pre></div>
+<hr />
+<h2 id="_7">📝 決策記錄</h2>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>決策</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025-01-09</td>
+<td>原計劃不執行 Phase C</td>
+<td>2144 測試風險太高</td>
+</tr>
+<tr>
+<td>2025-01-09</td>
+<td>README 精簡完成</td>
+<td>448 → 181 行</td>
+</tr>
+<tr>
+<td>2025-01-09</td>
+<td>保留 v10_tools.py</td>
+<td>已是 registry 架構</td>
+</tr>
+<tr>
+<td>2026-01-09</td>
+<td><strong>執行 Phase C</strong></td>
+<td>用戶要求完成實際移動</td>
+</tr>
+<tr>
+<td>2026-01-09</td>
+<td>向後兼容策略</td>
+<td>保留 legacy 檔案 + deprecation warnings</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="v10260">✅ V10.26.0 完成項目</h2>
+<ul>
+<li>[x] README.md 精簡 (448 → 181 行)</li>
+<li>[x] README_zh.md 精簡 (451 → 169 行)</li>
+<li>[x] 重構規劃文檔建立</li>
+<li>[x] Phase B: Deprecation warnings 添加</li>
+<li>[x] Phase C: 實際移動完成</li>
+<li>[x] tools/plugins.py (3 tools)</li>
+<li>[x] tools/workspace.py (4 tools)</li>
+<li>[x] tools/assistant.py (3 tools)</li>
+<li>[x] tools/vibe.py (10 tools)</li>
+<li>[x] server.py imports 更新</li>
+<li>[x] 測試驗證通過 (2140 passed)</li>
+<li>[x] CHANGELOG 更新</li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

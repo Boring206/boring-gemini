@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>✨ Vibe Coder Experience (V10.24) - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u2728 Vibe Coder Experience (V10.24)";
+        var mkdocs_page_input_path = "features\\vibe-coder.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">✨ Vibe Coder Experience (V10.24)</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/features/vibe-coder.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="vibe-coder-experience-v1024">✨ Vibe Coder Experience (V10.24)</h1>
+<blockquote>
+<p><strong>Philosophy</strong>: "Don't write code. Just describe the vibe."</p>
+</blockquote>
+<p>The <strong>Vibe Coder</strong> feature set in Boring-Gemini V10.24 is designed for the modern AI-assisted developer who prefers natural language over manual configuration. It transforms the 98+ complex MCP tools into a seamless, conversational interface.</p>
+<h2 id="the-universal-router">🎯 The Universal Router</h2>
+<p>Instead of remembering dozens of tool names like <code>boring_rag_search</code>, <code>boring_security_scan</code>, or <code>boring_test_gen</code>, you now have a single entry point: <strong><code>boring()</code></strong>.</p>
+<h3 id="how-it-works">How it Works</h3>
+<p>The router uses semantic analysis to understand your intent and route your request to the best tool.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Old Way (Classic MCP)</span>
+<span class="c1"># You had to know the tool name and specific parameters</span>
+<span class="n">client</span><span class="o">.</span><span class="n">call_tool</span><span class="p">(</span><span class="s2">&quot;boring_rag_search&quot;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="s2">&quot;authentication logic&quot;</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c1"># ✨ Vibe Coder Way</span>
+<span class="c1"># Just say what you want</span>
+<span class="n">boring</span><span class="p">(</span><span class="s2">&quot;search for authentication logic&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="supported-categories">Supported Categories</h3>
+<p>The router understands intents across 17 categories:</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Keywords (English/Chinese)</th>
+<th>Target Tools</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Coding</strong></td>
+<td><code>code</code>, <code>search</code>, <code>找程式碼</code></td>
+<td><code>rag_search</code></td>
+</tr>
+<tr>
+<td><strong>Testing</strong></td>
+<td><code>test</code>, <code>verify</code>, <code>幫我寫測試</code></td>
+<td><code>test_gen</code>, <code>verify</code></td>
+</tr>
+<tr>
+<td><strong>Review</strong></td>
+<td><code>review</code>, <code>audit</code>, <code>審查</code>, <code>健檢</code></td>
+<td><code>code_review</code>, <code>security_scan</code></td>
+</tr>
+<tr>
+<td><strong>Planning</strong></td>
+<td><code>plan</code>, <code>architect</code>, <code>我想做...</code></td>
+<td><code>prompt_plan</code></td>
+</tr>
+<tr>
+<td><strong>Git</strong></td>
+<td><code>commit</code>, <code>push</code>, <code>提交</code></td>
+<td><code>commit</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="cli-usage-boring-route">💻 CLI Usage: <code>boring-route</code></h2>
+<p>We've added a CLI tool so you can use Vibe Coder capabilities directly from your terminal, without needing an elaborate IDE setup.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Ask for tests</span>
+boring-route<span class="w"> </span><span class="s2">&quot;帮我写测试&quot;</span>
+<span class="c1"># 🎯 Matched: boring_test_gen (100%)</span>
+
+<span class="c1"># Check security</span>
+boring-route<span class="w"> </span><span class="s2">&quot;review my code for security&quot;</span>
+<span class="c1"># 🎯 Matched: boring_security_scan (85%)</span>
+</code></pre></div>
+<h2 id="tool-profiles">🎛️ Tool Profiles</h2>
+<p>To further optimize your experience and save LLM token usage, we introduced <strong>Tool Profiles</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Profile</th>
+<th>Tools Loaded</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Minimal</strong></td>
+<td>8</td>
+<td>Pure conversation, minimal overhead</td>
+</tr>
+<tr>
+<td><strong>Lite</strong> (Default)</td>
+<td>19</td>
+<td>Everyday Vibe Coding (Router + Essentials)</td>
+</tr>
+<tr>
+<td><strong>Standard</strong></td>
+<td>50</td>
+<td>Heavy development tasks</td>
+</tr>
+<tr>
+<td><strong>Full</strong></td>
+<td>98+</td>
+<td>Power user, full control</td>
+</tr>
+</tbody>
+</table>
+<h3 id="configuration">Configuration</h3>
+<p>In <code>.boring.toml</code>:
+<div class="highlight"><pre><span></span><code><span class="k">[boring.mcp]</span>
+<span class="n">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;lite&quot;</span>
+<span class="n">enable_router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+</code></pre></div></p>
+<h2 id="why-this-matters">🚀 Why This Matters</h2>
+<ol>
+<li><strong>Context Efficiency</strong>: Reduces context window usage by ~80% (19 tools vs 98 tools).</li>
+<li><strong>Accuracy</strong>: The router logic helps the LLM avoid "hallucinating" tool names.</li>
+<li><strong>Speed</strong>: Faster tool selection means faster turnaround time.</li>
+<li><strong>Simplicity</strong>: You only need to know <strong>one</strong> function: <code>boring()</code>.</li>
+</ol>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

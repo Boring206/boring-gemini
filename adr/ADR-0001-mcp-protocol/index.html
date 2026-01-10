@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>ADR-0001: Use MCP Protocol for Tool Integration - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "ADR-0001: Use MCP Protocol for Tool Integration";
+        var mkdocs_page_input_path = "adr\\ADR-0001-mcp-protocol.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">ADR-0001: Use MCP Protocol for Tool Integration</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/adr/ADR-0001-mcp-protocol.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="adr-0001-use-mcp-protocol-for-tool-integration">ADR-0001: Use MCP Protocol for Tool Integration</h1>
+<p><strong>Date</strong>: 2025-12-15</p>
+<p><strong>Status</strong>: Accepted</p>
+<p><strong>Deciders</strong>: @Boring206</p>
+<p><strong>Tags</strong>: architecture, integration, mcp</p>
+<hr />
+<h2 id="context">Context</h2>
+<h3 id="problem-statement">Problem Statement</h3>
+<p>Boring-Gemini needs a standardized way to integrate with various AI coding assistants (Cursor, Claude Desktop, VS Code Copilot) and provide consistent tool interfaces across different platforms.</p>
+<h3 id="goals">Goals</h3>
+<ul>
+<li>Provide consistent tool interface across multiple clients</li>
+<li>Enable easy discovery and invocation of capabilities</li>
+<li>Support both local and remote deployment</li>
+<li>Maintain backward compatibility with existing workflows</li>
+</ul>
+<h3 id="non-goals">Non-Goals</h3>
+<ul>
+<li>Creating a custom protocol from scratch</li>
+<li>Supporting non-AI coding assistant integrations</li>
+</ul>
+<h2 id="decision">Decision</h2>
+<p>We will adopt the <strong>Model Context Protocol (MCP)</strong> as the primary integration method for Boring-Gemini.</p>
+<h3 id="approach">Approach</h3>
+<ol>
+<li>Implement MCP server in <code>src/boring/mcp/</code></li>
+<li>Expose all 98+ tools via MCP interfaces</li>
+<li>Support both FastMCP (lite) and full MCP with vector capabilities</li>
+<li>Maintain CLI compatibility for legacy workflows</li>
+</ol>
+<h3 id="implementation-plan">Implementation Plan</h3>
+<ol>
+<li>✅ Create MCP server architecture</li>
+<li>✅ Implement tool router with natural language routing</li>
+<li>✅ Add Smithery deployment support</li>
+<li>✅ Document MCP configuration for all clients</li>
+<li>✅ Maintain backward compatibility with CLI mode</li>
+</ol>
+<h3 id="acceptance-criteria">Acceptance Criteria</h3>
+<ul>
+<li>[x] MCP server runs successfully</li>
+<li>[x] All major tools accessible via MCP</li>
+<li>[x] Integration with Cursor/Claude Desktop works</li>
+<li>[x] Smithery deployment functional</li>
+<li>[x] Documentation complete</li>
+</ul>
+<h2 id="consequences">Consequences</h2>
+<h3 id="positive-consequences">Positive Consequences</h3>
+<ul>
+<li><strong>Standardization</strong>: Single protocol for all AI assistant integrations</li>
+<li><strong>Discoverability</strong>: Tools automatically discoverable by clients</li>
+<li><strong>Community</strong>: Benefit from growing MCP ecosystem</li>
+<li><strong>Deployment</strong>: Easy deployment via Smithery</li>
+<li><strong>Maintenance</strong>: Centralized tool management</li>
+</ul>
+<h3 id="negative-consequences">Negative Consequences</h3>
+<ul>
+<li><strong>Dependency</strong>: Relies on MCP protocol stability</li>
+<li><strong>Learning Curve</strong>: Team must learn MCP protocol</li>
+<li><strong>Complexity</strong>: Additional layer vs direct API integration</li>
+<li><strong>CLI Deprecation</strong>: CLI mode becomes secondary</li>
+</ul>
+<h3 id="risks">Risks</h3>
+<ul>
+<li>MCP protocol changes (Mitigation: Version pinning, adaptation layer)</li>
+<li>Client compatibility issues (Mitigation: Multi-client testing)</li>
+<li>Performance overhead (Mitigation: Caching, optimization)</li>
+</ul>
+<h2 id="alternatives-considered">Alternatives Considered</h2>
+<h3 id="alternative-1-direct-api-integration">Alternative 1: Direct API Integration</h3>
+<p><strong>Pros:</strong>
+- Full control over protocol
+- No external dependencies
+- Maximum performance</p>
+<p><strong>Cons:</strong>
+- Reimplementing standard protocols
+- Multiple integrations to maintain
+- No ecosystem benefits</p>
+<p><strong>Why not chosen:</strong>
+MCP provides standardization benefits that outweigh custom implementation control.</p>
+<h3 id="alternative-2-lsp-language-server-protocol">Alternative 2: LSP (Language Server Protocol)</h3>
+<p><strong>Pros:</strong>
+- Well-established protocol
+- Excellent IDE integration
+- Rich tooling ecosystem</p>
+<p><strong>Cons:</strong>
+- Designed for language features, not AI tools
+- Doesn't fit AI assistant use case well
+- Overkill for our needs</p>
+<p><strong>Why not chosen:</strong>
+LSP is optimized for different use cases; MCP is purpose-built for AI integrations.</p>
+<h3 id="alternative-3-rest-api">Alternative 3: REST API</h3>
+<p><strong>Pros:</strong>
+- Simple and well-understood
+- Language-agnostic
+- Easy to test</p>
+<p><strong>Cons:</strong>
+- No standardized discovery mechanism
+- Manual integration for each client
+- No built-in streaming support</p>
+<p><strong>Why not chosen:</strong>
+Lack of standardization and discovery makes it less suitable than MCP.</p>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://modelcontextprotocol.io/">MCP Specification</a></li>
+<li><a href="https://pypi.org/project/fastmcp/">FastMCP Documentation</a></li>
+<li><a href="https://smithery.ai/">Smithery Platform</a></li>
+<li><a href="https://github.com/Boring206/boring-gemini/issues/45">Issue #45: MCP Integration</a></li>
+</ul>
+<h2 id="notes">Notes</h2>
+<p>This decision enabled the "Vibe Coder" experience by providing a consistent interface across all platforms. The natural language router (built on top of MCP) further enhanced usability.</p>
+<hr />
+<h2 id="changelog">Changelog</h2>
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Status Change</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025-12-15</td>
+<td>Proposed</td>
+<td>Initial draft</td>
+</tr>
+<tr>
+<td>2025-12-20</td>
+<td>Accepted</td>
+<td>Implemented and validated</td>
+</tr>
+<tr>
+<td>2026-01-01</td>
+<td>Updated</td>
+<td>Added Smithery deployment</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

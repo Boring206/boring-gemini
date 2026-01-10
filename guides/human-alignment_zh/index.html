@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>人類對齊 (Alignment) - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u4eba\u985e\u5c0d\u9f4a (Alignment)";
+        var mkdocs_page_input_path = "guides\\human-alignment_zh.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">人類對齊 (Alignment)</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_1">🧠 對齊引擎</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#1-rubrics">📋 1. 顯式引導：評分表 (Rubrics)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_2">如何使用：</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2-memory">💾 2. 隱性學習：記憶 (Memory)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_3">學習循環：</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3-speckit-evolution">🔄 3. 適應性工作流 (SpecKit Evolution)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_4">讓它「更懂人心」：</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5">💡 對齊的最佳實踐</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">📖 指南 (Guides)</li>
+      <li class="breadcrumb-item active">人類對齊 (Alignment)</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/guides/human-alignment_zh.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="human-alignment">人類對齊與偏好系統 (Human Alignment)</h1>
+<blockquote>
+<p>如何引導 Boring 的 AI 代理人，使其行為符合您個人或團隊的「人類需求」。</p>
+</blockquote>
+<hr />
+<h2 id="_1">🧠 對齊引擎</h2>
+<p>Boring 並非在真空狀態下運作。它被設計為能夠適應<strong>您的工作方式</strong>。這主要透過兩個系統實現：<strong>Rubrics</strong>（顯式規則）和 <strong>Learned Memory</strong>（隱性習慣）。</p>
+<hr />
+<h2 id="1-rubrics">📋 1. 顯式引導：評分表 (Rubrics)</h2>
+<p>評分表是位於 <code>.boring/brain/rubrics/</code> 中的 JSON 檔案。它們告訴 AI 在向您展示成品之前，該如何精確評估自己的工作。</p>
+<h3 id="_2">如何使用：</h3>
+<ol>
+<li><strong>建立評分表</strong>：定義一個新的 <code>.json</code> 檔案（例如 <code>mobile_standards.json</code>）。</li>
+<li><strong>定義準則</strong>：為「效能」、「無障礙」或「變數命名」等項目添加權重與等級。</li>
+<li><strong>AI 自我修正</strong>：當 Boring 執行任務時，它會使用這些評分表為自己打分。如果分數過低，它會<strong>自動重構</strong>程式碼，直到符合您的「人類標準」。</li>
+</ol>
+<hr />
+<h2 id="2-memory">💾 2. 隱性學習：記憶 (Memory)</h2>
+<p>每當您糾正 Boring（例如說：「我更喜歡在這裡使用 <code>async/await</code>」），Boring 就會使用 <code>boring_learn</code> 工具來保存該偏好。</p>
+<h3 id="_3">學習循環：</h3>
+<ul>
+<li><strong>互動</strong>：您提供回饋或修正錯誤。</li>
+<li><strong>模式提取</strong>：Boring 辨識出「修正模式 (Fix Pattern)」並將其存儲在 <code>.boring/brain/learned_patterns/</code> 中。</li>
+<li><strong>先驗行為</strong>：下次發生類似情況時，Boring 會主動採用您偏好的風格。</li>
+</ul>
+<hr />
+<h2 id="3-speckit-evolution">🔄 3. 適應性工作流 (SpecKit Evolution)</h2>
+<p><code>.agent/workflows/</code> 檔案並非靜態的。<strong>Workflow Evolver</strong> 會分析您專案的獨特需求，並自動修改這些檢查清單。</p>
+<h3 id="_4">讓它「更懂人心」：</h3>
+<ul>
+<li>如果您的團隊要求每次變更資料庫都必須進行安全審核，只需在 <code>PROMPT.md</code> 中提到這一點。</li>
+<li>Boring 會<strong>進化</strong>您的 <code>speckit-tasks.md</code>，自動加入一個強制的 <code>[ ] 安全檢查</code> 步驟。</li>
+</ul>
+<hr />
+<h2 id="_5">💡 對齊的最佳實踐</h2>
+<ol>
+<li><strong>明確表達</strong>：使用 <code>boring profile learn</code> 手動教會 AI 您最喜歡的程式庫或 Linting 風格。</li>
+<li><strong>審核大腦</strong>：定期檢查 <code>.boring/brain/learned_patterns/</code> 看看 AI 學到了關於您的什麼。您可以手動刪除不再適用的模式。</li>
+<li><strong>團隊共享</strong>：將 <code>.boring/brain/rubrics/</code> 資料夾提交至 Git，這樣整個團隊就能共享相同的「人類品質閘道」。</li>
+</ol>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../skills_guide/" class="btn btn-neutral float-left" title="Skills & 擴充"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../plugins_zh/" class="btn btn-neutral float-right" title="外掛系統 (Plugins)">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../skills_guide/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../plugins_zh/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

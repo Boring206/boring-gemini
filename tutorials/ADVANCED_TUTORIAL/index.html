@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Boring for Gemini: Advanced Developer Guide - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Boring for Gemini: Advanced Developer Guide";
+        var mkdocs_page_input_path = "tutorials\\ADVANCED_TUTORIAL.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Boring for Gemini: Advanced Developer Guide</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/tutorials/ADVANCED_TUTORIAL.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="boring-for-gemini-advanced-developer-guide">Boring for Gemini: Advanced Developer Guide</h1>
+<blockquote>
+<p><strong>Audience</strong>: Senior/Staff Engineers who want to understand the internals, extend the platform, or integrate it into enterprise workflows.</p>
+</blockquote>
+<hr />
+<h2 id="1-architecture-overview">1. Architecture Overview</h2>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────┐
+│                    AI Client (Claude/Gemini)                │
+└─────────────────────────┬───────────────────────────────────┘
+                          │ MCP Protocol (stdio/HTTP)
+┌─────────────────────────▼───────────────────────────────────┐
+│                    FastMCP Server Layer                     │
+│  ┌─────────────┬────────────────┬─────────────────────────┐ │
+│  │ V9 Tools    │ V10 Tools      │ Advanced Tools          │ │
+│  │ (Plugins,   │ (RAG, Agents,  │ (Security, Transactions,│ │
+│  │  Workspace) │  Shadow Mode)  │  Background, Context)   │ │
+│  └─────────────┴────────────────┴─────────────────────────┘ │
+│  ┌─────────────────────────────────────────────────────────┐ │
+│  │              Dynamic Discovery Resources                │ │
+│  │  boring://capabilities  |  boring://tools/{category}   │ │
+│  └─────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<h3 id="key-design-decisions">Key Design Decisions</h3>
+<ol>
+<li><strong>Discovery-First</strong>: ~55 tools consolidated into 14 categories. AI queries <code>boring://capabilities</code> first.</li>
+<li><strong>Transactional Safety</strong>: Git-based rollback for risky operations.</li>
+<li><strong>Async by Default</strong>: Long tasks (test, verify, security scan) run in background threads.</li>
+<li><strong>Memory Persistence</strong>: Cross-session context via SQLite + vector embeddings.</li>
+</ol>
+<hr />
+<h2 id="15-universal-router-tool-profiles-v1024">1.5. Universal Router &amp; Tool Profiles (V10.24)</h2>
+<p>The <strong>Universal Router</strong> is the single gateway to all Boring tools. It uses keyword matching and category selection to route natural language intent to the right tools.</p>
+<h3 id="architecture">Architecture</h3>
+<div class="highlight"><pre><span></span><code>                  User: &quot;Help me write tests&quot; 
+                              ↓
+┌────────────────────────────────────┐
+│  ToolRouter.route(&quot;write tests&quot;)  │
+│        ↓                          │
+│   KeywordMatch: testing (95%)     │
+│        ↓                          │
+│   → boring_test_gen              │
+└────────────────────────────────────┘
+</code></pre></div>
+<h3 id="tool-profiles">Tool Profiles</h3>
+<p>To reduce LLM context, use profiles:</p>
+<table>
+<thead>
+<tr>
+<th>Profile</th>
+<th>Tools</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>minimal</code></td>
+<td>8</td>
+<td>Simple single-tool workflows</td>
+</tr>
+<tr>
+<td><code>lite</code></td>
+<td>20</td>
+<td><strong>Default</strong> - daily dev work</td>
+</tr>
+<tr>
+<td><code>standard</code></td>
+<td>50</td>
+<td>Full-featured projects</td>
+</tr>
+<tr>
+<td><code>full</code></td>
+<td>98+</td>
+<td>Power users, everything exposed</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Config</strong> (<code>.boring.toml</code>):
+<div class="highlight"><pre><span></span><code><span class="k">[boring.mcp]</span>
+<span class="n">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;lite&quot;</span>
+</code></pre></div></p>
+<p><strong>CLI</strong>:
+<div class="highlight"><pre><span></span><code>boring-route<span class="w"> </span><span class="s2">&quot;幫我寫測試&quot;</span><span class="w">  </span><span class="c1"># 自動路由到 boring_test_gen</span>
+boring-route<span class="w"> </span><span class="s2">&quot;search for auth logic&quot;</span><span class="w">  </span><span class="c1"># 自動路由到 boring_rag_search</span>
+</code></pre></div></p>
+<hr />
+<h2 id="2-mcp-tool-registration-deep-dive">2. MCP Tool Registration Deep Dive</h2>
+<h3 id="entry-point-srcboringmcpserverpy">Entry Point: <code>src/boring/mcp/server.py</code></h3>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_server_instance</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure and return the FastMCP server.&quot;&quot;&quot;</span>
+    <span class="c1"># V9: Plugins, Workspace, Auto-Fix</span>
+    <span class="n">register_v9_tools</span><span class="p">(</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
+
+    <span class="c1"># V10: RAG, Multi-Agent, Shadow Mode</span>
+    <span class="n">register_v10_tools</span><span class="p">(</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
+
+    <span class="c1"># V10.16: Security, Transactions, Background, Context</span>
+    <span class="n">register_advanced_tools</span><span class="p">(</span><span class="n">mcp</span><span class="p">)</span>
+
+    <span class="c1"># Dynamic Discovery Resources</span>
+    <span class="n">register_discovery_resources</span><span class="p">(</span><span class="n">mcp</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="creating-a-new-tool">Creating a New Tool</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># src/boring/mcp/tools/my_tool.py</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">boring.mcp.instance</span> <span class="kn">import</span> <span class="n">mcp</span>
+
+<span class="nd">@mcp</span><span class="o">.</span><span class="n">tool</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">boring_my_tool</span><span class="p">(</span>
+    <span class="n">target</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Target path to process&quot;</span><span class="p">),</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;standard&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Processing mode&quot;</span><span class="p">),</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;One-line description shown in MCP.&quot;&quot;&quot;</span>
+    <span class="c1"># Implementation</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span> <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="o">...</span><span class="p">}</span>
+</code></pre></div>
+<blockquote>
+<p><strong>Important</strong>: All parameters MUST use <code>Field(description=...)</code> for Smithery schema generation.</p>
+</blockquote>
+<hr />
+<h2 id="3-dynamic-discovery-system">3. Dynamic Discovery System</h2>
+<h3 id="how-it-works">How It Works</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># src/boring/mcp/tools/discovery.py</span>
+<span class="n">CAPABILITIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;security&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Security scanning, secret detection&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tools&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;boring_security_scan&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;docs&quot;</span><span class="p">:</span> <span class="s2">&quot;Use boring_security_scan to check for vulnerabilities.&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="c1"># ... 13 more categories</span>
+<span class="p">}</span>
+
+<span class="nd">@mcp</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s2">&quot;boring://capabilities&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_capabilities</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;AI calls this first to understand available tools.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">CAPABILITIES</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="ai-workflow">AI Workflow</h3>
+<ol>
+<li>AI calls <code>boring://capabilities</code> → gets category list</li>
+<li>AI calls <code>boring://tools/security</code> → gets detailed usage</li>
+<li>AI invokes <code>boring_security_scan()</code></li>
+</ol>
+<hr />
+<h2 id="4-transaction-rollback-pattern">4. Transaction &amp; Rollback Pattern</h2>
+<h3 id="usage">Usage</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Start transaction (creates git stash)</span>
+<span class="n">boring_transaction_start</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;Refactoring auth module&quot;</span><span class="p">)</span>
+
+<span class="c1"># Make risky changes...</span>
+<span class="n">boring_multi_agent</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="s2">&quot;Refactor authentication&quot;</span><span class="p">)</span>
+
+<span class="c1"># Verify</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">boring_verify</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;FULL&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;passed&quot;</span><span class="p">]:</span>
+    <span class="n">boring_transaction_commit</span><span class="p">()</span>  <span class="c1"># Finalize</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">boring_rollback</span><span class="p">()</span>  <span class="c1"># Restore previous state</span>
+</code></pre></div>
+<h3 id="internals-srcboringtransactionspy">Internals (<code>src/boring/transactions.py</code>)</h3>
+<ul>
+<li>Uses <code>git stash</code> for atomic savepoints</li>
+<li>Tracks transaction stack for nested operations</li>
+<li>Auto-rollback on unhandled exceptions</li>
+</ul>
+<hr />
+<h2 id="5-background-task-system">5. Background Task System</h2>
+<h3 id="architecture_1">Architecture</h3>
+<div class="highlight"><pre><span></span><code>┌──────────────────┐     ┌─────────────────────┐
+│  MCP Tool Call   │────▶│ BackgroundTaskRunner│
+│  (non-blocking)  │     │  (ThreadPoolExecutor)│
+└──────────────────┘     └──────────┬──────────┘
+                                    │
+       ┌────────────────────────────┼────────────────────────────┐
+       ▼                            ▼                            ▼
+  ┌─────────┐                 ┌─────────┐                  ┌─────────┐
+  │ verify  │                 │  test   │                  │ security│
+  │  task   │                 │  task   │                  │  scan   │
+  └─────────┘                 └─────────┘                  └─────────┘
+</code></pre></div>
+<h3 id="usage_1">Usage</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Submit task</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">boring_background_task</span><span class="p">(</span><span class="n">task_type</span><span class="o">=</span><span class="s2">&quot;verify&quot;</span><span class="p">,</span> <span class="n">task_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;FULL&quot;</span><span class="p">})</span>
+<span class="n">task_id</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;task_id&quot;</span><span class="p">]</span>  <span class="c1"># &quot;task-a1b2c3d4&quot;</span>
+
+<span class="c1"># Check status (non-blocking)</span>
+<span class="n">status</span> <span class="o">=</span> <span class="n">boring_task_status</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="n">task_id</span><span class="p">)</span>
+<span class="c1"># {&quot;status&quot;: &quot;running&quot;, &quot;progress&quot;: 45, ...}</span>
+
+<span class="c1"># List all active tasks</span>
+<span class="n">tasks</span> <span class="o">=</span> <span class="n">boring_list_tasks</span><span class="p">()</span>
+</code></pre></div>
+<hr />
+<h2 id="6-shadow-mode-human-in-the-loop">6. Shadow Mode (Human-in-the-Loop)</h2>
+<h3 id="when-to-use">When to Use</h3>
+<ul>
+<li>File deletions</li>
+<li>Database migrations</li>
+<li>Production deployments</li>
+<li>Any operation marked "high-risk"</li>
+</ul>
+<h3 id="workflow">Workflow</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Enable Shadow Mode</span>
+<span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;STRICT&quot;</span><span class="p">)</span>
+
+<span class="c1"># High-risk operation is CAPTURED, not executed</span>
+<span class="n">boring_multi_agent</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="s2">&quot;Delete all test files&quot;</span><span class="p">)</span>
+<span class="c1"># Returns: {&quot;status&quot;: &quot;pending_approval&quot;, &quot;operation_id&quot;: &quot;op-xyz&quot;}</span>
+
+<span class="c1"># Human reviews</span>
+<span class="n">boring_shadow_status</span><span class="p">()</span>  <span class="c1"># See pending operations</span>
+
+<span class="c1"># Approve or Reject</span>
+<span class="n">boring_shadow_approve</span><span class="p">(</span><span class="n">operation_id</span><span class="o">=</span><span class="s2">&quot;op-xyz&quot;</span><span class="p">,</span> <span class="n">note</span><span class="o">=</span><span class="s2">&quot;Reviewed, safe to proceed&quot;</span><span class="p">)</span>
+<span class="c1"># or</span>
+<span class="n">boring_shadow_reject</span><span class="p">(</span><span class="n">operation_id</span><span class="o">=</span><span class="s2">&quot;op-xyz&quot;</span><span class="p">,</span> <span class="n">note</span><span class="o">=</span><span class="s2">&quot;Too risky&quot;</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="7-plugin-development">7. Plugin Development</h2>
+<h3 id="structure">Structure</h3>
+<div class="highlight"><pre><span></span><code>.boring_plugins/
+├── my_plugin/
+│   ├── plugin.yaml      # Metadata
+│   ├── __init__.py      # Entry point
+│   └── handlers.py      # Logic
+</code></pre></div>
+<h3 id="pluginyaml">plugin.yaml</h3>
+<div class="highlight"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my_plugin</span>
+<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Custom code analyzer</span>
+<span class="nt">hooks</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pre_verify</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">post_commit</span>
+</code></pre></div>
+<h3 id="initpy"><strong>init</strong>.py</h3>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">pre_verify</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Called before every verification.&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Verifying: </span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">project_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;skip&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>  <span class="c1"># Return {&quot;skip&quot;: True} to bypass</span>
+
+<span class="k">def</span> <span class="nf">post_commit</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Called after every commit.&quot;&quot;&quot;</span>
+    <span class="c1"># Send Slack notification, update dashboard, etc.</span>
+</code></pre></div>
+<h3 id="registration">Registration</h3>
+<div class="highlight"><pre><span></span><code>boring_run_plugin<span class="o">(</span><span class="nv">name</span><span class="o">=</span><span class="s2">&quot;my_plugin&quot;</span>,<span class="w"> </span><span class="nv">args</span><span class="o">={</span><span class="s2">&quot;target&quot;</span>:<span class="w"> </span><span class="s2">&quot;src/&quot;</span><span class="o">})</span>
+</code></pre></div>
+<hr />
+<h2 id="8-rag-semantic-search">8. RAG &amp; Semantic Search</h2>
+<h3 id="indexing">Indexing</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Index the codebase (runs on first call)</span>
+<span class="n">boring_rag_index</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Rebuild index</span>
+</code></pre></div>
+<h3 id="search">Search</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Natural language query</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">boring_rag_search</span><span class="p">(</span>
+    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;authentication middleware that validates JWT&quot;</span><span class="p">,</span>
+    <span class="n">max_results</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">expand_graph</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Include callers/callees</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="dependency-graph">Dependency Graph</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Get context for a specific function</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">boring_rag_context</span><span class="p">(</span>
+    <span class="n">file_path</span><span class="o">=</span><span class="s2">&quot;src/auth/jwt.py&quot;</span><span class="p">,</span>
+    <span class="n">function_name</span><span class="o">=</span><span class="s2">&quot;validate_token&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># Returns: callers, callees, related files</span>
+</code></pre></div>
+<hr />
+<h2 id="9-multi-agent-orchestration">9. Multi-Agent Orchestration</h2>
+<h3 id="agent-roles">Agent Roles</h3>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Role</th>
+<th>Tools Used</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Architect</strong></td>
+<td>Design, planning</td>
+<td><code>boring_agent_plan</code></td>
+</tr>
+<tr>
+<td><strong>Coder</strong></td>
+<td>Implementation</td>
+<td>File edits, <code>boring_delegate</code></td>
+</tr>
+<tr>
+<td><strong>Reviewer</strong></td>
+<td>Quality assurance</td>
+<td><code>boring_agent_review</code>, <code>boring_verify</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="custom-delegation">Custom Delegation</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Delegate to specialized sub-agent</span>
+<span class="n">boring_delegate</span><span class="p">(</span>
+    <span class="n">task</span><span class="o">=</span><span class="s2">&quot;Query the database for user schema&quot;</span><span class="p">,</span>
+    <span class="n">tool_type</span><span class="o">=</span><span class="s2">&quot;database&quot;</span><span class="p">,</span>  <span class="c1"># database, web_search, file_system, api, reasoning</span>
+<span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="10-speckit-workflows">10. SpecKit Workflows</h2>
+<h3 id="available-workflows">Available Workflows</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/speckit-clarify</code></td>
+<td>Generate clarifying questions</td>
+</tr>
+<tr>
+<td><code>/speckit-plan</code></td>
+<td>Create implementation plan</td>
+</tr>
+<tr>
+<td><code>/speckit-tasks</code></td>
+<td>Break plan into actionable tasks</td>
+</tr>
+<tr>
+<td><code>/speckit-analyze</code></td>
+<td>Cross-artifact consistency check</td>
+</tr>
+<tr>
+<td><code>/speckit-checklist</code></td>
+<td>Generate quality checklist</td>
+</tr>
+</tbody>
+</table>
+<h3 id="chaining-example">Chaining Example</h3>
+<div class="highlight"><pre><span></span><code>1. User: &quot;Build a payment system&quot;
+2. AI: /speckit-clarify → &quot;What payment providers? What currencies?&quot;
+3. User answers
+4. AI: /speckit-plan → Detailed implementation plan
+5. AI: /speckit-tasks → Checklist of 15 tasks
+6. AI: boring_multi_agent() → Execute plan
+</code></pre></div>
+<hr />
+<h2 id="13-team-knowledge-portability-brain">13. Team Knowledge &amp; Portability (Brain)</h2>
+<h3 id="the-boringbrain-directory">The <code>.boring/brain/</code> Directory</h3>
+<p>The "Shared Brain" of your project. It contains portable knowledge that can be committed to Git and shared across your team.</p>
+<table>
+<thead>
+<tr>
+<th>Subdirectory/File</th>
+<th>Content</th>
+<th>Portable?</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>patterns.json</code></td>
+<td>Learned coding styles</td>
+<td>✅ YES</td>
+<td>Teaches AI your team's specific coding patterns</td>
+</tr>
+<tr>
+<td><code>rubrics/*.yaml</code></td>
+<td>Evaluation standards</td>
+<td>✅ YES</td>
+<td>Standardizes code review criteria across team</td>
+</tr>
+<tr>
+<td><code>quality_history.json</code></td>
+<td>Quality scores</td>
+<td>⚠️ NO</td>
+<td>Project-specific history (don't copy to new repos)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="porting-knowledge">Porting Knowledge</h3>
+<p>To transfer AI knowledge to a new project:
+1. <strong>Copy</strong> <code>.boring/brain/patterns.json</code>
+2. <strong>Copy</strong> <code>.boring/brain/rubrics/</code>
+3. <strong>Commit</strong> to the new repo
+4. <strong>Result</strong>: AI immediately adopts your team's coding style and review standards.</p>
+<h3 id="learning-patterns-boring_learn">Learning Patterns (<code>boring_learn</code>)</h3>
+<p>AI learns from <em>your</em> modifications.
+1. You fix a bug or refactor code in your preferred style.
+2. Run <code>/learn_patterns</code> (or <code>boring_learn</code>).
+3. AI compares <code>HEAD</code> vs <code>HEAD~1</code>, extracts the "diff pattern", and saves it.
+4. <strong>Next time</strong>: AI applies this pattern automatically.</p>
+<hr />
+<h2 id="11-smithery-deployment">11. Smithery Deployment</h2>
+<h3 id="smitheryyaml">smithery.yaml</h3>
+<div class="highlight"><pre><span></span><code><span class="nt">startCommand</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stdio</span>
+<span class="w">  </span><span class="nt">configSchema</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">object</span>
+<span class="w">    </span><span class="nt">properties</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">GOOGLE_API_KEY</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">string</span>
+<span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">API key for Gemini</span>
+<span class="w">    </span><span class="nt">required</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GOOGLE_API_KEY</span>
+<span class="w">  </span><span class="nt">commandFunction</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python</span>
+<span class="w">    </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;-m&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;boring.mcp.server&quot;</span><span class="p p-Indicator">]</span>
+</code></pre></div>
+<h3 id="http-mode-for-debugging">HTTP Mode (for debugging)</h3>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>boring.mcp.http<span class="w"> </span>--port<span class="w"> </span><span class="m">8000</span>
+<span class="c1"># Access: http://localhost:8000/.well-known/mcp.json</span>
+</code></pre></div>
+<hr />
+<h2 id="12-testing-quality-gates">12. Testing &amp; Quality Gates</h2>
+<h3 id="run-tests">Run Tests</h3>
+<div class="highlight"><pre><span></span><code>pytest<span class="w"> </span>tests/<span class="w"> </span>-v<span class="w"> </span>--cov<span class="o">=</span>src/boring<span class="w"> </span>--cov-fail-under<span class="o">=</span><span class="m">39</span>
+</code></pre></div>
+<h3 id="pre-commit-hooks">Pre-commit Hooks</h3>
+<div class="highlight"><pre><span></span><code>boring_hooks_install<span class="w">  </span><span class="c1"># Sets up pre-commit hooks</span>
+</code></pre></div>
+<h3 id="cicd-integration">CI/CD Integration</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># .github/workflows/quality.yml</span>
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">lint</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ruff check src/ tests/</span>
+<span class="w">  </span><span class="nt">format</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ruff format --check src/ tests/</span>
+<span class="w">  </span><span class="nt">test</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pytest tests/ --cov</span>
+<span class="w">  </span><span class="nt">security</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">boring_security_scan</span>
+</code></pre></div>
+<hr />
+<h2 id="quick-reference-card">Quick Reference Card</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Key Tools</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Knowledge</strong></td>
+<td><code>boring_learn</code>, <code>boring_create_rubrics</code></td>
+</tr>
+<tr>
+<td><strong>Verification</strong></td>
+<td><code>boring_verify</code>, <code>boring_auto_fix</code></td>
+</tr>
+<tr>
+<td><strong>Security</strong></td>
+<td><code>boring_security_scan</code></td>
+</tr>
+<tr>
+<td><strong>Transactions</strong></td>
+<td><code>boring_transaction_start</code>, <code>boring_rollback</code></td>
+</tr>
+<tr>
+<td><strong>Background</strong></td>
+<td><code>boring_background_task</code>, <code>boring_task_status</code></td>
+</tr>
+<tr>
+<td><strong>RAG</strong></td>
+<td><code>boring_rag_search</code>, <code>boring_rag_context</code></td>
+</tr>
+<tr>
+<td><strong>Agents</strong></td>
+<td><code>boring_multi_agent</code>, <code>boring_agent_plan</code></td>
+</tr>
+<tr>
+<td><strong>Shadow</strong></td>
+<td><code>boring_shadow_mode</code>, <code>boring_shadow_approve</code></td>
+</tr>
+<tr>
+<td><strong>Plugins</strong></td>
+<td><code>boring_run_plugin</code>, <code>boring_list_plugins</code></td>
+</tr>
+<tr>
+<td><strong>Workspace</strong></td>
+<td><code>boring_workspace_add</code>, <code>boring_workspace_switch</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="next-steps">Next Steps</h2>
+<ol>
+<li><strong>Explore</strong>: Run <code>boring://capabilities</code> to see all available tools</li>
+<li><strong>Experiment</strong>: Try <code>boring_multi_agent(task="...", execute=True)</code> to run in background (Use with caution!)</li>
+<li><strong>Extend</strong>: Create a custom plugin in <code>.boring_plugins/</code></li>
+<li><strong>Contribute</strong>: See <code>CONTRIBUTING.md</code> for development guidelines</li>
+</ol>
+<hr />
+<p><em>Built with ❤️ by the Boring for Gemini team</em></p>
+<hr />
+<p><em>Last updated: V10.26.0</em></p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

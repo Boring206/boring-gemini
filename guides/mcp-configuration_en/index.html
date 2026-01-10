@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Boring MCP Configuration Guide - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Boring MCP Configuration Guide";
+        var mkdocs_page_input_path = "guides\\mcp-configuration_en.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Boring MCP Configuration Guide</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/guides/mcp-configuration_en.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="boring-mcp-configuration-guide">Boring MCP Configuration Guide</h1>
+<p>This document explains all environment variables and configuration options for the Boring MCP Server.</p>
+<h2 id="environment-variables">Environment Variables</h2>
+<h3 id="boring_mcp_mode"><code>BORING_MCP_MODE</code></h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>1</code></td>
+<td>✅ <strong>Enable MCP mode</strong> - Required</td>
+</tr>
+<tr>
+<td><code>0</code> or unset</td>
+<td>⚠️ Test/CLI mode, MCP tools may not work properly</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Affected areas:</strong>
+- Shadow Mode interception
+- Tool initialization
+- Log output format</p>
+<hr />
+<h3 id="boring_mcp_profile"><code>BORING_MCP_PROFILE</code></h3>
+<p>Controls how many tools are exposed to the AI.</p>
+<table>
+<thead>
+<tr>
+<th>Profile</th>
+<th>Tool Count</th>
+<th>Token Savings</th>
+<th>Description</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ultra_lite</code></td>
+<td>3</td>
+<td><strong>97%</strong></td>
+<td>Minimal</td>
+<td>Token-constrained LLMs</td>
+</tr>
+<tr>
+<td><code>minimal</code></td>
+<td>8</td>
+<td>92%</td>
+<td>Essential only</td>
+<td>Quick tasks</td>
+</tr>
+<tr>
+<td><code>lite</code></td>
+<td>20</td>
+<td>80%</td>
+<td>Daily development</td>
+<td><strong>Default</strong></td>
+</tr>
+<tr>
+<td><code>standard</code></td>
+<td>50</td>
+<td>50%</td>
+<td>Balanced</td>
+<td>Professional dev</td>
+</tr>
+<tr>
+<td><code>full</code></td>
+<td>~98</td>
+<td>0%</td>
+<td>All tools</td>
+<td>Power User</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tools included in each profile:</strong></p>
+<h4 id="ultra-lite-3-tools-v1026-new">Ultra Lite (3 tools) - V10.26 NEW</h4>
+<ul>
+<li><code>boring</code> (universal router)</li>
+<li><code>boring_help</code> (category discovery)</li>
+<li><code>boring_discover</code> (on-demand tool schema)</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Workflow</strong>: Use <code>boring</code> to route natural language requests, <code>boring_discover</code> to fetch full schema for a specific tool, then call the target tool.</p>
+</blockquote>
+<h4 id="minimal-8-tools">Minimal (8 tools)</h4>
+<ul>
+<li><code>boring</code> (router)</li>
+<li><code>boring_help</code></li>
+<li><code>boring_rag_search</code></li>
+<li><code>boring_commit</code></li>
+<li><code>boring_verify</code></li>
+<li><code>boring_vibe_check</code></li>
+<li><code>boring_shadow_status</code></li>
+<li><code>boring_suggest_next</code></li>
+</ul>
+<h4 id="lite-20-tools">Lite (20 tools)</h4>
+<p>Includes all Minimal, plus:
+- <code>boring_rag_index</code>, <code>boring_rag_context</code>
+- <code>boring_code_review</code>, <code>boring_perf_tips</code>
+- <code>boring_test_gen</code>, <code>boring_doc_gen</code>
+- <code>boring_security_scan</code>
+- <code>boring_prompt_plan</code>, <code>boring_prompt_fix</code>
+- <code>boring_impact_check</code>, <code>boring_context</code></p>
+<h4 id="standard-50-tools">Standard (50 tools)</h4>
+<p>Includes all Lite, plus:
+- Full RAG suite (<code>boring_rag_expand</code>, <code>boring_rag_status</code>)
+- Shadow Mode controls (<code>boring_shadow_mode</code>, <code>boring_shadow_approve</code>)
+- Git Hooks (<code>boring_hooks_install</code>, <code>boring_hooks_status</code>)
+- Intelligence (<code>boring_predict_impact</code>, <code>boring_brain_health</code>)
+- Workspace management
+- Multi-agent planning
+- Core Speckit tools</p>
+<h4 id="full-98-tools">Full (~98 tools)</h4>
+<p>All registered tools.</p>
+<hr />
+<h3 id="project_root_default"><code>PROJECT_ROOT_DEFAULT</code></h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.</code></td>
+<td>Use current working directory</td>
+</tr>
+<tr>
+<td><code>/path/to/project</code></td>
+<td>Specify project path</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="boring_llm_provider"><code>BORING_LLM_PROVIDER</code></h3>
+<p>Select the underlying model provider.</p>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Gemini</strong></td>
+<td><code>gemini-cli</code></td>
+<td>Default. Requires <code>gemini-cli</code>.</td>
+</tr>
+<tr>
+<td><strong>Claude</strong></td>
+<td><code>claude-code</code></td>
+<td>Requires <code>claude</code> CLI.</td>
+</tr>
+<tr>
+<td><strong>Ollama</strong></td>
+<td><code>ollama</code></td>
+<td>Local model (Experimental).</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>[!CAUTION]
+<strong>Ollama Limitations</strong>: The current Ollama implementation does <strong>not</strong> support Function Calling (Tool Use).
+If you use <code>ollama</code>, <code>boring</code> cannot execute tools (edit files, run tests). It will behave as a text-only chat bot.
+For Vibe Coder automation workflows, please use Gemini or Claude.</p>
+</blockquote>
+<hr />
+<h2 id="mcp-configuration-examples">MCP Configuration Examples</h2>
+<h3 id="local-full-version-recommended">Local Full Version (Recommended)</h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;boring&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boring-mcp&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">      </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;BORING_MCP_MODE&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;BORING_MCP_PROFILE&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;standard&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;PROJECT_ROOT_DEFAULT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;.&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="smithery-cloud-version">Smithery Cloud Version</h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;boring&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://server.smithery.ai/@boring/boring-mcp/mcp&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<blockquote>
+<p>📋 <strong>Smithery Deployment Info</strong>
+- <strong>Default Profile</strong>: <code>lite</code> (~20 tools)
+- <strong>Installation Type</strong>: <code>[mcp-lite]</code> lightweight
+- <strong>RAG Capability</strong>: Degraded to keyword search (no vector DB)
+- <strong>Adjustable</strong>: Set <code>BORING_MCP_PROFILE: "dev"</code> or <code>"pro"</code> in config
+- <strong>Full RAG</strong>: Requires local install <code>pip install "boring-aicoding[all]"</code></p>
+</blockquote>
+<h3 id="hybrid-local-cloud">Hybrid (Local + Cloud)</h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;boring-cloud&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://server.smithery.ai/@boring/boring-mcp/mcp&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;boring-local&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boring-mcp&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">      </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;BORING_MCP_MODE&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;BORING_MCP_PROFILE&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;full&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;PROJECT_ROOT_DEFAULT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;.&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="version-differences">Version Differences</h2>
+<h3 id="installation-options">Installation Options</h3>
+<table>
+<thead>
+<tr>
+<th>Installation</th>
+<th>RAG Support</th>
+<th>Docker Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pip install boring-aicoding[mcp-lite]</code></td>
+<td>❌ Degraded</td>
+<td>~500MB</td>
+</tr>
+<tr>
+<td><code>pip install boring-aicoding[mcp]</code></td>
+<td>✅ Full</td>
+<td>~4GB</td>
+</tr>
+</tbody>
+</table>
+<h3 id="smithery-vs-local">Smithery vs Local</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Smithery (mcp-lite)</th>
+<th>Local (mcp)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Basic tools</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>RAG semantic search</td>
+<td>⚠️ keyword fallback</td>
+<td>✅ Vector search</td>
+</tr>
+<tr>
+<td>Local notifications</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Offline use</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="faq">FAQ</h2>
+<h3 id="q-smithery-has-fewer-tools-what-should-i-do">Q: Smithery has fewer tools, what should I do?</h3>
+<p>Smithery defaults to <code>mcp-lite</code> + <code>lite</code> profile. For more features:
+1. Install full version locally: <code>pip install "boring-aicoding[mcp]"</code>
+2. Set <code>BORING_MCP_PROFILE=full</code></p>
+<h3 id="q-what-is-the-pro-profile">Q: What is the <code>pro</code> profile?</h3>
+<p><code>pro</code> is not a valid value and falls back to <code>lite</code>. Valid values are:
+- <code>ultra_lite</code>, <code>minimal</code>, <code>lite</code>, <code>standard</code>, <code>full</code></p>
+<h3 id="q-how-do-i-see-all-available-tools">Q: How do I see all available tools?</h3>
+<p>Call:
+<div class="highlight"><pre><span></span><code>boring_help
+</code></pre></div>
+Or set <code>BORING_MCP_PROFILE=full</code> to see everything.</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Core API Reference - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Core API Reference";
+        var mkdocs_page_input_path = "api\\core.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Core API Reference</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/api/core.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="core-api-reference">Core API Reference</h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="boring.core" class="doc doc-heading">
+            <code>boring.core</code>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Core Module for Boring V4.0 (DEPRECATED Compatibility Layer)</p>
+<p>⚠️ DEPRECATION NOTICE:
+This module is deprecated and will be removed in V5.0.
+Please import directly from the appropriate modules:</p>
+<ul>
+<li>from .circuit import should_halt_execution, reset_circuit_breaker, ...</li>
+<li>from .logger import log_status, update_status, get_log_tail</li>
+<li>from .limiter import can_make_call, increment_call_counter, ...</li>
+</ul>
+<p>Modules:
+- circuit.py: Circuit Breaker logic
+- logger.py: Logging and status management
+- limiter.py: Rate limiting and exit detection</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="boring.core.CircuitState" class="doc doc-heading">
+            <code>CircuitState</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="enum.Enum">Enum</span></code></p>
+
+
+
+        <p>Circuit breaker states.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src\boring\core\circuit.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CircuitState</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Circuit breaker states.&quot;&quot;&quot;</span>
+
+    <span class="n">CLOSED</span> <span class="o">=</span> <span class="s2">&quot;CLOSED&quot;</span>
+    <span class="n">OPEN</span> <span class="o">=</span> <span class="s2">&quot;OPEN&quot;</span>
+    <span class="n">HALF_OPEN</span> <span class="o">=</span> <span class="s2">&quot;HALF_OPEN&quot;</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.core.get_circuit_state" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_circuit_state</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get current circuit breaker state.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\core\circuit.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_circuit_state</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get current circuit breaker state.&quot;&quot;&quot;</span>
+    <span class="n">init_circuit_breaker</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">CB_STATE_FILE</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.core.init_circuit_breaker" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">init_circuit_breaker</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initializes the circuit breaker state file.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\core\circuit.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">init_circuit_breaker</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes the circuit breaker state file.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">CB_STATE_FILE</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="n">CircuitState</span><span class="o">.</span><span class="n">CLOSED</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">&quot;failures&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;last_failure_time&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;last_loop_info&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;loop&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;files_changed&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;has_errors&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;output_length&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
+        <span class="n">CB_STATE_FILE</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">CB_HISTORY_FILE</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">CB_HISTORY_FILE</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">([],</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.core.record_loop_result" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">record_loop_result</span><span class="p">(</span><span class="n">loop_num</span><span class="p">,</span> <span class="n">files_changed</span><span class="p">,</span> <span class="n">has_errors</span><span class="p">,</span> <span class="n">output_length</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Records the result of a loop and updates circuit breaker state.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="int">int</span></code>
+              –
+              <div class="doc-md-description">
+                <p>0 if OK to continue, 1 if should halt</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\core\circuit.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">record_loop_result</span><span class="p">(</span>
+    <span class="n">loop_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">files_changed</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">has_errors</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">output_length</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Records the result of a loop and updates circuit breaker state.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 if OK to continue, 1 if should halt</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">init_circuit_breaker</span><span class="p">()</span>
+    <span class="n">state_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">CB_STATE_FILE</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>
+    <span class="n">current_state</span> <span class="o">=</span> <span class="n">state_data</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span>
+    <span class="n">failures</span> <span class="o">=</span> <span class="n">state_data</span><span class="p">[</span><span class="s2">&quot;failures&quot;</span><span class="p">]</span>
+    <span class="n">last_loop_info</span> <span class="o">=</span> <span class="n">state_data</span><span class="p">[</span><span class="s2">&quot;last_loop_info&quot;</span><span class="p">]</span>
+
+    <span class="n">new_state</span> <span class="o">=</span> <span class="n">current_state</span>
+
+    <span class="c1"># Heuristic for progress</span>
+    <span class="n">progress_made</span> <span class="o">=</span> <span class="n">files_changed</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span>
+        <span class="n">output_length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">output_length</span> <span class="o">&gt;</span> <span class="n">last_loop_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;output_length&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">has_errors</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">progress_made</span><span class="p">:</span>
+        <span class="n">failures</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">state_data</span><span class="p">[</span><span class="s2">&quot;last_failure_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">failures</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Reset failures on success</span>
+
+    <span class="c1"># State transitions</span>
+    <span class="k">if</span> <span class="n">current_state</span> <span class="o">==</span> <span class="n">CircuitState</span><span class="o">.</span><span class="n">CLOSED</span><span class="o">.</span><span class="n">value</span> <span class="ow">and</span> <span class="n">failures</span> <span class="o">&gt;=</span> <span class="n">CIRCUIT_BREAKER_MAX_FAILURES</span><span class="p">:</span>
+        <span class="n">new_state</span> <span class="o">=</span> <span class="n">CircuitState</span><span class="o">.</span><span class="n">OPEN</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">_log_circuit_state_change</span><span class="p">(</span>
+            <span class="n">CircuitState</span><span class="o">.</span><span class="n">OPEN</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;Too many consecutive failures/no progress&quot;</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">current_state</span> <span class="o">==</span> <span class="n">CircuitState</span><span class="o">.</span><span class="n">OPEN</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="o">-</span> <span class="n">state_data</span><span class="p">[</span><span class="s2">&quot;last_failure_time&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">CIRCUIT_BREAKER_RESET_TIMEOUT</span><span class="p">:</span>
+            <span class="n">new_state</span> <span class="o">=</span> <span class="n">CircuitState</span><span class="o">.</span><span class="n">HALF_OPEN</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">_log_circuit_state_change</span><span class="p">(</span><span class="n">CircuitState</span><span class="o">.</span><span class="n">HALF_OPEN</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;Reset timeout reached&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">current_state</span> <span class="o">==</span> <span class="n">CircuitState</span><span class="o">.</span><span class="n">HALF_OPEN</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">has_errors</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">progress_made</span><span class="p">:</span>
+            <span class="n">new_state</span> <span class="o">=</span> <span class="n">CircuitState</span><span class="o">.</span><span class="n">OPEN</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">_log_circuit_state_change</span><span class="p">(</span><span class="n">CircuitState</span><span class="o">.</span><span class="n">OPEN</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;Failed in HALF_OPEN state&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_state</span> <span class="o">=</span> <span class="n">CircuitState</span><span class="o">.</span><span class="n">CLOSED</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">_log_circuit_state_change</span><span class="p">(</span><span class="n">CircuitState</span><span class="o">.</span><span class="n">CLOSED</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;Recovered in HALF_OPEN state&quot;</span><span class="p">)</span>
+
+    <span class="n">state_data</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_state</span>
+    <span class="n">state_data</span><span class="p">[</span><span class="s2">&quot;failures&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">failures</span>
+    <span class="n">state_data</span><span class="p">[</span><span class="s2">&quot;last_loop_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;loop&quot;</span><span class="p">:</span> <span class="n">loop_num</span><span class="p">,</span>
+        <span class="s2">&quot;files_changed&quot;</span><span class="p">:</span> <span class="n">files_changed</span><span class="p">,</span>
+        <span class="s2">&quot;has_errors&quot;</span><span class="p">:</span> <span class="n">has_errors</span><span class="p">,</span>
+        <span class="s2">&quot;output_length&quot;</span><span class="p">:</span> <span class="n">output_length</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">CB_STATE_FILE</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">state_data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">new_state</span> <span class="o">==</span> <span class="n">CircuitState</span><span class="o">.</span><span class="n">OPEN</span><span class="o">.</span><span class="n">value</span> <span class="k">else</span> <span class="mi">0</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.core.reset_circuit_breaker" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">reset_circuit_breaker</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="s1">&#39;Manual reset&#39;</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Resets the circuit breaker to CLOSED state.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\core\circuit.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">reset_circuit_breaker</span><span class="p">(</span><span class="n">reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Manual reset&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resets the circuit breaker to CLOSED state.&quot;&quot;&quot;</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="n">CircuitState</span><span class="o">.</span><span class="n">CLOSED</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="s2">&quot;failures&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;last_failure_time&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;last_loop_info&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;loop&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;files_changed&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;has_errors&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;output_length&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+    <span class="p">}</span>
+    <span class="n">CB_STATE_FILE</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+    <span class="n">_log_circuit_state_change</span><span class="p">(</span><span class="n">CircuitState</span><span class="o">.</span><span class="n">CLOSED</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.core.should_halt_execution" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">should_halt_execution</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Checks if the circuit breaker is in OPEN state.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\core\circuit.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">should_halt_execution</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if the circuit breaker is in OPEN state.&quot;&quot;&quot;</span>
+    <span class="n">state_data</span> <span class="o">=</span> <span class="n">get_circuit_state</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">state_data</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">CircuitState</span><span class="o">.</span><span class="n">OPEN</span><span class="o">.</span><span class="n">value</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.core.show_circuit_status" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">show_circuit_status</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Displays the current circuit breaker status.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\core\circuit.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">show_circuit_status</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Displays the current circuit breaker status.&quot;&quot;&quot;</span>
+    <span class="n">state_data</span> <span class="o">=</span> <span class="n">get_circuit_state</span><span class="p">()</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
+        <span class="n">Panel</span><span class="p">(</span>
+            <span class="n">JSON</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">state_data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)),</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;[bold blue]Circuit Breaker Status[/bold blue]&quot;</span><span class="p">,</span>
+            <span class="n">border_style</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">CB_HISTORY_FILE</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">history_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">CB_HISTORY_FILE</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>
+        <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
+            <span class="n">Panel</span><span class="p">(</span>
+                <span class="n">JSON</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">history_data</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:],</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)),</span>  <span class="c1"># Show last 10</span>
+                <span class="n">title</span><span class="o">=</span><span class="s2">&quot;[bold blue]Circuit Breaker History[/bold blue]&quot;</span><span class="p">,</span>
+                <span class="n">border_style</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.core.can_make_call" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">can_make_call</span><span class="p">(</span><span class="n">call_count_file</span><span class="p">,</span> <span class="n">max_calls_per_hour</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Checks if another API call can be made within the rate limit.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>call_count_file</code></b>
+                  (<code><span title="pathlib.Path">Path</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Path to call count file</p>
+              </div>
+            </li>
+            <li>
+              <b><code>max_calls_per_hour</code></b>
+                  (<code><span title="int">int</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Maximum allowed calls per hour</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="bool">bool</span></code>
+              –
+              <div class="doc-md-description">
+                <p>True if call can be made</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\core\limiter.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">can_make_call</span><span class="p">(</span><span class="n">call_count_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">max_calls_per_hour</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if another API call can be made within the rate limit.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        call_count_file: Path to call count file</span>
+<span class="sd">        max_calls_per_hour: Maximum allowed calls per hour</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if call can be made</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">get_calls_made</span><span class="p">(</span><span class="n">call_count_file</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">max_calls_per_hour</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.core.get_calls_made" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_calls_made</span><span class="p">(</span><span class="n">call_count_file</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Reads the current number of API calls made this hour.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>call_count_file</code></b>
+                  (<code><span title="pathlib.Path">Path</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Path to call count file</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="int">int</span></code>
+              –
+              <div class="doc-md-description">
+                <p>Number of calls made</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\core\limiter.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_calls_made</span><span class="p">(</span><span class="n">call_count_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads the current number of API calls made this hour.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        call_count_file: Path to call count file</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Number of calls made</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">call_count_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">call_count_file</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="mi">0</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.core.increment_call_counter" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">increment_call_counter</span><span class="p">(</span><span class="n">call_count_file</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Increments the API call counter.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>call_count_file</code></b>
+                  (<code><span title="pathlib.Path">Path</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Path to call count file</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="int">int</span></code>
+              –
+              <div class="doc-md-description">
+                <p>New call count</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\core\limiter.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">increment_call_counter</span><span class="p">(</span><span class="n">call_count_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Increments the API call counter.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        call_count_file: Path to call count file</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        New call count</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">calls_made</span> <span class="o">=</span> <span class="n">get_calls_made</span><span class="p">(</span><span class="n">call_count_file</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">call_count_file</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">calls_made</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">calls_made</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.core.init_call_tracking" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">init_call_tracking</span><span class="p">(</span><span class="n">call_count_file</span><span class="p">,</span> <span class="n">timestamp_file</span><span class="p">,</span> <span class="n">exit_signals_file</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initializes call counter and exit signals tracking.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>call_count_file</code></b>
+                  (<code><span title="pathlib.Path">Path</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>File to track API call count</p>
+              </div>
+            </li>
+            <li>
+              <b><code>timestamp_file</code></b>
+                  (<code><span title="pathlib.Path">Path</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>File to track last reset timestamp</p>
+              </div>
+            </li>
+            <li>
+              <b><code>exit_signals_file</code></b>
+                  (<code><span title="pathlib.Path">Path</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>File to track exit signals</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\core\limiter.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">init_call_tracking</span><span class="p">(</span><span class="n">call_count_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">timestamp_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">exit_signals_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initializes call counter and exit signals tracking.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        call_count_file: File to track API call count</span>
+<span class="sd">        timestamp_file: File to track last reset timestamp</span>
+<span class="sd">        exit_signals_file: File to track exit signals</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">current_hour</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H&quot;</span><span class="p">)</span>
+    <span class="n">last_reset_hour</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">timestamp_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">last_reset_hour</span> <span class="o">=</span> <span class="n">timestamp_file</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">current_hour</span> <span class="o">!=</span> <span class="n">last_reset_hour</span><span class="p">:</span>
+        <span class="n">call_count_file</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="s2">&quot;0&quot;</span><span class="p">)</span>
+        <span class="n">timestamp_file</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">current_hour</span><span class="p">)</span>
+        <span class="n">log_status</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;logs&quot;</span><span class="p">),</span> <span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Call counter reset for new hour: </span><span class="si">{</span><span class="n">current_hour</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">exit_signals_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">exit_signals_file</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+                <span class="p">{</span><span class="s2">&quot;test_only_loops&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;done_signals&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;completion_indicators&quot;</span><span class="p">:</span> <span class="p">[]},</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.core.should_exit_gracefully" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">should_exit_gracefully</span><span class="p">(</span><span class="n">exit_signals_file</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Determines if the loop should exit gracefully based on signals.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>exit_signals_file</code></b>
+                  (<code><span title="pathlib.Path">Path</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Path to exit signals file</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="typing.Optional">Optional</span>[<span title="str">str</span>]</code>
+              –
+              <div class="doc-md-description">
+                <p>Exit reason string or None if no exit condition met</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\core\limiter.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">should_exit_gracefully</span><span class="p">(</span><span class="n">exit_signals_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines if the loop should exit gracefully based on signals.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        exit_signals_file: Path to exit signals file</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Exit reason string or None if no exit condition met</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">exit_signals_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">signals_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">exit_signals_file</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>
+
+    <span class="n">test_only_loops</span> <span class="o">=</span> <span class="n">signals_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;test_only_loops&quot;</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="n">done_signals</span> <span class="o">=</span> <span class="n">signals_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done_signals&quot;</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="n">completion_indicators</span> <span class="o">=</span> <span class="n">signals_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;completion_indicators&quot;</span><span class="p">,</span> <span class="p">[])</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_only_loops</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">MAX_CONSECUTIVE_TEST_LOOPS</span><span class="p">:</span>
+        <span class="n">log_status</span><span class="p">(</span>
+            <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;logs&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;WARN&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Exit condition: Too many test-focused loops (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test_only_loops</span><span class="p">)</span><span class="si">}</span><span class="s2"> &gt;= </span><span class="si">{</span><span class="n">MAX_CONSECUTIVE_TEST_LOOPS</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;test_saturation&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">done_signals</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">MAX_CONSECUTIVE_DONE_SIGNALS</span><span class="p">:</span>
+        <span class="n">log_status</span><span class="p">(</span>
+            <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;logs&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;WARN&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Exit condition: Multiple completion signals (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">done_signals</span><span class="p">)</span><span class="si">}</span><span class="s2"> &gt;= </span><span class="si">{</span><span class="n">MAX_CONSECUTIVE_DONE_SIGNALS</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;completion_signals&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">completion_indicators</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">log_status</span><span class="p">(</span>
+            <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;logs&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;WARN&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Exit condition: Strong completion indicators (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">completion_indicators</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;project_complete&quot;</span>
+
+    <span class="c1"># Check @fix_plan.md for completion</span>
+    <span class="n">fix_plan_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;@fix_plan.md&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fix_plan_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">fix_plan_file</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
+        <span class="n">total_items</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;- [ ]&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">content</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;- [x]&quot;</span><span class="p">)</span>
+        <span class="n">completed_items</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;- [x]&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">total_items</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">completed_items</span> <span class="o">==</span> <span class="n">total_items</span><span class="p">:</span>
+            <span class="n">log_status</span><span class="p">(</span>
+                <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;logs&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;WARN&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;Exit condition: All fix_plan.md items completed (</span><span class="si">{</span><span class="n">completed_items</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">total_items</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;plan_complete&quot;</span>
+
+    <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.core.wait_for_reset" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">wait_for_reset</span><span class="p">(</span><span class="n">call_count_file</span><span class="p">,</span> <span class="n">timestamp_file</span><span class="p">,</span> <span class="n">max_calls_per_hour</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Waits for the rate limit to reset with a countdown.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>call_count_file</code></b>
+                  (<code><span title="pathlib.Path">Path</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Path to call count file</p>
+              </div>
+            </li>
+            <li>
+              <b><code>timestamp_file</code></b>
+                  (<code><span title="pathlib.Path">Path</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Path to timestamp file</p>
+              </div>
+            </li>
+            <li>
+              <b><code>max_calls_per_hour</code></b>
+                  (<code><span title="int">int</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Maximum allowed calls per hour</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\core\limiter.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">wait_for_reset</span><span class="p">(</span><span class="n">call_count_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">timestamp_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">max_calls_per_hour</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Waits for the rate limit to reset with a countdown.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        call_count_file: Path to call count file</span>
+<span class="sd">        timestamp_file: Path to timestamp file</span>
+<span class="sd">        max_calls_per_hour: Maximum allowed calls per hour</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">calls_made</span> <span class="o">=</span> <span class="n">get_calls_made</span><span class="p">(</span><span class="n">call_count_file</span><span class="p">)</span>
+    <span class="n">log_status</span><span class="p">(</span>
+        <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;logs&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;WARN&quot;</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;Rate limit reached (</span><span class="si">{</span><span class="n">calls_made</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">max_calls_per_hour</span><span class="si">}</span><span class="s2">). Waiting for reset...&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="n">next_hour</span> <span class="o">=</span> <span class="p">(</span><span class="n">now</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">wait_seconds</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">next_hour</span> <span class="o">-</span> <span class="n">now</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
+
+    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[blue]Sleeping for </span><span class="si">{</span><span class="n">wait_seconds</span><span class="si">}</span><span class="s2"> seconds until next hour...[/blue]&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">console</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="s2">&quot;[bold green]Waiting for rate limit reset...[/bold green]&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">status</span><span class="p">:</span>
+        <span class="k">while</span> <span class="n">wait_seconds</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">hours</span><span class="p">,</span> <span class="n">remainder</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">wait_seconds</span><span class="p">,</span> <span class="mi">3600</span><span class="p">)</span>
+            <span class="n">minutes</span><span class="p">,</span> <span class="n">seconds</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">remainder</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;[yellow]Time until reset: </span><span class="si">{</span><span class="n">hours</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">minutes</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">seconds</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">[/yellow]&quot;</span>
+            <span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">wait_seconds</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="n">init_call_tracking</span><span class="p">(</span><span class="n">call_count_file</span><span class="p">,</span> <span class="n">timestamp_file</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;.exit_signals&quot;</span><span class="p">))</span>
+    <span class="n">log_status</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;logs&quot;</span><span class="p">),</span> <span class="s2">&quot;SUCCESS&quot;</span><span class="p">,</span> <span class="s2">&quot;Rate limit reset! Ready for new calls.&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.core.get_log_tail" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_log_tail</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the last N lines from the log file.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>log_dir</code></b>
+                  (<code><span title="pathlib.Path">Path</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Directory containing boring.log</p>
+              </div>
+            </li>
+            <li>
+              <b><code>lines</code></b>
+                  (<code><span title="int">int</span></code>, default:
+                      <code>10</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Number of lines to return</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
+              –
+              <div class="doc-md-description">
+                <p>List of log lines</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\core\logger.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_log_tail</span><span class="p">(</span><span class="n">log_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the last N lines from the log file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        log_dir: Directory containing boring.log</span>
+<span class="sd">        lines: Number of lines to return</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of log lines</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log_file</span> <span class="o">=</span> <span class="n">log_dir</span> <span class="o">/</span> <span class="s2">&quot;boring.log&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">log_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">all_lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">all_lines</span><span class="p">[</span><span class="o">-</span><span class="n">lines</span><span class="p">:]]</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.core.log_status" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">log_status</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Logs status messages using structlog with console and file output.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>log_dir</code></b>
+                  (<code><span title="typing.Any">Any</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Directory for log files (Path or str). If None/False, only logs to console.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>level</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Log level (INFO, WARN, ERROR, SUCCESS, LOOP)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>message</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Message to log</p>
+              </div>
+            </li>
+            <li>
+              <b><code>**kwargs</code></b>
+                  (<code><span title="typing.Any">Any</span></code>, default:
+                      <code>{}</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Additional structured fields</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\core\logger.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">log_status</span><span class="p">(</span><span class="n">log_dir</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs status messages using structlog with console and file output.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        log_dir: Directory for log files (Path or str). If None/False, only logs to console.</span>
+<span class="sd">        level: Log level (INFO, WARN, ERROR, SUCCESS, LOOP)</span>
+<span class="sd">        message: Message to log</span>
+<span class="sd">        **kwargs: Additional structured fields</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">log_dir</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">log_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">log_dir</span><span class="p">)</span>
+        <span class="n">log_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">log_file</span> <span class="o">=</span> <span class="n">log_dir</span> <span class="o">/</span> <span class="s2">&quot;boring.log&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">log_file</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Console output with Rich colors</span>
+    <span class="n">color_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;INFO&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;WARN&quot;</span><span class="p">:</span> <span class="s2">&quot;yellow&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ERROR&quot;</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SUCCESS&quot;</span><span class="p">:</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;LOOP&quot;</span><span class="p">:</span> <span class="s2">&quot;purple&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;DEBUG&quot;</span><span class="p">:</span> <span class="s2">&quot;dim&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CRITICAL&quot;</span><span class="p">:</span> <span class="s2">&quot;bold red&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;PLAN&quot;</span><span class="p">:</span> <span class="s2">&quot;cyan&quot;</span><span class="p">,</span>  <span class="c1"># New level for Vibe Coder planning</span>
+        <span class="s2">&quot;VIBE&quot;</span><span class="p">:</span> <span class="s2">&quot;magenta&quot;</span><span class="p">,</span>  <span class="c1"># New level for Vibe Coder interactions</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Emoji mapping for Vibe Coder</span>
+    <span class="n">emoji_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;INFO&quot;</span><span class="p">:</span> <span class="s2">&quot;ℹ️ &quot;</span><span class="p">,</span>
+        <span class="s2">&quot;WARN&quot;</span><span class="p">:</span> <span class="s2">&quot;⚠️ &quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ERROR&quot;</span><span class="p">:</span> <span class="s2">&quot;❌ &quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SUCCESS&quot;</span><span class="p">:</span> <span class="s2">&quot;✅ &quot;</span><span class="p">,</span>
+        <span class="s2">&quot;LOOP&quot;</span><span class="p">:</span> <span class="s2">&quot;🔄 &quot;</span><span class="p">,</span>
+        <span class="s2">&quot;DEBUG&quot;</span><span class="p">:</span> <span class="s2">&quot;🐛 &quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CRITICAL&quot;</span><span class="p">:</span> <span class="s2">&quot;🚨 &quot;</span><span class="p">,</span>
+        <span class="s2">&quot;PLAN&quot;</span><span class="p">:</span> <span class="s2">&quot;🗺️ &quot;</span><span class="p">,</span>
+        <span class="s2">&quot;VIBE&quot;</span><span class="p">:</span> <span class="s2">&quot;✨ &quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">style</span> <span class="o">=</span> <span class="n">color_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">level</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="s2">&quot;default&quot;</span><span class="p">)</span>
+    <span class="n">emoji</span> <span class="o">=</span> <span class="n">emoji_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">level</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Format extra fields for display</span>
+    <span class="n">extra_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">extra_str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+
+    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">] [[</span><span class="si">{</span><span class="n">level</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">]] </span><span class="si">{</span><span class="n">emoji</span><span class="si">}{</span><span class="n">message</span><span class="si">}{</span><span class="n">extra_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
+
+    <span class="c1"># File output in JSON Lines format for analysis</span>
+    <span class="k">if</span> <span class="n">log_file</span><span class="p">:</span>
+        <span class="n">log_entry</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span> <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="n">level</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">}</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">log_entry</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Also log via structlog for consistent observability</span>
+    <span class="n">log_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_logger</span><span class="p">,</span> <span class="n">level</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">)</span>
+    <span class="n">log_method</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.core.update_status" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">update_status</span><span class="p">(</span><span class="n">status_file</span><span class="p">,</span> <span class="n">loop_count</span><span class="p">,</span> <span class="n">max_calls</span><span class="p">,</span> <span class="n">last_action</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">exit_reason</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">calls_made</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Updates the status.json file for external monitoring.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>status_file</code></b>
+                  (<code><span title="pathlib.Path">Path</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Path to status.json</p>
+              </div>
+            </li>
+            <li>
+              <b><code>loop_count</code></b>
+                  (<code><span title="int">int</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Current loop number</p>
+              </div>
+            </li>
+            <li>
+              <b><code>max_calls</code></b>
+                  (<code><span title="int">int</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Maximum calls per hour</p>
+              </div>
+            </li>
+            <li>
+              <b><code>last_action</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Description of last action</p>
+              </div>
+            </li>
+            <li>
+              <b><code>status</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Current status string</p>
+              </div>
+            </li>
+            <li>
+              <b><code>exit_reason</code></b>
+                  (<code><span title="str">str</span></code>, default:
+                      <code>&#39;&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Reason for exit (if any)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>calls_made</code></b>
+                  (<code><span title="typing.Optional">Optional</span>[<span title="int">int</span>]</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Number of API calls made</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\core\logger.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">update_status</span><span class="p">(</span>
+    <span class="n">status_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">loop_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">max_calls</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">last_action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">status</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">exit_reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">calls_made</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Updates the status.json file for external monitoring.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        status_file: Path to status.json</span>
+<span class="sd">        loop_count: Current loop number</span>
+<span class="sd">        max_calls: Maximum calls per hour</span>
+<span class="sd">        last_action: Description of last action</span>
+<span class="sd">        status: Current status string</span>
+<span class="sd">        exit_reason: Reason for exit (if any)</span>
+<span class="sd">        calls_made: Number of API calls made</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">status_file</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">next_reset_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H:%M:%S&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">calls_made</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">.limiter</span> <span class="kn">import</span> <span class="n">get_calls_made</span>
+
+        <span class="n">calls_made</span> <span class="o">=</span> <span class="n">get_calls_made</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;.call_count&quot;</span><span class="p">))</span>
+
+    <span class="n">status_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="s2">&quot;loop_count&quot;</span><span class="p">:</span> <span class="n">loop_count</span><span class="p">,</span>
+        <span class="s2">&quot;calls_made_this_hour&quot;</span><span class="p">:</span> <span class="n">calls_made</span><span class="p">,</span>
+        <span class="s2">&quot;max_calls_per_hour&quot;</span><span class="p">:</span> <span class="n">max_calls</span><span class="p">,</span>
+        <span class="s2">&quot;last_action&quot;</span><span class="p">:</span> <span class="n">last_action</span><span class="p">,</span>
+        <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
+        <span class="s2">&quot;exit_reason&quot;</span><span class="p">:</span> <span class="n">exit_reason</span><span class="p">,</span>
+        <span class="s2">&quot;next_reset&quot;</span><span class="p">:</span> <span class="n">next_reset_time</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">status_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">status_data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+    <span class="c1"># Log status update structurally</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;status_updated&quot;</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="n">loop_count</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span> <span class="n">calls</span><span class="o">=</span><span class="n">calls_made</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="boring.core.__getattr__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__getattr__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Emit deprecation warning when accessing attributes from this module.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\core\__init__.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emit deprecation warning when accessing attributes from this module.&quot;&quot;&quot;</span>
+    <span class="c1"># This is called when an attribute is accessed that doesn&#39;t exist directly</span>
+    <span class="c1"># Since we&#39;re re-exporting, this will only catch truly missing attributes</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s2">&quot;Importing from &#39;boring.core&#39; is deprecated. &quot;</span>
+        <span class="s2">&quot;Please import directly from the appropriate module &quot;</span>
+        <span class="s2">&quot;(.circuit, .logger, or .limiter) instead.&quot;</span><span class="p">,</span>
+        <span class="ne">DeprecationWarning</span><span class="p">,</span>
+        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;module &#39;boring.core&#39; has no attribute &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

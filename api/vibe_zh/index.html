@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Vibe Module - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Vibe Module";
+        var mkdocs_page_input_path = "api\\vibe_zh.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Vibe Module</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#vibe-engine">Vibe Engine (核心引擎)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#boring.vibe.engine">engine</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#boring.vibe.engine.VibePerformanceStats">VibePerformanceStats</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#boring.vibe.engine.VibeEngine">VibeEngine</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vibe-analysis">Vibe Analysis (分析器)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#boring.vibe.analysis">analysis</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#boring.vibe.analysis.CodeIssue">CodeIssue</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#boring.vibe.analysis.CodeFunction">CodeFunction</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#boring.vibe.analysis.CodeClass">CodeClass</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#boring.vibe.analysis.DocItem">DocItem</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#boring.vibe.analysis.DocResult">DocResult</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#boring.vibe.analysis.ReviewResult">ReviewResult</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#boring.vibe.analysis.TestGenResult">TestGenResult</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">🔌 API 參考 (API Reference)</li>
+      <li class="breadcrumb-item active">Vibe Module</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/api/vibe_zh.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="vibe-module-api">Vibe Module API 參考</h1>
+<p>Boring 的核心感知與決策引擎。</p>
+<h2 id="vibe-engine">Vibe Engine (核心引擎)</h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="boring.vibe.engine" class="doc doc-heading">
+            <code>boring.vibe.engine</code>
+
+
+</h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Vibe Engine (V10.23 Enhanced).</p>
+<p>Core dispatcher that routes requests to appropriate language handlers.</p>
+<p>V10.23 Enhancements:
+- Performance tracking for all operations
+- Analysis result caching (LRU with TTL)
+- Handler performance statistics
+- Integration with AdaptiveCache for cross-request optimization</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="boring.vibe.engine.VibePerformanceStats" class="doc doc-heading">
+            <code>VibePerformanceStats</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>V10.23: Performance tracking for Vibe operations.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src\boring\vibe\engine.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">VibePerformanceStats</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;V10.23: Performance tracking for Vibe operations.&quot;&quot;&quot;</span>
+
+    <span class="n">total_analyses</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_reviews</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_test_gens</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">cache_hits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">cache_misses</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_time_ms</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">handler_times</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>  <span class="c1"># handler_name -&gt; total_ms</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cache_hit_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_hits</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_misses</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_hits</span> <span class="o">/</span> <span class="n">total</span> <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">avg_operation_time_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">total_ops</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_analyses</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_reviews</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_test_gens</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_time_ms</span> <span class="o">/</span> <span class="n">total_ops</span> <span class="k">if</span> <span class="n">total_ops</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="boring.vibe.engine.VibeEngine" class="doc doc-heading">
+            <code>VibeEngine</code>
+
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Main engine for Vibe Coder Pro tools (V10.23 Enhanced).
+Uses Strategy Pattern to select the correct handler for a file.</p>
+<p>V10.23 Features:
+- LRU cache for analysis results (reduces repeated work)
+- Performance tracking per handler
+- Statistics for optimization insights</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src\boring\vibe\engine.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">VibeEngine</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main engine for Vibe Coder Pro tools (V10.23 Enhanced).</span>
+<span class="sd">    Uses Strategy Pattern to select the correct handler for a file.</span>
+
+<span class="sd">    V10.23 Features:</span>
+<span class="sd">    - LRU cache for analysis results (reduces repeated work)</span>
+<span class="sd">    - Performance tracking per handler</span>
+<span class="sd">    - Statistics for optimization insights</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># V10.23: Cache configuration</span>
+    <span class="n">CACHE_MAX_SIZE</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="n">CACHE_TTL_SECONDS</span> <span class="o">=</span> <span class="mi">300</span>  <span class="c1"># 5 minutes</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handlers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseHandler</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseHandler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># V10.23: Analysis cache (key -&gt; (result, timestamp))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_cache</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_review_cache</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># V10.23: Performance tracking</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span> <span class="o">=</span> <span class="n">VibePerformanceStats</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">register_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">:</span> <span class="n">BaseHandler</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a language handler.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">handler</span><span class="o">.</span><span class="n">supported_extensions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handlers</span><span class="p">[</span><span class="n">ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">handler</span>
+
+    <span class="k">def</span> <span class="nf">get_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseHandler</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the appropriate handler for a file path.&quot;&quot;&quot;</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handlers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_handler</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_cache_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;V10.23: Generate cache key from file and content.&quot;&quot;&quot;</span>
+        <span class="c1"># Use sha256 for cache key (non-security)</span>
+        <span class="n">content_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">source_code</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()[:</span><span class="mi">16</span><span class="p">]</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">content_hash</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_get_cached</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;V10.23: Get from cache if not expired.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">cache</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">,</span> <span class="n">timestamp</span> <span class="o">=</span> <span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">timestamp</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">CACHE_TTL_SECONDS</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">cache_hits</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">return</span> <span class="n">result</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>  <span class="c1"># Expired</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">cache_misses</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_set_cached</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;V10.23: Add to cache with LRU eviction.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cache</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CACHE_MAX_SIZE</span><span class="p">:</span>
+            <span class="c1"># Remove oldest entry</span>
+            <span class="n">oldest_key</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">cache</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">del</span> <span class="n">cache</span><span class="p">[</span><span class="n">oldest_key</span><span class="p">]</span>
+        <span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_track_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">elapsed_ms</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;V10.23: Track operation time per handler.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">total_time_ms</span> <span class="o">+=</span> <span class="n">elapsed_ms</span>
+        <span class="k">if</span> <span class="n">handler_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">handler_times</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">handler_times</span><span class="p">[</span><span class="n">handler_name</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">handler_times</span><span class="p">[</span><span class="n">handler_name</span><span class="p">]</span> <span class="o">+=</span> <span class="n">elapsed_ms</span>
+
+    <span class="k">def</span> <span class="nf">analyze_for_test_gen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TestGenResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Route test generation analysis to appropriate handler (V10.23: cached).&quot;&quot;&quot;</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_handler</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">handler</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unsupported file type: </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2"> (No handler registered)&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># V10.23: Check cache</span>
+        <span class="n">cache_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_key</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">source_code</span><span class="p">,</span> <span class="s2">&quot;test_gen&quot;</span><span class="p">)</span>
+        <span class="n">cached</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cached</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_analysis_cache</span><span class="p">,</span> <span class="n">cache_key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cached</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cached</span>
+
+        <span class="c1"># Execute with timing</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">analyze_for_test_gen</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">source_code</span><span class="p">)</span>
+        <span class="n">elapsed_ms</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>
+
+        <span class="c1"># V10.23: Track stats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">total_analyses</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_track_time</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">language_name</span><span class="p">,</span> <span class="n">elapsed_ms</span><span class="p">)</span>
+
+        <span class="c1"># V10.23: Cache result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_cached</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_analysis_cache</span><span class="p">,</span> <span class="n">cache_key</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">perform_code_review</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">focus</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReviewResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Route code review to appropriate handler (V10.23: cached).&quot;&quot;&quot;</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_handler</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">handler</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unsupported file type: </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2"> (No handler registered)&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># V10.23: Check cache (include focus in key)</span>
+        <span class="n">cache_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_key</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">source_code</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;review_</span><span class="si">{</span><span class="n">focus</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">cached</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cached</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_review_cache</span><span class="p">,</span> <span class="n">cache_key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cached</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cached</span>
+
+        <span class="c1"># Execute with timing</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">perform_code_review</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">source_code</span><span class="p">,</span> <span class="n">focus</span><span class="p">)</span>
+        <span class="n">elapsed_ms</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>
+
+        <span class="c1"># V10.23: Track stats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">total_reviews</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_track_time</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">language_name</span><span class="p">,</span> <span class="n">elapsed_ms</span><span class="p">)</span>
+
+        <span class="c1"># V10.23: Cache result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_cached</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_review_cache</span><span class="p">,</span> <span class="n">cache_key</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">generate_test_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">TestGenResult</span><span class="p">,</span> <span class="n">project_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Route test generation string creation.&quot;&quot;&quot;</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_handler</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">handler</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No handler found for </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">generate_test_code</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">project_root</span><span class="p">)</span>
+        <span class="n">elapsed_ms</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>
+
+        <span class="c1"># V10.23: Track stats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">total_test_gens</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_track_time</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">language_name</span><span class="p">,</span> <span class="n">elapsed_ms</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">code</span>
+
+    <span class="k">def</span> <span class="nf">extract_dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Route dependency extraction.&quot;&quot;&quot;</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_handler</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">handler</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">handler</span><span class="o">.</span><span class="n">extract_dependencies</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">source_code</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">extract_documentation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DocResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Identify documentation and comments in code.&quot;&quot;&quot;</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_handler</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">handler</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">DocResult</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span> <span class="n">module_doc</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[])</span>
+        <span class="k">return</span> <span class="n">handler</span><span class="o">.</span><span class="n">extract_documentation</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">source_code</span><span class="p">)</span>
+
+    <span class="c1"># =========================================================================</span>
+    <span class="c1"># V10.23: Statistics and Cache Management</span>
+    <span class="c1"># =========================================================================</span>
+
+    <span class="k">def</span> <span class="nf">get_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;V10.23: Get performance statistics.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;total_analyses&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">total_analyses</span><span class="p">,</span>
+            <span class="s2">&quot;total_reviews&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">total_reviews</span><span class="p">,</span>
+            <span class="s2">&quot;total_test_gens&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">total_test_gens</span><span class="p">,</span>
+            <span class="s2">&quot;cache_hit_rate&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">cache_hit_rate</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="s2">&quot;cache_hits&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">cache_hits</span><span class="p">,</span>
+            <span class="s2">&quot;cache_misses&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">cache_misses</span><span class="p">,</span>
+            <span class="s2">&quot;avg_operation_time_ms&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">avg_operation_time_ms</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="s2">&quot;handler_times&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">handler_times</span><span class="p">,</span>
+            <span class="s2">&quot;analysis_cache_size&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_analysis_cache</span><span class="p">),</span>
+            <span class="s2">&quot;review_cache_size&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_review_cache</span><span class="p">),</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">clear_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;V10.23: Clear all caches.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_review_cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_stats_report</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;V10.23: Get human-readable performance report.&quot;&quot;&quot;</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;🚀 **Vibe Engine Performance (V10.23)**&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;- Total Operations: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;total_analyses&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;total_reviews&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;total_test_gens&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;- Cache Hit Rate: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;cache_hit_rate&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;- Avg Operation Time: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;avg_operation_time_ms&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">ms&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;**Handler Breakdown:**&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">handler</span><span class="p">,</span> <span class="n">time_ms</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;handler_times&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">handler</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">time_ms</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">ms total&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="boring.vibe.engine.VibeEngine.register_handler" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">register_handler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span></code>
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Register a language handler.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\vibe\engine.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">register_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">:</span> <span class="n">BaseHandler</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register a language handler.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">handler</span><span class="o">.</span><span class="n">supported_extensions</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handlers</span><span class="p">[</span><span class="n">ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">handler</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="boring.vibe.engine.VibeEngine.get_handler" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_handler</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></code>
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the appropriate handler for a file path.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\vibe\engine.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseHandler</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the appropriate handler for a file path.&quot;&quot;&quot;</span>
+    <span class="n">ext</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handlers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_handler</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="boring.vibe.engine.VibeEngine.analyze_for_test_gen" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">analyze_for_test_gen</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">source_code</span><span class="p">)</span></code>
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Route test generation analysis to appropriate handler (V10.23: cached).</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\vibe\engine.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">analyze_for_test_gen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TestGenResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Route test generation analysis to appropriate handler (V10.23: cached).&quot;&quot;&quot;</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_handler</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">handler</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unsupported file type: </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2"> (No handler registered)&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># V10.23: Check cache</span>
+    <span class="n">cache_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_key</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">source_code</span><span class="p">,</span> <span class="s2">&quot;test_gen&quot;</span><span class="p">)</span>
+    <span class="n">cached</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cached</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_analysis_cache</span><span class="p">,</span> <span class="n">cache_key</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cached</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cached</span>
+
+    <span class="c1"># Execute with timing</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">analyze_for_test_gen</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">source_code</span><span class="p">)</span>
+    <span class="n">elapsed_ms</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>
+
+    <span class="c1"># V10.23: Track stats</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">total_analyses</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_track_time</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">language_name</span><span class="p">,</span> <span class="n">elapsed_ms</span><span class="p">)</span>
+
+    <span class="c1"># V10.23: Cache result</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_set_cached</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_analysis_cache</span><span class="p">,</span> <span class="n">cache_key</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="boring.vibe.engine.VibeEngine.perform_code_review" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">perform_code_review</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">source_code</span><span class="p">,</span> <span class="n">focus</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span></code>
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Route code review to appropriate handler (V10.23: cached).</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\vibe\engine.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">perform_code_review</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">focus</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReviewResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Route code review to appropriate handler (V10.23: cached).&quot;&quot;&quot;</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_handler</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">handler</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unsupported file type: </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2"> (No handler registered)&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># V10.23: Check cache (include focus in key)</span>
+    <span class="n">cache_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_key</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">source_code</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;review_</span><span class="si">{</span><span class="n">focus</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">cached</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cached</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_review_cache</span><span class="p">,</span> <span class="n">cache_key</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cached</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cached</span>
+
+    <span class="c1"># Execute with timing</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">perform_code_review</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">source_code</span><span class="p">,</span> <span class="n">focus</span><span class="p">)</span>
+    <span class="n">elapsed_ms</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>
+
+    <span class="c1"># V10.23: Track stats</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">total_reviews</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_track_time</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">language_name</span><span class="p">,</span> <span class="n">elapsed_ms</span><span class="p">)</span>
+
+    <span class="c1"># V10.23: Cache result</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_set_cached</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_review_cache</span><span class="p">,</span> <span class="n">cache_key</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="boring.vibe.engine.VibeEngine.generate_test_code" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">generate_test_code</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">project_root</span><span class="p">)</span></code>
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Route test generation string creation.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\vibe\engine.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">generate_test_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">TestGenResult</span><span class="p">,</span> <span class="n">project_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Route test generation string creation.&quot;&quot;&quot;</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_handler</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">handler</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No handler found for </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">generate_test_code</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">project_root</span><span class="p">)</span>
+    <span class="n">elapsed_ms</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>
+
+    <span class="c1"># V10.23: Track stats</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">total_test_gens</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_track_time</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">language_name</span><span class="p">,</span> <span class="n">elapsed_ms</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">code</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="boring.vibe.engine.VibeEngine.extract_dependencies" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">extract_dependencies</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">source_code</span><span class="p">)</span></code>
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Route dependency extraction.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\vibe\engine.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">extract_dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Route dependency extraction.&quot;&quot;&quot;</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_handler</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">handler</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="k">return</span> <span class="n">handler</span><span class="o">.</span><span class="n">extract_dependencies</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">source_code</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="boring.vibe.engine.VibeEngine.extract_documentation" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">extract_documentation</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">source_code</span><span class="p">)</span></code>
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Identify documentation and comments in code.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\vibe\engine.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">extract_documentation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DocResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Identify documentation and comments in code.&quot;&quot;&quot;</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_handler</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">handler</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DocResult</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span> <span class="n">module_doc</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[])</span>
+    <span class="k">return</span> <span class="n">handler</span><span class="o">.</span><span class="n">extract_documentation</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">source_code</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="boring.vibe.engine.VibeEngine.get_stats" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_stats</span><span class="p">()</span></code>
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>V10.23: Get performance statistics.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\vibe\engine.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;V10.23: Get performance statistics.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;total_analyses&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">total_analyses</span><span class="p">,</span>
+        <span class="s2">&quot;total_reviews&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">total_reviews</span><span class="p">,</span>
+        <span class="s2">&quot;total_test_gens&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">total_test_gens</span><span class="p">,</span>
+        <span class="s2">&quot;cache_hit_rate&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">cache_hit_rate</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+        <span class="s2">&quot;cache_hits&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">cache_hits</span><span class="p">,</span>
+        <span class="s2">&quot;cache_misses&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">cache_misses</span><span class="p">,</span>
+        <span class="s2">&quot;avg_operation_time_ms&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">avg_operation_time_ms</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="s2">&quot;handler_times&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stats</span><span class="o">.</span><span class="n">handler_times</span><span class="p">,</span>
+        <span class="s2">&quot;analysis_cache_size&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_analysis_cache</span><span class="p">),</span>
+        <span class="s2">&quot;review_cache_size&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_review_cache</span><span class="p">),</span>
+    <span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="boring.vibe.engine.VibeEngine.clear_cache" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">clear_cache</span><span class="p">()</span></code>
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>V10.23: Clear all caches.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\vibe\engine.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">clear_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;V10.23: Clear all caches.&quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_review_cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="boring.vibe.engine.VibeEngine.get_stats_report" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_stats_report</span><span class="p">()</span></code>
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>V10.23: Get human-readable performance report.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\vibe\engine.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_stats_report</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;V10.23: Get human-readable performance report.&quot;&quot;&quot;</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;🚀 **Vibe Engine Performance (V10.23)**&quot;</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;- Total Operations: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;total_analyses&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;total_reviews&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;total_test_gens&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;- Cache Hit Rate: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;cache_hit_rate&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;- Avg Operation Time: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;avg_operation_time_ms&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">ms&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;**Handler Breakdown:**&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">handler</span><span class="p">,</span> <span class="n">time_ms</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;handler_times&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">handler</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">time_ms</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">ms total&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="vibe-analysis">Vibe Analysis (分析器)</h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="boring.vibe.analysis" class="doc doc-heading">
+            <code>boring.vibe.analysis</code>
+
+
+</h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Vibe Analysis Data Structures.</p>
+<p>Defines the common data objects used across different language handlers.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="boring.vibe.analysis.CodeIssue" class="doc doc-heading">
+            <code>CodeIssue</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Represents a single issue found during code review.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src\boring\vibe\analysis.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">CodeIssue</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a single issue found during code review.&quot;&quot;&quot;</span>
+
+    <span class="n">category</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># e.g., &quot;Naming&quot;, &quot;Error Handling&quot;, &quot;Performance&quot;, &quot;Security&quot;</span>
+    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">severity</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># &quot;high&quot;, &quot;medium&quot;, &quot;low&quot;</span>
+    <span class="n">line</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">suggestion</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="boring.vibe.analysis.CodeFunction" class="doc doc-heading">
+            <code>CodeFunction</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Represents a function definition.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src\boring\vibe\analysis.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">CodeFunction</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a function definition.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">args</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">docstring</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">lineno</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">is_async</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">is_exported</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># For JS/TS</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="boring.vibe.analysis.CodeClass" class="doc doc-heading">
+            <code>CodeClass</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Represents a class definition.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src\boring\vibe\analysis.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">CodeClass</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a class definition.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">methods</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">docstring</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">lineno</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">is_exported</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="boring.vibe.analysis.DocItem" class="doc doc-heading">
+            <code>DocItem</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Documentation for a code element (function/class).</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src\boring\vibe\analysis.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">DocItem</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Documentation for a code element (function/class).&quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># function, class, method</span>
+    <span class="n">docstring</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">signature</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">line_number</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="boring.vibe.analysis.DocResult" class="doc doc-heading">
+            <code>DocResult</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Documentation extraction result.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src\boring\vibe\analysis.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">DocResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Documentation extraction result.&quot;&quot;&quot;</span>
+
+    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">module_doc</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">DocItem</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">score</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># 0-100 score based on issues</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="boring.vibe.analysis.ReviewResult" class="doc doc-heading">
+            <code>ReviewResult</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Result of a code review analysis.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src\boring\vibe\analysis.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ReviewResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of a code review analysis.&quot;&quot;&quot;</span>
+
+    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">issues</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">CodeIssue</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">score</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># 0-100 score based on issues</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="boring.vibe.analysis.TestGenResult" class="doc doc-heading">
+            <code>TestGenResult</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Result of test generation analysis.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src\boring\vibe\analysis.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TestGenResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of test generation analysis.&quot;&quot;&quot;</span>
+
+    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">functions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">CodeFunction</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">classes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">CodeClass</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">module_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">source_language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;python&quot;</span>  <span class="c1"># python, javascript, typescript, etc.</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../resources_zh/" class="btn btn-neutral float-left" title="Resources"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../hooks_zh/" class="btn btn-neutral float-right" title="Git Hooks">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../resources_zh/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../hooks_zh/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

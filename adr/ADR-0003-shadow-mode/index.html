@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>ADR-0003: Shadow Mode for Security - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "ADR-0003: Shadow Mode for Security";
+        var mkdocs_page_input_path = "adr\\ADR-0003-shadow-mode.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">ADR-0003: Shadow Mode for Security</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/adr/ADR-0003-shadow-mode.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="adr-0003-shadow-mode-for-security">ADR-0003: Shadow Mode for Security</h1>
+<p><strong>Date</strong>: 2026-01-06</p>
+<p><strong>Status</strong>: Accepted</p>
+<p><strong>Deciders</strong>: @Boring206</p>
+<p><strong>Tags</strong>: security, safety, ux</p>
+<hr />
+<h2 id="context">Context</h2>
+<h3 id="problem-statement">Problem Statement</h3>
+<p>AI agents can potentially execute dangerous operations (file deletion, system commands, network requests) without user awareness. We need a mechanism to provide safety without completely blocking automation.</p>
+<h3 id="goals">Goals</h3>
+<ul>
+<li>Prevent unintended destructive operations</li>
+<li>Maintain user control over AI actions</li>
+<li>Allow trusted operations to proceed automatically</li>
+<li>Provide clear audit trail</li>
+</ul>
+<h3 id="non-goals">Non-Goals</h3>
+<ul>
+<li>Complete sandboxing (OS-level isolation)</li>
+<li>Preventing all possible security issues</li>
+<li>Replacing proper code review</li>
+</ul>
+<h2 id="decision">Decision</h2>
+<p>We will implement <strong>Shadow Mode</strong>: a security layer that requires explicit user approval for high-risk operations while allowing safe operations to proceed automatically.</p>
+<h3 id="approach">Approach</h3>
+<ol>
+<li><strong>Operation Classification</strong></li>
+<li>Safe: Read operations, analysis, logging</li>
+<li>Moderate: File writes, configuration changes</li>
+<li>
+<p>Dangerous: File deletion, system commands, network requests</p>
+</li>
+<li>
+<p><strong>Approval Mechanism</strong></p>
+</li>
+<li>Shadow mode prompts user for dangerous operations</li>
+<li>User can approve/deny individual operations</li>
+<li>Option to trust operation patterns persistently</li>
+<li>
+<p>All decisions logged in audit trail</p>
+</li>
+<li>
+<p><strong>Configuration</strong></p>
+</li>
+<li>User-configurable risk levels</li>
+<li>Persistent trust rules</li>
+<li>Shadow mode can be disabled (not recommended)</li>
+</ol>
+<h3 id="implementation-plan">Implementation Plan</h3>
+<ol>
+<li>✅ Define operation risk classifications</li>
+<li>✅ Implement approval prompt system</li>
+<li>✅ Add persistent configuration storage</li>
+<li>✅ Create audit logging mechanism</li>
+<li>✅ Document security best practices</li>
+</ol>
+<h3 id="acceptance-criteria">Acceptance Criteria</h3>
+<ul>
+<li>[x] All dangerous operations require approval by default</li>
+<li>[x] Approval decisions persist across sessions</li>
+<li>[x] Audit log captures all operations</li>
+<li>[x] Clear UI for approval prompts</li>
+<li>[x] Documentation of security model</li>
+</ul>
+<h2 id="consequences">Consequences</h2>
+<h3 id="positive-consequences">Positive Consequences</h3>
+<ul>
+<li><strong>Safety</strong>: Prevents accidental destructive operations</li>
+<li><strong>Transparency</strong>: Users see what AI is doing</li>
+<li><strong>Control</strong>: Users maintain ultimate control</li>
+<li><strong>Audit</strong>: Complete trail of all operations</li>
+<li><strong>Trust Building</strong>: Gradual trust through patterns</li>
+<li><strong>Education</strong>: Users learn what AI is capable of</li>
+</ul>
+<h3 id="negative-consequences">Negative Consequences</h3>
+<ul>
+<li><strong>Friction</strong>: Additional prompts slow down automation</li>
+<li><strong>Interruption</strong>: User must be present for certain operations</li>
+<li><strong>Complexity</strong>: More configuration to manage</li>
+<li><strong>False Security</strong>: Not a complete security solution</li>
+</ul>
+<h3 id="risks">Risks</h3>
+<ul>
+<li>Users disable shadow mode entirely (Mitigation: Strong warnings, default enabled)</li>
+<li>Prompt fatigue leads to blind approval (Mitigation: Pattern recognition, batch approval)</li>
+<li>Audit log grows too large (Mitigation: Log rotation, size limits)</li>
+</ul>
+<h2 id="alternatives-considered">Alternatives Considered</h2>
+<h3 id="alternative-1-full-sandboxing">Alternative 1: Full Sandboxing</h3>
+<p><strong>Pros:</strong>
+- Maximum security
+- No user intervention needed
+- Prevents all dangerous operations</p>
+<p><strong>Cons:</strong>
+- Severely limits functionality
+- Complex to implement correctly
+- May not be portable across OS
+- Breaks many legitimate use cases</p>
+<p><strong>Why not chosen:</strong>
+Too restrictive for a development tool; developers need flexibility.</p>
+<h3 id="alternative-2-no-safety-mechanism">Alternative 2: No Safety Mechanism</h3>
+<p><strong>Pros:</strong>
+- Maximum automation speed
+- No user interruption
+- Simpler implementation</p>
+<p><strong>Cons:</strong>
+- Dangerous for users
+- Easy to cause damage
+- No audit trail
+- Trust issues</p>
+<p><strong>Why not chosen:</strong>
+Unacceptable risk level for production tool.</p>
+<h3 id="alternative-3-dry-run-mode">Alternative 3: Dry-Run Mode</h3>
+<p><strong>Pros:</strong>
+- Shows what would happen
+- No risk of damage
+- Educational</p>
+<p><strong>Cons:</strong>
+- Doesn't actually execute
+- Requires manual re-execution
+- Slows workflow significantly</p>
+<p><strong>Why not chosen:</strong>
+Too slow for practical use; shadow mode provides better balance.</p>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="../guides/security.md">Security Best Practices</a></li>
+<li><a href="../guides/shadow-mode.md">Shadow Mode Configuration</a></li>
+<li><a href="https://owasp.org/www-project-ai-security-and-privacy-guide/">OWASP AI Security Guidelines</a></li>
+</ul>
+<h2 id="notes">Notes</h2>
+<p>Shadow mode strikes a balance between safety and productivity. Key insight: most AI operations are safe, so only gate the dangerous ones.</p>
+<p>User feedback shows high satisfaction with this approach:
+- "Gives me confidence to use AI automation"
+- "Saved me from deleting important files"
+- "Trust rules make it less annoying over time"</p>
+<p>Future enhancements could include:
+- Machine learning to predict safe patterns
+- Community-shared trust rules
+- Better batch approval UX</p>
+<hr />
+<h2 id="changelog">Changelog</h2>
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Status Change</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-01-06</td>
+<td>Proposed</td>
+<td>Initial design</td>
+</tr>
+<tr>
+<td>2026-01-07</td>
+<td>Accepted</td>
+<td>User testing validated approach</td>
+</tr>
+<tr>
+<td>2026-01-08</td>
+<td>Updated</td>
+<td>Added persistent trust rules</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

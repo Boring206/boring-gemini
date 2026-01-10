@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Verification - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Verification";
+        var mkdocs_page_input_path = "api\\verification.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Verification</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#verifier">Verifier (驗證器)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#boring.verification.verifier">verifier</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#boring.verification.verifier.CodeVerifier">CodeVerifier</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#test-runners">Test Runners (測試執行)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#boring.verification.test_runners">test_runners</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">🔌 API 參考 (API Reference)</li>
+      <li class="breadcrumb-item active">Verification</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/api/verification.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="verification-api-reference">Verification API Reference</h1>
+<p>自動驗證與測試執行模組。</p>
+<h2 id="verifier">Verifier (驗證器)</h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="boring.verification.verifier" class="doc doc-heading">
+            <code>boring.verification.verifier</code>
+
+
+</h3>
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="boring.verification.verifier.CodeVerifier" class="doc doc-heading">
+            <code>CodeVerifier</code>
+
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Polyglot code verification system.
+Refactored in V10.15 for better modularity.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src\boring\verification\verifier.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CodeVerifier</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Polyglot code verification system.</span>
+<span class="sd">    Refactored in V10.15 for better modularity.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">project_root</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">log_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">judge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">=</span> <span class="n">project_root</span> <span class="ow">or</span> <span class="n">settings</span><span class="o">.</span><span class="n">PROJECT_ROOT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span> <span class="o">=</span> <span class="n">log_dir</span> <span class="ow">or</span> <span class="n">settings</span><span class="o">.</span><span class="n">LOG_DIR</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">judge</span> <span class="o">=</span> <span class="n">judge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="n">VerificationCache</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_cache</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_rules</span> <span class="o">=</span> <span class="n">load_custom_rules</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tools</span> <span class="o">=</span> <span class="n">ToolManager</span><span class="p">()</span>
+
+        <span class="c1"># Dispatch configuration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;.py&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;syntax&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_syntax_python</span><span class="p">,</span>
+                <span class="s2">&quot;lint&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_lint_python</span><span class="p">,</span>
+                <span class="s2">&quot;import&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_imports_python</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;.js&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;syntax&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_syntax_node</span><span class="p">,</span>
+                <span class="s2">&quot;lint&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_lint_node</span><span class="p">,</span>
+                <span class="s2">&quot;import&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_imports_node</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;.jsx&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;syntax&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_syntax_node</span><span class="p">,</span>
+                <span class="s2">&quot;lint&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_lint_node</span><span class="p">,</span>
+                <span class="s2">&quot;import&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_imports_node</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;.ts&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;syntax&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_syntax_node</span><span class="p">,</span>
+                <span class="s2">&quot;lint&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_lint_node</span><span class="p">,</span>
+                <span class="s2">&quot;import&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_imports_node</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;.tsx&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;syntax&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_syntax_node</span><span class="p">,</span>
+                <span class="s2">&quot;lint&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_lint_node</span><span class="p">,</span>
+                <span class="s2">&quot;import&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_imports_node</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;.go&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;syntax&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_syntax_go</span><span class="p">,</span>
+                <span class="s2">&quot;lint&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_lint_generic</span><span class="p">,</span>
+                <span class="s2">&quot;import&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_imports_go</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;.rs&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;syntax&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_syntax_rust</span><span class="p">,</span>
+                <span class="s2">&quot;lint&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_lint_generic</span><span class="p">,</span>
+                <span class="s2">&quot;import&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;.java&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;syntax&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_syntax_java</span><span class="p">,</span>
+                <span class="s2">&quot;lint&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_lint_generic</span><span class="p">,</span>
+                <span class="s2">&quot;import&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;.c&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;syntax&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_syntax_c</span><span class="p">,</span>
+                <span class="s2">&quot;lint&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_lint_generic</span><span class="p">,</span>
+                <span class="s2">&quot;import&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;.cpp&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;syntax&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_syntax_cpp</span><span class="p">,</span>
+                <span class="s2">&quot;lint&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_lint_generic</span><span class="p">,</span>
+                <span class="s2">&quot;import&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;.h&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;syntax&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_syntax_c</span><span class="p">,</span>
+                <span class="s2">&quot;lint&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_lint_generic</span><span class="p">,</span>
+                <span class="s2">&quot;import&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;.hpp&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;syntax&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_syntax_cpp</span><span class="p">,</span>
+                <span class="s2">&quot;lint&quot;</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_lint_generic</span><span class="p">,</span>
+                <span class="s2">&quot;import&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">verify_syntax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VerificationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check syntax based on file extension.&quot;&quot;&quot;</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">handler</span> <span class="ow">and</span> <span class="n">handler</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;syntax&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">handler</span><span class="p">[</span><span class="s2">&quot;syntax&quot;</span><span class="p">](</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">VerificationResult</span><span class="p">(</span>
+            <span class="n">passed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_type</span><span class="o">=</span><span class="s2">&quot;syntax&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Skipped: </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">details</span><span class="o">=</span><span class="p">[],</span> <span class="n">suggestions</span><span class="o">=</span><span class="p">[]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">verify_lint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">auto_fix</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VerificationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run linter based on file extension.&quot;&quot;&quot;</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">handler</span> <span class="ow">and</span> <span class="n">handler</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lint&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">handler</span><span class="p">[</span><span class="s2">&quot;lint&quot;</span><span class="p">](</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">,</span> <span class="n">auto_fix</span><span class="o">=</span><span class="n">auto_fix</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">VerificationResult</span><span class="p">(</span>
+            <span class="n">passed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_type</span><span class="o">=</span><span class="s2">&quot;lint&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Skipped&quot;</span><span class="p">,</span> <span class="n">details</span><span class="o">=</span><span class="p">[],</span> <span class="n">suggestions</span><span class="o">=</span><span class="p">[]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">verify_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VerificationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check imports based on file extension.&quot;&quot;&quot;</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">handler</span> <span class="ow">and</span> <span class="n">handler</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;import&quot;</span><span class="p">):</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="n">handler</span><span class="p">[</span><span class="s2">&quot;import&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s2">&quot;.go&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">VerificationResult</span><span class="p">(</span>
+            <span class="n">passed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_type</span><span class="o">=</span><span class="s2">&quot;import&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Skipped&quot;</span><span class="p">,</span> <span class="n">details</span><span class="o">=</span><span class="p">[],</span> <span class="n">suggestions</span><span class="o">=</span><span class="p">[]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_verify_lint_generic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VerificationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compatibility wrapper for handlers.verify_lint_generic.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">handlers</span><span class="o">.</span><span class="n">verify_lint_generic</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">verify_file</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;STANDARD&quot;</span><span class="p">,</span> <span class="n">auto_fix</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">VerificationResult</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run all applicable verifications on a file.&quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ext</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">results</span>
+
+        <span class="c1"># Always run syntax check</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">verify_syntax</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+
+        <span class="c1"># Standard level adds linting and imports</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;STANDARD&quot;</span><span class="p">,</span> <span class="s2">&quot;FULL&quot;</span><span class="p">,</span> <span class="s2">&quot;SEMANTIC&quot;</span><span class="p">]:</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">verify_lint</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">auto_fix</span><span class="o">=</span><span class="n">auto_fix</span><span class="p">))</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">verify_imports</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;SEMANTIC&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">judge</span><span class="p">:</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">verify_semantics</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">results</span>
+
+    <span class="k">def</span> <span class="nf">verify_semantics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VerificationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run LLM Judge on file.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+            <span class="n">feedback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">judge</span><span class="o">.</span><span class="n">grade_code</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;pending_manual_review&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">VerificationResult</span><span class="p">(</span>
+                    <span class="n">passed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">check_type</span><span class="o">=</span><span class="s2">&quot;semantic&quot;</span><span class="p">,</span>
+                    <span class="n">message</span><span class="o">=</span><span class="s2">&quot;⚠️ Manual Review Required (Delegated to Cursor)&quot;</span><span class="p">,</span>
+                    <span class="n">details</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Copy the prompt below to Cursor AI:&quot;</span><span class="p">],</span>
+                    <span class="n">suggestions</span><span class="o">=</span><span class="p">[</span><span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;prompt&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)],</span>
+                <span class="p">)</span>
+
+            <span class="n">score</span> <span class="o">=</span> <span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">passed</span> <span class="o">=</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="mf">4.0</span>
+
+            <span class="n">details</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">dimensions</span> <span class="o">=</span> <span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dimensions&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;breakdown&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dimensions</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/5 - </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">strategic</span> <span class="o">=</span> <span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;strategic_advice&quot;</span><span class="p">)</span>
+            <span class="n">first_step</span> <span class="o">=</span> <span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;first_step&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">strategic</span><span class="p">:</span>
+                <span class="n">details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🧠 Strategic Advice: </span><span class="si">{</span><span class="n">strategic</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">first_step</span><span class="p">:</span>
+                <span class="n">details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;👣 First Step: </span><span class="si">{</span><span class="n">first_step</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">VerificationResult</span><span class="p">(</span>
+                <span class="n">passed</span><span class="o">=</span><span class="n">passed</span><span class="p">,</span>
+                <span class="n">check_type</span><span class="o">=</span><span class="s2">&quot;semantic&quot;</span><span class="p">,</span>
+                <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Semantic Score: </span><span class="si">{</span><span class="n">score</span><span class="si">}</span><span class="s2">/5.0 (</span><span class="si">{</span><span class="s1">&#39;PASS&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">passed</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;FAIL&#39;</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+                <span class="n">details</span><span class="o">=</span><span class="n">details</span><span class="p">,</span>
+                <span class="n">suggestions</span><span class="o">=</span><span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;suggestions&quot;</span><span class="p">,</span> <span class="p">[]),</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">VerificationResult</span><span class="p">(</span>
+                <span class="n">passed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">check_type</span><span class="o">=</span><span class="s2">&quot;semantic&quot;</span><span class="p">,</span>
+                <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Judge failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">details</span><span class="o">=</span><span class="p">[],</span>
+                <span class="n">suggestions</span><span class="o">=</span><span class="p">[],</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">run_tests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VerificationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run tests based on project type.&quot;&quot;&quot;</span>
+        <span class="c1"># Detect project type</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;Cargo.toml&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">test_runners</span><span class="o">.</span><span class="n">run_tests_rust</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">,</span> <span class="n">test_path</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;pom.xml&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">test_runners</span><span class="o">.</span><span class="n">run_tests_maven</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">,</span> <span class="n">test_path</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;build.gradle&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;build.gradle.kts&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">test_runners</span><span class="o">.</span><span class="n">run_tests_gradle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">,</span> <span class="n">test_path</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;package.json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">test_runners</span><span class="o">.</span><span class="n">run_tests_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">,</span> <span class="n">test_path</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;go.mod&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">test_runners</span><span class="o">.</span><span class="n">run_tests_go</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">,</span> <span class="n">test_path</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">test_runners</span><span class="o">.</span><span class="n">run_tests_python</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">,</span> <span class="n">test_path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_aggregate_results</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">VerificationResult</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VerificationResult</span><span class="p">:</span>
+        <span class="n">passed</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">passed</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">)</span>
+        <span class="n">details</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">suggestions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">passed</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">check_type</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">details</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">details</span><span class="p">)</span>
+            <span class="n">suggestions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">suggestions</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">VerificationResult</span><span class="p">(</span>
+            <span class="n">passed</span><span class="o">=</span><span class="n">passed</span><span class="p">,</span>
+            <span class="n">check_type</span><span class="o">=</span><span class="s2">&quot;file_comparison&quot;</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span> <span class="k">if</span> <span class="n">messages</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;All checks passed: </span><span class="si">{</span><span class="n">file_path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">details</span><span class="o">=</span><span class="n">details</span><span class="p">,</span>
+            <span class="n">suggestions</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">suggestions</span><span class="p">)),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_git_changed_files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get list of files changed in Git.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">staged</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;diff&quot;</span><span class="p">,</span> <span class="s2">&quot;--cached&quot;</span><span class="p">,</span> <span class="s2">&quot;--name-only&quot;</span><span class="p">],</span>
+                <span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span>
+                <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">unstaged</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;diff&quot;</span><span class="p">,</span> <span class="s2">&quot;--name-only&quot;</span><span class="p">],</span>
+                <span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span>
+                <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">changed</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="p">[</span><span class="n">staged</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">unstaged</span><span class="o">.</span><span class="n">stdout</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
+                        <span class="n">changed</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="n">line</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">changed</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">verify_project</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;STANDARD&quot;</span><span class="p">,</span>
+        <span class="n">auto_fix</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">max_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">incremental</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="n">target_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;src&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">target_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;Project directory not found&quot;</span>
+
+        <span class="n">all_results</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">VerificationResult</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">excludes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">VERIFICATION_EXCLUDES</span><span class="p">)</span>
+
+        <span class="n">target_files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">target_dir</span><span class="p">):</span>
+            <span class="n">dirs</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dirs</span> <span class="k">if</span> <span class="n">d</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">excludes</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="n">file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="o">/</span> <span class="n">file</span>
+                <span class="k">if</span> <span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                    <span class="n">target_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">incremental</span><span class="p">:</span>
+            <span class="n">git_changed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_git_changed_files</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">git_changed</span><span class="p">:</span>
+                <span class="n">target_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">target_files</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">git_changed</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">target_files</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;No changed files to verify (incremental mode)&quot;</span>
+
+        <span class="n">files_to_verify</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">target_files</span><span class="p">:</span>
+                <span class="n">cached</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">cached</span><span class="p">:</span>
+                    <span class="n">all_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cached</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">files_to_verify</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">files_to_verify</span> <span class="o">=</span> <span class="n">target_files</span>
+
+        <span class="n">cache_updates</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">files_to_verify</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">Progress</span><span class="p">(</span>
+                <span class="n">SpinnerColumn</span><span class="p">(),</span>
+                <span class="n">TextColumn</span><span class="p">(</span><span class="s2">&quot;[progress.description]</span><span class="si">{task.description}</span><span class="s2">&quot;</span><span class="p">),</span>
+                <span class="n">BarColumn</span><span class="p">(),</span>
+                <span class="n">TextColumn</span><span class="p">(</span><span class="s2">&quot;[progress.percentage]</span><span class="si">{task.percentage:&gt;3.0f}</span><span class="s2">%&quot;</span><span class="p">),</span>
+                <span class="n">transient</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span> <span class="k">as</span> <span class="n">progress</span><span class="p">:</span>
+                <span class="n">task_id</span> <span class="o">=</span> <span class="n">progress</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Verifying </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">files_to_verify</span><span class="p">)</span><span class="si">}</span><span class="s2"> files...&quot;</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">files_to_verify</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">max_workers</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+                    <span class="n">future_to_file</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">verify_file</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">auto_fix</span><span class="o">=</span><span class="n">auto_fix</span><span class="p">):</span> <span class="n">f</span>
+                        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files_to_verify</span>
+                    <span class="p">}</span>
+                    <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">as_completed</span><span class="p">(</span><span class="n">future_to_file</span><span class="p">):</span>
+                        <span class="n">file_path</span> <span class="o">=</span> <span class="n">future_to_file</span><span class="p">[</span><span class="n">future</span><span class="p">]</span>
+                        <span class="n">progress</span><span class="o">.</span><span class="n">advance</span><span class="p">(</span><span class="n">task_id</span><span class="p">)</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">results</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+                            <span class="n">all_results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span>
+                                <span class="n">aggregate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aggregate_results</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+                                <span class="n">cache_updates</span><span class="p">[</span><span class="n">file_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">aggregate</span>
+                        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error verifying </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="ow">and</span> <span class="n">cache_updates</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">bulk_update</span><span class="p">(</span><span class="n">cache_updates</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;FULL&quot;</span><span class="p">:</span>
+            <span class="n">all_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_tests</span><span class="p">())</span>
+
+        <span class="n">failed</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">all_results</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">passed</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">failed</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;All </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_results</span><span class="p">)</span><span class="si">}</span><span class="s2"> checks passed&quot;</span>
+
+        <span class="n">summary_parts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;## Verification Failed:&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">failed</span><span class="p">[:</span><span class="mi">10</span><span class="p">]:</span>
+            <span class="n">summary_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">### </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">check_type</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">detail</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">details</span><span class="p">[:</span><span class="mi">10</span><span class="p">]:</span>
+                <span class="n">summary_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- </span><span class="si">{</span><span class="n">detail</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">suggestions</span><span class="p">:</span>
+                <span class="n">summary_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">💡 **Suggestions:**&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">suggestion</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">suggestions</span><span class="p">:</span>
+                    <span class="n">summary_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- </span><span class="si">{</span><span class="n">suggestion</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">summary_parts</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">generate_feedback_prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">VerificationResult</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">failed</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">passed</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">failed</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">prompt_parts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CRITICAL: Your code failed verification. You must fix these issues:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">failed</span><span class="p">:</span>
+            <span class="n">prompt_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">## </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">check_type</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> ERROR&quot;</span><span class="p">)</span>
+            <span class="n">prompt_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;**Problem:** </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">details</span><span class="p">:</span>
+                <span class="n">prompt_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;**Details:**&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">detail</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">details</span><span class="p">:</span>
+                    <span class="n">prompt_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">detail</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">suggestions</span><span class="p">:</span>
+                <span class="n">prompt_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;**Fix:** </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">suggestions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">prompt_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Output the COMPLETE fixed file(s) using &lt;file path=&quot;...&quot;&gt;...&lt;/file&gt; format.&#39;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prompt_parts</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="boring.verification.verifier.CodeVerifier.verify_syntax" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">verify_syntax</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></code>
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Check syntax based on file extension.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\verification\verifier.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">verify_syntax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VerificationResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check syntax based on file extension.&quot;&quot;&quot;</span>
+    <span class="n">ext</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">handler</span> <span class="ow">and</span> <span class="n">handler</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;syntax&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">handler</span><span class="p">[</span><span class="s2">&quot;syntax&quot;</span><span class="p">](</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">VerificationResult</span><span class="p">(</span>
+        <span class="n">passed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_type</span><span class="o">=</span><span class="s2">&quot;syntax&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Skipped: </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">details</span><span class="o">=</span><span class="p">[],</span> <span class="n">suggestions</span><span class="o">=</span><span class="p">[]</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="boring.verification.verifier.CodeVerifier.verify_lint" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">verify_lint</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">auto_fix</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Run linter based on file extension.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\verification\verifier.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">verify_lint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">auto_fix</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VerificationResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run linter based on file extension.&quot;&quot;&quot;</span>
+    <span class="n">ext</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">handler</span> <span class="ow">and</span> <span class="n">handler</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lint&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">handler</span><span class="p">[</span><span class="s2">&quot;lint&quot;</span><span class="p">](</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">,</span> <span class="n">auto_fix</span><span class="o">=</span><span class="n">auto_fix</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">VerificationResult</span><span class="p">(</span>
+        <span class="n">passed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_type</span><span class="o">=</span><span class="s2">&quot;lint&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Skipped&quot;</span><span class="p">,</span> <span class="n">details</span><span class="o">=</span><span class="p">[],</span> <span class="n">suggestions</span><span class="o">=</span><span class="p">[]</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="boring.verification.verifier.CodeVerifier.verify_imports" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">verify_imports</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></code>
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Check imports based on file extension.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\verification\verifier.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">verify_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VerificationResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check imports based on file extension.&quot;&quot;&quot;</span>
+    <span class="n">ext</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">handler</span> <span class="ow">and</span> <span class="n">handler</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;import&quot;</span><span class="p">):</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="n">handler</span><span class="p">[</span><span class="s2">&quot;import&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s2">&quot;.go&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">VerificationResult</span><span class="p">(</span>
+        <span class="n">passed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_type</span><span class="o">=</span><span class="s2">&quot;import&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Skipped&quot;</span><span class="p">,</span> <span class="n">details</span><span class="o">=</span><span class="p">[],</span> <span class="n">suggestions</span><span class="o">=</span><span class="p">[]</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="boring.verification.verifier.CodeVerifier.verify_file" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">verify_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s1">&#39;STANDARD&#39;</span><span class="p">,</span> <span class="n">auto_fix</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Run all applicable verifications on a file.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\verification\verifier.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">verify_file</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;STANDARD&quot;</span><span class="p">,</span> <span class="n">auto_fix</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">VerificationResult</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run all applicable verifications on a file.&quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ext</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">ext</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">results</span>
+
+    <span class="c1"># Always run syntax check</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">verify_syntax</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+
+    <span class="c1"># Standard level adds linting and imports</span>
+    <span class="k">if</span> <span class="n">level</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;STANDARD&quot;</span><span class="p">,</span> <span class="s2">&quot;FULL&quot;</span><span class="p">,</span> <span class="s2">&quot;SEMANTIC&quot;</span><span class="p">]:</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">verify_lint</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">auto_fix</span><span class="o">=</span><span class="n">auto_fix</span><span class="p">))</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">verify_imports</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;SEMANTIC&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">judge</span><span class="p">:</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">verify_semantics</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">results</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="boring.verification.verifier.CodeVerifier.verify_semantics" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">verify_semantics</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></code>
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Run LLM Judge on file.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\verification\verifier.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">verify_semantics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VerificationResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run LLM Judge on file.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+        <span class="n">feedback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">judge</span><span class="o">.</span><span class="n">grade_code</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;pending_manual_review&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">VerificationResult</span><span class="p">(</span>
+                <span class="n">passed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">check_type</span><span class="o">=</span><span class="s2">&quot;semantic&quot;</span><span class="p">,</span>
+                <span class="n">message</span><span class="o">=</span><span class="s2">&quot;⚠️ Manual Review Required (Delegated to Cursor)&quot;</span><span class="p">,</span>
+                <span class="n">details</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Copy the prompt below to Cursor AI:&quot;</span><span class="p">],</span>
+                <span class="n">suggestions</span><span class="o">=</span><span class="p">[</span><span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;prompt&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)],</span>
+            <span class="p">)</span>
+
+        <span class="n">score</span> <span class="o">=</span> <span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">passed</span> <span class="o">=</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="mf">4.0</span>
+
+        <span class="n">details</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dimensions</span> <span class="o">=</span> <span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dimensions&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;breakdown&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dimensions</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/5 - </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">strategic</span> <span class="o">=</span> <span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;strategic_advice&quot;</span><span class="p">)</span>
+        <span class="n">first_step</span> <span class="o">=</span> <span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;first_step&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">strategic</span><span class="p">:</span>
+            <span class="n">details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🧠 Strategic Advice: </span><span class="si">{</span><span class="n">strategic</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">first_step</span><span class="p">:</span>
+            <span class="n">details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;👣 First Step: </span><span class="si">{</span><span class="n">first_step</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">VerificationResult</span><span class="p">(</span>
+            <span class="n">passed</span><span class="o">=</span><span class="n">passed</span><span class="p">,</span>
+            <span class="n">check_type</span><span class="o">=</span><span class="s2">&quot;semantic&quot;</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Semantic Score: </span><span class="si">{</span><span class="n">score</span><span class="si">}</span><span class="s2">/5.0 (</span><span class="si">{</span><span class="s1">&#39;PASS&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">passed</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;FAIL&#39;</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+            <span class="n">details</span><span class="o">=</span><span class="n">details</span><span class="p">,</span>
+            <span class="n">suggestions</span><span class="o">=</span><span class="n">feedback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;suggestions&quot;</span><span class="p">,</span> <span class="p">[]),</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">VerificationResult</span><span class="p">(</span>
+            <span class="n">passed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">check_type</span><span class="o">=</span><span class="s2">&quot;semantic&quot;</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Judge failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">details</span><span class="o">=</span><span class="p">[],</span>
+            <span class="n">suggestions</span><span class="o">=</span><span class="p">[],</span>
+        <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="boring.verification.verifier.CodeVerifier.run_tests" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">run_tests</span><span class="p">(</span><span class="n">test_path</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Run tests based on project type.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src\boring\verification\verifier.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_tests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VerificationResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run tests based on project type.&quot;&quot;&quot;</span>
+    <span class="c1"># Detect project type</span>
+    <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;Cargo.toml&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">test_runners</span><span class="o">.</span><span class="n">run_tests_rust</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">,</span> <span class="n">test_path</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;pom.xml&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">test_runners</span><span class="o">.</span><span class="n">run_tests_maven</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">,</span> <span class="n">test_path</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;build.gradle&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;build.gradle.kts&quot;</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">test_runners</span><span class="o">.</span><span class="n">run_tests_gradle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">,</span> <span class="n">test_path</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;package.json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">test_runners</span><span class="o">.</span><span class="n">run_tests_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">,</span> <span class="n">test_path</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;go.mod&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">test_runners</span><span class="o">.</span><span class="n">run_tests_go</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">,</span> <span class="n">test_path</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">test_runners</span><span class="o">.</span><span class="n">run_tests_python</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">,</span> <span class="n">test_path</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="test-runners">Test Runners (測試執行)</h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="boring.verification.test_runners" class="doc doc-heading">
+            <code>boring.verification.test_runners</code>
+
+
+</h3>
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../utils_zh/" class="btn btn-neutral float-left" title="Utilities"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../utils_zh/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

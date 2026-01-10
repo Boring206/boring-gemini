@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>效能與架構 - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u6548\u80fd\u8207\u67b6\u69cb";
+        var mkdocs_page_input_path = "features\\performance_zh.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/troubleshooting_zh/">故障排除</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reference/contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">效能與架構</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/features/performance_zh.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="_1">效能與架構</h1>
+<blockquote>
+<p>Boring 專為大型專案的最高效率而設計。本文檔說明以效能為核心的架構和優化策略。</p>
+</blockquote>
+<hr />
+<h2 id="_2">🚀 增量驗證</h2>
+<h3 id="_3">智能快取系統</h3>
+<p>Boring 在 <code>.boring/cache/verification.json</code> 維護驗證快取，儲存檔案雜湊值。這實現了：</p>
+<ul>
+<li><strong>100+ 未變更檔案</strong> → 重新驗證時間 <strong>&lt; 2 秒</strong></li>
+<li><strong>只分析變更的檔案</strong></li>
+<li><strong>快取失效</strong> 在檔案修改時自動處理</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 正常驗證（使用快取）</span>
+boring<span class="w"> </span>verify
+
+<span class="c1"># 強制完整驗證（繞過快取）</span>
+boring<span class="w"> </span>verify<span class="w"> </span>--force
+</code></pre></div>
+<h3 id="v10280">效能指標 (v10.28.0)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">操作</th>
+<th style="text-align: left;">v10.24 (舊版)</th>
+<th style="text-align: left;">v10.28 (瘦身版)</th>
+<th style="text-align: left;">加速倍率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>冷啟動 (Cold Start)</strong></td>
+<td style="text-align: left;">~2,500ms</td>
+<td style="text-align: left;"><strong>~575ms</strong></td>
+<td style="text-align: left;"><strong>~4.3x</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">工具 Profile 載入</td>
+<td style="text-align: left;">~800ms</td>
+<td style="text-align: left;">&lt; 100ms</td>
+<td style="text-align: left;">8x</td>
+</tr>
+<tr>
+<td style="text-align: left;">全局索引搜尋</td>
+<td style="text-align: left;">~4s</td>
+<td style="text-align: left;">~2s</td>
+<td style="text-align: left;">2x</td>
+</tr>
+<tr>
+<td style="text-align: left;">驗證 (快取)</td>
+<td style="text-align: left;">~5s</td>
+<td style="text-align: left;">~3s</td>
+<td style="text-align: left;">1.6x</td>
+</tr>
+</tbody>
+</table>
+<h3 id="boring-diet">「Boring Diet」瘦身優化</h3>
+<p>Boring V10.28 移除了核心啟動路徑中的「贅肉」：
+- <strong>移除預先載入</strong>：所有重量級函式庫（Torch, ChromaDB, FastAPI）現在改為 <strong>延遲載入 (Lazy-Loaded)</strong>。
+- <strong>模組化 Extras</strong>：可選功能被隔離在 <code>DependencyManager</code> 後方。
+- <strong>零延遲 Profile</strong>：<code>lite</code> 設定檔現在是預設，僅消耗 ~3k tokens，CPU 開銷微乎其微。</p>
+<h3 id="context-optimization">上下文優化 (Context Optimization)</h3>
+<p>Boring V10.24 引入 <strong>工具配置檔 (Tool Profiles)</strong> 來大幅減少上下文佔用：</p>
+<ul>
+<li><strong>問題</strong>: 載入 98 個工具定義會消耗約 30k tokens 的上下文窗口。</li>
+<li><strong>解決方案</strong>: <code>lite</code> 配置 (預設) 僅載入 20 個核心工具 (~5k tokens)。</li>
+<li><strong>影響</strong>: <strong>上下文減少 80%</strong>，推理更快，成本更低。</li>
+</ul>
+<p>通過 <code>.boring.toml</code> 或環境變數 <code>BORING_MCP_PROFILE=lite</code> 啟用。</p>
+<hr />
+<h2 id="rag">🧠 增量 RAG 索引</h2>
+<h3 id="_4">狀態追蹤</h3>
+<p>RAG 索引使用內容雜湊來追蹤變更：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 增量索引（預設 - 只處理變更的檔案）</span>
+boring<span class="w"> </span>rag<span class="w"> </span>index
+
+<span class="c1"># 完整重新索引</span>
+boring<span class="w"> </span>rag<span class="w"> </span>index<span class="w"> </span>--force
+</code></pre></div>
+<h3 id="ragwatcher-v1018">RAGWatcher 自動更新（V10.18+）</h3>
+<p>從 V10.18.3 開始，<code>RAGWatcher</code> 自動偵測檔案變更並觸發增量重新索引：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 自動執行 - 不需要手動命令</span>
+<span class="c1"># RAGWatcher 在 boring start 期間在背景執行</span>
+</code></pre></div>
+<hr />
+<h2 id="v1013">⚡ 平行驗證（V10.13+）</h2>
+<h3 id="_5">執行緒池架構</h3>
+<p>Boring 使用 <code>ThreadPoolExecutor</code> 進行並發檢查：</p>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────┐
+│           驗證引擎                       │
+├─────────────────────────────────────────┤
+│  ┌─────┐  ┌─────┐  ┌─────┐  ┌─────┐    │
+│  │ T1  │  │ T2  │  │ T3  │  │ T4  │    │
+│  │Lint │  │Test │  │Type │  │Sec  │    │
+│  └──┬──┘  └──┬──┘  └──┬──┘  └──┬──┘    │
+│     └────────┴────────┴────────┘       │
+│              聚合器                      │
+└─────────────────────────────────────────┘
+</code></pre></div>
+<h3 id="_6">效能提升</h3>
+<table>
+<thead>
+<tr>
+<th>專案大小</th>
+<th>序列執行</th>
+<th>平行（4 執行緒）</th>
+<th>加速比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>小型（50 檔案）</td>
+<td>15秒</td>
+<td>8秒</td>
+<td>1.9x</td>
+</tr>
+<tr>
+<td>中型（200 檔案）</td>
+<td>45秒</td>
+<td>15秒</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>大型（500+ 檔案）</td>
+<td>120秒</td>
+<td>30秒</td>
+<td>4x</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_7">🔄 提供者切換</h2>
+<h3 id="_8">多語言架構</h3>
+<p>Boring 支援多個 AI 提供者，並具有自動偵測功能：</p>
+<table>
+<thead>
+<tr>
+<th>提供者</th>
+<th>需要 API Key</th>
+<th>最適合</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gemini CLI</td>
+<td>❌</td>
+<td>一般開發</td>
+</tr>
+<tr>
+<td>Claude Code CLI</td>
+<td>❌</td>
+<td>複雜推理</td>
+</tr>
+<tr>
+<td>Ollama（本地）</td>
+<td>❌</td>
+<td>隱私敏感</td>
+</tr>
+<tr>
+<td>SDK 模式</td>
+<td>✅</td>
+<td>自訂整合</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="c1"># 啟動時自動偵測</span>
+boring<span class="w"> </span>start
+
+<span class="c1"># 明確指定提供者</span>
+boring<span class="w"> </span>start<span class="w"> </span>--provider<span class="w"> </span>gemini-cli
+boring<span class="w"> </span>start<span class="w"> </span>--provider<span class="w"> </span>claude-code
+boring<span class="w"> </span>start<span class="w"> </span>--provider<span class="w"> </span>ollama
+</code></pre></div>
+<hr />
+<h2 id="_9">📊 品質趨勢追蹤</h2>
+<h3 id="_10">歷史記錄</h3>
+<p>審核分數儲存在 <code>.boring/brain/quality_history.json</code>：</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;2024-01-01&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">4.2</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;issues&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;2024-01-02&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">4.5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;issues&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;2024-01-03&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">4.8</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;issues&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="_11">視覺化</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># ASCII 趨勢圖</span>
+boring_quality_trend<span class="w"> </span>--days<span class="w"> </span><span class="m">30</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>品質分數趨勢（過去 30 天）
+5.0 |                    ████████
+4.5 |          ████████████
+4.0 |  ██████████
+3.5 |██
+    └───────────────────────────────
+       1月1日     1月15日     1月30日
+</code></pre></div>
+<hr />
+<h2 id="_12">🛠️ 配置</h2>
+<h3 id="boringtoml">專案級設定（.boring.toml）</h3>
+<div class="highlight"><pre><span></span><code><span class="k">[boring.performance]</span>
+<span class="n">parallel_workers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w">          </span><span class="c1"># 執行緒數量</span>
+<span class="n">verification_cache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">     </span><span class="c1"># 啟用快取</span>
+<span class="n">incremental_rag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">        </span><span class="c1"># 自動 RAG 更新</span>
+
+<span class="k">[boring.timeouts]</span>
+<span class="n">api_call</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">60</span><span class="w">                 </span><span class="c1"># 秒</span>
+<span class="n">verification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">300</span><span class="w">            </span><span class="c1"># 秒</span>
+</code></pre></div>
+<hr />
+<h2 id="_13">💡 最佳實踐</h2>
+<h3 id="_14">大型專案</h3>
+<ol>
+<li><strong>啟用快取</strong> - 將 <code>.boring/cache/</code> 加入 <code>.gitignore</code></li>
+<li><strong>使用增量模式</strong> - <code>boring verify --incremental</code></li>
+<li><strong>平行化</strong> - 確保 CPU 核心被充分利用</li>
+</ol>
+<h3 id="cicd">CI/CD</h3>
+<ol>
+<li><strong>預熱快取</strong> - 在平行任務前先執行一次驗證</li>
+<li><strong>使用分層閘道</strong> - <code>BASIC</code> → <code>STANDARD</code> → <code>FULL</code></li>
+<li><strong>監控趨勢</strong> - 在品質回歸時失敗</li>
+</ol>
+<hr />
+<h2 id="_15">另請參閱</h2>
+<ul>
+<li><a href="../quality-gates_zh/">品質閘道</a> - CI/CD 配置</li>
+<li><a href="../mcp-tools_zh/">MCP 工具</a> - 工具參考</li>
+<li><a href="../../guides/pro-tips_zh/">專業技巧</a> - 優化策略</li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

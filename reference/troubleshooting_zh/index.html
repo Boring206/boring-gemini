@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Boring206" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>故障排除 - Boring-Gemini API 文檔</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u6545\u969c\u6392\u9664";
+        var mkdocs_page_input_path = "reference\\troubleshooting_zh.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Boring-Gemini API 文檔
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首頁</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🚀 快速上手</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart/">既然是用游標 (Quick Start)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation/">安裝指南 (Installation)</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📖 指南 (Guides)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/cookbook_zh/">🍳 Vibe 食譜 (Cookbook)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/vibe-coder_zh/">🧞‍♂️ Vibe Coder (Router)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/skills_guide/">Skills & 擴充</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/human-alignment_zh/">人類對齊 (Alignment)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/plugins_zh/">外掛系統 (Plugins)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guides/architect_mode_zh/">架構師模式</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">✨ 核心功能 (Features)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/mcp-tools_zh/">🛠️ MCP 工具集</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/shadow-mode_zh/">🧛 影子模式 (Shadow Mode)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/rag_zh/">RAG 知識庫</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/quality-gates_zh/">品質閘門 (Quality Gates)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../features/hidden-gems_zh/">💎 隱藏寶石</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">📚 教學 (Tutorials)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/TUTORIAL_en/">基礎教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/ADVANCED_TUTORIAL_zh/">進階教學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PRACTICAL_DEMO_en/">實戰演示</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../tutorials/PROFESSIONAL_PLAYBOOK_en/">企業手冊</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">⚙️ 參考 (Reference)</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../configuration_zh/">🔰 配置手冊 (Config)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_B_FAQ_zh/">❓ 常見問題 (FAQ)</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">故障排除</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">🔍 診斷工具</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">🛑 常見問題</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-agent-thinking">1. "Agent 卡在 Thinking 狀態"</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-rag">2. "RAG 搜尋沒有返回結果"</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3">3. "影子模式阻擋了所有操作"</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-smithery-gemini-client">4. "Smithery 安裝在 Gemini Client 上失敗"</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#5">5. "乾淨的代碼驗證失敗"</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">🐛 除錯模式</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_5">啟用除錯日誌</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#api">追蹤 API 呼叫</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_6">🆘 取得幫助</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#6">6. "找不到工具 / 指令未找到"</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_C_PROMPT_PHILOSOPHY_zh/">Prompt 哲學</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../APPENDIX_A_TOOL_REFERENCE_zh/">工具詳細參數</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../security-privacy_zh/">安全與隱私</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../architecture_zh/">架構設計</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../contributing_zh/">貢獻指南</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">🔌 API 參考 (API Reference)</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/index_zh/">索引 (Index)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/agents_zh/">Agents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/intelligence_zh/">Intelligence</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/loop_zh/">Loop & Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/judge_zh/">Judge & Evaluation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/security_zh/">Security</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/mcp_server_zh/">MCP Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/tools_zh/">Tools</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/resources_zh/">Resources</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/vibe_zh/">Vibe Module</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/hooks_zh/">Git Hooks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils_zh/">Utilities</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/verification/">Verification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Boring-Gemini API 文檔</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">⚙️ 參考 (Reference)</li>
+      <li class="breadcrumb-item active">故障排除</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Boring206/boring-gemini/edit/master/docs/reference/troubleshooting_zh.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="_1">故障排除指南</h1>
+<blockquote>
+<p>診斷並修復 Boring 的常見問題。</p>
+</blockquote>
+<hr />
+<h2 id="_2">🔍 診斷工具</h2>
+<p>在嘗試手動修復之前，請使用內建診斷工具：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 檢查環境和系統健康狀況</span>
+boring<span class="w"> </span>doctor
+
+<span class="c1"># 顯示當前配置（對除錯很有用）</span>
+boring<span class="w"> </span>config<span class="w"> </span>show
+
+<span class="c1"># 查看日誌</span>
+tail<span class="w"> </span>-f<span class="w"> </span>~/.boring_logs/boring.log
+</code></pre></div>
+<hr />
+<h2 id="_3">🛑 常見問題</h2>
+<h3 id="1-agent-thinking">1. "Agent 卡在 Thinking 狀態"</h3>
+<p><strong>症狀</strong>：旋轉指示器持續超過 2 分鐘，沒有輸出。</p>
+<p><strong>原因</strong>：
+- API 速率限制 (429)
+- 複雜提示導致超時
+- 網路連接問題</p>
+<p><strong>解決方案</strong>：
+1. <strong>檢查日誌</strong>：<code>tail ~/.boring_logs/boring.log</code> 查看 API 錯誤。
+2. <strong>重啟</strong>：按 <code>Ctrl+C</code> 停止，然後再次執行 <code>boring start</code>。Boring 會從記憶中恢復。
+3. <strong>重置上下文</strong>：如果卡在錯誤的思考迴圈中：
+   <div class="highlight"><pre><span></span><code>rm<span class="w"> </span>.boring/memory/context.json
+boring<span class="w"> </span>start
+</code></pre></div></p>
+<h3 id="2-rag">2. "RAG 搜尋沒有返回結果"</h3>
+<p><strong>症狀</strong>：<code>boring_rag_search</code> 返回空列表。</p>
+<p><strong>原因</strong>：
+- 索引未建立
+- 嵌入向量缺失
+- <code>.gitignore</code> 排除了原始碼檔案</p>
+<p><strong>解決方案</strong>：
+1. <strong>強制重新索引</strong>：
+   <div class="highlight"><pre><span></span><code>boring<span class="w"> </span>rag<span class="w"> </span>index<span class="w"> </span>--force
+</code></pre></div>
+2. <strong>檢查 <code>.gitignore</code></strong>：確保 <code>src/</code> 未被忽略。
+3. <strong>驗證安裝</strong>：執行 <code>pip show chromadb</code>。如果缺失，安裝 <code>boring-aicoding[mcp]</code>。</p>
+<h3 id="3">3. "影子模式阻擋了所有操作"</h3>
+<p><strong>症狀</strong>：每個操作都要求批准，即使是安全的操作。</p>
+<p><strong>原因</strong>：
+- 全域配置中級別設為 <code>STRICT</code>。
+- <code>auto_approve_patterns</code> 為空。</p>
+<p><strong>解決方案</strong>：
+1. <strong>檢查級別</strong>：
+   <div class="highlight"><pre><span></span><code>boring_shadow_mode<span class="w"> </span>status
+</code></pre></div>
+2. <strong>降低級別</strong>（如果安全）：
+   <div class="highlight"><pre><span></span><code><span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;set_level&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ENABLED&quot;</span><span class="p">)</span>
+</code></pre></div>
+3. <strong>重置配置</strong>：
+   刪除 <code>~/.boring/brain/shadow_config.json</code> 以恢復預設值。</p>
+<h3 id="4-smithery-gemini-client">4. "Smithery 安裝在 Gemini Client 上失敗"</h3>
+<p><strong>症狀</strong>：<code>npx</code> 安裝期間出錯或 "Connection refused"。</p>
+<p><strong>原因</strong>：
+- Gemini Client 對 Smithery 有特定的網路/環境限制。</p>
+<p><strong>解決方案</strong>：
+使用本地 pip 安裝作為備用：
+1. <code>git clone https://github.com/Boring206/boring-gemini.git</code>
+2. <code>pip install -e .</code>
+3. 手動配置 MCP（參見 <a href="../configuration_zh/">配置</a>）。</p>
+<h3 id="5">5. "乾淨的代碼驗證失敗"</h3>
+<p><strong>症狀</strong>：<code>boring verify</code> 報告僅存在於快取中的錯誤。</p>
+<p><strong>原因</strong>：
+- 過期的快取檔案。</p>
+<p><strong>解決方案</strong>：
+1. <strong>清除快取</strong>：
+   <div class="highlight"><pre><span></span><code>rm<span class="w"> </span>-rf<span class="w"> </span>.boring/cache/
+</code></pre></div>
+2. <strong>執行全新驗證</strong>：
+   <div class="highlight"><pre><span></span><code>boring<span class="w"> </span>verify<span class="w"> </span>--force
+</code></pre></div></p>
+<hr />
+<h2 id="_4">🐛 除錯模式</h2>
+<h3 id="_5">啟用除錯日誌</h3>
+<p>在 <code>.boring.toml</code> 中：
+<div class="highlight"><pre><span></span><code><span class="k">[boring]</span>
+<span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+</code></pre></div></p>
+<p>或透過環境變數：
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">BORING_LOG_LEVEL</span><span class="o">=</span>DEBUG
+boring<span class="w"> </span>start
+</code></pre></div></p>
+<h3 id="api">追蹤 API 呼叫</h3>
+<p>查看發送給 LLM 的確切內容：
+<div class="highlight"><pre><span></span><code>tail<span class="w"> </span>-f<span class="w"> </span>~/.boring_logs/api_trace.log
+</code></pre></div></p>
+<hr />
+<h2 id="_6">🆘 取得幫助</h2>
+<p>如果這些步驟無法修復：</p>
+<ol>
+<li><strong>執行 <code>boring doctor</code></strong> 並保存輸出。</li>
+<li><strong>收集日誌</strong>：壓縮 <code>~/.boring_logs/</code>。</li>
+<li><strong>開啟 Issue</strong>：<a href="https://github.com/Boring206/boring-gemini/issues">GitHub Issues</a> 並附上上述資訊。</li>
+</ol>
+<h3 id="6">6. "找不到工具 / 指令未找到"</h3>
+<p><strong>症狀</strong>：嘗試使用 <code>boring_code_review</code> 或 <code>boring_test_gen</code> 但 Agent 說「找不到工具」。</p>
+<p><strong>原因</strong>：
+- 您可能處於 <code>minimal</code> 或 <code>ultra_lite</code> Profile 模式。</p>
+<p><strong>解決方案</strong>：
+1. 檢查當前 Profile：
+   <div class="highlight"><pre><span></span><code>boring<span class="w"> </span>config<span class="w"> </span>show
+</code></pre></div>
+2. 切換至 <code>lite</code> 或 <code>standard</code>：
+   <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">BORING_MCP_PROFILE</span><span class="o">=</span>lite
+<span class="c1"># 重啟 IDE/Server</span>
+</code></pre></div>
+   詳情請見 <a href="../../guides/mcp-profiles-comparison_zh/">MCP Profiles 指南</a>。</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../APPENDIX_B_FAQ_zh/" class="btn btn-neutral float-left" title="❓ 常見問題 (FAQ)"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../APPENDIX_C_PROMPT_PHILOSOPHY_zh/" class="btn btn-neutral float-right" title="Prompt 哲學">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Boring206/boring-gemini" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../APPENDIX_B_FAQ_zh/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../APPENDIX_C_PROMPT_PHILOSOPHY_zh/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
