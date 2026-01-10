@@ -131,6 +131,13 @@ Select the underlying model provider.
 }
 ```
 
+> 📋 **Smithery Deployment Info**
+> - **Default Profile**: `lite` (~20 tools)
+> - **Installation Type**: `[mcp-lite]` lightweight
+> - **RAG Capability**: Degraded to keyword search (no vector DB)
+> - **Adjustable**: Set `BORING_MCP_PROFILE: "dev"` or `"pro"` in config
+> - **Full RAG**: Requires local install `pip install "boring-aicoding[all]"`
+
 ### Hybrid (Local + Cloud)
 
 ```json

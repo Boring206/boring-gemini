@@ -131,6 +131,13 @@
 }
 ```
 
+> 📋 **Smithery 部署資訊**
+> - **默認 Profile**: `lite`（~20 個工具）
+> - **安裝類型**: `[mcp-lite]` 輕量級
+> - **RAG 功能**: 降級為關鍵字搜尋（無向量庫）
+> - **可調整**: 在配置中設置 `BORING_MCP_PROFILE: "dev"` 或 `"pro"`
+> - **完整 RAG**: 需本地安裝 `pip install "boring-aicoding[all]"`
+
 ### 混合版 (本地 + 雲端)
 
 ```json

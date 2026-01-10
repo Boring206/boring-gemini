@@ -83,6 +83,13 @@ Boring-Gemini V10.28 continues to refine the critical optimizations inspired by 
 npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ```
 
+> 📋 **Smithery Deployment Info**
+> - **Profile Level**: `lite` (default, adjustable to `dev` or `pro` in config)
+> - **Installation Type**: `[mcp-lite]` lightweight (~500MB, no RAG vector DB)
+> - **RAG Capability**: ⚠️ Degraded to keyword search (no ChromaDB/Torch)
+> - **Best For**: Daily development, fast response
+> - **For Full RAG**: Use Option 2 local install `[all]`
+
 > ⚠️ **Gemini Client Users**: If you encounter issues installing via Smithery, please use **Option 2 (Local pip)**. Direct Smithery integration on Gemini Client can be intermittent.
 
 ### Option 2: Local pip Installation
