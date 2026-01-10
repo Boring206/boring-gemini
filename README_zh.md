@@ -74,6 +74,9 @@ Boring-Gemini V10.28 持續優化受 NotebookLM 研究啟發的多項核心功�
 - **上下文嵌入動態提示**：模組化提示系統，僅在需要時才加載上下文，節省高達 60% Token 成本。
 
 ---
+### 🛠️ 專為 Vibe Coder 打造的自主開發代理
+
+[**探索官方文檔**](https://boring206.github.io/boring-gemini/) | [**Smithery 註冊表**](https://smithery.ai/server/boring-aicoding) | [**PyPI**](https://pypi.org/project/boring-aicoding/)
 [![Downloads](https://img.shields.io/pypi/dm/boring-aicoding.svg)](https://pypi.org/project/boring-aicoding/)
 [![smithery badge](https://smithery.ai/badge/boring/boring)](https://smithery.ai/server/boring/boring)
 

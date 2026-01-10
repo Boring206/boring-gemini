@@ -2,6 +2,10 @@
 [![PyPI version](https://badge.fury.io/py/boring-aicoding.svg)](https://badge.fury.io/py/boring-aicoding)
 [![Downloads](https://static.pepy.tech/badge/boring-aicoding)](https://pepy.tech/project/boring-aicoding)
 [![Python Versions](https://img.shields.io/pypi/pyversions/boring-aicoding.svg)](https://pypi.org/project/boring-aicoding/)
+
+### 🛠️ The Autonomous Development Agent for Vibe Coders
+
+[**Explore Documentation**](https://boring206.github.io/boring-gemini/) | [**Smithery Registry**](https://smithery.ai/server/boring-aicoding) | [**PyPI**](https://pypi.org/project/boring-aicoding/)
 [![Vibe Coder](https://img.shields.io/badge/Vibe_Coder-Pure_Natural_Language-ff69b4)](docs/features/vibe-coder.md)
 
 # Boring for Gemini
