@@ -15,6 +15,18 @@ Choose your path:
 | 🔧 **DevOps/CI** | [Quality Gates](./features/quality-gates.md) |
 | 🏢 **Team Lead** | [Pro Tips](./guides/pro-tips.md) |
 
+### 📦 Installation Options
+
+| Method | Profile | RAG Capability | Best For |
+|--------|---------|----------------|----------|
+| **Smithery (Remote)** | `lite` (default) | ⚠️ Keyword only | Quick setup, daily development |
+| **Local pip `[all]`** | `standard`/`full` | ✅ Vector + Semantic | Full RAG, complete features |
+| **Local pip (minimal)** | `lite` | ⚠️ Keyword only | Lightweight, CI/CD |
+
+> 📋 **Smithery Deployment**: Uses `[mcp-lite]` (~500MB), `lite` profile by default (~20 tools). For full RAG with vector search, use local installation.
+>
+> 📖 **[Complete Installation Guide](../README.md#-installation)** | **[MCP Configuration Guide](./guides/mcp-configuration.md)**
+
 ---
 
 ## 📚 Documentation Structure
