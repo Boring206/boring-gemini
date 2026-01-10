@@ -2,7 +2,6 @@
 Tests for error diagnostics module.
 """
 
-import pytest
 
 from boring.error_diagnostics import DiagnosticResult, ErrorDiagnostics
 
