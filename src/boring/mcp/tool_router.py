@@ -1,7 +1,7 @@
 # Copyright 2026 Boring for Gemini Authors
 # SPDX-License-Identifier: Apache-2.0
 """
-Tool Router - Unified Gateway for MCP Tools (V10.24)
+Tool Router - Unified Gateway for MCP Tools (V10.31)
 
 Problem: 98 individual tools overwhelms LLM context and causes selection confusion.
 
@@ -150,12 +150,17 @@ TOOL_CATEGORIES = {
             "commit",
             "分支",
             "歷史",
+            "checkpoint",
+            "還原",
+            "回退",
+            "存檔",
         ],
         tools=[
             "boring_commit",
             "boring_hooks_install",
             "boring_hooks_status",
             "boring_hooks_uninstall",
+            "boring_checkpoint",
         ],
     ),
     "docs": ToolCategory(
@@ -220,6 +225,7 @@ TOOL_CATEGORIES = {
             "boring_shadow_trust",
             "boring_shadow_trust_list",
             "boring_shadow_trust_remove",
+            "boring_checkpoint",
         ],
     ),
     "planning": ToolCategory(
@@ -605,6 +611,12 @@ class ToolRouter:
             if tool_short in query:
                 score += 2.0
 
+        # V10.31: Global Safety Checkpoint Boost
+        if category.name == "Git & Version Control" and any(
+            kw in query for kw in ["checkpoint", "還原", "回退", "存檔", "rollback"]
+        ):
+            score += 10.0
+
         return score
 
     def _select_tool_in_category(self, query: str, category: ToolCategory) -> str:
@@ -622,6 +634,27 @@ class ToolRouter:
                 if word in query:
                     score += 1.0
 
+            # V10.31: Specific Cross-Keyword Boost
+            if tool == "boring_checkpoint":
+                if any(
+                    kw in query
+                    for kw in [
+                        "checkpoint",
+                        "restore",
+                        "rollback",
+                        "save",
+                        "還原",
+                        "回退",
+                        "存檔",
+                        "救命",
+                    ]
+                ):
+                    score += 5.0  # High boost for specific checkpoint intent
+
+            if tool == "boring_commit":
+                if any(kw in query for kw in ["commit", "提交", "推送", "push"]):
+                    score += 2.0  # Boost for direct commit intent
+
             tool_scores[tool] = score
 
         # Return best scoring tool, or first if no matches
@@ -633,6 +666,7 @@ class ToolRouter:
     def _extract_params(self, query: str, tool: str) -> dict:
         """Extract likely parameters from the query."""
         params = {}
+        query_lower = query.lower()
 
         # Common patterns
         if "rag" in tool or "search" in tool:
@@ -644,6 +678,35 @@ class ToolRouter:
             file_match = re.search(r"([a-zA-Z0-9_/\\]+\.(py|js|ts|tsx|md|json))", query)
             if file_match:
                 params["file_path"] = file_match.group(1)
+
+        if "checkpoint" in tool:
+            # Action detection
+            # Priority: restore > create > list
+            if any(kw in query_lower for kw in ["restore", "revert", "rollback", "還原", "回退"]):
+                params["action"] = "restore"
+            elif any(
+                kw in query_lower
+                for kw in ["create", "save", "建立", "標記", "存檔為", "叫做", "叫作"]
+            ):
+                params["action"] = "create"
+            elif any(
+                kw in query_lower for kw in ["list", "show", "哪個", "哪些", "清單", "列表", "存檔"]
+            ):
+                params["action"] = "list"
+            else:
+                params["action"] = "list"
+
+            # Name extraction - Use original query for casing
+            # Supports: "to X", "as X", "at X", "into X", "還原到 X", "存檔為 X", "叫作 X", "叫做 X", "到 X", "為 X"
+            name_match = re.search(
+                r"(?:\bto\b|\bas\b|\bat\b|\binto\b|還原到|存檔為|叫作|叫做|到|為)\s*([a-zA-Z0-9_\-\.]+)",
+                query,
+                re.IGNORECASE,
+            )
+            if name_match:
+                params["name"] = name_match.group(1)
+            elif params.get("action") in ["create", "restore"]:
+                params["_note"] = "A checkpoint name is required for this action."
 
         if "project" in query or "path" in query:
             # Note that project_path might be needed
@@ -740,6 +803,7 @@ Instead of remembering 98+ specific tools, just describe what you want:
 - "評估這段程式碼" → boring_evaluate
 - "show bias report" → boring_bias_report
 - "generate rubric for API" → boring_generate_rubric
+- "還原到重構前" → boring_checkpoint
 
 **Categories:**
 - RAG & Search: Find code, get context

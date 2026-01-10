@@ -12,7 +12,10 @@ from boring.mcp.tools.assistant import register_assistant_tools
 
 # Mock Objects
 mock_mcp = MagicMock()
-mock_audited = lambda x: x
+
+
+def mock_audited(x):
+    return x
 
 
 def get_boring_suggest_next_function():
@@ -69,8 +72,10 @@ def test_suggest_next_filtering_in_lite_profile():
         mock_miner.analyze_project_state.return_value = "Active"
         mock_get_miner.return_value = mock_miner
 
-        # Simulate LITE restriction
-        mock_should_tool.side_effect = lambda tool, prof: tool != "boring_rag_index"
+        def mock_should_tool_logic(tool, prof):
+            return tool != "boring_rag_index"
+
+        mock_should_tool.side_effect = mock_should_tool_logic
 
         # Mock RAG check check - needs __name__ for ThreadPoolExecutor
         mock_rag_check.return_value = [
@@ -132,4 +137,7 @@ def test_suggest_next_allowed_in_full_profile():
             m4.__name__ = "_check_project_empty"
 
             result = boring_suggest_next()
-            assert "Run `boring_rag_index`" in result["context_enhancements"][0]["action"]
+            rag_suggestion = next(
+                item for item in result["context_enhancements"] if item["type"] == "rag_not_indexed"
+            )
+            assert "Run `boring_rag_index`" in rag_suggestion["action"]

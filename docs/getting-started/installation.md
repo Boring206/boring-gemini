@@ -61,5 +61,5 @@ Run this in your terminal:
 
 ```bash
 boring --version
-# Output: boring v10.28.4  (or newer)
+# Output: boring v10.31.0  (or newer)
 ```

@@ -6,11 +6,11 @@
 
 ## 🧠 What is the "Brain"?
 
-Boring stores its persistent intelligence in a dedicated directory called `.boring/brain` (usually located in your project root or user home). This directory contains:
+Boring stores its persistent intelligence in a dedicated directory called `.boring/brain` (usually located in `~/.boring/brain`). This directory contains:
 
-1.  **Learnings (`learnings.json`)**: Captured error-solution patterns.
-2.  **RAG Index (ChromaDB)**: Vector metadata of your codebase.
-3.  **Context**: History of your plans and progress.
+1.  **Learnings (`patterns/`)**: Captured error-solution patterns.
+2.  **Rubrics (`rubrics/`)**: Project-specific quality criteria.
+3.  **Shadow Config**: Global Shadow Mode settings.
 
 ---
 
@@ -18,11 +18,11 @@ Boring stores its persistent intelligence in a dedicated directory called `.bori
 
 ### Sharing Progress with a Team
 To allow a team member to benefit from what Boring has already learned:
-1.  **Copy metadata**: Share the `.boring/brain/learnings.json` file.
-2.  **Import**: The colleague can place this file in their local `.boring/brain/` directory.
+1.  **Export patterns**: Use `boring_global_export` to share specific patterns.
+2.  **Import**: The colleague can use `boring_global_import`.
 
 ### Migrating across Projects
-If you start a new project similar to an old one, you can bootstrap it by copying the `learnings.json`.
+Starting in V10.31, **Active Recall** automatically handles cross-project knowledge retrieval from the global brain.
 
 ---
 
@@ -49,5 +49,5 @@ If you want Boring to start with a clean slate (forgetting all previous errors a
 
 ## 💡 Best Practices
 
-- **Periodic Backups**: Commit your `.boring/brain/learnings.json` (if small) to Git if you want to track how the project's knowledge evolves.
-- **Selective Learning**: Use the `boring_learn` tool explicitly if you find a very clever fix that you want the agent to remember forever.
+- **Periodic Backups**: Knowledge in `~/.boring/brain/` is global. Keep it safe!
+- **Selective Learning**: Use the `boring_learn_pattern` tool explicitly if you find a very clever fix that you want the agent to remember forever.
