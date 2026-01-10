@@ -683,5 +683,11 @@ class SQLiteStorage:
 
 def create_storage(project_root: Path, log_dir: Optional[Path] = None) -> SQLiteStorage:
     """Factory function to create storage instance."""
-    memory_dir = project_root / ".boring_memory"
+    try:
+        from boring.paths import get_boring_path
+
+        memory_dir = get_boring_path(project_root, "memory", warn_legacy=False)
+    except ImportError:
+        # Fallback if paths module not available
+        memory_dir = project_root / ".boring_memory"
     return SQLiteStorage(memory_dir, log_dir)

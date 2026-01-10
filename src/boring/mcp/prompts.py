@@ -840,7 +840,7 @@ Focus: {focus}
    - Naming conventions
    - Common fix patterns
    - Code structure preferences
-3. Save learned patterns to `.boring_brain/`
+3. Save learned patterns to `.boring/brain/`
 4. Show summary of what was learned
 """
 
@@ -861,7 +861,7 @@ Rubric Name: {rubric_name}
    - Naming convention rules
    - Documentation requirements
    - Test coverage minimums
-3. Save to `.boring_brain/rubrics/{rubric_name}.yaml`
+3. Save to `.boring/brain/rubrics/{rubric_name}.yaml`
 4. These will be used by `boring_evaluate` for automated scoring
 """
 

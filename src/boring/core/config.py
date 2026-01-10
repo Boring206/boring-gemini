@@ -56,11 +56,11 @@ class Settings(BaseSettings):
     )
 
     PROJECT_ROOT: Path = Field(default_factory=_find_project_root)
-    LOG_DIR: Path = Field(default=Path("logs"))
-    BRAIN_DIR: Path = Field(default=Path(".boring_brain"))
-    BACKUP_DIR: Path = Field(default=Path(".boring_backups"))
-    MEMORY_DIR: Path = Field(default=Path(".boring_memory"))
-    CACHE_DIR: Path = Field(default=Path(".boring_cache"))
+    LOG_DIR: Path = Field(default=Path(".boring/logs"))
+    BRAIN_DIR: Path = Field(default=Path(".boring/brain"))
+    BACKUP_DIR: Path = Field(default=Path(".boring/backups"))
+    MEMORY_DIR: Path = Field(default=Path(".boring/memory"))
+    CACHE_DIR: Path = Field(default=Path(".boring/cache"))
 
     # Gemini Settings
     GOOGLE_API_KEY: Optional[str] = Field(default=None)

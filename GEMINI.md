@@ -1,4 +1,4 @@
-# GEMINI.md - Boring for Gemini (V10.28)
+# GEMINI.md - Boring for Gemini (V10.31)
 
 ## Project Overview
 
@@ -11,13 +11,15 @@ The system is built entirely in **Python**, using modern CLI frameworks and rich
 - **Intelligent Exit Detection:** The loop automatically terminates when it detects project completion through multiple signals (done signals, task list completion, test saturation).
 - **Safeguards:** Implements rate limiting (to manage API costs), a circuit breaker (to prevent getting stuck in failing loops), and graceful handling of API usage limits.
 - **Live Monitoring:** Provides real-time monitoring of the agent's status, logs, and API call usage via `boring-monitor`.
+- **🆕 Brain Reflex (V10.31):** Active Recall mechanism that automatically retrieves solutions for known errors from the Brain.
+- **🆕 Safety Net (V10.31):** Autonomous Git Checkpoints (`boring_checkpoint`) allowing the Agent to save/restore state before risky ops.
 - **🆕 Theme-Tips Output (V10.27):** Hierarchical tool output format for better LLM comprehension (+1.13% accuracy).
 - **🆕 PREPAIR Reasoning Cache (V10.27):** Caches pointwise analysis before pairwise comparisons, reducing evaluation bias.
 - **🆕 Dynamic Prompts (V10.27):** MCP prompts with contextual embedding (logs, diffs, code) on-demand.
 - **🆕 Token Economy (V10.26):** ULTRA_LITE profile with 97% token savings via progressive disclosure (`boring_discover` tool).
 - **🆕 Hybrid RAG (V10.17):** Combined Vector + Keyword search with dependency graph expansion.
 - **🆕 Security Guard (V10.17):** Cross-session persistent Shadow Mode and multi-file-type security scanning.
-- **🆕 Knowledge Base (.boring_brain):** Persistent storage for workflow adaptations, learned patterns, and evaluation rubrics.
+- **🆕 Knowledge Base (~/.boring/brain):** Persistent storage for workflow adaptations, learned patterns, and evaluation rubrics.
 
 **Technology Stack:**
 - **Language:** Python 3.9+
@@ -118,9 +120,12 @@ pytest tests/test_core.py
   - Logging via the `log_status` function
 - **Modularity:** Core logic is organized in `src/boring/`:
   - `main.py` - CLI entry point and main loop
-  - `core.py` - Rate limiting, exit detection, circuit breaker
-  - `response_analyzer.py` - Gemini output analysis
-  - `monitor.py` - Live monitoring dashboard
+  - `intelligence/` - Brain Manager, Memory, Auto Learner, Pattern Mining
+  - `loop/` - Background Agent, Shadow Mode, Workflow Manager, Transactions
+  - `mcp/` - Model Context Protocol Server & Tools
+  - `judge/` - Evaluation Rubrics and LLM Judge
+  - `cli/` - Command-line interface subcommands
+  - `services/` - Web Monitor and Health Checks
   - `setup.py` - Project scaffolding
 - **AI-Facing Documentation:**
   - `PROMPT.md` - Primary instructions for the AI for a given project

@@ -11,6 +11,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
 
+from boring.paths import get_boring_path
+
 logger = logging.getLogger(__name__)
 
 
@@ -71,7 +73,7 @@ class TrustRuleManager:
 
     def __init__(self, project_root: Path):
         self.project_root = Path(project_root)
-        self.brain_dir = self.project_root / ".boring_brain"
+        self.brain_dir = get_boring_path(self.project_root, "brain")
         self.rules_file = self.brain_dir / "trust_rules.json"
         self.rules: list[TrustRule] = []
 

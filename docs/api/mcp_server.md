@@ -1,6 +1,6 @@
 # mcp_server
 
-::: boring.mcp_server
+::: boring.mcp.server
     options:
       show_root_heading: true
       members_order: source

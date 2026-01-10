@@ -16,7 +16,7 @@
 
 ---
 
-## ✨ The Vibe Coder Experience (V10.28)
+## ✨ The Vibe Coder Experience (V10.31)
 
 **No Code Needed.** Just describe the vibe.
 
@@ -40,6 +40,16 @@ boring-route "review my code"
 
 ---
 
+## 🚀 What's New in V10.31?
+
+Boring continues to evolve into a fully **Agentic AI Partner**:
+
+1.  **🧠 Brain Reflex (Active Recall)**: When the Agent encounters an error (like a failed test), it automatically queries the Global Brain for past solutions and fixes it. No more "stuck loops".
+2.  **🛡️ Safety Net (Git Checkpoints)**: Fearlessly let the AI refactor your code. The new `boring_checkpoint` tool creates safe-points before risky operations, allowing instant rollback if things go wrong.
+3.  **⚡ Architecture Decoupling**: We've split the "Brain" from the core, resulting in a system that is significantly more stable, testable, and faster to boot.
+
+---
+
 ## ⚡ boring 的厲害 (Why Boring?)
 
 Boring isn't just an MCP server; it's a **Intelligence Maximization System**:
@@ -54,13 +64,13 @@ Boring isn't just an MCP server; it's a **Intelligence Maximization System**:
 
 ---
 
-## 🧪 NotebookLM Optimizations (V10.28)
+## 🧪 NotebookLM Optimizations (V10.28+)
 
-Boring-Gemini V10.28 continues to refine the critical optimizations inspired by NotebookLM research to maximize LLM comprehension and minimize token overhead:
+Boring-Gemini V10.28 introduced critical optimizations inspired by NotebookLM research:
 
-- **Theme-Tips Hierarchical Output**: Restructures complex tool outputs into a "Theme → Tips" format. This hierarchical structure has been shown to improve LLM comprehension accuracy by **+1.13%** by reducing cognitive load.
-- **PREPAIR Reasoning Cache**: Implements the *PREPAIR* technique for code evaluation. By caching pointwise reasoning results before pairwise comparison, we eliminate evaluation bias and reduce LLM "laziness" during code selection.
-- **Dynamic Prompts with Contextual Embedding**: Modular prompt system that only loads what is necessary (logs, diffs, or code chunks) on-demand, saving up to 60% in token costs for routine tasks.
+- **Theme-Tips Hierarchical Output**: Restructures complex tool outputs into a "Theme → Tips" format (+1.13% comprehension).
+- **PREPAIR Reasoning Cache**: Caches logic before comparison to eliminate bias.
+- **Dynamic Prompts**: Modular prompts load only on-demand, saving 60% token costs.
 
 ---
 > **Boring is now primarily an MCP tool (used via Cursor / Claude Desktop / IDE)**
@@ -291,6 +301,30 @@ export BORING_MCP_PROFILE=lite
 
 ---
 
+## 🎛️ Token Optimization (V10.28+)
+> **Save 60-94% on LLM Token Costs**
+
+### 📉 Token Optimization (V10.28+)
+
+> **Save 60-94% of LLM Token Costs**
+
+Boring MCP supports **Verbosity Control** (`minimal`, `standard`, `verbose`) and **Prompt Caching** to minimize context usage.
+
+| Level | Tokens | Use Case |
+|-------|--------|----------|
+| `minimal` | ~50 | Quick scans / CI |
+| `standard`| ~400 | Daily Dev (Default) |
+| `verbose` | ~1k+ | Debugging |
+
+**Quick Config**:
+```bash
+export BORING_MCP_VERBOSITY=minimal
+```
+
+👉 **[Read Full Guide: Token Optimization](./docs/features/token-optimization.md)** for detailed usage, tool behaviors, and prompt caching setup.
+
+---
+
 ## 🎯 Quick Start Prompts
 
 | Prompt | Usage |
@@ -371,7 +405,27 @@ Boring integrates the most powerful external MCP tools by default, turning the A
 | **Boring Monitor** | 🖥️ **TUI Dashboard**<br>Real-time terminal view of status, logs (v10.23+). | `boring-monitor` / `python -m boring.monitor` |
 | **Boring Dashboard**| 🎨 **GUI Dashboard**<br>Comprehensive web view with Brain Explorer. | `boring-dashboard` / `python -m boring dashboard` / `python -m boring.monitor --web` |
 
-## 🚀 Performance (v10.21.0)
+## 🧩 Capabilities Matrix
+> **Everything you need to know about what Boring can do.**
+
+| Capability | Description | Documentation |
+| :--- | :--- | :-- |
+| **Vibe Coder** | Pure natural language coding experience. No tool learning curve. | [Guide](./docs/features/vibe-coder.md) |
+| **External Intelligence** | **Context7** (Real-time Docs) & **Thinking Mode** (Reasoning). | [Guide](./docs/features/external-intelligence.md) |
+| **Hybrid RAG** | Advanced Search (Vector + Key + Graph) for large codebases. | [Guide](./docs/features/rag.md) |
+| **Token Optimization** | **Save 90% Costs**. Verbosity control & Prompt Caching. | [Guide](./docs/features/token-optimization.md) |
+| **Shadow Mode** | Security Sandbox. Prevents AI from breaking things. | [Guide](./docs/features/shadow-mode.md) |
+| **Agentic Safety** | **Checkpoints** & **Auto-Rollback**. Explore code fearlessly. | [Guide](./docs/features/safety.md) |
+| **Boring Monitor** | Real-time TUI & Web Dashboard for visibility. | [Guide](./docs/features/monitor.md) |
+| **Global Brain** | **Active Recall** & Persistent project memory for patterns. | [Guide](./docs/features/memory.md) |
+| **Agents Squad** | Planner, Coder, Reviewer agents working together. | [Guide](./docs/features/agents.md) |
+| **MCP Toolset** | 55+ Specialized tools for every DevOps task. | [Reference](./docs/features/mcp-tools.md) |
+| **Quality Gates** | CI/CD verification levels & "Definition of Done". | [Guide](./docs/features/quality-gates.md) |
+| **Performance** | WAL mode, Parallel verification. | [Guide](./docs/features/performance.md) |
+| **Hidden Gems** | Power user tips & Easter eggs. | [Guide](./docs/features/hidden-gems.md) |
+
+## 🚀 Performance (v10.31.0)
+- **Startup time < 600ms**: Optimized lazy loading.
 - **Thread-local SQLite**: Zero-overhead DB connections.
 - **WAL Mode**: 50% faster concurrent reads.
 - **Smart Caching**: 30s query cache & Pattern cache for instant RAG.

@@ -64,7 +64,7 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
     @audited
     def boring_list_plugins(
         project_path: Annotated[
-            str, Field(description="Path to project root (default: current directory)")
+            Optional[str], Field(description="Path to project root (default: current directory)")
         ] = None,
         include_builtin: Annotated[
             bool, Field(description="Include built-in MCP tools in the list")
@@ -140,11 +140,11 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
             ),
         ],
         project_path: Annotated[
-            str,
+            Optional[str],
             Field(description="Optional explicit path to project root."),
         ] = None,
         args: Annotated[
-            dict,
+            Optional[dict],
             Field(description="Optional dictionary of arguments to pass to the plugin."),
         ] = None,
     ) -> dict:
@@ -166,7 +166,7 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
     @audited
     def boring_reload_plugins(
         project_path: Annotated[
-            str, Field(description="Path to project root (default: current directory)")
+            Optional[str], Field(description="Path to project root (default: current directory)")
         ] = None,
     ) -> dict:
         """

@@ -25,7 +25,7 @@ While other tools might generate code that "looks right," Boring enforces local 
 Boring uses your PRD and Task checklist as the source of truth. It tracks progress against specific requirements, ensuring no edge case is forgotten and the final implementation matches the technical plan.
 
 ### 3. Cumulative Intelligence (Learned Memory)
-Boring captures "Fix Patterns." If it encountered a tricky environment issue or a subtle bug in your tech stack, it saves the successful resolution to its `.boring_brain`. Next time a similar issue occurs, it resolves it instantly without expensive re-thinking.
+Boring captures "Fix Patterns." If it encountered a tricky environment issue or a subtle bug in your tech stack, it saves the successful resolution to its `.boring/brain`. Next time a similar issue occurs, it resolves it instantly without expensive re-thinking.
 
 ---
 

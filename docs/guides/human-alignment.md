@@ -12,7 +12,7 @@ Boring doesn't just work in a vacuum. It is designed to adapt to **how you work*
 
 ## 📋 1. Explicit Steering: Rubrics
 
-Rubrics are JSON files located in `.boring_brain/rubrics/`. They tell the AI exactly how to evaluate its own work before presenting it to you.
+Rubrics are JSON files located in `.boring/brain/rubrics/`. They tell the AI exactly how to evaluate its own work before presenting it to you.
 
 ### How to use them:
 1.  **Create a Rubric**: Define a new `.json` file (e.g., `mobile_standards.json`).
@@ -27,7 +27,7 @@ Every time you correct Boring (e.g., "I prefer using `async/await` here"), Borin
 
 ### The Learning Loop:
 - **Interaction**: You provide feedback or fix an error.
-- **Pattern Extraction**: Boring identifies the "Fix Pattern" and stores it in `.boring_brain/learned_patterns/`.
+- **Pattern Extraction**: Boring identifies the "Fix Pattern" and stores it in `.boring/brain/learned_patterns/`.
 - **Precognition**: Next time a similar situation occurs, Boring will proactively use your preferred style.
 
 ---
@@ -45,5 +45,5 @@ The `.agent/workflows/` files are not static. The **Workflow Evolver** analyzes 
 ## 💡 Best Practices for Alignment
 
 1.  **Be Explicit**: Use `boring profile learn` to manually teach the AI your favorite libraries or linting styles.
-2.  **Review the Brain**: Occasionally check `.boring_brain/learned_patterns/` to see what the AI has learned about you. You can manually delete any patterns that are no longer relevant.
-3.  **Team Sharing**: Commit the `.boring_brain/rubrics/` folder to Git so your entire team shares the same "Human Quality Gates".
+2.  **Review the Brain**: Occasionally check `.boring/brain/learned_patterns/` to see what the AI has learned about you. You can manually delete any patterns that are no longer relevant.
+3.  **Team Sharing**: Commit the `.boring/brain/rubrics/` folder to Git so your entire team shares the same "Human Quality Gates".

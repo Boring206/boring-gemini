@@ -6,7 +6,7 @@ Guide Vibe Coders through their journey without reading manuals. "Learn by doing
 ## Architecture
 
 ### 1. `TutorialManager` (`src/boring/tutorial.py`)
-- **State Tracking**: Stores `completed_tutorials` list in `.boring_brain/user_profile.json` or `.boring_tutorial.json`.
+- **State Tracking**: Stores `completed_tutorials` list in `.boring/brain/user_profile.json` or `.boring_tutorial.json`.
 - **Triggers**: Hooks into CLI commands or MCP tools.
 - **Content**: Short, actionable tips (Markdown + Emoji).
 

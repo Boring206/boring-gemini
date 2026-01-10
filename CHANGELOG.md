@@ -1,5 +1,42 @@
 # Changelog
 
+## [10.31.0] - 2026-01-11 - The Cognitive Reflex Update 🧠✨
+
+### 🚀 Major Features
+- **Agentic Safety Net (Git Checkpoints)**: New `boring_checkpoint` tool allows the Agent to create restore points before risky refactors. If things go wrong, `restore` brings you back instantly.
+- **Cognitive Reflexes (Active Recall)**: The Agent now "reflexively" checks the Global Brain for solutions when it encounters errors (like test failures), automatically applying verified fixes from past experiences.
+- **Unified .boring Directory**: Consolidated all project state into a clean `.boring/` directory (Replacing `.boring_brain`, `.boring_memory`, etc.).
+  - `~/.boring/brain` - Global Knowledge
+  - `.boring/memory` - Project Memory
+  - `.boring/cache` - Ephemeral Cache
+
+### 🏗️ Architecture
+- **Phase 7-13 Complete**: Modularization of `intelligence`, `loop`, and `mcp` subsystems is now complete.
+- **Decoupled Brain**: The `intelligence` module is now a standalone service, improving testability and startup speed.
+
+### 📚 Documentation
+- **Knowledge System Guide**: Updated with new directory structure and Active Recall diagrams.
+- **Safety Net Guide**: Added documentation for Checkpoints and Shadow Mode integration.
+- **README Refreshed**: Highlighted V10.31 Agentic features.
+
+### ⚠️ Breaking Changes
+- **Path Migration**: Legacy paths (`.boring_brain` etc.) are supported but deprecated. The system attempts auto-migration.
+
+## [10.28.4] - 2026-01-10 - Documentation Revolution 📚✨
+
+### 📚 Documentation Overhaul (User-Centric)
+- **Newbie-Friendly Rewrite**: Completely rewrote core documentation to be accessible to non-technical users.
+  - **Vibe Coder**: Added "Cheat Sheet" and simplified "Just Ask" guide.
+  - **Configuration**: Transformed technical reference into a "Cookbook" with copy-paste recipes (Save Money / Max Power).
+  - **RAG & Shadow Mode**: Replaced jargon with simple analogies (e.g., "AI's Child Safety Lock").
+- **API Reference Completion**: Rebuilt `docs/api` to cover the entire codebase.
+  - Added missing modules: `tools`, `vibe`, `hooks`, `utils`, `resources`.
+  - Fixed broken module references.
+- **Guide Consolidation**: Clarified distinction between "Reference" (Basic) and "Guides" (Advanced/Deep Dive).
+
+### 🔧 Fixes
+- **MkDocs Integation**: Updated `mkdocs.yml` to include all new API modules, ensuring complete site generation.
+
 ## [10.28.3] - 2026-01-10
 
 ### ✅ Testing & Quality
@@ -149,6 +186,8 @@ All Quality Gate checks now passing:
 - README.md structure cleanup - removed duplicate content sections
 - Version number consistency across all configuration files
 - Documentation version references updated to V10.26
+
+
 
 ## [10.25.1] - 2026-01-09
 

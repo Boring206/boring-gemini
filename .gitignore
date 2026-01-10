@@ -12,6 +12,9 @@ status.json
 .response_analysis
 .boring_cache/
 
+# V10.29+ Unified Boring Directory
+.boring/
+
 
 # Boring Memory & Brain (local state, NOT for sharing)
 .boring_memory/

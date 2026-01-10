@@ -490,7 +490,7 @@ my-awesome-app/
 ├── PROMPT.md      # ✅ 必要 - 你要寫的任務說明
 ├── @fix_plan.md   # 任務清單
 ├── GEMINI.md      # 專案說明
-└── .boring_brain/ # AI 知識庫
+└── .boring/brain/ # AI 知識庫
 ```
 
 ---

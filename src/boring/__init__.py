@@ -1,6 +1,11 @@
 """
 Boring for Gemini - AI Coding Assistant
 
+V10.31 "The Cognitive Reflex Update":
+- Agentic Safety Net (Git Checkpoints)
+- Active Recall (Brain-driven Error Correction)
+- Phase 7-11 Architecture Modernization (Decoupled Tools)
+
 V10.28 "The Diet Update":
 - Modular installation extras ([vector], [gui], [mcp])
 - Optimized startup < 600ms via lazy loading
@@ -35,7 +40,7 @@ Backward compatibility is maintained - old import paths still work.
 import importlib
 from typing import TYPE_CHECKING
 
-__version__ = "10.28.3"
+__version__ = "10.31.0"
 
 # =============================================================================
 # Lazy Loading Configuration

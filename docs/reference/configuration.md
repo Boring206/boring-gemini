@@ -1,163 +1,117 @@
 # Configuration Reference
 
-> The complete guide to configuring Boring via `.boring.toml` and Environment Variables.
+> **Simple Guide for Beginners**: Boring has two ways to configure. Choose based on your needs.
 
 ---
 
-## 📄 Project Configuration (`.boring.toml`)
+## 🚦 Quick Start: Where do I edit?
 
-Place this file in your project root to control Boring's behavior.
+### Scenario 1: I am a Solo Developer (Use Cursor/Claude)
+**👉 You should edit `mcp.json` (or Cursor Settings)**
+This is for preferences that affect **only you**, such as:
+- Cost savings (Token Optimization)
+- Performance tuning
+- Profile Selection (Lite/Standard)
 
-### `[boring]` Global Settings
+### Scenario 2: I am a Team Lead
+**👉 You should create `.boring.toml` (in Project Root)**
+This is for rules that **the whole team** must follow, such as:
+- Code Quality Standards (Lint/Test)
+- Security Scan Levels
+- CI/CD Rules
 
+---
+
+## 🙋 Common Scenarios (Cookbook)
+
+### 1. I want to Save Money (Token Optimization)
+Edit your MCP JSON Config:
+```json
+"env": {
+  "BORING_MCP_VERBOSITY": "minimal",  // Minimized output (Saves 90%)
+  "BORING_MCP_PROFILE": "ultra_lite"  // Minimized tools
+}
+```
+
+### 2. I want Max Performance (Parallelism)
+Edit your MCP JSON Config:
+```json
+"env": {
+  "BORING_WORKER_COUNT": "8"  // Run 8 threads parallel
+}
+```
+
+### 3. I want Stricter Security (Shadow Mode)
+Edit your `.boring.toml`:
 ```toml
 [boring]
-# Enable debug logging (default: false)
-debug = false
-
-# Enable/Disable specific features
 enable_shadow_mode = true
+
+[boring.security]
+secret_scan = true       # Scan for passwords
+dependency_scan = true   # Scan for vulnerabilities
+```
+
+---
+
+## 🔧 Detailed Reference
+
+### 1. Project Config (`.boring.toml`)
+Place this file in your project root.
+
+#### `[boring]` Global Settings
+```toml
+[boring]
+# Enable debug logs (default: false)
+debug = false
+# Enable RAG Memory (default: true)
 enable_rag = true
-
-# Default Tool Profile (minimal, lite, standard, full)
-# See Details: docs/guides/mcp-profiles-comparison.md
-profile = "lite"
 ```
 
-### `[boring.profiles]`
-Customize tool profiles or create new ones.
-
-```toml
-[boring.profiles.my_custom]
-# Explicitly include list of tools
-include = ["boring_read_file", "boring_verify"]
-# Or extend an existing profile
-extend = "lite"
-# Exclude specific tools
-exclude = ["boring_commit"]
-
-```
-
-### `[boring.performance]`
-
-Performance tuning settings.
-
-```toml
-[boring.performance]
-# Number of parallel workers for verification (default: 4)
-# Recommendations: 
-# - Small projects (<500 files): 2-4
-# - Large projects (>1000 files): 8-16
-parallel_workers = 4
-
-# Enable caching of verification results (default: true)
-# Disabling this forces a full re-check every time.
-verification_cache = true
-
-# Incrementally update RAG index (default: true)
-incremental_rag = true
-```
-
-### `[boring.quality_gates]`
-
-Thresholds for verification failure.
-
+#### `[boring.quality_gates]`
+Define the "Definition of Done".
 ```toml
 [boring.quality_gates]
-# Minimum unit test coverage percentage (0-100)
-min_coverage = 40
-
-# Maximum Allowed Cyclomatic Complexity (McCabe)
-max_complexity = 15
-
-# Max lines per file allowed
-max_file_lines = 500
-
-# Max lines per function allowed
-max_function_lines = 50
-
-# Strict Type Checking (mypy)
-check_untyped_defs = true
-disallow_any_generics = false
+min_coverage = 40        # Minimum Test Coverage %
+max_complexity = 15      # Max allowed complexity
+max_file_lines = 500     # Max lines per file
+check_untyped_defs = true # Strict typing
 ```
 
-### `[boring.hooks]`
-
-Git Hook behavior.
-
+#### `[boring.hooks]` (Git Hooks)
+Control behavior on Commit/Push.
 ```toml
 [boring.hooks]
-# Verification level for 'git commit'
-# Options: BASIC, STANDARD, FULL
-pre_commit_level = "STANDARD"
-
-# Verification level for 'git push'
-pre_push_level = "FULL"
-
-# Automatically fix linting errors (default: true)
-auto_fix = true
-
-# Timeout in seconds for hooks
-timeout_seconds = 300
-
-[boring.hooks.bypass_patterns]
-# Files to ignore during hook verification
-skip_files = ["*.md", "docs/*", "tests/fixtures/*"]
+pre_commit_level = "STANDARD" # Check on commit
+pre_push_level = "FULL"       # Check on push
+auto_fix = true               # Auto-fix simple errors
+timeout_seconds = 300         # Timeout in seconds
 ```
 
-### `[boring.security]`
+### 2. Environment Variables & MCP JSON (`env`)
+These are usually set in the `env` section of your Cursor/Claude MCP config.
 
-Security scan configuration.
-
-```toml
-[boring.security]
-# Minimum severity to report (low, medium, high)
-bandit_severity = "medium"
-
-# Scan project dependencies for vulnerabilities
-dependency_scan = true
-
-# Scan for secrets/credentials
-secret_scan = true
-```
+| Variable Name | Default | Description |
+| :--- | :--- | :--- |
+| **Core Settings** | | |
+| `BORING_MCP_PROFILE` | `lite` | Toolset Size (`minimal`, `lite`, `standard`, `full`) |
+| `BORING_MCP_VERBOSITY`| `standard` | Output Verbosity (`minimal`, `standard`, `verbose`) |
+| `BORING_LOG_LEVEL` | `INFO` | Log Level |
+| **Security Settings**| | |
+| `SHADOW_MODE_LEVEL` | `ENABLED` | Sandbox Level (`DISABLED`, `ENABLED`, `STRICT`) |
+| `BORING_ALLOW_DANGEROUS`| `false` | Allow dangerous ops (Not Recommended) |
+| **Performance** | | |
+| `BORING_WORKER_COUNT` | `4` | Number of parallel workers |
+| `BORING_CACHE_DIR` | `.boring/cache`| Cache directory location |
+| **System** | | |
+| `BORING_PROJECT_ROOT` | `.` | Force project path |
+| `BORING_RAG_ENABLED` | `1` | Enable RAG (0=Disable) |
 
 ---
 
-## 🌐 Environment Variables
+## 📝 Complete Example: MCP JSON
 
-Global overrides, best set in `.env` or CI/CD pipelines.
-
-### Core
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `BORING_LOG_LEVEL` | `INFO` | Logging verbosity (`DEBUG`, `INFO`, `WARNING`, `ERROR`) |
-| `BORING_PROJECT_ROOT` | `.` | Override project root path |
-| `BORING_MCP_PROFILE` | `lite` | Active Profile (`minimal`, `lite`, `standard`, `full`) |
-| `BORING_CI_MODE` | `0` | Set to `1` to disable interactive prompts |
-
-### Shadow Mode
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SHADOW_MODE_LEVEL` | `ENABLED` | Security level (`DISABLED`, `ENABLED`, `STRICT`) |
-| `BORING_ALLOW_DANGEROUS` | `false` | Set `true` to bypass some safety checks (NOT RECOMMENDED) |
-
-### Performance
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `BORING_WORKER_COUNT` | `4` | Override parallel worker count |
-| `BORING_CACHE_DIR` | `.boring_cache` | Custom cache directory |
-
-### Brain & Memory
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `BORING_BRAIN_PATH` | `~/.boring_brain` | Global knowledge storage path |
-| `BORING_RAG_ENABLED` | `1` | Set `0` to disable RAG entirely |
-
----
-
-## 🛠️ MCP Configuration (`smithery.yaml`/`mcp_config.json`)
-
-When running as an MCP Server:
+This is what it looks like in your Cursor Settings:
 
 ```json
 {
@@ -166,50 +120,12 @@ When running as an MCP Server:
       "command": "python",
       "args": ["-m", "boring.mcp.server"],
       "env": {
-        "SHADOW_MODE_LEVEL": "STRICT",
-        "BORING_MCP_MODE": "1"
+        "BORING_MCP_MODE": "1",           // REQUIRED: Enable MCP Mode
+        "BORING_MCP_PROFILE": "lite",     // RECOMMENDED: For daily dev
+        "BORING_MCP_VERBOSITY": "minimal",// RECOMMENDED: Save tokens
+        "PROJECT_ROOT_DEFAULT": "."       // Default to current dir
       }
     }
   }
 }
-```
-
-### MCP-Specific Variables
-
-| Variable | Description |
-|----------|-------------|
-| `BORING_MCP_MODE` | Must be `1` for MCP server operation |
-| `PROJECT_ROOT_DEFAULT` | Default path if client doesn't provide one |
-
----
-
-## 💡 Example: Full Production Config
-
-**.boring.toml**
-```toml
-[boring]
-debug = false
-
-[boring.performance]
-parallel_workers = 8
-verification_cache = true
-
-[boring.quality_gates]
-min_coverage = 80
-max_complexity = 10
-check_untyped_defs = true
-
-[boring.hooks]
-pre_commit_level = "STANDARD"
-pre_push_level = "FULL"
-auto_fix = false 
-
-[boring.security]
-bandit_severity = "high"
-```
-
-**.env**
-```bash
-SHADOW_MODE_LEVEL=STRICT
-BORING_CI_MODE=1
 ```

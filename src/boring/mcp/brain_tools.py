@@ -44,7 +44,7 @@ def register_brain_tools(mcp, audited, helpers):
         ] = None,
     ) -> dict:
         """
-        Trigger learning from .boring_memory to .boring_brain.
+        Trigger learning from .boring/memory to .boring/brain.
 
         Extracts successful patterns from loop history and error solutions,
         storing them in learned_patterns/ for future reference.
@@ -59,7 +59,7 @@ def register_brain_tools(mcp, audited, helpers):
 
         _configure_runtime_for_project(project_root)
 
-        storage = SQLiteStorage(project_root / ".boring_memory", settings.LOG_DIR)
+        storage = SQLiteStorage(project_root / ".boring/memory", settings.LOG_DIR)
         brain = BrainManager(project_root, settings.LOG_DIR)
 
         return brain.learn_from_memory(storage)
@@ -78,7 +78,7 @@ def register_brain_tools(mcp, audited, helpers):
         ] = None,
     ) -> dict:
         """
-        Create default evaluation rubrics in .boring_brain/rubrics/.
+        Create default evaluation rubrics in .boring/brain/rubrics/.
 
         Creates rubrics for: implementation_plan, task_list, code_quality.
         """
@@ -108,7 +108,7 @@ def register_brain_tools(mcp, audited, helpers):
         ] = None,
     ) -> dict:
         """
-        Get summary of .boring_brain knowledge base.
+        Get summary of .boring/brain knowledge base.
 
         Shows counts of patterns, rubrics, and adaptations.
         """
@@ -157,7 +157,7 @@ def register_brain_tools(mcp, audited, helpers):
         Learn a pattern directly from AI observation.
 
         This allows AI to explicitly record patterns it discovers.
-        Patterns are persisted in .boring_brain/learned_patterns/patterns.json.
+        Patterns are persisted in .boring/brain/learned_patterns/patterns.json.
 
         Use cases:
         - Record error solutions for future reference
@@ -437,7 +437,7 @@ def register_brain_tools(mcp, audited, helpers):
         Export high-quality patterns from current project to global brain.
 
         This allows sharing learned patterns across all projects.
-        Patterns are stored in ~/.boring_brain/global_patterns.json
+        Patterns are stored in ~/.boring/brain/global_patterns.json
 
         Use cases:
         - Share successful error solutions with other projects
@@ -471,7 +471,7 @@ def register_brain_tools(mcp, audited, helpers):
                 "vibe_summary": f"🌐 **Global Brain Export**\n"
                 f"- 已導出: {result['exported']} patterns\n"
                 f"- 全局總數: {result['total_global']}\n"
-                f"- 儲存位置: ~/.boring_brain/global_patterns.json",
+                f"- 儲存位置: ~/.boring/brain/global_patterns.json",
             }
         except Exception as e:
             return {
@@ -533,7 +533,7 @@ def register_brain_tools(mcp, audited, helpers):
                 "vibe_summary": f"🌐 **Global Brain Import**\n"
                 f"- 已導入: {result['imported']} new patterns\n"
                 f"- 專案總數: {result['total_local']}\n"
-                f"- 來源: ~/.boring_brain/global_patterns.json",
+                f"- 來源: ~/.boring/brain/global_patterns.json",
             }
         except Exception as e:
             return {
@@ -556,7 +556,7 @@ def register_brain_tools(mcp, audited, helpers):
         - Source project
         - Success count
 
-        Storage location: ~/.boring_brain/global_patterns.json
+        Storage location: ~/.boring/brain/global_patterns.json
         """
         from ..intelligence.brain_manager import get_global_knowledge_store
 
@@ -588,7 +588,7 @@ def register_brain_tools(mcp, audited, helpers):
                 "vibe_summary": f"🌐 **Global Brain Summary**\n"
                 f"- 總 Patterns: {len(patterns)}\n"
                 f"- 類型分布: {', '.join(f'{k}({len(v)})' for k, v in by_type.items())}\n"
-                f"- 儲存: ~/.boring_brain/global_patterns.json",
+                f"- 儲存: ~/.boring/brain/global_patterns.json",
             }
         except Exception as e:
             return {

@@ -47,7 +47,7 @@ def full_stack_dev(...):
 
 - **Code Location**: `session.py` (Line 223)
 - **What it does**: It initiates a **State Machine** managed by Python code.
-- **Persistence**: It saves state to `.boring_memory/sessions/{id}.json`. This means even if the chat crashes, the session can be resumed (`boring_session_continue`).
+- **Persistence**: It saves state to `.boring/memory/sessions/{id}.json`. This means even if the chat crashes, the session can be resumed (`boring_session_continue`).
 - **Enforcement**: It explicitly defines `SessionPhase` (Alignment, Planning, Implementation...). You CANNOT proceed to Implementation without calling `boring_session_confirm()`, which is enforced by code logic.
 
 ```python

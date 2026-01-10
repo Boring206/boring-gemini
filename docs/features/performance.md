@@ -8,7 +8,7 @@
 
 ### Smart Caching System
 
-Boring maintains a verification cache at `.boring_cache/verification.json` that stores file hashes. This enables:
+Boring maintains a verification cache at `.boring/cache/verification.json` that stores file hashes. This enables:
 
 - **100+ unchanged files** → Re-verification in **< 2 seconds**
 - **Only changed files** are re-analyzed
@@ -125,7 +125,7 @@ boring start --provider ollama
 
 ### History Recording
 
-Audit scores are stored in `.boring_brain/quality_history.json`:
+Audit scores are stored in `.boring/brain/quality_history.json`:
 
 ```json
 {
@@ -175,7 +175,7 @@ verification = 300            # Seconds
 
 ### For Large Projects
 
-1. **Enable caching** - Keep `.boring_cache/` in `.gitignore`
+1. **Enable caching** - Keep `.boring/cache/` in `.gitignore`
 2. **Use incremental mode** - `boring verify --incremental`
 3. **Parallelize** - Ensure CPU cores are utilized
 

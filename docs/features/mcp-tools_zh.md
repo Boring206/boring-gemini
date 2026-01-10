@@ -2,7 +2,11 @@
 
 > Boring 提供 55+ 個 MCP 工具，按邏輯分類組織。
 >
-> **✨ Vibe Coder 提示**: 你通常不需要直接呼叫這些工具。請使用 **[通用路由器 (Universal Router)](./vibe-coder_zh.md)** (`boring()`)。
+> **✨ 給 Vibe Coder 的話**:
+> **別被下面的 Python 代碼嚇到！** 😱
+> 文檔列出 Python 代碼是為了精確定義參數，但您 **完全不需要** 自己寫這些代碼。
+> 
+> 👉 **您只需要說中文**，例如：「幫我做安全掃描」，AI 就會自動翻譯成 `boring_security_scan(...)` 並執行。
 
 ---
 

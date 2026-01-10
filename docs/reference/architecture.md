@@ -144,7 +144,7 @@ sequenceDiagram
 Unlike typical agents that just generate code, Boring **verifies** it.
 
 - **Parallel Execution**: Uses `ThreadPoolExecutor` to run linters/tests concurrently.
-- **Caching**: Hashes file content to skip re-verification of unchanged files (`.boring_cache`).
+- **Caching**: Hashes file content to skip re-verification of unchanged files (`.boring/cache`).
 - **Layers**:
   - **Static**: Syntax check, linting (ruff, eslint).
   - **Dynamic**: Unit tests (pytest).

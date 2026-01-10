@@ -27,15 +27,19 @@ from .tools import (
 
 # Import legacy tools to trigger @mcp.tool registration
 from .tools.advanced import register_advanced_tools
+from .tools.assistant import register_assistant_tools
 
 # V10.26: Import refactored tools from tools/ directory
 from .tools.discovery import register_discovery_resources
+from .tools.plugins import register_plugin_tools
+
+# from .vibe_tools import register_vibe_tools  # Deprecated and Removed in Phase 10
+from .tools.vibe import register_vibe_tools  # Phase 10: Modernized Vibe Module
+from .tools.workspace import register_workspace_tools
 
 # Import tools packages to trigger decorators
 from .utils import configure_runtime_for_project, detect_project_root, get_project_root_or_error
-from .v9_tools import register_v9_tools  # Deprecated: use tools/*.py
 from .v10_tools import register_v10_tools
-from .vibe_tools import register_vibe_tools  # Deprecated: use tools/vibe.py
 
 # Try to import Smithery decorator for HTTP deployment
 try:
@@ -97,13 +101,17 @@ def get_server_instance():
         """Get recent server logs."""
         return "Log access not implemented in stdio mode"
 
-    # Register V9 Tools
+    # Register Modular Tools (formerly V9)
     helpers = {
         "get_project_root_or_error": get_project_root_or_error,
         "detect_project_root": detect_project_root,
         "configure_runtime": configure_runtime_for_project,
     }
-    register_v9_tools(instance.mcp, audited, helpers)
+    # register_v9_tools(instance.mcp, audited, helpers)
+    register_workspace_tools(instance.mcp, audited, helpers)
+    register_plugin_tools(instance.mcp, audited, helpers)
+    register_assistant_tools(instance.mcp, audited, helpers)
+    # register_knowledge_tools(instance.mcp, audited, helpers)
 
     # Register V10 Tools (RAG, Multi-Agent, Shadow Mode)
     register_v10_tools(instance.mcp, audited, helpers)
@@ -167,13 +175,17 @@ def run_server():
     # This prevents any print() statement from corrupting the JSON-RPC stream
     interceptors.install_interceptors()
 
-    # 2. Register V9 Tools
+    # 2. Register Modular Tools (formerly V9)
     helpers = {
         "get_project_root_or_error": get_project_root_or_error,
         "detect_project_root": detect_project_root,
         "configure_runtime": configure_runtime_for_project,
     }
-    register_v9_tools(instance.mcp, audited, helpers)
+    # register_v9_tools(instance.mcp, audited, helpers)
+    register_workspace_tools(instance.mcp, audited, helpers)
+    register_plugin_tools(instance.mcp, audited, helpers)
+    register_assistant_tools(instance.mcp, audited, helpers)
+    # knowledge tools registered via import side-effect (top-level)
 
     # 3. Register V10 Tools (RAG, Multi-Agent, Shadow Mode)
     register_v10_tools(instance.mcp, audited, helpers)
@@ -196,6 +208,35 @@ def run_server():
     # V10.24: Register Tool Router (Universal Natural Language Gateway)
     profile = get_profile()
     router = get_tool_router()
+
+    # V10.29: Post-registration PROMPT filtering based on profile
+    # FastMCP stores prompts in _prompts dict. We filter it directly.
+    # This prevents context window bloat (52 prompts -> ~5 in LITE)
+    from .tool_profiles import should_register_prompt
+
+    if profile.prompts is not None:  # None means FULL profile (all prompts)
+        # Access internal prompts storage
+        # FastMCP 2.x usually has _prompts on the instance
+        prompts_dict = getattr(instance.mcp, "_prompts", None)
+
+        if prompts_dict and isinstance(prompts_dict, dict):
+            original_prompt_count = len(prompts_dict)
+            prompts_to_remove = [
+                name for name in prompts_dict.keys() if not should_register_prompt(name, profile)
+            ]
+
+            for name in prompts_to_remove:
+                del prompts_dict[name]
+
+            filtered_prompt_count = len(prompts_dict)
+            sys.stderr.write(
+                f"[boring-mcp] 📝 Prompt Filter: {original_prompt_count} → {filtered_prompt_count} prompts "
+                f"(saved context for Vibe Coding)\n"
+            )
+        else:
+            sys.stderr.write(
+                "[boring-mcp] ⚠️ Could not filter prompts: internal structure changed\n"
+            )
 
     @instance.mcp.tool(
         description=create_router_tool_description(),
@@ -288,8 +329,11 @@ def run_server():
         return (
             f"## 🔍 Tool: `{tool_name}`\n\n"
             f"**Description:** {schema_info.get('description', 'N/A')}\n\n"
-            f"**Schema:**\n```json\n{json.dumps(schema_info, indent=2, default=str)}\n```\n\n"
-            f"💡 You can now call `{tool_name}` with the parameters above."
+            f"<!-- CACHEABLE_CONTENT_START -->\n"
+            f"**Schema:**\n```json\n{json.dumps(schema_info, indent=2, default=str)}\n```\n"
+            f"<!-- CACHEABLE_CONTENT_END -->\n\n"
+            f"💡 You can now call `{tool_name}` with the parameters above.\n"
+            f"ℹ️  This schema is stable and can be cached for the session."
         )
 
     # V10.26: Cache all tools BEFORE filtering for boring_discover

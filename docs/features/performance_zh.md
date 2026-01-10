@@ -8,7 +8,7 @@
 
 ### 智能快取系統
 
-Boring 在 `.boring_cache/verification.json` 維護驗證快取，儲存檔案雜湊值。這實現了：
+Boring 在 `.boring/cache/verification.json` 維護驗證快取，儲存檔案雜湊值。這實現了：
 
 - **100+ 未變更檔案** → 重新驗證時間 **< 2 秒**
 - **只分析變更的檔案**
@@ -133,7 +133,7 @@ boring start --provider ollama
 
 ### 歷史記錄
 
-審核分數儲存在 `.boring_brain/quality_history.json`：
+審核分數儲存在 `.boring/brain/quality_history.json`：
 
 ```json
 {
@@ -183,7 +183,7 @@ verification = 300            # 秒
 
 ### 大型專案
 
-1. **啟用快取** - 將 `.boring_cache/` 加入 `.gitignore`
+1. **啟用快取** - 將 `.boring/cache/` 加入 `.gitignore`
 2. **使用增量模式** - `boring verify --incremental`
 3. **平行化** - 確保 CPU 核心被充分利用
 

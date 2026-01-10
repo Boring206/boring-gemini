@@ -4,9 +4,9 @@
 
 ---
 
-## 🧠 什麼是「大腦」(.boring_brain)？
+## 🧠 什麼是「大腦」(.boring/brain)？
 
-Boring 將其持久性的智慧儲存在名為 `.boring_brain` 的目錄中。這個目錄包含：
+Boring 將其持久性的智慧儲存在名為 `.boring/brain` 的目錄中。這個目錄包含：
 
 1.  **學習經驗 (`learnings.json`)**：擷取到的「錯誤-修復」模式。
 2.  **RAG 索引 (ChromaDB)**：代碼庫的向量中繼資料。
@@ -18,8 +18,8 @@ Boring 將其持久性的智慧儲存在名為 `.boring_brain` 的目錄中。�
 
 ### 與團隊分享進度
 若要讓團隊成員受益於 Boring 已學習到的經驗：
-1.  **複製中繼資料**：分享 `.boring_brain/learnings.json` 檔案。
-2.  **匯入**：同事可以將此檔案放置在他們本地的 `.boring_brain/` 目錄中。
+1.  **複製中繼資料**：分享 `.boring/brain/learnings.json` 檔案。
+2.  **匯入**：同事可以將此檔案放置在他們本地的 `.boring/brain/` 目錄中。
 
 ### 跨專案遷移
 如果您啟動了一個與舊專案類似的新專案，可以透過複製 `learnings.json` 快速「繼承」之前的修復經驗。
@@ -42,7 +42,7 @@ boring rag-reindex --force
 
 如果您希望 Boring 從零開始（忘記所有之前的錯誤和修復）：
 1.  **停止 Boring**。
-2.  **刪除目錄**：`rm -rf .boring_brain`
+2.  **刪除目錄**：`rm -rf .boring/brain`
 3.  **重啟**：Boring 會重新初始化一個乾淨的大腦。
 
 ---

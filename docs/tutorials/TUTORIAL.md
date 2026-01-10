@@ -83,7 +83,7 @@ my-app/
 ├── tests/
 ├── PROMPT.md          # AI 指令
 ├── @fix_plan.md       # 任務清單
-└── .boring_brain/     # 知識庫
+└── .boring/brain/     # 知識庫
 ```
 
 ---
@@ -441,7 +441,7 @@ Boring: [生成詳細實作計畫]
 
 自訂程式碼品質規則:
 
-**.boring_brain/rubrics/my_rules.yaml**:
+**.boring/brain/rubrics/my_rules.yaml**:
 ```yaml
 name: my_coding_standards
 rules:

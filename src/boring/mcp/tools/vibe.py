@@ -22,6 +22,7 @@ from typing import Annotated, Optional
 
 from pydantic import Field
 
+from ...paths import get_boring_path
 from ...security import SecurityScanner  # Phase 14 Enhancement
 from ...vibe.engine import VibeEngine
 from ...vibe.handlers.generic import GenericHandler
@@ -53,9 +54,8 @@ def _get_storage(project_root: Path):
     try:
         from ..storage import SQLiteStorage
 
-        memory_dir = project_root / ".boring_memory"
-        # SQLiteStorage.__init__ already creates directories automatically
-        # But we add an explicit check here for clarity
+        # Phase 10: Use unified path .boring/memory
+        memory_dir = get_boring_path(project_root, "memory")
         storage = SQLiteStorage(memory_dir)
         return storage
     except ImportError:
@@ -225,6 +225,12 @@ def register_vibe_tools(mcp, audited, helpers):
                 description="審查重點: 'all', 'naming', 'error_handling', 'performance', 'security'"
             ),
         ] = "all",
+        verbosity: Annotated[
+            str,
+            Field(
+                description="Output verbosity: 'minimal' (summary only ~100 tokens), 'standard' (categorized issues ~500 tokens), 'verbose' (full details with brain patterns ~1000+ tokens). Default: 'standard'."
+            ),
+        ] = "standard",
         project_path: Annotated[Optional[str], Field(description="專案根目錄 (自動偵測)")] = None,
     ) -> dict:
         """
@@ -271,13 +277,23 @@ def register_vibe_tools(mcp, audited, helpers):
                 except Exception:
                     pass  # BrainManager is optional enhancement
 
+            # Import verbosity control
+            from boring.mcp.verbosity import Verbosity, get_verbosity
+
+            verb_level = get_verbosity(verbosity)
+
             if not result.issues:
                 brain_status = (
                     f"\n🧠 已參考 {len(brain_patterns)} 個專案 Pattern" if brain_patterns else ""
                 )
+                message = f"✅ 程式碼品質良好！沒有發現明顯問題。{brain_status}"
+
+                if verb_level == Verbosity.MINIMAL:
+                    message = f"✅ {target_file.name}: 無問題"
+
                 return {
                     "status": "SUCCESS",
-                    "message": f"✅ 程式碼品質良好！沒有發現明顯問題。{brain_status}",
+                    "message": message,
                     "file": str(target_file),
                     "issues_count": 0,
                     "brain_patterns_used": len(brain_patterns),
@@ -286,21 +302,63 @@ def register_vibe_tools(mcp, audited, helpers):
             # 按嚴重程度排序
             result.issues.sort(key=lambda x: {"high": 0, "medium": 1, "low": 2}.get(x.severity, 3))
 
-            summary_lines = [f"🔍 Code Review: `{target_file.name}`", ""]
-            for i, issue in enumerate(result.issues[:10], 1):
-                severity_icon = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(
-                    issue.severity, "⚪"
-                )
-                summary_lines.append(f"{i}. {severity_icon} **{issue.category}**: {issue.message}")
-                if issue.suggestion:
-                    summary_lines.append(f"   💡 建議: {issue.suggestion}")
+            # Format output based on verbosity
+            if verb_level == Verbosity.MINIMAL:
+                # MINIMAL: Only summary statistics
+                severity_counts = {"high": 0, "medium": 0, "low": 0}
+                for issue in result.issues:
+                    severity_counts[issue.severity] = severity_counts.get(issue.severity, 0) + 1
 
-            # V10.21: 加入 Brain Pattern 建議
-            if brain_patterns:
-                summary_lines.append("")
-                summary_lines.append("🧠 **專案 Pattern 建議**:")
-                for bp in brain_patterns[:2]:
-                    summary_lines.append(f"   - {bp['description']}: {bp['suggestion']}")
+                summary_lines = [
+                    f"🔍 {target_file.name}: {len(result.issues)} 問題",
+                    f"🔴 High: {severity_counts['high']} | 🟡 Medium: {severity_counts['medium']} | 🟢 Low: {severity_counts['low']}",
+                ]
+                if brain_patterns:
+                    summary_lines.append(f"🧠 {len(brain_patterns)} patterns")
+
+                summary_lines.append("💡 Use verbosity='standard' for details")
+
+            elif verb_level == Verbosity.VERBOSE:
+                # VERBOSE: Full details with brain patterns
+                summary_lines = [f"🔍 Code Review: `{target_file.name}`", ""]
+                for i, issue in enumerate(result.issues, 1):  # Show ALL issues in verbose
+                    severity_icon = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(
+                        issue.severity, "⚪"
+                    )
+                    summary_lines.append(
+                        f"{i}. {severity_icon} **{issue.category}** (Line {issue.line}): {issue.message}"
+                    )
+                    if issue.suggestion:
+                        summary_lines.append(f"   💡 建議: {issue.suggestion}")
+
+                # Include all brain patterns in verbose
+                if brain_patterns:
+                    summary_lines.append("")
+                    summary_lines.append(
+                        f"🧠 **專案 Pattern 建議** ({len(brain_patterns)} patterns):"
+                    )
+                    for bp in brain_patterns:
+                        summary_lines.append(f"   - [{bp['type']}] {bp['description']}")
+                        summary_lines.append(f"     → {bp['suggestion']}")
+            else:
+                # STANDARD: Current behavior (top 10 issues)
+                summary_lines = [f"🔍 Code Review: `{target_file.name}`", ""]
+                for i, issue in enumerate(result.issues[:10], 1):
+                    severity_icon = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(
+                        issue.severity, "⚪"
+                    )
+                    summary_lines.append(
+                        f"{i}. {severity_icon} **{issue.category}**: {issue.message}"
+                    )
+                    if issue.suggestion:
+                        summary_lines.append(f"   💡 建議: {issue.suggestion}")
+
+                # V10.21: 加入 Brain Pattern 建議
+                if brain_patterns:
+                    summary_lines.append("")
+                    summary_lines.append("🧠 **專案 Pattern 建議**:")
+                    for bp in brain_patterns[:2]:
+                        summary_lines.append(f"   - {bp['description']}: {bp['suggestion']}")
 
             # Generate Fix Prompt
             fix_prompt = f"Please review `{target_file.name}` and fix the following {len(result.issues)} issues:\n"
@@ -355,11 +413,20 @@ def register_vibe_tools(mcp, audited, helpers):
     def boring_perf_tips(
         file_path: Annotated[str, Field(description="要分析的檔案路徑")],
         project_path: Annotated[Optional[str], Field(description="專案根目錄 (自動偵測)")] = None,
+        verbosity: Annotated[
+            str,
+            Field(description="輸出詳細程度: 'minimal', 'standard' (預設), 'verbose'"),
+        ] = "standard",
     ) -> dict:
         """
         ⚡ 效能分析提示 - 專注於程式碼效能瓶頸檢測。
         支援平台: Python, JavaScript, TypeScript
         """
+        # Import verbosity control
+        from boring.mcp.verbosity import get_verbosity, is_minimal, is_standard
+
+        verb_level = get_verbosity(verbosity)
+
         project_root, error = _get_project_root_or_error(project_path)
         if error:
             return error
@@ -377,20 +444,16 @@ def register_vibe_tools(mcp, audited, helpers):
             result = vibe_engine.perform_code_review(str(target_file), source, focus="performance")
 
             if not result.issues:
+                msg = "⚡ 效能分析完成：未發現明顯瓶頸。"
+                if is_minimal(verb_level):
+                    msg = f"⚡ {target_file.name}: 無效能問題"
+
                 return {
                     "status": "SUCCESS",
-                    "message": "⚡ 效能分析完成：未發現明顯瓶頸。",
+                    "message": msg,
                     "file": str(target_file),
                     "tips_count": 0,
                 }
-
-            summary_lines = [f"⚡ Performance Tips: `{target_file.name}`", ""]
-            for i, issue in enumerate(result.issues, 1):
-                # Performance issues are usually worth highlighting with specific icons
-                icon = "🐌" if issue.severity == "high" else "🐢"
-                summary_lines.append(f"{i}. {icon} **{issue.message}** (Line {issue.line})")
-                if issue.suggestion:
-                    summary_lines.append(f"   🚀 優化: {issue.suggestion}")
 
             # Generate Perf Fix Prompt
             fix_prompt = f"Please analyze performance bottlenecks in `{target_file.name}` and apply the following optimizations:\n"
@@ -398,6 +461,55 @@ def register_vibe_tools(mcp, audited, helpers):
                 fix_prompt += f"- {issue.message} (Line {issue.line})\n"
                 if issue.suggestion:
                     fix_prompt += f"  Tip: {issue.suggestion}\n"
+
+            # --- Verbosity Logic ---
+
+            # 1. MINIMAL: Summary only
+            if is_minimal(verb_level):
+                severity_counts = {"high": 0, "medium": 0, "low": 0}
+                for issue in result.issues:
+                    severity_counts[issue.severity] = severity_counts.get(issue.severity, 0) + 1
+
+                return {
+                    "status": "SUCCESS",
+                    "vibe_summary": (
+                        f"⚡ {target_file.name}: {len(result.issues)} 效能問題\n"
+                        f"🐌 High: {severity_counts['high']} | 🐢 Medium/Low: {severity_counts['medium'] + severity_counts['low']}\n"
+                        f"💡 Use verbosity='standard' for tips"
+                    ),
+                    "file": str(target_file),
+                    "tips_count": len(result.issues),
+                }
+
+            # 2. STANDARD: Top 5 issues
+            if is_standard(verb_level):
+                summary_lines = [f"⚡ Performance Tips: `{target_file.name}`", ""]
+                # Show top 5
+                for i, issue in enumerate(result.issues[:5], 1):
+                    icon = "🐌" if issue.severity == "high" else "🐢"
+                    summary_lines.append(f"{i}. {icon} **{issue.message}** (Line {issue.line})")
+                    if issue.suggestion:
+                        summary_lines.append(f"   🚀 優化: {issue.suggestion}")
+
+                if len(result.issues) > 5:
+                    summary_lines.append(f"\n... and {len(result.issues) - 5} more issues.")
+                    summary_lines.append("💡 Use verbosity='verbose' for full list.")
+
+                return {
+                    "status": "SUCCESS",
+                    "file": str(target_file),
+                    "tips_count": len(result.issues),
+                    "vibe_summary": "\n".join(summary_lines),
+                    "suggested_fix_prompt": fix_prompt,
+                }
+
+            # 3. VERBOSE: Full list (Legacy behavior)
+            summary_lines = [f"⚡ Performance Tips: `{target_file.name}`", ""]
+            for i, issue in enumerate(result.issues, 1):
+                icon = "🐌" if issue.severity == "high" else "🐢"
+                summary_lines.append(f"{i}. {icon} **{issue.message}** (Line {issue.line})")
+                if issue.suggestion:
+                    summary_lines.append(f"   🚀 優化: {issue.suggestion}")
 
             return {
                 "status": "SUCCESS",
@@ -623,6 +735,12 @@ def register_vibe_tools(mcp, audited, helpers):
         target_path: Annotated[str, Field(description="要健檢的檔案或目錄")] = ".",
         project_path: Annotated[Optional[str], Field(description="專案根目錄 (自動偵測)")] = None,
         max_files: Annotated[int, Field(description="最大掃描檔案數 (預設 10)")] = 10,
+        verbosity: Annotated[
+            str,
+            Field(
+                description="Output verbosity: 'minimal' (score + tier only ~50 tokens), 'standard' (score + top issues ~300 tokens), 'verbose' (full report ~800+ tokens). Default: 'standard'."
+            ),
+        ] = "standard",
     ) -> dict:
         """
         📊 Vibe Check - 全面健康度檢查與評分。
@@ -794,23 +912,95 @@ def register_vibe_tools(mcp, audited, helpers):
 
         storage_status = "✅ 分數已記錄" if storage else "⚠️ Storage 未啟用"
 
+        # Import verbosity control
+        from boring.mcp.verbosity import Verbosity, get_verbosity
+
+        verb_level = get_verbosity(verbosity)
+
+        # Generate vibe_summary based on verbosity
+        if verb_level == Verbosity.MINIMAL:
+            # MINIMAL: Only score and tier (~50 tokens)
+            vibe_summary = f"📊 Vibe Score: {final_score}/100 | {tier}"
+            if score_trend:
+                vibe_summary += f"\n{score_trend}"
+            vibe_summary += "\n💡 Use verbosity='standard' for details"
+
+        elif verb_level == Verbosity.VERBOSE:
+            # VERBOSE: Full detailed report (~800+ tokens)
+            summary_lines = [
+                f"📊 Vibe Check: `{target_path}`",
+                f"Score: {final_score}/100 | {tier}",
+                "",
+            ]
+
+            if score_trend:
+                summary_lines.append(f"{score_trend}\n")
+
+            # Code Quality Issues
+            if issues_found:
+                summary_lines.append(f"🔍 Code Quality Issues ({len(issues_found)}):")
+                for issue in issues_found[:20]:  # Show up to 20
+                    summary_lines.append(f"  - {issue}")
+                if len(issues_found) > 20:
+                    summary_lines.append(f"  ... and {len(issues_found) - 20} more")
+                summary_lines.append("")
+
+            # Security Issues
+            if security_issues:
+                summary_lines.append(f"🔒 Security Issues ({len(security_issues)}):")
+                for sec in security_issues[:10]:
+                    summary_lines.append(f"  - {sec}")
+                if len(security_issues) > 10:
+                    summary_lines.append(f"  ... and {len(security_issues) - 10} more")
+                summary_lines.append("")
+
+            # Documentation
+            if doc_missing > 0:
+                summary_lines.append(f"📝 Documentation: {doc_missing} missing docstrings")
+                summary_lines.append("")
+
+            summary_lines.append(f"🔗 {storage_status}")
+            vibe_summary = "\n".join(summary_lines)
+
+        else:  # STANDARD
+            # STANDARD: Score + top issues (~300 tokens)
+            summary_lines = [f"📊 Vibe Score: {final_score}/100 | {tier}", ""]
+
+            if score_trend:
+                summary_lines.append(f"{score_trend}\n")
+
+            # Top 5 quality issues
+            if issues_found:
+                summary_lines.append(
+                    f"🔍 Top Issues ({min(5, len(issues_found))}/{len(issues_found)}):"
+                )
+                for issue in issues_found[:5]:
+                    summary_lines.append(f"  - {issue}")
+                if len(issues_found) > 5:
+                    summary_lines.append(f"  ... and {len(issues_found) - 5} more")
+                summary_lines.append("")
+
+            # Critical security issues
+            if security_issues:
+                critical_sec = [s for s in security_issues if "CRITICAL" in s or "HIGH" in s]
+                if critical_sec:
+                    summary_lines.append(f"🔒 Critical Security ({len(critical_sec)}):")
+                    for sec in critical_sec[:3]:
+                        summary_lines.append(f"  - {sec}")
+                    summary_lines.append("")
+
+            if doc_missing > 0:
+                summary_lines.append(f"📝 {doc_missing} missing docstrings\n")
+
+            summary_lines.append(f"🔗 {storage_status}")
+            summary_lines.append("\n💡 Use verbosity='verbose' for full report")
+            vibe_summary = "\n".join(summary_lines)
+
         return {
             "status": "SUCCESS",
             "score": final_score,
             "tier": tier,
-            "issues_count": len(issues_found),
-            "doc_missing_count": doc_missing,
-            "security_issues_count": len(security_issues),
-            "previous_score": previous_score,
-            "score_trend": score_trend,
-            "storage_enhanced": storage is not None,
-            "vibe_summary": f"📊 **Vibe Score**: {final_score} / 100 {score_trend}\n"
-            f"🏅 **Tier**: {tier}\n"
-            f"🐛 **Issues**: {len(issues_found)}\n"
-            f"📝 **Missing Docs**: {doc_missing}\n"
-            f"🔒 **Security Issues**: {len(security_issues)}\n"
-            f"💾 {storage_status}",
-            "suggested_fix_prompt": fix_prompt,
+            "vibe_summary": vibe_summary,
         }
 
     # === boring_impact_check ===

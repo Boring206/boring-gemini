@@ -94,7 +94,7 @@ my-app/
 ├── tests/
 ├── PROMPT.md          # AI Instructions
 ├── @fix_plan.md       # Task Checklist
-└── .boring_brain/     # Knowledge Base
+└── .boring/brain/     # Knowledge Base
 ```
 
 ---
@@ -452,7 +452,7 @@ Boring: [Generates detailed implementation plan]
 
 Customize code quality rules:
 
-**.boring_brain/rubrics/my_rules.yaml**:
+**.boring/brain/rubrics/my_rules.yaml**:
 ```yaml
 name: my_coding_standards
 rules:

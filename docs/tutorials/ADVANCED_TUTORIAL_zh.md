@@ -347,7 +347,7 @@ boring_delegate(
 
 ## 11. 團隊知識與可攜性 (Brain)
 
-### `.boring_brain/` 目錄
+### `.boring/brain/` 目錄
 這是專案的「共享大腦」。包含可攜式的知識，可提交到 Git 並在團隊間共享。
 
 | 子目錄/檔案 | 內容 | 可攜帶? | 用途 |
@@ -358,8 +358,8 @@ boring_delegate(
 
 ### 移植知識
 將 AI 知識轉移到新專案：
-1. **複製** `.boring_brain/patterns.json`
-2. **複製** `.boring_brain/rubrics/`
+1. **複製** `.boring/brain/patterns.json`
+2. **複製** `.boring/brain/rubrics/`
 3. **提交** 到新 Repo
 4. **結果**: AI 立即採用你們團隊的編碼風格與審查標準。
 

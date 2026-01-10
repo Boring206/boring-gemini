@@ -70,8 +70,8 @@ boring verify --force --level FULL
 ### 技巧 4：累積知識
 
 ```
-開發 → AI 修復錯誤 → 記錄到 .boring_memory
-專案結束 → boring_learn → 模式儲存到 .boring_brain
+開發 → AI 修復錯誤 → 記錄到 .boring/memory
+專案結束 → boring_learn → 模式儲存到 .boring/brain
 下個專案 → AI 自動參考過去的解決方案！
 ```
 
@@ -171,7 +171,7 @@ jobs:
 # 專案完成時
 boring_learn --topics "error-handling,testing,patterns"
 
-# 知識儲存到 ~/.boring_brain/
+# 知識儲存到 ~/.boring/brain/
 # 所有未來專案都可用
 ```
 

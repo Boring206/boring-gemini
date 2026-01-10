@@ -117,7 +117,7 @@ Lost?
 
 ## Advanced Technique: AI Knowledge Base (Brain Management)
 
-Boring's core brain is located at `.boring_brain/`, which is "packable wisdom".
+Boring's core brain is located at `.boring/brain/`, which is "packable wisdom".
 
 ### 1. Teach AI Your Code Style (`/learn_patterns`)
 When AI writes code that doesn't fit your habit, **don't just correct it in this conversation**.
@@ -128,14 +128,14 @@ When AI writes code that doesn't fit your habit, **don't just correct it in this
 
 ### 2. Port Brain to New Project (Brain Portability)
 Want to carry over habits to a new project?
-1. Copy `.boring_brain/patterns.json` (Code Style).
-2. Copy `.boring_brain/rubrics/` (Scoring Rubrics).
+1. Copy `.boring/brain/patterns.json` (Code Style).
+2. Copy `.boring/brain/rubrics/` (Scoring Rubrics).
 3. Paste to new project's same folder.
 4. **Done**: New project's AI instantly possesses 5 years of senior engineer experience.
 
 ### 3. Cross-Project Knowledge (Cross-Project Knowledge v10.18)
 Boring v10.18 supports Global Knowledge Base.
-- Your fixes and preferences automatically sync to `~/.boring_brain/global_patterns.json`.
+- Your fixes and preferences automatically sync to `~/.boring/brain/global_patterns.json`.
 - When starting any new project, Boring already knows your preferences.
 
 ---

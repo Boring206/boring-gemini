@@ -115,7 +115,7 @@ Vibe Coding 的精髓在於「Flow」。不要被細節卡住，用高層次指�
 
 ## 進階技巧：AI 知識庫管理 (Brain Management)
 
-Boring 的核心大腦位於 `.boring_brain/`，這是你可以「打包帶走」的智慧。
+Boring 的核心大腦位於 `.boring/brain/`，這是你可以「打包帶走」的智慧。
 
 ### 1. 教會 AI 你的 Code Style (`/learn_patterns`)
 當 AI 寫出的代碼不符合你的習慣時，**不要只在這次對話中糾正它**。
@@ -126,14 +126,14 @@ Boring 的核心大腦位於 `.boring_brain/`，這是你可以「打包帶走�
 
 ### 2. 移植大腦到新專案 (Brain Portability)
 想在新專案沿用舊專案的習慣？
-1. 複製 `.boring_brain/patterns.json` (代碼風格)。
-2. 複製 `.boring_brain/rubrics/` (評分標準)。
+1. 複製 `.boring/brain/patterns.json` (代碼風格)。
+2. 複製 `.boring/brain/rubrics/` (評分標準)。
 3. 貼到新專案的同名資料夾。
 4. **完成**：新專案的 AI 瞬間擁有 5 年資深工程師的經驗。
 
 ### 3. 跨專案知識共享 (Cross-Project Knowledge v10.18)
 Boring v10.18 支援全域知識庫。
-- 你的修正與偏好會自動同步到 `~/.boring_brain/global_patterns.json`。
+- 你的修正與偏好會自動同步到 `~/.boring/brain/global_patterns.json`。
 - 開啟任何新專案時，Boring 都已經知道你的喜好。
 
 

@@ -37,7 +37,7 @@ tail -f ~/.boring_logs/boring.log
 2. **重啟**：按 `Ctrl+C` 停止，然後再次執行 `boring start`。Boring 會從記憶中恢復。
 3. **重置上下文**：如果卡在錯誤的思考迴圈中：
    ```bash
-   rm .boring_memory/context.json
+   rm .boring/memory/context.json
    boring start
    ```
 
@@ -76,7 +76,7 @@ tail -f ~/.boring_logs/boring.log
    boring_shadow_mode(action="set_level", level="ENABLED")
    ```
 3. **重置配置**：
-   刪除 `~/.boring_brain/shadow_config.json` 以恢復預設值。
+   刪除 `~/.boring/brain/shadow_config.json` 以恢復預設值。
 
 ### 4. "Smithery 安裝在 Gemini Client 上失敗"
 
@@ -101,7 +101,7 @@ tail -f ~/.boring_logs/boring.log
 **解決方案**：
 1. **清除快取**：
    ```bash
-   rm -rf .boring_cache/
+   rm -rf .boring/cache/
    ```
 2. **執行全新驗證**：
    ```bash

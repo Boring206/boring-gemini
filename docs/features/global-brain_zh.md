@@ -6,16 +6,16 @@
 
 ### 核心概念
 
-- **專案 Brain** (`.boring_brain/`): 每個專案各自的知識庫
-- **Global Brain** (`~/.boring_brain/`): 跨所有專案的全局知識庫
+- **專案 Brain** (`.boring/brain/`): 每個專案各自的知識庫
+- **Global Brain** (`~/.boring/brain/`): 跨所有專案的全局知識庫
 - **知識流向**: 專案 → Global → 其他專案
 
 ## 📂 儲存位置
 
 Global Brain 儲存在您的**使用者主目錄**：
 
-- **Windows**: `C:\Users\{YourName}\.boring_brain\global_patterns.json`
-- **Linux/Mac**: `/home/{username}/.boring_brain/global_patterns.json`
+- **Windows**: `C:\Users\{YourName}\.boring/brain\global_patterns.json`
+- **Linux/Mac**: `/home/{username}/.boring/brain/global_patterns.json`
 
 **優點**: 
 - ✅ 與專案無關，不會被誤刪
@@ -176,9 +176,9 @@ print(result["patterns"])  # 每個 pattern 的詳細資訊
 
 如果您想與團隊分享：
 
-1. 複製 `~/.boring_brain/global_patterns.json`
+1. 複製 `~/.boring/brain/global_patterns.json`
 2. 透過安全管道傳給同事
-3. 同事放到他們的 `~/.boring_brain/` 目錄
+3. 同事放到他們的 `~/.boring/brain/` 目錄
 
 ## 💡 最佳實踐
 
@@ -192,7 +192,7 @@ print(result["patterns"])  # 每個 pattern 的詳細資訊
 ### ❌ 不要
 
 - 匯出低品質、未驗證的模式
-- 在 Git 中 commit `.boring_brain/` 目錄
+- 在 Git 中 commit `.boring/brain/` 目錄
 - 導入所有模式而不先查看內容
 
 ## 🐛 常見問題
@@ -204,7 +204,7 @@ print(result["patterns"])  # 每個 pattern 的詳細資訊
 **A**: 使用 `boring_brain_summary` 查看專案 Brain
 
 ### Q: 如何刪除某個 Pattern？
-**A**: 手動編輯 `~/.boring_brain/global_patterns.json`
+**A**: 手動編輯 `~/.boring/brain/global_patterns.json`
 
 ### Q: 可以在團隊間共享嗎？
 **A**: 可以，但需要手動複製 JSON 檔案

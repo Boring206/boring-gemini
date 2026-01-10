@@ -47,7 +47,15 @@ def check_rate_limit(tool_name: str) -> tuple[bool, str]:
 # 3. CWD if it contains anchor files
 # 4. Return None and let caller handle the error
 
-_ANCHOR_FILES = [".git", ".boring_brain", ".boring_memory", ".agent", "PROMPT.md", "@fix_plan.md"]
+_ANCHOR_FILES = [
+    ".git",
+    ".boring",
+    ".boring_brain",
+    ".boring_memory",
+    ".agent",
+    "PROMPT.md",
+    "@fix_plan.md",
+]
 
 
 def detect_project_root(explicit_path: Optional[str] = None) -> Optional[Path]:
@@ -119,8 +127,14 @@ def ensure_project_initialized(project_root: Path) -> None:
                     f"[boring-mcp] Warning: Workflow templates not found at {template_path}\n"
                 )
 
-        # 2. Critical Dirs
-        (project_root / ".boring_memory").mkdir(parents=True, exist_ok=True)
+        # 2. Critical Dirs - Use new paths module with fallback
+        try:
+            from boring.paths import get_boring_path
+
+            get_boring_path(project_root, "memory", create=True, warn_legacy=False)
+        except ImportError:
+            # Fallback if paths module not available
+            (project_root / ".boring_memory").mkdir(parents=True, exist_ok=True)
         (project_root / ".gemini").mkdir(parents=True, exist_ok=True)
 
         # 3. PROMPT.md (optional, empty if missing)
@@ -137,6 +151,26 @@ def ensure_project_initialized(project_root: Path) -> None:
 
     except Exception as e:
         sys.stderr.write(f"[boring-mcp] Auto-init failed: {e}\n")
+
+
+def detect_context_capabilities(project_root: Path) -> dict[str, bool]:
+    """
+    Detect project capabilities for Dynamic Discovery and Context Reporting.
+
+    Used by:
+    - knowledge.py (boring_brain_status)
+    - assistant.py (boring_suggest_next)
+    """
+    return {
+        "has_git": (project_root / ".git").exists(),
+        "has_node": (project_root / "package.json").exists(),
+        "has_python": (project_root / "pyproject.toml").exists()
+        or (project_root / "setup.py").exists(),
+        "has_docker": (project_root / "Dockerfile").exists(),
+        "has_boring_brain": (project_root / ".boring_brain").exists(),
+        "has_node_modules": (project_root / "node_modules").exists(),
+        "has_venv": (project_root / "venv").exists() or (project_root / ".venv").exists(),
+    }
 
 
 def configure_runtime_for_project(project_root: Path) -> None:

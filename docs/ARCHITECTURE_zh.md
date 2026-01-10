@@ -194,7 +194,7 @@ src/boring/
 │   │   ├── verification.py       # 驗證工具
 │   │   └── ...                   # 更多工具模組
 │   │
-│   ├── v9_tools.py               # ⚠️ 已棄用 (re-export 包裝)
+│   ├── tools/assistant.py               # ⚠️ 已棄用 (re-export 包裝)
 │   ├── v10_tools.py              # Registry hub
 │   └── vibe_tools.py             # ⚠️ 已棄用 (re-export 包裝)
 │

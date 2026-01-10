@@ -223,7 +223,7 @@ boring_shadow_mode(action="status")
 ```
 
 ### Configure Patterns
-Edit `~/.boring_brain/shadow_config.json`:
+Edit `~/.boring/brain/shadow_config.json`:
 ```json
 {
   "level": "STRICT",

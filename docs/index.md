@@ -25,7 +25,7 @@ Choose your path:
 
 > 📋 **Smithery Deployment**: Uses `[mcp-lite]` (~500MB), `lite` profile by default (~20 tools). For full RAG with vector search, use local installation.
 >
-> 📖 **[Complete Installation Guide](../README.md#-installation)** | **[MCP Configuration Guide](./guides/mcp-configuration.md)**
+> 📖 **[Complete Installation Guide](./getting-started/installation.md)** | **[MCP Configuration Guide](./guides/mcp-configuration.md)**
 
 ---
 
@@ -44,6 +44,7 @@ Core capabilities explained in depth.
 | [🤖 Autonomous Agents](./features/agents.md) | **LOOP**: Planner, Coder, Reviewer Squad ([中文](./features/agents_zh.md)) |
 | [MCP Toolset](./features/mcp-tools.md) | 55+ Tools, Profiles, Router ([中文](./features/mcp-tools_zh.md)) |
 | [Shadow Mode](./features/shadow-mode.md) | Security Sandbox ([中文](./features/shadow-mode_zh.md)) |
+| [📉 Token Optimization](./features/token-optimization.md) | **NEW**: Verbosity & Caching ([中文](./features/token-optimization_zh.md)) |
 | [Quality Gates](./features/quality-gates.md) | CI/CD integration and verification levels |
 | [💎 Hidden Gems](./features/hidden-gems.md) | **Pro**: Advanced tips & secrets ([中文](./features/hidden-gems_zh.md)) |
 
@@ -88,7 +89,8 @@ Deep dive technical documentation.
 
 | Reference | Description |
 |-----------|-------------|
-| [Configuration](./reference/configuration.md) | **Deep Dive**: `.boring.toml` & ENV variables |
+| [Configuration](./reference/configuration.md) | **Cookbook**: Recipes for Save Money/Max Power ([中文](./reference/configuration_zh.md)) |
+| [API Reference](./api/index_zh.md) | **Complete Specs**: Core, Tools, Vibe (Auto-generated) |
 | [Troubleshooting](./reference/troubleshooting.md) | **Deep Dive**: Diagnosis & common fixes |
 | [Architecture](./reference/architecture.md) | **Deep Dive**: Internals & Design |
 | [Tool Reference (Appendix A)](./reference/APPENDIX_A_TOOL_REFERENCE.md) | Complete API documentation |
@@ -116,6 +118,7 @@ Deep dive technical documentation.
 | 功能 | 說明 |
 |------|------|
 | [效能與架構](./features/performance_zh.md) | 增量驗證、快取、平行化 |
+| [📉 Token 優化](./features/token-optimization_zh.md) | **最新**: Verbosity 控制與 Prompt Caching |
 | [Vibe Coder Pro](./guides/vibe-coder_zh.md) | **最新**: 文件生成、測試生成、衝擊分析、友善審查 |
 | [MCP 工具集](./features/mcp-tools_zh.md) | 所有 55+ 工具及範例 |
 | [影子模式](./features/shadow-mode_zh.md) | AI 操作的安全沙箱 |

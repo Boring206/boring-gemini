@@ -12,7 +12,7 @@ Boring 並非在真空狀態下運作。它被設計為能夠適應**您的工�
 
 ## 📋 1. 顯式引導：評分表 (Rubrics)
 
-評分表是位於 `.boring_brain/rubrics/` 中的 JSON 檔案。它們告訴 AI 在向您展示成品之前，該如何精確評估自己的工作。
+評分表是位於 `.boring/brain/rubrics/` 中的 JSON 檔案。它們告訴 AI 在向您展示成品之前，該如何精確評估自己的工作。
 
 ### 如何使用：
 1.  **建立評分表**：定義一個新的 `.json` 檔案（例如 `mobile_standards.json`）。
@@ -27,7 +27,7 @@ Boring 並非在真空狀態下運作。它被設計為能夠適應**您的工�
 
 ### 學習循環：
 - **互動**：您提供回饋或修正錯誤。
-- **模式提取**：Boring 辨識出「修正模式 (Fix Pattern)」並將其存儲在 `.boring_brain/learned_patterns/` 中。
+- **模式提取**：Boring 辨識出「修正模式 (Fix Pattern)」並將其存儲在 `.boring/brain/learned_patterns/` 中。
 - **先驗行為**：下次發生類似情況時，Boring 會主動採用您偏好的風格。
 
 ---
@@ -45,5 +45,5 @@ Boring 並非在真空狀態下運作。它被設計為能夠適應**您的工�
 ## 💡 對齊的最佳實踐
 
 1.  **明確表達**：使用 `boring profile learn` 手動教會 AI 您最喜歡的程式庫或 Linting 風格。
-2.  **審核大腦**：定期檢查 `.boring_brain/learned_patterns/` 看看 AI 學到了關於您的什麼。您可以手動刪除不再適用的模式。
-3.  **團隊共享**：將 `.boring_brain/rubrics/` 資料夾提交至 Git，這樣整個團隊就能共享相同的「人類品質閘道」。
+2.  **審核大腦**：定期檢查 `.boring/brain/learned_patterns/` 看看 AI 學到了關於您的什麼。您可以手動刪除不再適用的模式。
+3.  **團隊共享**：將 `.boring/brain/rubrics/` 資料夾提交至 Git，這樣整個團隊就能共享相同的「人類品質閘道」。

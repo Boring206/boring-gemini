@@ -70,8 +70,8 @@ boring verify --force --level FULL
 ### Tip 4: Accumulate Knowledge
 
 ```
-Develop → AI fixes errors → Recorded in .boring_memory
-Project ends → boring_learn → Patterns saved to .boring_brain
+Develop → AI fixes errors → Recorded in .boring/memory
+Project ends → boring_learn → Patterns saved to .boring/brain
 Next project → AI auto-references past solutions!
 ```
 
@@ -171,7 +171,7 @@ jobs:
 # On project completion
 boring_learn --topics "error-handling,testing,patterns"
 
-# Knowledge saved to ~/.boring_brain/
+# Knowledge saved to ~/.boring/brain/
 # Available for all future projects
 ```
 

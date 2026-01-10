@@ -37,7 +37,7 @@ tail -f ~/.boring_logs/boring.log
 2. **Restart**: `Ctrl+C` to stop, then `boring start` again. Boring resumes from memory.
 3. **Reset context**: If stuck on a bad thought loop:
    ```bash
-   rm .boring_memory/context.json
+   rm .boring/memory/context.json
    boring start
    ```
 
@@ -76,7 +76,7 @@ tail -f ~/.boring_logs/boring.log
    boring_shadow_mode(action="set_level", level="ENABLED")
    ```
 3. **Reset config**:
-   Delete `~/.boring_brain/shadow_config.json` to restore defaults.
+   Delete `~/.boring/brain/shadow_config.json` to restore defaults.
 
 ### 4. "Smithery installation fails on Gemini Client"
 
@@ -101,7 +101,7 @@ Use local pip installation as fallback:
 **Solution**:
 1. **Clear cache**:
    ```bash
-   rm -rf .boring_cache/
+   rm -rf .boring/cache/
    ```
 2. **Run fresh verification**:
    ```bash

@@ -5,9 +5,9 @@
 
 Most AI coding assistants reset their brain every session. **Boring-Gemini remembers.** It learns from your codebase, your corrections, and its own mistakes to get smarter over time.
 
-## 🧩 The Knowledge Brain (`.boring_brain`)
+## 🧩 The Knowledge Brain (`.boring/brain`)
 
-Boring maintains a persistent SQLite vector database in your home directory (`~/.boring_brain`). This is its long-term memory.
+Boring maintains a persistent SQLite vector database in your home directory (`~/.boring/brain`). This is its long-term memory.
 
 ### What it Remembers
 

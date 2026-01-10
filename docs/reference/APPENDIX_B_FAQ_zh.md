@@ -166,7 +166,7 @@ def my_tool(target: str = Field(default="src/", description="目標路徑")): ..
    boring_rag_search(query="authentication middleware")
    ```
 
-索引會儲存在 `.boring_brain/` 中，跨 Session 依然存在。
+索引會儲存在 `.boring/brain/` 中，跨 Session 依然存在。
 
 ---
 

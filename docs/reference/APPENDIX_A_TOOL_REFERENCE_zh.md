@@ -21,9 +21,10 @@
 
 | 工具 | 說明 | 關鍵參數 |
 |------|------|----------|
-| `boring_security_scan` | SAST + 秘密檢測 + 依賴掃描 | `project_path`, `scan_type` |
+| `boring_security_scan` | SAST + 秘密檢測 + 依賴掃描 | `project_path`, `scan_type`, `verbosity` |
 
 **掃描類型**: `secrets`, `vulnerabilities`, `dependencies`, `all`
+**詳細度**: `minimal`, `standard`, `verbose`
 
 ---
 
@@ -66,7 +67,7 @@
 | 工具 | 說明 | 關鍵參數 |
 |------|------|----------|
 | `boring_rag_index` | 建立程式碼索引 | `force`, `project_path` (需要 `chromadb`) |
-| `boring_rag_search` | 語義搜尋代碼 | `query`, `max_results`, `expand_graph` |
+| `boring_rag_search` | 語義搜尋代碼 | `query`, `max_results`, `verbosity` |
 | `boring_rag_context` | 取得代碼上下文 | `file_path`, `function_name` |
 | `boring_rag_expand` | 展開依賴關係圖 | `chunk_id`, `depth` |
 | `boring_rag_status` | 檢查索引健康度 | - |
@@ -139,7 +140,33 @@
 
 ---
 
-## 13. 知識庫工具 (Knowledge Base Tools)
+### 13. 評估 (`boring_evaluate`)
+
+LLM 作為評審的代碼評分。
+
+```python
+boring_evaluate(
+    target="src/main.py",
+    level="DIRECT",         # DIRECT|PAIRWISE|RUBRIC
+    criteria=["correctness", "readability"],
+    verbosity="standard"    # minimal|standard|verbose
+)
+```
+
+### 14. 代碼健檢 (`boring_vibe_check`)
+
+全面的專案健康度檢查。
+
+```python
+boring_vibe_check(
+    target_path=".",
+    verbosity="minimal"     # minimal|standard|verbose
+)
+```
+
+---
+
+## 15. 知識庫工具 (Knowledge Base Tools)
 
 | 工具 | 說明 | 關鍵參數 |
 |------|------|----------|
@@ -149,7 +176,7 @@
 
 ---
 
-## 14. 評估工具 (Evaluation Tools)
+## 16. 評估工具 (Evaluation Tools)
 
 | 工具 | 說明 | 關鍵參數 |
 |------|------|----------|

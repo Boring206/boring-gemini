@@ -30,13 +30,13 @@ exclude = ["boring_commit"]
 
 ## 🧠 Brain Surgery
 
-Your AI learns from mistakes (`~/.boring_brain`), but sometimes it learns the *wrong* thing.
+Your AI learns from mistakes (`~/.boring/brain`), but sometimes it learns the *wrong* thing.
 
 ### View Your Brain
 Check what patterns are currently stored:
 
 ```bash
-cat ~/.boring_brain/patterns.json
+cat ~/.boring/brain/patterns.json
 ```
 
 ### Force Unlearning

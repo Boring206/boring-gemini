@@ -1,76 +1,59 @@
-# ✨ Vibe Coder 體驗 (V10.24)
+# ✨ Vibe Coder 體驗 (自然語言操作)
 
-> **核心哲學**: "不需要寫程式碼 (No Code)。只要描述你的感覺 (Vibe)。"
+> **簡單說**：就像跟真人資深工程師講話一樣。你不用記指令，只要說人話。
 
-Boring-Gemini V10.24 推出的 **Vibe Coder** 功能，專為偏好自然語言而非手動配置的現代 AI 開發者設計。它將原本複雜的 98+ 個 MCP 工具轉化為流暢的對話式介面。
+---
 
-## 🎯 通用路由 (Universal Router)
+## 🙋 只要開口說 (Just Ask)
 
-你不再需要記住像是 `boring_rag_search`、`boring_security_scan` 或 `boring_test_gen` 這樣冗長的工具名稱。現在，你只有一個入口：**`boring()`**。
+以前你要記住一堆指令：`boring-rag --query "login" --limit 5`。
+現在，你只要告訴 **Vibe Coder** (我們的 AI 路由助手)：
 
-### 如何運作
+> "幫我找一下登入邏輯壞在哪"
+> "這段代碼安全嗎？"
+> "幫我把這個變數改名"
 
-路由器使用語意分析來理解你的意圖，並將你的請求導向最合適的工具。
+它會聽懂你的意思，然後自動去幫你跑工具。
 
-```python
-# 舊方法 (傳統 MCP)
-# 你必須知道工具名稱和具體參數
-client.call_tool("boring_rag_search", query="authentication logic", threshold=0.5)
+---
 
-# ✨ Vibe Coder 方式
-# 只要說出你想要的
-boring("幫我找一下驗證邏輯在哪裡")
-```
+## 🗣️ 金句小抄 (Cheat Sheet)
 
-### 支援的類別
+把這些句子記下來，或是直接複製貼上：
 
-路由器理解 17 種意圖類別，全面支援中英文：
+### 1. 找東西 (RAG)
+*   「幫我找一下跟 **[功能]** 有關的程式碼」
+*   「**[函式名稱]** 是做什麼用的？」
+*   「哪裡有用到 **[變數]**？」
 
-| 類別 | 關鍵字範例 | 目標工具 |
-|------|------------|----------|
-| **Coding** (寫程式) | `code`, `search`, `找程式碼`, `在哪裡` | `rag_search` |
-| **Testing** (測試) | `test`, `verify`, `幫我寫測試` | `test_gen`, `verify` |
-| **Review** (審查) | `review`, `audit`, `審查`, `健檢`, `看看` | `code_review`, `security_scan` |
-| **Planning** (規劃) | `plan`, `architect`, `我想做...` | `prompt_plan` |
-| **Git** (版本控制) | `commit`, `push`, `提交`, `改好了` | `commit` |
+### 2. 檢查品質 (Review)
+*   「幫我 **Code Review** 剛寫的檔案」
+*   「檢查這段有沒有 **安全漏洞**」
+*   「這寫法 **效能** 好嗎？」
 
-## 💻 CLI 使用方式: `boring-route`
+### 3. 動手做 (Action)
+*   「幫我為這個檔案 **寫測試**」
+*   「幫我把這個功能 **提交 (Commit)**」
+*   「幫我 **擬定計畫**」
 
-我們新增了一個 CLI 工具，讓你可以直接在終端機 (Terminal) 中使用 Vibe Coder 的能力，完全不需要開啟複雜的 IDE。
+---
 
-```bash
-# 要求寫測試
-boring-route "幫我寫測試"
-# 🎯 Matched: boring_test_gen (100%)
+## 🚀 背後原理 (給好奇的人)
 
-# 檢查安全性
-boring-route "審查我的程式碼有沒有漏洞"
-# 🎯 Matched: boring_security_scan (85%)
-```
+你只有一個入口：**`boring()`**。
 
-## 🎛️ 工具配置檔 (Tool Profiles)
+當你說話時，Vibe Coder 會進行「意圖分析」：
+1.  你說：「幫我找登入邏輯」
+2.  分析：「意圖 = 搜尋代碼」
+3.  執行：呼叫 `boring_rag_search` 工具
 
-為了進一步優化體驗並節省 LLM Token 用量，我們引入了 **工具配置檔**。
+這代表你不再需要去記那 98 個複雜的工具名稱了。
 
-| 配置檔 (Profile) | 載入工具數 | 適用場景 |
-|------------------|------------|----------|
-| **Minimal** | 8 | 純對話，極低負載 |
-| **Lite** (預設) | 19 | 日常 Vibe Coding (Router + 核心工具) |
-| **Standard** | 50 | 繁重的開發任務 |
-| **Full** | 98+ | 超級使用者，完全控制 |
+## 🎛️ 如何設定？ (Profile)
 
-### 設定方式
+我們提供了不同的「工具包」模式，在 `.boring.toml` 或 `mcp.json` 設定 `BORING_MCP_PROFILE`：
 
-在 `.boring.toml` 中：
-```toml
-[boring.mcp]
-profile = "lite"
-enable_router = true
-```
+*   **`ultra_lite` (超級省錢包)**：只給你最基本的搜尋和讀寫功能。適合只想簡單問答的人。
+*   **`lite` (推薦)**：包含搜尋、讀寫、基本測試。適合 90% 的日常開發。
+*   **`standard`**：全功能開發。
 
-## 🚀 為什麼這很重要？
-
-1.  **節省上下文 (Context)**: 上下文佔用量減少約 80% (從 98 個工具降至 19 個)。
-2.  **準確性**: 路由邏輯幫助 LLM 避免 "幻覺" (Hallucination) 虛構出不存在的工具名稱。
-3.  **速度**: 更快的工具選擇意味著更快的反應時間。
-4.  **簡單**: 你只需要知道 **一個** 函數：`boring()`。

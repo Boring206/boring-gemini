@@ -6,16 +6,16 @@
 
 ### Core Concepts
 
-- **Project Brain** (`.boring_brain/`): Each project's own knowledge base
-- **Global Brain** (`~/.boring_brain/`): Global knowledge base across all projects
+- **Project Brain** (`.boring/brain/`): Each project's own knowledge base
+- **Global Brain** (`~/.boring/brain/`): Global knowledge base across all projects
 - **Knowledge Flow**: Project → Global → Other Projects
 
 ## 📂 Storage Location
 
 Global Brain is stored in your **user home directory**:
 
-- **Windows**: `C:\Users\{YourName}\.boring_brain\global_patterns.json`
-- **Linux/Mac**: `/home/{username}/.boring_brain/global_patterns.json`
+- **Windows**: `C:\Users\{YourName}\.boring/brain\global_patterns.json`
+- **Linux/Mac**: `/home/{username}/.boring/brain/global_patterns.json`
 
 **Benefits**: 
 - ✅ Independent from projects, won't be accidentally deleted
@@ -176,9 +176,9 @@ print(result["patterns"])  # Detailed info for each pattern
 
 To share with team:
 
-1. Copy `~/.boring_brain/global_patterns.json`
+1. Copy `~/.boring/brain/global_patterns.json`
 2. Share through secure channel
-3. Colleagues place in their `~/.boring_brain/` directory
+3. Colleagues place in their `~/.boring/brain/` directory
 
 ## 💡 Best Practices
 
@@ -192,7 +192,7 @@ To share with team:
 ### ❌ Don't
 
 - Export low-quality, unverified patterns
-- Commit `.boring_brain/` to Git
+- Commit `.boring/brain/` to Git
 - Import all patterns without reviewing
 
 ## 🐛 FAQ
@@ -204,7 +204,7 @@ To share with team:
 **A**: Use `boring_brain_summary` to view project Brain
 
 ### Q: How to delete a pattern?
-**A**: Manually edit `~/.boring_brain/global_patterns.json`
+**A**: Manually edit `~/.boring/brain/global_patterns.json`
 
 ### Q: Can teams share?
 **A**: Yes, but requires manual JSON file copying
