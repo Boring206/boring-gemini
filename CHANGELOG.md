@@ -1,5 +1,24 @@
 # Changelog
 
+## [10.28.3] - 2026-01-10
+
+### ✅ Testing & Quality
+- **Test Coverage**: Increased from 48.37% to 51.61% (+3.24%)
+  - Added 137 new test cases across 11 comprehensive test files
+  - All 1139 tests passing, 0 failures
+- **Code Quality**: Fixed all lint and format issues
+  - Resolved multiple GitHub Actions Quality Gate failures
+  - Applied ruff auto-fixes and formatting to entire test suite
+- **CI/CD**: Complete GitHub Actions Quality Gate compliance
+  - ✅ Lint & Format check passed
+  - ✅ Security scan passed
+  - ✅ Test suite passed
+
+### 🔧 Version Management
+- **PyPI Publication**: Version 10.28.3 prepared for PyPI deployment
+- **Version Sync**: Updated all version strings across codebase
+  - pyproject.toml, __init__.py, mcp/http.py
+
 ## [10.28.1] - 2026-01-10
 
 ### 🔧 Fixes
