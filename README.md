@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="docs/assets/logo.png" width="200" alt="Boring for Gemini Logo">
+  <img src="docs/assets/logo.png" width="180" alt="Boring for Gemini Logo">
 </p>
 
 <h1 align="center">Boring for Gemini</h1>
 
 <p align="center">
-  <strong>The Autonomous AI Development Engine for Vibe Coders</strong>
+  <strong>The Cognitive Reasoning Engine for Autonomous Development</strong>
 </p>
 
 <p align="center">
@@ -21,34 +21,34 @@
 
 ---
 
-### 🧞‍♂️ The Vibe Coder Experience
-> **"Don't write code. Describe the vibe."**
+## ⚡ Beyond Generative AI: Agentic Cognition
+
+Boring-Gemini isn't just a collection of tools; it's the **thinking layer** for your AI development workflow. While standard AI models *suggest* code, Boring **reasons, verifies, and learns**.
+
+### 🧞‍♂️ The Vibe Coder Philosophy
+> **"Intent is the new Implementation."**
 >
-> Boring-Gemini is an autonomous AI agent loop designed to turn natural language into high-quality software. It deeply integrates with **Gemini**, **Claude**, and your favorite IDEs (Cursor/VS Code) to automate the heavy lifting of development.
+> In the era of Vibe Coding, your role shifts from writing syntax to defining **Intent**. Boring-Gemini acts as your agentic partner, handling the gap between a "Vibe" (Natural Language) and "Production" (Verified Code).
 
 ---
 
-## 🚀 Core Capabilities
+## 🚀 The Three Pillars of Autonomy
+
+### 🧠 Pillar I: Cognitive Reasoning (Agentic Loop)
+Boring implements a rigorous **Planning -> Execution -> Verification** loop. It doesn't just run commands; it uses `sequentialthinking` and `criticalthinking` to analyze its own steps, critiquing logic *before* hitting your disk.
+
+### 🛡️ Pillar II: Resilient Autonomy (Active Recall)
+The first agent with a **Global Brain**. When Boring encounters a failure, it consults its persistent knowledge base (`.boring/brain`) to recall how similar issues were solved across sessions. It learns from its mistakes so you don't have to.
+
+### ⚓ Pillar III: Production-Grade Safety (Safety Net)
+Trust is built on safety. Boring automatically creates **Git Checkpoints** before any risky operation. Combined with **Shadow Mode**, you have a "undo" button for AI agentic actions, ensuring your repository remains stable even during complex refactors.
+
+---
+
+## 🛠️ Key Capabilities
 
 | | Feature | Description |
 | :--- | :--- | :--- |
-| 🧠 | **Active Recall** | Automatically learns from errors and applies past solutions to fix "stuck loops". |
-| 🛡️ | **Safety Net** | Automatic Git checkpoints before risky operations. Roll back instantly if AI goes wild. |
-| 🕵️ | **Hybrid RAG** | Advanced semantic search using vectors + dependency graphs to find hidden logic. |
-| 🧪 | **Vibe Check** | One-click project health scan (Coverage, Security, Documentation) with an AI Fix Prompt. |
-| 🔌 | **MCP Native** | 98+ specialized tools for every DevOps task, optimized for IDE context windows. |
-
----
-
-## ⚡ Why Boring?
-
-Boring isn't just a tool; it's a **collaborative intelligence system** that follows a rigorous development lifecycle:
-
-1.  **Planning**: AI analyzes requirements and creates a technical specification.
-2.  **Execution**: Code is implemented with precision using specialized agents.
-3.  **Verification**: Every change is automatically verified through tests and quality gates.
-
-> [!TIP]
 > **Universal Natural Language Router**: You don't need to learn 98 tool names. Just say:
 > *"Review my code for security issues"* or *"Add a Google login feature"* — Boring handles the routing.
 
