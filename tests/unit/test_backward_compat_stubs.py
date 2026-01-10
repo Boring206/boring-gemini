@@ -3,7 +3,6 @@ Tests for backward compatibility stub modules.
 These modules are re-exports for backward compatibility.
 """
 
-import pytest
 
 
 def test_auto_learner_import():
