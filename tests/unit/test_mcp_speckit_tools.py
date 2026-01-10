@@ -75,7 +75,7 @@ def test_speckit_plan_default_params(
     reg(mcp, mock_audited, mock_helpers, mock_execute_workflow)
 
     # Test speckit_plan
-    result = registered_tools["speckit_plan"]()
+    registered_tools["speckit_plan"]()
     assert mock_execute_workflow.called
     mock_execute_workflow.assert_called_with("speckit-plan", None, None)
 
@@ -100,7 +100,7 @@ def test_speckit_tasks_with_context(
 
     register_speckit_tools(mcp, mock_audited, mock_helpers, mock_execute_workflow)
 
-    result = registered_tools["speckit_tasks"](context="Test context")
+    registered_tools["speckit_tasks"](context="Test context")
     mock_execute_workflow.assert_called_with("speckit-tasks", "Test context", None)
 
 
@@ -124,7 +124,7 @@ def test_speckit_analyze_with_project_path(
 
     register_speckit_tools(mcp, mock_audited, mock_helpers, mock_execute_workflow)
 
-    result = registered_tools["speckit_analyze"](project_path="/test/path")
+    registered_tools["speckit_analyze"](project_path="/test/path")
     mock_execute_workflow.assert_called_with("speckit-analyze", None, "/test/path")
 
 
