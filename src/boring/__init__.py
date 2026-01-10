@@ -1,7 +1,13 @@
 """
 Boring for Gemini - AI Coding Assistant
 
-V10.31 "The Cognitive Reflex Update":
+V10.31.1 "The Cognitive Reflex Update (Patch 1)":
+- Highlighted Deep Thinking (Reasoning & Critical Thinking) in Vibe Sessions
+- Robust NL routing for safety checkpoints and evaluation tools
+- Improved keyword parity for traditional Chinese users
+- Stabilized CI coverage above 50% gate
+
+V10.31.0 "The Cognitive Reflex Update":
 - Agentic Safety Net (Git Checkpoints)
 - Active Recall (Brain-driven Error Correction)
 - Phase 7-11 Architecture Modernization (Decoupled Tools)

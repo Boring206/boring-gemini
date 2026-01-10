@@ -55,7 +55,7 @@ Boring 持續進化為全功能的 **Agentic AI Partner（代理 AI 夥伴）**�
 
 Boring 不只是一個 MCP 伺服器；它是一套 **Intelligence Maximization System (智能最大化系統)**：
 
-1.  **🤝 Vibe Session (協作會話)**: 取代了舊的 `boring start`。這是一個結構化的 AI 協作流程 (`boring_session_start`)，將開發分解為「規劃、實作、驗證」等階段。
+1.  **🤝 Vibe Session (協作會話)**: 取代了舊的 `boring start`。這是一個結構化的 AI 協作流程 (`boring_session_start`)，深度整合了 **Sequential Thinking (深度思考)** 與 **Critical Thinking (批判性思考)**，將開發分解為「規劃、實作、驗證」等階段。這是 Boring 的核心賣點！
     - **預設模式**: 每個階段完成後會等待您確認 (`boring_session_confirm`)，確保您對流程的完全控制。
     - **自動模式**: 可切換至自主代理模式 (`boring_session_auto`)，自動推進直到任務完成。
 2.  **🕵️ 混合型 RAG (Hybrid RAG)**: 結合關鍵字、向量和依賴圖的高級代碼搜索 (HyDE + Cross-Encoder)。它能找到你甚至不知道存在的程式碼。

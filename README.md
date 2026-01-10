@@ -54,9 +54,9 @@ Boring continues to evolve into a fully **Agentic AI Partner**:
 
 Boring isn't just an MCP server; it's a **Intelligence Maximization System**:
 
-1.  **🤝 Vibe Session**: Replaces the legacy `boring start`. A structured AI collaboration workflow (`boring_session_start`) that breaks development into phases: Alignment, Planning, Implementation, and Verification.
-    - **Default Mode**: Pauses for your confirmation (`boring_session_confirm`) after each phase, giving you full control.
-    - **Auto Mode**: Switch to autonomous agent mode (`boring_session_auto`) to auto-advance until the task is done.
+1.  **🤝 Vibe Session**: Replaces the old `boring start`. This is a structured AI collaboration workflow (`boring_session_start`) that deeply integrates **Sequential Thinking (Deep Thinking)** and **Critical Thinking**, breaking development into "Planning, Implementation, Verification" phases. This is Boring's unique selling point!
+    - **Default Mode**: Waits for your confirmation (`boring_session_confirm`) after each phase, ensuring you have total control.
+    - **Auto Mode**: Switch to autonomous agent mode (`boring_session_auto`) to progress automatically until completion.
 2.  **🕵️ Hybrid RAG**: Advanced code search combining keywords, vectors, and dependency graphs (HyDE + Cross-Encoder). It finds code you didn't even know existed.
 3.  **🛡️ Security Shadow Mode**: Safe execution sandbox. It catches dangerous operations *before* they happen.
 4.  **⚡ 30% Faster**: Smart caching and optimized router reduce context usage by 80% (from 98 tools to 19).

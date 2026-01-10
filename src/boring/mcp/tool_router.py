@@ -136,7 +136,7 @@ TOOL_CATEGORIES = {
     ),
     "git": ToolCategory(
         name="Git & Version Control",
-        description="Commits, branches, git operations",
+        description="Commits, branches, git operations, and safety checkpoints",
         keywords=[
             "git",
             "commit",
@@ -147,13 +147,28 @@ TOOL_CATEGORIES = {
             "提交",
             "推送",
             "版本",
-            "commit",
             "分支",
             "歷史",
             "checkpoint",
+            "restore",
+            "rollback",
+            "revert",
+            "save",
+            "create",
+            "list",
+            "show",
             "還原",
             "回退",
             "存檔",
+            "救命",
+            "標記",
+            "狀態",
+            "備份",
+            "清單",
+            "列表",
+            "還原到",
+            "回退到",
+            "建立存檔",
         ],
         tools=[
             "boring_commit",
@@ -302,17 +317,42 @@ TOOL_CATEGORIES = {
             "boring_suggest_next",
         ],
     ),
+    "session": ToolCategory(
+        name="Vibe Session & Workflow",
+        description="Complete AI-human collaboration sessions using Deep Thinking (Phase 1-4)",
+        keywords=[
+            "session",
+            "start session",
+            "confirm",
+            "status",
+            "workflow",
+            "collaboration",
+            "會話",
+            "開始會話",
+            "確認",
+            "會話狀態",
+            "流程",
+            "協作",
+            "開發流程",
+        ],
+        tools=[
+            "boring_session_start",
+            "boring_session_confirm",
+            "boring_session_status",
+            "boring_session_load",
+            "boring_session_pause",
+            "boring_session_auto",
+        ],
+    ),
     "context": ToolCategory(
-        name="Context & Session",
-        description="Session context, memory, context management",
+        name="Context & Session Context",
+        description="Manage project context and memory",
         keywords=[
             "context",
-            "session",
             "memory",
             "profile",
             "transaction",
             "上下文",
-            "會話",
             "記憶",
             "設定檔",
             "交易",
@@ -406,8 +446,8 @@ TOOL_CATEGORIES = {
     ),
     # V10.24: External Intelligence Integration
     "reasoning": ToolCategory(
-        name="Reasoning & Thinking",
-        description="Complex problem solving using Sequential Thinking",
+        name="Reasoning & Thinking (Deep Thinking)",
+        description="Complex problem solving using Sequential and Critical Thinking. Use this for difficult engineering tasks.",
         keywords=[
             "think",
             "reason",
@@ -422,6 +462,8 @@ TOOL_CATEGORIES = {
             "想一下",
             "分析",
             "深度思考",
+            "批判思考",
+            "推理模式",
         ],
         tools=["sequentialthinking", "criticalthinking"],
     ),
@@ -455,7 +497,7 @@ TOOL_CATEGORIES = {
             "constitution",
             "規格",
             "釐清",
-            "清單",
+            "核對清單",
             "憲法",
         ],
         tools=[
@@ -486,6 +528,7 @@ TOOL_CATEGORIES = {
             "f1",
             "pairwise",
             "compare",
+            "report",
             # Chinese
             "評估",
             "評分",
@@ -501,6 +544,9 @@ TOOL_CATEGORIES = {
             "評測",
             "評審",
             "判斷",
+            "報告",
+            "效能指標",
+            "審查報告",
         ],
         tools=[
             "boring_evaluate",
@@ -557,6 +603,7 @@ class ToolRouter:
             score = self._score_category(query_lower, category)
             if score > 0:
                 category_scores[cat_name] = score
+                # print(f"DEBUG: Category {cat_name} score: {score}")
 
         if not category_scores:
             # Default to RAG search for unknown queries
@@ -613,7 +660,8 @@ class ToolRouter:
 
         # V10.31: Global Safety Checkpoint Boost
         if category.name == "Git & Version Control" and any(
-            kw in query for kw in ["checkpoint", "還原", "回退", "存檔", "rollback"]
+            kw in query
+            for kw in ["checkpoint", "還原", "回退", "存檔", "rollback", "revert", "restore"]
         ):
             score += 10.0
 
@@ -634,6 +682,11 @@ class ToolRouter:
                 if word in query:
                     score += 1.0
 
+            # Additional tool-specific keyword mapping for selection
+            if tool == "boring_checkpoint":
+                if any(kw in query for kw in ["checkpoint", "save", "save as", "存檔", "備份"]):
+                    score += 3.0
+
             # V10.31: Specific Cross-Keyword Boost
             if tool == "boring_checkpoint":
                 if any(
@@ -642,14 +695,37 @@ class ToolRouter:
                         "checkpoint",
                         "restore",
                         "rollback",
+                        "revert",
                         "save",
                         "還原",
                         "回退",
                         "存檔",
                         "救命",
+                        "還原到",
+                        "回退到",
+                        "建立",
+                        "標記",
+                        "狀態",
+                        "備份",
+                        "清單",
+                        "列表",
+                        "叫做",
+                        "叫作",
                     ]
                 ):
                     score += 5.0  # High boost for specific checkpoint intent
+
+            if tool == "boring_evaluation_metrics":
+                if any(kw in query for kw in ["metrics", "指標", "數據"]):
+                    score += 2.0
+
+            if tool == "boring_bias_report":
+                if any(kw in query for kw in ["bias", "偏見", "報告"]):
+                    score += 2.0
+
+            if tool == "boring_generate_rubric":
+                if any(kw in query for kw in ["rubric", "量表", "標準"]):
+                    score += 2.0
 
             if tool == "boring_commit":
                 if any(kw in query for kw in ["commit", "提交", "推送", "push"]):
@@ -697,9 +773,9 @@ class ToolRouter:
                 params["action"] = "list"
 
             # Name extraction - Use original query for casing
-            # Supports: "to X", "as X", "at X", "into X", "還原到 X", "存檔為 X", "叫作 X", "叫做 X", "到 X", "為 X"
+            # Supports: "to X", "as X", "at X", "into X", "還原到 X", "存檔為 X", "叫作 X", "叫做 X", "到 X", "為 X", "回退到 X"
             name_match = re.search(
-                r"(?:\bto\b|\bas\b|\bat\b|\binto\b|還原到|存檔為|叫作|叫做|到|為)\s*([a-zA-Z0-9_\-\.]+)",
+                r"(?:\bto\b|\bas\b|\bat\b|\binto\b|還原到|存檔為|叫作|叫做|到|為|回退到|存檔名為|存檔叫做)\s*([a-zA-Z0-9_\-\.]+)",
                 query,
                 re.IGNORECASE,
             )
@@ -795,6 +871,7 @@ def create_router_tool_description() -> str:
 Instead of remembering 98+ specific tools, just describe what you want:
 
 **Examples:**
+- "start session to build auth" → boring_session_start (Leverages Deep Thinking)
 - "search for authentication code" → boring_rag_search
 - "review my code for security" → boring_security_scan
 - "generate tests for user.py" → boring_test_gen
@@ -810,10 +887,12 @@ Instead of remembering 98+ specific tools, just describe what you want:
 - Review & Quality: Code review, linting
 - Testing: Generate and run tests
 - Git: Commits, hooks, version control
+- Session & Workflow: Start Vibe Session (Ultimate Selling Point! ✨)
 - Security: Scans, audits
 - Planning: Architecture, workflows
 - Intelligence: Predictions, learning
-- Evaluation: Code grading, bias monitoring, metrics
+- Reasoning: Deep Thinking & Logic
+- Evaluation: Code grading, metrics
 
 Just ask naturally - I'll route to the right tool!
 """
