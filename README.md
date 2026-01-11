@@ -63,6 +63,7 @@ Not just execution, but evolution. V11.2 introduces **Self-Correcting Pipelines*
 | 🕵️ | **[Hybrid RAG](docs/features/rag.md)** | Combined Vector + Dependency Graph search. Understands not just *what* code says, but *how* it's used globally. |
 | 🧪 | **[Vibe Check](docs/features/quality-gates.md)** | Gamified health scanning. Calculates a **Vibe Score** and generates a "One-Click Fix Prompt" for the agent. |
 | 🛡️ | **[Active Recall](docs/features/global-brain.md)** | Automatically learns from error patterns. Recalls past solutions to avoid repeating mistakes across sessions. |
+| 🧬 | **[Skill Compilation](docs/features/cognitive.md)** | Distills repeated successfulpatterns into high-level **Strategic Skills**. |
 
 ---
 

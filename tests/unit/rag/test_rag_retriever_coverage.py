@@ -3,6 +3,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+# Skip all tests if chromadb not installed (CI test environment)
+pytest.importorskip("chromadb")
+
 from boring.rag.code_indexer import CodeChunk
 from boring.rag.rag_retriever import (
     RAGRetriever,

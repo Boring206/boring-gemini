@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 # MCP Server Card - metadata for Smithery discovery
 MCP_SERVER_CARD = {
     "name": "boring-gemini",
-    "version": "10.32.1",
+    "version": "11.2.1",
     "description": "Boring Vibecoder Assistant: An AI-powered development support tool with NotebookLM optimizations.",
     "vendor": {"name": "Boring for Gemini"},
     "capabilities": {"tools": True, "resources": True, "prompts": True},

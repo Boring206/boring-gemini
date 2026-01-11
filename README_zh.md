@@ -47,7 +47,7 @@ Boring 實作了嚴謹的 **「規劃 -> 執行 -> 驗證」** 循環。它不�
 信任建立在安全之上。Boring 在執行任何風險操作前都會自動建立 **Git 檢查點**。結合 **影子模式 (Shadow Mode)**，你擁有了 AI 代理行為的「後悔藥」，確保即使在複雜的重構過程中，程式碼庫依然穩如泰山。
 
 ### 🧬 支柱五：[認知進化 (V11.2.1)](docs/features/cognitive_zh.md)
-不只是執行，而是進化。V11.2 導入了 **「自我修補流水線 (Self-Correcting Pipelines)」** 與 **「知識群 (Knowledge Swarm)」**。
+不只是執行，而是進化。V11.2.1 導入了 **「自我修補流水線 (Self-Correcting Pipelines)」** 與 **「知識群 (Knowledge Swarm)」**。
 - **主動因果記憶 (Active Causal Memory)**：自動從錯誤中學習，建立專屬的「直覺庫」。
 - **系統二推理 (System 2 Reasoning)**：依據任務難度，動態切換到深度思考模式。
 - **技能萃取 (Skill Compilation)**：將繁瑣流程濃縮為單一技能。

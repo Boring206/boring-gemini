@@ -1,7 +1,9 @@
 from unittest.mock import MagicMock, patch
-
+import pytest
 from boring.mcp.http import MCP_SERVER_CARD, _get_tools_robust, create_app
 
+# Skip all tests in this module if starlette is not installed
+pytest.importorskip("starlette")
 
 class TestMCPHttp:
     """Test suite for MCP HTTP/SSE server."""
@@ -30,7 +32,7 @@ class TestMCPHttp:
 
     def test_mcp_server_card_version(self):
         # We just updated this!
-        assert MCP_SERVER_CARD["version"] == "10.32.1"
+        assert MCP_SERVER_CARD["version"] == "11.2.1"
 
     @patch("boring.mcp.server.get_server_instance")
     def test_health_endpoint(self, mock_get_server):
