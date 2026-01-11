@@ -1,4 +1,3 @@
-
 from datetime import datetime, timedelta
 from unittest.mock import patch
 
@@ -17,7 +16,7 @@ class TestBrainManagerEnhanced:
             error_type="python_error",
             error_message="KeyError: 'user'",
             solution="Ensure user key exists in dictionary.",
-            file_path="src/auth.py"
+            file_path="src/auth.py",
         )
         assert result["status"] == "SUCCESS"
 
@@ -39,9 +38,10 @@ class TestBrainManagerEnhanced:
             success_count=1,
             created_at=old_date,
             last_used=old_date,
-            decay_score=1.0
+            decay_score=1.0,
         )
         import dataclasses
+
         brain._save_patterns([dataclasses.asdict(pattern)])
 
         # Update decay
@@ -65,7 +65,7 @@ class TestBrainManagerEnhanced:
             "success_count": 0,
             "decay_score": 0.05,  # Below default 0.1 threshold
             "created_at": datetime.now().isoformat(),
-            "last_used": datetime.now().isoformat()
+            "last_used": datetime.now().isoformat(),
         }
         brain._save_patterns([pattern])
 

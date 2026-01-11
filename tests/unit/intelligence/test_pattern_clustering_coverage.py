@@ -1,4 +1,3 @@
-
 from unittest.mock import patch
 
 import pytest
@@ -18,34 +17,34 @@ def sample_patterns():
         {
             "description": "Fix null pointer exception",
             "context": "Java Code",
-            "solution": "Check if obj is null"
+            "solution": "Check if obj is null",
         },
         {
             "description": "Fix null pointer exception",
             "context": "Java Code",
-            "solution": "Check if obj is null"
+            "solution": "Check if obj is null",
         },
         {
             "description": "Use dependency injection",
             "context": "Architecture",
-            "solution": "Inject services in constructor"
+            "solution": "Inject services in constructor",
         },
         {
             "description": "Use DI pattern",
             "context": "Architecture",
-            "solution": "Constructor injection"
-        }
+            "solution": "Constructor injection",
+        },
     ]
 
-class TestPatternClusterer:
 
+class TestPatternClusterer:
     def test_deduplication_exact(self, sample_patterns):
         clusterer = PatternClusterer()
         unique = clusterer._remove_exact_duplicates(sample_patterns)
-        assert len(unique) == 3 # The first two are identical
+        assert len(unique) == 3  # The first two are identical
 
     def test_clustering_logic(self, sample_patterns):
-        clusterer = PatternClusterer(similarity_threshold=0.1) # Low threshold to force merge
+        clusterer = PatternClusterer(similarity_threshold=0.1)  # Low threshold to force merge
 
         # Mocking compute_similarity_matrix to be deterministic without sklearn
         # Or relying on the fallback SequenceMatcher which works fine for these strings
@@ -102,10 +101,10 @@ class TestPatternClusterer:
         assert "brown" in text
         assert "fox" in text
         assert "jumping" in text
-        assert "the" not in text # Stopword
+        assert "the" not in text  # Stopword
+
 
 class TestEmbeddingVersionManager:
-
     def test_version_management(self, tmp_path):
         mgr = EmbeddingVersionManager(tmp_path)
 
@@ -129,6 +128,7 @@ class TestEmbeddingVersionManager:
         mgr2 = EmbeddingVersionManager(tmp_path)
         v3 = mgr2.get_current_version()
         assert v3["model_name"] == "new-model"
+
 
 def test_singleton():
     c1 = get_pattern_clusterer()

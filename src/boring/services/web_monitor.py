@@ -30,6 +30,7 @@ class TransactionalFileWriter:
     Uses write-to-temp-then-rename pattern for crash-safe writes.
     """
 
+
 class ThreadSafeJsonReader:
     """
     Thread-safe JSON reader with retry logic for incomplete reads.

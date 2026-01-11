@@ -23,8 +23,17 @@ log_error() {
     echo -e "${RED}❌ $1${NC}"
 }
 
-# 1. Check Python
+# 1. Check Prerequisites (Python & UV)
 log_step "Checking Prerequisites..."
+
+# Check for uv (The game changer)
+HAS_UV=false
+if command -v uv &> /dev/null; then
+    HAS_UV=true
+    echo -e "${MAGENTA}🚀 UV detected! Engaging Turbo Mode...${NC}"
+else
+    echo -e "${CYAN}🐢 UV not found. Using standard Python (Slower but reliable)...${NC}"
+fi
 
 if command -v python3 &> /dev/null; then
     PYTHON_CMD="python3"
@@ -54,17 +63,29 @@ mkdir -p "$BORING_DIR"
 log_step "Preparing Environment at $VENV_DIR..."
 
 if [ ! -d "$VENV_DIR" ]; then
-    echo "Creating Virtual Environment..."
-    $PYTHON_CMD -m venv "$VENV_DIR"
+    if [ "$HAS_UV" = true ]; then
+        echo "Creating Virtual Environment (UV)..."
+        uv venv "$VENV_DIR"
+    else
+        echo "Creating Virtual Environment (Standard)..."
+        $PYTHON_CMD -m venv "$VENV_DIR"
+    fi
 else
     echo "Using existing Virtual Environment."
 fi
 
 # 3. Install/Update Boring
 log_step "Installing Boring (Latest)..."
-PIP_CMD="$VENV_DIR/bin/pip"
 
-"$PIP_CMD" install --upgrade boring-aicoding --quiet
+if [ "$HAS_UV" = true ]; then
+    # UV is atomic and fast
+    VENV_PYTHON="$VENV_DIR/bin/python"
+    uv pip install --python "$VENV_PYTHON" --upgrade boring-aicoding --quiet
+else
+    # Legacy PIP method
+    PIP_CMD="$VENV_DIR/bin/pip"
+    "$PIP_CMD" install --upgrade boring-aicoding --quiet
+fi
 log_success "Boring installed successfully."
 
 # 4. Launch Wizard

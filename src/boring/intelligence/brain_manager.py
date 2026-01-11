@@ -1097,6 +1097,7 @@ class GlobalKnowledgeStore:
             "kept": len(patterns_to_keep),
             "original": original_count,
         }
+
     def get_pattern_stats(self) -> dict[str, Any]:
         """V10.23: Get statistics about the global pattern knowledge base."""
         patterns = self._load_global_patterns()

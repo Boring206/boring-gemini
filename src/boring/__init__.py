@@ -1,11 +1,10 @@
 """
 Boring for Gemini - AI Coding Assistant
 
-V11.1.0 "Cross-Language Parser Refinement":
-- Fixed JavaScript function expression parsing (function_expression -> function node type)
-- Added type specificity ranking for accurate Go interface/type detection
-- Updated test cases with pure JavaScript patterns (no JSX)
-- All 4 languages (JS/TS/Go/C++) fully validated with correct names/types
+V11.1.0 "Turbo Mode & Wizard Upgrade":
+- Turbo Mode Installers: Integrated `uv` support for 100x faster setup on Win/Linux/Mac
+- Enhanced Wizard: Custom profile configuration (Shadow Mode, Verbosity, Feature Flags)
+- Polyglot RAG Precision: Type specificity ranking (Interface > Class) and improved JS/TS parsing
 
 V11.0.0 "The Resilient Foundation Update":
 - Windows Mandatory File Locking protection with exponential backoff retry

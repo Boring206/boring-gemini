@@ -1,4 +1,3 @@
-
 import time
 from unittest.mock import MagicMock, patch
 
@@ -8,7 +7,6 @@ from boring.rag.rag_watcher import RAGWatcher, get_rag_watcher, start_rag_watch,
 
 
 class TestRAGWatcher:
-
     @pytest.fixture
     def mock_thread(self):
         with patch("threading.Thread") as mock:
@@ -73,7 +71,7 @@ class TestRAGWatcher:
         assert "new.py" in diff
 
         # Deleted
-        deleted = {"file2.py": 100.0} # file1 and new gone
+        deleted = {"file2.py": 100.0}  # file1 and new gone
         # Note: input to detect_changes is compared AGAINST self._file_mtimes
         # So if I pass 'deleted' which lacks file1, it should detect file1 as deleted
 
@@ -89,10 +87,12 @@ class TestRAGWatcher:
         watcher._on_change_callback = MagicMock()
 
         watcher._pending_reindex = True
-        watcher._last_change_time = time.time() - 0.2 # Past debounce window
+        watcher._last_change_time = time.time() - 0.2  # Past debounce window
 
         # Manually invoke the check logic that would run in loop
-        if watcher._pending_reindex and (time.time() - watcher._last_change_time >= watcher.debounce_seconds):
+        if watcher._pending_reindex and (
+            time.time() - watcher._last_change_time >= watcher.debounce_seconds
+        ):
             watcher._trigger_reindex()
             watcher._pending_reindex = False
 

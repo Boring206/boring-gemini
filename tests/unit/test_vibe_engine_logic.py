@@ -1,4 +1,3 @@
-
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -102,7 +101,7 @@ class TestVibeEngineLogic:
 
             engine.clear_cache()
             engine.perform_code_review("x.py", "code")
-            assert engine._stats.cache_misses == 2 # New miss after clear
+            assert engine._stats.cache_misses == 2  # New miss after clear
 
     def test_get_stats_report(self, engine):
         engine._stats.total_analyses = 5

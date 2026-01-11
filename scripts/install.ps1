@@ -19,8 +19,17 @@ function Write-ErrorMsg {
     Write-Host "❌ $Message" -ForegroundColor Red
 }
 
-# 1. Check Python
+# 1. Check Prerequisites (Python & UV)
 Write-Step "Checking Prerequisites..."
+
+# Check for uv (The game changer)
+if (Get-Command "uv" -ErrorAction SilentlyContinue) {
+    $HAS_UV = $true
+    Write-Host "🚀 UV detected! Engaging Turbo Mode..." -ForegroundColor Magenta
+} else {
+    $HAS_UV = $false
+    Write-Host "🐢 UV not found. Using standard Python (Slower but reliable)..." -ForegroundColor Yellow
+}
 
 if (-not (Get-Command "python" -ErrorAction SilentlyContinue)) {
     if (-not (Get-Command "py" -ErrorAction SilentlyContinue)) {
@@ -47,8 +56,14 @@ if (-not (Test-Path $BORING_DIR)) {
 Write-Step "Preparing Environment at $VENV_DIR..."
 
 if (-not (Test-Path $VENV_DIR)) {
-    Write-Host "Creating Virtual Environment..." -ForegroundColor Gray
-    & $PYTHON_CMD -m venv $VENV_DIR
+    if ($HAS_UV) {
+        Write-Host "Creating Virtual Environment (UV)..." -ForegroundColor Gray
+        uv venv $VENV_DIR
+    } else {
+        Write-Host "Creating Virtual Environment (Standard)..." -ForegroundColor Gray
+        & $PYTHON_CMD -m venv $VENV_DIR
+    }
+    
     if ($LASTEXITCODE -ne 0) {
         Write-ErrorMsg "Failed to create venv."
         exit 1
@@ -59,9 +74,17 @@ if (-not (Test-Path $VENV_DIR)) {
 
 # 3. Install/Update Boring
 Write-Step "Installing Boring (Latest)..."
-$PIP_CMD = Join-Path $VENV_DIR "Scripts\pip.exe"
 
-& $PIP_CMD install --upgrade boring-aicoding --quiet
+if ($HAS_UV) {
+    # UV is atomic and fast. We point it to the python executable in the venv
+    $VENV_PYTHON = Join-Path $VENV_DIR "Scripts\python.exe"
+    uv pip install --python $VENV_PYTHON --upgrade boring-aicoding --quiet
+} else {
+    # Legacy PIP method
+    $PIP_CMD = Join-Path $VENV_DIR "Scripts\pip.exe"
+    & $PIP_CMD install --upgrade boring-aicoding --quiet
+}
+
 if ($LASTEXITCODE -ne 0) {
     Write-ErrorMsg "Failed to install boring-aicoding."
     exit 1

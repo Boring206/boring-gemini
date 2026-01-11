@@ -1,4 +1,3 @@
-
 import pytest
 
 from boring.rag.parser import TreeSitterParser
@@ -10,6 +9,7 @@ def parser():
     if not p.is_available():
         pytest.skip("tree-sitter-languages not installed")
     return p
+
 
 def test_go_receiver_extraction(parser):
     code = """
@@ -31,6 +31,7 @@ func RegularFunc() {}
     assert method.name == "ProcessData"
     assert method.receiver == "Service"
     assert "func (s *Service) ProcessData" in method.signature
+
 
 def test_typescript_interface_and_type(parser):
     code = """
@@ -55,6 +56,7 @@ class Account {
     assert type_alias is not None
     assert type_alias.name == "ID"
 
+
 def test_javascript_react_component(parser):
     code = """
 const MyComponent = ({ title }) => {
@@ -74,6 +76,7 @@ export default function App() {
 
     app = next((c for c in chunks if c.name == "App"), None)
     assert app is not None
+
 
 def test_cpp_namespace_and_template(parser):
     code = """

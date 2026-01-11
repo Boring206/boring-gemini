@@ -1,4 +1,3 @@
-
 import json
 import os
 import platform
@@ -15,13 +14,21 @@ from rich.table import Table
 console = Console()
 
 PROFILES = {
-    "standard": {
-        "desc": "Balanced: RAG, Web, Analytics (Recommended)",
-        "tokens": "Moderate",
+    "ultra_lite": {
+        "desc": "Token Saver: Router only (97% savings). Best for Reasoning Models.",
+        "tokens": "Lowest",
+    },
+    "minimal": {
+        "desc": "Context Only: Read-only access to files & RAG.",
+        "tokens": "Very Low",
     },
     "lite": {
-        "desc": "Minimal: Core tools only. Saves tokens & cost.",
+        "desc": "Daily Driver: Core tools for fixes & improvements.",
         "tokens": "Low",
+    },
+    "standard": {
+        "desc": "Balanced: RAG, Web, Analytics (Recommended).",
+        "tokens": "Moderate",
     },
     "full": {
         "desc": "Max Power: All tools, Deep RAG, Security, Vibe Check.",
@@ -33,10 +40,12 @@ PROFILES = {
     },
 }
 
+
 class WizardManager:
     """
     Manages Zero-Config setup for Boring MCP.
     """
+
     # ... (init and paths unchanged) ...
     def __init__(self):
         self.system = platform.system()
@@ -53,7 +62,7 @@ class WizardManager:
         self.editors = {
             "Claude Desktop": self._get_claude_path(),
             "Cursor": self._get_cursor_path(),
-            "VS Code": self._get_vscode_path()
+            "VS Code": self._get_vscode_path(),
         }
 
     def _get_claude_path(self) -> Optional[Path]:
@@ -72,17 +81,31 @@ class WizardManager:
         paths_to_check = []
 
         if self.system == "Windows":
-            paths_to_check.append(self.appdata / "Cursor" / "User" / "globalStorage" / "cursor_mcp_config.json")
-            paths_to_check.append(self.appdata / "Cursor" / "User" / "globalStorage" / "cursor.mcp" / "config.json")
+            paths_to_check.append(
+                self.appdata / "Cursor" / "User" / "globalStorage" / "cursor_mcp_config.json"
+            )
+            paths_to_check.append(
+                self.appdata / "Cursor" / "User" / "globalStorage" / "cursor.mcp" / "config.json"
+            )
         elif self.system == "Darwin":
-            paths_to_check.append(self.home / "Library" / "Application Support" / "Cursor" / "User" / "globalStorage" / "cursor_mcp_config.json")
+            paths_to_check.append(
+                self.home
+                / "Library"
+                / "Application Support"
+                / "Cursor"
+                / "User"
+                / "globalStorage"
+                / "cursor_mcp_config.json"
+            )
         elif self.system == "Linux":
-            paths_to_check.append(self.appdata / "Cursor" / "User" / "globalStorage" / "cursor_mcp_config.json")
+            paths_to_check.append(
+                self.appdata / "Cursor" / "User" / "globalStorage" / "cursor_mcp_config.json"
+            )
 
         for path in paths_to_check:
-             # Just check if directory exists to be permissive
-             if path.parent.exists():
-                 return path
+            # Just check if directory exists to be permissive
+            if path.parent.exists():
+                return path
         return None
 
     def _get_vscode_path(self) -> Optional[Path]:
@@ -103,10 +126,16 @@ class WizardManager:
             if path:
                 # For Claude, the file might not exist but folder does
                 if path.parent.exists():
-                     found[name] = path
+                    found[name] = path
         return found
 
-    def install(self, editor_name: str, config_path: Path, profile: str = "standard", extra_env: Optional[dict[str, str]] = None):
+    def install(
+        self,
+        editor_name: str,
+        config_path: Path,
+        profile: str = "standard",
+        extra_env: Optional[dict[str, str]] = None,
+    ):
         """Install Boring MCP into the config file."""
         console.print(f"\n[bold blue]🔮 Configuring {editor_name}...[/bold blue]")
 
@@ -135,10 +164,7 @@ class WizardManager:
         # Use sys.executable to ensure we use the same python environment
         exe = sys.executable
 
-        env_vars = {
-            "PYTHONUTF8": "1",
-            "BORING_MCP_PROFILE": profile.lower()
-        }
+        env_vars = {"PYTHONUTF8": "1", "BORING_MCP_PROFILE": profile.lower()}
         if extra_env:
             env_vars.update(extra_env)
 
@@ -147,7 +173,7 @@ class WizardManager:
             "args": ["-m", "boring.mcp.server"],
             "env": env_vars,
             "disabled": False,
-            "autoApprove": []
+            "autoApprove": [],
         }
 
         mcp_servers = config.get("mcpServers", {})
@@ -167,12 +193,17 @@ class WizardManager:
 
         # 4. Write
         try:
-            config_path.write_text(json.dumps(config, indent=2, ensure_ascii=False), encoding="utf-8")
-            console.print(f"[bold green]✅ Success! Added 'boring-boring' ({profile}) to {editor_name}[/bold green]")
+            config_path.write_text(
+                json.dumps(config, indent=2, ensure_ascii=False), encoding="utf-8"
+            )
+            console.print(
+                f"[bold green]✅ Success! Added 'boring-boring' ({profile}) to {editor_name}[/bold green]"
+            )
             console.print(f"[dim]Path: {config_path}[/dim]")
             console.print("[bold]🔄 Please restart your editor to apply changes.[/bold]")
         except Exception as e:
             console.print(f"[bold red]❌ Write failed: {e}[/bold red]")
+
 
 def show_profiles():
     table = Table(title="Boring MCP Profiles")
@@ -185,36 +216,73 @@ def show_profiles():
 
     console.print(table)
 
+
 def configure_custom_profile() -> tuple[str, dict[str, str]]:
     """Interactive wizard for custom configuration."""
     console.print("\n[bold orange]🛠️ Custom Configuration[/bold orange]")
 
     # 1. Base Profile
-    base = Prompt.ask("Start from base profile", choices=["standard", "lite", "full"], default="standard")
+    base = Prompt.ask(
+        "Start from base profile", choices=["standard", "lite", "full"], default="standard"
+    )
 
     env = {}
 
     # 2. Log Level
-    log_level = Prompt.ask("Log Level", choices=["DEBUG", "INFO", "WARNING", "ERROR"], default="INFO")
+    log_level = Prompt.ask(
+        "Log Level", choices=["DEBUG", "INFO", "WARNING", "ERROR"], default="INFO"
+    )
     env["BORING_LOG_LEVEL"] = log_level
 
     # 3. RAG
     if Confirm.ask("Enable RAG (Retrieval Augmented Generation)?", default=True):
-        env["BORING_RAG_ENABLE"] = "true"
+        env["BORING_RAG_ENABLED"] = "true"
         # Maybe ask for paths?
     else:
-        env["BORING_RAG_ENABLE"] = "false"
+        env["BORING_RAG_ENABLED"] = "false"
 
-    # 4. Vibe/Experiments
+    # 4. Feature Flags
+    if Confirm.ask("Enable Vector Memory (ChromaDB)?", default=False):
+        env["BORING_USE_VECTOR_MEMORY"] = "true"
+
+    if Confirm.ask("Enable Diff Patching (Smart Edits)?", default=True):
+        env["BORING_USE_DIFF_PATCHING"] = "true"
+    else:
+        env["BORING_USE_DIFF_PATCHING"] = "false"
+
+    # 5. Output Verbosity
+    verbosity = Prompt.ask(
+        "Output Verbosity", choices=["minimal", "standard", "verbose"], default="standard"
+    )
+    env["BORING_MCP_VERBOSITY"] = verbosity
+
+    # 6. Security & Safety
+    shadow = Prompt.ask(
+        "Shadow Mode Level", choices=["DISABLED", "ENABLED", "STRICT"], default="ENABLED"
+    )
+    env["SHADOW_MODE_LEVEL"] = shadow
+
+    if Confirm.ask("Allow Dangerous Tools (e.g. arbitrary command execution)?", default=False):
+        env["BORING_ALLOW_DANGEROUS"] = "true"
+    else:
+        env["BORING_ALLOW_DANGEROUS"] = "false"
+
+    # 7. Vibe/Experiments
     if Confirm.ask("Enable Experimental Vibe Features?", default=False):
-         env["BORING_EXPERIMENTAL_VIBE"] = "true"
+        env["BORING_EXPERIMENTAL_VIBE"] = "true"
 
     console.print("[dim]Custom settings prepared.[/dim]")
     return base, env
 
+
 def run_wizard():
     manager = WizardManager()
-    console.print(Panel("[bold magenta]✨ Boring Zero-Config Setup Wizard ✨[/bold magenta]\n[dim]Auto-detects editors & configures MCP.[/dim]", expand=False))
+    console.print(
+        Panel(
+            "[bold magenta]✨ Boring Zero-Config Setup Wizard ✨[/bold magenta]\n[dim]Auto-detects editors & configures MCP.[/dim]",
+            expand=False,
+        )
+    )
 
     found = manager.scan_editors()
 
@@ -229,7 +297,11 @@ def run_wizard():
     console.print("\n[bold]Configuration Profile:[/bold]")
     show_profiles()
 
-    profile = Prompt.ask("Choose a profile", choices=["standard", "lite", "full", "custom"], default="standard")
+    profile = Prompt.ask(
+        "Choose a profile",
+        choices=["ultra_lite", "minimal", "lite", "standard", "full", "custom"],
+        default="standard",
+    )
 
     extra_env = None
     if profile == "custom":

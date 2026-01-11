@@ -1,4 +1,3 @@
-
 import importlib
 import json
 import sys
@@ -11,14 +10,16 @@ import pytest
 @pytest.fixture(autouse=True)
 def setup_mcp_env():
     # Patch the dependencies before import
-    with patch("boring.mcp.instance.MCP_AVAILABLE", True), \
-         patch("boring.mcp.instance.mcp") as mock_mcp:
-
+    with (
+        patch("boring.mcp.instance.MCP_AVAILABLE", True),
+        patch("boring.mcp.instance.mcp") as mock_mcp,
+    ):
         # Define the resource decorator mock to return the original function
         def resource_decorator(uri):
             def wrapper(func):
-                func._mcp_uri = uri # tag it for verification if needed
+                func._mcp_uri = uri  # tag it for verification if needed
                 return func
+
             return wrapper
 
         mock_mcp.resource = MagicMock(side_effect=resource_decorator)
@@ -31,6 +32,7 @@ def setup_mcp_env():
 
         yield mock_mcp
 
+
 def test_get_project_status(tmp_path):
     from boring.mcp.resources import get_project_status
 
@@ -40,15 +42,17 @@ def test_get_project_status(tmp_path):
         assert "No project detected" in res
 
     # Case 2: Valid project root
-    with patch("boring.mcp.resources.detect_project_root", return_value=tmp_path), \
-         patch("boring.intelligence.MemoryManager") as MockMM:
-
+    with (
+        patch("boring.mcp.resources.detect_project_root", return_value=tmp_path),
+        patch("boring.intelligence.MemoryManager") as MockMM,
+    ):
         mock_mm_instance = MockMM.return_value
         mock_mm_instance.get_project_state.return_value = {"state": "good"}
 
         res = get_project_status()
         assert "{'state': 'good'}" == res
         assert (tmp_path / "logs").exists()
+
 
 def test_get_prompt(tmp_path):
     from boring.mcp.resources import get_prompt
@@ -67,6 +71,7 @@ def test_get_prompt(tmp_path):
 
     with patch("boring.mcp.resources.detect_project_root", return_value=tmp_path):
         assert "System Prompt" in get_prompt()
+
 
 def test_get_workflows(tmp_path):
     from boring.mcp.resources import get_workflows
@@ -89,6 +94,7 @@ def test_get_workflows(tmp_path):
         res = get_workflows()
         assert "deploy" in res
         assert "test" in res
+
 
 def test_get_project_config(tmp_path):
     from boring.mcp.resources import get_project_config
@@ -116,6 +122,7 @@ def test_get_project_config(tmp_path):
         data = json.loads(res)
         assert "boring_config" not in data
 
+
 def test_get_project_tasks(tmp_path):
     from boring.mcp.resources import get_project_tasks
 
@@ -130,11 +137,14 @@ def test_get_project_tasks(tmp_path):
 
     # Case 3: Valid task.md
     task_file = tmp_path / "task.md"
-    task_file.write_text("""
+    task_file.write_text(
+        """
     - [x] Done task
     - [ ] Pending task 1
     - [ ] Pending task 2
-    """, encoding="utf-8")
+    """,
+        encoding="utf-8",
+    )
 
     with patch("boring.mcp.resources.detect_project_root", return_value=tmp_path):
         res = json.loads(get_project_tasks())

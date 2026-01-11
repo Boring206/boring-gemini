@@ -1,4 +1,3 @@
-
 import json
 from unittest.mock import patch
 
@@ -8,7 +7,6 @@ from boring.cli.wizard import WizardManager
 
 
 class TestWizardManager:
-
     @pytest.fixture
     def mock_platform(self):
         with patch("platform.system") as mock:
@@ -19,7 +17,6 @@ class TestWizardManager:
         with patch.dict("os.environ", {"APPDATA": str(tmp_path / "AppData")}):
             yield
 
-
     def test_path_detection_linux(self, mock_platform, tmp_path):
         mock_platform.return_value = "Linux"
 
@@ -27,16 +24,16 @@ class TestWizardManager:
         config = home / ".config"
 
         # Setup env
-        with patch.dict("os.environ", {"XDG_CONFIG_HOME": str(config)}), \
-             patch("pathlib.Path.home", return_value=home):
-
+        with (
+            patch.dict("os.environ", {"XDG_CONFIG_HOME": str(config)}),
+            patch("pathlib.Path.home", return_value=home),
+        ):
             # Setup paths
             claude = config / "Claude" / "claude_desktop_config.json"
             claude.parent.mkdir(parents=True, exist_ok=True)
 
             manager = WizardManager()
             assert manager.editors["Claude Desktop"] == claude
-
 
     def test_install_with_profile(self, tmp_path):
         manager = WizardManager()
@@ -73,19 +70,16 @@ class TestWizardManager:
         target_file.parent.mkdir(parents=True, exist_ok=True)
 
         # Pre-existing
-        initial = {
-            "mcpServers": {
-                "boring-boring": {"command": "old", "args": []}
-            }
-        }
+        initial = {"mcpServers": {"boring-boring": {"command": "old", "args": []}}}
         target_file.write_text(json.dumps(initial), encoding="utf-8")
 
         # Patch Confirm to say YES
-        with patch("rich.prompt.Confirm.ask", return_value=True), \
-             patch("sys.executable", "new_python"), \
-             patch("rich.console.Console.print"):
+        with (
+            patch("rich.prompt.Confirm.ask", return_value=True),
+            patch("sys.executable", "new_python"),
+            patch("rich.console.Console.print"),
+        ):
             manager.install("Test Editor", target_file)
 
         data = json.loads(target_file.read_text())
         assert data["mcpServers"]["boring-boring"]["command"] == "new_python"
-

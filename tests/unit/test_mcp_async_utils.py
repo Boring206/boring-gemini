@@ -1,5 +1,3 @@
-
-
 import pytest
 
 from boring.mcp.async_utils import AsyncTaskRunner, execute_async, run_in_thread
@@ -33,6 +31,7 @@ class TestAsyncUtils:
             return val
 
         progress_calls = []
+
         def on_progress(msg, pct):
             progress_calls.append((msg, pct))
 

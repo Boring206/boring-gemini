@@ -1,4 +1,3 @@
-
 from boring.intelligence.auto_learner import (
     AutoLearner,
     ErrorSolutionPair,
@@ -56,7 +55,7 @@ class TestAutoLearner:
         sections = [
             "Just a comment",
             "I resolved the bug by changing the return value.",
-            "Another section"
+            "Another section",
         ]
         solution = learner._find_solution(sections)
         assert solution is not None

@@ -93,12 +93,12 @@ class TestShadowModeGuard:
         op = {"name": "write_file", "args": {"file_path": "regular.txt"}}
         pending = guard.check_operation(op)
         assert pending is not None
-        assert pending.severity == OperationSeverity.LOW # STRICT blocks even LOW
+        assert pending.severity == OperationSeverity.LOW  # STRICT blocks even LOW
 
     @patch("boring.loop.shadow_mode._get_trust_manager")
     def test_check_operation_trusted(self, mock_get_trust, guard):
         mock_trust = MagicMock()
-        mock_trust.check_trust.return_value = True # Trusted!
+        mock_trust.check_trust.return_value = True  # Trusted!
         mock_get_trust.return_value = mock_trust
 
         op = {"name": "delete_file", "args": {"file_path": "trusted.txt"}}
@@ -131,7 +131,7 @@ class TestShadowModeGuard:
         guard.pending_queue.append(pending)
 
         assert guard.reject_operation("id1", "too risky") is True
-        assert len(guard.pending_queue) == 0 # Rejection removes from queue or sets approved=False?
+        assert len(guard.pending_queue) == 0  # Rejection removes from queue or sets approved=False?
         # Code says: self._remove_pending(operation_id)
 
     def test_get_pending_operations(self, guard):

@@ -1,4 +1,3 @@
-
 from dataclasses import asdict
 from datetime import datetime, timedelta
 from unittest.mock import MagicMock, patch
@@ -13,12 +12,7 @@ from boring.intelligence.brain_manager import (
 
 class TestBrainManagerCoverage:
     def test_rubric_instantiation(self):
-        r = Rubric(
-            name="test",
-            description="desc",
-            criteria=[],
-            created_at="2026-01-11"
-        )
+        r = Rubric(name="test", description="desc", criteria=[], created_at="2026-01-11")
         assert r.name == "test"
 
     def test_brain_manager_init_paths(self, tmp_path):
@@ -43,7 +37,12 @@ class TestBrainManagerCoverage:
         mock_storage = MagicMock()
         mock_storage.get_recent_loops.return_value = [{"status": "SUCCESS"}]
         mock_storage.get_top_errors.return_value = [
-            {"error_type": "ValueError", "error_message": "msg", "solution": "fix", "occurrence_count": 5}
+            {
+                "error_type": "ValueError",
+                "error_message": "msg",
+                "solution": "fix",
+                "occurrence_count": 5,
+            }
         ]
 
         result = brain.learn_from_memory(mock_storage)
@@ -90,7 +89,7 @@ class TestBrainManagerCoverage:
         brain = BrainManager(tmp_path)
         patterns = [
             {"context": "apple banana", "description": "fruits", "solution": "eat"},
-            {"context": "carrot potato", "description": "veggies", "solution": "cook"}
+            {"context": "carrot potato", "description": "veggies", "solution": "cook"},
         ]
         results = brain._intelligent_pattern_match("apple", patterns, limit=5)
         assert results[0]["context"] == "apple banana"
@@ -120,7 +119,9 @@ class TestBrainManagerCoverage:
 
             # Case B: p['context'] in context (if len > 5)
             patterns[0]["context"] = "longer_context"
-            res = brain_manager._intelligent_pattern_match("contains longer_context here", patterns, 5)
+            res = brain_manager._intelligent_pattern_match(
+                "contains longer_context here", patterns, 5
+            )
             assert len(res) == 1
 
     def test_update_pattern_decay_edge_cases(self, tmp_path):
@@ -130,11 +131,11 @@ class TestBrainManagerCoverage:
         patterns = [
             {"id": "p1", "last_used": "invalid-date", "decay_score": 1.0},
             {"id": "p2", "last_used": None, "decay_score": 1.0},
-            {"id": "p3", "last_used": datetime.now().isoformat(), "decay_score": 1.0}
+            {"id": "p3", "last_used": datetime.now().isoformat(), "decay_score": 1.0},
         ]
 
-        with patch.object(brain_manager, '_load_patterns', return_value=patterns):
-            with patch.object(brain_manager, '_save_patterns') as mock_save:
+        with patch.object(brain_manager, "_load_patterns", return_value=patterns):
+            with patch.object(brain_manager, "_save_patterns") as mock_save:
                 res = brain_manager.update_pattern_decay()
                 # Should handle invalid date gracefully (continue)
                 # Should skip None
@@ -148,10 +149,10 @@ class TestBrainManagerCoverage:
         brain_manager = BrainManager(tmp_path)
         patterns = []
         for i in range(10):
-            patterns.append({"id": f"p{i}", "success_count": 0, "decay_score": 0.01}) # Low score
+            patterns.append({"id": f"p{i}", "success_count": 0, "decay_score": 0.01})  # Low score
 
-        with patch.object(brain_manager, '_load_patterns', return_value=patterns):
-            with patch.object(brain_manager, '_save_patterns'):
+        with patch.object(brain_manager, "_load_patterns", return_value=patterns):
+            with patch.object(brain_manager, "_save_patterns"):
                 # Max 5, but keep_min 10 -> keep all?
                 # Logic: if i < keep_min: keep.
 
@@ -178,7 +179,7 @@ class TestBrainManagerCoverage:
                 solution="sol",
                 last_used=old_date,
                 created_at=old_date,
-                success_count=1
+                success_count=1,
             )
             store._save_global_patterns([asdict(pattern)])
 
@@ -218,12 +219,14 @@ class TestBrainManagerCoverage:
             # Add some patterns
             patterns = []
             for i in range(110):
-                patterns.append({
-                    "pattern_id": f"P{i}",
-                    "decay_score": 0.1 if i > 100 else 1.0,
-                    "success_count": 1,
-                    "session_boost": 0.0
-                })
+                patterns.append(
+                    {
+                        "pattern_id": f"P{i}",
+                        "decay_score": 0.1 if i > 100 else 1.0,
+                        "success_count": 1,
+                        "session_boost": 0.0,
+                    }
+                )
             store._save_global_patterns(patterns)
             res2 = store.prune_patterns(keep_min=100)
             assert res2["status"] == "SUCCESS"

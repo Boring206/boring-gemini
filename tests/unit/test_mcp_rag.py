@@ -1,4 +1,3 @@
-
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -20,13 +19,12 @@ class TestRagTools:
             def decorator(f):
                 tools[f.__name__] = f
                 return f
+
             return decorator
 
         mcp.tool = mock_tool
 
-        helpers = {
-            "get_project_root_or_error": lambda p: (Path(p) if p else Path("."), None)
-        }
+        helpers = {"get_project_root_or_error": lambda p: (Path(p) if p else Path("."), None)}
 
         register_rag_tools(mcp, helpers)
         return tools

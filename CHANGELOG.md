@@ -9,9 +9,30 @@
 - **Version Fallback**: Updated CLI version fallback from 10.32.1 to 11.1.0.
 - **Dynamic Version Tests**: Test assertions now use dynamic version checking from `boring.__version__`.
 
-## [11.0.0] - 2026-01-11
-### 🛡️ Resilient Foundation (Windows Optimization)
-- **Transactional Atomic Writes**: Introduced `TransactionalFileWriter` with exponential backoff for `os.replace` to solve Windows mandatory file locking contention.
+### 🚀 Major Improvements
+
+#### ⚡ Turbo Mode Installers (Windows/Linux/macOS)
+- **Problem**: Pip installation is slow and non-atomic.
+- **Solution**: Integrated `uv` support into `install.ps1` and `install.sh`.
+- **Impact**: Detects `uv` automatically. If found, installation time drops from ~30s to <1s (cached) via `uv pip install`.
+- **Usage**: Just run the installer. It upgrades automatically to Turbo Mode if `uv` is present.
+
+#### 🧙‍♂️ Enhanced Zero-Config Wizard
+- **Problem**: The setup wizard hid advanced configurations.
+- **Solution**: Updated `boring wizard` with a new `custom` profile flow.
+- **Features**:
+    - **Verbosity**: Configure `BORING_MCP_VERBOSITY` (minimal/standard/verbose).
+    - **Shadow Mode**: Configure `SHADOW_MODE_LEVEL` (DISABLED/ENABLED/STRICT).
+    - **Feature Flags**: Toggle `Vector Memory` and `Diff Patching` interactively.
+    - **Profile Visibility**: Now exposes `ultra_lite` (97% token savings) and `minimal` profiles.
+
+#### 🔍 Polyglot RAG Precision (Refined)
+- **TypeScript**: Fixed function expression parsing.
+- **Go**: Added type specificity ranking (Interface > Class) to prioritize definitions.
+- **JavaScript**: Optimized parser for pure JS (non-JSX) patterns.
+
+### 📦 Dependencies
+- Updated `boring-boring` MCP server configuration schema to match V11 capabilities.
 - **Race Condition Prevention**: Implemented cross-thread and cross-process safe state persistence for `Web Monitor` and `Shadow Mode`.
 - **Pre-execution Locking**: Added mandatory lock detection before file modifications to ensure clean rollbacks.
 

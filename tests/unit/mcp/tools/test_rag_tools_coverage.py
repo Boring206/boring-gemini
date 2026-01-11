@@ -1,4 +1,3 @@
-
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -14,8 +13,10 @@ class TestRAGTools:
     @pytest.fixture
     def mock_mcp(self):
         mcp = MagicMock()
+
         def tool_decorator(func):
             return func
+
         mcp.tool = MagicMock(return_value=tool_decorator)
         return mcp
 
@@ -35,9 +36,11 @@ class TestRAGTools:
         import boring.mcp.tools.rag as rag_mod
 
         tools = {}
+
         def fake_tool_decorator(func):
             tools[func.__name__] = func
             return func
+
         mock_mcp.tool = MagicMock(return_value=fake_tool_decorator)
 
         register_rag_tools(mock_mcp, mock_helpers)
@@ -61,12 +64,9 @@ class TestRAGTools:
                 classes=5,
                 methods=30,
                 script_chunks=5,
-                skipped_files=0
+                skipped_files=0,
             ),
-            graph_stats=MockObj(
-                total_nodes=15,
-                total_edges=25
-            )
+            graph_stats=MockObj(total_nodes=15, total_edges=25),
         )
         mock_ret.get_stats.return_value = mock_stats
 
@@ -77,7 +77,7 @@ class TestRAGTools:
             "target": [mock_ret_obj],
             "callers": [],
             "callees": [],
-            "siblings": []
+            "siblings": [],
         }
 
         mock_ret.smart_expand.return_value = []

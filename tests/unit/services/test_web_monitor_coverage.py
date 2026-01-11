@@ -1,4 +1,3 @@
-
 from pathlib import Path
 from unittest.mock import patch
 
@@ -16,6 +15,7 @@ except ImportError:
     TestClient = None
     FASTAPI_AVAILABLE = False
 
+
 @pytest.fixture
 def monitor_app(tmp_path):
     if not FASTAPI_AVAILABLE:
@@ -31,14 +31,15 @@ def monitor_app(tmp_path):
 
     return create_monitor_app(tmp_path)
 
+
 @pytest.fixture
 def client(monitor_app):
     if not monitor_app:
         pytest.skip("Could not create app")
     return TestClient(monitor_app)
 
-class TestWebMonitor:
 
+class TestWebMonitor:
     def test_dashboard_html(self, client):
         response = client.get("/")
         assert response.status_code == 200
@@ -46,7 +47,9 @@ class TestWebMonitor:
 
     def test_api_status_from_file(self, client, tmp_path):
         # Path 1: loop_status.json exists
-        (tmp_path / ".boring_memory" / "loop_status.json").write_text('{"state": "running", "extra": "data"}')
+        (tmp_path / ".boring_memory" / "loop_status.json").write_text(
+            '{"state": "running", "extra": "data"}'
+        )
 
         response = client.get("/api/status")
         assert response.status_code == 200
@@ -75,7 +78,7 @@ class TestWebMonitor:
         p_file.write_text('[{"id": "p1"}, {"id": "p2"}]')
 
         # Setup pending
-        (tmp_path / ".boring_memory" / "pending_ops.json").write_text('[{}, {}, {}]')
+        (tmp_path / ".boring_memory" / "pending_ops.json").write_text("[{}, {}, {}]")
 
         # Setup RAG
         (tmp_path / ".boring_memory" / "rag_db").mkdir()
@@ -115,5 +118,6 @@ class TestWebMonitor:
         with patch("boring.services.web_monitor.uvicorn") as mock_uvicorn:
             with patch("boring.services.web_monitor.FASTAPI_AVAILABLE", True):
                 from boring.services.web_monitor import run_web_monitor
+
                 run_web_monitor(tmp_path, port=9999)
                 assert mock_uvicorn.run.called

@@ -61,9 +61,9 @@ class TestTransactionManager:
         # 2. rev-parse HEAD -> commit_hash
         # 3. status --porcelain -> empty (no changes)
         mock_run.side_effect = [
-            MagicMock(returncode=0, stdout=".git", stderr=""), # git-dir
-            MagicMock(returncode=0, stdout="abc1234", stderr=""), # HEAD
-            MagicMock(returncode=0, stdout="", stderr=""), # status
+            MagicMock(returncode=0, stdout=".git", stderr=""),  # git-dir
+            MagicMock(returncode=0, stdout="abc1234", stderr=""),  # HEAD
+            MagicMock(returncode=0, stdout="", stderr=""),  # status
         ]
 
         res = manager.start("Test transaction")
@@ -83,10 +83,10 @@ class TestTransactionManager:
         # 3. status --porcelain -> modified files
         # 4. stash push -> success
         mock_run.side_effect = [
-            MagicMock(returncode=0, stdout=".git", stderr=""), # git-dir
-            MagicMock(returncode=0, stdout="abc1234", stderr=""), # HEAD
-            MagicMock(returncode=0, stdout=" M file1.py\n?? file2.py", stderr=""), # status
-            MagicMock(returncode=0, stdout="Saved working directory", stderr=""), # stash push
+            MagicMock(returncode=0, stdout=".git", stderr=""),  # git-dir
+            MagicMock(returncode=0, stdout="abc1234", stderr=""),  # HEAD
+            MagicMock(returncode=0, stdout=" M file1.py\n?? file2.py", stderr=""),  # status
+            MagicMock(returncode=0, stdout="Saved working directory", stderr=""),  # stash push
         ]
 
         res = manager.start()
@@ -138,9 +138,9 @@ class TestTransactionManager:
         # 2. clean -> success
         # 3. reset -> success
         mock_run.side_effect = [
-            MagicMock(returncode=0, stdout="", stderr=""), # checkout
-            MagicMock(returncode=0, stdout="", stderr=""), # clean
-            MagicMock(returncode=0, stdout="", stderr=""), # reset
+            MagicMock(returncode=0, stdout="", stderr=""),  # checkout
+            MagicMock(returncode=0, stdout="", stderr=""),  # clean
+            MagicMock(returncode=0, stdout="", stderr=""),  # reset
         ]
 
         res = manager.rollback()
@@ -157,9 +157,9 @@ class TestTransactionManager:
         # 2. clean -> success
         # 3. stash pop -> success
         mock_run.side_effect = [
-            MagicMock(returncode=0, stdout="", stderr=""), # checkout
-            MagicMock(returncode=0, stdout="", stderr=""), # clean
-            MagicMock(returncode=0, stdout="Popped", stderr=""), # stash pop
+            MagicMock(returncode=0, stdout="", stderr=""),  # checkout
+            MagicMock(returncode=0, stdout="", stderr=""),  # clean
+            MagicMock(returncode=0, stdout="Popped", stderr=""),  # stash pop
         ]
 
         res = manager.rollback()
@@ -187,7 +187,9 @@ class TestTransactionManager:
 
     @patch("subprocess.run")
     def test_status_active(self, mock_run, manager):
-        manager.current_transaction = TransactionState("tx-1", datetime.now(), "abc1234", "desc", ["f1.py"])
+        manager.current_transaction = TransactionState(
+            "tx-1", datetime.now(), "abc1234", "desc", ["f1.py"]
+        )
         manager._save_state()
 
         mock_run.return_value = MagicMock(returncode=0, stdout="XY f2.py", stderr="")

@@ -1,4 +1,3 @@
-
 from unittest.mock import MagicMock, patch
 
 from boring.interactions_client import InteractionsClient, is_model_supported

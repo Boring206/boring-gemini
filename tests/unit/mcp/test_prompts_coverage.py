@@ -1,4 +1,3 @@
-
 from unittest.mock import MagicMock
 
 from boring.mcp.prompts import register_prompts
@@ -12,6 +11,7 @@ def test_prompts_coverage():
         def wrapper(func):
             captured_prompts[name] = func
             return func
+
         return wrapper
 
     mock_mcp.prompt = MagicMock(side_effect=prompt_decorator)
@@ -123,7 +123,7 @@ def test_prompts_coverage():
     # 20. smart_commit
     res = captured_prompts["smart_commit"](message="feat: new", push=True)
     assert "feat: new" in res
-    assert "push=True" in res or "True" in res # Depending on exact formatting
+    assert "push=True" in res or "True" in res  # Depending on exact formatting
 
     # 21. project/plugin/eval prompts
     assert "boring_workspace_switch" in captured_prompts["switch_project"]()
@@ -136,7 +136,7 @@ def test_prompts_coverage():
         error_type="ValError",
         error_line=99,
         code_context="def foo():\n  pass",
-        stack_trace="Traceback..."
+        stack_trace="Traceback...",
     )
     assert "`ValError`" in res
     assert "Line**: 99" in res

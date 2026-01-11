@@ -1,4 +1,3 @@
-
 import time
 from unittest.mock import MagicMock, patch
 
@@ -38,6 +37,7 @@ class TestRAGRetrieverUtility:
 
     def test_clear_query_cache(self):
         from boring.rag.rag_retriever import _query_cache
+
         _query_cache["test"] = ([], time.time())
         _clear_query_cache()
         assert len(_query_cache) == 0
@@ -81,7 +81,17 @@ class TestRAGRetrieverCore:
             "ids": [["chunk1"]],
             "distances": [[0.2]],
             "documents": [["def test(): pass"]],
-            "metadatas": [[{"file_path": "test.py", "name": "test", "start_line": 1, "end_line": 2, "chunk_type": "function"}]]
+            "metadatas": [
+                [
+                    {
+                        "file_path": "test.py",
+                        "name": "test",
+                        "start_line": 1,
+                        "end_line": 2,
+                        "chunk_type": "function",
+                    }
+                ]
+            ],
         }
 
         results = retriever.retrieve("unique_query", n_results=1)
@@ -101,7 +111,7 @@ class TestRAGRetrieverCore:
 
         with patch.object(retriever.indexer, "collect_files", return_value=[test_file]):
             with patch.object(retriever.index_state, "get_changed_files", return_value=[test_file]):
-                count = retriever.build_index()
+                _count = retriever.build_index()
                 assert mock_collection.upsert.called
 
     def test_build_index_stale_files(self, retriever, mock_chroma):
@@ -112,7 +122,9 @@ class TestRAGRetrieverCore:
 
         with patch.object(retriever.indexer, "collect_files", return_value=[]):
             with patch.object(retriever.index_state, "get_changed_files", return_value=[]):
-                with patch.object(retriever.index_state, "get_stale_files", return_value=["old.py"]):
+                with patch.object(
+                    retriever.index_state, "get_stale_files", return_value=["old.py"]
+                ):
                     retriever.build_index()
                     mock_collection.delete.assert_called_with(ids=["c1", "c2"])
                     assert "old.py" not in retriever.index_state.state
@@ -122,7 +134,9 @@ class TestRAGRetrieverCore:
 
         retriever.build_index(force=True)
         # It's mock_client.return_value because retriever.client = chromadb.PersistentClient(...)
-        mock_client.return_value.delete_collection.assert_called_once_with(retriever.collection_name)
+        mock_client.return_value.delete_collection.assert_called_once_with(
+            retriever.collection_name
+        )
         mock_client.return_value.create_collection.assert_called_once()
 
     def test_update_file(self, retriever, tmp_path, mock_chroma):
@@ -133,9 +147,21 @@ class TestRAGRetrieverCore:
         # Mock file in state
         retriever._file_to_chunks["hello.py"] = ["old1"]
 
-        with patch.object(retriever.indexer, "index_file", return_value=[
-            CodeChunk(chunk_id="new1", file_path="hello.py", name="script", content="print('hello')", start_line=1, end_line=1, chunk_type="script")
-        ]):
+        with patch.object(
+            retriever.indexer,
+            "index_file",
+            return_value=[
+                CodeChunk(
+                    chunk_id="new1",
+                    file_path="hello.py",
+                    name="script",
+                    content="print('hello')",
+                    start_line=1,
+                    end_line=1,
+                    chunk_type="script",
+                )
+            ],
+        ):
             count = retriever.update_file(test_file)
             assert count == 1
             mock_collection.delete.assert_called_with(ids=["old1"])
@@ -157,7 +183,17 @@ class TestRAGRetrieverCore:
             "ids": [["chunk1"]],
             "distances": [[0.5]],
             "documents": [["def error_handler(): pass"]],
-            "metadatas": [[{"file_path": "test.py", "name": "error_handler", "start_line": 1, "end_line": 2, "chunk_type": "function"}]]
+            "metadatas": [
+                [
+                    {
+                        "file_path": "test.py",
+                        "name": "error_handler",
+                        "start_line": 1,
+                        "end_line": 2,
+                        "chunk_type": "function",
+                    }
+                ]
+            ],
         }
 
         results = retriever.retrieve("error", n_results=1)
@@ -174,12 +210,30 @@ class TestRAGRetrieverCore:
         mock_graph = MagicMock()
         retriever.graph = mock_graph
 
-        chunk = CodeChunk(chunk_id="c1", file_path="test.py", name="func", content="def func(): pass", start_line=1, end_line=2, chunk_type="function")
+        chunk = CodeChunk(
+            chunk_id="c1",
+            file_path="test.py",
+            name="func",
+            content="def func(): pass",
+            start_line=1,
+            end_line=2,
+            chunk_type="function",
+        )
         mock_graph.get_chunks_by_name.return_value = [chunk]
         mock_graph.get_context_for_modification.return_value = {
-            "callers": [CodeChunk(chunk_id="c2", file_path="app.py", name="main", content="func()", start_line=10, end_line=11, chunk_type="function")],
+            "callers": [
+                CodeChunk(
+                    chunk_id="c2",
+                    file_path="app.py",
+                    name="main",
+                    content="func()",
+                    start_line=10,
+                    end_line=11,
+                    chunk_type="function",
+                )
+            ],
             "callees": [],
-            "siblings": []
+            "siblings": [],
         }
 
         context = retriever.get_modification_context("test.py", function_name="func")
@@ -192,10 +246,26 @@ class TestRAGRetrieverCore:
         mock_graph = MagicMock()
         retriever.graph = mock_graph
 
-        chunk = CodeChunk(chunk_id="c1", file_path="test.py", name="func", content="def func(): pass", start_line=1, end_line=2, chunk_type="function")
+        chunk = CodeChunk(
+            chunk_id="c1",
+            file_path="test.py",
+            name="func",
+            content="def func(): pass",
+            start_line=1,
+            end_line=2,
+            chunk_type="function",
+        )
         mock_graph.get_chunk.return_value = chunk
         mock_graph.get_related_chunks.return_value = [
-            CodeChunk(chunk_id="c3", file_path="util.py", name="helper", content="pass", start_line=1, end_line=2, chunk_type="function")
+            CodeChunk(
+                chunk_id="c3",
+                file_path="util.py",
+                name="helper",
+                content="pass",
+                start_line=1,
+                end_line=2,
+                chunk_type="function",
+            )
         ]
 
         results = retriever.smart_expand("c1", depth=2)
@@ -206,8 +276,18 @@ class TestRAGRetrieverCore:
     def test_generate_context_injection(self, retriever, mock_chroma):
         # reuse retrieval logic
         with patch.object(retriever, "retrieve") as mock_retrieve:
-            chunk = CodeChunk(chunk_id="c1", file_path="test.py", name="func", content="def func(): pass", start_line=1, end_line=2, chunk_type="function")
-            mock_retrieve.return_value = [RetrievalResult(chunk=chunk, score=0.9, retrieval_method="vector")]
+            chunk = CodeChunk(
+                chunk_id="c1",
+                file_path="test.py",
+                name="func",
+                content="def func(): pass",
+                start_line=1,
+                end_line=2,
+                chunk_type="function",
+            )
+            mock_retrieve.return_value = [
+                RetrievalResult(chunk=chunk, score=0.9, retrieval_method="vector")
+            ]
 
             context_str = retriever.generate_context_injection("my query")
             assert "Relevant Code Context" in context_str

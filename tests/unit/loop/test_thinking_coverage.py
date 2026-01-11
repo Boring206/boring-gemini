@@ -43,7 +43,7 @@ class TestThinkingState:
         context.interactive = True
         context.prompt_file.write_text("Test Prompt")
 
-        with patch("boring.loop.states.thinking.console") as mock_console:
+        with patch("boring.loop.states.thinking.console"):
             res = state.handle(context)
             assert res == StateResult.EXIT
             context.mark_exit.assert_called_with("Delegated to Host")
@@ -55,14 +55,16 @@ class TestThinkingState:
         context.gemini_client.generate_with_tools.return_value = (
             "Response text",
             [{"name": "test_tool", "args": {}}],
-            True
+            True,
         )
         context.prompt_file.write_text("Test Prompt")
-        context.verbose = True # To trigger Live mock
+        context.verbose = True  # To trigger Live mock
 
-        with patch("boring.loop.states.thinking.Live"), \
-             patch("boring.loop.states.thinking.Panel"), \
-             patch("boring.loop.states.thinking.Progress"):
+        with (
+            patch("boring.loop.states.thinking.Live"),
+            patch("boring.loop.states.thinking.Panel"),
+            patch("boring.loop.states.thinking.Progress"),
+        ):
             res = state.handle(context)
             assert res == StateResult.SUCCESS
             assert context.output_content == "Response text"
@@ -86,21 +88,25 @@ class TestThinkingState:
         mock_adapter = mock_adapter_cls.return_value
         mock_adapter.generate.return_value = ("# File: a.py\n```python\nprint(1)\n```", True)
 
-        with patch("boring.cli_client.GeminiCLIAdapter", return_value=mock_adapter), \
-             patch("boring.diff_patcher.extract_search_replace_blocks", return_value=[]), \
-             patch("boring.file_patcher.extract_file_blocks", return_value={"a.py": "print(1)"}):
+        with (
+            patch("boring.cli_client.GeminiCLIAdapter", return_value=mock_adapter),
+            patch("boring.diff_patcher.extract_search_replace_blocks", return_value=[]),
+            patch("boring.file_patcher.extract_file_blocks", return_value={"a.py": "print(1)"}),
+        ):
             res = state.handle(context)
             assert res == StateResult.SUCCESS
             assert any(call["name"] == "write_file" for call in context.function_calls)
 
     def test_next_state_success_with_tools(self, state, context):
         from boring.loop.states.patching import PatchingState
+
         context.function_calls = [{"name": "tool"}]
         next_s = state.next_state(context, StateResult.SUCCESS)
         assert isinstance(next_s, PatchingState)
 
     def test_next_state_failure(self, state, context):
         from boring.loop.states.recovery import RecoveryState
+
         next_s = state.next_state(context, StateResult.FAILURE)
         assert isinstance(next_s, RecoveryState)
 

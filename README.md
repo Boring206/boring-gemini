@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://smithery.ai/server/boring/boring"><img src="https://smithery.ai/badge/boring/boring" alt="Smithery Badge"></a>
-  <a href="https://badge.fury.io/py/boring-aicoding"><img src="https://badge.fury.io/py/boring-aicoding" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/v/boring-aicoding.svg" alt="PyPI version"></a>
   <a href="https://pepy.tech/project/boring-aicoding"><img src="https://static.pepy.tech/badge/boring-aicoding" alt="Downloads"></a>
   <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/pyversions/boring-aicoding.svg" alt="Python Versions"></a>
 </p>
@@ -34,16 +34,16 @@ Boring-Gemini isn't just a collection of tools; it's the **thinking layer** for 
 
 ## 🚀 The Three Pillars of Autonomy
 
-### 🧠 Pillar I: Cognitive Reasoning (Agentic Loop)
+### 🧠 Pillar I: [Cognitive Reasoning (Agentic Loop)](docs/features/agents.md)
 Boring implements a rigorous **Planning -> Execution -> Verification** loop. It doesn't just run commands; it uses `sequentialthinking` and `criticalthinking` to analyze its own steps, critiquing logic *before* hitting your disk.
 
-### 🛡️ Pillar II: Resilient Autonomy (Active Recall)
+### 🛡️ Pillar II: [Resilient Autonomy (Active Recall)](docs/features/global-brain.md)
 The first agent with a **Global Brain**. When Boring encounters a failure, it consults its persistent knowledge base (`.boring/brain`) to recall how similar issues were solved across sessions. It learns from its mistakes so you don't have to.
 
-### ⚡ Pillar III: Ultra-Fast Ecosystem (UV Native)
+### ⚡ Pillar III: [Ultra-Fast Ecosystem (UV Native)](https://docs.astral.sh/uv/)
 Designed for the modern Python stack. Boring natively supports **[uv](https://github.com/astral-sh/uv)** for near-instant package management, lockfile synchronization, and isolated environment execution.
 
-### ⚓ Pillar IV: Production-Grade Safety (Safety Net)
+### ⚓ Pillar IV: [Production-Grade Safety (Safety Net)](docs/features/shadow-mode.md)
 Trust is built on safety. Boring automatically creates **Git Checkpoints** before any risky operation. Combined with **Shadow Mode**, you have a "undo" button for AI agentic actions, ensuring your repository remains stable even during complex refactors.
 
 ---
@@ -52,10 +52,10 @@ Trust is built on safety. Boring automatically creates **Git Checkpoints** befor
 
 | | Feature | Description |
 | :--- | :--- | :--- |
-| 🧠 | **Cognitive Router** | No need to learn 100+ tool names. Say *"Check impact of modifying utils.py"* or *"Review my code"* — Boring handles the routing. |
-| 🕵️ | **Hybrid RAG** | Combined Vector + Dependency Graph search. Understands not just *what* code says, but *how* it's used globally. |
-| 🧪 | **Vibe Check** | Gamified health scanning. Calculates a **Vibe Score** and generates a "One-Click Fix Prompt" for the agent. |
-| 🛡️ | **Active Recall** | Automatically learns from error patterns. Recalls past solutions to avoid repeating mistakes across sessions. |
+| 🧠 | **[Cognitive Router](docs/features/mcp-tools.md)** | No need to learn 100+ tool names. Say *"Check impact of modifying utils.py"* or *"Review my code"* — Boring handles the routing. |
+| 🕵️ | **[Hybrid RAG](docs/features/rag.md)** | Combined Vector + Dependency Graph search. Understands not just *what* code says, but *how* it's used globally. |
+| 🧪 | **[Vibe Check](docs/features/quality-gates.md)** | Gamified health scanning. Calculates a **Vibe Score** and generates a "One-Click Fix Prompt" for the agent. |
+| 🛡️ | **[Active Recall](docs/features/global-brain.md)** | Automatically learns from error patterns. Recalls past solutions to avoid repeating mistakes across sessions. |
 
 ---
 
@@ -104,6 +104,7 @@ pip install "boring-aicoding[mcp]"    # MCP Server
 ### 💎 Top Interaction Triggers
 Just say these phrases to the AI in your IDE (Cursor/Claude):
 
+- **`start session`**: 🚀 **Ultimate Integration**. Activates Deep Thinking to autonomously manage the entire lifecycle of a complex task.
 - **`/vibe_start`**: Kick off a new project from scratch.
 - **`quick_fix`**: Automatically repair all linting and formatting errors.
 - **`review_code`**: Request a technical audit of your current file.

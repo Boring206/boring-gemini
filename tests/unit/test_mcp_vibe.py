@@ -1,4 +1,3 @@
-
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -12,14 +11,18 @@ class TestVibeTools:
     @pytest.fixture
     def registered_tools(self, mock_mcp, helpers):
         tools = {}
-        def audited(x): return x
+
+        def audited(x):
+            return x
 
         # Override mock_mcp.tool to capture the functions
         def capture_tool(description, **kwargs):
             def wrapper(func):
                 tools[func.__name__] = func
                 return func
+
             return wrapper
+
         mock_mcp.tool = capture_tool
 
         register_vibe_tools(mock_mcp, audited, helpers)
@@ -71,8 +74,10 @@ class TestVibeTools:
         test_file.write_text("def hello(): pass", encoding="utf-8")
 
         # Mocking complex vibe check dependencies
-        with patch("boring.mcp.tools.vibe.vibe_engine"), \
-             patch("boring.mcp.tools.vibe.SecurityScanner") as mock_sec:
+        with (
+            patch("boring.mcp.tools.vibe.vibe_engine"),
+            patch("boring.mcp.tools.vibe.SecurityScanner") as mock_sec,
+        ):
             mock_sec.return_value.scan_file.return_value = []
 
             result = vibe_check(target_path="app.py", project_path=str(tmp_path))
@@ -82,11 +87,13 @@ class TestVibeTools:
     # Alternative: Test the helper functions in vibe.py
     def test_get_brain_manager(self, tmp_path):
         from boring.mcp.tools.vibe import _get_brain_manager
+
         brain = _get_brain_manager(tmp_path)
         assert brain is not None
 
     def test_get_storage(self, tmp_path):
         from boring.mcp.tools.vibe import _get_storage
+
         storage = _get_storage(tmp_path)
         # Should return a storage instance (even if mock)
         assert storage is not None

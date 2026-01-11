@@ -1,4 +1,3 @@
-
 import json
 
 from boring.workspace import WorkspaceManager, get_workspace_manager
@@ -83,6 +82,7 @@ class TestWorkspaceStrict:
     def test_get_workspace_manager_singleton(self):
         """Test global singleton initialization (lines 250-252)."""
         import boring.workspace
+
         boring.workspace._workspace = None
 
         manager1 = get_workspace_manager()

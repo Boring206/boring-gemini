@@ -1,4 +1,3 @@
-
 from unittest.mock import MagicMock, patch
 
 from boring.mcp.http import MCP_SERVER_CARD, _get_tools_robust, create_app
@@ -25,7 +24,7 @@ class TestMCPHttp:
         app = create_app()
         assert app is not None
         # Verify routes
-        route_paths = [r.path for r in app.routes if hasattr(r, 'path')]
+        route_paths = [r.path for r in app.routes if hasattr(r, "path")]
         assert "/.well-known/mcp.json" in route_paths
         assert "/health" in route_paths
 

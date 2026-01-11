@@ -1,4 +1,3 @@
-
 from unittest.mock import patch
 
 from boring.loop.background_agent import BackgroundTaskRunner, get_runner, submit_background_task
@@ -32,6 +31,7 @@ class TestBackgroundRunnerEnhanced:
 
     def test_cancel_already_running(self):
         import time
+
         runner = BackgroundTaskRunner(max_workers=1)
 
         def slow_func():

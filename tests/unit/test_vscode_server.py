@@ -1,4 +1,3 @@
-
 import json
 from unittest.mock import patch
 
@@ -17,12 +16,7 @@ class TestVSCodeServer:
     @pytest.mark.asyncio
     async def test_handle_request_success(self, server):
         # Test boring.version
-        request = json.dumps({
-            "jsonrpc": "2.0",
-            "method": "boring.version",
-            "params": {},
-            "id": 1
-        })
+        request = json.dumps({"jsonrpc": "2.0", "method": "boring.version", "params": {}, "id": 1})
         response_json = await server.handle_request(request)
         response = json.loads(response_json)
         assert response["id"] == 1
@@ -30,12 +24,7 @@ class TestVSCodeServer:
 
     @pytest.mark.asyncio
     async def test_handle_request_method_not_found(self, server):
-        request = json.dumps({
-            "jsonrpc": "2.0",
-            "method": "boring.unknown",
-            "params": {},
-            "id": 99
-        })
+        request = json.dumps({"jsonrpc": "2.0", "method": "boring.unknown", "params": {}, "id": 99})
         response_json = await server.handle_request(request)
         response = json.loads(response_json)
         assert response["error"]["code"] == -32601

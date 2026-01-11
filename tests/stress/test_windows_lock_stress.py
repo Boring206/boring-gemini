@@ -24,7 +24,7 @@ def test_transactional_write_concurrency(tmp_path):
                 "thread": tid,
                 "iteration": i,
                 "timestamp": time.time(),
-                "payload": "x" * 1000  # Large payload to increase write time
+                "payload": "x" * 1000,  # Large payload to increase write time
             }
             success = TransactionalFileWriter.write_json(target_file, data)
             if not success:
@@ -35,13 +35,12 @@ def test_transactional_write_concurrency(tmp_path):
 
             # Verify file is valid JSON if it exists
             if target_file.exists():
-                json_valid = False
-                for r_attempt in range(5):
+                for _r_attempt in range(5):
                     try:
                         import json
+
                         with open(target_file) as f:
                             json.load(f)
-                        json_valid = True
                         break
                     except (PermissionError, OSError):
                         time.sleep(0.01)
@@ -60,6 +59,7 @@ def test_transactional_write_concurrency(tmp_path):
 
     assert not errors, f"JSON corruption detected: {errors}"
 
+
 def test_windows_lock_retry_simulation(tmp_path):
     """
     Simulate a Windows file lock and verify retry_with_backoff handles it.
@@ -74,12 +74,15 @@ def test_windows_lock_retry_simulation(tmp_path):
         attempts.append(time.time())
         if len(attempts) < 3:
             # Simulate a lock by raising OSError
-            raise OSError("WinError 32: The process cannot access the file because it is being used by another process")
+            raise OSError(
+                "WinError 32: The process cannot access the file because it is being used by another process"
+            )
         return "success"
 
     result = risky_operation()
     assert result == "success"
     assert len(attempts) == 3
+
 
 def test_file_lock_detector(tmp_path):
     """
@@ -95,10 +98,10 @@ def test_file_lock_detector(tmp_path):
 
     # Simulate a lock by opening with exclusive access if on Windows
     # or just check that it handles existing files correctly.
-    if os.name == 'nt':
+    if os.name == "nt":
         try:
             # Keep file open to trigger "Sharing violation" on Windows
-            f = open(test_file, 'a')
+            f = open(test_file, "a")
             # FileLockDetector._check_windows_lock tries to open with os.O_EXCL
             # which should fail if 'f' is holding it.
             assert FileLockDetector.is_file_locked(test_file)

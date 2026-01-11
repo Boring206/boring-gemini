@@ -1,4 +1,3 @@
-
 import json
 from unittest.mock import patch
 
@@ -18,13 +17,14 @@ def brain_dir(tmp_path):
     (d / "learned_patterns").mkdir()
     return d
 
+
 @pytest.fixture
 def pattern_miner(brain_dir):
     clear_pattern_miner_cache()
     return PatternMiner(brain_dir)
 
-class TestPatternMiner:
 
+class TestPatternMiner:
     def test_initialization(self, pattern_miner):
         # Should load default patterns if no custom ones
         assert len(pattern_miner.patterns) > 0
@@ -40,7 +40,7 @@ class TestPatternMiner:
             "suggested_actions": ["do something"],
             "success_rate": 0.99,
             "usage_count": 10,
-            "last_used": "2025-01-01T12:00:00"
+            "last_used": "2025-01-01T12:00:00",
         }
 
         p_file = brain_dir / "learned_patterns" / "p1.json"
@@ -94,7 +94,9 @@ class TestPatternMiner:
         (tmp_path / "new_file.py").touch()
 
         state2 = pattern_miner.analyze_project_state(tmp_path)
-        assert state2["code_count"] == state1["code_count"]  # Assuming "new_file.py" isn't counted yet
+        assert (
+            state2["code_count"] == state1["code_count"]
+        )  # Assuming "new_file.py" isn't counted yet
 
         # Clear cache and retry
         clear_pattern_miner_cache(tmp_path)
@@ -109,7 +111,11 @@ class TestPatternMiner:
             # First call: time is 1000
             mock_time_mod.time.return_value = 1000.0
 
-            with patch.object(pattern_miner, '_analyze_project_state_impl', wraps=pattern_miner._analyze_project_state_impl) as mock_impl:
+            with patch.object(
+                pattern_miner,
+                "_analyze_project_state_impl",
+                wraps=pattern_miner._analyze_project_state_impl,
+            ) as mock_impl:
                 pattern_miner.analyze_project_state(tmp_path)
                 assert mock_impl.call_count == 1
 
@@ -134,18 +140,14 @@ class TestPatternMiner:
             "code_count": 0,
             "has_errors": False,
             "task_completion": 0.0,
-            "has_spec": False
+            "has_spec": False,
         }
         matches = pattern_miner.match_patterns(state_new)
         # "new_project" pattern checks for 'new' or 'empty' and !has_code
         assert any(p.id == "new_project" for p in matches)
 
         # Case 2: Failed Verification
-        state_fail = {
-            "has_code": True,
-            "has_errors": True,
-            "task_completion": 0.5
-        }
+        state_fail = {"has_code": True, "has_errors": True, "task_completion": 0.5}
         matches = pattern_miner.match_patterns(state_fail)
         assert any(p.id == "verification_failed" for p in matches)
         assert any(p.id == "stuck_debugging" for p in matches)
@@ -155,7 +157,7 @@ class TestPatternMiner:
             "has_code": True,
             "has_tests": True,
             "has_errors": False,
-            "task_completion": 0.9
+            "task_completion": 0.9,
         }
         matches = pattern_miner.match_patterns(state_done)
         assert any(p.id == "feature_complete" for p in matches)

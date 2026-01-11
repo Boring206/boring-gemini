@@ -31,7 +31,7 @@ Do something.
     def test_workflow_package_from_json(self):
         json_data = {
             "metadata": {"name": "test", "version": "1.1.0", "description": "d"},
-            "content": "some content"
+            "content": "some content",
         }
         pkg = WorkflowPackage.from_json(json.dumps(json_data))
         assert pkg.metadata.name == "test"
@@ -60,7 +60,7 @@ Do something.
         name = "imported_flow"
         pkg_data = {
             "metadata": {"name": name, "version": "1.0.0", "description": "desc"},
-            "content": "# New Flow Content"
+            "content": "# New Flow Content",
         }
         pkg_file = manager.project_root / "pkg.json"
         pkg_file.write_text(json.dumps(pkg_data))
@@ -74,7 +74,7 @@ Do something.
         name = "url_flow"
         pkg_data = {
             "metadata": {"name": name, "version": "1.0.0", "description": "desc"},
-            "content": "# URL Flow Content"
+            "content": "# URL Flow Content",
         }
 
         with patch("urllib.request.urlopen") as mock_url:
@@ -93,10 +93,12 @@ Do something.
 
         with patch("urllib.request.urlopen") as mock_url:
             mock_response = MagicMock()
-            mock_response.read.return_value = json.dumps({
-                "html_url": "https://gist.github.com/123",
-                "files": {f"{name}.bwf.json": {"raw_url": "https://gist.github.com/raw/123"}}
-            }).encode("utf-8")
+            mock_response.read.return_value = json.dumps(
+                {
+                    "html_url": "https://gist.github.com/123",
+                    "files": {f"{name}.bwf.json": {"raw_url": "https://gist.github.com/raw/123"}},
+                }
+            ).encode("utf-8")
             mock_response.__enter__.return_value = mock_response
             mock_url.return_value = mock_response
 

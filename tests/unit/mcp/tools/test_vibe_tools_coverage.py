@@ -1,4 +1,3 @@
-
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -12,26 +11,28 @@ class DummyMCP:
     def tool(self, **kwargs):
         def decorator(func):
             return func
+
         return decorator
+
 
 def dummy_audited(func):
     return func
 
+
 @pytest.fixture
 def mcp_setup():
     mcp = DummyMCP()
-    helpers = {
-        "get_project_root_or_error": MagicMock(return_value=(Path("/mock/root"), None))
-    }
+    helpers = {"get_project_root_or_error": MagicMock(return_value=(Path("/mock/root"), None))}
     return mcp, dummy_audited, helpers
+
 
 @pytest.fixture
 def mock_vibe_engine():
     with patch("boring.mcp.tools.vibe.vibe_engine") as mock:
         yield mock
 
-class TestVibeTools:
 
+class TestVibeTools:
     def test_boring_test_gen_flow(self, mcp_setup, mock_vibe_engine, tmp_path):
         mcp, audited, helpers = mcp_setup
         helpers["get_project_root_or_error"].return_value = (tmp_path, None)
@@ -57,11 +58,13 @@ class TestVibeTools:
         # Modifying the test strategy: Import the register function and mocking mcp.tool to capture the inner functions.
 
         captured_tools = {}
+
         class CapturingMCP:
             def tool(self, **kwargs):
                 def decorator(func):
                     captured_tools[func.__name__] = func
                     return func
+
                 return decorator
 
         mcp = CapturingMCP()
@@ -97,12 +100,15 @@ class TestVibeTools:
         helpers["get_project_root_or_error"].return_value = (tmp_path, None)
 
         captured_tools = {}
+
         class CapturingMCP:
             def tool(self, **kwargs):
                 def decorator(func):
                     captured_tools[func.__name__] = func
                     return func
+
                 return decorator
+
         register_vibe_tools(CapturingMCP(), audited, helpers)
         boring_test_gen = captured_tools["boring_test_gen"]
 
@@ -131,12 +137,15 @@ class TestVibeTools:
         target_file.write_text("code", encoding="utf-8")
 
         captured_tools = {}
+
         class CapturingMCP:
             def tool(self, **kwargs):
                 def decorator(func):
                     captured_tools[func.__name__] = func
                     return func
+
                 return decorator
+
         register_vibe_tools(CapturingMCP(), audited, helpers)
         boring_code_review = captured_tools["boring_code_review"]
 
@@ -163,12 +172,15 @@ class TestVibeTools:
         target_file.write_text("bad code", encoding="utf-8")
 
         captured_tools = {}
+
         class CapturingMCP:
             def tool(self, **kwargs):
                 def decorator(func):
                     captured_tools[func.__name__] = func
                     return func
+
                 return decorator
+
         register_vibe_tools(CapturingMCP(), audited, helpers)
         boring_code_review = captured_tools["boring_code_review"]
 
@@ -187,7 +199,12 @@ class TestVibeTools:
             # Test minimal verbosity
             res_min = boring_code_review(file_path="bad.py", verbosity="minimal")
             # Minimal summary: "🔍 {file}: {count} 問題" or similar
-            assert "1 問題" in res_min["vibe_summary"] or "1 issues" in res_min["vibe_summary"] or "🔴" in res_min["vibe_summary"] or "🟡" in res_min["vibe_summary"]
+            assert (
+                "1 問題" in res_min["vibe_summary"]
+                or "1 issues" in res_min["vibe_summary"]
+                or "🔴" in res_min["vibe_summary"]
+                or "🟡" in res_min["vibe_summary"]
+            )
 
             # Test standard verbosity (default)
             res_std = boring_code_review(file_path="bad.py")

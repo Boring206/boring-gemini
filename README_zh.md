@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://smithery.ai/server/boring/boring"><img src="https://smithery.ai/badge/boring/boring" alt="Smithery Badge"></a>
-  <a href="https://badge.fury.io/py/boring-aicoding"><img src="https://badge.fury.io/py/boring-aicoding" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/v/boring-aicoding.svg" alt="PyPI version"></a>
   <a href="https://pepy.tech/project/boring-aicoding"><img src="https://static.pepy.tech/badge/boring-aicoding" alt="Downloads"></a>
   <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/pyversions/boring-aicoding.svg" alt="Python Versions"></a>
 </p>
@@ -34,16 +34,16 @@ Boring-Gemini 不僅僅是一組工具的集合；它是你 AI 開發工作流�
 
 ## 🚀 自主開發的三大支柱
 
-### 🧠 支柱一：認知推理 (Agentic Loop)
+### 🧠 支柱一：[認知推理 (Agentic Loop)](docs/features/agents_zh.md)
 Boring 實作了嚴謹的 **「規劃 -> 執行 -> 驗證」** 循環。它不只是執行指令，而是透過 `sequentialthinking` 與 `criticalthinking` 來分析每一個步驟，並在程式碼落地前進行邏輯審核。
 
-### 🛡️ 支柱二：韌性自主 (Active Recall)
+### 🛡️ 支柱二：[韌性自主 (Active Recall)](docs/features/global-brain_zh.md)
 這是業界首創具備 **「全域大腦」** 的代理人。當 Boring 遇到失敗時，它會檢索持久化知識庫 (`.boring/brain`)，回憶過去如何解決類似問題。它從錯誤中精進，讓你無需重複面對相同的挑戰。
 
-### ⚡ 支柱三：現代高效生態 (UV 原生支持)
+### ⚡ 支柱三：[現代高效生態 (UV 原生支持)](https://docs.astral.sh/uv/)
 專為現代 Python 棧設計。Boring 原生支持 **[uv](https://github.com/astral-sh/uv)**，提供極速的套件管理、整合 Lockfile 同步以及隔離環境執行能力。
 
-### ⚓ 支柱四：生產級安全 (Safety Net)
+### ⚓ 支柱四：[生產級安全 (Safety Net)](docs/features/shadow-mode_zh.md)
 信任建立在安全之上。Boring 在執行任何風險操作前都會自動建立 **Git 檢查點**。結合 **影子模式 (Shadow Mode)**，你擁有了 AI 代理行為的「後悔藥」，確保即使在複雜的重構過程中，程式碼庫依然穩如泰山。
 
 ---
@@ -52,10 +52,10 @@ Boring 實作了嚴謹的 **「規劃 -> 執行 -> 驗證」** 循環。它不�
 
 | | 功能 | 描述 |
 | :--- | :--- | :--- |
-| 🧠 | **全能路由** | 不再需要死背 100+ 個工具名稱。說 *"分析修改 utils.py 的衝擊"* 或 *"審查我的程式碼"* — Boring 會自動路由。 |
-| 🕵️ | **混合 RAG** | 結合向量搜尋與「依賴圖」擴展，深度理解程式碼的底層上下文與調用關係。 |
-| 🧪 | **Vibe Check** | 遊戲化的健康評分系統，一鍵生成讓 AI 代理修復程式碼的「萬能提示詞」。 |
-| 🛡️ | **Active Recall** | 自動從錯誤模式中學習。在多個對話 Session 間回憶解決方案，避免重複錯誤。 |
+| 🧠 | **[全能路由](docs/features/mcp-tools_zh.md)** | 不再需要死背 100+ 個工具名稱。說 *"分析修改 utils.py 的衝擊"* 或 *"審查我的程式碼"* — Boring 會自動路由。 |
+| 🕵️ | **[混合 RAG](docs/features/rag_zh.md)** | 結合向量搜尋與「依賴圖」擴展，深度理解程式碼的底層上下文與調用關係。 |
+| 🧪 | **[Vibe Check](docs/features/quality-gates_zh.md)** | 遊戲化的健康評分系統，一鍵生成讓 AI 代理修復程式碼的「萬能提示詞」。 |
+| 🛡️ | **[Active Recall](docs/features/global-brain_zh.md)** | 自動從錯誤模式中學習。在多個對話 Session 間回憶解決方案，避免重複錯誤。 |
 
 ---
 
@@ -167,6 +167,7 @@ pip install "boring-aicoding[mcp]"    # MCP 伺服器
 ### 💎 高頻交互指令
 在你的 IDE（Cursor / Claude）中對 AI 說這些話：
 
+- **`start session`**: 🚀 **超強整合**。啟動深度思考模式，自動管理複雜任務的全生命週期（規劃→執行→驗證）。
 - **`/vibe_start`**：從零開始啟動一個新專案。
 - **`quick_fix`**：自動修復所有 Lint 和格式錯誤。
 - **`review_code`**：對當前文件進行技術審計。

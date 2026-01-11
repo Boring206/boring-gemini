@@ -50,17 +50,19 @@ startCommand:
         type: "string"
         title: "Tool Profile"
         description: |
-          Select the toolset profile to load.
+          Select the toolset profile to load (V11+).
           
-          - "lite": Essential coding tools only (fastest, low noise)
-          - "dev": Adds debugging, git, and project tools (recommended for developers)
-          - "pro": Full suite including RAG, Multi-Agent, and Intelligence (maximum capability)
+          - "ultra_lite": Essential tools only (97% token savings, good for reasoning models)
+          - "minimal": Read-only context (files + RAG)
+          - "lite": Daily driver (core tools + git)
+          - "standard": Balanced suite (recommended default)
+          - "full": Maximum power (security, vibe check, agents)
           
-          **Default:** "lite"
-          **Example:** Use "pro" for full Vibe Coder experience
-        default: "lite"
-        enum: ["lite", "dev", "pro"]
-        examples: ["lite", "pro"]
+          **Default:** "standard"
+          **Example:** Use "ultra_lite" for low token usage
+        default: "standard"
+        enum: ["ultra_lite", "minimal", "lite", "standard", "full"]
+        examples: ["standard", "ultra_lite", "full"]
       LOG_LEVEL:
         type: "string"
         title: "Log Level"

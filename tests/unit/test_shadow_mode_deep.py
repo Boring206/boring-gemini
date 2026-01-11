@@ -1,4 +1,3 @@
-
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -20,13 +19,16 @@ def temp_project(tmp_path):
     # No pre-existing mode file to avoid confusion
     return tmp_path
 
+
 @pytest.fixture(autouse=True)
 def reset_globals():
     """Reset global state between tests."""
     from boring import trust_rules
     from boring.loop import shadow_mode
+
     shadow_mode._trust_manager = None
     trust_rules._managers = {}
+
 
 class TestShadowModeDeep:
     """Deep tests for Shadow Mode logic and edge cases."""
@@ -34,7 +36,7 @@ class TestShadowModeDeep:
     def test_mode_persistence(self, tmp_path):
         # Use tmp_path directly to eliminate fixture complexity
         guard = ShadowModeGuard(tmp_path)
-        assert guard.mode == ShadowModeLevel.ENABLED # Default
+        assert guard.mode == ShadowModeLevel.ENABLED  # Default
 
         guard.mode = ShadowModeLevel.STRICT
         # Verify file exists and content
@@ -56,14 +58,18 @@ class TestShadowModeDeep:
     def test_classify_sensitive(self, temp_project):
         guard = ShadowModeGuard(temp_project)
         # .env is sensitive
-        pending = guard.check_operation({"name": "write_file", "args": {"file_path": ".env", "content": "KEY=VALUE"}})
+        pending = guard.check_operation(
+            {"name": "write_file", "args": {"file_path": ".env", "content": "KEY=VALUE"}}
+        )
         assert pending is not None
         assert pending.operation_type == "SENSITIVE_CHANGE"
         assert pending.severity == OperationSeverity.CRITICAL
 
     def test_classify_config(self, temp_project):
         guard = ShadowModeGuard(temp_project)
-        pending = guard.check_operation({"name": "search_replace", "args": {"file_path": "pyproject.toml", "replace": "new"}})
+        pending = guard.check_operation(
+            {"name": "search_replace", "args": {"file_path": "pyproject.toml", "replace": "new"}}
+        )
         assert pending is not None
         assert pending.operation_type == "CONFIG_CHANGE"
         assert pending.severity == OperationSeverity.HIGH
@@ -79,14 +85,18 @@ class TestShadowModeDeep:
         guard = ShadowModeGuard(temp_project)
         guard.mode = ShadowModeLevel.STRICT
         large_content = "line\n" * 50
-        pending = guard.check_operation({"name": "search_replace", "args": {"file_path": "test.py", "search": large_content}})
+        pending = guard.check_operation(
+            {"name": "search_replace", "args": {"file_path": "test.py", "search": large_content}}
+        )
         assert pending is not None
         assert pending.operation_type == "LARGE_EDIT"
         assert pending.severity == OperationSeverity.MEDIUM
 
     def test_classify_protected_path(self, temp_project):
         guard = ShadowModeGuard(temp_project)
-        pending = guard.check_operation({"name": "write_file", "args": {"file_path": "/etc/passwd"}})
+        pending = guard.check_operation(
+            {"name": "write_file", "args": {"file_path": "/etc/passwd"}}
+        )
         assert pending is not None
         assert pending.operation_type == "PROTECTED_PATH"
         assert pending.severity == OperationSeverity.CRITICAL
@@ -99,8 +109,10 @@ class TestShadowModeDeep:
 
             guard = ShadowModeGuard(temp_project)
             # Should be blocked normally
-            pending = guard.check_operation({"name": "delete_file", "args": {"file_path": "test.py"}})
-            assert pending is None # Auto-approved by trust rule
+            pending = guard.check_operation(
+                {"name": "delete_file", "args": {"file_path": "test.py"}}
+            )
+            assert pending is None  # Auto-approved by trust rule
 
     def test_approval_flow(self, temp_project):
         callback_mock = MagicMock(return_value=True)

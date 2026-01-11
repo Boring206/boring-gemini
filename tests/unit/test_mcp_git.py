@@ -1,4 +1,3 @@
-
 from unittest.mock import MagicMock, patch
 
 from boring.mcp.tools.git import boring_checkpoint, boring_commit, boring_hooks_status
@@ -38,7 +37,9 @@ class TestGitTools:
 
     @patch("subprocess.run")
     def test_boring_checkpoint_list(self, mock_run, tmp_path):
-        mock_run.return_value = MagicMock(stdout="checkpoint/v1\ncheckpoint/v2", stderr="", returncode=0)
+        mock_run.return_value = MagicMock(
+            stdout="checkpoint/v1\ncheckpoint/v2", stderr="", returncode=0
+        )
 
         with patch("boring.mcp.tools.git.get_project_root_or_error", return_value=(tmp_path, None)):
             result = boring_checkpoint(action="list", project_path=str(tmp_path))
@@ -49,11 +50,12 @@ class TestGitTools:
     @patch("subprocess.run")
     def test_boring_checkpoint_create(self, mock_run, tmp_path):
         import subprocess
+
         # 1. rev-parse check (fail = not exist)
         # 2. tag command (success)
         mock_run.side_effect = [
             subprocess.CalledProcessError(1, "git", stderr="not found"),
-            MagicMock(stdout="", stderr="", returncode=0)
+            MagicMock(stdout="", stderr="", returncode=0),
         ]
 
         with patch("boring.mcp.tools.git.get_project_root_or_error", return_value=(tmp_path, None)):

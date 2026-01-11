@@ -1,4 +1,3 @@
-
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -24,7 +23,9 @@ class TestBrainTools:
         }
 
     def test_registration(self, mock_mcp, helpers):
-        def audited(x): return x
+        def audited(x):
+            return x
+
         tools = register_brain_tools(mock_mcp, audited, helpers)
         assert "boring_learn" in tools
         assert "boring_brain_health" in tools
@@ -33,7 +34,9 @@ class TestBrainTools:
     @patch("boring.intelligence.brain_manager.BrainManager")
     @patch("boring.storage.SQLiteStorage")
     def test_boring_learn_flow(self, mock_storage, mock_brain, mock_mcp, helpers):
-        def audited(x): return x
+        def audited(x):
+            return x
+
         tools = register_brain_tools(mock_mcp, audited, helpers)
         learn_tool = tools["boring_learn"]
 
@@ -43,7 +46,9 @@ class TestBrainTools:
 
     @patch("boring.intelligence.brain_manager.BrainManager")
     def test_boring_brain_health_fallback(self, mock_brain, mock_mcp, helpers):
-        def audited(x): return x
+        def audited(x):
+            return x
+
         tools = register_brain_tools(mock_mcp, audited, helpers)
         health_tool = tools["boring_brain_health"]
 
@@ -56,7 +61,9 @@ class TestBrainTools:
 
     @patch("boring.intelligence.brain_manager.BrainManager")
     def test_boring_incremental_learn(self, mock_brain, mock_mcp, helpers):
-        def audited(x): return x
+        def audited(x):
+            return x
+
         tools = register_brain_tools(mock_mcp, audited, helpers)
         inc_tool = tools["boring_incremental_learn"]
 
@@ -68,12 +75,18 @@ class TestBrainTools:
 
     @patch("boring.intelligence.brain_manager.get_global_knowledge_store")
     def test_boring_global_export(self, mock_global, mock_mcp, helpers):
-        def audited(x): return x
+        def audited(x):
+            return x
+
         tools = register_brain_tools(mock_mcp, audited, helpers)
         export_tool = tools["boring_global_export"]
 
         mock_store = mock_global.return_value
-        mock_store.export_from_project.return_value = {"status": "SUCCESS", "exported": 5, "total_global": 10}
+        mock_store.export_from_project.return_value = {
+            "status": "SUCCESS",
+            "exported": 5,
+            "total_global": 10,
+        }
 
         result = export_tool()
         assert result["exported"] == 5

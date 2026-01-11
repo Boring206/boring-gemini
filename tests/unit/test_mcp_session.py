@@ -1,4 +1,3 @@
-
 from unittest.mock import patch
 
 from boring.mcp.tools.session import (
@@ -64,6 +63,7 @@ class TestSessionTools:
 
                 # Reset simulation and load
                 from boring.mcp.tools.session import _session_managers
+
                 _session_managers.clear()
 
                 load_res = boring_session_load(session_id=session_id, project_path=str(tmp_path))
