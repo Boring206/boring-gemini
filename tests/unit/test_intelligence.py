@@ -63,14 +63,14 @@ class TestIntelligentRanker:
 
         # Create multiple chunks with different selection counts
         for i in range(5):
-            ranker.record_selection(f"chunk_{i}", "query", session_id="s1")
+            ranker.record_selection(f"top_chunk_{i}", "query", session_id="s1")
 
         for _ in range(3):
-            ranker.record_selection("chunk_0", "query", session_id="s1")
+            ranker.record_selection("top_chunk_0", "query", session_id="s1")
 
         top = ranker.get_top_chunks(limit=3)
         assert len(top) == 3
-        assert top[0].chunk_id == "chunk_0"
+        assert top[0].chunk_id == "top_chunk_0"
 
 
 class TestPredictiveAnalyzer:

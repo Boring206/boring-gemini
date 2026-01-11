@@ -31,6 +31,7 @@ Directory Structure:
 """
 
 import json
+import shutil
 import time
 from dataclasses import asdict, dataclass
 from datetime import datetime
@@ -95,10 +96,15 @@ class BrainManager:
 
     def __init__(self, project_root: Path, log_dir: Optional[Path] = None):
         self.project_root = Path(project_root)
-        # Use unified paths with fallback to legacy
         from boring.paths import get_boring_path
 
         self.brain_dir = get_boring_path(self.project_root, "brain")
+        self.backup_dir = get_boring_path(self.project_root, "backups")
+
+        # Ensure directories exist
+        self.brain_dir.mkdir(parents=True, exist_ok=True)
+        self.backup_dir.mkdir(parents=True, exist_ok=True)
+
         self.log_dir = log_dir or self.project_root / "logs"
 
         # Subdirectories
@@ -835,6 +841,18 @@ class BrainManager:
             "health_status": "OK" if health_score > 70 else "WARNING",
         }
 
+    def snapshot(self) -> Optional[str]:
+        """Create a backup snapshot of the brain."""
+        try:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            archive_name = self.backup_dir / f"brain_snapshot_{timestamp}"
+            shutil.make_archive(str(archive_name), "zip", self.brain_dir)
+            return str(archive_name) + ".zip"
+        except Exception as e:
+            if self.log_dir:
+                log_status(self.log_dir, "WARN", f"Brain snapshot failed: {e}")
+            return None
+
 
 def create_brain_manager(project_root: Path, log_dir: Optional[Path] = None) -> BrainManager:
     """Factory function to create BrainManager instance."""
@@ -855,6 +873,58 @@ class GlobalKnowledgeStore:
         self.global_dir = get_boring_path(Path.home(), "brain")
         self.global_patterns_file = self.global_dir / "global_patterns.json"
         self.global_dir.mkdir(parents=True, exist_ok=True)
+
+    def sync_with_remote(self, remote_url: Optional[str] = None) -> dict[str, Any]:
+        """
+        Sync global brain with a remote Git repository.
+
+        Args:
+            remote_url: Git remote URL. If None, uses existing remote.
+
+        Returns:
+            Sync status result
+        """
+        try:
+            import git
+
+            # Initialize repo if needed
+            if not (self.global_dir / ".git").exists():
+                repo = git.Repo.init(self.global_dir)
+            else:
+                repo = git.Repo(self.global_dir)
+
+            # Set remote
+            if remote_url:
+                if "origin" in repo.remotes:
+                    repo.delete_remote("origin")
+                repo.create_remote("origin", remote_url)
+
+            if "origin" not in repo.remotes:
+                return {"status": "ERROR", "error": "No remote URL provided and origin not set"}
+
+            origin = repo.remotes.origin
+
+            # Pull changes (if any)
+            try:
+                origin.pull(rebase=True)
+            except Exception:
+                # Might be empty repo or fresh init
+                pass
+
+            # Add and modify
+            repo.index.add([str(self.global_patterns_file)])
+
+            if repo.is_dirty() or repo.untracked_files:
+                repo.index.commit(f"Brain Sync: {datetime.now().isoformat()}")
+                origin.push()
+                return {"status": "SUCCESS", "action": "pushed_changes"}
+
+            return {"status": "SUCCESS", "action": "up_to_date"}
+
+        except ImportError:
+            return {"status": "ERROR", "error": "gitpython not installed"}
+        except Exception as e:
+            return {"status": "ERROR", "error": str(e)}
 
     def _load_global_patterns(self) -> list[dict]:
         """Load global patterns."""

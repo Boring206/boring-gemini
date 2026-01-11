@@ -1,3 +1,22 @@
+## [11.2.1] - 2026-01-11
+### 🔧 Fixes
+- **Vibe Tools**: Resolved `KeyError: 'message'` and `NameError` in `boring_code_review` and `boring_perf_tips`.
+- **Unit Isolation**: Fixed inconsistent engine usage in `vibe.py`, ensuring injected mocks are respected in tests.
+- **Knowledge Sync**: Optimized Git synchronization retry logic.
+- **Reflex Stability**: Improved Brain Reflex prompt injection for multiline tracebacks.
+- **Reasoning**: Refined System 2 complexity assessment thresholds.
+- **Lint & Format**: Cleaned up `ruff` errors in core library and unit tests.
+
+## [11.2.0] - 2026-01-11
+The Cognitive Evolution Update 🧠🧬
+### 🚀 Major Features
+- **System 2 Reasoning**: Dedicated `ReasoningState` for complex problem decomposition.
+- **Active Causal Memory**: `BrainManager` explicitly tracks error-causes and solutions (Active Recall).
+- **Self-Correcting Pipelines**: `ReasoningState` proactively injects brain solutions (Reflex) into the context.
+- **Knowledge Swarm**: `boring_brain_sync` enables global pattern sharing via Git.
+- **Live Tool Synthesis**: `boring_synth_tool` allows the Agent to write and hot-reload its own Python tools safely.
+- **Deep Integration**: Shadow Mode binding for synthesized tools and Vibe Check memory injection.
+
 ## [11.1.0] - 2026-01-11
 ### 🔧 Cross-Language Parser Refinement
 - **JavaScript Fix**: Fixed `function_expression` → `function` node type for tree-sitter-languages JavaScript grammar.

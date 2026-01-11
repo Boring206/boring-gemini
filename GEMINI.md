@@ -1,4 +1,4 @@
-# GEMINI.md - Boring for Gemini (V10.32.2)
+# GEMINI.md - Boring for Gemini (V11.1.0)
 
 ## Project Overview
 
@@ -13,6 +13,7 @@ The system is built entirely in **Python**, using modern CLI frameworks and rich
 - **Live Monitoring:** Provides real-time monitoring of the agent's status, logs, and API call usage via `boring-monitor`.
 - **🆕 Zero-Config Wizard (V10.32):** One-click `boring wizard` to auto-configure MCP for Claude Desktop, Cursor, and VS Code.
 - **🆕 Brain Reflex (V10.31):** Active Recall mechanism that automatically retrieves solutions for known errors from the Brain.
+- **🆕 Cognitive Architecture (V11.0):** System 2 ReasoningState, Active Causal Memory, and Live Tool Synthesis (`boring_synth_tool`).
 - **🆕 Safety Net (V10.31):** Autonomous Git Checkpoints (`boring_checkpoint`) allowing the Agent to save/restore state before risky ops.
 - **🆕 Theme-Tips Output (V10.27):** Hierarchical tool output format for better LLM comprehension (+1.13% accuracy).
 - **🆕 PRO-Files (V10.32):** Standard/Lite/Full/Custom profile selection for granular token and feature control.

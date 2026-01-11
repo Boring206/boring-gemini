@@ -28,6 +28,7 @@ from ...vibe.engine import VibeEngine
 from ...vibe.handlers.generic import GenericHandler
 from ...vibe.handlers.javascript import JavascriptHandler
 from ...vibe.handlers.python import PythonHandler
+from ..verbosity import is_minimal, is_standard, is_verbose
 
 # Initialize Engine
 vibe_engine = VibeEngine()
@@ -83,11 +84,12 @@ def _get_rag_retriever(project_root: Path):
     return None
 
 
-def register_vibe_tools(mcp, audited, helpers):
+def register_vibe_tools(mcp, audited, helpers, engine=None):
     """
     Register Vibe Coder Pro tools with the MCP server.
     """
     _get_project_root_or_error = helpers["get_project_root_or_error"]
+    global_engine = engine or vibe_engine
 
     # === boring_test_gen ===
     @mcp.tool(
@@ -128,7 +130,7 @@ def register_vibe_tools(mcp, audited, helpers):
         try:
             # 1. 使用 Engine 分析
             source = target_file.read_text(encoding="utf-8")
-            result = vibe_engine.analyze_for_test_gen(str(target_file), source)
+            result = global_engine.analyze_for_test_gen(str(target_file), source)
 
             if not result.functions and not result.classes:
                 return {
@@ -156,7 +158,7 @@ def register_vibe_tools(mcp, audited, helpers):
                     pass  # RAG is optional enhancement
 
             # 3. 生成測試程式碼 (with style hints)
-            test_code = vibe_engine.generate_test_code(result, str(project_root))
+            test_code = global_engine.generate_test_code(result, str(project_root))
 
             # Prepend style hints if available
             if test_style_hints:
@@ -254,7 +256,7 @@ def register_vibe_tools(mcp, audited, helpers):
 
         try:
             source = target_file.read_text(encoding="utf-8")
-            result = vibe_engine.perform_code_review(str(target_file), source, focus)
+            result = global_engine.perform_code_review(str(target_file), source, focus)
 
             # V10.21: BrainManager 整合 - 取得相關 Pattern
             brain_patterns = []
@@ -277,18 +279,13 @@ def register_vibe_tools(mcp, audited, helpers):
                 except Exception:
                     pass  # BrainManager is optional enhancement
 
-            # Import verbosity control
-            from boring.mcp.verbosity import Verbosity, get_verbosity
-
-            verb_level = get_verbosity(verbosity)
-
             if not result.issues:
                 brain_status = (
                     f"\n🧠 已參考 {len(brain_patterns)} 個專案 Pattern" if brain_patterns else ""
                 )
                 message = f"✅ 程式碼品質良好！沒有發現明顯問題。{brain_status}"
 
-                if verb_level == Verbosity.MINIMAL:
+                if is_minimal(verbosity):
                     message = f"✅ {target_file.name}: 無問題"
 
                 return {
@@ -297,13 +294,14 @@ def register_vibe_tools(mcp, audited, helpers):
                     "file": str(target_file),
                     "issues_count": 0,
                     "brain_patterns_used": len(brain_patterns),
+                    "vibe_summary": message,
                 }
 
             # 按嚴重程度排序
             result.issues.sort(key=lambda x: {"high": 0, "medium": 1, "low": 2}.get(x.severity, 3))
 
             # Format output based on verbosity
-            if verb_level == Verbosity.MINIMAL:
+            if is_minimal(verbosity):
                 # MINIMAL: Only summary statistics
                 severity_counts = {"high": 0, "medium": 0, "low": 0}
                 for issue in result.issues:
@@ -318,7 +316,7 @@ def register_vibe_tools(mcp, audited, helpers):
 
                 summary_lines.append("💡 Use verbosity='standard' for details")
 
-            elif verb_level == Verbosity.VERBOSE:
+            elif is_verbose(verbosity):
                 # VERBOSE: Full details with brain patterns
                 summary_lines = [f"🔍 Code Review: `{target_file.name}`", ""]
                 for i, issue in enumerate(result.issues, 1):  # Show ALL issues in verbose
@@ -422,11 +420,6 @@ def register_vibe_tools(mcp, audited, helpers):
         ⚡ 效能分析提示 - 專注於程式碼效能瓶頸檢測。
         支援平台: Python, JavaScript, TypeScript
         """
-        # Import verbosity control
-        from boring.mcp.verbosity import get_verbosity, is_minimal, is_standard
-
-        verb_level = get_verbosity(verbosity)
-
         project_root, error = _get_project_root_or_error(project_path)
         if error:
             return error
@@ -441,11 +434,11 @@ def register_vibe_tools(mcp, audited, helpers):
         try:
             source = target_file.read_text(encoding="utf-8")
             # 僅專注於 performance
-            result = vibe_engine.perform_code_review(str(target_file), source, focus="performance")
+            result = global_engine.perform_code_review(str(target_file), source, focus="performance")
 
             if not result.issues:
                 msg = "⚡ 效能分析完成：未發現明顯瓶頸。"
-                if is_minimal(verb_level):
+                if is_minimal(verbosity):
                     msg = f"⚡ {target_file.name}: 無效能問題"
 
                 return {
@@ -453,6 +446,7 @@ def register_vibe_tools(mcp, audited, helpers):
                     "message": msg,
                     "file": str(target_file),
                     "tips_count": 0,
+                    "vibe_summary": msg,
                 }
 
             # Generate Perf Fix Prompt
@@ -465,7 +459,7 @@ def register_vibe_tools(mcp, audited, helpers):
             # --- Verbosity Logic ---
 
             # 1. MINIMAL: Summary only
-            if is_minimal(verb_level):
+            if is_minimal(verbosity):
                 severity_counts = {"high": 0, "medium": 0, "low": 0}
                 for issue in result.issues:
                     severity_counts[issue.severity] = severity_counts.get(issue.severity, 0) + 1
@@ -482,7 +476,7 @@ def register_vibe_tools(mcp, audited, helpers):
                 }
 
             # 2. STANDARD: Top 5 issues
-            if is_standard(verb_level):
+            if is_standard(verbosity):
                 summary_lines = [f"⚡ Performance Tips: `{target_file.name}`", ""]
                 # Show top 5
                 for i, issue in enumerate(result.issues[:5], 1):
@@ -834,6 +828,36 @@ def register_vibe_tools(mcp, audited, helpers):
                 )
         except Exception:
             pass  # Security scan is optional enhancement
+
+        # 3.5 Memory Injection (Phase 20 Enhancement)
+        # Attempt to match error codes with Brain Memory
+        brain_advice = []
+        try:
+            from boring.intelligence.brain_manager import BrainManager
+
+            brain = BrainManager(project_root)
+
+            seen_patterns = set()
+            for issue in issues_found:
+                # Naive pattern extraction: "[file:line] Message" -> "Message"
+                # Better: Extract error code if available (e.g. F401)
+                # Here we just take the message part
+                msg_part = issue.split("] ", 1)[-1] if "] " in issue else issue
+
+                # Query brain
+                patterns = brain.match_error_pattern(msg_part)
+                if patterns:
+                    best_match = patterns[0]  # Take top match
+                    if best_match.pattern_id not in seen_patterns:
+                        brain_advice.append(
+                            f"🧠 Brain Recall: For '{msg_part}', previously solving by: {best_match.solution}"
+                        )
+                        seen_patterns.add(best_match.pattern_id)
+
+                        # Apply to fix prompt
+                        deductions -= 5  # Bonus for having a known solution!
+        except Exception:
+            pass
 
         # 4. 計算分數
         final_score = max(0, base_score - deductions)

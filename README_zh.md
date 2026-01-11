@@ -46,6 +46,13 @@ Boring 實作了嚴謹的 **「規劃 -> 執行 -> 驗證」** 循環。它不�
 ### ⚓ 支柱四：[生產級安全 (Safety Net)](docs/features/shadow-mode_zh.md)
 信任建立在安全之上。Boring 在執行任何風險操作前都會自動建立 **Git 檢查點**。結合 **影子模式 (Shadow Mode)**，你擁有了 AI 代理行為的「後悔藥」，確保即使在複雜的重構過程中，程式碼庫依然穩如泰山。
 
+### 🧬 支柱五：[認知進化 (V11.2.1)](docs/features/cognitive_zh.md)
+不只是執行，而是進化。V11.2 導入了 **「自我修補流水線 (Self-Correcting Pipelines)」** 與 **「知識群 (Knowledge Swarm)」**。
+- **主動因果記憶 (Active Causal Memory)**：自動從錯誤中學習，建立專屬的「直覺庫」。
+- **系統二推理 (System 2 Reasoning)**：依據任務難度，動態切換到深度思考模式。
+- **技能萃取 (Skill Compilation)**：將繁瑣流程濃縮為單一技能。
+- **即時合成 (Live Tool Synthesis)**：Agent 可即時編寫並編譯自己的 Python 工具。
+
 ---
 
 ## 🛠️ 核心能力一覽
@@ -61,10 +68,17 @@ Boring 實作了嚴謹的 **「規劃 -> 執行 -> 驗證」** 循環。它不�
 
 ## 📦 快速上手
 
-### 1. 極速模式 (Smithery)
-適合想快速在 `gemini-cli` 或 `Claude Desktop` 測試 Boring 的用戶，無需污染本地環境。
+### 一鍵安裝 (One-Click)
+專為 Vibe Coder 設計，30 秒內完成環境設置。
+
+**Windows (PowerShell):**
+```powershell
+powershell -c "irm https://raw.githubusercontent.com/Boring206/boring-gemini/main/scripts/install.ps1 | iex"
+```
+
+**Linux / macOS:**
 ```bash
-npx -y @smithery/cli@latest install boring/boring --client gemini-cli
+curl -fsSL https://raw.githubusercontent.com/Boring206/boring-gemini/main/scripts/install.sh | bash
 ```
 
 ### 2. 專業模式 (uv / pip)

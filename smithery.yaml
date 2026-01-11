@@ -3,13 +3,13 @@
 
 runtime: "container"
 displayName: "Boring Gemini Agent"
-description: "Boring Vibecoder Assistant: An AI-powered development support tool handling project planning, logic verification, and knowledge management. Supports both remote deployment (via Smithery, no local installation) and local installation (via pip). Works alongside Cursor, Copilot, and others to ensure rigorous, efficient workflows, letting developers focus on architecture and decision-making."
-version: 11.1.0
+description: "Boring Vibecoder Assistant: An autonomous AI development loop with System 2 Reasoning, Active Causal Memory, and Live Tool Synthesis. Supports Knowledge Swarm (Git Sync) and Self-Correcting Pipelines."
+version: 11.2.1
 repository: "https://github.com/Boring206/boring-gemini"
 homepage: "https://github.com/Boring206/boring-gemini"
 documentation: "https://github.com/Boring206/boring-gemini/blob/main/README.md"
 icon: "https://avatars.githubusercontent.com/u/156481716?s=200&v=4"
-tags: ["ai", "agent", "gemini", "autonomous", "devops", "remote", "quality-gates", "polyglot"]
+tags: ["ai", "agent", "gemini", "autonomous", "devops", "reasoning", "knowledge-graph", "polyglot"]
 
 build:
   dockerfile: "Dockerfile"
@@ -159,7 +159,21 @@ startCommand:
           **Example:** Use "FULL" before production deployments, "SEMANTIC" for critical code reviews
         default: "STANDARD"
         enum: ["BASIC", "STANDARD", "FULL", "SEMANTIC"]
+        default: "STANDARD"
+        enum: ["BASIC", "STANDARD", "FULL", "SEMANTIC"]
         examples: ["STANDARD", "FULL", "SEMANTIC", "BASIC"]
+      BRAIN_SYNC_REMOTE:
+        type: "string"
+        title: "Brain Sync Remote URL"
+        description: |
+          Git remote URL for 'Knowledge Swarm' synchronization (Global Brain).
+          
+          **Feature:**
+          - If set, `boring_brain_sync` will default to this URL
+          - Enables sharing learned patterns across machines
+          
+          **Example:** "git@github.com:user/boring-brain.git"
+        examples: ["git@github.com:user/boring-brain.git", "https://github.com/user/patterns.git"]
     additionalProperties: false
     required: []
     examples:

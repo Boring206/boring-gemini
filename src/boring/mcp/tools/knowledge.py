@@ -111,9 +111,31 @@ def boring_brain_status(
         return {"status": "ERROR", "error": str(e)}
 
 
+@audited
+def boring_brain_sync(
+    remote_url: Annotated[
+        Optional[str], Field(description="Git remote URL. If None, uses configured origin.")
+    ] = None,
+) -> dict:
+    """
+    Sync global brain knowledge with a remote Git repository (Push/Pull).
+
+    Enable 'Knowledge Swarm' by syncing your ~/.boring_brain/global_patterns.json.
+    """
+    try:
+        from ...intelligence.brain_manager import GlobalKnowledgeStore
+
+        store = GlobalKnowledgeStore()
+        return store.sync_with_remote(remote_url)
+
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e)}
+
+
 # ==============================================================================
 # TOOL REGISTRATION
 # ==============================================================================
+
 
 if MCP_AVAILABLE and mcp is not None:
     mcp.tool(
@@ -129,3 +151,8 @@ if MCP_AVAILABLE and mcp is not None:
         description="Get Brain Status & Context (Visualization).",
         annotations={"readOnlyHint": True},
     )(boring_brain_status)
+
+    mcp.tool(
+        description="Sync global brain with Git (Knowledge Swarm).",
+        annotations={"readOnlyHint": False, "openWorldHint": True},
+    )(boring_brain_sync)

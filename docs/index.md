@@ -66,6 +66,7 @@ Core capabilities explained in depth.
 | [MCP Toolset](./features/mcp-tools.md) | 55+ Tools, Profiles, Router ([中文](./features/mcp-tools_zh.md)) |
 | [Shadow Mode](./features/shadow-mode.md) | Security Sandbox ([中文](./features/shadow-mode_zh.md)) |
 | [📉 Token Optimization](./features/token-optimization.md) | **NEW**: Verbosity & Caching ([中文](./features/token-optimization_zh.md)) |
+| [🧬 Cognitive Evolution](./features/cognitive.md) | **V11.2**: Memory, Reasoning, Skills ([中文](./features/cognitive_zh.md)) |
 | [Quality Gates](./features/quality-gates.md) | CI/CD integration and verification levels |
 | [💎 Hidden Gems](./features/hidden-gems.md) | **Pro**: Advanced tips & secrets ([中文](./features/hidden-gems_zh.md)) |
 
@@ -141,6 +142,7 @@ Deep dive technical documentation.
 | [效能與架構](./features/performance_zh.md) | 增量驗證、快取、平行化 |
 | [📉 Token 優化](./features/token-optimization_zh.md) | **最新**: Verbosity 控制與 Prompt Caching |
 | [Vibe Coder Pro](./guides/vibe-coder_zh.md) | **最新**: 文件生成、測試生成、衝擊分析、友善審查 |
+| [🧬 認知進化](./features/cognitive_zh.md) | **V11.0**: 記憶、推理、技能、合成 |
 | [MCP 工具集](./features/mcp-tools_zh.md) | 所有 55+ 工具及範例 |
 | [影子模式](./features/shadow-mode_zh.md) | AI 操作的安全沙箱 |
 | [品質閘道](./features/quality-gates_zh.md) | CI/CD 整合和驗證級別 |

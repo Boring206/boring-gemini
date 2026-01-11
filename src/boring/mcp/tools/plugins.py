@@ -159,6 +159,101 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
         plugin_kwargs = args if args else {}
         return loader.execute_plugin(name, **plugin_kwargs)
 
+        plugin_kwargs = args if args else {}
+        return loader.execute_plugin(name, **plugin_kwargs)
+
+    @mcp.tool(
+        description="合成新工具 (Synthesize Tool). 適合: 'Create tool', 'New plugin', 'Make a tool for X'. V11.0 Live Tool Synthesis.",
+        annotations={
+            "readOnlyHint": False,
+            "openWorldHint": True,
+            "idempotentHint": False,
+            "destructiveHint": True,
+        },
+    )
+    @audited
+    def boring_synth_tool(
+        name: Annotated[
+            str,
+            Field(
+                description="Name of the tool (must be a valid python identifier, e.g. 'check_weather')."
+            ),
+        ],
+        description: Annotated[
+            str,
+            Field(description="Description of what the tool does."),
+        ],
+        code: Annotated[
+            str,
+            Field(
+                description="Full Python code for the tool. Must include imports and @plugin decorator."
+            ),
+        ],
+        project_path: Annotated[
+            Optional[str],
+            Field(description="Optional explicit path to project root."),
+        ] = None,
+    ) -> dict:
+        """
+        Synthesize a new plugin tool on the fly.
+        """
+        project_root = _detect_project_root(project_path)
+
+        # Security check: Validate name
+        if not name.isidentifier():
+            return {"status": "ERROR", "message": "Tool name must be a valid Python identifier."}
+
+        plugin_dir = project_root / ".boring_plugins"
+        if not plugin_dir.exists():
+            plugin_dir.mkdir(parents=True)
+
+        file_path = plugin_dir / f"{name}_plugin.py"
+
+        # Inject boilerplate if missing
+        final_code = code
+        if "from boring.plugins import plugin" not in code:
+            return {
+                "status": "ERROR",
+                "message": "Code must import 'plugin': `from boring.plugins import plugin`",
+            }
+
+        try:
+            # Safety: Backup if exists
+            if file_path.exists():
+                backup_path = plugin_dir / f"{name}_plugin.py.bak"
+                import shutil
+
+                shutil.copy2(file_path, backup_path)
+
+            # Write file
+            file_path.write_text(final_code, encoding="utf-8")
+
+            # Trigger hot-reload
+            _clear_plugin_cache(project_root)
+            loader = _get_cached_plugin_loader(project_root)
+            updated = loader.check_for_updates()
+
+            # Verify if loaded
+            if loader.get_plugin(name):
+                return {
+                    "status": "SUCCESS",
+                    "message": f"✅ Synthesized tool '{name}' successfully.",
+                    "path": str(file_path),
+                    "vibe_summary": f"🧪 **Tool Synthesized**\n"
+                    f"- Name: `{name}`\n"
+                    f"- Status: Active (Hot-reloaded)\n"
+                    f"- Path: `{file_path.name}`",
+                }
+            else:
+                return {
+                    "status": "WARNING",
+                    "message": f"File wrote to {file_path}, but loader did not pick it up.",
+                    "debug_updated": updated,
+                }
+
+        except Exception as e:
+            return {"status": "ERROR", "message": str(e)}
+
     @mcp.tool(
         description="重新載入所有擴充功能 (Reload plugins). 適合: '重載外掛', 'Reload plugins', '更新擴充'.",
         annotations={"readOnlyHint": False, "idempotentHint": True},
@@ -188,4 +283,4 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
             "message": f"Reloaded {len(updated)} plugins" if updated else "No updates",
         }
 
-    return 3  # Number of tools registered
+    return 4  # Number of tools registered
