@@ -1238,14 +1238,61 @@ class GlobalKnowledgeStore:
         self._save_global_patterns([])
         return count
 
+    def distill_skills(self, min_success: int = 3) -> dict[str, Any]:
+        """
+        V11.0: Distill high-success patterns into 'Skills'.
+
+        A skill is a pattern that has proven effective multiple times.
+        Compiled skills are stored in a dedicated format for better retrieval.
+        """
+        patterns = self._load_global_patterns()
+        to_distill = [p for p in patterns if p.get("success_count", 0) >= min_success]
+
+        if not to_distill:
+            return {"status": "NO_SKILLS_TO_DISTILL", "count": 0}
+
+        skills_dir = self.global_dir / "compiled_skills"
+        if not skills_dir.exists():
+            skills_dir.mkdir(parents=True)
+
+        distilled_count = 0
+
+        for p in to_distill:
+            skill_id = f"skill_{p.get('pattern_id', 'unknown')}"
+            skill_file = skills_dir / f"{skill_id}.json"
+
+            skill_data = {
+                "skill_id": skill_id,
+                "name": p.get("description", "Unnamed Skill"),
+                "context_trigger": p.get("context", ""),
+                "action_plan": p.get("solution", ""),
+                "success_metrics": p.get("success_count", 0),
+                "compiled_at": datetime.now().isoformat()
+            }
+
+            with open(skill_file, "w", encoding="utf-8") as f:
+                json.dump(skill_data, f, indent=4)
+            distilled_count += 1
+
+        return {
+            "status": "SUCCESS",
+            "distilled_count": distilled_count,
+            "message": f"Compiled {distilled_count} patterns into Strategic Skills."
+        }
+
 
 # Singleton global store
 _global_store: Optional[GlobalKnowledgeStore] = None
 
 
-def get_global_knowledge_store() -> GlobalKnowledgeStore:
-    """Get global knowledge store singleton."""
+def get_global_store() -> GlobalKnowledgeStore:
+    """Get global knowledge store singleton (V11.0 Alias)."""
     global _global_store
     if _global_store is None:
         _global_store = GlobalKnowledgeStore()
     return _global_store
+
+
+def get_global_knowledge_store() -> GlobalKnowledgeStore:
+    """Get global knowledge store singleton."""
+    return get_global_store()

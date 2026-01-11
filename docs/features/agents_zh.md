@@ -22,9 +22,18 @@ Boring-Gemini 作為一個多 Agent 系統 (Multi-Agent System, MAS) 運作。�
 *   **工作**: 寫程式、修復 Bug、運行測試。專注於執行。
 *   **動力來源**: Vibe Coder 能力。
 
-### 4. Reviewer (品管)
-*   **角色**: 品質保證 (QA)。
-*   **工作**: 審查程式碼中的 Bug、安全問題 (`security_scan`) 和效能問題 (`perf_tips`)。
+### 4. 審核員 (Reviewer - 品質保證)
+*   **角色**：品質保證工程師 (QA)。
+*   **工作**：檢查程式碼中的 Bug、安全問題 (`security_scan`) 以及效能問題 (`perf_tips`)。
+
+---
+
+## 🧠 系統一 vs. 系統二推理
+
+Boring-Gemini 使用 **「雙程 (Dual-Process)」** 思考模型來優化成本並提升效能：
+
+-   **系統一 (快速)**：用於工具路由及簡單的編輯。它依賴模型直覺的「下一個 Token」預測。
+-   **系統二 (慢速)**：自動為複雜任務（架構變更、大型重構）觸發。它使用 **「ReasoningState (推理狀態)」** 在調用任何工具之前進行內部審議。
 
 ## 🔄 自主迴圈 (The Autonomous Loop)
 

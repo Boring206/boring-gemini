@@ -222,8 +222,34 @@ class StatefulAgentLoop:
 
     def _run_state_machine(self) -> None:
         """Execute the state machine for a single iteration."""
-        # Start with ThinkingState
-        self._current_state = ThinkingState()
+        # V11.0 System 2 Reasoning Trigger
+        initial_state = ThinkingState()
+
+        try:
+            # Try to peek at prompt to assess complexity
+            prompt_content = ""
+            if self.context.prompt_file and self.context.prompt_file.exists():
+                prompt_content = self.context.prompt_file.read_text(encoding="utf-8")
+
+            if prompt_content:
+                from ..mcp.tool_router import get_tool_router
+
+                complexity = get_tool_router().assess_complexity(prompt_content)
+
+                if complexity >= 0.7:
+                    from .states.reasoning import ReasoningState
+
+                    log_status(
+                        self.context.log_dir,
+                        "INFO",
+                        f"[System 2] High complexity detected ({complexity:.2f}). Triggering Reasoning State.",
+                    )
+                    initial_state = ReasoningState()
+        except Exception as e:
+            log_status(self.context.log_dir, "DEBUG", f"Complexity assessment failed: {e}")
+
+        # Start with chosen state
+        self._current_state = initial_state
 
         while self._current_state is not None:
             state = self._current_state

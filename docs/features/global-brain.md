@@ -22,6 +22,16 @@ Global Brain is stored in your **user home directory**:
 - ✅ Not managed by Git, protects privacy
 - ✅ Automatically shared across all projects
 
+---
+
+## 🌐 Knowledge Swarm (Sync)
+
+Starting from V11.0, Global Brain supports automated synchronization via Git, known as **Knowledge Swarm**.
+
+-   **Tool**: `boring_brain_sync(remote_url=...)`
+-   **Collaborative Power**: By pointing your global brain to a team repository, every developer's agent can pull successful patterns from others.
+-   **Auto-Propagation**: Solutions for difficult architecture or configuration bugs propagate across the hive mind in minutes.
+
 ## 🧰 Available Tools
 
 ### 1. `boring_global_export`

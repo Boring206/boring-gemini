@@ -19,61 +19,64 @@ Boring-Gemini features a **Universal Natural Language Router**. You don't need t
 
 ---
 
-## ⚡ Why Boring?
+## 🚀 Quick Start (One-Click)
 
-| Feature | Description |
-|---------|-------------|
-| 🧠 **Autonomous Loop** | Runs continuously, thinking, coding, testing, and fixing until done |
-| 🕵️ **Hybrid RAG** | Advanced code search with HyDE + Cross-Encoder |
-| 🛡️ **Shadow Mode** | Safe execution sandbox catches dangerous ops before they happen |
-| ⚡ **30% Faster** | Smart caching reduces context usage by 80% |
-| 🧩 **Vibe Coder** | Most human-friendly AI coding interface |
+### 🪄 Zero-Config Wizard 
+Boring features a smart setup wizard that automatically bridges your IDE (Cursor, VS Code, Claude Desktop) with the Gemini agent.
 
----
+```bash
+pip install "boring-aicoding[all]"
+boring wizard
+```
 
-## 🚀 Quick Installation
-
-### Smithery (Recommended)
+### 💎 Smithery Integration
+One-click install for Cursor/Claude Desktop.
 
 ```bash
 npx -y @smithery/cli@latest install boring/boring --client cursor
 ```
 
-### Local pip
+---
 
-```bash
-pip install boring-aicoding[mcp]
-```
+## 🧐 Cognitive Evolution (Pillar V)
+
+V11.2.1 transforms Boring from a simple loop into a **Self-Improving Intelligence System**:
+
+- **🧠 System 2 Reasoning**: Automatically engages "Slow Thinking" for complex tasks. It decomposes problems and calculates impacts before touching code.
+- **⚡ Brain Reflex (Active Recall)**: Instantly recalls past debug patterns. No more "searching"—it remembers how you fixed that `AttributeError` last time.
+- **🏆 Skill Compilation**: High-frequency successful patterns are distilled into **Strategic Skills**, making your local agent uniquely expert in your stack.
+- **🛠️ Live Tool Synthesis**: The agent can now **generate its own tools** in Python to solve hyper-specific problems on-the-fly.
+- **🌐 Knowledge Swarm**: Sync learned patterns across your team via Git-based synchronization.
 
 ---
 
-## 📦 Usage
+## ⚡ Core Capabilities
 
-### As MCP Server (Recommended)
+| Feature | Description |
+|---------|-------------|
+| 🧠 **Autonomous Loop** | Runs continuously: thinking → coding → testing → fixing. |
+| 🕵️ **Context Optimization** | 80% token savings via smart chunking and specificity ranking. |
+| 🛡️ **Shadow Mode** | Safe execution sandbox catches destructive operations before they happen. |
+| 🧩 **Natural Language** | Universal Router: "幫我寫測試" or "Fix auth bugs" triggered instantly. |
+| 🧪 **Vibe Score** | Gamified health check: Lint, Security, and Docs tracked over time. |
 
-Add to your IDE's MCP configuration:
+---
 
+## 📦 Usage Modes
+
+### As MCP Server (Recommended for IDEs)
 ```json
 {
   "mcpServers": {
-    "boring": {
-      "command": "boring-mcp"
-    }
+    "boring": { "command": "boring-mcp" }
   }
 }
 ```
 
-### CLI Tools (Run in Terminal/CMD)
-
-> **Note**: These are standalone CLI commands. Run them in your terminal, not in MCP client.
-
-```bash
-boring-monitor           # TUI Dashboard (Terminal UI)
-boring-dashboard         # Web Dashboard (Opens browser)
-boring-route "query"     # Shows which tool would be used (demo only, doesn't execute)
-python -m boring status  # Health check
-python -m boring verify  # Code verification
-```
+### Managed CLI Utilities
+- `boring-monitor`: Fullscreen TUI dashboard for live agent monitoring.
+- `boring-dashboard`: Modern web UI for project health and history.
+- `boring-setup`: Scaffold new Boring-ready projects in seconds.
 
 **About `boring-route`**: This command only **shows** which MCP tool would be selected for your query. To actually execute the tool, use it in your MCP client (Cursor/Claude Desktop).
 

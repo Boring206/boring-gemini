@@ -169,6 +169,8 @@ TOOL_CATEGORIES = {
             "還原到",
             "回退到",
             "建立存檔",
+            "Knowledge Swarm",
+            "知識群",
         ],
         tools=[
             "boring_commit",
@@ -176,6 +178,7 @@ TOOL_CATEGORIES = {
             "boring_hooks_status",
             "boring_hooks_uninstall",
             "boring_checkpoint",
+            "boring_brain_sync",
         ],
     ),
     "docs": ToolCategory(
@@ -635,6 +638,42 @@ class ToolRouter:
             suggested_params=params,
             alternatives=alternatives,
         )
+
+    def assess_complexity(self, query: str) -> float:
+        """
+        Assess the complexity of a query to determine if System 2 Reasoning is needed.
+        Returns a score from 0.0 to 1.0.
+        """
+        score = 0.0
+        query_lower = query.lower()
+
+        # 1. Complexity keywords (Strong signals)
+        complexity_keywords = [
+            "refactor", "complex", "architecture", "design", "difficult", "hard",
+            "rewrite", "restructure", "reorganize", "planning", "implement feature",
+            "重構", "複雜", "架構", "設計", "困難", "難", "重寫", "規劃", "部署", "實作"
+        ]
+        for kw in complexity_keywords:
+            if kw in query_lower:
+                score += 0.3
+
+        # 2. Sequential/Critical thinking triggers
+        if any(kw in query_lower for kw in ["think", "reason", "analyze", "why", "一步步", "為什麼", "分析"]):
+            score += 0.2
+
+        # 3. Code density signals (multiple potential file mentions)
+        file_extensions = [".py", ".js", ".ts", ".tsx", ".md", ".json", ".yaml", ".yml"]
+        ext_count = sum(1 for ext in file_extensions if ext in query_lower)
+        if ext_count >= 2:
+            score += 0.2
+
+        # 4. Long queries usually imply complexity
+        if len(query) > 100:
+            score += 0.1
+        if len(query) > 200:
+            score += 0.1
+
+        return min(score, 1.0)
 
     def _score_category(self, query: str, category: ToolCategory) -> float:
         """Score how well a query matches a category."""

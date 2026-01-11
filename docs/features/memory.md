@@ -16,6 +16,15 @@ Boring maintains a persistent SQLite vector database in your home directory (`~/
 3.  **User Preferences**: "The user likes concise docstrings."
 4.  **Project Context**: Architecture decisions, active goals.
 
+---
+
+## ⚡ Active Causal Memory (Brain Reflex)
+
+Boring-Gemini doesn't just remember *what* code exists; it remembers *why* things failed and *how* to fix them. This is **Active Causal Memory**.
+
+-   **Reflex Trigger**: When a command fails, the agent doesn't just "try again." It performs a "Brain Reflex" check—querying the memory for the exact error signature.
+-   **One-Shot Correction**: If a match is found, the successful solution is injected directly into the next thinking cycle, allowing the agent to self-correct instantly.
+
 ## 🔄 Automated Learning Loop
 
 1.  **Observe**: Agent executes a command or writes code.

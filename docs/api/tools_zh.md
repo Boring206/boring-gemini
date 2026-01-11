@@ -43,3 +43,9 @@
     options:
       show_root_heading: true
       heading_level: 3
+
+## Knowledge & Learning (知識與學習)
+::: boring.mcp.tools.knowledge
+    options:
+      show_root_heading: true
+      heading_level: 3

@@ -84,12 +84,13 @@ def _get_rag_retriever(project_root: Path):
     return None
 
 
-def register_vibe_tools(mcp, audited, helpers, engine=None):
+def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factory=None):
     """
     Register Vibe Coder Pro tools with the MCP server.
     """
     _get_project_root_or_error = helpers["get_project_root_or_error"]
     global_engine = engine or vibe_engine
+    _get_brain = brain_manager_factory or _get_brain_manager
 
     # === boring_test_gen ===
     @mcp.tool(
@@ -260,7 +261,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None):
 
             # V10.21: BrainManager 整合 - 取得相關 Pattern
             brain_patterns = []
-            brain = _get_brain_manager(project_root)
+            brain = _get_brain(project_root)
             if brain:
                 try:
                     # 搜尋與審查相關的 Pattern

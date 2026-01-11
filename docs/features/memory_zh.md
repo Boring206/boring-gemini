@@ -14,7 +14,16 @@ Boring 在你的家目錄 (`~/.boring/brain`) 中維護一個持久的 SQLite �
 1.  **程式模式 (Patterns)**: "這個專案偏好 `pydantic` v2 而不是 v1。"
 2.  **錯誤修復 (Fixes)**: "上次我修復 `ImportError` 是通過將路徑加入 `sys.path`。"
 3.  **使用者偏好 (Preferences)**: "使用者喜歡簡潔的 docstrings。"
-4.  **專案上下文 (Context)**: 架構決策、當前目標。
+4.  **專案上下文 (Project Context)**：架構決策、活動目標。
+
+---
+
+## ⚡ 主動因果記憶 (Brain Reflex)
+
+Boring-Gemini 不僅僅記住*哪些*程式碼存在；它還記住*為什麼*事情失敗了，以及*如何*修復它們。這就是 **「主動因果記憶 (Active Causal Memory)」**。
+
+-   **反射觸發 (Reflex Trigger)**：當命令失敗時，Agent 不會只是「再試一次」。它會執行「腦反射 (Brain Reflex)」檢查——在記憶中查詢確切的錯誤特徵。
+-   **單次修復 (One-Shot Correction)**：如果找到了匹配項，成功的解決方案將直接注入到下一個思考週期中，讓 Agent 能夠立即自我修復。
 
 ## 🔄 自動學習迴圈
 

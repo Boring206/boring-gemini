@@ -26,6 +26,15 @@ Boring-Gemini operates as a Multi-Agent System (MAS). When you give a complex ta
 *   **Role**: Quality Assurance.
 *   **Job**: Reviews code for bugs, security issues (`security_scan`), and performance problems (`perf_tips`).
 
+---
+
+## 🧠 System 1 vs. System 2 Reasoning
+
+Boring-Gemini uses a **Dual-Process** thinking model to optimize cost and performance:
+
+-   **System 1 (Fast)**: Used for routing tools and simple edits. It relies on the model's intuitive "next-token" prediction.
+-   **System 2 (Slow)**: Automatically triggered for complex tasks (architecture changes, big refactors). It uses **ReasoningState** to perform internal deliberation before calling any tools.
+
 ## 🔄 The Autonomous Loop
 
 Unlike standard chatbots that stop after one reply, Boring runs in a **Loop**:

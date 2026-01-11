@@ -132,6 +132,28 @@ def boring_brain_sync(
         return {"status": "ERROR", "error": str(e)}
 
 
+@audited
+def boring_distill_skills(
+    min_success: Annotated[
+        int, Field(description="Minimum success count to distill into a skill (default: 3)")
+    ] = 3,
+) -> dict:
+    """
+    Distill high-success patterns into Strategic Skills (Skill Compilation).
+
+    Converts frequently successful learned patterns into compiled 'Skills' that
+    are given higher priority in future reasoning iterations.
+    """
+    try:
+        from ...intelligence.brain_manager import get_global_store
+
+        store = get_global_store()
+        return store.distill_skills(min_success=min_success)
+
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e)}
+
+
 # ==============================================================================
 # TOOL REGISTRATION
 # ==============================================================================
@@ -156,3 +178,8 @@ if MCP_AVAILABLE and mcp is not None:
         description="Sync global brain with Git (Knowledge Swarm).",
         annotations={"readOnlyHint": False, "openWorldHint": True},
     )(boring_brain_sync)
+
+    mcp.tool(
+        description="Distill patterns into Strategic Skills (Skill Compilation).",
+        annotations={"readOnlyHint": False},
+    )(boring_distill_skills)
