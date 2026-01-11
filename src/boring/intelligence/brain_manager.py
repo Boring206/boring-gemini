@@ -643,6 +643,198 @@ class BrainManager:
             "brain_dir": str(self.brain_dir),
         }
 
+    def incremental_learn(
+        self, error_type: str, error_message: str, solution: str, file_path: str = ""
+    ) -> dict[str, Any]:
+        """
+        V10.23: Incrementally learn from a single error resolution.
+
+        Unlike learn_from_memory which batch processes, this learns
+        immediately from a single success, ideal for real-time learning.
+
+        Args:
+            error_type: Type of error that was solved
+            error_message: Context/message of the error
+            solution: The solution that worked
+            file_path: Optional file path for context
+
+        Returns:
+            Learning result
+        """
+        import hashlib
+
+        # Generate pattern ID
+        content_hash = hashlib.sha256(f"{error_type}:{error_message[:100]}".encode()).hexdigest()[
+            :8
+        ]
+        pattern_id = f"INC_{content_hash}"
+
+        patterns = self._load_patterns()
+
+        # Check for existing pattern
+        existing = None
+        for p in patterns:
+            if p.get("pattern_id") == pattern_id:
+                existing = p
+                break
+
+        if existing:
+            # Update existing
+            existing["success_count"] = existing.get("success_count", 0) + 1
+            existing["last_used"] = datetime.now().isoformat()
+            existing["decay_score"] = 1.0  # Reset decay on use
+
+            # Update solution if this one is better (longer/more detailed)
+            if len(solution) > len(existing.get("solution", "")):
+                existing["solution"] = solution
+
+            self._save_patterns(patterns)
+            return {
+                "status": "UPDATED",
+                "pattern_id": pattern_id,
+                "success_count": existing["success_count"],
+            }
+
+        # Create new pattern
+        new_pattern = LearnedPattern(
+            pattern_id=pattern_id,
+            pattern_type="error_solution",
+            description=f"Solution for {error_type}",
+            context=error_message[:500],
+            solution=solution,
+            success_count=1,
+            created_at=datetime.now().isoformat(),
+            last_used=datetime.now().isoformat(),
+            decay_score=1.0,
+            session_boost=0.0,
+            cluster_id=error_type[:20],  # Simple clustering by error type
+        )
+        patterns.append(asdict(new_pattern))
+        self._save_patterns(patterns)
+
+        return {"status": "SUCCESS", "pattern_id": pattern_id, "total_patterns": len(patterns)}
+
+    def get_pattern_stats(self) -> dict[str, Any]:
+        """V10.23: Get statistics about the pattern knowledge base."""
+        patterns = self._load_patterns()
+
+        if not patterns:
+            return {
+                "total": 0,
+                "by_type": {},
+                "avg_success_count": 0.0,
+                "avg_decay_score": 0.0,
+                "patterns_with_session_boost": 0,
+            }
+
+        by_type = {}
+        total_success = 0
+        total_decay = 0.0
+        boosted_count = 0
+
+        for p in patterns:
+            ptype = p.get("pattern_type", "unknown")
+            by_type[ptype] = by_type.get(ptype, 0) + 1
+            total_success += p.get("success_count", 0)
+            total_decay += p.get("decay_score", 1.0)
+            if p.get("session_boost", 0.0) > 0:
+                boosted_count += 1
+
+        return {
+            "total": len(patterns),
+            "by_type": by_type,
+            "avg_success_count": round(total_success / len(patterns), 2) if patterns else 0.0,
+            "avg_decay_score": round(total_decay / len(patterns), 2) if patterns else 0.0,
+            "patterns_with_session_boost": boosted_count,
+        }
+
+    def prune_patterns(self, min_score: float = 0.1, keep_min: int = 0) -> dict[str, Any]:
+        """
+        V10.23: Remove low-value patterns to keep the knowledge base efficient.
+        """
+        patterns = self._load_patterns()
+        patterns = self._load_patterns()
+
+        # Calculate pattern value for sorting
+        def pattern_value(p: dict):
+            return p.get("success_count", 1) * p.get("decay_score", 1.0)
+
+        # Sort by value (descending)
+        sorted_patterns = sorted(patterns, key=pattern_value, reverse=True)
+
+        patterns_to_keep = []
+        pruned_count = 0
+
+        for i, p in enumerate(sorted_patterns):
+            # Keep if within keep_min OR (above min_score AND under MAX_PATTERNS)
+            val = pattern_value(p)
+            if i < keep_min:
+                patterns_to_keep.append(p)
+            elif i < MAX_PATTERNS and val >= min_score:
+                patterns_to_keep.append(p)
+            else:
+                pruned_count += 1
+
+        if pruned_count > 0:
+            self._save_patterns(patterns_to_keep)
+
+        return {
+            "status": "SUCCESS" if pruned_count > 0 else "SKIPPED",
+            "pruned_count": pruned_count,
+            "remaining": len(patterns_to_keep),
+        }
+
+    def update_pattern_decay(self) -> dict[str, Any]:
+        """V10.23: Update decay scores for all patterns based on usage recency."""
+        patterns = self._load_patterns()
+        updated_count = 0
+        now = datetime.now()
+
+        for p in patterns:
+            last_used_str = p.get("last_used")
+            if not last_used_str:
+                continue
+
+            try:
+                last_used = datetime.fromisoformat(last_used_str)
+                days_since = (now - last_used).days
+
+                if days_since > 0:
+                    # Decay formula: score * (0.99 ^ days_since)
+                    new_score = p.get("decay_score", 1.0) * (0.99**days_since)
+                    p["decay_score"] = max(0.01, round(new_score, 4))
+                    updated_count += 1
+            except ValueError:
+                continue
+
+        if updated_count > 0:
+            self._save_patterns(patterns)
+
+        return {"status": "SUCCESS", "updated": updated_count}
+
+    def get_brain_health_report(self) -> dict[str, Any]:
+        """V10.23: Get a data-rich health report for the brain."""
+        stats = self.get_pattern_stats()
+
+        health_score = 100
+        issues = []
+
+        if stats["total"] == 0:
+            health_score -= 30
+            issues.append("No patterns learned yet")
+
+        if stats["avg_decay_score"] < 0.5:
+            health_score -= 15
+            issues.append("Stale patterns detected")
+
+        return {
+            "health_score": health_score,
+            "total_patterns": stats["total"],
+            "stats": stats,
+            "issues": issues,
+            "health_status": "OK" if health_score > 70 else "WARNING",
+        }
+
 
 def create_brain_manager(project_root: Path, log_dir: Optional[Path] = None) -> BrainManager:
     """Factory function to create BrainManager instance."""
@@ -788,12 +980,9 @@ class GlobalKnowledgeStore:
 
     def update_pattern_decay(self) -> dict[str, Any]:
         """
-        V10.23: Update decay scores for all patterns based on usage recency.
-
-        Patterns not used recently get lower decay scores, making them
-        less likely to be returned in searches.
+        V10.23: Update decay scores for all global patterns based on usage recency.
         """
-        patterns = self._load_patterns()
+        patterns = self._load_global_patterns()
         updated = 0
         now = datetime.now()
 
@@ -803,49 +992,35 @@ class GlobalKnowledgeStore:
                 continue
 
             try:
-                last_used = datetime.fromisoformat(
-                    last_used_str.replace("Z", "+00:00").replace("+00:00", "")
-                )
+                # Handle ISO format with Z or +00:00
+                last_used = datetime.fromisoformat(last_used_str.replace("Z", "+00:00"))
                 days_since_use = (now - last_used).days
 
-                # Calculate decay: starts at 1.0, decreases over PATTERN_DECAY_DAYS
+                # Calculate decay
                 if days_since_use <= PATTERN_DECAY_DAYS:
-                    decay = (
-                        1.0 - (days_since_use / PATTERN_DECAY_DAYS) * 0.5
-                    )  # Min 0.5 within window
+                    decay = 1.0 - (days_since_use / PATTERN_DECAY_DAYS) * 0.5
                 else:
-                    decay = max(
-                        0.2, 0.5 - (days_since_use - PATTERN_DECAY_DAYS) / 365
-                    )  # Further decay
+                    decay = max(0.2, 0.5 - (days_since_use - PATTERN_DECAY_DAYS) / 365)
 
                 if pattern.get("decay_score", 1.0) != decay:
                     pattern["decay_score"] = round(decay, 2)
                     updated += 1
             except (ValueError, TypeError):
-                pattern["decay_score"] = 0.5  # Default for unparseable dates
+                pattern["decay_score"] = 0.5
 
         if updated > 0:
-            self._save_patterns(patterns)
+            self._save_global_patterns(patterns)
 
         return {"status": "SUCCESS", "updated": updated, "total": len(patterns)}
 
     def apply_session_boost(self, keywords: list[str], boost: float = 0.3) -> int:
         """
-        V10.23: Apply temporary boost to patterns matching session keywords.
-
-        This makes patterns relevant to the current session rank higher.
-
-        Args:
-            keywords: Keywords from the current session context
-            boost: Boost amount to apply
-
-        Returns:
-            Number of patterns boosted
+        V10.23: Apply temporary boost to global patterns matching session keywords.
         """
         if not keywords:
             return 0
 
-        patterns = self._load_patterns()
+        patterns = self._load_global_patterns()
         boosted = 0
         keywords_lower = [k.lower() for k in keywords]
 
@@ -854,7 +1029,6 @@ class GlobalKnowledgeStore:
                 f"{pattern.get('context', '')} {pattern.get('description', '')} {pattern.get('solution', '')}"
             ).lower()
 
-            # Check for keyword matches
             match_count = sum(1 for kw in keywords_lower if kw in pattern_text)
             if match_count > 0:
                 pattern["session_boost"] = min(1.0, boost * match_count)
@@ -862,12 +1036,13 @@ class GlobalKnowledgeStore:
             else:
                 pattern["session_boost"] = 0.0
 
-        self._save_patterns(patterns)
+        if boosted > 0:
+            self._save_global_patterns(patterns)
         return boosted
 
     def clear_session_boosts(self) -> int:
-        """V10.23: Clear all session boosts."""
-        patterns = self._load_patterns()
+        """V10.23: Clear all global session boosts."""
+        patterns = self._load_global_patterns()
         cleared = 0
 
         for pattern in patterns:
@@ -876,49 +1051,37 @@ class GlobalKnowledgeStore:
                 cleared += 1
 
         if cleared > 0:
-            self._save_patterns(patterns)
+            self._save_global_patterns(patterns)
+
+        if cleared > 0:
+            self._save_global_patterns(patterns)
 
         return cleared
 
     def prune_patterns(self, keep_min: int = 100) -> dict[str, Any]:
         """
-        V10.23: Remove low-value patterns to keep the knowledge base efficient.
-
-        Criteria for removal:
-        - Decay score below MIN_PATTERN_SCORE
-        - Success count is 1 and older than 30 days
-        - Total patterns exceed MAX_PATTERNS
-
-        Args:
-            keep_min: Minimum patterns to keep regardless of score
-
-        Returns:
-            Pruning result
+        V10.23: Remove low-value global patterns.
         """
-        patterns = self._load_patterns()
+        patterns = self._load_global_patterns()
         original_count = len(patterns)
 
         if original_count <= keep_min:
             return {"status": "SKIPPED", "reason": f"Only {original_count} patterns, below minimum"}
 
         def pattern_value(p: dict) -> float:
-            """Calculate pattern value for sorting."""
             decay = p.get("decay_score", 1.0)
             success = min(1.0, p.get("success_count", 1) * 0.1)
             session = p.get("session_boost", 0.0)
             return decay * 0.5 + success * 0.3 + session * 0.2
 
-        # Score all patterns
         scored_patterns = [(pattern_value(p), p) for p in patterns]
         scored_patterns.sort(key=lambda x: x[0], reverse=True)
 
-        # Keep top patterns up to MAX_PATTERNS
         patterns_to_keep = []
         removed = 0
 
         for i, (score, pattern) in enumerate(scored_patterns):
             if i < keep_min:
-                # Always keep minimum
                 patterns_to_keep.append(pattern)
             elif i < MAX_PATTERNS and score >= MIN_PATTERN_SCORE:
                 patterns_to_keep.append(pattern)
@@ -926,7 +1089,7 @@ class GlobalKnowledgeStore:
                 removed += 1
 
         if removed > 0:
-            self._save_patterns(patterns_to_keep)
+            self._save_global_patterns(patterns_to_keep)
 
         return {
             "status": "SUCCESS",
@@ -934,153 +1097,68 @@ class GlobalKnowledgeStore:
             "kept": len(patterns_to_keep),
             "original": original_count,
         }
-
     def get_pattern_stats(self) -> dict[str, Any]:
-        """V10.23: Get statistics about the pattern knowledge base."""
-        patterns = self._load_patterns()
+        """V10.23: Get statistics about the global pattern knowledge base."""
+        patterns = self._load_global_patterns()
 
         if not patterns:
             return {
                 "total": 0,
-                "by_type": {},
-                "avg_success_count": 0,
-                "avg_decay_score": 0,
-                "patterns_with_session_boost": 0,
+                "avg_success": 0.0,
+                "avg_decay": 0.0,
             }
 
-        from collections import Counter
-
-        type_counts = Counter(p.get("pattern_type", "unknown") for p in patterns)
         avg_success = sum(p.get("success_count", 0) for p in patterns) / len(patterns)
         avg_decay = sum(p.get("decay_score", 1.0) for p in patterns) / len(patterns)
-        session_boosted = sum(1 for p in patterns if p.get("session_boost", 0) > 0)
 
         return {
             "total": len(patterns),
-            "by_type": dict(type_counts),
-            "avg_success_count": round(avg_success, 1),
-            "avg_decay_score": round(avg_decay, 2),
-            "patterns_with_session_boost": session_boosted,
+            "avg_success": round(avg_success, 1),
+            "avg_decay": round(avg_decay, 2),
         }
 
     def incremental_learn(
-        self, error_type: str, error_context: str, solution: str, file_path: str = ""
+        self, error_type: str, error_message: str, solution: str, file_path: str = ""
     ) -> dict[str, Any]:
         """
-        V10.23: Incrementally learn from a single error resolution.
-
-        Unlike learn_from_memory which batch processes, this learns
-        immediately from a single success, ideal for real-time learning.
-
-        Args:
-            error_type: Type of error that was solved
-            error_context: Context/message of the error
-            solution: The solution that worked
-            file_path: Optional file path for context
-
-        Returns:
-            Learning result
+        V10.23: Global incremental learn for shared fixes.
         """
         import hashlib
 
-        # Generate pattern ID
-        content_hash = hashlib.sha256(f"{error_type}:{error_context[:100]}".encode()).hexdigest()[
+        # Generate global pattern ID
+        content_hash = hashlib.sha256(f"{error_type}:{error_message[:100]}".encode()).hexdigest()[
             :8
         ]
-        pattern_id = f"INC_{content_hash}"
+        pattern_id = f"GLB_{content_hash}"
 
-        patterns = self._load_patterns()
+        patterns = self._load_global_patterns()
 
-        # Check for existing pattern
-        existing = None
-        for p in patterns:
-            if p.get("pattern_id") == pattern_id:
-                existing = p
-                break
-
+        # Check existing
+        existing = next((p for p in patterns if p.get("pattern_id") == pattern_id), None)
         if existing:
-            # Update existing
             existing["success_count"] = existing.get("success_count", 0) + 1
             existing["last_used"] = datetime.now().isoformat()
-            existing["decay_score"] = 1.0  # Reset decay on use
+            self._save_global_patterns(patterns)
+            return {"status": "UPDATED", "pattern_id": pattern_id}
 
-            # Update solution if this one is better (longer/more detailed)
-            if len(solution) > len(existing.get("solution", "")):
-                existing["solution"] = solution
-
-            self._save_patterns(patterns)
-            return {
-                "status": "UPDATED",
-                "pattern_id": pattern_id,
-                "success_count": existing["success_count"],
-            }
-
-        # Create new pattern
         new_pattern = LearnedPattern(
             pattern_id=pattern_id,
-            pattern_type="error_solution",
-            description=f"Solution for {error_type}",
-            context=error_context[:500],
+            pattern_type="global_fix",
+            description=f"Global fix for {error_type}",
+            context=error_message[:500],
             solution=solution,
             success_count=1,
             created_at=datetime.now().isoformat(),
             last_used=datetime.now().isoformat(),
-            decay_score=1.0,
-            session_boost=0.0,
-            cluster_id=error_type[:20],  # Simple clustering by error type
         )
         patterns.append(asdict(new_pattern))
-        self._save_patterns(patterns)
-
-        return {"status": "CREATED", "pattern_id": pattern_id, "total_patterns": len(patterns)}
+        self._save_global_patterns(patterns)
+        return {"status": "CREATED", "pattern_id": pattern_id}
 
     def get_brain_health_report(self) -> str:
-        """V10.23: Get a human-readable health report for the brain."""
+        """V10.23: Get a human-readable health report for the global brain."""
         stats = self.get_pattern_stats()
-
-        # Calculate health indicators
-        health_score = 100
-        issues = []
-
-        if stats["total"] == 0:
-            health_score -= 30
-            issues.append("No patterns learned yet")
-        elif stats["total"] > MAX_PATTERNS:
-            health_score -= 10
-            issues.append(f"Pattern count ({stats['total']}) exceeds max ({MAX_PATTERNS})")
-
-        if stats["avg_decay_score"] < 0.5:
-            health_score -= 15
-            issues.append("Many patterns are stale (low decay scores)")
-
-        if stats["avg_success_count"] < 2:
-            health_score -= 10
-            issues.append("Low pattern reinforcement (low success counts)")
-
-        report_lines = [
-            "🧠 Brain Health Report (V10.23)",
-            f"├─ Health Score: {health_score}/100",
-            f"├─ Total Patterns: {stats['total']}",
-            f"├─ Avg Success Count: {stats['avg_success_count']}",
-            f"├─ Avg Decay Score: {stats['avg_decay_score']}",
-            f"├─ Session Boosted: {stats['patterns_with_session_boost']}",
-        ]
-
-        if stats["by_type"]:
-            report_lines.append("├─ By Type:")
-            for ptype, count in sorted(stats["by_type"].items(), key=lambda x: x[1], reverse=True)[
-                :5
-            ]:
-                report_lines.append(f"│  └─ {ptype}: {count}")
-
-        if issues:
-            report_lines.append("└─ Issues:")
-            for issue in issues:
-                report_lines.append(f"   ⚠️ {issue}")
-        else:
-            report_lines.append("└─ Status: ✅ Healthy")
-
-        return "\n".join(report_lines)
+        return f"🌍 Global Brain: {stats['total']} patterns, avg success {stats.get('avg_success', 0):.1f}"
 
     def clear_global_patterns(self) -> int:
         """Clear all global patterns. Returns count removed."""

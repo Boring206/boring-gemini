@@ -84,6 +84,11 @@ nav:
       - Judge: api/judge_zh.md
       - MCP Server: api/mcp_server_zh.md
       - Tools: api/tools_zh.md
+  - 📋 更新日誌:
+      - V11 (Current): changelog/v11.md
+      - V11 (繁中): changelog/v11_zh.md
+      - V10: changelog/v10.md
+      - V10 (繁中): changelog/v10_zh.md
 
 markdown_extensions:
   - admonition

@@ -1,20 +1,212 @@
 # Copyright 2025-2026 Boring for Gemini Authors
 # SPDX-License-Identifier: Apache-2.0
 """
-Atomic Transaction Management for Boring.
+Atomic Transaction Management for Boring V11.0.
 
 Provides Git-based snapshot and rollback capabilities for safe code changes.
+
+V11.0 Enhancements:
+- Exponential backoff retry mechanism for Windows file locking
+- Pre-execution file lock detection
+- Graceful recovery on disk write failures
 """
 
+import logging
+import os
 import subprocess
+import sys
+import time
 from dataclasses import dataclass, field
 from datetime import datetime
+from functools import wraps
 from pathlib import Path
-from typing import Optional
+from typing import Callable, Optional, TypeVar
 
 from rich.console import Console
 
 console = Console()
+logger = logging.getLogger(__name__)
+
+# Type variable for generic retry decorator
+T = TypeVar("T")
+
+
+class WindowsFileLockError(Exception):
+    """Raised when a file is locked by another process on Windows."""
+
+    def __init__(self, file_path: Path, message: str = ""):
+        self.file_path = file_path
+        self.message = message or f"File is locked: {file_path}"
+        super().__init__(self.message)
+
+
+def retry_with_backoff(
+    max_retries: int = 5,
+    initial_delay: float = 0.1,
+    max_delay: float = 5.0,
+    backoff_factor: float = 2.0,
+    retryable_exceptions: tuple = (OSError, subprocess.SubprocessError),
+) -> Callable:
+    """
+    Decorator for exponential backoff retry mechanism.
+
+    Designed to handle Windows Mandatory File Locking gracefully.
+
+    Args:
+        max_retries: Maximum number of retry attempts
+        initial_delay: Initial delay in seconds (default 100ms)
+        max_delay: Maximum delay between retries (default 5s)
+        backoff_factor: Multiplier for delay after each retry
+        retryable_exceptions: Tuple of exceptions that trigger retry
+
+    Returns:
+        Decorated function with retry logic
+    """
+
+    def decorator(func: Callable[..., T]) -> Callable[..., T]:
+        @wraps(func)
+        def wrapper(*args, **kwargs) -> T:
+            delay = initial_delay
+            last_exception = None
+
+            for attempt in range(max_retries + 1):
+                try:
+                    return func(*args, **kwargs)
+                except retryable_exceptions as e:
+                    last_exception = e
+                    if attempt < max_retries:
+                        # Log retry attempt
+                        logger.warning(
+                            f"Attempt {attempt + 1}/{max_retries + 1} failed for {func.__name__}: {e}. "
+                            f"Retrying in {delay:.2f}s..."
+                        )
+                        time.sleep(delay)
+                        delay = min(delay * backoff_factor, max_delay)
+                    else:
+                        logger.error(
+                            f"All {max_retries + 1} attempts failed for {func.__name__}: {e}"
+                        )
+
+            # All retries exhausted
+            raise last_exception  # type: ignore
+
+        return wrapper
+
+    return decorator
+
+
+class FileLockDetector:
+    """
+    Detects file locks on Windows and other platforms.
+
+    Windows uses Mandatory File Locking, which can cause Git operations
+    to fail if files are open in an IDE or Agent process.
+    """
+
+    @staticmethod
+    def is_windows() -> bool:
+        """Check if running on Windows."""
+        return sys.platform == "win32"
+
+    @staticmethod
+    def is_file_locked(file_path: Path) -> bool:
+        """
+        Check if a file is locked by another process.
+
+        Args:
+            file_path: Path to the file to check
+
+        Returns:
+            True if file is locked, False otherwise
+        """
+        if not file_path.exists():
+            return False
+
+        if FileLockDetector.is_windows():
+            return FileLockDetector._check_windows_lock(file_path)
+        else:
+            return FileLockDetector._check_unix_lock(file_path)
+
+    @staticmethod
+    def _check_windows_lock(file_path: Path) -> bool:
+        """Check file lock on Windows using exclusive open."""
+        try:
+            # Try to open file with exclusive access
+            fd = os.open(str(file_path), os.O_RDWR | os.O_EXCL)
+            os.close(fd)
+            return False
+        except OSError:
+            return True
+        except Exception:
+            return False
+
+    @staticmethod
+    def _check_unix_lock(file_path: Path) -> bool:
+        """Check file lock on Unix-like systems using fcntl."""
+        try:
+            import fcntl
+
+            fd = os.open(str(file_path), os.O_RDWR)
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                fcntl.flock(fd, fcntl.LOCK_UN)
+                return False
+            except (BlockingIOError, OSError):
+                return True
+            finally:
+                os.close(fd)
+        except (ImportError, OSError):
+            return False
+
+    @staticmethod
+    def find_locked_files(directory: Path, patterns: list[str] = None) -> list[Path]:
+        """
+        Find all locked files in a directory.
+
+        Args:
+            directory: Directory to scan
+            patterns: File patterns to check (default: common code files)
+
+        Returns:
+            List of locked file paths
+        """
+        if patterns is None:
+            patterns = ["*.py", "*.js", "*.ts", "*.json", "*.yaml", "*.yml", "*.md"]
+
+        locked_files = []
+
+        for pattern in patterns:
+            for file_path in directory.rglob(pattern):
+                if file_path.is_file() and FileLockDetector.is_file_locked(file_path):
+                    locked_files.append(file_path)
+
+        return locked_files
+
+    @staticmethod
+    def wait_for_file_unlock(
+        file_path: Path,
+        timeout: float = 10.0,
+        check_interval: float = 0.5,
+    ) -> bool:
+        """
+        Wait for a file to become unlocked.
+
+        Args:
+            file_path: Path to the file
+            timeout: Maximum time to wait in seconds
+            check_interval: Time between checks in seconds
+
+        Returns:
+            True if file is unlocked, False if timeout reached
+        """
+        start_time = time.time()
+
+        while time.time() - start_time < timeout:
+            if not FileLockDetector.is_file_locked(file_path):
+                return True
+            time.sleep(check_interval)
+
+        return False
 
 
 @dataclass
@@ -44,29 +236,95 @@ class TransactionManager:
         self.state_file = self.project_root / ".boring_transaction"
         self.current_transaction: Optional[TransactionState] = None
 
-    def _run_git(self, args: list[str]) -> tuple[bool, str]:
-        """Run a git command and return (success, output)."""
-        import os
+    def _run_git(self, args: list[str], with_retry: bool = False) -> tuple[bool, str]:
+        """
+        Run a git command and return (success, output).
 
+        Args:
+            args: Git command arguments
+            with_retry: If True, use exponential backoff retry for file lock issues
+
+        Returns:
+            Tuple of (success, output)
+        """
         # Prevent git from prompting for credentials or GPG keys
         env = os.environ.copy()
         env["GIT_TERMINAL_PROMPT"] = "0"
 
-        try:
-            # Add -c commit.gpgsign=false to avoid GPG passphrase prompts
-            cmd = ["git", "-c", "commit.gpgsign=false"] + args
+        def _execute_git() -> tuple[bool, str]:
+            try:
+                # Add -c commit.gpgsign=false to avoid GPG passphrase prompts
+                cmd = ["git", "-c", "commit.gpgsign=false"] + args
 
-            result = subprocess.run(
-                cmd,
-                cwd=self.project_root,
-                capture_output=True,
-                text=True,
-                timeout=30,
-                env=env,
-            )
-            return result.returncode == 0, result.stdout.strip() or result.stderr.strip()
-        except Exception as e:
-            return False, str(e)
+                result = subprocess.run(
+                    cmd,
+                    cwd=self.project_root,
+                    capture_output=True,
+                    text=True,
+                    timeout=30,
+                    env=env,
+                )
+                return result.returncode == 0, result.stdout.strip() or result.stderr.strip()
+            except subprocess.TimeoutExpired as e:
+                raise OSError(f"Git command timed out: {e}")
+            except Exception as e:
+                return False, str(e)
+
+        if with_retry:
+            # Use retry mechanism for operations that may encounter file locks
+            @retry_with_backoff(max_retries=5, initial_delay=0.1, max_delay=5.0)
+            def _execute_with_retry() -> tuple[bool, str]:
+                success, output = _execute_git()
+                if not success and self._is_file_lock_error(output):
+                    raise OSError(f"File lock detected: {output}")
+                return success, output
+
+            try:
+                return _execute_with_retry()
+            except OSError as e:
+                return False, str(e)
+        else:
+            return _execute_git()
+
+    def _is_file_lock_error(self, error_message: str) -> bool:
+        """Check if error message indicates a file lock issue."""
+        lock_indicators = [
+            "cannot lock",
+            "unable to create",
+            "Permission denied",
+            "Access is denied",
+            "being used by another process",
+            "cannot create",
+            "file is busy",
+            "resource busy",
+        ]
+        error_lower = error_message.lower()
+        return any(indicator.lower() in error_lower for indicator in lock_indicators)
+
+    def _check_file_locks_before_operation(self) -> dict:
+        """
+        Check for file locks before performing rollback operation.
+
+        Returns:
+            Dict with status and any locked files found
+        """
+        locked_files = FileLockDetector.find_locked_files(self.project_root)
+
+        if locked_files:
+            # Attempt to wait for files to unlock
+            still_locked = []
+            for file_path in locked_files:
+                if not FileLockDetector.wait_for_file_unlock(file_path, timeout=3.0):
+                    still_locked.append(str(file_path))
+
+            if still_locked:
+                return {
+                    "status": "warning",
+                    "locked_files": still_locked,
+                    "message": f"Found {len(still_locked)} locked files. Proceeding with caution.",
+                }
+
+        return {"status": "ok", "locked_files": []}
 
     def _get_current_commit(self) -> str:
         """Get current HEAD commit hash."""
@@ -78,7 +336,11 @@ class TransactionManager:
         success, output = self._run_git(["status", "--porcelain"])
         if not success or not output:
             return []
-        return [line[3:] for line in output.split("\n") if line]
+        res = []
+        for line in output.split("\n"):
+            if line:
+                res.append(line[3:])
+        return res
 
     def start(self, description: str = "Boring transaction") -> dict:
         """
@@ -172,6 +434,11 @@ class TransactionManager:
         """
         Rollback to the checkpoint, discarding all changes since start().
 
+        V11.0 Enhancements:
+        - Pre-execution file lock detection
+        - Exponential backoff retry for Windows file locking
+        - Graceful recovery on disk write failures
+
         Returns:
             Result as dict
         """
@@ -181,32 +448,81 @@ class TransactionManager:
         transaction_id = self.current_transaction.transaction_id
         checkpoint = self.current_transaction.commit_hash
 
-        # Discard all current changes
-        self._run_git(["checkout", "--", "."])
-        self._run_git(["clean", "-fd"])
+        # V11.0: Check for file locks before operation
+        lock_check = self._check_file_locks_before_operation()
+        if lock_check["status"] == "warning":
+            logger.warning(
+                f"Proceeding with rollback despite locked files: {lock_check['locked_files']}"
+            )
 
-        # Restore stashed changes if applicable
-        if checkpoint.startswith("stash"):
-            success, output = self._run_git(["stash", "pop"])
+        # Track rollback progress for graceful recovery
+        rollback_state = {"checkout_done": False, "clean_done": False, "restore_done": False}
+
+        try:
+            # Discard all current changes (with retry for file locks)
+            success, output = self._run_git(["checkout", "--", "."], with_retry=True)
             if not success:
                 return {
-                    "status": "partial",
+                    "status": "error",
                     "transaction_id": transaction_id,
-                    "message": f"Rolled back but stash restore failed: {output}",
+                    "message": f"Failed to checkout: {output}",
+                    "partial_state": rollback_state,
                 }
-        else:
-            # Hard reset to the commit
-            self._run_git(["reset", "--hard", checkpoint])
+            rollback_state["checkout_done"] = True
 
-        # Clear transaction
-        self.current_transaction.is_active = False
-        self._clear_state()
+            success, output = self._run_git(["clean", "-fd"], with_retry=True)
+            if not success:
+                logger.warning(f"Clean operation had issues: {output}")
+            rollback_state["clean_done"] = True
 
-        return {
-            "status": "success",
-            "transaction_id": transaction_id,
-            "message": "Transaction rolled back. All changes since start() have been reverted.",
-        }
+            # Restore stashed changes if applicable
+            if checkpoint.startswith("stash"):
+                success, output = self._run_git(["stash", "pop"], with_retry=True)
+                if not success:
+                    # Attempt graceful recovery: try stash apply instead
+                    success, output = self._run_git(["stash", "apply", "stash@{0}"])
+                    if success:
+                        # Apply worked, drop the stash
+                        self._run_git(["stash", "drop", "stash@{0}"])
+                    else:
+                        return {
+                            "status": "partial",
+                            "transaction_id": transaction_id,
+                            "message": f"Rolled back but stash restore failed: {output}. "
+                            "Your changes are still in the stash.",
+                            "partial_state": rollback_state,
+                        }
+                rollback_state["restore_done"] = True
+            else:
+                # Hard reset to the commit (with retry)
+                success, output = self._run_git(["reset", "--hard", checkpoint], with_retry=True)
+                if not success:
+                    return {
+                        "status": "partial",
+                        "transaction_id": transaction_id,
+                        "message": f"Reset failed: {output}",
+                        "partial_state": rollback_state,
+                    }
+                rollback_state["restore_done"] = True
+
+            # Clear transaction
+            self.current_transaction.is_active = False
+            self._clear_state()
+
+            return {
+                "status": "success",
+                "transaction_id": transaction_id,
+                "message": "Transaction rolled back. All changes since start() have been reverted.",
+            }
+
+        except Exception as e:
+            logger.error(f"Rollback encountered an unexpected error: {e}")
+            return {
+                "status": "error",
+                "transaction_id": transaction_id,
+                "message": f"Rollback failed with error: {e}",
+                "partial_state": rollback_state,
+            }
 
     def status(self) -> dict:
         """Get current transaction status."""

@@ -15,6 +15,8 @@ from typing import Any, Optional
 import structlog
 from rich.console import Console
 
+from boring.core.utils import TransactionalFileWriter
+
 # MCP-compatible Rich Console (stderr, quiet in MCP mode)
 _is_mcp_mode = os.environ.get("BORING_MCP_MODE") == "1"
 console = Console(stderr=True, quiet=_is_mcp_mode)
@@ -160,8 +162,7 @@ def update_status(
         "next_reset": next_reset_time,
     }
 
-    with open(status_file, "w", encoding="utf-8") as f:
-        json.dump(status_data, f, indent=4)
+    TransactionalFileWriter.write_json(status_file, status_data, indent=4)
 
     # Log status update structurally
     _logger.debug("status_updated", loop=loop_count, status=status, calls=calls_made)

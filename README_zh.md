@@ -52,10 +52,10 @@ Boring 實作了嚴謹的 **「規劃 -> 執行 -> 驗證」** 循環。它不�
 
 | | 功能 | 描述 |
 | :--- | :--- | :--- |
-| 🕵️ | **混合 RAG** | 結合向量搜尋與「依賴圖」擴展，深度理解程式碼的底層上下文。 |
-| 🧪 | **Vibe Check** | 遊戲化的健康評分系統，掃描 Lint、安全性與文件，並生成「一鍵修復提示詞」。 |
-| 🔌 | **全能路由** | 透過自然語言調用 100+ 個專業工具。不再需要死背 CLI 參數。 |
-| 🚢 | **零設定 Smithery** | 秒級部署 Boring 作為遠端 MCP 伺服器，將你的 IDE 連接至雲端智能。 |
+| 🧠 | **全能路由** | 不再需要死背 100+ 個工具名稱。說 *"分析修改 utils.py 的衝擊"* 或 *"審查我的程式碼"* — Boring 會自動路由。 |
+| 🕵️ | **混合 RAG** | 結合向量搜尋與「依賴圖」擴展，深度理解程式碼的底層上下文與調用關係。 |
+| 🧪 | **Vibe Check** | 遊戲化的健康評分系統，一鍵生成讓 AI 代理修復程式碼的「萬能提示詞」。 |
+| 🛡️ | **Active Recall** | 自動從錯誤模式中學習。在多個對話 Session 間回憶解決方案，避免重複錯誤。 |
 
 ---
 
@@ -124,16 +124,24 @@ Boring 不僅是一個工具，它是一個**協作智能系統**，遵循嚴謹
 
 ## 📦 快速開始
 
-### 快速安裝 (Smithery)
+### 快速安裝 (一鍵啟動)
+為 Vibe Coder 設計，30 秒內完成環境設置。
 
-```bash
-npx -y @smithery/cli@latest install boring/boring --client gemini-cli
+**Windows (PowerShell):**
+```powershell
+powershell -c "irm https://raw.githubusercontent.com/Boring206/boring-gemini/main/scripts/install.ps1 | iex"
 ```
 
-### 專業用戶安裝 (pip)
+**Linux / macOS:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/Boring206/boring-gemini/main/scripts/install.sh | bash
+```
+
+### 手動安裝 (pip)
 
 ```bash
-pip install "boring-aicoding[all]"
+pip install boring-aicoding
+boring wizard
 ```
 
 <details>

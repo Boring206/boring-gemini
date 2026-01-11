@@ -52,7 +52,7 @@ def _get_brain_manager(project_root: Path):
 def _get_storage(project_root: Path):
     """Get SQLiteStorage instance for metrics recording."""
     try:
-        from ..storage import SQLiteStorage
+        from ...services.storage import SQLiteStorage
 
         # Phase 10: Use unified path .boring/memory
         memory_dir = get_boring_path(project_root, "memory")
@@ -998,7 +998,7 @@ def register_vibe_tools(mcp, audited, helpers):
 
         return {
             "status": "SUCCESS",
-            "score": final_score,
+            "vibe_score": final_score,
             "tier": tier,
             "vibe_summary": vibe_summary,
         }

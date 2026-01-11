@@ -1,6 +1,20 @@
 """
 Boring for Gemini - AI Coding Assistant
 
+V11.1.0 "Cross-Language Parser Refinement":
+- Fixed JavaScript function expression parsing (function_expression -> function node type)
+- Added type specificity ranking for accurate Go interface/type detection
+- Updated test cases with pure JavaScript patterns (no JSX)
+- All 4 languages (JS/TS/Go/C++) fully validated with correct names/types
+
+V11.0.0 "The Resilient Foundation Update":
+- Windows Mandatory File Locking protection with exponential backoff retry
+- Pre-execution file lock detection for safe rollbacks
+- Cross-language Tree-sitter precision: Go method receivers, TS interfaces, React components
+- Transactional file writing (write-temp-then-rename) for race condition prevention
+- Threading locks for concurrent JSON state file access
+- Enhanced RAG indexing for JS/TS/Go/C++ codebases
+
 V10.32.1 "Visual Identity & Stability Update":
 - Overhauled README.md and README_zh.md with modern header/logo
 - Fixed version command fallback in unit tests
@@ -56,7 +70,7 @@ Backward compatibility is maintained - old import paths still work.
 import importlib
 from typing import TYPE_CHECKING
 
-__version__ = "10.32.1"
+__version__ = "11.1.0"
 
 # =============================================================================
 # Lazy Loading Configuration

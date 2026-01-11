@@ -1,8 +1,15 @@
 """
-Tree-sitter Parser Wrapper
+Tree-sitter Parser Wrapper V11.0
 
 Provides a unified interface to parse code and extract semantic chunks (functions, classes)
 using tree-sitter-languages.
+
+V11.0 Enhancements:
+- Enhanced JavaScript/TypeScript queries for React components and arrow functions
+- Go method receiver support with full receiver type extraction
+- TypeScript interface and type alias support
+- C++ namespace and template support
+- Structured validation for cross-language precision
 """
 
 import logging
@@ -29,11 +36,13 @@ except ImportError:
 class ParsedChunk:
     """A semantic chunk of code."""
 
-    type: str  # 'function', 'class', 'method'
+    type: str  # 'function', 'class', 'method', 'interface', 'type_alias', 'component'
     name: str
     start_line: int  # 1-indexed
     end_line: int  # 1-indexed
     content: str
+    receiver: Optional[str] = None  # For Go method receivers
+    signature: Optional[str] = None  # Function/method signature
 
 
 class TreeSitterParser:
@@ -58,44 +67,122 @@ class TreeSitterParser:
     }
 
     # S-expression queries for extracting definitions
-    # Note: These are simplified common queries.
+    # V11.0: Enhanced queries for cross-language precision
+    # V11.1: Fixed JavaScript function_expression -> function node type
     QUERIES = {
         "python": """
             (function_definition
                 name: (identifier) @name) @function
             (class_definition
                 name: (identifier) @name) @class
+            (decorated_definition
+                definition: (function_definition
+                    name: (identifier) @name)) @function
         """,
         "javascript": """
+            ; Regular function declarations
             (function_declaration
                 name: (identifier) @name) @function
+
+            ; Class declarations
             (class_declaration
                 name: (identifier) @name) @class
+
+            ; Method definitions in classes
             (method_definition
                 name: (property_identifier) @name) @method
+
+            ; Arrow functions assigned to variables (React components pattern)
             (variable_declarator
-                name: (identifier) @name
-                value: [(arrow_function) (function_expression)]
-            ) @function
+                (identifier) @name
+                (arrow_function)) @function
+
+            ; Anonymous function expressions assigned to variables
+            ; Note: In tree-sitter-languages, the node type is 'function' not 'function_expression'
+            (variable_declarator
+                (identifier) @name
+                (function)) @function
+
+            ; Export statement with function declaration
+            (export_statement
+                (function_declaration
+                    name: (identifier) @name)) @function
+
+            ; React.memo, React.forwardRef wrapped components
+            (variable_declarator
+                (identifier) @name
+                (call_expression
+                    (member_expression))) @function
         """,
         "typescript": """
+            ; Function declarations
             (function_declaration
                 name: (identifier) @name) @function
+
+            ; Class declarations
             (class_declaration
                 name: (type_identifier) @name) @class
+
+            ; Interface declarations (V11.0 enhancement)
+            (interface_declaration
+                name: (type_identifier) @name) @interface
+
+            ; Type alias declarations (V11.0 enhancement)
+            (type_alias_declaration
+                name: (type_identifier) @name) @type_alias
+
+            ; Method definitions
             (method_definition
                 name: (property_identifier) @name) @method
-            (interface_declaration
+
+            ; Arrow functions (including React FC components)
+            (variable_declarator
+                name: (identifier) @name
+                value: (arrow_function)) @function
+
+            ; Typed arrow functions: const Component: React.FC = () => {}
+            (lexical_declaration
+                (variable_declarator
+                    name: (identifier) @name
+                    type: (type_annotation)
+                    value: (arrow_function))) @function
+
+            ; Export default function
+            (export_statement
+                declaration: (function_declaration
+                    name: (identifier) @name)) @function
+
+            ; Enum declarations
+            (enum_declaration
+                name: (identifier) @name) @class
+
+            ; Abstract class
+            (abstract_class_declaration
                 name: (type_identifier) @name) @class
         """,
         "go": """
+            ; Regular function declarations
             (function_declaration
                 name: (identifier) @name) @function
+
+            ; Method declarations with receiver (V11.0 enhancement)
+            ; Captures both the method name and receiver type
             (method_declaration
-                name: (field_identifier) @name) @function
+                receiver: (parameter_list
+                    (parameter_declaration
+                        type: (_) @receiver_type))
+                name: (field_identifier) @name) @method
+
+            ; Type declarations (struct, interface)
             (type_declaration
                 (type_spec
                     name: (type_identifier) @name)) @class
+
+            ; Interface type specifically
+            (type_declaration
+                (type_spec
+                    name: (type_identifier) @name
+                    type: (interface_type))) @interface
         """,
         "java": """
             (method_declaration
@@ -103,14 +190,53 @@ class TreeSitterParser:
             (class_declaration
                 name: (identifier) @name) @class
             (interface_declaration
+                name: (identifier) @name) @interface
+            (constructor_declaration
+                name: (identifier) @name) @function
+            (enum_declaration
+                name: (identifier) @name) @class
+            (annotation_type_declaration
                 name: (identifier) @name) @class
         """,
         "cpp": """
+            ; Function definitions
             (function_definition
                 declarator: (function_declarator
                     declarator: (identifier) @name)) @function
+
+            ; Class specifiers
             (class_specifier
                 name: (type_identifier) @name) @class
+
+            ; Struct specifiers
+            (struct_specifier
+                name: (type_identifier) @name) @class
+
+            ; Namespace definitions (V11.0 enhancement)
+            (namespace_definition
+                name: (namespace_identifier) @name) @namespace
+
+            ; Template declarations (V11.0 enhancement)
+            (template_declaration
+                (function_definition
+                    declarator: (function_declarator
+                        declarator: (identifier) @name))) @function
+
+            ; Template class
+            (template_declaration
+                (class_specifier
+                    name: (type_identifier) @name)) @class
+        """,
+        "c": """
+            (function_definition
+                declarator: (function_declarator
+                    declarator: (identifier) @name)) @function
+            (struct_specifier
+                name: (type_identifier) @name) @class
+            (enum_specifier
+                name: (type_identifier) @name) @class
+            (type_definition
+                declarator: (type_identifier) @name) @type_alias
         """,
         "rust": """
             (function_item
@@ -119,6 +245,14 @@ class TreeSitterParser:
                 type: (type_identifier) @name) @class
             (struct_item
                 name: (type_identifier) @name) @class
+            (enum_item
+                name: (type_identifier) @name) @class
+            (trait_item
+                name: (type_identifier) @name) @interface
+            (type_item
+                name: (type_identifier) @name) @type_alias
+            (mod_item
+                name: (identifier) @name) @namespace
         """,
         "ruby": """
             (method
@@ -138,6 +272,8 @@ class TreeSitterParser:
             (method_declaration
                 name: (name) @name) @method
             (interface_declaration
+                name: (name) @name) @interface
+            (trait_declaration
                 name: (name) @name) @class
         """,
     }
@@ -174,7 +310,11 @@ class TreeSitterParser:
         return self.extract_chunks(content, lang_name)
 
     def extract_chunks(self, code: str, language: str) -> list[ParsedChunk]:
-        """Extract chunks from code string using tree-sitter."""
+        """
+        Extract chunks from code string using tree-sitter.
+
+        V11.0: Enhanced to handle interface, type_alias, namespace, and Go method receivers.
+        """
         if not HAS_TREE_SITTER:
             return []
 
@@ -193,59 +333,145 @@ class TreeSitterParser:
             ts_language = get_language(language)
             query = ts_language.query(query_str)
 
-            chunks = []
-            captures = query.captures(tree.root_node)
+            chunk_types = {
+                "function",
+                "class",
+                "method",
+                "interface",
+                "type_alias",
+                "namespace",
+            }
 
-            # captures is a list of (Node, str_capture_name)
-            # We need to pair @function/@class with its inner @name
-            # This is tricky because captures are flattened.
-            # Simplified approach: Iterate nodes, check type.
+            # V11.1: Type specificity ranking - more specific types take precedence
+            # Higher number = more specific
+            type_specificity = {
+                "class": 1,
+                "function": 2,
+                "method": 3,
+                "namespace": 4,
+                "type_alias": 5,
+                "interface": 6,  # interface is more specific than class for Go
+            }
 
-            # Better approach: Iterate matches if query.matches returns them?
-            # tree-sitter-languages bindings vary.
-            # Let's try standard capture iteration processing.
+            result = []
+            matches = query.matches(tree.root_node)
 
-            # We will store potential chunks keyed by node id to merge name + body
-            pending_nodes = {}
+            # Map of node_id -> dict to avoid duplicates if multiple queries hit the same node
+            processed_chunks = {}
 
-            for node, name in captures:
-                if name in ["function", "class", "method"]:
-                    pending_nodes[node.id] = {"node": node, "type": name, "name": "anonymous"}
-                elif name == "name":
-                    # The name usually belongs to the immediate parent or grandparent
-                    # dependent on the grammar structure.
-                    # We look up the ancestry.
-                    curr = node.parent
-                    while curr:
-                        if curr.id in pending_nodes:
-                            pending_nodes[curr.id]["name"] = code[node.start_byte : node.end_byte]
-                            break
-                        curr = curr.parent
+            for _match_id, captures in matches:
+                # In 0.21.3, captures is a dict mapping capture_name -> Node
+                # (or list of Nodes depending on configuration, but usually Node for matches)
 
-            # Convert to ParsedChunk objects
-            code.splitlines()
+                # Identify the primary chunk node in this match
+                chunk_node = None
+                chunk_type = None
+                for c_name, node in captures.items():
+                    if c_name in chunk_types:
+                        chunk_node = node
+                        chunk_type = c_name
+                        break
 
-            for item in pending_nodes.values():
-                node = item["node"]
-                start_line = node.start_point[0] + 1
-                end_line = node.end_point[0] + 1
+                if not chunk_node:
+                    continue
 
-                # Extract text
-                # We can index into 'lines' or use byte offsets if we have the bytes
-                chunk_content = node.text.decode("utf8")
+                # Get or create the chunk entry
+                node_id = chunk_node.id
 
-                chunks.append(
-                    ParsedChunk(
-                        type=item["type"],
-                        name=item["name"],
-                        start_line=start_line,
-                        end_line=end_line,
-                        content=chunk_content,
-                    )
+                # V11.1: Check if this type is more specific than existing one
+                if node_id in processed_chunks:
+                    existing_type = processed_chunks[node_id]["type"]
+                    existing_specificity = type_specificity.get(existing_type, 0)
+                    new_specificity = type_specificity.get(chunk_type, 0)
+                    if new_specificity > existing_specificity:
+                        # Update to more specific type
+                        processed_chunks[node_id]["type"] = chunk_type
+                else:
+                    start_line = chunk_node.start_point[0] + 1
+                    end_line = chunk_node.end_point[0] + 1
+                    content = chunk_node.text.decode("utf8")
+                    lines = content.split("\n")
+                    signature = lines[0] if lines else ""
+
+                    # Capture signature spanning multiple lines
+                    if "{" not in signature and len(lines) > 1:
+                        for i, line in enumerate(lines[1:], 1):
+                            signature += "\n" + line
+                            if "{" in line or i >= 3:
+                                break
+
+                    processed_chunks[node_id] = {
+                        "type": chunk_type,
+                        "name": "anonymous",
+                        "start_line": start_line,
+                        "end_line": end_line,
+                        "content": content,
+                        "signature": signature.strip(),
+                        "receiver": None,
+                    }
+
+                # Extract attributes from the same match
+                chunk_data = processed_chunks[node_id]
+
+                # Defensive capture name lookup
+                capture_names = {
+                    query.capture_names[k]: node
+                    for k, node in captures.items()
+                    if isinstance(k, int)
+                }
+                capture_names.update(
+                    {k: node for k, node in captures.items() if isinstance(k, str)}
                 )
 
-            return sorted(chunks, key=lambda x: x.start_line)
+                if "name" in capture_names:
+                    name_node = capture_names["name"]
+                    chunk_data["name"] = name_node.text.decode("utf8")
+
+                if "receiver_type" in capture_names:
+                    recv_node = capture_names["receiver_type"]
+                    recv_text = recv_node.text.decode("utf8")
+                    if recv_text.startswith("*"):
+                        recv_text = recv_text[1:]
+                    chunk_data["receiver"] = recv_text
+
+            # Sort and return
+            for data in processed_chunks.values():
+                result.append(ParsedChunk(**data))
+
+            return sorted(result, key=lambda x: x.start_line)
 
         except Exception as e:
-            logger.error(f"Tree-sitter parse error for {language}: {e}")
+            logger.error(f"Tree-sitter match failure for {language}: {e}")
             return []
+
+    def validate_language_support(self, language: str, test_code: str) -> dict:
+        """
+        Validate that Tree-sitter queries work correctly for a given language.
+
+        V11.0: Structured testing for cross-language precision.
+
+        Args:
+            language: Language name (e.g., 'go', 'typescript')
+            test_code: Sample code to parse
+
+        Returns:
+            Dict with validation results
+        """
+        if not HAS_TREE_SITTER:
+            return {"success": False, "error": "tree-sitter not available"}
+
+        if language not in self.QUERIES:
+            return {"success": False, "error": f"No query defined for language: {language}"}
+
+        try:
+            chunks = self.extract_chunks(test_code, language)
+            return {
+                "success": True,
+                "language": language,
+                "chunks_found": len(chunks),
+                "chunk_types": list({c.type for c in chunks}),
+                "chunk_names": [c.name for c in chunks],
+                "receivers": [c.receiver for c in chunks if c.receiver],
+            }
+        except Exception as e:
+            return {"success": False, "error": str(e)}

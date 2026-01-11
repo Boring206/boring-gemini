@@ -10,7 +10,7 @@
 ### 情境 A：您正在使用 Cursor 或 Claude Desktop 📝
 這是最推薦的方式！您只需要像聊天一樣。
 
-1.  確認您已設定好 Boring MCP Server。
+1.  確認您已執行 **One-Click Install** (或 `boring wizard`) 設定好 Boring MCP Server。
 2.  打開對話視窗 (Chat)。
 3.  **直接輸入想要的指令** (不用背指令，用口語就行)：
 

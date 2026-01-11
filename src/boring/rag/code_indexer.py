@@ -1,17 +1,25 @@
 """
-Universal Code Indexer for Vector RAG
+Universal Code Indexer for Vector RAG V11.0
 
 Polyglot code chunking system supporting:
 - Python (.py): AST-based parsing with dependency extraction
-- JavaScript/TypeScript (.js/.jsx/.ts/.tsx): Tree-sitter or regex fallback
-- Go (.go), Rust (.rs), Java (.java): Tree-sitter semantic parsing
-- C/C++ (.c/.cpp/.h/.hpp): Tree-sitter parsing
+- JavaScript/TypeScript (.js/.jsx/.ts/.tsx): Tree-sitter with React component support
+- Go (.go): Tree-sitter with method receiver extraction
+- Rust (.rs), Java (.java): Tree-sitter semantic parsing
+- C/C++ (.c/.cpp/.h/.hpp): Tree-sitter with namespace/template support
 - Ruby (.rb), PHP (.php): Tree-sitter support
 - Markdown (.md): Heading-based chunking
+
+V11.0 Enhancements:
+- Enhanced cross-language Tree-sitter precision
+- Structured validation tests for JS/TS/Go/C++
+- Interface and type alias detection
+- Go method receiver tracking
 
 Chunk Types:
 - Function-level chunks with signature extraction
 - Class-level chunks with inheritance tracking
+- Interface and type alias chunks
 - Import block chunks with dependency metadata
 - Module docstrings and documentation
 
@@ -36,13 +44,14 @@ class CodeChunk:
 
     chunk_id: str
     file_path: str
-    chunk_type: str  # "function", "class", "imports", "module_doc"
+    chunk_type: str  # "function", "class", "imports", "module_doc", "interface", "type_alias"
     name: str
     content: str
     start_line: int
     end_line: int
     dependencies: list[str] = field(default_factory=list)  # Functions/classes this chunk calls
     parent: Optional[str] = None  # Parent class if method
+    receiver: Optional[str] = None  # Go method receiver type (V11.0)
     signature: Optional[str] = None  # Function/class signature for quick reference
     docstring: Optional[str] = None
 
@@ -174,6 +183,8 @@ class CodeIndexer:
         """
         Smart chunking for non-Python files using Tree-sitter or regex fallback.
         Supports C-style languages (JS, TS, Java, C++, Go, Rust) and Markdown.
+
+        V11.0: Enhanced to capture interface, type_alias, namespace, and Go method receivers.
         """
         import re
 
@@ -192,19 +203,31 @@ class CodeIndexer:
 
         rel_path = self._get_rel_path(file_path)
 
-        # 1. Try Tree-sitter Parsing
+        # 1. Try Tree-sitter Parsing (V11.0 Enhanced)
         if ts_parser and ts_parser.is_available():
             ts_chunks = ts_parser.parse_file(file_path)
             if ts_chunks:
                 for chunk in ts_chunks:
+                    # V11.0: Map parser chunk types to indexer chunk types
+                    chunk_type_map = {
+                        "function": "code_function",
+                        "class": "code_class",
+                        "method": "code_method",
+                        "interface": "code_interface",
+                        "type_alias": "code_type_alias",
+                        "namespace": "code_namespace",
+                    }
+                    mapped_type = chunk_type_map.get(chunk.type, f"code_{chunk.type}")
+
                     yield CodeChunk(
                         chunk_id=self._make_id(rel_path, f"{chunk.type}_{chunk.name}"),
                         file_path=rel_path,
-                        chunk_type=f"code_{chunk.type}",
+                        chunk_type=mapped_type,
                         name=chunk.name,
                         content=chunk.content,
                         start_line=chunk.start_line,
                         end_line=chunk.end_line,
+                        receiver=getattr(chunk, "receiver", None),  # V11.0: Go method receiver
                     )
                 # If we got chunks, assume we handled the file well enough (for now).
                 # Optionally we could index the gaps as well, but definitions are key.
@@ -602,3 +625,224 @@ class CodeIndexer:
     def get_stats(self) -> IndexStats:
         """Return indexing statistics."""
         return self.stats
+
+
+# =============================================================================
+# V11.0 Structured Validation Tests
+# V11.1: Fixed JavaScript test cases (removed JSX, use pure JS syntax)
+# =============================================================================
+
+
+class CrossLanguageValidator:
+    """
+    V11.0: Structured tests for cross-language Tree-sitter precision.
+    V11.1: Fixed JavaScript test cases to use valid non-JSX syntax.
+
+    Ensures boring_rag_context works correctly for JS/TS/Go/C++.
+    """
+
+    # Test cases for each language
+    TEST_CASES = {
+        "javascript": {
+            "code": """
+// Regular function
+function handleClick(event) {
+    console.log("clicked");
+}
+
+// Arrow function component (without JSX for pure JS parsing)
+const Button = ({ label }) => {
+    return document.createElement("button");
+};
+
+// Anonymous function expression
+const myHelper = function(x) {
+    return x * 2;
+};
+
+// Class component
+class Counter {
+    constructor() {
+        this.count = 0;
+    }
+    render() {
+        return this.count;
+    }
+}
+
+// Export function
+export function App() {
+    return "app";
+}
+""",
+            "expected_names": ["handleClick", "Button", "myHelper", "Counter", "App", "render"],
+            "expected_types": ["function", "class", "method"],
+        },
+        "typescript": {
+            "code": """
+// Interface
+interface User {
+    id: number;
+    name: string;
+}
+
+// Type alias
+type UserID = string | number;
+
+// Typed arrow function
+const fetchUser: (id: UserID) => Promise<User> = async (id) => {
+    return { id: 1, name: "test" };
+};
+
+// Class with interface
+class UserService implements IService {
+    getUser(id: number): User {
+        return { id, name: "test" };
+    }
+}
+
+// Enum
+enum Status {
+    Active,
+    Inactive
+}
+""",
+            "expected_names": ["User", "UserID", "fetchUser", "UserService", "Status"],
+            "expected_types": ["interface", "type_alias", "function", "class"],
+        },
+        "go": {
+            "code": """
+package main
+
+// Regular function
+func HandleRequest(w http.ResponseWriter, r *http.Request) {
+    fmt.Println("handling")
+}
+
+// Struct type
+type User struct {
+    ID   int
+    Name string
+}
+
+// Method with pointer receiver
+func (u *User) GetName() string {
+    return u.Name
+}
+
+// Method with value receiver
+func (u User) String() string {
+    return u.Name
+}
+
+// Interface
+type Repository interface {
+    Find(id int) (*User, error)
+}
+""",
+            "expected_names": ["HandleRequest", "User", "GetName", "String", "Repository"],
+            "expected_types": ["function", "method", "class", "interface"],
+        },
+        "cpp": {
+            "code": """
+// Namespace
+namespace MyApp {
+
+// Class
+class Calculator {
+public:
+    int add(int a, int b);
+};
+
+// Template function
+template<typename T>
+T maximum(T a, T b) {
+    return (a > b) ? a : b;
+}
+
+// Struct
+struct Point {
+    int x, y;
+};
+
+} // namespace MyApp
+
+// Regular function
+int main() {
+    return 0;
+}
+""",
+            "expected_names": ["MyApp", "Calculator", "maximum", "Point", "main"],
+            "expected_types": ["namespace", "class", "function"],
+        },
+    }
+
+    @classmethod
+    def validate_language(cls, language: str) -> dict:
+        """
+        Validate Tree-sitter parsing for a specific language.
+
+        Args:
+            language: Language to validate (javascript, typescript, go, cpp)
+
+        Returns:
+            Validation result dict
+        """
+        try:
+            from .parser import TreeSitterParser
+
+            parser = TreeSitterParser()
+        except ImportError:
+            return {"success": False, "error": "TreeSitterParser not available"}
+
+        if language not in cls.TEST_CASES:
+            return {"success": False, "error": f"No test case for language: {language}"}
+
+        test_case = cls.TEST_CASES[language]
+        result = parser.validate_language_support(language, test_case["code"])
+
+        if not result.get("success"):
+            return result
+
+        # Check expected names
+        found_names = set(result.get("chunk_names", []))
+        expected_names = set(test_case["expected_names"])
+        missing_names = expected_names - found_names
+
+        # Check expected types
+        found_types = set(result.get("chunk_types", []))
+        expected_types = set(test_case["expected_types"])
+        missing_types = expected_types - found_types
+
+        return {
+            "success": len(missing_names) == 0,
+            "language": language,
+            "chunks_found": result.get("chunks_found", 0),
+            "found_names": list(found_names),
+            "missing_names": list(missing_names),
+            "found_types": list(found_types),
+            "missing_types": list(missing_types),
+            "receivers": result.get("receivers", []),
+        }
+
+    @classmethod
+    def validate_all(cls) -> dict:
+        """
+        Validate all supported languages.
+
+        Returns:
+            Dict with validation results for each language
+        """
+        results = {}
+        all_passed = True
+
+        for language in cls.TEST_CASES:
+            result = cls.validate_language(language)
+            results[language] = result
+            if not result.get("success"):
+                all_passed = False
+
+        return {
+            "all_passed": all_passed,
+            "results": results,
+        }

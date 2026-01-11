@@ -1,3 +1,46 @@
+## [11.1.0] - 2026-01-11
+### 🔧 Cross-Language Parser Refinement
+- **JavaScript Fix**: Fixed `function_expression` → `function` node type for tree-sitter-languages JavaScript grammar.
+- **Type Specificity Ranking**: Added intelligent type priority system (`interface > type_alias > namespace > method > function > class`) for accurate Go interface detection.
+- **Test Cases Updated**: Migrated JavaScript tests from JSX to pure JavaScript patterns for consistent parsing.
+- **Full Validation**: All 4 languages (JS/TS/Go/C++) now fully validated with correct names and types.
+
+### 🔧 Fixes
+- **Version Fallback**: Updated CLI version fallback from 10.32.1 to 11.1.0.
+- **Dynamic Version Tests**: Test assertions now use dynamic version checking from `boring.__version__`.
+
+## [11.0.0] - 2026-01-11
+### 🛡️ Resilient Foundation (Windows Optimization)
+- **Transactional Atomic Writes**: Introduced `TransactionalFileWriter` with exponential backoff for `os.replace` to solve Windows mandatory file locking contention.
+- **Race Condition Prevention**: Implemented cross-thread and cross-process safe state persistence for `Web Monitor` and `Shadow Mode`.
+- **Pre-execution Locking**: Added mandatory lock detection before file modifications to ensure clean rollbacks.
+
+### 🔍 Polyglot RAG Precision
+- **Matched Definition Extraction**: Re-engineered `TreeSitterParser` to use `query.matches()`, ensuring properties (Go receivers, TS interface names) are precisely bound to their definitions.
+- **Go Support**: Added robust extraction for Go method receivers and pointer types.
+- **TypeScript & C++**: Enhanced semantic boundary detection for TS Interface/Type Alias and C++ Namespace/Template definitions.
+- **Tree-sitter Pinning**: Standardized on `tree-sitter==0.21.3` for project-wide API stability.
+
+### 🚀 Developer Experience
+- **Zero-Config Wizard**: Integrated the `boring wizard` and cross-platform bootstrappers (`install.ps1`, `install.sh`) as a core feature.
+- **Vibe Score Evolution**: Fully integrated "One-Click Fix Prompt" logic into health checks.
+
+### 🚀 Zero-Config Bootstrapper
+- **One-Click Installers**: Introduced `install.ps1` (Windows) and `install.sh` (Linux/macOS) for a unified, stable setup experience.
+- **Isolated Environment**: Bootstrappers now automatically create a dedicated `~/.boring/env` to prevent Python conflicts.
+- **Wizard Enhancements**: Added `Custom` profile support to `boring wizard` for granular control over RAG and Logs without editing JSON.
+
+### 📚 Documentation
+- **All Environments**: Rewrote Installation Guide to prioritize the Bootstrapper -> Wizard flow.
+- **Remote One-Liners**: Switched `README.md` and `README_zh.md` to use remote `curl/irm` commands for zero-clone setup.
+- **Cleanup**: executed a 5-pass cleanup of project documentation and temporary files.
+
+### 🧪 Sustainability & Quality (Deep Thinking Coverage)
+- **Coverage Success**: Tripled project-wide test coverage to **60%** (up from ~20%).
+- **Intelligence Layer**: Achieved high coverage for core AI modules: `brain_manager.py` (88%), `pattern_clustering.py` (93%), `pattern_mining.py` (86%).
+- **Resilient Services**: Robust testing established for `web_monitor.py` (78%) and `rag_watcher.py`.
+- **Infrastructure**: Fixed flakiness in evaluation tests and optimized test isolation.
+
 ## [10.32.1] - 2026-01-11
 ### ✨ Highlights
 - **README Redesign**: Completely overhauled both English and Traditional Chinese READMEs with a modern, high-impact visual design.
@@ -197,7 +240,7 @@ All Quality Gate checks now passing:
   - **97% token savings** compared to FULL profile (~5000 → ~150 tokens)
 - **Progressive Disclosure Tool** (`boring_discover`): Fetch full JSON schema for any tool on-demand
   - Enables lazy loading of tool definitions
-  - Works even after profile filtering (caches all tools before filter)
+- Works even after profile filtering (caches all tools before filter)
 
 ### Changed
 - **Major Code Reorganization**: Completed structure-v2 refactoring
@@ -443,7 +486,7 @@ All Quality Gate checks now passing:
 
 ### Added
 
-#### �️ MCP Intelligence Tools (NEW!)
+#### ️ MCP Intelligence Tools (NEW!)
 - **`boring_predict_impact`**: 預測程式碼變更影響，評估風險等級
 - **`boring_risk_areas`**: 識別高風險程式碼區域
 - **`boring_cache_insights`**: 查看智能快取統計和洞察

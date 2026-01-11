@@ -1,135 +1,81 @@
 # 安裝指南 (Installation)
 
-> **🇨🇳 懶人包**: 推薦使用 **Option 1 (Smithery)** 自動安裝，或 **Option 2 (pip)** 手動安裝。
-> 安裝完後，請參閱 [快速入門](./quickstart.md)。
+> **🚀 推薦方式**: 使用 **One-Click Bootstrapper** (自動配置環境與 MCP)。
+> **手動方式**: 使用 `pip` 安裝後執行 `boring wizard`。
 
 ---
 
-## 🚀 Quick Install
+## 🚀 方式 1: One-Click Bootstrapper (推薦)
 
-### Option 1: Smithery for Claude/Gemini (Recommended)
+這是一鍵完成安裝與配置的最快方式。它會自動：
+1. 為 Boring 建立獨立的 Python 虛擬環境 (`~/.boring/env`)
+2. 安裝最新版 `boring-aicoding`
+3. 自動啟動配置精靈 (`boring wizard`) 來設定你的編輯器 (Cursor/Claude/VSCode)
 
-The easiest way to install without touching the terminal.
+### Windows (PowerShell)
+```powershell
+powershell -c "irm https://raw.githubusercontent.com/Boring206/boring-gemini/main/scripts/install.ps1 | iex"
+```
 
+### Linux / macOS
+```bash
+curl -fsSL https://raw.githubusercontent.com/Boring206/boring-gemini/main/scripts/install.sh | bash
+```
+
+---
+
+## 🛠️ 方式 2: 手動安裝 (pip)
+
+如果你希望手動管理 Python 環境：
+
+### 1. 安裝套件
+```bash
+# 推薦 (包含 RAG 支持)
+pip install "boring-aicoding[all]"
+
+# 或者基礎版
+pip install boring-aicoding
+```
+
+### 2. 配置編輯器 (MCP)
+執行此指令來自動掃描並配置你的 IDE：
+```bash
+boring wizard
+```
+*(支援設定 Standard/Lite/Full/Custom 配置檔)*
+
+---
+
+## ⚡ 方式 3: 進階用戶 (Smithery / uv)
+
+<details>
+<summary><b>Smithery (Gemini CLI)</b></summary>
+
+適合不想污染本地環境的用戶：
 ```bash
 npx -y @smithery/cli@latest install boring/boring --client gemini-cli
 ```
+</details>
 
-### Option 2: pip (Manual)
+<details>
+<summary><b>uv (極速安裝)</b></summary>
 
-If you prefer control or use `pip`:
-
+使用 `uv` 獲得 10-100x 安裝速度：
 ```bash
-# Recommended for Vibe Coder (Includes RAG & Verified tools)
-pip install "boring-aicoding[all]"
-```
-
-### Option 2.5: uv (⚡ Ultra-Fast)
-
-> **New!** Install 10-100x faster with [uv](https://github.com/astral-sh/uv)
-
-```bash
-# Install uv first (if not already installed)
-curl -LsSf https://astral.sh/uv/install.sh | sh  # Linux/Mac
-powershell -c "irm https://astral.sh/uv/install.ps1 | iex"  # Windows
-
-# Install boring-aicoding with uv
+# 安裝
 uv pip install "boring-aicoding[all]"
 
-# Or use uv to manage the entire project
-uv venv
-source .venv/bin/activate  # Linux/Mac
-.venv\Scripts\activate      # Windows
-uv pip install "boring-aicoding[all]"
+# 配置 MCP (推薦使用 wizard，或手動參考下方)
+boring wizard
 ```
-
-**Why uv?**
-- ⚡ 10-100x faster than pip
-- 🎯 Better dependency resolution
-- 🔒 Deterministic builds
-- 📦 Smaller cache
+</details>
 
 ---
 
-## ⚙️ MCP Configuration (Critical!)
+## ✅ 驗證安裝
 
-After installation, add this to your MCP Config (Cursor/Claude):
-
-### For Cursor / Claude Desktop (Standard pip)
-
-```json
-{
-  "mcpServers": {
-    "boring": {
-      "command": "boring-mcp",
-      "args": [],
-      "env": {
-        "BORING_MCP_MODE": "1",
-        "BORING_MCP_PROFILE": "lite",  
-        "PROJECT_ROOT_DEFAULT": "."
-      }
-    }
-  }
-}
-```
-
-### For uv Installation (⚡ Recommended for Performance)
-
-**Method 1: uvx (No local installation required)**
-
-```json
-{
-  "mcpServers": {
-    "boring": {
-      "command": "uvx",
-      "args": ["--from", "boring-aicoding[all]", "python", "-m", "boring.mcp.server"],
-      "env": {
-        "BORING_MCP_MODE": "1",
-        "BORING_MCP_PROFILE": "lite",
-        "PROJECT_ROOT_DEFAULT": "."
-      }
-    }
-  }
-}
-```
-
-**Method 2: uv run (Using venv)**
-
-```json
-{
-  "mcpServers": {
-    "boring": {
-      "command": "uv",
-      "args": ["run", "python", "-m", "boring.mcp.server"],
-      "env": {
-        "BORING_MCP_MODE": "1",
-        "BORING_MCP_PROFILE": "lite",
-        "PROJECT_ROOT_DEFAULT": ".",
-        "VIRTUAL_ENV": "/path/to/your/.venv"
-      }
-    }
-  }
-}
-```
-
-**Benefits of uv for MCP:**
-- ⚡ Server startup ~30% faster
-- 🔒 Isolated dependencies per project
-- 📦 Automatic environment management
-- 🎯 No global package pollution
-
-> **Profiles**:
-> - `lite` (Default): 20 essential tools. Fast & Cheap.
-> - `standard`: 50 tools. Good for power users.
-> - `full`: 98+ tools. Expensive on tokens.
-
----
-
-## ✅ Verify
-
-Run this in your terminal:
-
+在終端機輸入：
 ```bash
 boring --version
-# Output: boring v10.31.0  (or newer)
+# Output: boring v10.32.1 (or newer)
 ```

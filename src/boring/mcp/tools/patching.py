@@ -1,10 +1,13 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 from pydantic import Field
 
 from ...audit import audited
+from ...config import settings
+from ...diff_patcher import apply_search_replace_blocks, extract_search_replace_blocks
 from ..instance import MCP_AVAILABLE, mcp
 from ..utils import configure_runtime_for_project, get_project_root_or_error
+from .shadow import get_shadow_guard
 
 # ==============================================================================
 # PATCHING TOOLS
@@ -17,7 +20,7 @@ def boring_apply_patch(
     search_text: Annotated[str, Field(description="Exact text to search for (must match exactly)")],
     replace_text: Annotated[str, Field(description="Text to replace with")],
     project_path: Annotated[
-        str, Field(description="Optional explicit path to project root")
+        Optional[str], Field(description="Optional explicit path to project root")
     ] = None,
 ) -> dict:
     """
@@ -49,8 +52,6 @@ def boring_apply_patch(
             return error
 
         # Shadow Mode Check
-        from .shadow import get_shadow_guard
-
         guard = get_shadow_guard(project_root)
 
         pending = guard.check_operation(
@@ -121,7 +122,7 @@ def boring_extract_patches(
         bool, Field(description="If True, only parse and report patches without applying")
     ] = False,
     project_path: Annotated[
-        str, Field(description="Optional explicit path to project root")
+        Optional[str], Field(description="Optional explicit path to project root")
     ] = None,
 ) -> dict:
     """
@@ -140,9 +141,6 @@ def boring_extract_patches(
         Extracted patches and apply results
     """
     try:
-        from ...config import settings
-        from ...diff_patcher import apply_search_replace_blocks, extract_search_replace_blocks
-
         # Resolve project root
         project_root, error = get_project_root_or_error(project_path)
         if error:
@@ -151,8 +149,6 @@ def boring_extract_patches(
         configure_runtime_for_project(project_root)
 
         # Shadow Mode Check
-        from .shadow import get_shadow_guard
-
         guard = get_shadow_guard(project_root)
 
         # 1. Parse patches

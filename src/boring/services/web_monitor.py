@@ -1,17 +1,101 @@
 """
-Web Monitor for Boring
+Web Monitor for Boring V11.0
 
 Provides a lightweight web dashboard for monitoring Boring loop status.
 Uses FastAPI for async support and real-time updates.
+
+V11.0 Enhancements:
+- Transactional File Writing (write to temp, then atomic rename)
+- Threading Lock for concurrent access protection
+- Race condition prevention for JSON state files
 """
 
 import json
 import logging
+import threading
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
+
+# Thread lock for file operations
+_file_lock = threading.Lock()
+
+
+class TransactionalFileWriter:
+    """
+    Atomic file writer that prevents partial writes.
+
+    Uses write-to-temp-then-rename pattern for crash-safe writes.
+    """
+
+class ThreadSafeJsonReader:
+    """
+    Thread-safe JSON reader with retry logic for incomplete reads.
+
+    Handles race conditions when Agent is writing while Monitor is reading.
+    """
+
+    @staticmethod
+    def read_json(file_path: Path, default: Any = None, max_retries: int = 3) -> Any:
+        """
+        Safely read JSON file with retry logic.
+
+        Args:
+            file_path: Path to JSON file
+            default: Default value if read fails
+            max_retries: Number of retry attempts
+
+        Returns:
+            Parsed JSON data or default value
+        """
+        if not file_path.exists():
+            return default
+
+        with _file_lock:
+            for attempt in range(max_retries):
+                try:
+                    content = file_path.read_text(encoding="utf-8")
+                    if not content.strip():
+                        return default
+                    return json.loads(content)
+                except json.JSONDecodeError as e:
+                    logger.warning(
+                        f"JSON decode error on attempt {attempt + 1}/{max_retries} for {file_path}: {e}"
+                    )
+                    if attempt < max_retries - 1:
+                        import time
+
+                        time.sleep(0.1 * (attempt + 1))  # Brief backoff
+                except Exception as e:
+                    logger.warning(f"Failed to read {file_path}: {e}")
+                    return default
+
+            return default
+
+    @staticmethod
+    def read_text(file_path: Path, default: str = "") -> str:
+        """
+        Safely read text file.
+
+        Args:
+            file_path: Path to text file
+            default: Default value if read fails
+
+        Returns:
+            File content or default value
+        """
+        if not file_path.exists():
+            return default
+
+        with _file_lock:
+            try:
+                return file_path.read_text(encoding="utf-8")
+            except Exception as e:
+                logger.warning(f"Failed to read {file_path}: {e}")
+                return default
+
 
 # Check for FastAPI availability
 try:
@@ -43,7 +127,7 @@ def create_monitor_app(project_root: Path) -> Optional[Any]:
     app = FastAPI(
         title="Boring Monitor",
         description="Real-time monitoring dashboard for Boring autonomous loop",
-        version="1.0.0",
+        version="11.0.0",
     )
 
     memory_dir = project_root / ".boring_memory"
@@ -56,31 +140,30 @@ def create_monitor_app(project_root: Path) -> Optional[Any]:
 
     @app.get("/api/status")
     async def get_status():
-        """Get current loop status."""
+        """
+        Get current loop status.
+
+        V11.0: Uses ThreadSafeJsonReader to prevent race conditions.
+        """
+        # Try to read loop status with thread-safe reader
         status_file = memory_dir / "loop_status.json"
-        if status_file.exists():
-            try:
-                return json.loads(status_file.read_text(encoding="utf-8"))
-            except Exception:
-                pass
+        status_data = ThreadSafeJsonReader.read_json(status_file)
+        if status_data:
+            return status_data
 
         # Read from circuit breaker state
         circuit_file = project_root / ".circuit_breaker_state"
-        circuit_state = "UNKNOWN"
-        if circuit_file.exists():
-            try:
-                data = json.loads(circuit_file.read_text(encoding="utf-8"))
-                circuit_state = data.get("state", "UNKNOWN")
-            except Exception:
-                pass
+        circuit_data = ThreadSafeJsonReader.read_json(circuit_file, default={})
+        circuit_state = circuit_data.get("state", "UNKNOWN") if circuit_data else "UNKNOWN"
 
-        # Read call count
+        # Read call count with thread-safe reader
         call_count_file = project_root / ".call_count"
         call_count = 0
-        if call_count_file.exists():
+        call_count_text = ThreadSafeJsonReader.read_text(call_count_file)
+        if call_count_text.strip():
             try:
-                call_count = int(call_count_file.read_text().strip())
-            except Exception:
+                call_count = int(call_count_text.strip())
+            except ValueError:
                 pass
 
         return {
@@ -92,58 +175,60 @@ def create_monitor_app(project_root: Path) -> Optional[Any]:
 
     @app.get("/api/logs")
     async def get_recent_logs(limit: int = 50):
-        """Get recent log entries."""
+        """Get recent log entries with thread-safe reading."""
         logs_dir = project_root / "logs"
         if not logs_dir.exists():
             return {"logs": []}
 
         all_logs = []
         for log_file in sorted(logs_dir.glob("*.log"), reverse=True)[:3]:
-            try:
-                lines = log_file.read_text(encoding="utf-8").strip().split("\n")
+            content = ThreadSafeJsonReader.read_text(log_file)
+            if content:
+                lines = content.strip().split("\n")
                 all_logs.extend(lines[-limit:])
-            except Exception:
-                pass
 
         return {"logs": all_logs[-limit:]}
 
     @app.get("/api/stats")
     async def get_stats():
-        """Get loop statistics."""
+        """
+        Get loop statistics.
+
+        V11.0: Uses ThreadSafeJsonReader for concurrent safety.
+        """
         stats = {
             "patterns_count": 0,
             "pending_approvals": 0,
             "rag_indexed": False,
         }
 
-        # Count patterns
+        # Count patterns with thread-safe reading
         patterns_file = brain_dir / "learned_patterns" / "patterns.json"
-        if patterns_file.exists():
-            try:
-                patterns = json.loads(patterns_file.read_text(encoding="utf-8"))
-                stats["patterns_count"] = len(patterns)
-            except Exception:
-                pass
+        patterns = ThreadSafeJsonReader.read_json(patterns_file, default=[])
+        if isinstance(patterns, list):
+            stats["patterns_count"] = len(patterns)
+        elif isinstance(patterns, dict):
+            stats["patterns_count"] = len(patterns)
 
         # Count pending Shadow Mode operations
         pending_file = memory_dir / "pending_ops.json"
-        if pending_file.exists():
-            try:
-                ops = json.loads(pending_file.read_text(encoding="utf-8"))
-                stats["pending_approvals"] = len(ops)
-            except Exception:
-                pass
+        ops = ThreadSafeJsonReader.read_json(pending_file, default=[])
+        if isinstance(ops, list):
+            stats["pending_approvals"] = len(ops)
 
         # Check RAG index
         rag_dir = memory_dir / "rag_db"
-        stats["rag_indexed"] = rag_dir.exists() and any(rag_dir.iterdir())
+        try:
+            stats["rag_indexed"] = rag_dir.exists() and any(rag_dir.iterdir())
+        except Exception:
+            stats["rag_indexed"] = False
 
         return stats
 
     @app.get("/api/health")
     async def health_check():
         """Health check endpoint."""
-        return {"status": "ok", "timestamp": datetime.now().isoformat()}
+        return {"status": "ok", "version": "11.0.0", "timestamp": datetime.now().isoformat()}
 
     return app
 

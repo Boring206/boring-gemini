@@ -17,6 +17,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Callable, Optional
 
+from boring.core.utils import TransactionalFileWriter
+
 logger = logging.getLogger(__name__)
 
 # Import trust rules (lazy to avoid circular import)
@@ -461,7 +463,7 @@ class ShadowModeGuard:
         """Save pending operations to file."""
         try:
             data = [op.to_dict() for op in self.pending_queue]
-            self.pending_file.write_text(json.dumps(data, indent=2))
+            TransactionalFileWriter.write_json(self.pending_file, data, indent=2)
         except Exception as e:
             logger.warning(f"Failed to save pending operations: {e}")
 
@@ -473,7 +475,7 @@ class ShadowModeGuard:
     def _persist_mode(self) -> None:
         """Persist current mode to disk for cross-session consistency."""
         try:
-            self._mode_file.write_text(self._mode.value)
+            TransactionalFileWriter.write_text(self._mode_file, self._mode.value)
             logger.debug(f"Shadow Mode persisted: {self._mode.value}")
         except Exception as e:
             logger.warning(f"Failed to persist Shadow Mode: {e}")

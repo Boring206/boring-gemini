@@ -21,7 +21,7 @@ from rich.console import Console
 from boring.core.config import settings
 
 HELP_TEXT = """
-[bold blue]Unified Path Management for Boring (V10.32.1)
+[bold blue]Unified Path Management for Boring (V11.0.0)
  - Enterprise AI Development Agent (MCP)[/bold blue]
 
 A powerful AI coding assistant designed for IDEs (Cursor, VS Code) and Gemini.
@@ -442,11 +442,23 @@ def version():
         try:
             ver = pkg_version("boring")
         except Exception:
-            ver = "10.32.1"
+            ver = "11.1.0"
 
     console.print(f"[bold blue]Boring[/bold blue] v{ver}")
     console.print(f"  Model: {settings.DEFAULT_MODEL}")
     console.print(f"  Project: {settings.PROJECT_ROOT}")
+
+
+@app.command("wizard")
+@app.command("install-mcp")
+def wizard():
+    """
+    Run the Zero-Config Setup Wizard for MCP.
+    Automatically detects Claude/Cursor/VS Code and configures them.
+    """
+    from .cli.wizard import run_wizard
+
+    run_wizard()
 
 
 # --- Workflow Hub CLI ---

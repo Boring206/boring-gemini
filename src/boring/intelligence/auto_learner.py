@@ -40,22 +40,23 @@ class AutoLearner:
     - Successful workflow completions
     """
 
-    # Common error patterns to detect
+    # Common error patterns to detect (ordered by specificity)
     ERROR_PATTERNS = [
-        # Python errors
-        (r"(?:Error|Exception):\s*(.+)", "python_error"),
-        (r"ModuleNotFoundError:\s*(.+)", "import_error"),
-        (r"ImportError:\s*(.+)", "import_error"),
-        (r"TypeError:\s*(.+)", "type_error"),
-        (r"AttributeError:\s*(.+)", "attribute_error"),
-        (r"SyntaxError:\s*(.+)", "syntax_error"),
+        # Specific Python errors first
+        (r"\bModuleNotFoundError:\s*(.+)", "import_error"),
+        (r"\bImportError:\s*(.+)", "import_error"),
+        (r"\bTypeError:\s*(.+)", "type_error"),
+        (r"\bAttributeError:\s*(.+)", "attribute_error"),
+        (r"\bSyntaxError:\s*(.+)", "syntax_error"),
+        # Generic Python error/exception
+        (r"\b(?:Error|Exception):\s*(.+)", "python_error"),
         # JavaScript/TypeScript errors
-        (r"ReferenceError:\s*(.+)", "js_reference_error"),
-        (r"Cannot find module\s*['\"](.+)['\"]", "js_import_error"),
+        (r"\bReferenceError:\s*(.+)", "js_reference_error"),
+        (r"\bCannot find module\s*['\"](.+)['\"]", "js_import_error"),
         # General patterns
         (r"FAILED.*?(\w+Error)", "test_failure"),
         (r"error\[E\d+\]:\s*(.+)", "rust_error"),
-        (r"error:\s*(.+)", "generic_error"),
+        (r"\berror:\s*(.+)", "generic_error"),
     ]
 
     # Solution indicators

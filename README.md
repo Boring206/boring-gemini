@@ -52,23 +52,33 @@ Trust is built on safety. Boring automatically creates **Git Checkpoints** befor
 
 | | Feature | Description |
 | :--- | :--- | :--- |
-> **Universal Natural Language Router**: You don't need to learn 98 tool names. Just say:
-> *"Review my code for security issues"* or *"Add a Google login feature"* — Boring handles the routing.
+| 🧠 | **Cognitive Router** | No need to learn 100+ tool names. Say *"Check impact of modifying utils.py"* or *"Review my code"* — Boring handles the routing. |
+| 🕵️ | **Hybrid RAG** | Combined Vector + Dependency Graph search. Understands not just *what* code says, but *how* it's used globally. |
+| 🧪 | **Vibe Check** | Gamified health scanning. Calculates a **Vibe Score** and generates a "One-Click Fix Prompt" for the agent. |
+| 🛡️ | **Active Recall** | Automatically learns from error patterns. Recalls past solutions to avoid repeating mistakes across sessions. |
 
 ---
 
 ## 📦 Getting Started
 
-### Quick Install (Smithery)
+### Quick Install (One-Click)
+Designed for Vibe Coders. Setup in < 30 seconds.
 
-```bash
-npx -y @smithery/cli@latest install boring/boring --client gemini-cli
+**Windows (PowerShell):**
+```powershell
+powershell -c "irm https://raw.githubusercontent.com/Boring206/boring-gemini/main/scripts/install.ps1 | iex"
 ```
 
-### Power User Install (pip)
+**Linux / macOS:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/Boring206/boring-gemini/main/scripts/install.sh | bash
+```
+
+### Manual Install (pip)
 
 ```bash
-pip install "boring-aicoding[all]"
+pip install boring-aicoding
+boring wizard
 ```
 
 <details>
@@ -109,6 +119,7 @@ Boring comes bundled with elite tools to boost AI performance:
 - **Security Shadow Mode**: A safety sandbox that intercepts dangerous AI operations.
 
 ---
+
 
 ## 📄 License & Links
 - **License**: [MIT](LICENSE)

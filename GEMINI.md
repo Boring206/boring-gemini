@@ -1,4 +1,4 @@
-# GEMINI.md - Boring for Gemini (V10.31)
+# GEMINI.md - Boring for Gemini (V10.32.2)
 
 ## Project Overview
 
@@ -11,9 +11,11 @@ The system is built entirely in **Python**, using modern CLI frameworks and rich
 - **Intelligent Exit Detection:** The loop automatically terminates when it detects project completion through multiple signals (done signals, task list completion, test saturation).
 - **Safeguards:** Implements rate limiting (to manage API costs), a circuit breaker (to prevent getting stuck in failing loops), and graceful handling of API usage limits.
 - **Live Monitoring:** Provides real-time monitoring of the agent's status, logs, and API call usage via `boring-monitor`.
+- **🆕 Zero-Config Wizard (V10.32):** One-click `boring wizard` to auto-configure MCP for Claude Desktop, Cursor, and VS Code.
 - **🆕 Brain Reflex (V10.31):** Active Recall mechanism that automatically retrieves solutions for known errors from the Brain.
 - **🆕 Safety Net (V10.31):** Autonomous Git Checkpoints (`boring_checkpoint`) allowing the Agent to save/restore state before risky ops.
 - **🆕 Theme-Tips Output (V10.27):** Hierarchical tool output format for better LLM comprehension (+1.13% accuracy).
+- **🆕 PRO-Files (V10.32):** Standard/Lite/Full/Custom profile selection for granular token and feature control.
 - **🆕 PREPAIR Reasoning Cache (V10.27):** Caches pointwise analysis before pairwise comparisons, reducing evaluation bias.
 - **🆕 Dynamic Prompts (V10.27):** MCP prompts with contextual embedding (logs, diffs, code) on-demand.
 - **🆕 Token Economy (V10.26):** ULTRA_LITE profile with 97% token savings via progressive disclosure (`boring_discover` tool).
@@ -35,6 +37,20 @@ The system is built entirely in **Python**, using modern CLI frameworks and rich
 
 ### 1. Installation
 
+**Recommended: One-Click Bootstrapper (Vibe Coder Way)**
+
+Windows (PowerShell):
+```powershell
+./scripts/install.ps1
+```
+
+Linux/macOS:
+```bash
+./scripts/install.sh
+```
+
+**Alternative: Manual pip**
+
 Install Boring as a Python package:
 
 ```bash
@@ -45,8 +61,8 @@ cd boring-gemini
 # Install in development mode
 pip install -e .
 
-# Or install directly
-pip install .
+# Configure Editor
+boring wizard
 ```
 
 This installs the following CLI commands:
@@ -143,6 +159,7 @@ pytest tests/test_core.py
 | Command | Description |
 |---------|-------------|
 | `boring start` | Start the autonomous development loop |
+| `boring wizard` | **(New)** Zero-Config Setup Wizard for MCP |
 | `boring status` | Show current loop status |
 | `boring circuit-status` | Show circuit breaker state |
 | `boring reset-circuit` | Reset circuit breaker to CLOSED |
