@@ -1,9 +1,12 @@
 from unittest.mock import MagicMock, patch
+
 import pytest
+
 from boring.mcp.http import MCP_SERVER_CARD, _get_tools_robust, create_app
 
 # Skip all tests in this module if starlette is not installed
 pytest.importorskip("starlette")
+
 
 class TestMCPHttp:
     """Test suite for MCP HTTP/SSE server."""

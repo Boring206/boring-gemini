@@ -1,10 +1,12 @@
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
+
 import pytest
 
 # Try to import FastAPI/TestClient, but don't fail if missing (skip instead)
 try:
     from fastapi.testclient import TestClient
+
     from boring.services.web_monitor import (
         FASTAPI_AVAILABLE,
         create_monitor_app,
@@ -12,11 +14,14 @@ try:
 except ImportError:
     TestClient = None
     FASTAPI_AVAILABLE = False
-    create_monitor_app = lambda x: None
+
+    def create_monitor_app(project_root: Path):
+        return None
+
 
 @pytest.fixture
 def monitor_app(tmp_path):
-    if not FASTAPI_AVAILABLE or create_monitor_app is None:
+    if not FASTAPI_AVAILABLE:
         pytest.skip("FastAPI not installed")
 
     # Setup mock files
@@ -32,11 +37,13 @@ def monitor_app(tmp_path):
         pytest.skip("FastAPI available but app creation failed (likely missing uvicorn)")
     return app
 
+
 @pytest.fixture
 def client(monitor_app):
     if not monitor_app or TestClient is None:
         pytest.skip("Could not create client")
     return TestClient(monitor_app)
+
 
 class TestWebMonitor:
     def test_dashboard_html(self, client):
@@ -74,7 +81,9 @@ class TestWebMonitor:
         p_file.write_text('[{"id": "p1"}, {"id": "p2"}]', encoding="utf-8")
 
         # Setup pending
-        (tmp_path / ".boring_memory" / "pending_ops.json").write_text("[{}, {}, {}]", encoding="utf-8")
+        (tmp_path / ".boring_memory" / "pending_ops.json").write_text(
+            "[{}, {}, {}]", encoding="utf-8"
+        )
 
         # Setup RAG
         (tmp_path / ".boring_memory" / "rag_db").mkdir()
@@ -106,6 +115,7 @@ class TestWebMonitor:
     def test_missing_fastapi(self):
         # Simulate missing dependencies
         from boring.services.web_monitor import create_monitor_app as actual_create
+
         with patch("boring.services.web_monitor.FASTAPI_AVAILABLE", False):
             app = actual_create(Path("/tmp"))
             assert app is None
