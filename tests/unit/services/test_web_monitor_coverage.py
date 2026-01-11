@@ -1,5 +1,5 @@
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -121,10 +121,12 @@ class TestWebMonitor:
             assert app is None
 
     def test_run_server(self, tmp_path):
-        # Mock uvicorn.run to avoid actually starting server
+        # Mock uvicorn and create_monitor_app to avoid actual server start and class calls
         with patch("boring.services.web_monitor.uvicorn") as mock_uvicorn:
-            with patch("boring.services.web_monitor.FASTAPI_AVAILABLE", True):
-                from boring.services.web_monitor import run_web_monitor
+            with patch("boring.services.web_monitor.create_monitor_app") as mock_create:
+                mock_create.return_value = MagicMock()  # Mock app
+                with patch("boring.services.web_monitor.FASTAPI_AVAILABLE", True):
+                    from boring.services.web_monitor import run_web_monitor
 
-                run_web_monitor(tmp_path, port=9999)
-                assert mock_uvicorn.run.called
+                    run_web_monitor(tmp_path, port=9999)
+                    assert mock_uvicorn.run.called
