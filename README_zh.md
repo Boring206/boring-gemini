@@ -63,6 +63,7 @@ Boring 實作了嚴謹的 **「規劃 -> 執行 -> 驗證」** 循環。它不�
 | 🕵️ | **[混合 RAG](docs/features/rag_zh.md)** | 結合向量搜尋與「依賴圖」擴展，深度理解程式碼的底層上下文與調用關係。 |
 | 🧪 | **[Vibe Check](docs/features/quality-gates_zh.md)** | 遊戲化的健康評分系統，一鍵生成讓 AI 代理修復程式碼的「萬能提示詞」。 |
 | 🛡️ | **[Active Recall](docs/features/global-brain_zh.md)** | 自動從錯誤模式中學習。在多個對話 Session 間回憶解決方案，避免重複錯誤。 |
+| 🧬 | **[技能萃取](docs/features/cognitive_zh.md)** | 將重複成功的模式萃取為高階的 **「戰略技能 (Strategic Skills)」**。 |
 
 ---
 
