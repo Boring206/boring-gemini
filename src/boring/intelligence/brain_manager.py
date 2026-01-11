@@ -1267,7 +1267,7 @@ class GlobalKnowledgeStore:
                 "context_trigger": p.get("context", ""),
                 "action_plan": p.get("solution", ""),
                 "success_metrics": p.get("success_count", 0),
-                "compiled_at": datetime.now().isoformat()
+                "compiled_at": datetime.now().isoformat(),
             }
 
             with open(skill_file, "w", encoding="utf-8") as f:
@@ -1277,7 +1277,7 @@ class GlobalKnowledgeStore:
         return {
             "status": "SUCCESS",
             "distilled_count": distilled_count,
-            "message": f"Compiled {distilled_count} patterns into Strategic Skills."
+            "message": f"Compiled {distilled_count} patterns into Strategic Skills.",
         }
 
 

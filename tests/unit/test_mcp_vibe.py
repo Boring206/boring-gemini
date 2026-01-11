@@ -14,11 +14,14 @@ class TestVibeTools:
 
     def test_boring_test_gen_flow(self, mock_mcp, tmp_path):
         tools = {}
+
         def capture_tool(description, **kwargs):
             def wrapper(func):
                 tools[func.__name__] = func
                 return func
+
             return wrapper
+
         mock_mcp.tool = capture_tool
 
         # Explicitly mock the helper that will be used inside the tool
@@ -26,7 +29,9 @@ class TestVibeTools:
         mock_helper = MagicMock(return_value=(tmp_path, None))
         helpers = {"get_project_root_or_error": mock_helper}
         mock_engine = MagicMock()
-        def audited(x): return x
+
+        def audited(x):
+            return x
 
         register_vibe_tools(mock_mcp, audited, helpers, engine=mock_engine)
         test_gen = tools["boring_test_gen"]
@@ -53,17 +58,22 @@ class TestVibeTools:
 
     def test_boring_code_review_flow(self, mock_mcp, tmp_path):
         tools = {}
+
         def capture_tool(description, **kwargs):
             def wrapper(func):
                 tools[func.__name__] = func
                 return func
+
             return wrapper
+
         mock_mcp.tool = capture_tool
 
         mock_helper = MagicMock(return_value=(tmp_path, None))
         helpers = {"get_project_root_or_error": mock_helper}
         mock_engine = MagicMock()
-        def audited(x): return x
+
+        def audited(x):
+            return x
 
         register_vibe_tools(mock_mcp, audited, helpers, engine=mock_engine)
         review = tools["boring_code_review"]
@@ -81,28 +91,34 @@ class TestVibeTools:
     def test_boring_code_review_with_brain(self, mock_mcp, tmp_path, monkeypatch):
         """Test code review with full BrainManager mock integration."""
         tools = {}
+
         def capture_tool(description, **kwargs):
             def wrapper(func):
                 tools[func.__name__] = func
                 return func
+
             return wrapper
+
         mock_mcp.tool = capture_tool
 
         mock_helper = MagicMock(return_value=(tmp_path, None))
         helpers = {"get_project_root_or_error": mock_helper}
         mock_engine = MagicMock()
-        def audited(x): return x
+
+        def audited(x):
+            return x
 
         mock_brain = MagicMock()
         mock_brain.get_relevant_patterns.return_value = [
             {"pattern_type": "code_style", "description": "Good style", "solution": "Follow PEP8"}
         ]
 
-
         # Use dependency injection instead of patching
         mock_brain_factory = MagicMock(return_value=mock_brain)
 
-        all_tools = register_vibe_tools(mock_mcp, audited, helpers, engine=mock_engine, brain_manager_factory=mock_brain_factory)
+        all_tools = register_vibe_tools(
+            mock_mcp, audited, helpers, engine=mock_engine, brain_manager_factory=mock_brain_factory
+        )
         review = all_tools["boring_code_review"]
 
         test_file = tmp_path / "app.py"
@@ -121,12 +137,15 @@ class TestVibeTools:
     def test_boring_code_review_issues_formatting(self, mock_mcp, tmp_path):
         """Test code review formatting with multiple issues."""
         from unittest.mock import patch
+
         mock_mcp.tool = lambda **kwargs: lambda x: x
 
         mock_helper = MagicMock(return_value=(tmp_path, None))
         helpers = {"get_project_root_or_error": mock_helper}
         mock_engine = MagicMock()
-        def audited(x): return x
+
+        def audited(x):
+            return x
 
         mock_issue = MagicMock()
         mock_issue.category = "Style"
@@ -146,9 +165,15 @@ class TestVibeTools:
         test_file.write_text("def hello(): pass", encoding="utf-8")
 
         with patch("boring.mcp.tools.vibe._get_brain_manager", return_value=None):
-            res_min = review_tool(file_path="app.py", verbosity="minimal", project_path=str(tmp_path))
+            res_min = review_tool(
+                file_path="app.py", verbosity="minimal", project_path=str(tmp_path)
+            )
             assert "1 問題" in res_min.get("vibe_summary", "")
 
             # res_std
-            res_std = review_tool(file_path="app.py", verbosity="standard", project_path=str(tmp_path))
-            assert "Bad style" in res_std.get("vibe_summary", "") or "Bad style" in res_std.get("message", "")
+            res_std = review_tool(
+                file_path="app.py", verbosity="standard", project_path=str(tmp_path)
+            )
+            assert "Bad style" in res_std.get("vibe_summary", "") or "Bad style" in res_std.get(
+                "message", ""
+            )

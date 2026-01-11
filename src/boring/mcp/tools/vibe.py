@@ -435,7 +435,9 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         try:
             source = target_file.read_text(encoding="utf-8")
             # 僅專注於 performance
-            result = global_engine.perform_code_review(str(target_file), source, focus="performance")
+            result = global_engine.perform_code_review(
+                str(target_file), source, focus="performance"
+            )
 
             if not result.issues:
                 msg = "⚡ 效能分析完成：未發現明顯瓶頸。"

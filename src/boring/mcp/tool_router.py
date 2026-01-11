@@ -649,16 +649,37 @@ class ToolRouter:
 
         # 1. Complexity keywords (Strong signals)
         complexity_keywords = [
-            "refactor", "complex", "architecture", "design", "difficult", "hard",
-            "rewrite", "restructure", "reorganize", "planning", "implement feature",
-            "重構", "複雜", "架構", "設計", "困難", "難", "重寫", "規劃", "部署", "實作"
+            "refactor",
+            "complex",
+            "architecture",
+            "design",
+            "difficult",
+            "hard",
+            "rewrite",
+            "restructure",
+            "reorganize",
+            "planning",
+            "implement feature",
+            "重構",
+            "複雜",
+            "架構",
+            "設計",
+            "困難",
+            "難",
+            "重寫",
+            "規劃",
+            "部署",
+            "實作",
         ]
         for kw in complexity_keywords:
             if kw in query_lower:
                 score += 0.3
 
         # 2. Sequential/Critical thinking triggers
-        if any(kw in query_lower for kw in ["think", "reason", "analyze", "why", "一步步", "為什麼", "分析"]):
+        if any(
+            kw in query_lower
+            for kw in ["think", "reason", "analyze", "why", "一步步", "為什麼", "分析"]
+        ):
             score += 0.2
 
         # 3. Code density signals (multiple potential file mentions)
