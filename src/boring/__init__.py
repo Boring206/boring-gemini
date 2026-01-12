@@ -1,12 +1,11 @@
 """
 Boring for Gemini - AI Coding Assistant
 
-V11.2.9 "Brain Map Evolution" (Stabilized)
-- **Dashboard**: Integrated Global MCP Brain patterns into the Brain Map.
-- **Dashboard**: Optimized empty state with auto-learning guidance.
-- **Architectural Standardization**: All core tools now return `BoringResult` (TypedDict) for reliable agentic integration.
-- **SQLite Brain**: Migrated persistent knowledge to SQLite for scalability and ACID compliance.
-- **Reflex Stability**: High-precision error analysis and Brain-driven automated fixes.
+V11.2.10 "One Dragon Evolution":
+- **One Dragon Engine**: New `boring_flow` MCP tool enabling AI to drive the entire SDLC via code.
+- **Headless Flow**: Refactored FlowEngine to support non-interactive, AI-driven execution.
+- **Auto-Alignment**: Improved Vibe Session alignment logic for better ambiguity resolution.
+
 
 V11.1.0 "Turbo Mode & Wizard Upgrade":
 
@@ -73,7 +72,7 @@ Backward compatibility is maintained - old import paths still work.
 import importlib
 from typing import TYPE_CHECKING
 
-__version__ = "11.2.9"
+__version__ = "11.2.10"
 
 # =============================================================================
 # Lazy Loading Configuration

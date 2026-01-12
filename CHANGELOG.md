@@ -1,3 +1,9 @@
+## [11.2.10] - 2026-01-13
+### 🚀 Major Features
+- **One Dragon Engine**: Released `boring_flow` MCP tool, enabling AI Agents (Cursor/Gemini) to fully drive the project lifecycle.
+- **Headless FlowEngine**: Refactored the core engine to support non-interactive execution, allowing seamless integration with MCP.
+- **Auto-Alignment**: Enhanced Vibe Session to handle vague instructions ("Make it pretty") by automatically resolving ambiguity via LLM.
+
 ## [11.2.9] - 2026-01-12
 ### 🚀 Major Features
 - **Brain Map Evolution**: 

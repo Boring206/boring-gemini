@@ -192,8 +192,10 @@ def run_server():
     register_assistant_tools(instance.mcp, audited, helpers)
     # knowledge tools registered via import side-effect (top-level)
 
-    # 3. Register V10 Tools (RAG, Multi-Agent, Shadow Mode)
     register_v10_tools(instance.mcp, audited, helpers)
+
+    # 3.5 [ONE DRAGON] Register Flow Tool
+    import boring.mcp.tools.flow_tool  # noqa: F401
 
     # 4. Register Advanced Tools (Security, Transactions, Background, Context)
     register_advanced_tools(instance.mcp)
