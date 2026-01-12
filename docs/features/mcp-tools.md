@@ -157,7 +157,7 @@ boring_verify(
 
 ---
 
-### 6. RAG Memory (`boring_rag_search`)
+### 6. RAG Memory (`boring_rag_search`) {: #boring_rag_search }
 
 Semantic code search with hybrid Vector + Keyword matching.
 
@@ -341,4 +341,5 @@ Enable via `.boring.toml` or env `BORING_MCP_PROFILE=lite`.
 
 - [Shadow Mode](./shadow-mode.md) - Security details
 - [Quality Gates](./quality-gates.md) - CI/CD integration
-- [Tool Reference (Appendix A)](../APPENDIX_A_TOOL_REFERENCE.md) - Complete API reference
+- [Tool Reference- [Appendix A: Tool Reference](../reference/APPENDIX_A_TOOL_REFERENCE.md)
+ - Complete API reference

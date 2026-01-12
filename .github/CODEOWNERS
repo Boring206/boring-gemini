@@ -3,54 +3,125 @@
 # Code owners are automatically requested for review when someone opens a pull request.
 #
 # More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# ============================================================================
+# 🤝 SEEKING DOMAIN EXPERTS - See MAINTAINERS.md
+# ============================================================================
+# We're actively looking for maintainers in specific areas.
+# If you're interested, please submit a Maintainer Application:
+# https://github.com/Boring206/boring-gemini/issues/new?template=maintainer_application.yml
+# ============================================================================
 
 # Default owners for everything in the repo
 * @Boring206
 
-# Core modules
-/src/boring/core.py @Boring206
-/src/boring/gemini_client.py @Boring206
+# ==============================================================================
+# Core Architecture (Requires Core Maintainer approval)
+# ==============================================================================
+/src/boring/core/ @Boring206
 /src/boring/config.py @Boring206
+/src/boring/interfaces.py @Boring206
 
-# Agent system
-/src/boring/agents/ @Boring206
-/src/boring/loop/ @Boring206
-
-# MCP server
+# ==============================================================================
+# 🔌 MCP Protocol (Seeking: Domain Expert)
+# ==============================================================================
+# Skills needed: FastMCP, Tool Design, Protocol Extension
 /src/boring/mcp/ @Boring206
+# Future: /src/boring/mcp/ @Boring206 @mcp-expert
 
-# RAG and memory
+# ==============================================================================
+# 🔍 RAG & Vector Memory (Seeking: Domain Expert)
+# ==============================================================================
+# Skills needed: ChromaDB, Embedding Models, Semantic Search
 /src/boring/rag/ @Boring206
 /src/boring/vector_memory.py @Boring206
 /src/boring/memory.py @Boring206
+/src/boring/intelligence/vector_memory.py @Boring206
+# Future: /src/boring/rag/ @Boring206 @rag-expert
 
-# Vibe coder and intelligence
-/src/boring/vibe/ @Boring206
+# ==============================================================================
+# 🤖 LLM Integration (Seeking: Domain Expert)
+# ==============================================================================
+# Skills needed: Gemini SDK, Ollama, OpenAI API, Claude
+/src/boring/llm/ @Boring206
+/src/boring/gemini_client.py @Boring206
+/src/boring/cli_client.py @Boring206
+# Future: /src/boring/llm/ @Boring206 @llm-expert
+
+# ==============================================================================
+# 🧠 Intelligence & Brain (Seeking: Domain Expert)
+# ==============================================================================
+# Skills needed: Pattern Mining, Machine Learning, SQLite
 /src/boring/intelligence/ @Boring206
+/src/boring/brain_manager.py @Boring206
+# Future: /src/boring/intelligence/ @Boring206 @ai-expert
 
-# Security and verification
-/src/boring/security.py @Boring206
+# ==============================================================================
+# 🎮 Vibe Coder (Seeking: Domain Expert)
+# ==============================================================================
+# Skills needed: UX Design, Gamification, Code Review
+/src/boring/vibe/ @Boring206
+# Future: /src/boring/vibe/ @Boring206 @vibe-expert
+
+# ==============================================================================
+# 🔄 Workflow & Agents
+# ==============================================================================
+/src/boring/agents/ @Boring206
+/src/boring/loop/ @Boring206
 /src/boring/shadow_mode.py @Boring206
-/src/boring/verification/ @Boring206
+/src/boring/workflow_manager.py @Boring206
 
-# Quality and monitoring
-/src/boring/quality_tracker.py @Boring206
+# ==============================================================================
+# 🛡️ Security (Seeking: Domain Expert)
+# ==============================================================================
+# Skills needed: Bandit, Security Auditing, Vulnerability Assessment
+/src/boring/security.py @Boring206
+/src/boring/verification/ @Boring206
+/src/boring/services/security.py @Boring206
+# Future: /src/boring/security.py @Boring206 @security-expert
+
+# ==============================================================================
+# 📊 Services & Infrastructure
+# ==============================================================================
+/src/boring/services/ @Boring206
 /src/boring/monitor.py @Boring206
 /src/boring/health.py @Boring206
+/src/boring/quality_tracker.py @Boring206
 
-# CI/CD and workflows
+# ==============================================================================
+# 🔧 CLI & Tools
+# ==============================================================================
+/src/boring/cli/ @Boring206
+/src/boring/tools/ @Boring206
+/src/boring/main.py @Boring206
+
+# ==============================================================================
+# 🔧 CI/CD and DevOps
+# ==============================================================================
 /.github/ @Boring206
 /.github/workflows/ @Boring206
+/Dockerfile @Boring206
+/smithery.yaml @Boring206
 
-# Documentation
+# ==============================================================================
+# 📚 Documentation (Seeking: Domain Expert)
+# ==============================================================================
+# Skills needed: Technical Writing, MkDocs, Bilingual (EN/ZH)
 /docs/ @Boring206
 /*.md @Boring206
+/mkdocs.yml @Boring206
+# Future: /docs/ @Boring206 @docs-expert
 
-# Configuration files
+# ==============================================================================
+# ⚙️ Configuration Files
+# ==============================================================================
 /pyproject.toml @Boring206
 /requirements*.txt @Boring206
 /.pre-commit-config.yaml @Boring206
-/Dockerfile @Boring206
 
-# Tests
+# ==============================================================================
+# 🧪 Testing (Seeking: Domain Expert)
+# ==============================================================================
+# Skills needed: Pytest, Coverage, Performance Testing
 /tests/ @Boring206
+# Future: /tests/ @Boring206 @qa-expert

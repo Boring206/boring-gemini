@@ -275,9 +275,20 @@ Boring: Multi-agent workflow complete!
 
 **Done!** Complex feature implemented with AI collaboration.
 
+### Tutorial 5: Architectural Evolution (Deep Thinking) {: #tutorial-5 }
+**Objective**: Refactor a messy codebase with high-level reasoning.
+1. Start Vibe Session: `boring start`
+2. Request Deep Analysis: `Execute "Analyze the overall architecture and suggest improvements using Deep Thinking mode."`
+3. Review Multi-Agent Plan: Boring will present a refined implementation plan based on the analysis.
+
+### Tutorial 6: Security Audit (Critical Thinking) {: #tutorial-6 }
+**Objective**: Identify subtle logic flaws or security risks.
+1. Run Audit: `boring run "Perform a Critical Thinking audit on the authentication logic."`
+2. Follow-up: Use `boring verify --level FULL` to confirm fixes.
+
 ---
 
-## See Also
+## 另請參閱 (See Also)
 
 - [Pro Tips](./pro-tips.md) - Expert tips
 - [Git Hooks](./git-hooks.md) - Local automation

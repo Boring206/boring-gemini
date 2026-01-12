@@ -17,8 +17,11 @@ class TestSessionTools:
         with patch("boring.mcp.tools.session.detect_project_root", return_value=tmp_path):
             with patch("boring.mcp.tools.session.check_rate_limit", return_value=(True, "")):
                 result = boring_session_start(goal="Test goal", project_path=str(tmp_path))
-                assert "Vibe Session 已啟動" in result
-                assert "Phase 1" in result
+                if result["status"] == "error":
+                    print(f"DEBUG: result={result}")
+                assert result["status"] == "success"
+                assert "Vibe Session 已啟動" in result["message"]
+                assert "Phase 1" in result["message"]
 
                 # Verify file created
                 session_dir = tmp_path / ".boring_memory" / "sessions"
@@ -29,7 +32,8 @@ class TestSessionTools:
         with patch("boring.mcp.tools.session.detect_project_root", return_value=tmp_path):
             with patch("boring.mcp.tools.session.check_rate_limit", return_value=(True, "")):
                 result = boring_session_status(project_path=str(tmp_path))
-                assert "沒有任何 Session 記錄" in result
+                assert result["status"] == "success"
+                assert "沒有任何 Session 記錄" in result["message"]
 
     def test_boring_session_flow(self, tmp_path):
         with patch("boring.mcp.tools.session.detect_project_root", return_value=tmp_path):
@@ -39,14 +43,16 @@ class TestSessionTools:
 
                 # 2. Status
                 status = boring_session_status(project_path=str(tmp_path))
-                assert "當前階段: ALIGNMENT" in status
+                assert status["status"] == "success"
+                assert "當前階段: ALIGNMENT" in status["message"]
 
                 # 3. Confirm (Alignment -> Planning)
                 confirm_res = boring_session_confirm(notes="Some notes", project_path=str(tmp_path))
-                assert "Phase 2" in confirm_res
+                assert confirm_res["status"] == "success"
+                assert "Phase 2" in confirm_res["message"]
 
                 status_after = boring_session_status(project_path=str(tmp_path))
-                assert "當前階段: PLANNING" in status_after
+                assert "當前階段: PLANNING" in status_after["message"]
 
     def test_boring_session_pause_resume(self, tmp_path):
         with patch("boring.mcp.tools.session.detect_project_root", return_value=tmp_path):
@@ -54,12 +60,12 @@ class TestSessionTools:
                 start_res = boring_session_start(goal="Pause test", project_path=str(tmp_path))
                 # Extract session ID from the output string using a simple heuristic
                 # **Session ID**: `20240101_120000`
-                session_id = start_res.split("`")[1]
+                session_id = start_res["message"].split("`")[1]
 
                 boring_session_pause(project_path=str(tmp_path))
 
                 status = boring_session_status(project_path=str(tmp_path))
-                assert "當前階段: PAUSED" in status
+                assert "當前階段: PAUSED" in status["message"]
 
                 # Reset simulation and load
                 from boring.mcp.tools.session import _session_managers
@@ -67,10 +73,11 @@ class TestSessionTools:
                 _session_managers.clear()
 
                 load_res = boring_session_load(session_id=session_id, project_path=str(tmp_path))
-                assert "Session 已載入" in load_res
+                assert load_res["status"] == "success"
+                assert "Session 已載入" in load_res["message"]
 
                 status_after = boring_session_status(project_path=str(tmp_path))
-                assert "當前階段: PAUSED" in status_after
+                assert "當前階段: PAUSED" in status_after["message"]
 
     def test_boring_session_auto_toggle(self, tmp_path):
         with patch("boring.mcp.tools.session.detect_project_root", return_value=tmp_path):
@@ -78,10 +85,12 @@ class TestSessionTools:
                 boring_session_start(goal="Auto test", project_path=str(tmp_path))
 
                 auto_res = boring_session_auto(enable=True, project_path=str(tmp_path))
-                assert "自動模式已啟用" in auto_res
+                assert auto_res["status"] == "success"
+                assert "自動模式已啟用" in auto_res["message"]
 
                 status = boring_session_status(project_path=str(tmp_path))
-                assert "自動模式: 開啟" in status
+                assert "自動模式: 開啟" in status["message"]
 
                 manual_res = boring_session_auto(enable=False, project_path=str(tmp_path))
-                assert "手動模式已啟用" in manual_res
+                assert manual_res["status"] == "success"
+                assert "手動模式已啟用" in manual_res["message"]

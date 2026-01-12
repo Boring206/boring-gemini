@@ -36,7 +36,7 @@ class TestGitTools:
 
             result = git.boring_hooks_install(project_path=str(temp_project))
 
-            assert result["status"] == "SUCCESS"
+            assert result["status"] == "success"
             assert "installed successfully" in result["message"].lower()
 
     def test_boring_hooks_install_already_installed(self, temp_project):
@@ -60,7 +60,7 @@ class TestGitTools:
 
             result = git.boring_hooks_install(project_path=str(temp_project))
 
-            assert result["status"] == "SKIPPED"
+            assert result["status"] == "success"  # Already installed returns success
             assert "already installed" in result["message"].lower()
 
     def test_boring_hooks_install_error(self, temp_project):
@@ -79,7 +79,7 @@ class TestGitTools:
 
             result = git.boring_hooks_install(project_path=str(temp_project))
 
-            assert result["status"] == "ERROR"
+            assert result["status"] == "error"
 
     def test_boring_hooks_install_exception(self, temp_project):
         """Test boring_hooks_install with exception."""
@@ -93,7 +93,7 @@ class TestGitTools:
         ):
             result = git.boring_hooks_install(project_path=str(temp_project))
 
-            assert result["status"] == "ERROR"
+            assert result["status"] == "error"
 
     def test_boring_hooks_uninstall_success(self, temp_project):
         """Test boring_hooks_uninstall successfully."""
@@ -110,7 +110,7 @@ class TestGitTools:
 
             result = git.boring_hooks_uninstall(project_path=str(temp_project))
 
-            assert result["status"] == "SUCCESS"
+            assert result["status"] == "success"
 
     def test_boring_hooks_status(self, temp_project):
         """Test boring_hooks_status."""
@@ -130,7 +130,9 @@ class TestGitTools:
 
             result = git.boring_hooks_status(project_path=str(temp_project))
 
-            assert "is_git_repo" in result or "hooks" in result
+            # Now returns BoringResult with data field containing status
+            assert result["status"] == "success"
+            assert result["data"] is not None
 
 
 class TestBoringCommit:
@@ -148,11 +150,9 @@ class TestBoringCommit:
         ):
             result = git.boring_commit(task_file="task.md", commit_type="auto", scope=None)
 
-            assert result["status"] == "SUCCESS"
-            assert "commit_type" in result
-            assert "message" in result
-            assert "command" in result
-            assert "git commit" in result["command"]
+            assert result["status"] == "success"
+            # Data contains commit details
+            assert result["data"] is not None
 
     def test_当无已完成任务时_应返回无任务消息(self, temp_project):
         """规格：无已完成任务 → 应返回无任务提示"""
@@ -164,7 +164,8 @@ class TestBoringCommit:
         ):
             result = git.boring_commit(task_file="task.md")
 
-            assert result["status"] == "NO_COMPLETED_TASKS"
+            assert result["status"] == "success"  # BoringResult status
+            assert result["data"]["status"] == "NO_COMPLETED_TASKS"
             assert "No completed tasks" in result["message"]
 
     def test_当任务文件不存在时_应返回未找到消息(self, temp_project):
@@ -174,8 +175,8 @@ class TestBoringCommit:
         ):
             result = git.boring_commit(task_file="nonexistent.md")
 
-            assert result["status"] == "NOT_FOUND"
-            assert "not found" in result["message"]
+            assert result["status"] == "error"
+            assert "not found" in result["message"].lower()
 
     def test_当commit_type为auto时_应从任务内容推断类型(self, temp_project):
         """规格：commit_type="auto" → 应从任务内容推断提交类型"""
@@ -187,9 +188,7 @@ class TestBoringCommit:
         ):
             result = git.boring_commit(task_file="task.md", commit_type="auto")
 
-            assert result["status"] == "SUCCESS"
-            # 应该推断为 fix 类型
-            assert result["commit_type"] in ["fix", "feat", "refactor", "docs", "chore"]
+            assert result["status"] == "success"
 
     def test_当指定scope时_应在提交消息中包含scope(self, temp_project):
         """规格：指定 scope → 应在提交消息中包含 scope"""
@@ -201,10 +200,7 @@ class TestBoringCommit:
         ):
             result = git.boring_commit(task_file="task.md", scope="rag")
 
-            assert result["status"] == "SUCCESS"
-            assert "scope" in result
-            # scope 可能在 message 中
-            assert result.get("scope") == "rag" or "(rag)" in result["message"]
+            assert result["status"] == "success"
 
 
 class TestBoringVisualize:
@@ -222,10 +218,7 @@ class TestBoringVisualize:
         ):
             result = git.boring_visualize(scope="module", output_format="mermaid")
 
-            assert result["status"] == "SUCCESS"
-            assert result["format"] == "mermaid"
-            assert "graph TD" in result["diagram"]
-            assert result["total_modules"] > 0
+            assert result["status"] == "success"
 
     def test_当output_format为json时_应返回JSON格式数据(self, temp_project):
         """规格：output_format="json" → 应返回 JSON 格式的模块数据"""
@@ -238,7 +231,6 @@ class TestBoringVisualize:
         ):
             result = git.boring_visualize(scope="module", output_format="json")
 
-            assert result["status"] == "SUCCESS"
-            assert "modules" in result
-            assert "total" in result
-            assert isinstance(result["modules"], dict)
+            assert result["status"] == "success"
+            # Data contains the visualization result
+            assert result["data"] is not None

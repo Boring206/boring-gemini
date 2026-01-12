@@ -93,7 +93,7 @@
 ## References
 
 <!-- Links to related resources -->
-- [Related ADR-XXXX](./ADR-XXXX-title.md)
+- [Related- [ADR-XXXX: Title](#)
 - [Issue #XXX](https://github.com/Boring206/boring-gemini/issues/XXX)
 - [External documentation]
 - [Research papers]

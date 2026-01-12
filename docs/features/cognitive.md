@@ -1,4 +1,4 @@
-# Pillar V: Cognitive Evolution (Deep Thinking)
+# Pillar V: Cognitive Evolution (Deep & Critical Thinking)
 
 Boring for Gemini V11.0+ introduces **Cognitive Evolution**, a paradigm shift from simple tool execution to autonomous reasoning and self-optimization. This "Pillar V" architecture enables the agent to think before acting, learn from its own mistakes, and synthesize new capabilities on the fly.
 
@@ -7,7 +7,7 @@ Boring for Gemini V11.0+ introduces **Cognitive Evolution**, a paradigm shift fr
 Inspired by the "Dual Process" theory of cognition, Boring implements a **Talker-Reasoner** architecture:
 
 -   **System 1 (ThinkingState)**: Fast, intuitive tool selection for routine tasks.
--   **System 2 (ReasoningState)**: Triggered automatically when task complexity is high (Score ≥ 0.7). It uses deep thinking frameworks (like Chain of Thought) to decompose problems before making changes.
+-   **System 2 (ReasoningState)**: Triggered automatically for high-complexity tasks. It leverages the **Critical Thinking** loop (Chain of Thought) to verify hypotheses before making changes.
 
 ### Trigger Mechanism: `assess_complexity`
 The `ToolRouter` analyzes your query for:
@@ -103,4 +103,4 @@ A critical evaluation of the Pillar V architecture reveals where the system exce
 ---
 
 ## ⚖️ Final Verdict
-The Cognitive Evolution suite is high-reward but **unsafe for unattended use** without Shadow Mode. V11.2.1 successfully bridges the code-gap, but V12.0 must focus on **Security and Noise Control.**
+The Cognitive Evolution suite is high-reward but **unsafe for unattended use** without Shadow Mode. V11.2.2 successfully bridges the code-gap, but V12.0 must focus on **Security and Noise Control.**

@@ -6,9 +6,11 @@ Exposes RAG functionality as MCP tools for AI agents.
 
 import sys
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated, Any, Optional
 
 from pydantic import Field
+
+from boring.types import BoringResult, create_error_result, create_success_result
 
 # Import error tracking for better diagnostics
 _RAG_IMPORT_ERROR = None
@@ -104,7 +106,7 @@ def get_retriever(project_root: Path) -> Optional[RAGRetriever]:
     return _retrievers[key]
 
 
-def register_rag_tools(mcp, helpers: dict):
+def register_rag_tools(mcp: Any, helpers: dict):
     """
     Register RAG tools with the MCP server.
 
@@ -118,7 +120,7 @@ def register_rag_tools(mcp, helpers: dict):
         description="Reload RAG dependencies after pip install.",
         annotations={"readOnlyHint": False, "idempotentHint": True},
     )
-    def boring_rag_reload() -> dict:
+    def boring_rag_reload() -> BoringResult:
         """
         Attempt to reload RAG dependencies at runtime.
 
@@ -128,7 +130,10 @@ def register_rag_tools(mcp, helpers: dict):
         Returns:
             Status and message indicating success or required actions
         """
-        return reload_rag_dependencies()
+        res = reload_rag_dependencies()
+        if res["status"] == "SUCCESS":
+            return create_success_result(res["message"], data=res)
+        return create_error_result(res["message"], error_details=res.get("hint"))
 
     @mcp.tool(
         description="Index codebase for semantic search.",
@@ -147,7 +152,7 @@ def register_rag_tools(mcp, helpers: dict):
                 description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory. Example: '.' or '/path/to/project'."
             ),
         ] = None,
-    ) -> str:
+    ) -> BoringResult:
         """
         Index the codebase for RAG retrieval.
 
@@ -163,11 +168,11 @@ def register_rag_tools(mcp, helpers: dict):
         """
         project_root, error = get_project_root_or_error(project_path)
         if error:
-            return error.get("message")
+            return create_error_result(error.get("message"))
         retriever = get_retriever(project_root)
         if retriever is None or not retriever.is_available:
             pip_cmd = f"{sys.executable} -m pip install boring-aicoding[vector]"
-            return (
+            return create_error_result(
                 "❌ RAG module not available.\n\n"
                 f"[AUTO-FIX] Run: {pip_cmd}\n\n"
                 "Then run `boring_rag_reload` to enable RAG.\n\n"
@@ -179,7 +184,7 @@ def register_rag_tools(mcp, helpers: dict):
 
         if stats.index_stats:
             idx = stats.index_stats
-            return (
+            msg = (
                 f"✅ RAG Index {'rebuilt' if force else 'ready'}\n\n"
                 f"📊 Statistics:\n"
                 f"- Files indexed: {idx.total_files}\n"
@@ -191,8 +196,13 @@ def register_rag_tools(mcp, helpers: dict):
                 f"- Skipped: {idx.skipped_files}\n\n"
                 f"💡 Project root: {project_root}"
             )
+            return create_success_result(
+                msg, data={"stats": idx.model_dump() if hasattr(idx, "model_dump") else str(idx)}
+            )
 
-        return f"✅ RAG Index ready with {count} chunks for `{project_root}`"
+        return create_success_result(
+            f"✅ RAG Index ready with {count} chunks for `{project_root}`", data={"chunks": count}
+        )
 
     @mcp.tool(
         description="Semantic code search with RAG.",
@@ -241,7 +251,7 @@ def register_rag_tools(mcp, helpers: dict):
                 description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory. Example: '.' or '/path/to/project'."
             ),
         ] = None,
-    ) -> str:
+    ) -> BoringResult:
         """
         Search the codebase using semantic RAG retrieval.
 
@@ -262,11 +272,11 @@ def register_rag_tools(mcp, helpers: dict):
         """
         project_root, error = get_project_root_or_error(project_path)
         if error:
-            return error.get("message")
+            return create_error_result(error.get("message"))
         retriever = get_retriever(project_root)
         if retriever is None or not retriever.is_available:
             pip_cmd = f"{sys.executable} -m pip install boring-aicoding[vector]"
-            return (
+            return create_error_result(
                 "❌ RAG module not available.\n\n"
                 f"[AUTO-FIX] Run: {pip_cmd}\n\n"
                 "Then run `boring_rag_reload` to enable RAG.\n\n"
@@ -277,7 +287,7 @@ def register_rag_tools(mcp, helpers: dict):
         if retriever.collection:
             chunk_count = retriever.collection.count()
             if chunk_count == 0:
-                return (
+                return create_error_result(
                     "❌ RAG index is empty.\n\n"
                     "**Solution:** Run `boring_rag_index` first to index your codebase:\n"
                     "```\n"
@@ -286,7 +296,7 @@ def register_rag_tools(mcp, helpers: dict):
                     "**Tip:** Use `boring_rag_status` to check index health."
                 )
         else:
-            return (
+            return create_error_result(
                 "❌ RAG collection not initialized.\n\n"
                 "**Solution:** Run `boring_rag_index` to create the index."
             )
@@ -304,12 +314,13 @@ def register_rag_tools(mcp, helpers: dict):
         )
 
         if not results:
-            return (
-                f"🔍 No results found for: **{query}**\n\n"
+            return create_success_result(
+                message=f"🔍 No results found for: **{query}**\n\n"
                 f"**Suggestions:**\n"
                 f"- Try a different query\n"
                 f"- Check if code exists in indexed files\n"
-                f"- Run `boring_rag_status` to verify index health"
+                f"- Run `boring_rag_status` to verify index health",
+                data={"query": query, "results_count": 0, "results": []},
             )
 
         # Import verbosity helpers
@@ -318,10 +329,25 @@ def register_rag_tools(mcp, helpers: dict):
         verb_level = get_verbosity(verbosity)
         parts = [f"🔍 Found {len(results)} results for: **{query}**\n"]
 
+        # Prepare structured data for tool consumer
+        structured_results = []
+
         for i, result in enumerate(results, 1):
             chunk = result.chunk
             method = result.retrieval_method.upper()
             score = f"{result.score:.2f}"
+
+            structured_results.append(
+                {
+                    "file": chunk.file_path,
+                    "name": chunk.name,
+                    "line_start": chunk.start_line,
+                    "line_end": chunk.end_line,
+                    "score": result.score,
+                    "type": chunk.chunk_type,
+                    "method": method,
+                }
+            )
 
             if verb_level == Verbosity.MINIMAL:
                 # MINIMAL: Only file path, function name, and score
@@ -345,7 +371,10 @@ def register_rag_tools(mcp, helpers: dict):
         if verb_level == Verbosity.MINIMAL:
             parts.append("\n💡 Use verbosity='standard' or 'verbose' to see code snippets.")
 
-        return "\n".join(parts)
+        return create_success_result(
+            message="\n".join(parts),
+            data={"query": query, "results_count": len(results), "results": structured_results},
+        )
 
     @mcp.tool(
         description="Check RAG index health and statistics.",
@@ -358,7 +387,7 @@ def register_rag_tools(mcp, helpers: dict):
                 description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory. Example: '.' or '/path/to/project'."
             ),
         ] = None,
-    ) -> str:
+    ) -> BoringResult:
         """
         Check RAG index health and provide diagnostic information.
 
@@ -372,7 +401,7 @@ def register_rag_tools(mcp, helpers: dict):
         """
         project_root, error = get_project_root_or_error(project_path)
         if error:
-            return error.get("message")
+            return create_error_result(error.get("message"))
 
         report = []  # Initialize report list
         retriever = get_retriever(project_root)
@@ -383,7 +412,7 @@ def register_rag_tools(mcp, helpers: dict):
             report.append(
                 "\n💡 [AI Action]: Execute the pip install command above, then call boring_rag_reload."
             )
-            return "\n".join(report)
+            return create_error_result("\n".join(report))
 
         report.append("## ✅ ChromaDB Available\n")
 
@@ -421,7 +450,10 @@ def register_rag_tools(mcp, helpers: dict):
         if retriever.persist_dir.exists():
             report.append(f"\n**Persist Directory:** `{retriever.persist_dir}`\n")
 
-        return "\n".join(report)
+        return create_success_result(
+            "\n".join(report),
+            data={"available": True, "chunk_count": chunk_count if retriever.collection else 0},
+        )
 
     @mcp.tool(
         description="Get callers and callees for a function.",
@@ -452,7 +484,7 @@ def register_rag_tools(mcp, helpers: dict):
                 description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory. Example: '.' or '/path/to/project'."
             ),
         ] = None,
-    ) -> str:
+    ) -> BoringResult:
         """
         Get comprehensive context for modifying a specific code location.
 
@@ -472,11 +504,11 @@ def register_rag_tools(mcp, helpers: dict):
         """
         project_root, error = get_project_root_or_error(project_path)
         if error:
-            return error.get("message")
+            return create_error_result(error.get("message"))
         retriever = get_retriever(project_root)
         if retriever is None or not retriever.is_available:
             pip_cmd = f"{sys.executable} -m pip install boring-aicoding[vector]"
-            return (
+            return create_error_result(
                 "❌ RAG module not available.\n\n"
                 f"[AUTO-FIX] Run: {pip_cmd}\n\n"
                 "Then run `boring_rag_reload` to enable RAG.\n\n"
@@ -494,7 +526,9 @@ def register_rag_tools(mcp, helpers: dict):
             chunk = context["target"][0].chunk
             parts.append(f"## 🎯 Target\n```python\n{chunk.content}\n```\n")
         else:
-            return f"❌ Could not find `{function_name or class_name}` in `{file_path}`"
+            return create_error_result(
+                f"❌ Could not find `{function_name or class_name}` in `{file_path}`"
+            )
 
         # Callers (might break)
         if context["callers"]:
@@ -522,7 +556,7 @@ def register_rag_tools(mcp, helpers: dict):
                 c = r.chunk
                 parts.append(f"- `{c.name}` (L{c.start_line}-{c.end_line})\n")
 
-        return "\n".join(parts)
+        return create_success_result("\n".join(parts), data=context)
 
     @mcp.tool(
         description="Expand dependency context for a chunk.",
@@ -547,7 +581,7 @@ def register_rag_tools(mcp, helpers: dict):
                 description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory. Example: '.' or '/path/to/project'."
             ),
         ] = None,
-    ) -> str:
+    ) -> BoringResult:
         """
         Smart expand: Get deeper dependency context for a specific chunk.
 
@@ -564,11 +598,11 @@ def register_rag_tools(mcp, helpers: dict):
         """
         project_root, error = get_project_root_or_error(project_path)
         if error:
-            return error.get("message")
+            return create_error_result(error.get("message"))
         retriever = get_retriever(project_root)
         if retriever is None or not retriever.is_available:
             pip_cmd = f"{sys.executable} -m pip install boring-aicoding[vector]"
-            return (
+            return create_error_result(
                 "❌ RAG module not available.\n\n"
                 f"[AUTO-FIX] Run: {pip_cmd}\n\n"
                 "Then run `boring_rag_reload` to enable RAG.\n\n"
@@ -578,7 +612,9 @@ def register_rag_tools(mcp, helpers: dict):
         results = retriever.smart_expand(chunk_id, depth=depth)
 
         if not results:
-            return f"🔍 No additional context found for chunk {chunk_id}"
+            return create_success_result(
+                f"🔍 No additional context found for chunk {chunk_id}", data={"results": []}
+            )
 
         parts = [f"🔗 Smart Expand: +{len(results)} related chunks (depth={depth})\n"]
 
@@ -589,4 +625,4 @@ def register_rag_tools(mcp, helpers: dict):
                 f"```python\n{chunk.content[:300]}...\n```\n"
             )
 
-        return "\n".join(parts)
+        return create_success_result("\n".join(parts), data={"results_count": len(results)})

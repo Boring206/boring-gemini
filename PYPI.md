@@ -40,9 +40,9 @@ npx -y @smithery/cli@latest install boring/boring --client cursor
 
 ## 🧐 Cognitive Evolution (Pillar V)
 
-V11.2.1 transforms Boring from a simple loop into a **Self-Improving Intelligence System**:
+V11.2.2 transforms Boring from a simple loop into a **Self-Improving Intelligence System**:
 
-- **🧠 System 2 Reasoning**: Automatically engages "Slow Thinking" for complex tasks. It decomposes problems and calculates impacts before touching code.
+- **🧘‍♀️ Deep & Critical Thinking**: Decomposes complex problems using multi-layered reasoning states (System 2).
 - **⚡ Brain Reflex (Active Recall)**: Instantly recalls past debug patterns. No more "searching"—it remembers how you fixed that `AttributeError` last time.
 - **🏆 Skill Compilation**: High-frequency successful patterns are distilled into **Strategic Skills**, making your local agent uniquely expert in your stack.
 - **🛠️ Live Tool Synthesis**: The agent can now **generate its own tools** in Python to solve hyper-specific problems on-the-fly.

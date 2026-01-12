@@ -60,6 +60,18 @@ boring list-plugins
 ```
 
 ---
+ 
+## 🛡️ Security & Safety
+
+Plugins, especially those generated via `boring_synth_tool`, are subject to strict security constraints:
+
+1.  **AST-based Sandbox**: All synthesized tools are validated using a `SynthesizedToolValidator`.
+2.  **Forbidden Operations**: To prevent destructive actions, the sandbox blocks:
+    - **Forbidden Imports**: `os`, `sys`, `subprocess`, `shutil`, `socket`
+    - **Forbidden Functions**: `exec()`, `eval()`, `open()`, `compile()`
+3.  **Shadow Mode Binding**: All plugin executions are monitored by **Shadow Mode** if enabled, providing a secondary defense against unintended file modifications.
+
+---
 
 ## 💡 Best Practices
 

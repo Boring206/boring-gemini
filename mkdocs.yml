@@ -51,7 +51,7 @@ nav:
       - 🧛 影子模式 (Shadow Mode): features/shadow-mode_zh.md
       - 🧠 RAG 知識庫: features/rag_zh.md
       - 🧞‍♂️ Vibe Coder: features/vibe-coder_zh.md
-      - 🛡️ 安全掃描: features/security_zh.md
+      - 🛡️ 安全掃描: reference/security-privacy_zh.md
       - 💎 隱藏寶石: features/hidden-gems_zh.md
       - 🛠️ MCP 工具集: features/mcp-tools_zh.md
       - 📈 效能分析: features/performance_zh.md
@@ -76,6 +76,9 @@ nav:
       - 🧠 Prompt 哲學: reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh.md
       - 🏗️ 系統架構: reference/architecture_zh.md
       - 🤝 貢獻指南: reference/contributing_zh.md
+      - 📊 功能矩陣: reference/feature-matrix.md
+      - 🌱 可持續性策略: reference/sustainability.md
+      - 🤖 LLM 適配器指南: reference/llm-adapters.md
   - 🔌 API 參考:
       - 索引: api/index_zh.md
       - Agents: api/agents_zh.md
@@ -92,6 +95,7 @@ nav:
 
 markdown_extensions:
   - admonition
+  - attr_list
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span

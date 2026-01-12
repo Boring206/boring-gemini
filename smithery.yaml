@@ -1,10 +1,10 @@
 # Smithery Configuration for Boring MCP Server
 # https://smithery.ai/docs/build/project-config
 
-runtime: "container"
+runtime: container
 displayName: "Boring Gemini Agent"
 description: "Boring Vibecoder Assistant: An autonomous AI development loop with System 2 Reasoning, Active Causal Memory, and Live Tool Synthesis. Supports Knowledge Swarm (Git Sync) and Self-Correcting Pipelines."
-version: 11.2.1
+version: 11.2.2
 repository: "https://github.com/Boring206/boring-gemini"
 homepage: "https://github.com/Boring206/boring-gemini"
 documentation: "https://github.com/Boring206/boring-gemini/blob/main/README.md"
@@ -17,6 +17,7 @@ build:
 
 startCommand:
   type: "http"
+  command: "python -m boring.mcp.http"
   configSchema:
     $schema: "http://json-schema.org/draft-07/schema#"
     title: "Boring MCP Server Configuration"
@@ -157,8 +158,6 @@ startCommand:
           
           **Default:** "STANDARD" (balanced quality and speed)
           **Example:** Use "FULL" before production deployments, "SEMANTIC" for critical code reviews
-        default: "STANDARD"
-        enum: ["BASIC", "STANDARD", "FULL", "SEMANTIC"]
         default: "STANDARD"
         enum: ["BASIC", "STANDARD", "FULL", "SEMANTIC"]
         examples: ["STANDARD", "FULL", "SEMANTIC", "BASIC"]

@@ -181,6 +181,6 @@
 
 ## 另請參閱
 
-- [發布說明](../releases/) - 詳細發布說明
-- [功能](../features/) - 功能文檔
+- [發布說明](./v11_zh.md) - 詳細發布說明
+- [功能](../features/cognitive_zh.md) - 功能文檔
 - [MCP 工具](../features/mcp-tools_zh.md) - 工具參考

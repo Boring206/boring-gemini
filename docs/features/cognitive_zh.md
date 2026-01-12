@@ -1,4 +1,4 @@
-# Pillar V: 認知演進 (深度思考)
+# Pillar V: 認知演進 (深度與批判性思考)
 
 Boring for Gemini V11.0+ 引入了 **「認知演進 (Cognitive Evolution)」**，這是一個從單純的工具執行轉向自主推理與自我優化的範式轉變。這種「Pillar V」架構使 Agent 能夠在行動前進行思考、從錯誤中學習，並即時合成新的能力。
 
@@ -7,7 +7,7 @@ Boring for Gemini V11.0+ 引入了 **「認知演進 (Cognitive Evolution)」**�
 受到認知科學「雙程運算 (Dual Process)」理論的啟發，Boring 實作了 **「講者-推理者 (Talker-Reasoner)」** 架構：
 
 -   **系統一 (ThinkingState)**：快速、直覺的工具選擇，用於日常例行工作。
--   **系統二 (ReasoningState)**：當任務複雜度較高 (評分 ≥ 0.7) 時自動觸發。它使用深度思考框架（如思维鏈 Chain of Thought）在進行更改前分解問題。
+-   **系統二 (ReasoningState)**：針對高複雜度任務自動觸發。它整合了 **「批判性思考 (Critical Thinking)」** 循環，在執行更改前先對邏輯進行多輪驗證。
 
 ### 觸發機制：`assess_complexity`
 `ToolRouter` 會分析您的查詢，檢查：
@@ -108,4 +108,4 @@ Boring for Gemini V11.0+ 引入了 **「認知演進 (Cognitive Evolution)」**�
 ---
 
 ## ⚖️ 最終裁定
-認知演進套件是高回報的，但在沒有「影子模式 (Shadow Mode)」和「主動模式萃取」的情況下，**不建議在無人看管的情況下使用**。V11.2.1 成功填補了代碼落差，但上述缺點指出了 V12.0 必須關注的方向：**安全性與雜訊控制**。
+認知演進套件是高回報的，但在沒有「影子模式 (Shadow Mode)」和「主動模式萃取」的情況下，**不建議在無人看管的情況下使用**。V11.2.2 成功填補了代碼落差，但上述缺點指出了 V12.0 必須關注的方向：**安全性與雜訊控制**。

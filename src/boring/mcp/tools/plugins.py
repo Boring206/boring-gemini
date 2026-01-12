@@ -16,7 +16,9 @@ from typing import Annotated, Any, Optional
 
 from pydantic import Field
 
+from ...loop.shadow_mode import SynthesizedToolValidator
 from ...plugins import PluginLoader
+from ...types import BoringResult, create_error_result, create_success_result
 
 # =============================================================================
 # Performance: Cached PluginLoader singleton per project
@@ -69,7 +71,7 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
         include_builtin: Annotated[
             bool, Field(description="Include built-in MCP tools in the list")
         ] = False,
-    ) -> dict:
+    ) -> BoringResult:
         """
         List all registered plugins and optional built-in tools.
 
@@ -125,7 +127,13 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
                 "Tip: Set include_builtin=True to see core tools."
             )
 
-        return response
+        msg = f"Found {len(plugins)} user plugin(s)" if plugins else "No user plugins found"
+        if include_builtin:
+            msg += f" and {len(builtin_tools)} built-in tools."
+        if not plugins and not include_builtin:
+            msg += f"\n\nHint: {response.get('hint', '')}"
+
+        return create_success_result(message=msg, data=response)
 
     @mcp.tool(
         description="執行指定的擴充功能 (Run plugin). 適合: '跑 XXX 外掛', 'Execute plugin', '執行擴充'.",
@@ -147,7 +155,7 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
             Optional[dict],
             Field(description="Optional dictionary of arguments to pass to the plugin."),
         ] = None,
-    ) -> dict:
+    ) -> BoringResult:
         """
         Execute a registered plugin by name.
 
@@ -156,11 +164,14 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
         project_root = _detect_project_root(project_path)
         loader = _get_cached_plugin_loader(project_root)
 
-        plugin_kwargs = args if args else {}
-        return loader.execute_plugin(name, **plugin_kwargs)
-
-        plugin_kwargs = args if args else {}
-        return loader.execute_plugin(name, **plugin_kwargs)
+        try:
+            plugin_kwargs = args if args else {}
+            result = loader.execute_plugin(name, **plugin_kwargs)
+            return create_success_result(
+                message=f"Plugin {name} executed successfully.", data=result
+            )
+        except Exception as e:
+            return create_error_result(message=f"Plugin execution failed: {e}")
 
     @mcp.tool(
         description="合成新工具 (Synthesize Tool). 適合: 'Create tool', 'New plugin', 'Make a tool for X'. V11.0 Live Tool Synthesis.",
@@ -193,7 +204,7 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
             Optional[str],
             Field(description="Optional explicit path to project root."),
         ] = None,
-    ) -> dict:
+    ) -> BoringResult:
         """
         Synthesize a new plugin tool on the fly.
         """
@@ -201,7 +212,15 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
 
         # Security check: Validate name
         if not name.isidentifier():
-            return {"status": "ERROR", "message": "Tool name must be a valid Python identifier."}
+            return create_error_result(message="Tool name must be a valid Python identifier.")
+
+        # Security check: AST Static Analysis
+        violations = SynthesizedToolValidator.validate(code)
+        if violations:
+            return create_error_result(
+                message="Security Violation: Sandbox Policy Rejected Code",
+                data={"violations": violations},
+            )
 
         plugin_dir = project_root / ".boring_plugins"
         if not plugin_dir.exists():
@@ -212,10 +231,9 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
         # Inject boilerplate if missing
         final_code = code
         if "from boring.plugins import plugin" not in code:
-            return {
-                "status": "ERROR",
-                "message": "Code must import 'plugin': `from boring.plugins import plugin`",
-            }
+            return create_error_result(
+                message="Code must import 'plugin': `from boring.plugins import plugin`"
+            )
 
         try:
             # Safety: Backup if exists
@@ -235,24 +253,24 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
 
             # Verify if loaded
             if loader.get_plugin(name):
-                return {
-                    "status": "SUCCESS",
-                    "message": f"✅ Synthesized tool '{name}' successfully.",
-                    "path": str(file_path),
-                    "vibe_summary": f"🧪 **Tool Synthesized**\n"
-                    f"- Name: `{name}`\n"
-                    f"- Status: Active (Hot-reloaded)\n"
-                    f"- Path: `{file_path.name}`",
-                }
+                return create_success_result(
+                    message=f"✅ Synthesized tool '{name}' successfully.\nPath: {file_path}",
+                    data={
+                        "path": str(file_path),
+                        "vibe_summary": f"🧪 **Tool Synthesized**\n"
+                        f"- Name: `{name}`\n"
+                        f"- Status: Active (Hot-reloaded)\n"
+                        f"- Path: `{file_path.name}`",
+                    },
+                )
             else:
-                return {
-                    "status": "WARNING",
-                    "message": f"File wrote to {file_path}, but loader did not pick it up.",
-                    "debug_updated": updated,
-                }
+                return create_success_result(
+                    message=f"⚠️ Tool synthesized but not loaded. Path: {file_path}",
+                    data={"debug_updated": updated},
+                )
 
         except Exception as e:
-            return {"status": "ERROR", "message": str(e)}
+            return create_error_result(message=f"Synthesis failed: {e}")
 
     @mcp.tool(
         description="重新載入所有擴充功能 (Reload plugins). 適合: '重載外掛', 'Reload plugins', '更新擴充'.",
@@ -263,7 +281,7 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
         project_path: Annotated[
             Optional[str], Field(description="Path to project root (default: current directory)")
         ] = None,
-    ) -> dict:
+    ) -> BoringResult:
         """
         Reload plugins that have changed on disk.
 
@@ -277,10 +295,9 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
         loader = _get_cached_plugin_loader(project_root)
         updated = loader.check_for_updates()
 
-        return {
-            "status": "SUCCESS",
-            "reloaded": updated,
-            "message": f"Reloaded {len(updated)} plugins" if updated else "No updates",
-        }
+        return create_success_result(
+            message=f"Reloaded {len(updated)} plugins" if updated else "No updates",
+            data={"reloaded": updated},
+        )
 
     return 4  # Number of tools registered

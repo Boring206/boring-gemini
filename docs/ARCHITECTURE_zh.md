@@ -1,7 +1,7 @@
 # Boring for Gemini - 完整架構說明 (中文版)
 
-> **版本**: V10.26.0  
-> **更新日期**: 2026-01-09
+> **版本**: V11.2.2  
+> **更新日期**: 2026-01-12
 
 ---
 
@@ -21,10 +21,10 @@
     └───────┬───────┘ └───────┬───────┘ └───────┬───────┘ └───────┬───────┘
             │                 │                 │                 │
      ┌──────┴──────┐   ┌──────┴──────┐   ┌──────┴──────┐   ┌──────┴──────┐
-     │ • RAG       │   │ • Judge     │   │ • Agent     │   │ • MCP Server│
-     │ • Brain     │   │ • Verify    │   │ • Shadow    │   │ • Router    │
-     │ • Predict   │   │ • Security  │   │ • Session   │   │ • Plugin    │
-     │ • Context   │   │ • Vibe      │   │ • Git       │   │ • Workspace │
+     │ • SQLite Brain  │   │ • Judge     │   │ • Agent     │   │ • MCP Server│
+     │ • Brain Map   │   │ • Verify    │   │ • Shadow    │   │ • Router    │
+     │ • Predict     │   │ • Security  │   │ • Session   │   │ • Plugin    │
+     │ • Context     │   │ • Vibe      │   │ • Git       │   │ • Workspace │
      └─────────────┘   └─────────────┘   └─────────────┘   └─────────────┘
 ```
 
@@ -46,9 +46,9 @@
 │  │  語義搜尋    │   │  記憶學習   │   │   錯誤預測   │   │  上下文管理  │     │
 │  └──────┬──────┘   └──────┬──────┘   └──────┬──────┘   └──────┬──────┘     │
 │         │                 │                 │                 │            │
-│  • rag_search      • learn          • predict_errors  • context           │
-│  • rag_index       • recall         • predict_impact  • optimize_context  │
-│  • rag_status      • forget         • risk_areas      • cache_insights    │
+│  • rag_search      • SQLite Storage • predict_errors  • context           │
+│  • rag_index       • Active Recall  • predict_impact  • optimize_context  │
+│  • rag_status      • Brain Map      • risk_areas      • cache_insights    │
 │                    • brain_stats    • health_score                        │
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -56,10 +56,10 @@
 
 | 模組 | 功能描述 | 核心工具 |
 |------|----------|----------|
-| **RAG** | 向量化搜尋程式碼，語義理解 | `boring_rag_search`, `boring_rag_index` |
-| **Brain** | 學習專案模式，累積經驗 | `boring_learn`, `boring_recall`, `boring_forget` |
-| **Predict** | 預測錯誤和修改影響 | `boring_predict_errors`, `boring_predict_impact` |
-| **Context** | 智能壓縮上下文，節省 Token | `boring_context`, `boring_optimize_context` |
+| **RAG** | 語義搜尋代碼庫 | `boring_rag_search`, `boring_rag_index` |
+| **Brain** | 學習專案模式 (SQLite) | `boring_learn`, `boring_recall`, `boring_forget` |
+| **Predict** | 預測錯誤和影響 | `boring_predict_errors`, `boring_predict_impact` |
+| **Context** | 智能上下文管理 | `boring_context`, `boring_optimize_context` |
 
 ---
 
@@ -142,10 +142,10 @@
 │  │   服務核心   │   │  自然語言路由 │   │   擴充系統   │   │   專案管理   │     │
 │  └──────┬──────┘   └──────┬──────┘   └──────┬──────┘   └──────┬──────┘     │
 │         │                 │                 │                 │            │
-│  • boring_help     • boring()       • list_plugins    • workspace_add     │
-│  • mcp_server      • profile_set    • run_plugin      • workspace_list    │
-│  • prompts         • profile_get    • reload_plugins  • workspace_switch  │
-│  • resources                                          • workspace_remove  │
+│  • boring_help     • boring()       • list_plugins    • Lazy Init         │
+│  • mcp_server      • profile_set    • run_plugin      • workspace_add     │
+│  • prompts         • profile_get    • reload_plugins  • Dashboard (Vis.js)│
+│  • resources                                          • Lightweight Mode  │
 │                                                                              │
 │  ┌─────────────┐   ┌─────────────┐                                          │
 │  │   SpecKit   │   │  Discovery  │                                          │
@@ -161,10 +161,10 @@
 
 | 模組 | 功能描述 | 核心工具 |
 |------|----------|----------|
-| **MCP Server** | FastMCP 服務核心 | `boring_help`, Prompts, Resources |
-| **Tool Router** | 自然語言路由到具體工具 | `boring()` (萬用入口) |
-| **Plugin** | 自定義擴充功能 | `boring_list_plugins`, `boring_run_plugin` |
-| **Workspace** | 多專案管理 | `boring_workspace_add`, `boring_workspace_switch` |
+| **MCP Server** | 服務核心 | `boring_help`, Prompts, Resources |
+| **Tool Router** | 自然語言路由 | `boring()` (萬用入口) |
+| **Plugin** | 擴充系統 | `boring_list_plugins`, `boring_run_plugin` |
+| **Workspace** | 專案管理 | `Lazy Init` (Lightweight Mode), Dashboard (Vis.js) |
 | **SpecKit** | 規格驅動開發 | `boring_speckit_plan`, `boring_speckit_checklist` |
 
 ---
@@ -305,3 +305,23 @@ boring_commit         # 智能提交
 `pip install boring-aicoding` | [GitHub](https://github.com/Boring206/boring-gemini) | [PyPI](https://pypi.org/project/boring-aicoding/)
 
 </div>
+
+## 🛡️ 安全架構 (Security Architecture)
+
+Boring V11.2 實作了全面的「深度防禦」策略：
+
+### 1. 影子模式 (Shadow Mode - 執行期守衛)
+- **角色**：封鎖主動破壞性操作（檔案/程序/網絡）。
+- **控制**：使用者可配置等級 (`DISABLED`, `ENABLED` (預設), `STRICT`)。
+- **機制**：攔截 `boring_` 工具呼叫，並檢查是否包含敏感模式（金鑰、系統配置）。
+
+### 2. 即時工具沙箱 (Synthesized Tool Sandbox - 驗證器)
+- **角色**：防止在合成工具 (`boring_synth_tool`) 中注入惡意代碼。
+- **機制**：基於 AST 的靜態分析 (`SynthesizedToolValidator`)。
+- **策略**：
+    - **禁止導入**：`os`, `sys`, `subprocess`, `shutil`, `socket`
+    - **禁止函數**：`exec()`, `eval()`, `open()`, `compile()`
+
+### 3. 安全檢查點 (Checkpoints - 狀態安全)
+- **角色**：在執行高風險操作前自動進行 Git 提交 (`boring_checkpoint`)。
+- **恢復**：透過 `git reset` 實現一鍵回滾。

@@ -92,23 +92,28 @@ class TestRAGTools:
         try:
             # 1. Index
             res = tools["boring_rag_index"](force=True)
-            assert "10" in res
+            assert res["status"] == "success"
+            assert "10" in res["message"]
 
             # 2. Search
             res = tools["boring_rag_search"](query="test")
-            assert "No results found" in res
+            assert res["status"] == "success"
+            assert "No results found" in res["message"]
 
             # 3. Status
             res = tools["boring_rag_status"]()
-            assert "100" in str(res)
+            assert res["status"] == "success"
+            assert "100" in str(res["message"])
 
             # 4. Context
             res = tools["boring_rag_context"](file_path="test.py", function_name="test_func")
-            assert "Context for" in res
-            assert "Target" in res
+            assert res["status"] == "success"
+            assert "Context for" in res["message"]
+            assert "Target" in res["message"]
 
             # 5. Expand
             res = tools["boring_rag_expand"](chunk_id="c1")
-            assert "No additional context" in res
+            assert res["status"] == "success"
+            assert "No additional context" in res["message"]
         finally:
             rag_mod.get_retriever = old_gr

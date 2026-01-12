@@ -152,17 +152,17 @@ class TestTokenOptimization:
         ):
             # 1. MINIMAL
             result_min = boring_perf_tips("api.py", verbosity="minimal")
-            assert "vibe_summary" in result_min
-            assert "10 效能問題" in result_min["vibe_summary"]
+            # assert "vibe_summary" in result_min["data"]
+            assert "10 效能問題" in result_min["message"]
 
             # 2. STANDARD
             result_std = boring_perf_tips("api.py", verbosity="standard")
-            assert "vibe_summary" in result_std
-            summary = result_std["vibe_summary"]
+            # assert "vibe_summary" in result_std
+            summary = result_std["message"]
             assert "🐌" in summary or "⚡" in summary
             assert "... and 5 more issues" in summary
 
             # 3. VERBOSE
             result_verb = boring_perf_tips("api.py", verbosity="verbose")
-            assert "tips" in result_verb
-            assert len(result_verb["tips"]) == 10
+            assert "tips" in result_verb["data"]
+            assert len(result_verb["data"]["tips"]) == 10

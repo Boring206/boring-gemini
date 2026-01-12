@@ -32,6 +32,7 @@ from typing import Annotated, Optional
 from pydantic import Field as PydanticField
 
 from ...audit import audited
+from ...types import BoringResult, create_error_result, create_success_result
 from ..instance import MCP_AVAILABLE, mcp
 from ..utils import check_rate_limit, detect_project_root
 
@@ -231,7 +232,7 @@ def boring_session_start(
         ),
     ] = "production",
     project_path: Annotated[str, PydanticField(description="專案路徑（選填）")] = None,
-) -> str:
+) -> BoringResult:
     """
     🎯 啟動 Vibe Session - 完整的 AI 協作流程。
 
@@ -246,11 +247,11 @@ def boring_session_start(
     """
     allowed, msg = check_rate_limit("boring_session_start")
     if not allowed:
-        return f"⏱️ Rate limited: {msg}"
+        return create_error_result(f"⏱️ Rate limited: {msg}")
 
     project_root = detect_project_root(project_path)
     if not project_root:
-        return "❌ 找不到有效的 Boring 專案。請在專案根目錄執行。"
+        return create_error_result("❌ 找不到有效的 Boring 專案。請在專案根目錄執行。")
 
     try:
         manager = get_session_manager(project_root)
@@ -261,7 +262,7 @@ def boring_session_start(
         # Phase 1 prompt
         goal_display = f"**目標**: {goal}" if goal else "**目標**: 待確認"
 
-        return f"""# 🎯 Vibe Session 已啟動
+        msg_content = f"""# 🎯 Vibe Session 已啟動
 
 **Session ID**: `{session.session_id}`
 {goal_display}
@@ -302,16 +303,17 @@ def boring_session_start(
 - `調整目標 XXX` - 修改目標
 - `取消` - 取消此 Session
 """
+        return create_success_result(message=msg_content, data=session.to_dict())
     except Exception as e:
         logger.error(f"Failed to start session: {e}")
-        return f"❌ 啟動 Session 失敗: {str(e)}"
+        return create_error_result(f"❌ 啟動 Session 失敗: {str(e)}")
 
 
 @audited
 def boring_session_confirm(
     notes: Annotated[str, PydanticField(description="補充說明或確認訊息")] = "",
     project_path: Annotated[str, PydanticField(description="專案路徑（選填）")] = None,
-) -> str:
+) -> BoringResult:
     """
     ✅ 確認當前階段並進入下一階段。
 
@@ -320,18 +322,18 @@ def boring_session_confirm(
     """
     allowed, msg = check_rate_limit("boring_session_confirm")
     if not allowed:
-        return f"⏱️ Rate limited: {msg}"
+        return create_error_result(f"⏱️ Rate limited: {msg}")
 
     project_root = detect_project_root(project_path)
     if not project_root:
-        return "❌ 找不到有效的 Boring 專案。"
+        return create_error_result("❌ 找不到有效的 Boring 專案。")
 
     try:
         manager = get_session_manager(project_root)
         session = manager.get_current_session()
 
         if not session:
-            return "❌ 沒有進行中的 Session。請先執行 `boring_session_start`。"
+            return create_error_result("❌ 沒有進行中的 Session。請先執行 `boring_session_start`。")
 
         current_phase = session.phase
 
@@ -347,25 +349,27 @@ def boring_session_confirm(
 
         # Return appropriate prompt for new phase
         if session.phase == SessionPhase.PLANNING:
-            return _get_planning_prompt(session)
+            prompt = _get_planning_prompt(session)
         elif session.phase == SessionPhase.IMPLEMENTATION:
-            return _get_implementation_prompt(session)
+            prompt = _get_implementation_prompt(session)
         elif session.phase == SessionPhase.VERIFICATION:
-            return _get_verification_prompt(session)
+            prompt = _get_verification_prompt(session)
         elif session.phase == SessionPhase.COMPLETED:
-            return _get_completion_prompt(session)
+            prompt = _get_completion_prompt(session)
         else:
-            return f"✅ 已確認。當前階段: {session.phase.value}"
+            prompt = f"✅ 已確認。當前階段: {session.phase.value}"
+
+        return create_success_result(message=prompt, data=session.to_dict())
 
     except Exception as e:
         logger.error(f"Failed to confirm session: {e}")
-        return f"❌ 確認失敗: {str(e)}"
+        return create_error_result(f"❌ 確認失敗: {str(e)}")
 
 
 @audited
 def boring_session_status(
     project_path: Annotated[str, PydanticField(description="專案路徑（選填）")] = None,
-) -> str:
+) -> BoringResult:
     """
     📊 查看當前 Vibe Session 狀態。
 
@@ -374,11 +378,11 @@ def boring_session_status(
     """
     allowed, msg = check_rate_limit("boring_session_status")
     if not allowed:
-        return f"⏱️ Rate limited: {msg}"
+        return create_error_result(f"⏱️ Rate limited: {msg}")
 
     project_root = detect_project_root(project_path)
     if not project_root:
-        return "❌ 找不到有效的 Boring 專案。"
+        return create_error_result("❌ 找不到有效的 Boring 專案。")
 
     try:
         manager = get_session_manager(project_root)
@@ -388,12 +392,15 @@ def boring_session_status(
             # List available sessions
             sessions = manager.list_sessions()
             if not sessions:
-                return "📭 沒有任何 Session 記錄。使用 `boring_session_start` 開始新的 Session。"
+                return create_success_result(
+                    "📭 沒有任何 Session 記錄。使用 `boring_session_start` 開始新的 Session。",
+                    data={"sessions": []},
+                )
 
             session_list = "\n".join(
                 [f"  • `{s['session_id']}` - {s['goal']} ({s['phase']})" for s in sessions[:5]]
             )
-            return f"""# 📊 Vibe Session 列表
+            msg_content = f"""# 📊 Vibe Session 列表
 
 最近的 Sessions:
 {session_list}
@@ -401,6 +408,7 @@ def boring_session_status(
 使用 `boring_session_load(session_id='...')` 載入特定 Session。
 或使用 `boring_session_start` 開始新的 Session。
 """
+            return create_success_result(message=msg_content, data={"sessions": sessions})
 
         # Calculate progress
         phase_progress = {
@@ -430,7 +438,7 @@ def boring_session_status(
             SessionPhase.PAUSED: "⏸️",
         }
 
-        return f"""# 📊 Vibe Session 狀態
+        msg_content = f"""# 📊 Vibe Session 狀態
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -455,17 +463,18 @@ def boring_session_status(
 - `boring_session_pause` - 暫停 Session
 - `boring_session_auto(enable=True)` - 開啟自動模式
 """
+        return create_success_result(message=msg_content, data=session.to_dict())
 
     except Exception as e:
         logger.error(f"Failed to get session status: {e}")
-        return f"❌ 取得狀態失敗: {str(e)}"
+        return create_error_result(f"❌ 取得狀態失敗: {str(e)}")
 
 
 @audited
 def boring_session_load(
     session_id: Annotated[str, PydanticField(description="要載入的 Session ID")],
     project_path: Annotated[str, PydanticField(description="專案路徑（選填）")] = None,
-) -> str:
+) -> BoringResult:
     """
     📂 載入之前的 Vibe Session。
 
@@ -474,20 +483,20 @@ def boring_session_load(
     """
     allowed, msg = check_rate_limit("boring_session_load")
     if not allowed:
-        return f"⏱️ Rate limited: {msg}"
+        return create_error_result(f"⏱️ Rate limited: {msg}")
 
     project_root = detect_project_root(project_path)
     if not project_root:
-        return "❌ 找不到有效的 Boring 專案。"
+        return create_error_result("❌ 找不到有效的 Boring 專案。")
 
     try:
         manager = get_session_manager(project_root)
         session = manager.load_session(session_id)
 
         if not session:
-            return f"❌ 找不到 Session: {session_id}"
+            return create_error_result(f"❌ 找不到 Session: {session_id}")
 
-        return f"""# 📂 Session 已載入
+        msg_content = f"""# 📂 Session 已載入
 
 **Session ID**: `{session.session_id}`
 **目標**: {session.goal}
@@ -499,16 +508,17 @@ def boring_session_load(
 使用 `boring_session_status` 查看詳細狀態。
 使用 `boring_session_confirm` 繼續下一步。
 """
+        return create_success_result(message=msg_content, data=session.to_dict())
 
     except Exception as e:
         logger.error(f"Failed to load session: {e}")
-        return f"❌ 載入失敗: {str(e)}"
+        return create_error_result(f"❌ 載入失敗: {str(e)}")
 
 
 @audited
 def boring_session_pause(
     project_path: Annotated[str, PydanticField(description="專案路徑（選填）")] = None,
-) -> str:
+) -> BoringResult:
     """
     ⏸️ 暫停當前 Vibe Session。
 
@@ -517,24 +527,24 @@ def boring_session_pause(
     """
     allowed, msg = check_rate_limit("boring_session_pause")
     if not allowed:
-        return f"⏱️ Rate limited: {msg}"
+        return create_error_result(f"⏱️ Rate limited: {msg}")
 
     project_root = detect_project_root(project_path)
     if not project_root:
-        return "❌ 找不到有效的 Boring 專案。"
+        return create_error_result("❌ 找不到有效的 Boring 專案。")
 
     try:
         manager = get_session_manager(project_root)
         session = manager.get_current_session()
 
         if not session:
-            return "❌ 沒有進行中的 Session。"
+            return create_error_result("❌ 沒有進行中的 Session。")
 
         previous_phase = session.phase
         session.phase = SessionPhase.PAUSED
         manager.save_session(session)
 
-        return f"""# ⏸️ Session 已暫停
+        msg_content = f"""# ⏸️ Session 已暫停
 
 **Session ID**: `{session.session_id}`
 **暫停前階段**: {previous_phase.value}
@@ -544,17 +554,18 @@ def boring_session_pause(
 boring_session_load(session_id='{session.session_id}')
 ```
 """
+        return create_success_result(message=msg_content, data=session.to_dict())
 
     except Exception as e:
         logger.error(f"Failed to pause session: {e}")
-        return f"❌ 暫停失敗: {str(e)}"
+        return create_error_result(f"❌ 暫停失敗: {str(e)}")
 
 
 @audited
 def boring_session_auto(
     enable: Annotated[bool, PydanticField(description="是否啟用自動模式")] = True,
     project_path: Annotated[str, PydanticField(description="專案路徑（選填）")] = None,
-) -> str:
+) -> BoringResult:
     """
     🤖 切換自動模式 - 自動確認並執行所有步驟。
 
@@ -563,24 +574,24 @@ def boring_session_auto(
     """
     allowed, msg = check_rate_limit("boring_session_auto")
     if not allowed:
-        return f"⏱️ Rate limited: {msg}"
+        return create_error_result(f"⏱️ Rate limited: {msg}")
 
     project_root = detect_project_root(project_path)
     if not project_root:
-        return "❌ 找不到有效的 Boring 專案。"
+        return create_error_result("❌ 找不到有效的 Boring 專案。")
 
     try:
         manager = get_session_manager(project_root)
         session = manager.get_current_session()
 
         if not session:
-            return "❌ 沒有進行中的 Session。"
+            return create_error_result("❌ 沒有進行中的 Session。")
 
         session.auto_mode = enable
         manager.save_session(session)
 
         if enable:
-            return """# 🤖 自動模式已啟用
+            msg_content = """# 🤖 自動模式已啟用
 
 ⚠️ **警告**: 自動模式下，我將：
 - 自動確認每個步驟
@@ -590,14 +601,15 @@ def boring_session_auto(
 使用 `boring_session_auto(enable=False)` 關閉自動模式。
 """
         else:
-            return """# 🎮 手動模式已啟用
+            msg_content = """# 🎮 手動模式已啟用
 
 ✅ 每個步驟都會等待你的確認後才執行。
 """
+        return create_success_result(message=msg_content, data={"auto_mode": enable})
 
     except Exception as e:
         logger.error(f"Failed to toggle auto mode: {e}")
-        return f"❌ 切換失敗: {str(e)}"
+        return create_error_result(f"❌ 切換失敗: {str(e)}")
 
 
 # ==============================================================================

@@ -9,6 +9,7 @@ Per user decision:
 - Human approval via callback or pending queue
 """
 
+import ast
 import json
 import logging
 from dataclasses import dataclass, field
@@ -571,3 +572,53 @@ def create_shadow_guard(
     callback = interactive_approval_ui if interactive else None
 
     return ShadowModeGuard(project_root=project_root, mode=level, approval_callback=callback)
+
+
+# ============================================================================
+# Static Analysis for Synthesized Tools (V2 Safety)
+# ============================================================================
+class SynthesizedToolValidator:
+    """
+    Validates generated code before execution using AST analysis.
+    Prevents injection of dangerous system calls in synthesized tools.
+    """
+
+    FORBIDDEN_IMPORTS = {"os", "sys", "subprocess", "shutil", "socket", "pickle", "importlib"}
+    FORBIDDEN_FUNCTIONS = {"exec", "eval", "compile", "open", "__import__", "breakpoint"}
+
+    @classmethod
+    def validate(cls, code: str) -> list[str]:
+        """
+        Analyze code for suppressed security risks.
+
+        Returns:
+            List of violation messages (empty if safe).
+        """
+        violations = []
+        try:
+            tree = ast.parse(code)
+        except SyntaxError as e:
+            return [f"Syntax Error: {e}"]
+
+        for node in ast.walk(tree):
+            # 1. Check Imports
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    root_pkg = alias.name.split(".")[0]
+                    if root_pkg in cls.FORBIDDEN_IMPORTS:
+                        violations.append(f"Forbidden import: '{root_pkg}' (Sandbox Violation)")
+            elif isinstance(node, ast.ImportFrom):
+                if node.module:
+                    root_pkg = node.module.split(".")[0]
+                    if root_pkg in cls.FORBIDDEN_IMPORTS:
+                        violations.append(f"Forbidden import: '{root_pkg}' (Sandbox Violation)")
+
+            # 2. Check Function Calls
+            if isinstance(node, ast.Call):
+                if isinstance(node.func, ast.Name):
+                    if node.func.id in cls.FORBIDDEN_FUNCTIONS:
+                        violations.append(
+                            f"Forbidden function call: '{node.func.id}' (Sandbox Violation)"
+                        )
+
+        return violations

@@ -71,8 +71,25 @@ STATE_FILES = [
 # =============================================================================
 
 
+import os
+
+
 def get_boring_root(project_root: Path) -> Path:
-    """Get the unified .boring directory path."""
+    """
+    Get the unified .boring directory path.
+
+    V11.2 Lightweight Mode:
+    If BORING_LAZY_MODE is set, use a global temporary directory
+    to prevent polluting user folders during casual usage.
+    """
+    if os.environ.get("BORING_LAZY_MODE") == "1":
+        import hashlib
+
+        # Create a unique virtual root for this project path
+        project_hash = hashlib.sha256(str(project_root.resolve()).encode()).hexdigest()[:8]
+        # Use user's home .boring_global_cache or system temp
+        return Path.home() / ".boring_global_cache" / project_hash / ".boring"
+
     return project_root / BORING_ROOT
 
 

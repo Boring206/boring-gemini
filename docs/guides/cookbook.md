@@ -261,7 +261,7 @@ boring_multi_agent(
 
 ---
 
-## Recipe 9: RAG Knowledge Base
+## Recipe 9: RAG Knowledge Base {: #recipe-9-rag-knowledge-base }
 
 ### Build Index
 ```python

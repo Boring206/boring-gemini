@@ -12,12 +12,12 @@ This module contains tools for structured development:
 - speckit_constitution: Project principles
 """
 
-from typing import Annotated
+from typing import Annotated, Any
 
 from pydantic import Field
 
 
-def register_speckit_tools(mcp, audited, helpers, execute_workflow):
+def register_speckit_tools(mcp: Any, audited: Any, helpers: dict, execute_workflow: Any):
     """
     Register SpecKit tools with the MCP server.
 

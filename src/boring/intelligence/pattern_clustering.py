@@ -17,7 +17,7 @@ import hashlib
 import logging
 from dataclasses import dataclass, field
 from difflib import SequenceMatcher
-from typing import Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -385,7 +385,7 @@ class EmbeddingVersionManager:
 
     VERSION_FILE = "embedding_version.json"
 
-    def __init__(self, persist_dir):
+    def __init__(self, persist_dir: Any):
         """
         Initialize version manager.
 

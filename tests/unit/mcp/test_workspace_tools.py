@@ -48,7 +48,7 @@ def test_boring_workspace_add(mcp_mock, workspace_mock):
 
     assert "boring_workspace_add" in funcs
     result = funcs["boring_workspace_add"](name="test", path="/tmp")
-    assert result["status"] == "SUCCESS"
+    assert result["status"] == "success"
     workspace_mock.return_value.add_project.assert_called_with("test", "/tmp", "", None)
 
 
@@ -58,7 +58,7 @@ def test_boring_workspace_remove(mcp_mock, workspace_mock):
 
     assert "boring_workspace_remove" in funcs
     result = funcs["boring_workspace_remove"](name="test")
-    assert result["status"] == "SUCCESS"
+    assert result["status"] == "success"
     workspace_mock.return_value.remove_project.assert_called_with("test")
 
 
@@ -69,8 +69,8 @@ def test_boring_workspace_list(mcp_mock, workspace_mock):
 
     assert "boring_workspace_list" in funcs
     result = funcs["boring_workspace_list"](tag="web")
-    assert result["status"] == "SUCCESS"
-    assert result["projects"] == []
+    assert result["status"] == "success"
+    assert result["data"]["projects"] == []
     workspace_mock.return_value.list_projects.assert_called_with("web")
 
 
@@ -80,5 +80,5 @@ def test_boring_workspace_switch(mcp_mock, workspace_mock):
 
     assert "boring_workspace_switch" in funcs
     result = funcs["boring_workspace_switch"](name="test")
-    assert result["status"] == "SUCCESS"
+    assert result["status"] == "success"
     workspace_mock.return_value.switch_project.assert_called_with("test")

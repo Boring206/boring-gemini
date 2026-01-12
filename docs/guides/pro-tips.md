@@ -131,21 +131,43 @@ boring_evaluate(
 
 AI judges which implementation is better, with bias mitigation.
 
-### Tip 8: Shadow Mode for Code Review
-
+### Tip 8: Security Sandbox with Shadow Mode
 ```python
-# Reviewer sets STRICT mode
+# Set STRICT mode for production
 boring_shadow_mode(action="set_level", level="STRICT")
+```
 
-# All AI changes require approval
-# Perfect for production code review
+---
+
+## 🧠 Cognitive Evolution (V11.2)
+
+### Tip 9: Levering Deep Thinking
+Use "Deep Thinking" for architectural decisions or complex refactors. 
+```
+"Analyze this architecture using Deep Thinking and suggest 3 refactoring paths."
+```
+
+### Tip 10: Critical Thinking Audit
+Use "Critical Thinking" for security reviews or logic verification.
+```
+"Perform a Critical Thinking audit on this payment flow for potential race conditions."
+```
+
+### Tip 11: Cross-Project Knowledge Sharing {: #tip-11 }
+
+```bash
+# On project completion
+boring_global_export --all
+
+# Knowledge saved to ~/.boring/brain/
+# Available for all future projects via Active Recall
 ```
 
 ---
 
 ## 🏢 For Teams
 
-### Tip 9: Shared Configuration
+### Tip 12: Shared Configuration
 
 ```bash
 # Commit .boring.toml to repo
@@ -155,7 +177,7 @@ git commit -m "Add team quality standards"
 
 Everyone uses the same quality gates.
 
-### Tip 10: CI/CD Integration
+### Tip 13: CI/CD Integration
 
 ```yaml
 # .github/workflows/quality-gates.yml
@@ -167,7 +189,7 @@ jobs:
       - run: boring verify --level FULL
 ```
 
-### Tip 11: Cross-Project Knowledge Sharing
+### Tip 11: Cross-Project Knowledge Sharing {: #tip-11 }
 
 ```bash
 # On project completion

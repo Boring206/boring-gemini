@@ -161,7 +161,7 @@ class Agent(ABC):
     3. Focused Responsibility: Each agent does ONE thing well
     """
 
-    def __init__(self, llm_client, role: AgentRole):
+    def __init__(self, llm_client: Any, role: AgentRole):
         """
         Initialize agent with LLM client.
 

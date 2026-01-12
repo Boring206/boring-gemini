@@ -6,31 +6,23 @@
 
 ## 📑 目錄
 
-- [環境變數 (進階)](#環境變數-進階)
+- [環境變數 (進階)](#env-vars)
   - [BORING_MCP_MODE](#boring_mcp_mode)
   - [BORING_MCP_PROFILE](#boring_mcp_profile)
-    - [Ultra Lite (3 個)](#ultra-lite-3-個---v1026-新增)
-    - [Minimal (8 個)](#minimal-8-個)
-    - [Lite (20 個)](#lite-20-個)
-    - [Standard (50 個)](#standard-50-個)
-    - [Full (~98 個)](#full-98-個)
+- [Ultra Lite](#ultra-lite)
+- [Minimal](#minimal)
+- [Lite](#lite)
+- [Standard](#standard)
+- [Full](#full)
   - [PROJECT_ROOT_DEFAULT](#project_root_default)
   - [BORING_LLM_PROVIDER](#boring_llm_provider)
-- [MCP 設定範例](#mcp-設定範例)
-  - [本地完整版 (推薦)](#本地完整版-推薦)
-  - [uv 安裝版（⚡ 超快速）](#uv-安裝版-超快速)
-    - [方法 1: uvx（無需本地安裝）](#方法-1-uvx-無需本地安裝)
-    - [方法 2: uv run（使用 venv）](#方法-2-uv-run-使用-venv)
-  - [Smithery 雲端版](#smithery-雲端版)
-  - [混合版 (本地 + 雲端)](#混合版-本地--雲端)
-- [版本差異](#版本差異)
-  - [安裝選項](#安裝選項)
-  - [Smithery vs 本地](#smithery-vs-本地)
-- [常見問題](#常見問題)
+- [MCP 設定範例](#mcp-examples)
+- [版本差異](#version-diff)
+- [常見問題](#faq)
 
 ---
 
-## 環境變數 (進階)
+## 環境變數 (進階) {: #env-vars }
 
 ### `BORING_MCP_MODE`
 
@@ -60,14 +52,14 @@
 
 **各 Profile 包含的工具：**
 
-#### Ultra Lite (3 個) - V10.26 新增
+#### Ultra Lite {: #ultra-lite }
 - `boring` (通用路由器)
 - `boring_help` (分類說明)
 - `boring_discover` (按需取得工具 Schema)
 
 > 💡 **工作流程**: 用 `boring` 路由自然語言請求，用 `boring_discover` 獲取特定工具的完整 Schema，然後呼叫目標工具。
 
-#### Minimal (8 個)
+#### Minimal {: #minimal }
 - `boring` (路由器)
 - `boring_help`
 - `boring_rag_search`
@@ -77,7 +69,7 @@
 - `boring_shadow_status`
 - `boring_suggest_next`
 
-#### Lite (20 個)
+#### Lite {: #lite }
 包含 Minimal 全部，加上：
 - `boring_rag_index`, `boring_rag_context`
 - `boring_code_review`, `boring_perf_tips`
@@ -86,7 +78,7 @@
 - `boring_prompt_plan`, `boring_prompt_fix`
 - `boring_impact_check`, `boring_context`
 
-#### Standard (50 個)
+#### Standard {: #standard }
 包含 Lite 全部，加上：
 - RAG 完整套件 (`boring_rag_expand`, `boring_rag_status`)
 - Shadow Mode 控制 (`boring_shadow_mode`, `boring_shadow_approve`)
@@ -96,7 +88,7 @@
 - Multi-agent 規劃
 - Speckit 核心工具
 
-#### Full (~98 個)
+#### Full {: #full }
 所有已註冊的工具。
 
 ---
@@ -127,7 +119,7 @@
 
 ---
 
-## MCP 設定範例
+## MCP 設定範例 {: #mcp-examples }
 
 ### 本地完整版 (推薦)
 
@@ -238,7 +230,7 @@
 
 ---
 
-## 版本差異
+## 版本差異 {: #version-diff }
 
 ### 安裝選項
 
@@ -260,7 +252,7 @@
 
 ---
 
-## 常見問題
+## 常見問題 {: #faq }
 
 ### Q: Smithery 工具比較少怎麼辦？
 

@@ -129,21 +129,33 @@ boring_evaluate(
 
 AI 判斷哪個實作更好，並減少偏見。
 
-### 技巧 8：代碼審查用影子模式
-
+### 技巧 8：安全沙箱與影子模式
 ```python
-# 審查者設定 STRICT 模式
+# 生產環境建議使用 STRICT 模式
 boring_shadow_mode(action="set_level", level="STRICT")
+```
 
-# 所有 AI 變更都需要批准
-# 適合生產代碼審查
+---
+
+## 🧠 認知進化 (V11.2)
+
+### 技巧 9：善用深度思考 (Deep Thinking)
+對於架構設計或複雜重構，指示 AI 進入深度思考模式。
+```
+「使用『深度思考』分析此架構，並提供三個重構路徑。」
+```
+
+### 技巧 10：批判性思維審計 (Critical Thinking)
+對於安全性檢查或邏輯驗證，要求進行批判性思維審計。
+```
+「對此支付流程進行『批判性思維』審計，找出可能的 Race Condition。」
 ```
 
 ---
 
 ## 🏢 團隊
 
-### 技巧 9：共享配置
+### 技巧 12：共享配置
 
 ```bash
 # 將 .boring.toml 提交到 repo
@@ -153,7 +165,7 @@ git commit -m "新增團隊品質標準"
 
 每個人使用相同的品質閘道。
 
-### 技巧 10：CI/CD 整合
+### 技巧 13：CI/CD 整合
 
 ```yaml
 # .github/workflows/quality-gates.yml
@@ -165,7 +177,7 @@ jobs:
       - run: boring verify --level FULL
 ```
 
-### 技巧 11：跨專案知識分享
+### 技巧 14：跨專案知識分享 {: #tip-11 }
 
 ```bash
 # 專案完成時

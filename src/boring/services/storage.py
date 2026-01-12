@@ -172,6 +172,35 @@ class SQLiteStorage:
                 CREATE INDEX IF NOT EXISTS idx_loops_status ON loops(status);
                 CREATE INDEX IF NOT EXISTS idx_loops_timestamp ON loops(timestamp);
                 CREATE INDEX IF NOT EXISTS idx_errors_type ON error_patterns(error_type);
+
+                -- Brain: Learned Patterns
+                CREATE TABLE IF NOT EXISTS brain_patterns (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    pattern_id TEXT UNIQUE NOT NULL,
+                    pattern_type TEXT NOT NULL,
+                    description TEXT,
+                    context TEXT,
+                    solution TEXT,
+                    success_count INTEGER DEFAULT 1,
+                    last_used TEXT,
+                    decay_score REAL DEFAULT 1.0,
+                    embedding TEXT,  -- JSON list of floats
+                    cluster_id TEXT,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                );
+
+                -- Brain: Rubrics
+                CREATE TABLE IF NOT EXISTS brain_rubrics (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT UNIQUE NOT NULL,
+                    description TEXT,
+                    criteria TEXT,  -- JSON array of {name, description, weight}
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                );
+
+                -- Brain Indexes
+                CREATE INDEX IF NOT EXISTS idx_brain_context ON brain_patterns(context);
+                CREATE INDEX IF NOT EXISTS idx_brain_type ON brain_patterns(pattern_type);
             """)
 
     @contextmanager
@@ -452,6 +481,112 @@ class SQLiteStorage:
                 """,
                     (datetime.now().isoformat(),),
                 )
+
+    # =========================================================================
+    # Brain Operations (V11.2)
+    # =========================================================================
+
+    def upsert_pattern(self, pattern: dict[str, Any]) -> int:
+        """Insert or update a learned pattern."""
+        embedding_json = (
+            json.dumps(pattern.get("embedding", [])) if pattern.get("embedding") else None
+        )
+
+        with self._get_connection() as conn:
+            cursor = conn.execute(
+                """
+                INSERT INTO brain_patterns (
+                    pattern_id, pattern_type, description, context, solution,
+                    success_count, last_used, decay_score, embedding, cluster_id, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(pattern_id) DO UPDATE SET
+                    description=excluded.description,
+                    context=excluded.context,
+                    solution=excluded.solution,
+                    success_count=excluded.success_count,
+                    last_used=excluded.last_used,
+                    decay_score=excluded.decay_score,
+                    embedding=excluded.embedding,
+                    cluster_id=excluded.cluster_id
+            """,
+                (
+                    pattern["pattern_id"],
+                    pattern["pattern_type"],
+                    pattern.get("description"),
+                    pattern.get("context"),
+                    pattern.get("solution"),
+                    pattern.get("success_count", 1),
+                    pattern.get("last_used", datetime.now().isoformat()),
+                    pattern.get("decay_score", 1.0),
+                    embedding_json,
+                    pattern.get("cluster_id"),
+                    pattern.get("created_at", datetime.now().isoformat()),
+                ),
+            )
+            return cursor.lastrowid
+
+    def get_patterns(
+        self,
+        pattern_type: Optional[str] = None,
+        context_like: Optional[str] = None,
+        limit: int = 100,
+    ) -> list[dict[str, Any]]:
+        """Retrieve patterns with optional filtering."""
+        query = "SELECT * FROM brain_patterns WHERE 1=1"
+        params = []
+
+        if pattern_type:
+            query += " AND pattern_type = ?"
+            params.append(pattern_type)
+
+        if context_like:
+            query += " AND (context LIKE ? OR description LIKE ?)"
+            match = f"%{context_like}%"
+            params.extend([match, match])
+
+        query += " ORDER BY success_count DESC LIMIT ?"
+        params.append(limit)
+
+        with self._get_connection() as conn:
+            rows = conn.execute(query, params).fetchall()
+            return [dict(row) for row in rows]
+
+    def delete_pattern(self, pattern_id: str) -> bool:
+        """Delete a pattern by ID."""
+        with self._get_connection() as conn:
+            cursor = conn.execute("DELETE FROM brain_patterns WHERE pattern_id = ?", (pattern_id,))
+            return cursor.rowcount > 0
+
+    def upsert_rubric(self, name: str, description: str, criteria: list[dict]) -> int:
+        """Insert or update a rubric."""
+        criteria_json = json.dumps(criteria)
+
+        with self._get_connection() as conn:
+            cursor = conn.execute(
+                """
+                INSERT INTO brain_rubrics (name, description, criteria)
+                VALUES (?, ?, ?)
+                ON CONFLICT(name) DO UPDATE SET
+                    description=excluded.description,
+                    criteria=excluded.criteria
+            """,
+                (name, description, criteria_json),
+            )
+            return cursor.lastrowid
+
+    def get_rubric(self, name: str) -> Optional[dict[str, Any]]:
+        """Get rubric by name."""
+        with self._get_connection() as conn:
+            row = conn.execute("SELECT * FROM brain_rubrics WHERE name = ?", (name,)).fetchone()
+            if row:
+                d = dict(row)
+                if d["criteria"]:
+                    try:
+                        d["criteria"] = json.loads(d["criteria"])
+                    except json.JSONDecodeError:
+                        d["criteria"] = []
+                return d
+            return None
 
     # =========================================================================
     # Predictive Analytics (V10.22)

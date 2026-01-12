@@ -4,13 +4,14 @@
 Tests for boring.paths module - Unified path management.
 """
 
+import os
 import warnings
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
 from boring.paths import (
-    BORING_ROOT,
     BoringPaths,
     check_needs_migration,
     get_boring_path,
@@ -23,11 +24,22 @@ from boring.paths import (
 class TestGetBoringRoot:
     """Tests for get_boring_root function."""
 
+    @patch.dict(os.environ, {"BORING_LAZY_MODE": "0"})
     def test_returns_boring_directory(self, tmp_path: Path):
         """Should return .boring directory path."""
         result = get_boring_root(tmp_path)
-        assert result == tmp_path / BORING_ROOT
+        assert result == tmp_path / ".boring"
         assert result.name == ".boring"
+
+    @patch.dict(os.environ, {"BORING_LAZY_MODE": "1"})
+    def test_returns_global_cache_in_lazy_mode(self, tmp_path: Path):
+        """Should return global cache path in lazy mode."""
+        import hashlib
+
+        result = get_boring_root(tmp_path)
+        project_hash = hashlib.sha256(str(tmp_path.resolve()).encode()).hexdigest()[:8]
+        expected_root = Path.home() / ".boring_global_cache" / project_hash / ".boring"
+        assert result == expected_root
 
 
 class TestGetBoringPath:
@@ -113,6 +125,7 @@ class TestGetStateFile:
 class TestBoringPaths:
     """Tests for BoringPaths class."""
 
+    @patch.dict(os.environ, {"BORING_LAZY_MODE": "0"})
     def test_all_properties(self, tmp_path: Path):
         """Should provide all path properties."""
         paths = BoringPaths(tmp_path, create=True)

@@ -5,7 +5,7 @@ Exposes Shadow Mode human-in-the-loop protection as MCP tools.
 """
 
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Any
 
 from pydantic import Field
 
@@ -28,7 +28,7 @@ def get_shadow_guard(project_root: Path, mode: str = "ENABLED") -> ShadowModeGua
     return _guards[key]
 
 
-def register_shadow_tools(mcp, helpers: dict):
+def register_shadow_tools(mcp: Any, helpers: dict):
     """
     Register Shadow Mode tools with the MCP server.
 

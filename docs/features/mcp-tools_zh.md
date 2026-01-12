@@ -161,7 +161,7 @@ boring_verify(
 
 ---
 
-### 6. RAG 記憶 (`boring_rag_search`)
+### 6. RAG 記憶 (`boring_rag_search`) {: #boring_rag_search }
 
 具有混合向量 + 關鍵字匹配的語意代碼搜尋。
 
@@ -333,4 +333,5 @@ graph LR
 
 - [影子模式](./shadow-mode_zh.md) - 安全詳情
 - [品質閘道](./quality-gates_zh.md) - CI/CD 整合
-- [工具參考（附錄 A）](../APPENDIX_A_TOOL_REFERENCE_zh.md) - 完整 API 參考
+- [附錄 A：工具參考](../reference/APPENDIX_A_TOOL_REFERENCE_zh.md)
+- 完整 API 參考

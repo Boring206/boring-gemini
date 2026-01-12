@@ -256,6 +256,6 @@ export BORING_CACHE_PATH="/tmp/boring_cache"
 
 ## 另請參閱
 
-- [MCP 工具 - RAG](./mcp-tools_zh.md#6-rag-記憶-boring_rag_search)
-- [專業技巧 - 知識](./pro-tips_zh.md#技巧-11跨專案知識分享)
-- [Cookbook - 食譜 9](./cookbook_zh.md#食譜-9rag-知識庫)
+- [MCP 工具 - RAG](../features/mcp-tools_zh.md#boring_rag_search)
+- [專業技巧 - 知識](pro-tips_zh.md#tip-11)
+- [Cookbook - 食譜 7](cookbook_zh.md#recipe-7)

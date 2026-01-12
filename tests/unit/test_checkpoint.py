@@ -21,8 +21,8 @@ def test_boring_checkpoint_create_success():
 
         result = boring_checkpoint(action="create", name="test-cp", project_path="/tmp")
 
-        assert result["status"] == "SUCCESS", f"Failed with: {result}"
-        assert "Created git tag" in result["details"]
+        assert result["status"] == "success", f"Failed with: {result}"
+        assert "created" in result["message"]
         # Verify calls
         assert mock_run.call_count == 2
 
@@ -43,7 +43,7 @@ def test_boring_checkpoint_create_exists():
 
         result = boring_checkpoint(action="create", name="test-cp", project_path="/tmp")
 
-        assert result["status"] == "ERROR"
+        assert result["status"] == "error"
         assert "already exists" in result["message"]
 
 
@@ -72,7 +72,7 @@ def test_boring_checkpoint_restore_success():
             action="restore", name="test-cp", stash_changes=True, project_path="/tmp"
         )
 
-        assert result["status"] == "SUCCESS"
+        assert result["status"] == "success"
         assert "Restored to checkpoint" in result["message"]
         assert "Current changes stashed" in result["message"]
 
@@ -92,5 +92,5 @@ def test_boring_checkpoint_list():
 
         result = boring_checkpoint(action="list", project_path="/tmp")
 
-        assert result["status"] == "SUCCESS"
-        assert result["checkpoints"] == ["cp1", "cp2"]  # Filtered prefix
+        assert result["status"] == "success"
+        assert result["data"]["checkpoints"] == ["cp1", "cp2"]  # Filtered prefix

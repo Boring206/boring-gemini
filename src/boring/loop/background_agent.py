@@ -65,9 +65,9 @@ class BackgroundTaskRunner:
     def submit(
         self,
         func: Callable,
-        *args,
+        *args: Any,
         name: str = "Background task",
-        **kwargs,
+        **kwargs: Any,
     ) -> str:
         """
         Submit a task for background execution.
@@ -75,7 +75,8 @@ class BackgroundTaskRunner:
         Args:
             func: Function to execute
             name: Task name for display
-            *args, **kwargs: Arguments to pass to func
+            *args: Arguments to pass to func
+            **kwargs: Keyword arguments to pass to func
 
         Returns:
             task_id for tracking

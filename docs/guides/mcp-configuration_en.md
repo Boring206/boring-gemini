@@ -9,18 +9,18 @@ This document explains all environment variables and configuration options for t
 - [Environment Variables](#environment-variables)
   - [BORING_MCP_MODE](#boring_mcp_mode)
   - [BORING_MCP_PROFILE](#boring_mcp_profile)
-    - [Ultra Lite (3 tools)](#ultra-lite-3-tools---v1026-new)
-    - [Minimal (8 tools)](#minimal-8-tools)
-    - [Lite (20 tools)](#lite-20-tools)
-    - [Standard (50 tools)](#standard-50-tools)
-    - [Full (~98 tools)](#full-98-tools)
+    - [Ultra Lite](#ultra-lite)
+    - [Minimal](#minimal)
+    - [Lite](#lite)
+    - [Standard](#standard)
+    - [Full](#full)
   - [PROJECT_ROOT_DEFAULT](#project_root_default)
   - [BORING_LLM_PROVIDER](#boring_llm_provider)
 - [MCP Configuration Examples](#mcp-configuration-examples)
   - [Local Full Version (Recommended)](#local-full-version-recommended)
   - [Smithery Cloud Version](#smithery-cloud-version)
-  - [Hybrid (Local + Cloud)](#hybrid-local--cloud)
-- [Version Differences](#version-differences)
+  - [Hybrid (Local + Cloud)](#hybrid-setup)
+- [Version Differences](#version-diff)
   - [Installation Options](#installation-options)
   - [Smithery vs Local](#smithery-vs-local)
 - [FAQ](#faq)
@@ -57,14 +57,14 @@ Controls how many tools are exposed to the AI.
 
 **Tools included in each profile:**
 
-#### Ultra Lite (3 tools) - V10.26 NEW
+#### Ultra Lite {: #ultra-lite }
 - `boring` (universal router)
 - `boring_help` (category discovery)
 - `boring_discover` (on-demand tool schema)
 
 > 💡 **Workflow**: Use `boring` to route natural language requests, `boring_discover` to fetch full schema for a specific tool, then call the target tool.
 
-#### Minimal (8 tools)
+#### Minimal {: #minimal }
 - `boring` (router)
 - `boring_help`
 - `boring_rag_search`
@@ -74,7 +74,7 @@ Controls how many tools are exposed to the AI.
 - `boring_shadow_status`
 - `boring_suggest_next`
 
-#### Lite (20 tools)
+#### Lite {: #lite }
 Includes all Minimal, plus:
 - `boring_rag_index`, `boring_rag_context`
 - `boring_code_review`, `boring_perf_tips`
@@ -83,7 +83,7 @@ Includes all Minimal, plus:
 - `boring_prompt_plan`, `boring_prompt_fix`
 - `boring_impact_check`, `boring_context`
 
-#### Standard (50 tools)
+#### Standard {: #standard }
 Includes all Lite, plus:
 - Full RAG suite (`boring_rag_expand`, `boring_rag_status`)
 - Shadow Mode controls (`boring_shadow_mode`, `boring_shadow_approve`)
@@ -93,7 +93,7 @@ Includes all Lite, plus:
 - Multi-agent planning
 - Core Speckit tools
 
-#### Full (~98 tools)
+#### Full {: #full }
 All registered tools.
 
 ---
@@ -163,7 +163,7 @@ Select the underlying model provider.
 > - **Adjustable**: Set `BORING_MCP_PROFILE: "dev"` or `"pro"` in config
 > - **Full RAG**: Requires local install `pip install "boring-aicoding[all]"`
 
-### Hybrid (Local + Cloud)
+### Hybrid (Local + Cloud) {: #hybrid-setup }
 
 ```json
 {
@@ -186,7 +186,7 @@ Select the underlying model provider.
 
 ---
 
-## Version Differences
+## Version Differences {: #version-diff }
 
 ### Installation Options
 

@@ -65,7 +65,7 @@ def test_boring_quality_trend_tool(MockTracker):
 
     result = boring_quality_trend(days=30)
 
-    assert "Quality Trend Report" in result
-    assert "4.2/5.0" in result
-    assert "||| Chart |||" in result
-    assert "**Open Issues**: 3" in result
+    assert "Quality Trend Report" in result["message"]
+    assert "4.2/5.0" in result["message"]
+    assert "||| Chart |||" in result["message"]
+    assert "**Open Issues**: 3" in result["message"]

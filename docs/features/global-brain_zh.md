@@ -228,5 +228,5 @@ print(result["patterns"])  # 每個 pattern 的詳細資訊
 
 ## 📚 參考
 
-- [Knowledge System Guide](knowledge.md)
-- [Brain Manager API](../api/brain_manager.md)
+- [知識系統指南](../guides/knowledge-system_zh.md)
+- [Intelligence API](../api/intelligence_zh.md)

@@ -4,28 +4,29 @@
 
 ---
 
-## � 目錄 (Table of Contents)
+## 📋 更新日誌 {: #changelog }
+## 目錄 (Table of Contents)
 
-- [🚀 Quick Start](#-quick-start)
-  - [📦 Installation Options](#-installation-options)
-- [📚 Documentation Structure](#-documentation-structure)
-  - [Features (功能)](#features-功能)
-  - [Guides (指南)](#guides-指南)
-  - [Tutorials (教學)](#tutorials-教學)
-  - [Reference (參考)](#reference-參考)
-  - [API Documentation](#api-documentation)
-- [🌏 繁體中文文檔](#-繁體中文文檔)
-  - [功能](#功能)
-  - [指南](#指南)
-  - [教學](#教學)
-  - [參考](#參考)
-  - [API 文檔](#api-文檔)
-- [🔗 External Links](#-external-links)
-- [📝 Contributing](#-contributing)
+- [🚀 Quick Start](#quick-start)
+  - [📦 Installation Options](#installation-options)
+- [📚 Documentation Structure](#docs-structure)
+  - [Features (功能)](#features)
+  - [Guides (指南)](#guides)
+  - [Tutorials (教學)](#tutorials)
+  - [Reference (參考)](#reference)
+  - [API Documentation](#api-docs)
+- [🌏 繁體中文文檔](#chinese-docs)
+  - [功能](#zh-features)
+  - [指南](#zh-guides)
+  - [教學](#zh-tutorials)
+  - [參考](#zh-reference)
+  - [API 文檔](#zh-api-docs)
+- [🔗 External Links](#external-links)
+- [📝 Contributing](#contributing)
 
 ---
 
-## �🚀 Quick Start
+## 🚀 Quick Start {: #quick-start }
 
 Choose your path:
 
@@ -36,7 +37,7 @@ Choose your path:
 | 🔧 **DevOps/CI** | [Quality Gates](./features/quality-gates.md) |
 | 🏢 **Team Lead** | [Pro Tips](./guides/pro-tips.md) |
 
-### 📦 Installation Options
+### 📦 Installation Options {: #installation-options }
 
 | Method | Profile | RAG Capability | Best For |
 |--------|---------|----------------|----------|
@@ -50,9 +51,9 @@ Choose your path:
 
 ---
 
-## 📚 Documentation Structure
+## 📚 Documentation Structure {: #docs-structure }
 
-### Features (功能)
+### ✨ Core Features (功能) {: #features }
 Core capabilities explained in depth.
 
 | **Feature** | **Description** |
@@ -64,13 +65,13 @@ Core capabilities explained in depth.
 | [🧠 Memory System](./features/memory.md) | **BRAIN**: Persistent Learning & Recall ([中文](./features/memory_zh.md)) |
 | [🤖 Autonomous Agents](./features/agents.md) | **LOOP**: Planner, Coder, Reviewer Squad ([中文](./features/agents_zh.md)) |
 | [MCP Toolset](./features/mcp-tools.md) | 55+ Tools, Profiles, Router ([中文](./features/mcp-tools_zh.md)) |
-| [Shadow Mode](./features/shadow-mode.md) | Security Sandbox ([中文](./features/shadow-mode_zh.md)) |
-| [📉 Token Optimization](./features/token-optimization.md) | **NEW**: Verbosity & Caching ([中文](./features/token-optimization_zh.md)) |
-| [🧬 Cognitive Evolution](./features/cognitive.md) | **V11.2**: Memory, Reasoning, Skills ([中文](./features/cognitive_zh.md)) |
-| [Quality Gates](./features/quality-gates.md) | CI/CD integration and verification levels |
-| [💎 Hidden Gems](./features/hidden-gems.md) | **Pro**: Advanced tips & secrets ([中文](./features/hidden-gems_zh.md)) |
+| [Shadow Mode](features/shadow-mode.md) | Security Sandbox ([中文](features/shadow-mode_zh.md)) |
+| [📉 Token Optimization](features/token-optimization.md) | **NEW**: Verbosity & Caching ([中文](features/token-optimization_zh.md)) |
+| [🧬 Cognitive Evolution](features/cognitive.md) | **V11.2**: Memory, Reasoning, Skills ([中文](features/cognitive_zh.md)) |
+| [Quality Gates](features/quality-gates.md) | CI/CD integration and verification levels |
+| [💎 Hidden Gems](features/hidden-gems.md) | **Pro**: Advanced tips & secrets ([中文](features/hidden-gems_zh.md)) |
 
-### Guides (指南)
+### Guides (指南) {: #guides }
 Practical how-to content.
 
 | Guide | Description |
@@ -96,7 +97,7 @@ Practical how-to content.
 | [API Integration](./guides/api-integration.md) | Use Boring as a Python library |
 | [Skills Guide](./guides/skills_guide.md) | **Learning**: Master the Boring Skill Tree |
 
-### Tutorials (教學)
+### Tutorials (教學) {: #tutorials }
 In-depth learning resources.
 
 | Tutorial | Description |
@@ -106,7 +107,7 @@ In-depth learning resources.
 | [Practical Demo](./tutorials/PRACTICAL_DEMO.md) | Real-world project walkthrough |
 | [Professional Playbook](./tutorials/PROFESSIONAL_PLAYBOOK.md) | Enterprise usage patterns |
 
-### Reference (參考)
+### Reference (參考) {: #reference }
 Deep dive technical documentation.
 
 | Reference | Description |
@@ -122,7 +123,7 @@ Deep dive technical documentation.
 | [Prompt Philosophy (Appendix C)](./reference/APPENDIX_C_PROMPT_PHILOSOPHY.md) | AI prompt design principles |
 | [Architect Mode](./guides/architect_mode.md) | High-level architecture planning |
 
-### API Documentation
+### API Documentation {: #api-docs }
 | Page | Description |
 |------|-------------|
 | [Intelligence API](./api/intelligence_zh.md) | **NEW**: Brain, Vector Memory, Patterns |
@@ -134,9 +135,9 @@ Deep dive technical documentation.
 
 ---
 
-## 🌏 繁體中文文檔
+## 🌏 繁體中文文檔 {: #chinese-docs }
 
-### 功能
+### 功能 {: #zh-features }
 | 功能 | 說明 |
 |------|------|
 | [效能與架構](./features/performance_zh.md) | 增量驗證、快取、平行化 |
@@ -147,7 +148,7 @@ Deep dive technical documentation.
 | [影子模式](./features/shadow-mode_zh.md) | AI 操作的安全沙箱 |
 | [品質閘道](./features/quality-gates_zh.md) | CI/CD 整合和驗證級別 |
 
-### 指南
+### 指南 {: #zh-guides }
 | 指南 | 說明 |
 |------|------|
 | [Vibe Coder 指南](./guides/vibe-coder_zh.md) | 給描述式開發者 |
@@ -165,7 +166,7 @@ Deep dive technical documentation.
 | [模組化安裝指南](./guides/modular-installation_zh.md) | **最新**: "Boring Diet" 與延伸安裝說明 |
 | [技能指南](./guides/skills_guide.md) | 掌握 Boring 技能樹 |
 
-### 教學
+### 教學 {: #zh-tutorials }
 | 教學 | 說明 |
 |------|------|
 | [基礎教學](./tutorials/TUTORIAL.md) | 開始使用 Boring |
@@ -173,7 +174,7 @@ Deep dive technical documentation.
 | [實戰演示](./tutorials/PRACTICAL_DEMO.md) | 真實專案演練 |
 | [專業手冊](./tutorials/PROFESSIONAL_PLAYBOOK.md) | 企業使用模式 |
 
-### 參考
+### 參考 {: #zh-reference }
 | 參考 | 說明 |
 |------|------|
 | [配置手冊](./reference/configuration_zh.md) | **深度指南**：`.boring.toml` 與環境變數 |
@@ -186,7 +187,7 @@ Deep dive technical documentation.
 | [提示詞哲學（附錄 C）](./reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh.md) | AI 提示設計原則 |
 | [架構師模式](./guides/architect_mode_zh.md) | 高階架構規劃 |
  
-### API 文檔
+### API 文檔 {: #zh-api-docs }
 | 頁面 | 說明 |
 |------|------|
 | [智能 API (Intelligence)](./api/intelligence_zh.md) | **最新**: 大腦、向量記憶、模式學習 |
@@ -198,7 +199,7 @@ Deep dive technical documentation.
  
 ---
 
-## 🔗 External Links
+## 🔗 External Links {: #external-links }
 
 - [GitHub Repository](https://github.com/Boring206/boring-gemini)
 - [PyPI Package](https://pypi.org/project/boring-aicoding/)
@@ -206,6 +207,6 @@ Deep dive technical documentation.
 
 ---
 
-## 📝 Contributing
+## 📝 Contributing {: #contributing }
 
 See [Contributing Guide](./reference/contributing.md) for how to contribute to Boring.

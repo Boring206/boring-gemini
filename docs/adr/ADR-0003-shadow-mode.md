@@ -131,8 +131,8 @@ Too slow for practical use; shadow mode provides better balance.
 
 ## References
 
-- [Security Best Practices](../guides/security.md)
-- [Shadow Mode Configuration](../guides/shadow-mode.md)
+- [ADR-0002: Hybrid RAG](../features/rag.md)
+- [ADR-0003: Shadow Mode](../features/shadow-mode.md)
 - [OWASP AI Security Guidelines](https://owasp.org/www-project-ai-security-and-privacy-guide/)
 
 ## Notes

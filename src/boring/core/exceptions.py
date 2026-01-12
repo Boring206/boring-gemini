@@ -83,6 +83,7 @@ class PathSecurityError(FileError):
         self.reason = reason
 
 
+# TODO(V12.0): Rename to BoringFileNotFoundError to avoid shadowing builtin
 class FileNotFoundError(FileError):
     """Raised when a required file is not found."""
 
@@ -112,6 +113,7 @@ class VerificationError(BoringError):
     pass
 
 
+# TODO(V12.0): Rename to BoringSyntaxError to avoid shadowing builtin
 class SyntaxError(VerificationError):
     """Raised when Python syntax check fails."""
 
@@ -194,3 +196,122 @@ class DependencyError(BoringError):
         super().__init__(f"Missing dependency: {package}", [install_hint] if install_hint else [])
         self.package = package
         self.install_command = install_command
+
+
+# =============================================================================
+# STORAGE ERRORS (V11.2.3)
+# =============================================================================
+
+
+class StorageError(BoringError):
+    """Base class for storage-related errors (SQLite, JSON, etc.)."""
+
+    pass
+
+
+class DatabaseConnectionError(StorageError):
+    """Raised when database connection fails."""
+
+    def __init__(self, db_path: str, reason: str):
+        super().__init__(f"Failed to connect to database '{db_path}': {reason}")
+        self.db_path = db_path
+        self.reason = reason
+
+
+class MigrationError(StorageError):
+    """Raised when data migration fails."""
+
+    def __init__(self, source: str, target: str, reason: str):
+        super().__init__(f"Migration from {source} to {target} failed: {reason}")
+        self.source = source
+        self.target = target
+        self.reason = reason
+
+
+# =============================================================================
+# BRAIN ERRORS (V11.2.3)
+# =============================================================================
+
+
+class BrainError(BoringError):
+    """Base class for Brain Manager errors."""
+
+    pass
+
+
+class PatternNotFoundError(BrainError):
+    """Raised when a pattern cannot be found in the brain."""
+
+    def __init__(self, pattern_id: str):
+        super().__init__(f"Pattern not found: {pattern_id}")
+        self.pattern_id = pattern_id
+
+
+class KnowledgeSyncError(BrainError):
+    """Raised when Knowledge Swarm sync fails."""
+
+    def __init__(self, remote_url: str, reason: str):
+        super().__init__(f"Failed to sync with '{remote_url}': {reason}")
+        self.remote_url = remote_url
+        self.reason = reason
+
+
+# =============================================================================
+# MCP TOOL ERRORS (V11.2.3)
+# =============================================================================
+
+
+class MCPToolError(BoringError):
+    """Base class for MCP tool execution errors."""
+
+    pass
+
+
+class ToolNotFoundError(MCPToolError):
+    """Raised when requested MCP tool is not found."""
+
+    def __init__(self, tool_name: str):
+        super().__init__(f"MCP tool not found: {tool_name}")
+        self.tool_name = tool_name
+
+
+class ToolExecutionError(MCPToolError):
+    """Raised when MCP tool execution fails."""
+
+    def __init__(self, tool_name: str, reason: str):
+        super().__init__(f"Tool '{tool_name}' execution failed: {reason}")
+        self.tool_name = tool_name
+        self.reason = reason
+
+
+# =============================================================================
+# SHADOW MODE ERRORS (V11.2.3)
+# =============================================================================
+
+
+class ShadowModeError(BoringError):
+    """Base class for Shadow Mode errors."""
+
+    pass
+
+
+class OperationBlockedError(ShadowModeError):
+    """Raised when an operation is blocked by Shadow Mode."""
+
+    def __init__(self, operation: str, severity: str, reason: str):
+        super().__init__(
+            f"Operation '{operation}' blocked (severity: {severity}): {reason}",
+            ["Use 'boring shadow_approve' to review pending operations"],
+        )
+        self.operation = operation
+        self.severity = severity
+        self.reason = reason
+
+
+class RollbackError(ShadowModeError):
+    """Raised when rollback operation fails."""
+
+    def __init__(self, checkpoint_id: str, reason: str):
+        super().__init__(f"Failed to rollback to checkpoint '{checkpoint_id}': {reason}")
+        self.checkpoint_id = checkpoint_id
+        self.reason = reason

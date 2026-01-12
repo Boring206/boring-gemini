@@ -40,11 +40,11 @@ class AgentOrchestrator:
 
     def __init__(
         self,
-        llm_client,
+        llm_client: Any,
         project_root: Path,
         human_callback: Optional[HumanApprovalCallback] = None,
         auto_approve_plans: bool = False,
-        shadow_guard=None,
+        shadow_guard: Any = None,
     ):
         """
         Initialize the orchestrator.
@@ -313,7 +313,7 @@ class AgentOrchestrator:
 
 # Convenience function for simple usage
 async def run_multi_agent(
-    task: str, project_root: Path, llm_client=None, auto_approve: bool = False
+    task: str, project_root: Path, llm_client: Any = None, auto_approve: bool = False
 ) -> dict[str, Any]:
     """
     Run the multi-agent workflow on a task.

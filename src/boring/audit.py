@@ -114,14 +114,16 @@ class AuditLogger:
         if not self.log_file.exists():
             return []
 
-        entries = []
+        def _safe_parse(line):
+            try:
+                return json.loads(line)
+            except json.JSONDecodeError:
+                return None
+
         with open(self.log_file, encoding="utf-8") as f:
-            for line in f:
-                if line.strip():
-                    try:
-                        entries.append(json.loads(line))
-                    except json.JSONDecodeError:
-                        continue
+            entries = [
+                parsed for line in f if line.strip() if (parsed := _safe_parse(line)) is not None
+            ]
 
         return entries[-limit:]
 

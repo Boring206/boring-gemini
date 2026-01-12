@@ -1,0 +1,154 @@
+name: 🤝 Maintainer Application
+description: Apply to become a project maintainer or domain expert
+title: '[MAINTAINER] Application: {Your Name}'
+labels: ['maintainer-application', 'community']
+assignees: 'Boring206'
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🎉 感謝您有興趣成為 Boring-Gemini 維護者！
+        
+        請填寫以下資訊，幫助我們了解您的背景和動機。
+        
+        > 詳細說明請參閱 [MAINTAINERS.md](https://github.com/Boring206/boring-gemini/blob/main/MAINTAINERS.md)
+
+  - type: input
+    id: github_username
+    attributes:
+      label: GitHub 用戶名
+      description: 您的 GitHub 用戶名
+      placeholder: "@your-username"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: role_type
+    attributes:
+      label: 申請角色
+      description: 您希望申請的維護者角色
+      options:
+        - Domain Expert - RAG & Vector Memory
+        - Domain Expert - MCP Protocol
+        - Domain Expert - LLM Integration
+        - Domain Expert - Security
+        - Domain Expert - Documentation
+        - Domain Expert - Testing & QA
+        - Community Manager - Issue Triage
+        - Community Manager - Translation
+        - Core Maintainer (需 6+ 個月貢獻)
+    validations:
+      required: true
+
+  - type: textarea
+    id: contributions
+    attributes:
+      label: 過往貢獻
+      description: 請列出您對本項目或相關開源項目的貢獻
+      placeholder: |
+        例如：
+        - PR #123: 修復 RAG 索引問題
+        - PR #456: 添加 Ollama 支持
+        - Issue #789: 報告並解決安全漏洞
+        - 其他開源項目貢獻...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expertise
+    attributes:
+      label: 專業技能
+      description: 描述您在所申請領域的專業背景
+      placeholder: |
+        例如：
+        - 5 年 Python 開發經驗
+        - 熟悉 ChromaDB 和向量搜索
+        - 有 LLM 應用開發經驗
+        - 參與過其他 MCP 項目...
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: 動機
+      description: 為什麼您想成為維護者？您希望如何貢獻？
+      placeholder: |
+        例如：
+        - 我經常使用這個工具，希望回饋社區
+        - 我想幫助改進 RAG 功能
+        - 我有時間每週投入 X 小時...
+    validations:
+      required: true
+
+  - type: input
+    id: time_commitment
+    attributes:
+      label: 時間投入
+      description: 您預計每月可以投入多少小時？
+      placeholder: "例如：每月 8-16 小時"
+    validations:
+      required: true
+
+  - type: input
+    id: timezone
+    attributes:
+      label: 時區
+      description: 您的時區 (用於協調會議和審查)
+      placeholder: "例如：UTC+8 (台北/北京)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: ideas
+    attributes:
+      label: 改進想法
+      description: 您對項目有什麼改進建議或想法？(可選)
+      placeholder: |
+        例如：
+        - 我認為可以優化 XXX 功能
+        - 建議添加 YYY 特性
+        - 文檔可以在 ZZZ 方面改進...
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: agreements
+    attributes:
+      label: 確認事項
+      description: 請確認以下事項
+      options:
+        - label: 我已閱讀並同意遵守 [Code of Conduct](https://github.com/Boring206/boring-gemini/blob/main/CODE_OF_CONDUCT.md)
+          required: true
+        - label: 我已閱讀 [MAINTAINERS.md](https://github.com/Boring206/boring-gemini/blob/main/MAINTAINERS.md) 了解維護者責任
+          required: true
+        - label: 我已閱讀 [CONTRIBUTING.md](https://github.com/Boring206/boring-gemini/blob/main/CONTRIBUTING.md) 了解貢獻流程
+          required: true
+        - label: 我理解維護者有 1 個月試用期
+          required: true
+        - label: 我承諾每月至少投入 4 小時
+          required: true
+
+  - type: textarea
+    id: additional_info
+    attributes:
+      label: 補充資訊
+      description: 其他您想讓我們知道的事情 (可選)
+      placeholder: "任何其他相關資訊..."
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        
+        ## 📋 接下來的流程
+        
+        1. ✅ 提交此申請
+        2. 🔍 現有維護者將在 **14 天內** 審核
+        3. 💬 可能會有後續問題或討論
+        4. 🎉 批准後進入 **1 個月試用期**
+        
+        感謝您願意為 Boring-Gemini 社區做出貢獻！

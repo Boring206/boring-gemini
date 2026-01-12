@@ -16,7 +16,14 @@ from typing import Annotated, Any
 
 from pydantic import Field
 
+from ...types import BoringResult, create_error_result, create_success_result
 from ...workspace import get_workspace_manager
+
+
+def _wrap_manager_result(result: dict) -> BoringResult:
+    if result.get("status") == "ERROR":
+        return create_error_result(message=result.get("message", "Unknown error"))
+    return create_success_result(message=result.get("message", "Success"), data=result)
 
 
 def register_workspace_tools(mcp, audited, helpers: dict[str, Any]) -> int:
@@ -54,12 +61,12 @@ def register_workspace_tools(mcp, audited, helpers: dict[str, Any]) -> int:
             list[str],
             Field(description="Optional list of tags for filtering and organizing projects."),
         ] = None,
-    ) -> dict:
+    ) -> BoringResult:
         """
         Add a project to the workspace.
         """
         manager = get_workspace_manager()
-        return manager.add_project(name, path, description, tags)
+        return _wrap_manager_result(manager.add_project(name, path, description, tags))
 
     @mcp.tool(
         description="移除專案 (Remove project). 適合: '移除專案', 'Remove project', '刪除專案註冊' (檔案不會刪除).",
@@ -68,14 +75,14 @@ def register_workspace_tools(mcp, audited, helpers: dict[str, Any]) -> int:
     @audited
     def boring_workspace_remove(
         name: Annotated[str, Field(description="Name of project to remove")],
-    ) -> dict:
+    ) -> BoringResult:
         """
         Remove a project from the workspace.
 
         Note: This only removes from tracking, does not delete files.
         """
         manager = get_workspace_manager()
-        return manager.remove_project(name)
+        return _wrap_manager_result(manager.remove_project(name))
 
     @mcp.tool(
         description="看看我有哪些專案 (List projects). 適合: 'Show my projects', '我的專案有哪些', 'What am I working on?'.",
@@ -84,18 +91,20 @@ def register_workspace_tools(mcp, audited, helpers: dict[str, Any]) -> int:
     @audited
     def boring_workspace_list(
         tag: Annotated[str, Field(description="Optional filter by tag")] = None,
-    ) -> dict:
+    ) -> BoringResult:
         """
         List all projects in the workspace.
         """
         manager = get_workspace_manager()
         projects = manager.list_projects(tag)
 
-        return {
-            "status": "SUCCESS",
-            "projects": projects,
-            "active_project": manager.active_project,
-        }
+        return create_success_result(
+            message=f"Found {len(projects)} projects (Active: {manager.active_project or 'None'})",
+            data={
+                "projects": projects,
+                "active_project": manager.active_project,
+            },
+        )
 
     @mcp.tool(
         description="切換到另一個專案 (Switch project). 適合: 'Switch to XXX', '切換專案', 'Work on another project'.",
@@ -104,13 +113,13 @@ def register_workspace_tools(mcp, audited, helpers: dict[str, Any]) -> int:
     @audited
     def boring_workspace_switch(
         name: Annotated[str, Field(description="Name of the project to switch context to")],
-    ) -> dict:
+    ) -> BoringResult:
         """
         Switch the active project context.
 
         All subsequent operations will use this project.
         """
         manager = get_workspace_manager()
-        return manager.switch_project(name)
+        return _wrap_manager_result(manager.switch_project(name))
 
     return 4  # Number of tools registered

@@ -73,23 +73,49 @@ if (-not (Test-Path $VENV_DIR)) {
 }
 
 # 3. Install/Update Boring
-Write-Step "Installing Boring (Latest)..."
+Write-Step "Checking for Updates..."
+
+# Get installed version
+$INSTALLED_VER = ""
+$PIP_LIST_CMD = if ($HAS_UV) { 
+    $VENV_PYTHON = Join-Path $VENV_DIR "Scripts\python.exe"
+    "uv pip list --python $VENV_PYTHON" 
+} else { 
+    $PIP_CMD = Join-Path $VENV_DIR "Scripts\pip.exe"
+    "$PIP_CMD list" 
+}
+
+try {
+    $INSTALLED_VER = iex "$PIP_LIST_CMD" | Select-String "boring-aicoding\s+([\d\.]+)" | ForEach-Object { $_.Matches.Groups[1].Value }
+} catch {
+    $INSTALLED_VER = ""
+}
+
+if ($INSTALLED_VER) {
+    Write-Host "Currently installed: v$INSTALLED_VER" -ForegroundColor Gray
+} else {
+    Write-Host "New installation detected." -ForegroundColor Gray
+}
+
+# Simple check: If already installed, we could skip long update unless forced
+# For Vibe Coder, let's always ensure we at least try --upgrade but quietly
+# UNLESS we are already on latest (V11.2.2 is current, but we check PyPI)
+
+Write-Step "Syncing Boring (Latest)..."
 
 if ($HAS_UV) {
-    # UV is atomic and fast. We point it to the python executable in the venv
     $VENV_PYTHON = Join-Path $VENV_DIR "Scripts\python.exe"
     uv pip install --python $VENV_PYTHON --upgrade boring-aicoding --quiet
 } else {
-    # Legacy PIP method
     $PIP_CMD = Join-Path $VENV_DIR "Scripts\pip.exe"
     & $PIP_CMD install --upgrade boring-aicoding --quiet
 }
 
 if ($LASTEXITCODE -ne 0) {
-    Write-ErrorMsg "Failed to install boring-aicoding."
+    Write-ErrorMsg "Failed to sync boring-aicoding."
     exit 1
 }
-Write-Success "Boring installed successfully."
+Write-Success "Boring is up to date."
 
 # 4. Launch Wizard
 Write-Step "Launching Configuration Wizard..."

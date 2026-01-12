@@ -201,6 +201,48 @@ git pull upstream main
 git branch -d feature/your-feature-name
 ```
 
+---
+
+## 🌟 成為核心貢獻者 (Become a Core Contributor)
+
+我們正在積極招募各領域的維護者！
+
+### 貢獻者階梯
+
+```
+Level 1: First-time Contributor (首次貢獻)
+    ↓  1+ PR 被合併
+Level 2: Regular Contributor (常規貢獻者)
+    ↓  3+ PR 被合併，持續活躍
+Level 3: Domain Expert (領域專家)
+    ↓  5+ 特定領域 PR，負責該領域審查
+Level 4: Core Maintainer (核心維護者)
+    ↓  6+ 個月持續貢獻，展現架構理解
+Level 5: Project Steward (項目管理者)
+```
+
+### 正在招募的領域專家
+
+| 領域 | 需要技能 | 狀態 |
+|------|----------|------|
+| 🔍 RAG & Vector Memory | ChromaDB, Embedding, Semantic Search | 🟢 招募中 |
+| 🔌 MCP Protocol | FastMCP, Tool Design | 🟢 招募中 |
+| 🤖 LLM Integration | Gemini, Ollama, Claude | 🟢 招募中 |
+| 🛡️ Security | Bandit, Vulnerability Assessment | 🟢 招募中 |
+| 📚 Documentation | MkDocs, Bilingual Writing | 🟢 招募中 |
+| 🧪 Testing & QA | Pytest, Performance Testing | 🟢 招募中 |
+
+### 如何申請
+
+1. 累積足夠的貢獻 (Level 2+)
+2. 填寫 [維護者申請表](https://github.com/Boring206/boring-gemini/issues/new?template=maintainer_application.yml)
+3. 等待現有維護者審核 (14 天內回覆)
+4. 通過後進入 1 個月試用期
+
+詳見 [MAINTAINERS.md](MAINTAINERS.md)
+
+---
+
 ## 質量門檻說明
 
 ### CI/CD 流程
@@ -240,6 +282,8 @@ git branch -d feature/your-feature-name
 - 📖 [可維護性指南](docs/MAINTAINABILITY.md)
 - 📋 [可維護性檢查清單](docs/MAINTAINABILITY_CHECKLIST.md)
 - 🏗️ [架構決策記錄 (ADR)](docs/adr/README.md)
+- 🌱 [可持續性策略](docs/reference/sustainability.md)
+- 📊 [功能矩陣](docs/reference/feature-matrix.md)
 
 ## 專案結構 (V10.24 - Vibe Coder Architecture)
 
@@ -256,6 +300,11 @@ boring-gemini/
 │   │   └── profiles/         # Context Optimization Profiles
 │   ├── plugins/              # Plugin System
 │   ├── rag/                  # RAG System
+│   ├── llm/                  # LLM Provider Abstraction
+│   │   ├── provider.py       # Abstract Interface
+│   │   ├── gemini.py         # Google Gemini
+│   │   ├── ollama.py         # Ollama (Local)
+│   │   └── ...               # More providers
 │   └── ...
 ├── docs/                     # Documentation (Reorganized)
 │   ├── tutorials/            # Tutorials, Demos, Playbooks
@@ -267,7 +316,11 @@ boring-gemini/
 
 ## 🔌 建立插件 (Creating Plugins)
 
-插件可在不修改核心程式碼的情況下擴展 Boring 功能。在 `~/.boring/plugins/` 或 `.boring_plugins/` 建立檔案：
+插件可在不修改核心程式碼的情況下擴展 Boring 功能。
+
+詳見 [插件開發指南](docs/guides/plugins_zh.md)
+
+快速範例：
 
 ```python
 # my_plugin.py
@@ -283,6 +336,10 @@ def my_custom_tool(arg1: str) -> dict:
 ```
 
 使用 `boring_reload_plugins`重新載入，並透過 `boring_run_plugin` 執行。
+
+## 🤖 添加新的 LLM Provider
+
+想要支持新的語言模型？請參閱 [LLM 適配器開發指南](docs/reference/llm-adapters.md)
 
 ## 有問題嗎？
 

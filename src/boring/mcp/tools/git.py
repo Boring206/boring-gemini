@@ -5,6 +5,7 @@ from pydantic import Field
 
 from ...audit import audited
 from ...hooks import HooksManager
+from ...types import BoringResult, create_error_result, create_success_result
 from ..instance import MCP_AVAILABLE, mcp
 from ..utils import configure_runtime_for_project, get_project_root_or_error
 
@@ -18,7 +19,7 @@ def boring_hooks_install(
     project_path: Annotated[
         str, Field(description="Optional explicit path to project root")
     ] = None,
-) -> dict:
+) -> BoringResult:
     """
     Install Boring Git hooks (pre-commit, pre-push) for local code quality enforcement.
 
@@ -33,7 +34,7 @@ def boring_hooks_install(
     try:
         root, error = get_project_root_or_error(project_path)
         if error:
-            return error
+            return create_error_result(error.get("message", "Invalid project root"))
 
         # Configure runtime
         configure_runtime_for_project(root)
@@ -51,24 +52,21 @@ def boring_hooks_install(
             )
             any_installed = any(h.get("installed", False) for h in hooks_info.values())
             if any_installed and all_boring:
-                return {
-                    "status": "SKIPPED",
-                    "message": "Hooks already installed.",
-                    "hooks": hooks_info,
-                }
+                return create_success_result(
+                    message="Hooks already installed.",
+                    data={"hooks": hooks_info, "status": "SKIPPED"},
+                )
         # --- End Idempotency Check ---
 
         success, msg = manager.install_all()
         if success:
-            return {
-                "status": "SUCCESS",
-                "message": "Hooks installed successfully!",
-                "details": msg,
-                "tip": "Your commits and pushes will now be verified automatically.",
-            }
-        return {"status": "ERROR", "message": msg}
+            return create_success_result(
+                message="Hooks installed successfully! Your commits and pushes will now be verified automatically.",
+                data={"details": msg},
+            )
+        return create_error_result(message=msg)
     except Exception as e:
-        return {"status": "ERROR", "error": str(e)}
+        return create_error_result(message=str(e))
 
 
 @audited
@@ -89,16 +87,18 @@ def boring_hooks_uninstall(
     try:
         root, error = get_project_root_or_error(project_path)
         if error:
-            return error
+            return create_error_result(error.get("message", "Invalid root"))
 
         configure_runtime_for_project(root)
 
         manager = HooksManager(root)
 
         success, msg = manager.uninstall_all()
-        return {"status": "SUCCESS" if success else "ERROR", "message": msg}
+        if success:
+            return create_success_result(message=msg)
+        return create_error_result(message=msg)
     except Exception as e:
-        return {"status": "ERROR", "error": str(e)}
+        return create_error_result(message=str(e))
 
 
 @audited
@@ -119,15 +119,19 @@ def boring_hooks_status(
     try:
         root, error = get_project_root_or_error(project_path)
         if error:
-            return error
+            return create_error_result(error.get("message", "Invalid root"))
 
         configure_runtime_for_project(root)
 
         manager = HooksManager(root)
 
-        return manager.status()
+        status_data = manager.status()
+        return create_success_result(
+            message=f"Git hooks status retrieved. Repo: {status_data.get('is_git_repo')}",
+            data=status_data,
+        )
     except Exception as e:
-        return {"status": "ERROR", "error": str(e)}
+        return create_error_result(message=str(e))
 
 
 # ==============================================================================
@@ -149,7 +153,7 @@ def boring_commit(
     project_path: Annotated[
         str, Field(description="Optional explicit path to project root")
     ] = None,
-) -> dict:
+) -> BoringResult:
     """
     Generate a semantic Git commit message from completed tasks in task.md.
 
@@ -167,7 +171,7 @@ def boring_commit(
     """
     project_root, error = get_project_root_or_error(project_path)
     if error:
-        return error
+        return create_error_result(error.get("message", "Invalid root"))
 
     # Find task file in common locations
     task_path = project_root / task_file
@@ -183,27 +187,28 @@ def boring_commit(
                 break
 
     if not task_path.exists():
-        return {
-            "status": "NOT_FOUND",
-            "message": f"Task file not found: {task_file}",
-            "searched": [str(project_root / task_file)],
-        }
+        return create_error_result(
+            message=f"Task file not found: {task_file}",
+            error_details=f"Searched: {[str(project_root / task_file)]}",
+        )
 
     try:
         content = task_path.read_text(encoding="utf-8")
     except Exception as e:
-        return {"status": "ERROR", "message": f"Cannot read task file: {e}"}
+        return create_error_result(message=f"Cannot read task file: {e}")
 
     # Parse completed tasks (lines with [x])
     completed_pattern = r"^\s*-\s*\[x\]\s*(.+)$"
     completed_tasks = re.findall(completed_pattern, content, re.MULTILINE | re.IGNORECASE)
 
     if not completed_tasks:
-        return {
-            "status": "NO_COMPLETED_TASKS",
-            "message": "No completed tasks found in task.md",
-            "hint": "Mark tasks as complete with [x] before generating commit",
-        }
+        return create_success_result(
+            message="No completed tasks found in task.md",
+            data={
+                "status": "NO_COMPLETED_TASKS",
+                "hint": "Mark tasks as complete with [x] before generating commit",
+            },
+        )
 
     # Detect commit type from tasks if auto
     detected_type = commit_type
@@ -246,14 +251,16 @@ def boring_commit(
     # Escape quotes for shell
     escaped_message = commit_line.replace('"', '\\"')
 
-    return {
-        "status": "SUCCESS",
-        "commit_type": detected_type,
-        "scope": detected_scope,
-        "message": commit_line,
-        "completed_tasks": len(completed_tasks),
-        "command": f'git commit -m "{escaped_message}"',
-    }
+    return create_success_result(
+        message=f"Ready to commit: {commit_line}",
+        data={
+            "commit_type": detected_type,
+            "scope": detected_scope,
+            "message": commit_line,
+            "completed_tasks": len(completed_tasks),
+            "command": f'git commit -m "{escaped_message}"',
+        },
+    )
 
 
 @audited
@@ -265,7 +272,7 @@ def boring_visualize(
     project_path: Annotated[
         str, Field(description="Optional explicit path to project root")
     ] = None,
-) -> dict:
+) -> BoringResult:
     """
     Generate architecture visualization from codebase structure.
 
@@ -282,7 +289,7 @@ def boring_visualize(
     """
     project_root, error = get_project_root_or_error(project_path)
     if error:
-        return error
+        return create_error_result(error.get("message", "Invalid root"))
 
     # Find Python files
     src_dir = project_root / "src"
@@ -312,7 +319,10 @@ def boring_visualize(
             continue
 
     if output_format == "json":
-        return {"status": "SUCCESS", "modules": modules, "total": len(modules)}
+        return create_success_result(
+            message=f"Analyzed {len(modules)} modules.",
+            data={"modules": modules, "total": len(modules)},
+        )
 
     # Generate Mermaid diagram
     mermaid_lines = ["graph TD"]
@@ -334,12 +344,14 @@ def boring_visualize(
         if src_id and tgt_id and src_id != tgt_id:
             mermaid_lines.append(f"    {src_id} --> {tgt_id}")
 
-    return {
-        "status": "SUCCESS",
-        "format": "mermaid",
-        "diagram": "\n".join(mermaid_lines),
-        "total_modules": len(modules),
-    }
+    return create_success_result(
+        message="Generated Mermaid diagram.",
+        data={
+            "format": "mermaid",
+            "diagram": "\n".join(mermaid_lines),
+            "total_modules": len(modules),
+        },
+    )
 
 
 @audited
@@ -354,7 +366,7 @@ def boring_checkpoint(
     project_path: Annotated[
         str, Field(description="Optional explicit path to project root")
     ] = None,
-) -> dict:
+) -> BoringResult:
     """
     Manage project checkpoints (save states) via Git tags.
 
@@ -373,7 +385,7 @@ def boring_checkpoint(
     """
     project_root, error = get_project_root_or_error(project_path)
     if error:
-        return error
+        return create_error_result(error.get("message", "Invalid root"))
 
     configure_runtime_for_project(project_root)
 
@@ -391,7 +403,7 @@ def boring_checkpoint(
 
     # Validate inputs
     if action in ["create", "restore"] and not name:
-        return {"status": "ERROR", "message": "Checkpoint name is required for create/restore"}
+        return create_error_result(message="Checkpoint name is required for create/restore")
 
     prefix = "checkpoint/"
 
@@ -400,26 +412,26 @@ def boring_checkpoint(
         # Check if exists
         ok, _ = git_cmd(["rev-parse", tag_name])
         if ok:
-            return {
-                "status": "ERROR",
-                "message": f"Checkpoint '{name}' already exists. Choose a different name.",
-            }
+            return create_error_result(
+                message=f"Checkpoint '{name}' already exists. Choose a different name."
+            )
 
         success, output = git_cmd(["tag", tag_name])
         if success:
-            return {
-                "status": "SUCCESS",
-                "message": f"Checkpoint '{name}' created.",
-                "details": f"Created git tag {tag_name}. Use action='restore' name='{name}' to revert matching state.",
-            }
-        return {"status": "ERROR", "message": f"Failed to create checkpoint: {output}"}
+            return create_success_result(
+                message=f"Checkpoint '{name}' created.",
+                data={
+                    "details": f"Created git tag {tag_name}. Use action='restore' name='{name}' to revert matching state."
+                },
+            )
+        return create_error_result(message=f"Failed to create checkpoint: {output}")
 
     elif action == "restore":
         tag_name = f"{prefix}{name}"
         # detailed check
         ok, _ = git_cmd(["rev-parse", tag_name])
         if not ok:
-            return {"status": "NOT_FOUND", "message": f"Checkpoint '{name}' not found."}
+            return create_error_result(message=f"Checkpoint '{name}' not found.")
 
         # Stash if requested
         stash_msg = ""
@@ -433,28 +445,29 @@ def boring_checkpoint(
                 if ok_stash:
                     stash_msg = " (Current changes stashed)"
                 else:
-                    return {"status": "ERROR", "message": f"Failed to stash changes: {out_stash}"}
+                    return create_error_result(message=f"Failed to stash changes: {out_stash}")
 
         # Reset hard
         success, output = git_cmd(["reset", "--hard", tag_name])
         if success:
-            return {
-                "status": "SUCCESS",
-                "message": f"Restored to checkpoint '{name}'{stash_msg}.",
-                "details": output,
-            }
-        return {"status": "ERROR", "message": f"Failed to restore: {output}"}
+            return create_success_result(
+                message=f"Restored to checkpoint '{name}'{stash_msg}.", data={"details": output}
+            )
+        return create_error_result(message=f"Failed to restore: {output}")
 
     elif action == "list":
         success, output = git_cmd(["tag", "-l", f"{prefix}*"])
         if not success:
-            return {"status": "ERROR", "message": f"Failed to list checkpoints: {output}"}
+            return create_error_result(message=f"Failed to list checkpoints: {output}")
 
         tags = output.splitlines()
         checkpoints = [t[len(prefix) :] for t in tags if t.strip() and t.startswith(prefix)]
-        return {"status": "SUCCESS", "checkpoints": checkpoints, "count": len(checkpoints)}
+        return create_success_result(
+            message=f"Found {len(checkpoints)} checkpoints.",
+            data={"checkpoints": checkpoints, "count": len(checkpoints)},
+        )
 
-    return {"status": "ERROR", "message": f"Unknown action: {action}"}
+    return create_error_result(message=f"Unknown action: {action}")
 
 
 # ==============================================================================

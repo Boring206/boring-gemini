@@ -24,6 +24,9 @@ from pydantic import Field
 
 from ...paths import get_boring_path
 from ...security import SecurityScanner  # Phase 14 Enhancement
+
+# V11.2.2: Standardization
+from ...types import BoringResult, create_error_result, create_success_result
 from ...vibe.engine import VibeEngine
 from ...vibe.handlers.generic import GenericHandler
 from ...vibe.handlers.javascript import JavascriptHandler
@@ -107,7 +110,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
             Optional[str], Field(description="測試輸出目錄 (預設: tests/unit/ 或 tests/)")
         ] = None,
         project_path: Annotated[Optional[str], Field(description="專案根目錄 (自動偵測)")] = None,
-    ) -> dict:
+    ) -> BoringResult:
         """
         🧪 自動生成單元測試 - 分析檔案並生成建議測試程式碼。
         支援平台: Python (pytest), JavaScript/TypeScript (jest/vitest)
@@ -118,7 +121,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         """
         project_root, error = _get_project_root_or_error(project_path)
         if error:
-            return error
+            return create_error_result(error.get("message", "Unknown error"))
 
         # 解析檔案路徑
         target_file = Path(file_path)
@@ -126,7 +129,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
             target_file = project_root / file_path
 
         if not target_file.exists():
-            return {"status": "ERROR", "message": f"❌ 找不到檔案: {file_path}"}
+            return create_error_result(f"❌ 找不到檔案: {file_path}")
 
         try:
             # 1. 使用 Engine 分析
@@ -134,11 +137,9 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
             result = global_engine.analyze_for_test_gen(str(target_file), source)
 
             if not result.functions and not result.classes:
-                return {
-                    "status": "NO_TESTABLE",
-                    "message": "😅 沒有找到可測試的導出函式或類別",
-                    "file": str(target_file),
-                }
+                return create_success_result(
+                    message="😅 沒有找到可測試的導出函式或類別", data={"file": str(target_file)}
+                )
 
             # 2. V10.21: RAG 搜尋現有測試風格
             test_style_hints = []
@@ -189,27 +190,26 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
 
             rag_status = "✅ RAG 風格參考" if test_style_hints else "⚠️ RAG 未啟用"
 
-            return {
-                "status": "SUCCESS",
-                "message": f"✅ 已生成 {result.source_language} 測試！",
-                "test_file": str(test_file),
-                "functions_count": len(result.functions),
-                "classes_count": len(result.classes),
-                "rag_enhanced": bool(test_style_hints),
-                "vibe_summary": f"🧪 為 `{target_file.name}` 生成了 {len(result.functions)} 個測試\n"
-                f"📁 測試檔案: `{test_file.relative_to(project_root)}`\n"
-                f"🌐 語言: {result.source_language}\n"
-                f"🔗 {rag_status}",
-            }
+            return create_success_result(
+                message=f"✅ 已生成 {result.source_language} 測試！\n檔案: {test_file.relative_to(project_root)}\n{rag_status}",
+                data={
+                    "test_file": str(test_file),
+                    "functions_count": len(result.functions),
+                    "classes_count": len(result.classes),
+                    "rag_enhanced": bool(test_style_hints),
+                    "vibe_summary": f"🧪 為 `{target_file.name}` 生成了 {len(result.functions)} 個測試\n"
+                    f"📁 測試檔案: `{test_file.relative_to(project_root)}`\n"
+                    f"🌐 語言: {result.source_language}\n"
+                    f"🔗 {rag_status}",
+                },
+            )
 
         except ValueError as e:
-            return {
-                "status": "ERROR",
-                "message": f"❌ 不支援的檔案類型: {target_file.suffix}",
-                "detail": str(e),
-            }
+            return create_error_result(
+                f"❌ 不支援的檔案類型: {target_file.suffix}", error_details=str(e)
+            )
         except Exception as e:
-            return {"status": "ERROR", "message": f"❌ 分析失敗: {str(e)}"}
+            return create_error_result(f"❌ 分析失敗: {str(e)}")
 
     # === boring_code_review ===
     @mcp.tool(
@@ -235,7 +235,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
             ),
         ] = "standard",
         project_path: Annotated[Optional[str], Field(description="專案根目錄 (自動偵測)")] = None,
-    ) -> dict:
+    ) -> BoringResult:
         """
         🔍 AI 程式碼審查 - 分析程式碼品質並給出改善建議。
         支援平台: Python, JavaScript, TypeScript
@@ -246,14 +246,14 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         """
         project_root, error = _get_project_root_or_error(project_path)
         if error:
-            return error
+            return create_error_result(error.get("message", "Unknown error"))
 
         target_file = Path(file_path)
         if not target_file.is_absolute():
             target_file = project_root / file_path
 
         if not target_file.exists():
-            return {"status": "ERROR", "message": f"❌ 找不到檔案: {file_path}"}
+            return create_error_result(f"❌ 找不到檔案: {file_path}")
 
         try:
             source = target_file.read_text(encoding="utf-8")
@@ -289,14 +289,15 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
                 if is_minimal(verbosity):
                     message = f"✅ {target_file.name}: 無問題"
 
-                return {
-                    "status": "SUCCESS",
-                    "message": message,
-                    "file": str(target_file),
-                    "issues_count": 0,
-                    "brain_patterns_used": len(brain_patterns),
-                    "vibe_summary": message,
-                }
+                return create_success_result(
+                    message=message,
+                    data={
+                        "file": str(target_file),
+                        "issues_count": 0,
+                        "brain_patterns_used": len(brain_patterns),
+                        "vibe_summary": message,
+                    },
+                )
 
             # 按嚴重程度排序
             result.issues.sort(key=lambda x: {"high": 0, "medium": 1, "low": 2}.get(x.severity, 3))
@@ -376,30 +377,31 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
 
             brain_status = "✅ Brain Pattern 整合" if brain_patterns else "⚠️ BrainManager 未啟用"
 
-            return {
-                "status": "SUCCESS",
-                "file": str(target_file),
-                "issues_count": len(result.issues),
-                "brain_patterns_used": len(brain_patterns),
-                "brain_enhanced": bool(brain_patterns),
-                "issues": [
-                    {
-                        "category": i.category,
-                        "severity": i.severity,
-                        "message": i.message,
-                        "line": i.line,
-                    }
-                    for i in result.issues
-                ],
-                "brain_patterns": brain_patterns,
-                "vibe_summary": "\n".join(summary_lines) + f"\n\n🔗 {brain_status}",
-                "suggested_fix_prompt": fix_prompt,
-            }
+            return create_success_result(
+                message="\n".join(summary_lines) + f"\n\n🔗 {brain_status}",
+                data={
+                    "file": str(target_file),
+                    "issues_count": len(result.issues),
+                    "brain_patterns_used": len(brain_patterns),
+                    "brain_enhanced": bool(brain_patterns),
+                    "issues": [
+                        {
+                            "category": i.category,
+                            "severity": i.severity,
+                            "message": i.message,
+                            "line": i.line,
+                        }
+                        for i in result.issues
+                    ],
+                    "brain_patterns": brain_patterns,
+                    "suggested_fix_prompt": fix_prompt,
+                },
+            )
 
         except ValueError:
-            return {"status": "ERROR", "message": f"❌ 不支援的格式: {target_file.suffix}"}
+            return create_error_result(f"❌ 不支援的格式: {target_file.suffix}")
         except Exception as e:
-            return {"status": "ERROR", "message": f"❌ 審查失敗: {str(e)}"}
+            return create_error_result(f"❌ 審查失敗: {str(e)}")
 
     # === boring_perf_tips ===
     @mcp.tool(
@@ -416,21 +418,21 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
             str,
             Field(description="輸出詳細程度: 'minimal', 'standard' (預設), 'verbose'"),
         ] = "standard",
-    ) -> dict:
+    ) -> BoringResult:
         """
         ⚡ 效能分析提示 - 專注於程式碼效能瓶頸檢測。
         支援平台: Python, JavaScript, TypeScript
         """
         project_root, error = _get_project_root_or_error(project_path)
         if error:
-            return error
+            return create_error_result(error.get("message", "Unknown error"))
 
         target_file = Path(file_path)
         if not target_file.is_absolute():
             target_file = project_root / file_path
 
         if not target_file.exists():
-            return {"status": "ERROR", "message": f"❌ 找不到檔案: {file_path}"}
+            return create_error_result(f"❌ 找不到檔案: {file_path}")
 
         try:
             source = target_file.read_text(encoding="utf-8")
@@ -444,13 +446,14 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
                 if is_minimal(verbosity):
                     msg = f"⚡ {target_file.name}: 無效能問題"
 
-                return {
-                    "status": "SUCCESS",
-                    "message": msg,
-                    "file": str(target_file),
-                    "tips_count": 0,
-                    "vibe_summary": msg,
-                }
+                return create_success_result(
+                    message=msg,
+                    data={
+                        "file": str(target_file),
+                        "tips_count": 0,
+                        "vibe_summary": msg,
+                    },
+                )
 
             # Generate Perf Fix Prompt
             fix_prompt = f"Please analyze performance bottlenecks in `{target_file.name}` and apply the following optimizations:\n"
@@ -467,16 +470,18 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
                 for issue in result.issues:
                     severity_counts[issue.severity] = severity_counts.get(issue.severity, 0) + 1
 
-                return {
-                    "status": "SUCCESS",
-                    "vibe_summary": (
-                        f"⚡ {target_file.name}: {len(result.issues)} 效能問題\n"
-                        f"🐌 High: {severity_counts['high']} | 🐢 Medium/Low: {severity_counts['medium'] + severity_counts['low']}\n"
-                        f"💡 Use verbosity='standard' for tips"
-                    ),
-                    "file": str(target_file),
-                    "tips_count": len(result.issues),
-                }
+                return create_success_result(
+                    message=f"⚡ {target_file.name}: {len(result.issues)} 效能問題",
+                    data={
+                        "vibe_summary": (
+                            f"⚡ {target_file.name}: {len(result.issues)} 效能問題\n"
+                            f"🐌 High: {severity_counts['high']} | 🐢 Medium/Low: {severity_counts['medium'] + severity_counts['low']}\n"
+                            f"💡 Use verbosity='standard' for tips"
+                        ),
+                        "file": str(target_file),
+                        "tips_count": len(result.issues),
+                    },
+                )
 
             # 2. STANDARD: Top 5 issues
             if is_standard(verbosity):
@@ -492,13 +497,15 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
                     summary_lines.append(f"\n... and {len(result.issues) - 5} more issues.")
                     summary_lines.append("💡 Use verbosity='verbose' for full list.")
 
-                return {
-                    "status": "SUCCESS",
-                    "file": str(target_file),
-                    "tips_count": len(result.issues),
-                    "vibe_summary": "\n".join(summary_lines),
-                    "suggested_fix_prompt": fix_prompt,
-                }
+                return create_success_result(
+                    message="\n".join(summary_lines),
+                    data={
+                        "file": str(target_file),
+                        "tips_count": len(result.issues),
+                        "vibe_summary": "\n".join(summary_lines),
+                        "suggested_fix_prompt": fix_prompt,
+                    },
+                )
 
             # 3. VERBOSE: Full list (Legacy behavior)
             summary_lines = [f"⚡ Performance Tips: `{target_file.name}`", ""]
@@ -508,22 +515,24 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
                 if issue.suggestion:
                     summary_lines.append(f"   🚀 優化: {issue.suggestion}")
 
-            return {
-                "status": "SUCCESS",
-                "file": str(target_file),
-                "tips_count": len(result.issues),
-                "tips": [
-                    {"message": i.message, "line": i.line, "suggestion": i.suggestion}
-                    for i in result.issues
-                ],
-                "vibe_summary": "\n".join(summary_lines),
-                "suggested_fix_prompt": fix_prompt,
-            }
+            return create_success_result(
+                message="\n".join(summary_lines),
+                data={
+                    "file": str(target_file),
+                    "tips_count": len(result.issues),
+                    "tips": [
+                        {"message": i.message, "line": i.line, "suggestion": i.suggestion}
+                        for i in result.issues
+                    ],
+                    "vibe_summary": "\n".join(summary_lines),
+                    "suggested_fix_prompt": fix_prompt,
+                },
+            )
 
         except ValueError:
-            return {"status": "ERROR", "message": f"❌ 不支援的格式: {target_file.suffix}"}
+            return create_error_result(f"❌ 不支援的格式: {target_file.suffix}")
         except Exception as e:
-            return {"status": "ERROR", "message": f"❌ 分析失敗: {str(e)}"}
+            return create_error_result(f"❌ 分析失敗: {str(e)}")
 
     # === boring_arch_check ===
     @mcp.tool(
@@ -538,7 +547,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         output_format: Annotated[
             str, Field(description="Output format: 'mermaid' or 'json'.")
         ] = "mermaid",
-    ) -> str:
+    ) -> BoringResult:
         """
         Analyze project dependencies and architecture.
 
@@ -549,7 +558,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
             None
         )  # project_path is now optional and handled by get_root
         if error:
-            return error.get("message")
+            return create_error_result(error.get("message", "Unknown error"))
 
         project_root = Path(root_str)
         # Handle both absolute and relative paths
@@ -578,7 +587,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
                 ]
             )
         else:
-            return f"❌ Target not found: {target}"
+            return create_error_result(f"❌ Target not found: {target}")
 
         edges = []
         nodes = set()
@@ -606,7 +615,10 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
                 continue
 
         if output_format == "json":
-            return str({"nodes": list(nodes), "edges": edges})
+            return create_success_result(
+                message="✅ Dependency analysis complete (JSON)",
+                data={"nodes": list(nodes), "edges": edges},
+            )
 
         # Mermaid format
         lines = ["graph TD"]
@@ -630,7 +642,11 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
             lines.append(f'    {s_id}["{src}"] --> {d_id}["{dst}"]')
             processed_count += 1
 
-        return "\n".join(lines)
+        mermaid_graph = "\n".join(lines)
+        return create_success_result(
+            message=mermaid_graph,
+            data={"mermaid": mermaid_graph, "node_count": len(nodes), "edge_count": len(edges)},
+        )
 
     # === boring_doc_gen ===
     @mcp.tool(
@@ -642,7 +658,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
     @audited
     def boring_doc_gen(
         target_path: Annotated[str, Field(description="File or directory to scan.")] = ".",
-    ) -> str:
+    ) -> BoringResult:
         """
         Extract documentation comments and generate an API reference.
 
@@ -654,7 +670,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         """
         root_str, error = _get_project_root_or_error(None)
         if error:
-            return error.get("message")
+            return create_error_result(error.get("message", "Unknown error"))
 
         project_root = Path(root_str)
         # Handle both absolute and relative paths
@@ -684,7 +700,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
                 ]
             )
         else:
-            return f"❌ Target not found: {target}"
+            return create_error_result(f"❌ Target not found: {target}")
 
         doc_output = [f"# API Documentation\n\nGenerated for: `{target_path}`\n"]
 
@@ -717,7 +733,11 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
             except Exception as e:
                 doc_output.append(f"<!-- Error processing {file_path.name}: {e} -->\n")
 
-        return "\n".join(doc_output)
+        doc_content = "\n".join(doc_output)
+        return create_success_result(
+            message=doc_content,
+            data={"documentation": doc_content, "files_scanned": len(files_to_scan)},
+        )
 
     # === boring_vibe_check ===
     @mcp.tool(
@@ -738,7 +758,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
                 description="Output verbosity: 'minimal' (score + tier only ~50 tokens), 'standard' (score + top issues ~300 tokens), 'verbose' (full report ~800+ tokens). Default: 'standard'."
             ),
         ] = "standard",
-    ) -> dict:
+    ) -> BoringResult:  # Forward reference or use BoringResult directly if imported
         """
         📊 Vibe Check - 全面健康度檢查與評分。
         整合多項指標 (Lint, Security, Doc)，提供遊戲化評分與一鍵修復 Prompt。
@@ -749,7 +769,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         """
         root_str, error = _get_project_root_or_error(project_path)
         if error:
-            return error
+            return create_error_result(error.get("message", "Unknown error"))
 
         project_root = Path(root_str)
         # Handle both absolute and relative paths
@@ -763,7 +783,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
             target = project_root / target_path
 
         if not target.exists():
-            return {"status": "ERROR", "message": f"❌ 找不到目標: {target}"}
+            return create_error_result(f"❌ 找不到目標: {target}")
 
         # 1. 收集檔案
         files_to_check = []
@@ -780,7 +800,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
             files_to_check.extend(candidates)
 
         if not files_to_check:
-            return {"status": "ERROR", "message": "⚠️ 找不到可分析的程式碼檔案 (.py, .js, .ts)"}
+            return create_error_result("⚠️ 找不到可分析的程式碼檔案 (.py, .js, .ts)")
 
         # Scoring Variables
         base_score = 100
@@ -1023,12 +1043,14 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
             summary_lines.append("\n💡 Use verbosity='verbose' for full report")
             vibe_summary = "\n".join(summary_lines)
 
-        return {
-            "status": "SUCCESS",
-            "vibe_score": final_score,
-            "tier": tier,
-            "vibe_summary": vibe_summary,
-        }
+        return create_success_result(
+            message=vibe_summary,
+            data={
+                "vibe_score": final_score,
+                "tier": tier,
+                "vibe_summary": vibe_summary,
+            },
+        )
 
     # === boring_impact_check ===
     @mcp.tool(
@@ -1045,7 +1067,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         max_depth: Annotated[
             int, Field(description="追蹤深度 (1=直接依賴, 2=間接依賴, 預設 2)")
         ] = 2,
-    ) -> dict:
+    ) -> BoringResult:
         """
         📡 Impact Analysis - 預判修改帶來的全局衝擊。
         Reverse Dependency Analysis with multi-level tracking (Phase 15 Enhancement).
@@ -1056,7 +1078,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         """
         root_str, error = _get_project_root_or_error(project_path)
         if error:
-            return error
+            return create_error_result(error.get("message", "Unknown error"))
 
         project_root = Path(root_str)
         # Handle both absolute and relative paths
@@ -1070,7 +1092,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
             target = project_root / target_path
 
         if not target.exists() or not target.is_file():
-            return {"status": "ERROR", "message": f"❌ 找不到目標檔案: {target_path}"}
+            return create_error_result(f"❌ 找不到目標檔案: {target_path}")
 
         # 1. 識別目標特徵 for fuzzy matching
         target_stem = target.stem  # e.g., "utils"
@@ -1253,27 +1275,29 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
             else "⚠️ RAG 未啟用"
         )
 
-        return {
-            "status": "SUCCESS",
-            "impact_level": impact_level,
-            "affected_count": len(all_affected),
-            "direct_count": len(direct_dependents),
-            "indirect_count": len(indirect_dependents),
-            "semantic_related_count": len(semantic_related),
-            "rag_enhanced": bool(semantic_related),
-            "affected_files": list(all_affected),
-            "direct_dependents": list(direct_dependents),
-            "indirect_dependents": list(indirect_dependents),
-            "semantic_related": semantic_related,
-            "mermaid": mermaid_graph,
-            "vibe_summary": f"📡 **Impact Analysis**: `{rel_target}`\n"
-            f"⚠️ **Impact Level**: {impact_level}\n"
-            f"🔗 **Direct (L1)**: {len(direct_dependents)}\n"
-            f"🔗 **Indirect (L2+)**: {len(indirect_dependents)}\n"
-            f"🧠 **Semantic (RAG)**: {len(semantic_related)}\n"
-            f"🔗 {rag_status}",
-            "suggested_fix_prompt": verify_prompt,
-        }
+        return create_success_result(
+            message=f"📡 Impact Analysis: {rel_target}\nImpact Level: {impact_level}\nDirect Dependent Count: {len(direct_dependents)}\nIndirect Dependent Count: {len(indirect_dependents)}\n{rag_status}\n\n{verify_prompt}",
+            data={
+                "impact_level": impact_level,
+                "affected_count": len(all_affected),
+                "direct_count": len(direct_dependents),
+                "indirect_count": len(indirect_dependents),
+                "semantic_related_count": len(semantic_related),
+                "rag_enhanced": bool(semantic_related),
+                "affected_files": list(all_affected),
+                "direct_dependents": list(direct_dependents),
+                "indirect_dependents": list(indirect_dependents),
+                "semantic_related": semantic_related,
+                "mermaid": mermaid_graph,
+                "vibe_summary": f"📡 **Impact Analysis**: `{rel_target}`\n"
+                f"⚠️ **Impact Level**: {impact_level}\n"
+                f"🔗 **Direct (L1)**: {len(direct_dependents)}\n"
+                f"🔗 **Indirect (L2+)**: {len(indirect_dependents)}\n"
+                f"🧠 **Semantic (RAG)**: {len(semantic_related)}\n"
+                f"🔗 {rag_status}",
+                "suggested_fix_prompt": verify_prompt,
+            },
+        )
 
     # =========================================================================
     # V10.22: Intelligence Tools
@@ -1290,7 +1314,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         file_path: Annotated[str, Field(description="要預測錯誤的檔案路徑")],
         limit: Annotated[int, Field(description="最多返回幾個預測")] = 5,
         project_path: Annotated[Optional[str], Field(description="專案根目錄")] = None,
-    ) -> dict:
+    ) -> BoringResult:
         """
         🔮 預測錯誤 - 根據歷史模式預測可能發生的錯誤。
 
@@ -1301,7 +1325,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         """
         project_root, error = _get_project_root_or_error(project_path)
         if error:
-            return error
+            return create_error_result(error.get("message", "Unknown error"))
 
         # Try to use PredictiveAnalyzer
         predictions = []
@@ -1322,11 +1346,10 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
                     predictions.append(type("Prediction", (), p)())
 
         if not predictions:
-            return {
-                "status": "NO_DATA",
-                "message": "📊 尚無足夠歷史資料進行預測。繼續使用系統累積資料！",
-                "file_path": file_path,
-            }
+            return create_error_result(
+                f"📊 尚無足夠歷史資料進行預測。繼續使用系統累積資料！\n檔案: {file_path}",
+                error_details="NO_DATA",
+            )
 
         # Format results
         result_items = []
@@ -1353,13 +1376,15 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
             summary += f"{i}. {conf_bar} **{item['error_type']}** ({item['confidence'] * 100:.0f}% confidence)\n"
             summary += f"   💡 {item['prevention_tip']}\n"
 
-        return {
-            "status": "SUCCESS",
-            "predictions": result_items,
-            "top_prediction": top,
-            "file_path": file_path,
-            "vibe_summary": summary,
-        }
+        return create_success_result(
+            message=summary,
+            data={
+                "predictions": result_items,
+                "top_prediction": top,
+                "file_path": file_path,
+                "vibe_summary": summary,
+            },
+        )
 
     @mcp.tool(
         description="📊 專案健康評分 (Project health score). "
@@ -1370,7 +1395,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
     @audited
     def boring_health_score(
         project_path: Annotated[Optional[str], Field(description="專案根目錄")] = None,
-    ) -> dict:
+    ) -> BoringResult:
         """
         📊 專案健康評分 - 綜合分析專案狀態。
 
@@ -1380,14 +1405,14 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         - 執行效率 (30% 權重)
         - 趨勢分析和建議
         """
-        try:
-            project_root = _get_project_root_or_error(project_path)
-        except Exception as e:
-            return {"status": "ERROR", "message": str(e)}
+        root_str, error = _get_project_root_or_error(project_path)
+        if error:
+            return create_error_result(error.get("message", "Unknown error"))
+        project_root = Path(root_str)
 
         storage = _get_storage(project_root)
         if not storage:
-            return {"status": "ERROR", "message": "Storage 未初始化"}
+            return create_error_result("Storage 未初始化")
 
         # Get health score
         health = storage.get_health_score()
@@ -1429,14 +1454,16 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
 - {trend.get("recommendation", "")}
 """
 
-        return {
-            "status": "SUCCESS",
-            "score": score,
-            "grade": grade,
-            "health": health,
-            "trend": trend,
-            "vibe_summary": summary,
-        }
+        return create_success_result(
+            message=summary,
+            data={
+                "score": score,
+                "grade": grade,
+                "breakdown": breakdown,
+                "trend": trend,
+                "vibe_summary": summary,
+            },
+        )
 
     @mcp.tool(
         description="🧠 優化上下文 (Optimize context for LLM). "
@@ -1452,7 +1479,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
             Optional[str], Field(description="相關錯誤訊息 (最高優先級)")
         ] = None,
         project_path: Annotated[Optional[str], Field(description="專案根目錄")] = None,
-    ) -> dict:
+    ) -> BoringResult:
         """
         🧠 上下文優化 - 智能壓縮程式碼以減少 token 使用。
 
@@ -1462,17 +1489,17 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         - 壓縮文檔和註釋
         - 保持語義完整性
         """
-        try:
-            project_root = _get_project_root_or_error(project_path)
-        except Exception as e:
-            return {"status": "ERROR", "message": str(e)}
+        root_str, error = _get_project_root_or_error(project_path)
+        if error:
+            return create_error_result(error.get("message", "Unknown error"))
+        project_root = Path(root_str)
 
         try:
             from ..intelligence import SmartContextBuilder
 
             builder = SmartContextBuilder(max_tokens=max_tokens, project_root=project_root)
         except ImportError:
-            return {"status": "ERROR", "message": "Intelligence 模組未安裝"}
+            return create_error_result("Intelligence 模組未安裝")
 
         # Add error context (highest priority)
         if error_message:
@@ -1498,18 +1525,20 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         report = builder.get_compression_report()
         stats = builder.stats
 
-        return {
-            "status": "SUCCESS",
-            "optimized_context": optimized,
-            "stats": {
-                "original_tokens": stats.original_tokens if stats else 0,
-                "optimized_tokens": stats.optimized_tokens if stats else 0,
-                "compression_ratio": stats.compression_ratio if stats else 1.0,
-                "sections_removed": stats.sections_removed if stats else 0,
-                "duplicates_merged": stats.duplicates_merged if stats else 0,
+        return create_success_result(
+            message=report,
+            data={
+                "optimized_context": optimized,
+                "stats": {
+                    "original_tokens": stats.original_tokens if stats else 0,
+                    "optimized_tokens": stats.optimized_tokens if stats else 0,
+                    "compression_ratio": stats.compression_ratio if stats else 1.0,
+                    "sections_removed": stats.sections_removed if stats else 0,
+                    "duplicates_merged": stats.duplicates_merged if stats else 0,
+                },
+                "vibe_summary": report,
             },
-            "vibe_summary": report,
-        }
+        )
 
     return {
         "boring_test_gen": boring_test_gen,

@@ -26,7 +26,7 @@ class TestGitTools:
 
         res = boring_hooks_install()
 
-        assert res["status"] == "SUCCESS"
+        assert res["status"] == "success"
         mock_manager.install_all.assert_called_once()
 
     @patch("boring.mcp.tools.git.get_project_root_or_error")
@@ -48,7 +48,7 @@ class TestGitTools:
 
         res = boring_hooks_install()
 
-        assert res["status"] == "SKIPPED"
+        assert res["status"] == "success"  # Already installed returns success
         mock_manager.install_all.assert_not_called()
 
     @patch("boring.mcp.tools.git.get_project_root_or_error")
@@ -64,7 +64,7 @@ class TestGitTools:
 
         res = boring_hooks_uninstall()
 
-        assert res["status"] == "SUCCESS"
+        assert res["status"] == "success"
         mock_manager.uninstall_all.assert_called_once()
 
     @patch("boring.mcp.tools.git.get_project_root_or_error")
@@ -80,4 +80,6 @@ class TestGitTools:
 
         res = boring_hooks_status()
 
-        assert res == {"foo": "bar"}
+        # Now returns BoringResult with data field
+        assert res["status"] == "success"
+        assert res["data"] == {"foo": "bar"}

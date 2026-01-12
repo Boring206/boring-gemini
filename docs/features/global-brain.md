@@ -228,5 +228,5 @@ To share with team:
 
 ## 📚 References
 
-- [Knowledge System Guide](knowledge.md)
-- [Brain Manager API](../api/brain_manager.md)
+- [Knowledge System Guide](../guides/knowledge-system.md)
+- [Brain Manager API](../api/intelligence_zh.md)

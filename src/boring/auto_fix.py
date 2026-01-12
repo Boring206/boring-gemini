@@ -110,7 +110,7 @@ class AutoFixPipeline:
                 success=fix_result.get("status") == "SUCCESS",
                 duration_seconds=duration,
             )
-            self.attempts.append(attempt)
+            self.attempts += [attempt]
 
             previous_issue_count = issue_count
 

@@ -46,12 +46,14 @@ Designed for the modern Python stack. Boring natively supports **[uv](https://gi
 ### ⚓ Pillar IV: [Production-Grade Safety (Safety Net)](docs/features/shadow-mode.md)
 Trust is built on safety. Boring automatically creates **Git Checkpoints** before any risky operation. Combined with **Shadow Mode**, you have a "undo" button for AI agentic actions, ensuring your repository remains stable even during complex refactors.
 
-### 🧬 Pillar V: [Cognitive Evolution (V11.2.1)](docs/features/cognitive.md)
-Not just execution, but evolution. V11.2 introduces **Self-Correcting Pipelines** and **Knowledge Swarm** for global knowledge sharing.
+### 🧬 Pillar V: [Cognitive Evolution (V11.2.2)](docs/features/cognitive.md)
+Not just execution, but evolution. V11.2 introduces **Adaptive Reasoning & Visualization**.
+- **Critical Thinking**: Built-in multi-layered reasoning states ensuring the Agent performs deep analysis before executing complex logic.
 - **Active Causal Memory**: Automatically learns from errors, building a "intuition" library.
-- **System 2 Reasoning**: Dynamically switches to deep thinking mode based on task complexity.
-- **Skill Compilation**: Condenses complex multi-step flows into single skills.
+- **Lightweight Mode (BORING_LAZY_MODE)**:
+  - **Benefits**: Zero-friction, zero-pollution. Usage in new directories caches state in a global directory instead of creating a local `.boring` folder. Perfect for "Quick Fixes" or "Temporary Scans".
 - **Live Tool Synthesis**: The Agent can write and compile its own Python tools on the fly.
+- **Interactive Brain Map**: Visualize your project's knowledge clusters with a physics-based network graph (Vis.js).
 
 ---
 

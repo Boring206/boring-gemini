@@ -35,7 +35,7 @@ class TestMCPHttp:
 
     def test_mcp_server_card_version(self):
         # We just updated this!
-        assert MCP_SERVER_CARD["version"] == "11.2.1"
+        assert MCP_SERVER_CARD["version"] == "11.2.2"
 
     @patch("boring.mcp.server.get_server_instance")
     def test_health_endpoint(self, mock_get_server):

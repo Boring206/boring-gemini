@@ -21,7 +21,7 @@ from rich.console import Console
 from boring.core.config import settings
 
 HELP_TEXT = """
-[bold blue]Unified Path Management for Boring (V11.0.0)
+[bold blue]Unified Path Management for Boring (V11.2.2)
  - Enterprise AI Development Agent (MCP)[/bold blue]
 
 A powerful AI coding assistant designed for IDEs (Cursor, VS Code) and Gemini.
@@ -76,6 +76,18 @@ def main(
         settings.LLM_BASE_URL = base_url
     if llm_model:
         settings.LLM_MODEL = llm_model
+
+    # V11.2 Lightweight Mode Detection
+    import os
+
+    project_root = settings.PROJECT_ROOT
+    boring_dir = project_root / ".boring"
+    legacy_memory = project_root / ".boring_memory"
+
+    # If no boring structure exists, enable Lazy Mode (Lightweight UX)
+    if not boring_dir.exists() and not legacy_memory.exists():
+        os.environ["BORING_LAZY_MODE"] = "1"
+        # We don't print here to keep output clean, but individual commands might notify.
 
 
 console = Console()

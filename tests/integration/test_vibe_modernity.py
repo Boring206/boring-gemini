@@ -67,8 +67,10 @@ class TestVibeModernity(unittest.TestCase):
         )
 
     @patch("boring.mcp.tools.vibe.vibe_engine")
+    @patch("boring.mcp.tools.vibe._get_brain_manager")
+    @patch("boring.mcp.tools.vibe._get_storage")
     @patch("boring.mcp.tools.vibe.get_boring_path")
-    def test_vibe_check_execution(self, mock_get_path, mock_engine):
+    def test_vibe_check_execution(self, mock_get_path, mock_storage, mock_brain, mock_engine):
         """Verify boring_vibe_check execution logic."""
         # Retrieve the function instance from registration
         tools = self._get_server_and_tools()
@@ -77,6 +79,8 @@ class TestVibeModernity(unittest.TestCase):
         # Mock Setup (Patches apply to the module namespace)
         mock_get_path.return_value = Path("/tmp/.boring/memory")
         mock_engine.perform_code_review.return_value = MagicMock(issues=[])
+        mock_brain.return_value = None
+        mock_storage.return_value = None
 
         # Create a real temporary file to satisfy existence check
         import tempfile
@@ -90,9 +94,8 @@ class TestVibeModernity(unittest.TestCase):
             result = boring_code_review(file_path="test.py", project_path=str(project_dir))
 
         # Verify
-        if result["status"] != "SUCCESS":
-            print(f"\n[DEBUG] Tool failed with result: {result}")
-        self.assertEqual(result["status"], "SUCCESS")
+        print(f"DEBUG_RESULT_STATUS: {result['status']}")
+        self.assertEqual(result["status"], "success")
 
 
 if __name__ == "__main__":

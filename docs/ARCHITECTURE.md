@@ -1,7 +1,7 @@
 # Boring for Gemini - 完整架構說明
 
-> **Version**: V10.26.0  
-> **Last Updated**: 2026-01-09
+> **Version**: V11.2.2
+> **Last Updated**: 2026-01-12
 
 ---
 
@@ -21,10 +21,10 @@
     └───────┬───────┘ └───────┬───────┘ └───────┬───────┘ └───────┬───────┘
             │                 │                 │                 │
      ┌──────┴──────┐   ┌──────┴──────┐   ┌──────┴──────┐   ┌──────┴──────┐
-     │ • RAG       │   │ • Judge     │   │ • Agent     │   │ • MCP Server│
-     │ • Brain     │   │ • Verify    │   │ • Shadow    │   │ • Router    │
-     │ • Predict   │   │ • Security  │   │ • Session   │   │ • Plugin    │
-     │ • Context   │   │ • Vibe      │   │ • Git       │   │ • Workspace │
+     │ • SQLite Brain  │   │ • Judge     │   │ • Agent     │   │ • MCP Server│
+     │ • Brain Map   │   │ • Verify    │   │ • Shadow    │   │ • Router    │
+     │ • Predict     │   │ • Security  │   │ • Session   │   │ • Plugin    │
+     │ • Context     │   │ • Vibe      │   │ • Git       │   │ • Workspace │
      └─────────────┘   └─────────────┘   └─────────────┘   └─────────────┘
 ```
 
@@ -46,9 +46,9 @@
 │  │  語義搜尋    │   │  記憶學習   │   │   錯誤預測   │   │  上下文管理  │     │
 │  └──────┬──────┘   └──────┬──────┘   └──────┬──────┘   └──────┬──────┘     │
 │         │                 │                 │                 │            │
-│  • rag_search      • learn          • predict_errors  • context           │
-│  • rag_index       • recall         • predict_impact  • optimize_context  │
-│  • rag_status      • forget         • risk_areas      • cache_insights    │
+│  • rag_search      • SQLite Storage • predict_errors  • context           │
+│  • rag_index       • Active Recall  • predict_impact  • optimize_context  │
+│  • rag_status      • Brain Map      • risk_areas      • cache_insights    │
 │                    • brain_stats    • health_score                        │
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -57,7 +57,7 @@
 | 模組 | 功能 | 核心工具 |
 |------|------|----------|
 | **RAG** | 語義搜尋代碼庫 | `boring_rag_search`, `boring_rag_index` |
-| **Brain** | 學習專案模式 | `boring_learn`, `boring_recall`, `boring_forget` |
+| **Brain** | 學習專案模式 (SQLite) | `boring_learn`, `boring_recall`, `boring_forget` |
 | **Predict** | 預測錯誤和影響 | `boring_predict_errors`, `boring_predict_impact` |
 | **Context** | 智能上下文管理 | `boring_context`, `boring_optimize_context` |
 
@@ -141,10 +141,10 @@
 │  │   服務核心   │   │  自然語言路由 │   │   擴充系統   │   │   專案管理   │     │
 │  └──────┬──────┘   └──────┬──────┘   └──────┬──────┘   └──────┬──────┘     │
 │         │                 │                 │                 │            │
-│  • boring_help     • boring()       • list_plugins    • workspace_add     │
-│  • mcp_server      • profile_set    • run_plugin      • workspace_list    │
-│  • prompts         • profile_get    • reload_plugins  • workspace_switch  │
-│  • resources                                          • workspace_remove  │
+│  • boring_help     • boring()       • list_plugins    • Lazy Init         │
+│  • mcp_server      • profile_set    • run_plugin      • workspace_add     │
+│  • prompts         • profile_get    • reload_plugins  • Dashboard (Vis.js)│
+│  • resources                                          • Lightweight Mode  │
 │                                                                              │
 │  ┌─────────────┐   ┌─────────────┐                                          │
 │  │   SpecKit   │   │  Discovery  │                                          │
@@ -163,12 +163,12 @@
 | **MCP Server** | 服務核心 | `boring_help`, Prompts, Resources |
 | **Tool Router** | 自然語言路由 | `boring()` (萬用入口) |
 | **Plugin** | 擴充系統 | `boring_list_plugins`, `boring_run_plugin` |
-| **Workspace** | 專案管理 | `boring_workspace_add`, `boring_workspace_switch` |
+| **Workspace** | 專案管理 | `Lazy Init` (Lightweight Mode), Dashboard (Vis.js) |
 | **SpecKit** | 規格驅動開發 | `boring_speckit_plan`, `boring_speckit_checklist` |
 
 ---
 
-## 🗂️ 模組結構 (V10.26.0)
+## 🗂️ 模組結構 (V11.2.2)
 
 ```
 src/boring/
@@ -179,7 +179,7 @@ src/boring/
 │   ├── tool_profiles.py          # Profile 管理
 │   ├── prompts.py                # Prompt 定義
 │   │
-│   ├── tools/                    # ✨ V10.26 模組化工具
+│   ├── tools/                    # ✨ 模組化工具
 │   │   ├── plugins.py            # Plugin 管理 (3 tools)
 │   │   ├── workspace.py          # Workspace 管理 (4 tools)
 │   │   ├── assistant.py          # AI 助手 (3 tools)
@@ -198,7 +198,7 @@ src/boring/
 │   └── vibe_tools.py             # ⚠️ DEPRECATED (re-export wrapper)
 │
 ├── agents/                       # Multi-Agent 系統
-├── brain_manager.py              # 記憶學習
+├── brain_manager.py              # 記憶學習 (SQLite backend)
 ├── intelligence/                 # 預測分析
 ├── judge/                        # 品質評估
 ├── rag/                          # RAG 搜索
@@ -206,7 +206,9 @@ src/boring/
 ├── shadow_mode.py                # Shadow Mode
 ├── verification/                 # 驗證系統
 ├── vibe/                         # Vibe Engine
-└── workspace.py                  # Workspace 管理
+├── workspace.py                  # Workspace 管理
+└── services/                     # 核心服務
+    └── storage.py                # SQLite Storage Engine (New!)
 ```
 
 ---
@@ -239,7 +241,7 @@ src/boring/
 
 ## 🚀 Vibe Session 工作流
 
-V10.25 的核心功能：完整的人機對齊工作流。
+V11.2 的核心功能：完整的人機對齊工作流。
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────┐
@@ -271,12 +273,12 @@ V10.25 的核心功能：完整的人機對齊工作流。
 
 | 版本 | 主要功能 | 日期 |
 |------|----------|------|
+| V11.2.2 | Visual Intelligence (Vis.js Brain Map) | 2026-01-12 |
+| V11.2.0 | Scalability (SQLite + Lightweight) | 2026-01-11 |
+| V11.1.0 | Cognitive Architecture | 2026-01-11 |
+| V10.31 | Safety Net (Checkpoints) | 2026-01-10 |
 | V10.26 | 模組化重構 (~1900 行精簡) | 2026-01-09 |
 | V10.25 | Vibe Session (人機對齊工作流) | 2026-01-08 |
-| V10.24 | Tool Router (自然語言路由) | 2026-01-07 |
-| V10.23 | Intelligence (預測分析) | 2026-01-06 |
-| V10.22 | SpecKit (規格驅動開發) | 2026-01-05 |
-| V10.21 | Vibe Coder Pro (遊戲化) | 2026-01-04 |
 
 ---
 
@@ -297,3 +299,23 @@ V10.25 的核心功能：完整的人機對齊工作流。
 `pip install boring-aicoding` | [GitHub](https://github.com/Boring206/boring-gemini) | [PyPI](https://pypi.org/project/boring-aicoding/)
 
 </div>
+
+## 🛡️ Security Architecture
+
+Boring V11.2 implements a comprehensive "Defense in Depth" strategy:
+
+### 1. Shadow Mode (Runtime Guard)
+- **Role**: Blocks active destructive operations (File/Process/Network).
+- **Control**: User-configurable levels (`DISABLED`, `ENABLED` (Default), `STRICT`).
+- **Mechanism**: Intercepts `boring_` tool calls and checks against sensitive patterns (secrets, config files).
+
+### 2. Live Tool Sandbox (Validator)
+- **Role**: Prevents injection of malicious code in synthesized tools (`boring_synth_tool`).
+- **Mechanism**: AST-based Static Analysis (`SynthesizedToolValidator`).
+- **Policy**:
+    - **Forbidden Imports**: `os`, `sys`, `subprocess`, `shutil`, `socket`
+    - **Forbidden Functions**: `exec()`, `eval()`, `open()`, `compile()`
+
+### 3. Checkpoints (State Safety)
+- **Role**: Automatic Git commits before risky operations (`boring_checkpoint`).
+- **Recovery**: One-click rollback via `git reset`.

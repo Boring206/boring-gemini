@@ -1,11 +1,12 @@
 """
 Boring for Gemini - AI Coding Assistant
 
-V11.2.1 "The Cognitive Evolution Update":
-- **System 2 Reasoning**: Dedicated `ReasoningState` for complex problem decomposition.
-- **Active Causal Memory**: `BrainManager` now explicitly tracks error-causes and solutions (Active Recall).
-- **Live Tool Synthesis**: `boring_synth_tool` allows the Agent to write and hot-reload its own Python tools safely.
-- **Deep Integration**: Shadow Mode binding for synthesized tools and Vibe Check memory injection.
+V11.2.2 "Standardization & Visual Intelligence":
+- **Architectural Standardization**: All core tools now return `BoringResult` (TypedDict) for reliable agentic integration.
+- **Interactive Brain Map**: Physics-based network visualization of project knowledge in the Dashboard.
+- **SQLite Brain**: Migrated persistent knowledge to SQLite for scalability and ACID compliance.
+- **Lightweight Mode**: Zero-config execution with global cache fallback.
+- **Reflex Stability**: High-precision error analysis and Brain-driven automated fixes.
 
 V11.1.0 "Turbo Mode & Wizard Upgrade":
 
@@ -72,7 +73,7 @@ Backward compatibility is maintained - old import paths still work.
 import importlib
 from typing import TYPE_CHECKING
 
-__version__ = "11.2.1"
+__version__ = "11.2.2"
 
 # =============================================================================
 # Lazy Loading Configuration

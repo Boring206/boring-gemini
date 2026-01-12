@@ -2,19 +2,20 @@
 Unit tests for boring.brain_manager module.
 """
 
-import json
 from unittest.mock import MagicMock
 
 import pytest
 
 from boring.brain_manager import BrainManager
+from boring.services.storage import _clear_thread_local_connection
 
 
 @pytest.fixture
 def temp_project(tmp_path):
     project = tmp_path / "project"
     project.mkdir()
-    return project
+    yield project
+    _clear_thread_local_connection()
 
 
 class TestBrainManager:
@@ -56,54 +57,60 @@ class TestBrainManager:
         assert patterns == []
 
     def test_load_patterns_existing(self, temp_project):
-        """Test loading existing patterns."""
+        """Test loading existing patterns (SQLite)."""
         manager = BrainManager(temp_project)
 
-        test_patterns = [
-            {"pattern_id": "1", "pattern_type": "error_solution", "description": "Test"}
-        ]
-        patterns_file = manager.patterns_dir / "patterns.json"
-        patterns_file.write_text(json.dumps(test_patterns), encoding="utf-8")
+        test_pattern = {
+            "pattern_id": "1",
+            "pattern_type": "error_solution",
+            "description": "Test",
+            "context": "test",
+            "solution": "fix",
+            "success_count": 1,
+            "created_at": "2024-01-01",
+            "last_used": "2024-01-01",
+        }
+        manager.storage.upsert_pattern(test_pattern)
 
         patterns = manager._load_patterns()
 
         assert len(patterns) == 1
         assert patterns[0]["pattern_id"] == "1"
 
-    def test_load_patterns_invalid_json(self, temp_project):
-        """Test loading patterns with invalid JSON."""
-        manager = BrainManager(temp_project)
-
-        patterns_file = manager.patterns_dir / "patterns.json"
-        patterns_file.write_text("invalid json", encoding="utf-8")
-
-        patterns = manager._load_patterns()
-
-        assert patterns == []
-
     def test_save_patterns(self, temp_project):
-        """Test saving patterns."""
+        """Test saving patterns (SQLite)."""
         manager = BrainManager(temp_project)
 
-        test_patterns = [{"pattern_id": "1", "test": "data"}]
+        test_patterns = [
+            {
+                "pattern_id": "1",
+                "pattern_type": "test",
+                "description": "abc",
+                "context": "ctx",
+                "solution": "sol",
+                "success_count": 1,
+                "created_at": "now",
+                "last_used": "now",
+            }
+        ]
         manager._save_patterns(test_patterns)
 
-        patterns_file = manager.patterns_dir / "patterns.json"
-        assert patterns_file.exists()
-
-        loaded = json.loads(patterns_file.read_text(encoding="utf-8"))
-        assert loaded == test_patterns
+        # Verify via storage
+        loaded = manager.storage.get_patterns()
+        assert len(loaded) == 1
+        assert loaded[0]["pattern_id"] == "1"
 
     def test_learn_from_memory(self, temp_project):
         """Test learning from memory."""
         manager = BrainManager(temp_project)
 
         mock_storage = MagicMock()
-        mock_storage.get_all_loops.return_value = []
+        mock_storage.get_recent_loops.return_value = []  # Fix api call
+        mock_storage.get_top_errors.return_value = []  # Fix api call
 
         result = manager.learn_from_memory(mock_storage)
 
-        assert "patterns_learned" in result or "status" in result
+        assert "new_patterns" in result or "status" in result
 
     def test_get_relevant_patterns(self, temp_project):
         """Test getting relevant patterns."""
@@ -126,31 +133,18 @@ class TestBrainManager:
 
         relevant = manager.get_relevant_patterns("authentication")
 
-        assert len(relevant) > 0 or isinstance(relevant, list)
+        assert len(relevant) > 0
 
     def test_add_pattern(self, temp_project):
         """Test adding a pattern."""
         manager = BrainManager(temp_project)
 
-        test_patterns = manager._load_patterns()
-        initial_count = len(test_patterns)
-
-        pattern = {
-            "pattern_id": "test-1",
-            "pattern_type": "error_solution",
-            "description": "Test pattern",
-            "context": "test",
-            "solution": "Solution",
-            "success_count": 1,
-            "created_at": "2024-01-01",
-            "last_used": "2024-01-01",
-        }
-
-        test_patterns.append(pattern)
-        manager._save_patterns(test_patterns)
+        # Learn directly
+        manager.learn_pattern("error_solution", "Test pattern", "test", "Solution")
 
         patterns = manager._load_patterns()
-        assert len(patterns) == initial_count + 1
+        assert len(patterns) == 1
+        assert patterns[0]["pattern_id"].startswith("ERROR_SOLUTION")
 
     def test_create_rubric(self, temp_project):
         """Test creating a rubric."""
@@ -159,7 +153,7 @@ class TestBrainManager:
         criteria = [{"name": "Quality", "description": "Good", "weight": 100}]
         manager.create_rubric(name="test_rubric", description="Test description", criteria=criteria)
 
-        rubric_file = manager.rubrics_dir / "test_rubric.json"
-        assert rubric_file.exists() or any(
-            f.name.startswith("test") for f in manager.rubrics_dir.iterdir()
-        )
+        # Verify via get_rubric
+        rubric = manager.get_rubric("test_rubric")
+        assert rubric is not None
+        assert rubric["name"] == "test_rubric"

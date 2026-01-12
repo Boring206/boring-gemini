@@ -256,6 +256,6 @@ export BORING_CACHE_PATH="/tmp/boring_cache"
 
 ## See Also
 
-- [MCP Tools - RAG](./mcp-tools.md#6-rag-memory-boring_rag_search)
-- [Pro Tips - Knowledge](./pro-tips.md#tip-11-cross-project-knowledge-sharing)
-- [Cookbook - Recipe 9](./cookbook.md#recipe-9-rag-knowledge-base)
+- [MCP Tools - RAG](../features/mcp-tools.md#boring_rag_search)
+- [Pro Tips - Knowledge](pro-tips.md#tip-11)
+- [Cookbook - RAG Recipe](cookbook.md#recipe-9-rag-knowledge-base)

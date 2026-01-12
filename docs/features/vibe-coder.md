@@ -33,6 +33,7 @@ The router understands intents across 17 categories:
 | **Review** | `review`, `audit`, `審查`, `健檢` | `code_review`, `security_scan` |
 | **Planning** | `plan`, `architect`, `我想做...` | `prompt_plan` |
 | **Git** | `commit`, `push`, `提交` | `commit` |
+| **Reasoning**| `reason`, `think`, `分析`, `思考` | `critical_think` |
 
 ## 💻 CLI Usage: `boring-route`
 

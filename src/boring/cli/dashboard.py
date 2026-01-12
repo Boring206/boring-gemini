@@ -97,8 +97,15 @@ def main():
 
     st.markdown("---")
 
+    # --- Data Loading ---
+    from boring.services.storage import create_storage
+
+    storage = create_storage(PROJECT_ROOT)
+
     # --- Main Layout ---
-    tab1, tab2, tab3 = st.tabs(["📊 Live Logs", "🧠 Brain Explorer", "⚙️ System Info"])
+    tab1, tab2, tab3, tab4 = st.tabs(
+        ["📊 Live Logs", "🧠 Brain Map", "🧬 Patterns", "⚙️ System Info"]
+    )
 
     with tab1:
         st.subheader("Live Logs")
@@ -116,45 +123,151 @@ def main():
             st.warning("No log file found.")
 
     with tab2:
-        st.subheader("Knowledge Base (.boring_brain)")
+        st.subheader("Brain Map (Visual Knowledge)")
 
-        if BRAIN_DIR.exists():
-            # List structure
-            col_tree, col_content = st.columns([1, 2])
+        patterns = storage.get_patterns(limit=500)
 
-            with col_tree:
-                st.markdown("#### Structure")
-                for root, _dirs, files in os.walk(BRAIN_DIR):
-                    level = root.replace(str(BRAIN_DIR), "").count(os.sep)
-                    indent = "&nbsp;" * 4 * level
-                    st.markdown(f"{indent}📁 **{os.path.basename(root)}/**", unsafe_allow_html=True)
-                    subindent = "&nbsp;" * 4 * (level + 1)
-                    for f in files:
-                        st.markdown(f"{subindent}📄 {f}", unsafe_allow_html=True)
+        if patterns:
+            import pandas as pd
+            import streamlit.components.v1 as components
 
-            with col_content:
-                st.markdown("#### File Viewer")
-                # Simple file selector
-                all_files = []
-                for root, _, files in os.walk(BRAIN_DIR):
-                    for file in files:
-                        if file.endswith(".md") or file.endswith(".json"):
-                            all_files.append(Path(root) / file)
+            df = pd.DataFrame(patterns)
+            if "success_count" not in df.columns:
+                df["success_count"] = 1
+            if "pattern_type" not in df.columns:
+                df["pattern_type"] = "unknown"
 
-                selected_file = st.selectbox(
-                    "Select file to view", all_files, format_func=lambda x: x.name
+            # Metrics
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Total Patterns", len(patterns))
+            c2.metric("Total Successes", df["success_count"].sum())
+            c3.metric("Pattern Types", df["pattern_type"].nunique())
+
+            st.divider()
+
+            # --- Network Graph ---
+            st.markdown("#### Knowledge Graph")
+
+            # Prepare Nodes & Edges
+            nodes = []
+            edges = []
+            types = df["pattern_type"].unique()
+
+            # Central Brain Node
+            nodes.append({"id": 0, "label": "BRAIN", "group": "brain", "value": 20})
+
+            # Type Nodes
+            type_map = {}
+            for i, t in enumerate(types):
+                tid = i + 1
+                type_map[t] = tid
+                nodes.append({"id": tid, "label": t.upper(), "group": "type", "value": 10})
+                edges.append({"from": 0, "to": tid})
+
+            # Pattern Nodes
+            p_base_id = len(types) + 1
+            for i, row in df.iterrows():
+                pid = p_base_id + i
+                val = max(5, min(20, row["success_count"] * 2))
+                label = (
+                    row["pattern_id"][:15] + "..."
+                    if len(row["pattern_id"]) > 15
+                    else row["pattern_id"]
                 )
 
-                if selected_file:
-                    content = selected_file.read_text(encoding="utf-8")
-                    if selected_file.suffix == ".json":
-                        st.json(json.loads(content))
-                    else:
-                        st.markdown(content)
+                nodes.append(
+                    {
+                        "id": pid,
+                        "label": label,
+                        "group": "pattern",
+                        "title": f"ID: {row['pattern_id']}\nSuccess: {row['success_count']}",
+                        "value": val,
+                    }
+                )
+                # Edge to Type
+                tid = type_map.get(row["pattern_type"], 0)
+                edges.append({"from": tid, "to": pid})
+
+            # Vis.js HTML Generation
+            html = f"""
+            <!DOCTYPE HTML>
+            <html>
+            <head>
+              <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+              <style type="text/css">
+                #mynetwork {{
+                  width: 100%;
+                  height: 600px;
+                  background-color: #0e1117;
+                  border: 1px solid #333;
+                  border-radius: 8px;
+                }}
+              </style>
+            </head>
+            <body>
+            <div id="mynetwork"></div>
+            <script type="text/javascript">
+              var nodes = new vis.DataSet({json.dumps(nodes)});
+              var edges = new vis.DataSet({json.dumps(edges)});
+              var container = document.getElementById('mynetwork');
+              var data = {{ nodes: nodes, edges: edges }};
+              var options = {{
+                nodes: {{
+                  shape: 'dot',
+                  font: {{ size: 14, color: '#ffffff' }},
+                  borderWidth: 2
+                }},
+                groups: {{
+                  brain: {{ color: '#ff4b4b', size: 30 }},
+                  type: {{ color: '#00ccff', size: 20 }},
+                  pattern: {{ color: '#00ff99' }}
+                }},
+                edges: {{
+                  width: 1,
+                  color: {{ color: '#555555', highlight: '#00ccff' }},
+                  smooth: {{ type: 'continuous' }}
+                }},
+                physics: {{
+                  stabilization: false,
+                  barnesHut: {{ gravitationalConstant: -2000, springConstant: 0.04 }}
+                }},
+                interaction: {{ hover: true }}
+              }};
+              var network = new vis.Network(container, data, options);
+            </script>
+            </body>
+            </html>
+            """
+            components.html(html, height=620)
+
+            # Interactive Explorer (Table)
+            st.markdown("#### Recent Operations")
+            st.dataframe(
+                df[["pattern_id", "pattern_type", "success_count", "last_used"]].sort_values(
+                    "last_used", ascending=False
+                ),
+                use_container_width=True,
+            )
         else:
-            st.info("Brain directory not initialized yet.")
+            st.info("Brain is empty. Run some tasks to learn patterns!")
 
     with tab3:
+        st.subheader("Pattern Explorer (Database)")
+
+        search = st.text_input("Search Patterns", placeholder="e.g. auth error")
+        if search:
+            results = storage.get_patterns(context_like=search, limit=20)
+        else:
+            results = storage.get_patterns(limit=20)
+
+        for p in results:
+            with st.expander(f"{p.get('pattern_type')} - {p.get('pattern_id')}"):
+                st.markdown(f"**Description:** {p.get('description')}")
+                st.markdown(f"**Context:**\n```\n{p.get('context')}\n```")
+                st.markdown(f"**Solution:**\n```\n{p.get('solution')}\n```")
+                st.caption(f"Successes: {p.get('success_count')} | Last Used: {p.get('last_used')}")
+
+    with tab4:
         st.subheader("System Configuration")
         st.json(
             {

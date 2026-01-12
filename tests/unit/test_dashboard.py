@@ -67,8 +67,8 @@ class TestDashboard:
         # Mock session state to allow attribute access
         mock_st.session_state.last_refresh = time.time()
 
-        # Mock tabs
-        mock_st.tabs.return_value = [MagicMock(), MagicMock(), MagicMock()]
+        # Mock tabs - dashboard now has 4 tabs
+        mock_st.tabs.return_value = [MagicMock(), MagicMock(), MagicMock(), MagicMock()]
 
         # Run main
         main()
@@ -82,8 +82,10 @@ class TestDashboard:
         mock_col2.metric.assert_called_with("Status", "RUNNING", delta_color="normal")
         mock_col4.metric.assert_called()
 
-        # Verify Tabs
-        mock_st.tabs.assert_called_with(["📊 Live Logs", "🧠 Brain Explorer", "⚙️ System Info"])
+        # Verify Tabs - updated to match new 4-tab layout
+        mock_st.tabs.assert_called_with(
+            ["📊 Live Logs", "🧠 Brain Map", "🧬 Patterns", "⚙️ System Info"]
+        )
 
     @patch("boring.cli.dashboard.st")
     @patch("boring.cli.dashboard.load_json")
@@ -95,7 +97,7 @@ class TestDashboard:
         mock_st.columns.side_effect = (
             lambda x: [MagicMock()] * 4 if x == 4 else [MagicMock(), MagicMock()]
         )
-        mock_st.tabs.return_value = [MagicMock(), MagicMock(), MagicMock()]
+        mock_st.tabs.return_value = [MagicMock(), MagicMock(), MagicMock(), MagicMock()]
         mock_st.session_state.last_refresh = time.time()
 
         main()
@@ -119,9 +121,9 @@ class TestDashboard:
             patch("pathlib.Path.exists", return_value=True),
             patch("pathlib.Path.read_text", return_value="# Content"),
         ):
-            # Trigger tab2 context
+            # Trigger tab2 context - now 4 tabs
             mock_tab2 = MagicMock()
-            mock_st.tabs.return_value = [MagicMock(), mock_tab2, MagicMock()]
+            mock_st.tabs.return_value = [MagicMock(), mock_tab2, MagicMock(), MagicMock()]
 
             main()
 

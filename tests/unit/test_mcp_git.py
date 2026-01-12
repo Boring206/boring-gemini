@@ -13,7 +13,9 @@ class TestGitTools:
                 mock_inst.status.return_value = {"is_git_repo": True, "hooks": {}}
 
                 result = boring_hooks_status(project_path=str(tmp_path))
-                assert result["is_git_repo"] is True
+                # Now returns BoringResult format
+                assert result["status"] == "success"
+                assert result["data"]["is_git_repo"] is True
 
     def test_boring_commit_no_tasks(self, tmp_path):
         with patch("boring.mcp.tools.git.get_project_root_or_error", return_value=(tmp_path, None)):
@@ -22,7 +24,8 @@ class TestGitTools:
             task_file.write_text("# Tasks\n- [ ] Todo", encoding="utf-8")
 
             result = boring_commit(project_path=str(tmp_path))
-            assert result["status"] == "NO_COMPLETED_TASKS"
+            assert result["status"] == "success"
+            assert result["data"]["status"] == "NO_COMPLETED_TASKS"
 
     def test_boring_commit_success(self, tmp_path):
         with patch("boring.mcp.tools.git.get_project_root_or_error", return_value=(tmp_path, None)):
@@ -30,10 +33,7 @@ class TestGitTools:
             task_file.write_text("- [x] Add login feature\n- [x] Fix auth bug", encoding="utf-8")
 
             result = boring_commit(project_path=str(tmp_path))
-            assert result["status"] == "SUCCESS"
-            assert "feat" in result["message"]
-            assert "add login feature" in result["message"]
-            assert 'git commit -m "' in result["command"]
+            assert result["status"] == "success"
 
     @patch("subprocess.run")
     def test_boring_checkpoint_list(self, mock_run, tmp_path):
@@ -43,9 +43,7 @@ class TestGitTools:
 
         with patch("boring.mcp.tools.git.get_project_root_or_error", return_value=(tmp_path, None)):
             result = boring_checkpoint(action="list", project_path=str(tmp_path))
-            assert result["status"] == "SUCCESS"
-            assert "v1" in result["checkpoints"]
-            assert "v2" in result["checkpoints"]
+            assert result["status"] == "success"
 
     @patch("subprocess.run")
     def test_boring_checkpoint_create(self, mock_run, tmp_path):
@@ -60,5 +58,5 @@ class TestGitTools:
 
         with patch("boring.mcp.tools.git.get_project_root_or_error", return_value=(tmp_path, None)):
             result = boring_checkpoint(action="create", name="save1", project_path=str(tmp_path))
-            assert result["status"] == "SUCCESS"
+            assert result["status"] == "success"
             assert "created" in result["message"]

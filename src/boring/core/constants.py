@@ -77,6 +77,7 @@ VECTOR_COLLECTION_NAME: Final[str] = "boring_knowledge"
 # =============================================================================
 
 STATUS_SUCCESS: Final[str] = "SUCCESS"
+STATUS_ERROR: Final[str] = "ERROR"  # V11.2.3: For BoringResult compatibility
 STATUS_FAILED: Final[str] = "FAILED"
 STATUS_PARTIAL: Final[str] = "PARTIAL"
 STATUS_IN_PROGRESS: Final[str] = "IN_PROGRESS"
