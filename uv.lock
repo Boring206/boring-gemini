@@ -250,7 +250,7 @@ wheels = [
 
 [[package]]
 name = "boring-aicoding"
-version = "11.2.2"
+version = "11.2.3"
 source = { editable = "." }
 dependencies = [
     { name = "duckduckgo-search" },
