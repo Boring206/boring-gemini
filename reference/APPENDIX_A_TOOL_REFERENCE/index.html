@@ -2036,6 +2036,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#0-universal-tools-the-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0. Universal Tools (The Gateway)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#1-verification-tools" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2165,41 +2176,13 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="12. Auto-Fix Tools">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#13-evaluation-boring_evaluate" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        13. Evaluation (boring_evaluate)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#14-code-health-boring_vibe_check" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        14. Code Health (boring_vibe_check)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
-  <a href="#15-knowledge-base-tools" class="md-nav__link">
+  <a href="#13-vibe-coder-pro-tools" class="md-nav__link">
     <span class="md-ellipsis">
       
-        15. Knowledge Base Tools
+        13. Vibe Coder Pro Tools
       
     </span>
   </a>
@@ -2207,10 +2190,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#16-evaluation-tools" class="md-nav__link">
+  <a href="#14-intelligence-tools-v112" class="md-nav__link">
     <span class="md-ellipsis">
       
-        16. Evaluation Tools
+        14. Intelligence Tools (V11.2)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-evaluation-llm-judge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. Evaluation &amp; LLM Judge
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16-knowledge-brain-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. Knowledge &amp; Brain Tools
       
     </span>
   </a>
@@ -2261,10 +2266,38 @@
 
 <h1 id="appendix-a-complete-mcp-tool-reference">Appendix A: Complete MCP Tool Reference</h1>
 <blockquote>
-<p><strong>Total Tools</strong>: ~55 tools organized into 14 categories.</p>
+<p><strong>Total Tools</strong>: 98+ tools organized into 18 categories.
+<strong>Version</strong>: V11.2.2 (Architectural Lockdown)</p>
 <p><strong>💡 Recommendation</strong>: Use the Universal Router (<code>boring()</code>) or CLI (<code>boring-route</code>) for most tasks. You rarely need to call these tools directly.</p>
 </blockquote>
 <hr />
+<h2 id="0-universal-tools-the-gateway">0. Universal Tools (The Gateway)</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+<th>Key Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>boring</code></td>
+<td><strong>Universal Router</strong>: Natural Language interface to all tools.</td>
+<td><code>request</code> (Natural Language)</td>
+</tr>
+<tr>
+<td><code>boring_help</code></td>
+<td>Show all available categories and profile info.</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>boring_discover</code></td>
+<td><strong>Progressive Disclosure</strong>: Get full schema for a tool.</td>
+<td><code>tool_name</code></td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h2 id="1-verification-tools">1. Verification Tools</h2>
 <table>
@@ -2631,24 +2664,8 @@
 </tbody>
 </table>
 <hr />
-<h3 id="13-evaluation-boring_evaluate">13. Evaluation (<code>boring_evaluate</code>)</h3>
-<p>Run LLM Judge evaluation.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">boring_evaluate</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;src/main.py&quot;</span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">level</span><span class="o">=</span><span class="s2">&quot;DIRECT&quot;</span><span class="p">,</span>         <span class="c1"># DIRECT|PAIRWISE|RUBRIC</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">criteria</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;correctness&quot;</span><span class="p">,</span> <span class="s2">&quot;readability&quot;</span><span class="p">],</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">verbosity</span><span class="o">=</span><span class="s2">&quot;standard&quot;</span>    <span class="c1"># minimal|standard|verbose</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">)</span>
-</span></code></pre></div>
-<h3 id="14-code-health-boring_vibe_check">14. Code Health (<code>boring_vibe_check</code>)</h3>
-<p>Comprehensive project health check.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">boring_vibe_check</span><span class="p">(</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">target_path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">verbosity</span><span class="o">=</span><span class="s2">&quot;minimal&quot;</span>     <span class="c1"># minimal|standard|verbose</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">)</span>
-</span></code></pre></div>
 <hr />
-<h2 id="15-knowledge-base-tools">15. Knowledge Base Tools</h2>
+<h2 id="13-vibe-coder-pro-tools">13. Vibe Coder Pro Tools</h2>
 <table>
 <thead>
 <tr>
@@ -2659,24 +2676,87 @@
 </thead>
 <tbody>
 <tr>
-<td><code>boring_learn</code></td>
-<td>Digest recent changes</td>
-<td>-</td>
+<td><code>boring_test_gen</code></td>
+<td><strong>Auto-Test Generator</strong>: Generates unit tests (Py/JS/TS).</td>
+<td><code>file_path</code>, <code>output_dir</code></td>
 </tr>
 <tr>
-<td><code>boring_create_rubrics</code></td>
-<td>Create evaluation rubrics</td>
-<td>-</td>
+<td><code>boring_code_review</code></td>
+<td><strong>AI Code Review</strong>: Quality analysis with Brain pattern matching.</td>
+<td><code>file_path</code>, <code>verbosity</code></td>
 </tr>
 <tr>
-<td><code>boring_brain_summary</code></td>
-<td>Show knowledge summary</td>
-<td>-</td>
+<td><code>boring_perf_tips</code></td>
+<td><strong>Performance Analysis</strong>: Detects N+1, I/O in loops, etc.</td>
+<td><code>file_path</code>, <code>verbosity</code></td>
+</tr>
+<tr>
+<td><code>boring_arch_check</code></td>
+<td><strong>Architecture Audit</strong>: Generates Mermaid dependency graphs.</td>
+<td><code>target_path</code>, <code>output_format</code></td>
+</tr>
+<tr>
+<td><code>boring_doc_gen</code></td>
+<td><strong>Documentation Generator</strong>: Automated API reference generation.</td>
+<td><code>target_path</code></td>
+</tr>
+<tr>
+<td><code>boring_vibe_check</code></td>
+<td><strong>Vibe Score</strong>: Health check (Lint + Security + Doc) with fix prompt.</td>
+<td><code>target_path</code>, <code>verbosity</code></td>
+</tr>
+<tr>
+<td><code>boring_impact_check</code></td>
+<td><strong>Impact Analysis</strong>: Reverse dependency tracking for safe changes.</td>
+<td><code>target_path</code>, <code>max_depth</code></td>
 </tr>
 </tbody>
 </table>
 <hr />
-<h2 id="16-evaluation-tools">16. Evaluation Tools</h2>
+<h2 id="14-intelligence-tools-v112">14. Intelligence Tools (V11.2)</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+<th>Key Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>boring_predict_errors</code></td>
+<td><strong>Error Prediction</strong>: Forecasts bugs based on local history.</td>
+<td><code>file_path</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td><code>boring_health_score</code></td>
+<td><strong>Execution Efficiency</strong>: Analyzes success rates &amp; solving speed.</td>
+<td><code>project_path</code></td>
+</tr>
+<tr>
+<td><code>boring_predict_impact</code></td>
+<td><strong>Risk Prediction</strong>: Estimates risk level for planned changes.</td>
+<td><code>file_path</code>, <code>action</code></td>
+</tr>
+<tr>
+<td><code>boring_risk_areas</code></td>
+<td><strong>Heatmap</strong>: Identifies files prone to recurrent failures.</td>
+<td><code>limit</code></td>
+</tr>
+<tr>
+<td><code>boring_cache_insights</code></td>
+<td><strong>Cache Audit</strong>: Insights into AdaptiveCache performance.</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>boring_set_session_context</code></td>
+<td><strong>Boost Context</strong>: Manually bias RAG/Intelligence.</td>
+<td><code>keywords</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="15-evaluation-llm-judge">15. Evaluation &amp; LLM Judge</h2>
 <table>
 <thead>
 <tr>
@@ -2688,8 +2768,51 @@
 <tbody>
 <tr>
 <td><code>boring_evaluate</code></td>
-<td>Run LLM Judge evaluation</td>
-<td><code>target</code>, <code>rubric</code>, <code>verbosity</code></td>
+<td><strong>LLM Judge</strong>: Automated code scoring (1-5 targets).</td>
+<td><code>target</code>, <code>level</code>, <code>rubric</code></td>
+</tr>
+<tr>
+<td><code>boring_generate_rubric</code></td>
+<td><strong>Rubric Factory</strong>: Creates detailed evaluation criteria.</td>
+<td><code>task</code>, <code>criteria</code></td>
+</tr>
+<tr>
+<td><code>boring_bias_report</code></td>
+<td><strong>Monitoring</strong>: Detects position/length bias in scoring.</td>
+<td><code>days</code></td>
+</tr>
+<tr>
+<td><code>boring_evaluation_metrics</code></td>
+<td><strong>System Health</strong>: Correlation with human judgments.</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="16-knowledge-brain-tools">16. Knowledge &amp; Brain Tools</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+<th>Key Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>boring_learn</code></td>
+<td><strong>Active Learning</strong>: Extracts patterns from session logs.</td>
+<td><code>topics</code></td>
+</tr>
+<tr>
+<td><code>boring_brain_summary</code></td>
+<td><strong>Brain Dashboard</strong>: High-level status of persistent knowledge.</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>boring_create_rubrics</code></td>
+<td>Create evaluation standards from project specs.</td>
+<td>-</td>
 </tr>
 </tbody>
 </table>
