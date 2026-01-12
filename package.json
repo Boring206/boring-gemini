@@ -4,7 +4,8 @@
     "description": "Workaround for Smithery build erroneously expecting a Node.js project",
     "private": true,
     "scripts": {
-        "test": "echo 'No tests here'"
+        "test": "echo 'No tests here'",
+        "build": "echo 'Skipping npm build, using Dockerfile'"
     },
     "dependencies": {},
     "devDependencies": {}
