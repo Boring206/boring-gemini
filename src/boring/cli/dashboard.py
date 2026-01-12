@@ -27,16 +27,18 @@ def load_global_brain_patterns() -> list:
             # Normalize to list of dicts for pandas
             result = []
             for p in patterns:
-                result.append({
-                    "pattern_id": p.get("id", p.get("pattern_id", "unknown")),
-                    "pattern_type": p.get("type", p.get("pattern_type", "mcp_brain")),
-                    "description": p.get("description", ""),
-                    "context": p.get("error", p.get("context", "")),
-                    "solution": p.get("fix", p.get("solution", "")),
-                    "success_count": p.get("success_count", 1),
-                    "last_used": p.get("timestamp", p.get("last_used", "")),
-                    "source": "global_brain",
-                })
+                result.append(
+                    {
+                        "pattern_id": p.get("id", p.get("pattern_id", "unknown")),
+                        "pattern_type": p.get("type", p.get("pattern_type", "mcp_brain")),
+                        "description": p.get("description", ""),
+                        "context": p.get("error", p.get("context", "")),
+                        "solution": p.get("fix", p.get("solution", "")),
+                        "success_count": p.get("success_count", 1),
+                        "last_used": p.get("timestamp", p.get("last_used", "")),
+                        "source": "global_brain",
+                    }
+                )
             return result
         except Exception:
             return []

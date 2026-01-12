@@ -99,7 +99,7 @@ if ($INSTALLED_VER) {
 
 # Simple check: If already installed, we could skip long update unless forced
 # For Vibe Coder, let's always ensure we at least try --upgrade but quietly
-# V11.2.8 'Brain Map Evolution' (Stabilized)
+# v11.2.9 'Brain Map Evolution' (Stabilized)
 
 Write-Step "Syncing Boring (Latest)..."
 

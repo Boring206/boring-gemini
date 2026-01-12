@@ -1,4 +1,4 @@
-## [11.2.8] - 2026-01-12
+## [11.2.9] - 2026-01-12
 ### 🚀 Major Features
 - **Brain Map Evolution**: 
   - Integrated **Global MCP Brain** patterns into the Dashboard Brain Map.
@@ -7,7 +7,8 @@
   - Overhauled Dashboard empty state with interactive **Auto-Learning** guidance.
 
 ### 🔧 Fixes
-- **Lint**: Fixed W293 (trailing whitespace) in `dashboard.py` to satisfy CI quality gates.
+- **Format**: Fixed `ruff format` issues in `dashboard.py` to satisfy CI quality gates.
+- **Lint**: Fixed W293 (trailing whitespace) in `dashboard.py`.
 
 ## [11.2.6] - 2026-01-12
 ### ✅ Quality & Stabilization

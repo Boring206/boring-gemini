@@ -1,7 +1,7 @@
 """
 Boring for Gemini - AI Coding Assistant
 
-V11.2.8 "Brain Map Evolution" (Stabilized)
+V11.2.9 "Brain Map Evolution" (Stabilized)
 - **Dashboard**: Integrated Global MCP Brain patterns into the Brain Map.
 - **Dashboard**: Optimized empty state with auto-learning guidance.
 - **Architectural Standardization**: All core tools now return `BoringResult` (TypedDict) for reliable agentic integration.
@@ -73,7 +73,7 @@ Backward compatibility is maintained - old import paths still work.
 import importlib
 from typing import TYPE_CHECKING
 
-__version__ = "11.2.8"
+__version__ = "11.2.9"
 
 # =============================================================================
 # Lazy Loading Configuration
