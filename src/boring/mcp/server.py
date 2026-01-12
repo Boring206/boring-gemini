@@ -1,6 +1,11 @@
 import logging
 import os
 import sys
+import warnings
+
+# Suppress warnings to prevent stderr pollution/noise in MCP connection
+warnings.simplefilter("ignore")
+
 from contextlib import contextmanager
 
 from . import interceptors

@@ -154,6 +154,50 @@ def boring_distill_skills(
         return {"status": "ERROR", "error": str(e)}
 
 
+@audited
+def boring_get_relevant_patterns(
+    limit: Annotated[int, Field(description="Maximum patterns to return")] = 5,
+    project_path: Annotated[
+        Optional[str], Field(description="Optional explicit path to project root")
+    ] = None,
+) -> dict:
+    """
+    Get relevant patterns (Skills) for the current project context.
+
+    Uses project capabilities (e.g., detected frameworks) to find matching
+    learned patterns in the Brain.
+    """
+    try:
+        from ...config import settings
+        from ...intelligence.brain_manager import BrainManager
+
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error
+
+        configure_runtime_for_project(project_root)
+
+        # Initialize Brain
+        brain = BrainManager(project_root, settings.LOG_DIR)
+
+        # Detected context tags
+        context_caps = detect_context_capabilities(project_root)
+
+        # Extract tags from context capabilities
+        tags = []
+        if context_caps.get("languages"):
+            tags.extend(context_caps["languages"])
+        if context_caps.get("frameworks"):
+            tags.extend(context_caps["frameworks"])
+
+        context_str = f"Project: {project_root.name} " + " ".join(tags)
+
+        return brain.get_relevant_patterns(context=context_str, limit=limit)
+
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e)}
+
+
 # ==============================================================================
 # TOOL REGISTRATION
 # ==============================================================================
@@ -183,3 +227,9 @@ if MCP_AVAILABLE and mcp is not None:
         description="Distill patterns into Strategic Skills (Skill Compilation).",
         annotations={"readOnlyHint": False},
     )(boring_distill_skills)
+
+    mcp.tool(
+        description="Get relevant patterns (skills) for the current context.",
+        annotations={"readOnlyHint": True},
+    )(boring_get_relevant_patterns)
+

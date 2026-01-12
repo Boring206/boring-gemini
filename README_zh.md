@@ -46,8 +46,9 @@ Boring 實作了嚴謹的 **「規劃 -> 執行 -> 驗證」** 循環。它不�
 ### ⚓ 支柱四：[生產級安全 (Safety Net)](docs/features/shadow-mode_zh.md)
 信任建立在安全之上。Boring 在執行任何風險操作前都會自動建立 **Git 檢查點**。結合 **影子模式 (Shadow Mode)**，你擁有了 AI 代理行為的「後悔藥」，確保即使在複雜的重構過程中，程式碼庫依然穩如泰山。
 
-### 🧬 支柱五：[認知進化 (V11.2.2)](docs/features/cognitive_zh.md)
-不只是執行，而是進化。V11.2 導入了 **「自適應推理與視覺化 (Adaptive Reasoning & Visualization)」**。
+### 🧬 支柱五：[認知進化 (V11.2.3)](docs/features/cognitive_zh.md)
+不只是執行，而是進化。V11.2.3 導入了 **「Web 技能發現 (Web Skill Discovery)」**。
+- **Web 技能發現**：全新 `find_skills` MCP Prompt，讓使用者能利用 AI 原生的網路搜尋功能尋找網路上的 "skill.md" 資源。
 - **批判性思考 (Critical Thinking)**：內建多層次推理狀態，確保 Agent 在處理複雜邏輯前先進行深度分析。
 - **主動因果記憶 (Active Causal Memory)**：自動從錯誤中學習，建立專屬的「直覺庫」。
 - **輕量化模式 (BORING_LAZY_MODE)**：

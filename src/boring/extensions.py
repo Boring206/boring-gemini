@@ -245,31 +245,81 @@ When working with external libraries, invoke: `use context7`
         if not self.is_gemini_available():
             return False, "Gemini CLI not found"
 
-        # Determine the boring-mcp command
-        boring_mcp_cmd = shutil.which("boring-mcp")
-        if not boring_mcp_cmd:
-            # Fallback to python -m if the script isn't in PATH
-            import sys
+        import sys
 
-            boring_mcp_cmd = f'"{sys.executable}" -m boring.mcp.server'
+        # Wrapper Script Strategy
+        # To strictly control environment variables (suppress warnings, set encoding)
+        # we create a wrapper script and register THAT.
+
+        wrapper_dir = self.project_root / ".boring"
+        wrapper_dir.mkdir(parents=True, exist_ok=True)
+
+        is_windows = os.name == "nt"
+        wrapper_name = "gemini_mcp_wrapper.bat" if is_windows else "gemini_mcp_wrapper.sh"
+        wrapper_path = wrapper_dir / wrapper_name
+
+        python_exe = sys.executable
+
+        if is_windows:
+            script_content = f"""@echo off
+set PYTHONWARNINGS=ignore
+set BORING_MCP_MODE=1
+set PYTHONUTF8=1
+"{python_exe}" -m boring.mcp.server %*
+"""
         else:
-            boring_mcp_cmd = f'"{boring_mcp_cmd}"'
+            script_content = f"""#!/bin/bash
+export PYTHONWARNINGS=ignore
+export BORING_MCP_MODE=1
+export PYTHONUTF8=1
+"{python_exe}" -m boring.mcp.server "$@"
+"""
 
         try:
-            # We use 'boring' as the name in Gemini CLI
-            cmd = [self.gemini_cmd, "mcp", "add", "boring", "command", boring_mcp_cmd]
+            wrapper_path.write_text(script_content, encoding="utf-8")
+            if not is_windows:
+                wrapper_path.chmod(0o755)
+        except Exception as e:
+            return False, f"Failed to create wrapper script: {e}"
 
-            # Note: We use shell=True on Windows if command has spaces and quotes
-            process = subprocess.run(
-                " ".join(cmd) if os.name == "nt" else cmd,
-                stdin=subprocess.DEVNULL,
-                capture_output=True,
-                text=True,
-                shell=(os.name == "nt"),
-            )  # nosec B602: Safe shell usage for Windows command registration
+        # Register the wrapper
+        try:
+            # We use 'boring' as the name in Gemini CLI
+            # Command: gemini mcp add boring <wrapper_path>
+
+            gemini_cmd_str = self.gemini_cmd
+
+            # Quote paths for Windows shell execution
+            if is_windows:
+                if " " in gemini_cmd_str:
+                    gemini_cmd_str = f'"{gemini_cmd_str}"'
+
+                # Wrapper path might have spaces
+                wrapper_run_path = str(wrapper_path)
+                if " " in wrapper_run_path:
+                    wrapper_run_path = f'"{wrapper_run_path}"'
+
+                cmd_str = f"{gemini_cmd_str} mcp add boring {wrapper_run_path}"
+
+                process = subprocess.run(
+                    cmd_str,
+                    stdin=subprocess.DEVNULL,
+                    capture_output=True,
+                    text=True,
+                    shell=True,
+                )
+            else:
+                # Unix-like systems
+                cmd = [self.gemini_cmd, "mcp", "add", "boring", str(wrapper_path)]
+                process = subprocess.run(
+                    cmd,
+                    stdin=subprocess.DEVNULL,
+                    capture_output=True,
+                    text=True,
+                )
 
             if process.returncode == 0:
-                return True, "Successfully registered Boring MCP with Gemini CLI"
+                return True, "Successfully registered Boring MCP with Gemini CLI (Wrapper)"
             else:
                 return False, f"Registration failed: {process.stderr or process.stdout}"
         except Exception as e:

@@ -162,6 +162,15 @@ NEW_MINIMAL_TOOLS_ADDITIONS = [
     "boring_get_relevant_patterns",
 ]
 
+SESSION_TOOLS = [
+    "boring_session_start",
+    "boring_session_confirm",
+    "boring_session_status",
+    "boring_session_load",
+    "boring_session_pause",
+    "boring_session_auto",
+]
+
 # New tools introduced in the user's STANDARD_TOOLS list
 EVAL_TOOLS = [
     "boring_evaluate_code",
@@ -213,6 +222,7 @@ LITE_TOOLS = (
     + SECURITY_TOOLS
     + IMPACT_TOOLS[:1]  # Only boring_impact_check
     + CONTEXT_TOOLS
+    + SESSION_TOOLS  # Phase 10: Vibe Session Tools (Critical for Agentic Workflow)
     + ["boring_checkpoint"]  # Safe checkpointing for daily work
 )
 LITE = ProfileConfig(

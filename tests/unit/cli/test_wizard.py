@@ -78,6 +78,7 @@ class TestWizardManager:
             patch("rich.prompt.Confirm.ask", return_value=True),
             patch("sys.executable", "new_python"),
             patch("rich.console.Console.print"),
+            patch("pathlib.Path.cwd", return_value=tmp_path),
         ):
             manager.install("Test Editor", target_file)
 

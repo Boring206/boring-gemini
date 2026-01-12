@@ -1,7 +1,7 @@
 """
 Boring for Gemini - AI Coding Assistant
 
-V11.2.2 "Standardization & Visual Intelligence":
+V11.2.3 "Web Skill Discovery":
 - **Architectural Standardization**: All core tools now return `BoringResult` (TypedDict) for reliable agentic integration.
 - **Interactive Brain Map**: Physics-based network visualization of project knowledge in the Dashboard.
 - **SQLite Brain**: Migrated persistent knowledge to SQLite for scalability and ACID compliance.
@@ -73,7 +73,7 @@ Backward compatibility is maintained - old import paths still work.
 import importlib
 from typing import TYPE_CHECKING
 
-__version__ = "11.2.2"
+__version__ = "11.2.3"
 
 # =============================================================================
 # Lazy Loading Configuration

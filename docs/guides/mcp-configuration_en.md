@@ -124,6 +124,27 @@ Select the underlying model provider.
 
 ---
 
+## One-Click Setup Wizard (Antigravity) {: #wizard }
+
+The easiest way to configure Boring MCP for all supported tools (Gemini CLI, Claude Desktop, Cursor, VS Code) is the built-in wizard.
+
+### Interactive Mode (Standard)
+```bash
+python -m boring wizard
+```
+Prompts you for confirmation at each step. Best for first-time setup or if you want granular control.
+
+### Automated Mode (Zero-Touch)
+```bash
+python -m boring wizard --yes
+```
+Automatically approves all safe configurations.
+- **Gemini CLI**: Registers via a robust Wrapper Script to fix Windows encoding/warning issues.
+- **VS Code**: Generates a safe JSON snippet for `settings.json` (Copilot).
+- **Cursor/Claude**: Auto-configures safely.
+
+---
+
 ## MCP Configuration Examples
 
 ### Local Full Version (Recommended)
