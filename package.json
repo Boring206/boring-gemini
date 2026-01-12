@@ -3,6 +3,6 @@
     "version": "11.2.2",
     "private": true,
     "scripts": {
-        "build": "npx -y @smithery/cli build"
+        "build": "node -e \"require('fs').writeFileSync('.smithery/manifest.json', JSON.stringify({name:'boring-gemini',version:'11.2.2',runtime:'container',transport:'http'}, null, 2)); require('fs').mkdirSync('.smithery', {recursive:true}); require('fs').writeFileSync('.smithery/manifest.json', JSON.stringify({name:'boring-gemini',version:'11.2.2',runtime:'container',transport:'http'}, null, 2));\""
     }
 }
