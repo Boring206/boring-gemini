@@ -1430,3 +1430,33 @@ If available, use `boring_evaluate` with cached reasoning for similar patterns.
 - **Theme: Fix** → Tip: [code change]
 - **Theme: Prevention** → Tip: [test/guard]
 """
+
+    @mcp.prompt(
+        name="find_skills",
+        description="Help the AI discover and learn skills from the web (No API required). 適合: 'Find skill.md', 'Search for skills', 'Web skill discovery'.",
+    )
+    def find_skills(
+        tech_stack: str = Field(
+            default="General",
+            description="Specific technology stack to look for",
+        ),
+    ) -> str:
+        """Generate a prompt for discovering skills via web search."""
+        return f"""**Web Skill Discovery**
+
+Target Stack: {tech_stack}
+
+Please perform a web search to find "skill.md" resources or "Agent Skills" relevant to {tech_stack}.
+
+**Recommended Search Queries:**
+1. site:github.com "{tech_stack}" "skill.md"
+2. "{tech_stack}" agent skills repository
+3. "awesome-agent-skills" {tech_stack}
+
+**Instructions:**
+1. Use your native **search tool** to find relevant repositories or documentation.
+2. Look for patterns, prompts, or "skills" that can be adapted for this project.
+3. If you find a useful skill, simplify it and modify it to fit this project context.
+4. Suggest how to integrate it as a new pattern in .boring/brain/ using boring_learn.
+"""
+

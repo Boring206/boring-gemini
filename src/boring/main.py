@@ -463,14 +463,16 @@ def version():
 
 @app.command("wizard")
 @app.command("install-mcp")
-def wizard():
+def wizard(
+    yes: bool = typer.Option(False, "--yes", "-y", help="Auto-approve all confirmations"),
+):
     """
     Run the Zero-Config Setup Wizard for MCP.
     Automatically detects Claude/Cursor/VS Code and configures them.
     """
     from .cli.wizard import run_wizard
 
-    run_wizard()
+    run_wizard(auto_approve=yes)
 
 
 # --- Workflow Hub CLI ---

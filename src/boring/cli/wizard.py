@@ -11,6 +11,8 @@ from rich.panel import Panel
 from rich.prompt import Confirm, Prompt
 from rich.table import Table
 
+from boring.extensions import ExtensionsManager
+
 console = Console()
 
 PROFILES = {
@@ -78,34 +80,24 @@ class WizardManager:
 
     def _get_cursor_path(self) -> Optional[Path]:
         # Cursor usually stores MCP settings in globalStorage
-        paths_to_check = []
+        # V2 (Modern): cursor.mcp/config.json
+        # V1 (Legacy): cursor_mcp_config.json
+
+        # We prefer V2. If globalStorage exists, we allow V2 path even if directory misses.
+        # install() creates directories.
 
         if self.system == "Windows":
-            paths_to_check.append(
-                self.appdata / "Cursor" / "User" / "globalStorage" / "cursor_mcp_config.json"
-            )
-            paths_to_check.append(
-                self.appdata / "Cursor" / "User" / "globalStorage" / "cursor.mcp" / "config.json"
-            )
+            base = self.appdata / "Cursor" / "User" / "globalStorage"
         elif self.system == "Darwin":
-            paths_to_check.append(
-                self.home
-                / "Library"
-                / "Application Support"
-                / "Cursor"
-                / "User"
-                / "globalStorage"
-                / "cursor_mcp_config.json"
-            )
+            base = self.home / "Library" / "Application Support" / "Cursor" / "User" / "globalStorage"
         elif self.system == "Linux":
-            paths_to_check.append(
-                self.appdata / "Cursor" / "User" / "globalStorage" / "cursor_mcp_config.json"
-            )
+            base = self.appdata / "Cursor" / "User" / "globalStorage"
+        else:
+            return None
 
-        for path in paths_to_check:
-            # Just check if directory exists to be permissive
-            if path.parent.exists():
-                return path
+        if base.exists():
+            return base / "cursor.mcp" / "config.json"
+
         return None
 
     def _get_vscode_path(self) -> Optional[Path]:
@@ -119,14 +111,44 @@ class WizardManager:
             return None
         return path if path.parent.exists() else None
 
+    def _get_vscode_settings_path(self) -> Optional[Path]:
+        """Get VS Code User settings.json path."""
+        if self.system == "Windows":
+            path = self.appdata / "Code" / "User" / "settings.json"
+        elif self.system == "Darwin":
+            path = self.appdata / "Code" / "User" / "settings.json"
+        elif self.system == "Linux":
+            path = self.appdata / "Code" / "User" / "settings.json"
+        else:
+            return None
+        return path if path.exists() else None
+
     def scan_editors(self) -> dict[str, Path]:
         """Scan for installed editors with valid config paths."""
         found = {}
         for name, path in self.editors.items():
             if path:
+                # For Cursor (V2), the 'cursor.mcp' folder might not verify until we verify grandparent
+                if name == "Cursor":
+                     if path.parent.exists() or path.parent.parent.exists():
+                         found[name] = path
+                     continue
+
                 # For Claude, the file might not exist but folder does
                 if path.parent.exists():
                     found[name] = path
+
+        # Check for Gemini CLI
+        ext_manager = ExtensionsManager()
+        if ext_manager.is_gemini_available():
+            # Use a dummy path for Gemini CLI since it manages its own config
+            found["Gemini CLI"] = Path("gemini-cli")
+
+        # Check for VS Code Settings (Copilot/Standard)
+        vscode_settings = self._get_vscode_settings_path()
+        if vscode_settings:
+            found["VS Code (Settings)"] = vscode_settings
+
         return found
 
     def install(
@@ -135,11 +157,30 @@ class WizardManager:
         config_path: Path,
         profile: str = "standard",
         extra_env: Optional[dict[str, str]] = None,
+        auto_approve: bool = False,
     ):
         """Install Boring MCP into the config file."""
+
+        # Special handling for Gemini CLI
+        if editor_name == "Gemini CLI":
+            console.print(f"\n[bold blue]🔮 Configuring {editor_name} (Antigravity)...[/bold blue]")
+            ext_manager = ExtensionsManager()
+            success, msg = ext_manager.register_boring_mcp()
+            if success:
+                console.print(f"[bold green]✅ Success! {msg}[/bold green]")
+                console.print("[dim]Note: Gemini CLI currently uses the default profile.[/dim]")
+            else:
+                console.print(f"[bold red]❌ Registration failed: {msg}[/bold red]")
+            return
+
         console.print(f"\n[bold blue]🔮 Configuring {editor_name}...[/bold blue]")
 
-        # 0. Ensure directory exists
+        # VS Code Settings (JSONC Handling)
+        if editor_name == "VS Code (Settings)":
+             self._install_vscode_settings(config_path, profile, extra_env)
+             return
+
+        # ... (rest of the existing install logic)
         config_path.parent.mkdir(parents=True, exist_ok=True)
 
         # 1. Load existing
@@ -151,7 +192,12 @@ class WizardManager:
                     config = json.loads(text)
             except Exception as e:
                 console.print(f"[red]⚠️ Failed to parse existing config: {e}[/red]")
-                if not Confirm.ask("Overwrite corrupted config?"):
+                # Corrupted config is DANGEROUS to overwrite automatically
+                # But if auto_approve is Force, maybe? No, let's fallback to skip or prompt if interactive
+                if not auto_approve and not Confirm.ask("Overwrite corrupted config?"):
+                    return
+                if auto_approve:
+                    console.print("[yellow]Skipping corrupted config in auto-mode (Safety).[/yellow]")
                     return
 
         # 2. Backup
@@ -161,8 +207,26 @@ class WizardManager:
             console.print(f"[dim]Backup created at: {backup_path.name}[/dim]")
 
         # 3. Construct MCP Entry
-        # Use sys.executable to ensure we use the same python environment
-        exe = sys.executable
+
+        # [Deep Health Check] Use Wrapper Script if available (Stable Mode)
+        # Prevents stdout pollution (DeprecationWarning) and encoding errors.
+        wrapper_name = "gemini_mcp_wrapper.bat" if self.system == "Windows" else "gemini_mcp_wrapper.sh"
+        # We need project root. Wizard doesn't strictly know it, but we can guess relative to CWD
+        # since wizard is usually run from project root.
+        # Or look for .boring folder in CWD.
+        cwd = Path.cwd()
+        wrapper_path = cwd / ".boring" / wrapper_name
+
+        if wrapper_path.exists():
+            # Use absolute path to wrapper
+            exe = str(wrapper_path.resolve())
+            args = [] # Wrapper handles args via %* or "$@"
+            console.print(f"[dim]Using Wrapper Script: {wrapper_name} (Stable Logic)[/dim]")
+        else:
+            # Fallback (Legacy/Uninitialized)
+            exe = sys.executable
+            args = ["-m", "boring.mcp.server"]
+            console.print("[yellow]Wrapper not found. Using raw Python (Fallback).[/yellow]")
 
         env_vars = {"PYTHONUTF8": "1", "BORING_MCP_PROFILE": profile.lower()}
         if extra_env:
@@ -170,7 +234,7 @@ class WizardManager:
 
         mcp_entry = {
             "command": exe,
-            "args": ["-m", "boring.mcp.server"],
+            "args": args,
             "env": env_vars,
             "disabled": False,
             "autoApprove": [],
@@ -179,12 +243,16 @@ class WizardManager:
         mcp_servers = config.get("mcpServers", {})
 
         if "boring-boring" in mcp_servers:
-            # Check if it is the same
             existing = mcp_servers["boring-boring"]
             old_profile = existing.get("env", {}).get("BORING_MCP_PROFILE", "unknown")
 
             console.print(f"[yellow]⚠️ 'boring-boring' exists (Profile: {old_profile}).[/yellow]")
-            if not Confirm.ask(f"Update to '{profile}' profile?"):
+
+            should_update = auto_approve
+            if not should_update:
+                should_update = Confirm.ask(f"Update to '{profile}' profile?", default=True)
+
+            if not should_update:
                 console.print("[dim]Skipped.[/dim]")
                 return
 
@@ -205,8 +273,47 @@ class WizardManager:
             console.print(f"[bold red]❌ Write failed: {e}[/bold red]")
 
 
+    def _install_vscode_settings(
+        self,
+        config_path: Path,
+        profile: str,
+        extra_env: Optional[dict[str, str]]
+    ):
+        """Handle VS Code settings.json (Copilot MCP). safe print or manual edit."""
+        console.print("[yellow]⚠️ VS Code 'settings.json' contains comments (JSONC).[/yellow]")
+        console.print("[dim]Direct modification is risky. Please add the following snippet manually:[/dim]")
+
+        # [Deep Health Check] Use Wrapper if available
+        cwd = Path.cwd()
+        wrapper_name = "gemini_mcp_wrapper.bat" if self.system == "Windows" else "gemini_mcp_wrapper.sh"
+        wrapper_path = cwd / ".boring" / wrapper_name
+
+        if wrapper_path.exists():
+            cmd = str(wrapper_path.resolve()).replace("\\", "\\\\")
+            args = []
+            console.print(f"[dim]Snippet optimized with Wrapper Script ({wrapper_name})[/dim]")
+        else:
+            cmd = sys.executable
+            args = ["-m", "boring.mcp.server"]
+
+        snippet = {
+            "github.copilot.chat.mcpServers": {
+                "boring": {
+                    "command": cmd,
+                    "args": args,
+                    "env": {"BORING_MCP_PROFILE": profile.lower()}
+                }
+            }
+        }
+        if extra_env:
+            snippet["github.copilot.chat.mcpServers"]["boring"]["env"].update(extra_env)
+
+        console.print(json.dumps(snippet, indent=2))
+        console.print(f"\n[dim]File: {config_path}[/dim]")
+
+
 def show_profiles():
-    table = Table(title="Boring MCP Profiles")
+    table = Table(title="Boring MCP Profiles (Antigravity-Ready)")
     table.add_column("Profile", style="cyan")
     table.add_column("Description", style="white")
     table.add_column("Tokens", style="yellow")
@@ -244,6 +351,8 @@ def configure_custom_profile() -> tuple[str, dict[str, str]]:
     # 4. Feature Flags
     if Confirm.ask("Enable Vector Memory (ChromaDB)?", default=False):
         env["BORING_USE_VECTOR_MEMORY"] = "true"
+    else:
+        env["BORING_USE_VECTOR_MEMORY"] = "false" # Default off for speed
 
     if Confirm.ask("Enable Diff Patching (Smart Edits)?", default=True):
         env["BORING_USE_DIFF_PATCHING"] = "true"
@@ -275,11 +384,11 @@ def configure_custom_profile() -> tuple[str, dict[str, str]]:
     return base, env
 
 
-def run_wizard():
+def run_wizard(auto_approve: bool = False):
     manager = WizardManager()
     console.print(
         Panel(
-            "[bold magenta]✨ Boring Zero-Config Setup Wizard ✨[/bold magenta]\n[dim]Auto-detects editors & configures MCP.[/dim]",
+            "[bold magenta]✨ Boring (Antigravity) Setup Wizard ✨[/bold magenta]\n[dim]Auto-detects editors & configures MCP.[/dim]",
             expand=False,
         )
     )
@@ -288,7 +397,7 @@ def run_wizard():
 
     if not found:
         console.print("[yellow]No supported editor configurations found automatically.[/yellow]")
-        console.print("Supported: Claude Desktop, Cursor, VS Code")
+        console.print("Supported: Claude Desktop, Cursor, VS Code, Gemini CLI")
         return
 
     console.print(f"Found {len(found)} editors: {', '.join(found.keys())}")
@@ -297,18 +406,26 @@ def run_wizard():
     console.print("\n[bold]Configuration Profile:[/bold]")
     show_profiles()
 
-    profile = Prompt.ask(
-        "Choose a profile",
-        choices=["ultra_lite", "minimal", "lite", "standard", "full", "custom"],
-        default="standard",
-    )
+    if auto_approve:
+        profile = "standard"
+        console.print(f"[dim]Auto-approving profile: {profile}[/dim]")
+    else:
+        profile = Prompt.ask(
+            "Choose a profile",
+            choices=["ultra_lite", "minimal", "lite", "standard", "full", "custom"],
+            default="standard",
+        )
 
     extra_env = None
     if profile == "custom":
         profile, extra_env = configure_custom_profile()
 
     for name, path in found.items():
-        if Confirm.ask(f"Install for [bold]{name}[/bold]?"):
-            manager.install(name, path, profile=profile, extra_env=extra_env)
+        should_install = auto_approve
+        if not should_install:
+             should_install = Confirm.ask(f"Install for [bold]{name}[/bold]?", default=True)
+
+        if should_install:
+            manager.install(name, path, profile=profile, extra_env=extra_env, auto_approve=auto_approve)
 
     console.print("\n[green]Wizard completed successfully![/green]")

@@ -1,3 +1,7 @@
+## [11.2.3] - 2026-01-12
+### 🚀 Major Features
+- **Web Skill Discovery**: New `find_skills` MCP Prompt allows users to leverage the AI's native web search to find "skill.md" resources and Agent Skills from the web, without requiring external API keys.
+
 ## [11.2.2] - 2026-01-12
 ### 🚀 Major Features
 - **Visual Intelligence**: New **Brain Map** in Dashboard.
