@@ -5,7 +5,7 @@
     "private": true,
     "scripts": {
         "test": "echo 'Tests run via pytest in Docker'",
-        "build": "node -e \"const fs = require('fs'); const manifest = {name: 'boring-gemini', version: '11.2.2', type: 'mcp-server', runtime: 'container', entrypoint: ['python', '-m', 'boring.mcp.http']}; fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, 2));\""
+        "build": "npx @anthropic-ai/smithery build"
     },
     "repository": {
         "type": "git",
@@ -15,5 +15,7 @@
     "author": "Boring206",
     "license": "Apache-2.0",
     "dependencies": {},
-    "devDependencies": {}
+    "devDependencies": {
+        "@anthropic-ai/smithery": "^0.4.0"
+    }
 }
