@@ -64,7 +64,7 @@ vector = [
     "chromadb>=0.4.0",
     "sentence-transformers>=2.2.0",
     "tree-sitter-languages==1.10.2",
-    "tree-sitter==0.21.3",
+    "tree-sitter==0.25.2",
 ]
 # MCP server without heavy vector search (for Smithery deployment)
 mcp-lite = [
