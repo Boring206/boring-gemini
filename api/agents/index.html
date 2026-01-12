@@ -706,7 +706,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/security_zh.md" class="md-nav__link">
+      <a href="../../reference/security-privacy_zh/" class="md-nav__link">
         
   
   
@@ -3154,7 +3154,7 @@
 </span><span id="__span-0-161"><a id="__codelineno-0-161" name="__codelineno-0-161"></a><span class="sd">    3. Focused Responsibility: Each agent does ONE thing well</span>
 </span><span id="__span-0-162"><a id="__codelineno-0-162" name="__codelineno-0-162"></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="__span-0-163"><a id="__codelineno-0-163" name="__codelineno-0-163"></a>
-</span><span id="__span-0-164"><a id="__codelineno-0-164" name="__codelineno-0-164"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">llm_client</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="n">AgentRole</span><span class="p">):</span>
+</span><span id="__span-0-164"><a id="__codelineno-0-164" name="__codelineno-0-164"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">llm_client</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="n">AgentRole</span><span class="p">):</span>
 </span><span id="__span-0-165"><a id="__codelineno-0-165" name="__codelineno-0-165"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-166"><a id="__codelineno-0-166" name="__codelineno-0-166"></a><span class="sd">        Initialize agent with LLM client.</span>
 </span><span id="__span-0-167"><a id="__codelineno-0-167" name="__codelineno-0-167"></a>
@@ -3353,6 +3353,7 @@ Each agent has a DIFFERENT system prompt focused on its role.</p>
                 <code>llm_client</code>
             </td>
             <td>
+                  <code><span title="typing.Any">Any</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -3395,7 +3396,7 @@ Each agent has a DIFFERENT system prompt focused on its role.</p>
 <span class="normal"><a href="#__codelineno-0-171">171</a></span>
 <span class="normal"><a href="#__codelineno-0-172">172</a></span>
 <span class="normal"><a href="#__codelineno-0-173">173</a></span>
-<span class="normal"><a href="#__codelineno-0-174">174</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-164"><a id="__codelineno-0-164" name="__codelineno-0-164"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">llm_client</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="n">AgentRole</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-174">174</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-164"><a id="__codelineno-0-164" name="__codelineno-0-164"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">llm_client</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="n">AgentRole</span><span class="p">):</span>
 </span><span id="__span-0-165"><a id="__codelineno-0-165" name="__codelineno-0-165"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-166"><a id="__codelineno-0-166" name="__codelineno-0-166"></a><span class="sd">    Initialize agent with LLM client.</span>
 </span><span id="__span-0-167"><a id="__codelineno-0-167" name="__codelineno-0-167"></a>
@@ -5451,11 +5452,11 @@ we share structured data via these resources.</p>
 </span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40"></a>
 </span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42"></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43"></a>        <span class="n">llm_client</span><span class="p">,</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43"></a>        <span class="n">llm_client</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 </span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44"></a>        <span class="n">project_root</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
 </span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45"></a>        <span class="n">human_callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">HumanApprovalCallback</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46"></a>        <span class="n">auto_approve_plans</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47"></a>        <span class="n">shadow_guard</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47"></a>        <span class="n">shadow_guard</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48"></a>    <span class="p">):</span>
 </span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="sd">        Initialize the orchestrator.</span>
@@ -5766,6 +5767,7 @@ we share structured data via these resources.</p>
                 <code>llm_client</code>
             </td>
             <td>
+                  <code><span title="typing.Any">Any</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -5829,6 +5831,7 @@ we share structured data via these resources.</p>
                 <code>shadow_guard</code>
             </td>
             <td>
+                  <code><span title="typing.Any">Any</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -5880,11 +5883,11 @@ we share structured data via these resources.</p>
 <span class="normal"><a href="#__codelineno-0-73">73</a></span>
 <span class="normal"><a href="#__codelineno-0-74">74</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42"></a>    <span class="bp">self</span><span class="p">,</span>
-</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43"></a>    <span class="n">llm_client</span><span class="p">,</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43"></a>    <span class="n">llm_client</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 </span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44"></a>    <span class="n">project_root</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
 </span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45"></a>    <span class="n">human_callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">HumanApprovalCallback</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46"></a>    <span class="n">auto_approve_plans</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47"></a>    <span class="n">shadow_guard</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47"></a>    <span class="n">shadow_guard</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="p">):</span>
 </span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="sd">    Initialize the orchestrator.</span>
@@ -6954,6 +6957,7 @@ we share structured data via these resources.</p>
                 <code>llm_client</code>
             </td>
             <td>
+                  <code><span title="typing.Any">Any</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7037,7 +7041,7 @@ we share structured data via these resources.</p>
 <span class="normal"><a href="#__codelineno-0-340">340</a></span>
 <span class="normal"><a href="#__codelineno-0-341">341</a></span>
 <span class="normal"><a href="#__codelineno-0-342">342</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-315"><a id="__codelineno-0-315" name="__codelineno-0-315"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run_multi_agent</span><span class="p">(</span>
-</span><span id="__span-0-316"><a id="__codelineno-0-316" name="__codelineno-0-316"></a>    <span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">project_root</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">llm_client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">auto_approve</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="__span-0-316"><a id="__codelineno-0-316" name="__codelineno-0-316"></a>    <span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">project_root</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">llm_client</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">auto_approve</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 </span><span id="__span-0-317"><a id="__codelineno-0-317" name="__codelineno-0-317"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 </span><span id="__span-0-318"><a id="__codelineno-0-318" name="__codelineno-0-318"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-319"><a id="__codelineno-0-319" name="__codelineno-0-319"></a><span class="sd">    Run the multi-agent workflow on a task.</span>

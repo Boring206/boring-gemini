@@ -706,7 +706,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/security_zh.md" class="md-nav__link">
+      <a href="../../reference/security-privacy_zh/" class="md-nav__link">
         
   
   
@@ -2195,7 +2195,46 @@
   <a href="#8" class="md-nav__link">
     <span class="md-ellipsis">
       
-        技巧 8：代碼審查用影子模式
+        技巧 8：安全沙箱與影子模式
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v112" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧠 認知進化 (V11.2)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🧠 認知進化 (V11.2)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#9-deep-thinking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        技巧 9：善用深度思考 (Deep Thinking)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-critical-thinking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        技巧 10：批判性思維審計 (Critical Thinking)
       
     </span>
   </a>
@@ -2220,10 +2259,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#9" class="md-nav__link">
+  <a href="#12" class="md-nav__link">
     <span class="md-ellipsis">
       
-        技巧 9：共享配置
+        技巧 12：共享配置
       
     </span>
   </a>
@@ -2231,10 +2270,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#10cicd" class="md-nav__link">
+  <a href="#13cicd" class="md-nav__link">
     <span class="md-ellipsis">
       
-        技巧 10：CI/CD 整合
+        技巧 13：CI/CD 整合
       
     </span>
   </a>
@@ -2242,10 +2281,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#11" class="md-nav__link">
+  <a href="#tip-11" class="md-nav__link">
     <span class="md-ellipsis">
       
-        技巧 11：跨專案知識分享
+        技巧 14：跨專案知識分享
       
     </span>
   </a>
@@ -2270,7 +2309,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#12" class="md-nav__link">
+  <a href="#12_1" class="md-nav__link">
     <span class="md-ellipsis">
       
         技巧 12：預熱快取
@@ -2503,69 +2542,76 @@
 </span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="p">)</span>
 </span></code></pre></div>
 <p>AI 判斷哪個實作更好，並減少偏見。</p>
-<h3 id="8">技巧 8：代碼審查用影子模式</h3>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># 審查者設定 STRICT 模式</span>
+<h3 id="8">技巧 8：安全沙箱與影子模式</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># 生產環境建議使用 STRICT 模式</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">boring_shadow_mode</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;set_level&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;STRICT&quot;</span><span class="p">)</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># 所有 AI 變更都需要批准</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1"># 適合生產代碼審查</span>
 </span></code></pre></div>
 <hr />
+<h2 id="v112">🧠 認知進化 (V11.2)</h2>
+<h3 id="9-deep-thinking">技巧 9：善用深度思考 (Deep Thinking)</h3>
+<p>對於架構設計或複雜重構，指示 AI 進入深度思考模式。
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>「使用『深度思考』分析此架構，並提供三個重構路徑。」
+</span></code></pre></div></p>
+<h3 id="10-critical-thinking">技巧 10：批判性思維審計 (Critical Thinking)</h3>
+<p>對於安全性檢查或邏輯驗證，要求進行批判性思維審計。
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>「對此支付流程進行『批判性思維』審計，找出可能的 Race Condition。」
+</span></code></pre></div></p>
+<hr />
 <h2 id="_5">🏢 團隊</h2>
-<h3 id="9">技巧 9：共享配置</h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># 將 .boring.toml 提交到 repo</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>git<span class="w"> </span>add<span class="w"> </span>.boring.toml
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;新增團隊品質標準&quot;</span>
+<h3 id="12">技巧 12：共享配置</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># 將 .boring.toml 提交到 repo</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>git<span class="w"> </span>add<span class="w"> </span>.boring.toml
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;新增團隊品質標準&quot;</span>
 </span></code></pre></div>
 <p>每個人使用相同的品質閘道。</p>
-<h3 id="10cicd">技巧 10：CI/CD 整合</h3>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># .github/workflows/quality-gates.yml</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nt">jobs</span><span class="p">:</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="nt">verify</span><span class="p">:</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install boring-aicoding</span>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">boring verify --level FULL</span>
+<h3 id="13cicd">技巧 13：CI/CD 整合</h3>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># .github/workflows/quality-gates.yml</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nt">jobs</span><span class="p">:</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span><span class="nt">verify</span><span class="p">:</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install boring-aicoding</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">boring verify --level FULL</span>
 </span></code></pre></div>
-<h3 id="11">技巧 11：跨專案知識分享</h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># 專案完成時</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>boring_learn<span class="w"> </span>--topics<span class="w"> </span><span class="s2">&quot;error-handling,testing,patterns&quot;</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># 知識儲存到 ~/.boring/brain/</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="c1"># 所有未來專案都可用</span>
+<h3 id="tip-11">技巧 14：跨專案知識分享</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># 專案完成時</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>boring_learn<span class="w"> </span>--topics<span class="w"> </span><span class="s2">&quot;error-handling,testing,patterns&quot;</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1"># 知識儲存到 ~/.boring/brain/</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1"># 所有未來專案都可用</span>
 </span></code></pre></div>
 <hr />
 <h2 id="_6">🔧 效能技巧</h2>
-<h3 id="12">技巧 12：預熱快取</h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># 第一次執行建立快取</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>boring<span class="w"> </span>verify
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="c1"># 後續執行很快</span>
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>boring<span class="w"> </span>verify<span class="w">  </span><span class="c1"># 使用快取</span>
+<h3 id="12_1">技巧 12：預熱快取</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># 第一次執行建立快取</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>boring<span class="w"> </span>verify
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="c1"># 後續執行很快</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>boring<span class="w"> </span>verify<span class="w">  </span><span class="c1"># 使用快取</span>
 </span></code></pre></div>
 <h3 id="13">技巧 13：平行驗證</h3>
-<div class="language-toml highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># .boring.toml</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">[boring.performance]</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">parallel_workers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="w">  </span><span class="c1"># 使用所有 CPU 核心</span>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># .boring.toml</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="k">[boring.performance]</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="n">parallel_workers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="w">  </span><span class="c1"># 使用所有 CPU 核心</span>
 </span></code></pre></div>
 <h3 id="14-rag">技巧 14：選擇性 RAG 索引</h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># 只索引特定目錄</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>boring<span class="w"> </span>rag<span class="w"> </span>index<span class="w"> </span>--paths<span class="w"> </span><span class="s2">&quot;src/&quot;</span><span class="w"> </span><span class="s2">&quot;lib/&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># 只索引特定目錄</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>boring<span class="w"> </span>rag<span class="w"> </span>index<span class="w"> </span>--paths<span class="w"> </span><span class="s2">&quot;src/&quot;</span><span class="w"> </span><span class="s2">&quot;lib/&quot;</span>
 </span></code></pre></div>
 <hr />
 <h2 id="_7">🛡️ 安全技巧</h2>
 <h3 id="15">技巧 15：生產環境始終使用影子模式</h3>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># smithery.yaml 或 MCP 配置</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="nt">SHADOW_MODE_LEVEL</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;STRICT&quot;</span>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="nt">BORING_ALLOW_DANGEROUS</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># smithery.yaml 或 MCP 配置</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="nt">SHADOW_MODE_LEVEL</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;STRICT&quot;</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="nt">BORING_ALLOW_DANGEROUS</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 </span></code></pre></div>
 <h3 id="16">技巧 16：受保護的檔案操作</h3>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># 使用 boring_write_file 而非原生 write_file</span>
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">boring_write_file</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;config.py&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1"># 使用 boring_write_file 而非原生 write_file</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">boring_write_file</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;config.py&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="17">技巧 17：密鑰掃描</h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># 提交前掃描</span>
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>boring_security_scan<span class="w"> </span>--scan-type<span class="w"> </span>secrets
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># 提交前掃描</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>boring_security_scan<span class="w"> </span>--scan-type<span class="w"> </span>secrets
 </span></code></pre></div>
 <hr />
 <h2 id="_8">另請參閱</h2>

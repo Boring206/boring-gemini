@@ -706,7 +706,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/security_zh.md" class="md-nav__link">
+      <a href="../../reference/security-privacy_zh/" class="md-nav__link">
         
   
   
@@ -2047,7 +2047,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#env-vars" class="md-nav__link">
     <span class="md-ellipsis">
       
         環境變數 (進階)
@@ -2082,10 +2082,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#ultra-lite-3-v1026" class="md-nav__link">
+  <a href="#ultra-lite" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Ultra Lite (3 個) - V10.26 新增
+        Ultra Lite
       
     </span>
   </a>
@@ -2093,10 +2093,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#minimal-8" class="md-nav__link">
+  <a href="#minimal" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Minimal (8 個)
+        Minimal
       
     </span>
   </a>
@@ -2104,10 +2104,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#lite-20" class="md-nav__link">
+  <a href="#lite" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Lite (20 個)
+        Lite
       
     </span>
   </a>
@@ -2115,10 +2115,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#standard-50" class="md-nav__link">
+  <a href="#standard" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Standard (50 個)
+        Standard
       
     </span>
   </a>
@@ -2126,10 +2126,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#full-98" class="md-nav__link">
+  <a href="#full" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Full (~98 個)
+        Full
       
     </span>
   </a>
@@ -2169,7 +2169,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mcp" class="md-nav__link">
+  <a href="#mcp-examples" class="md-nav__link">
     <span class="md-ellipsis">
       
         MCP 設定範例
@@ -2181,7 +2181,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
         本地完整版 (推薦)
@@ -2242,7 +2242,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
         混合版 (本地 + 雲端)
@@ -2258,7 +2258,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#version-diff" class="md-nav__link">
     <span class="md-ellipsis">
       
         版本差異
@@ -2270,7 +2270,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+  <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
         安裝選項
@@ -2297,7 +2297,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
+  <a href="#faq" class="md-nav__link">
     <span class="md-ellipsis">
       
         常見問題
@@ -2373,34 +2373,22 @@
 <p>本文件深入說明 Boring MCP Server 的 <strong>Profile 機制</strong> 和 <strong>安裝模式差異</strong>。</p>
 <h2 id="_1">📑 目錄</h2>
 <ul>
-<li><a href="#環境變數-進階">環境變數 (進階)</a></li>
+<li><a href="#env-vars">環境變數 (進階)</a></li>
 <li><a href="#boring_mcp_mode">BORING_MCP_MODE</a></li>
-<li><a href="#boring_mcp_profile">BORING_MCP_PROFILE</a><ul>
-<li><a href="#ultra-lite-3-個---v1026-新增">Ultra Lite (3 個)</a></li>
-<li><a href="#minimal-8-個">Minimal (8 個)</a></li>
-<li><a href="#lite-20-個">Lite (20 個)</a></li>
-<li><a href="#standard-50-個">Standard (50 個)</a></li>
-<li><a href="#full-98-個">Full (~98 個)</a></li>
-</ul>
-</li>
+<li><a href="#boring_mcp_profile">BORING_MCP_PROFILE</a></li>
+<li><a href="#ultra-lite">Ultra Lite</a></li>
+<li><a href="#minimal">Minimal</a></li>
+<li><a href="#lite">Lite</a></li>
+<li><a href="#standard">Standard</a></li>
+<li><a href="#full">Full</a></li>
 <li><a href="#project_root_default">PROJECT_ROOT_DEFAULT</a></li>
 <li><a href="#boring_llm_provider">BORING_LLM_PROVIDER</a></li>
-<li><a href="#mcp-設定範例">MCP 設定範例</a></li>
-<li><a href="#本地完整版-推薦">本地完整版 (推薦)</a></li>
-<li><a href="#uv-安裝版-超快速">uv 安裝版（⚡ 超快速）</a><ul>
-<li><a href="#方法-1-uvx-無需本地安裝">方法 1: uvx（無需本地安裝）</a></li>
-<li><a href="#方法-2-uv-run-使用-venv">方法 2: uv run（使用 venv）</a></li>
-</ul>
-</li>
-<li><a href="#smithery-雲端版">Smithery 雲端版</a></li>
-<li><a href="#混合版-本地--雲端">混合版 (本地 + 雲端)</a></li>
-<li><a href="#版本差異">版本差異</a></li>
-<li><a href="#安裝選項">安裝選項</a></li>
-<li><a href="#smithery-vs-本地">Smithery vs 本地</a></li>
-<li><a href="#常見問題">常見問題</a></li>
+<li><a href="#mcp-examples">MCP 設定範例</a></li>
+<li><a href="#version-diff">版本差異</a></li>
+<li><a href="#faq">常見問題</a></li>
 </ul>
 <hr />
-<h2 id="_2">環境變數 (進階)</h2>
+<h2 id="env-vars">環境變數 (進階)</h2>
 <h3 id="boring_mcp_mode"><code>BORING_MCP_MODE</code></h3>
 <table>
 <thead>
@@ -2476,7 +2464,7 @@
 </tbody>
 </table>
 <p><strong>各 Profile 包含的工具：</strong></p>
-<h4 id="ultra-lite-3-v1026">Ultra Lite (3 個) - V10.26 新增</h4>
+<h4 id="ultra-lite">Ultra Lite</h4>
 <ul>
 <li><code>boring</code> (通用路由器)</li>
 <li><code>boring_help</code> (分類說明)</li>
@@ -2485,7 +2473,7 @@
 <blockquote>
 <p>💡 <strong>工作流程</strong>: 用 <code>boring</code> 路由自然語言請求，用 <code>boring_discover</code> 獲取特定工具的完整 Schema，然後呼叫目標工具。</p>
 </blockquote>
-<h4 id="minimal-8">Minimal (8 個)</h4>
+<h4 id="minimal">Minimal</h4>
 <ul>
 <li><code>boring</code> (路由器)</li>
 <li><code>boring_help</code></li>
@@ -2496,7 +2484,7 @@
 <li><code>boring_shadow_status</code></li>
 <li><code>boring_suggest_next</code></li>
 </ul>
-<h4 id="lite-20">Lite (20 個)</h4>
+<h4 id="lite">Lite</h4>
 <p>包含 Minimal 全部，加上：
 - <code>boring_rag_index</code>, <code>boring_rag_context</code>
 - <code>boring_code_review</code>, <code>boring_perf_tips</code>
@@ -2504,7 +2492,7 @@
 - <code>boring_security_scan</code>
 - <code>boring_prompt_plan</code>, <code>boring_prompt_fix</code>
 - <code>boring_impact_check</code>, <code>boring_context</code></p>
-<h4 id="standard-50">Standard (50 個)</h4>
+<h4 id="standard">Standard</h4>
 <p>包含 Lite 全部，加上：
 - RAG 完整套件 (<code>boring_rag_expand</code>, <code>boring_rag_status</code>)
 - Shadow Mode 控制 (<code>boring_shadow_mode</code>, <code>boring_shadow_approve</code>)
@@ -2513,7 +2501,7 @@
 - Workspace 管理
 - Multi-agent 規劃
 - Speckit 核心工具</p>
-<h4 id="full-98">Full (~98 個)</h4>
+<h4 id="full">Full</h4>
 <p>所有已註冊的工具。</p>
 <hr />
 <h3 id="project_root_default"><code>PROJECT_ROOT_DEFAULT</code></h3>
@@ -2571,8 +2559,8 @@
 若要使用 Vibe Coder 自動化流程，請使用 Gemini 或 Claude。</p>
 </blockquote>
 <hr />
-<h2 id="mcp">MCP 設定範例</h2>
-<h3 id="_3">本地完整版 (推薦)</h3>
+<h2 id="mcp-examples">MCP 設定範例</h2>
+<h3 id="_2">本地完整版 (推薦)</h3>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">&quot;boring&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -2647,7 +2635,7 @@
 - <strong>可調整</strong>: 在配置中設置 <code>BORING_MCP_PROFILE: "dev"</code> 或 <code>"pro"</code>
 - <strong>完整 RAG</strong>: 需本地安裝 <code>pip install "boring-aicoding[all]"</code></p>
 </blockquote>
-<h3 id="_4">混合版 (本地 + 雲端)</h3>
+<h3 id="_3">混合版 (本地 + 雲端)</h3>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nt">&quot;boring-cloud&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -2666,8 +2654,8 @@
 </span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="p">}</span>
 </span></code></pre></div>
 <hr />
-<h2 id="_5">版本差異</h2>
-<h3 id="_6">安裝選項</h3>
+<h2 id="version-diff">版本差異</h2>
+<h3 id="_4">安裝選項</h3>
 <table>
 <thead>
 <tr>
@@ -2737,7 +2725,7 @@
 </tbody>
 </table>
 <hr />
-<h2 id="_7">常見問題</h2>
+<h2 id="faq">常見問題</h2>
 <h3 id="q-smithery">Q: Smithery 工具比較少怎麼辦？</h3>
 <p>Smithery 預設使用 <code>mcp-lite</code> + <code>lite</code> profile。如果需要更多功能：
 1. 本地安裝完整版：<code>pip install "boring-aicoding[mcp]"</code>

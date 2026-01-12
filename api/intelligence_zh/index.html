@@ -712,7 +712,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/security_zh.md" class="md-nav__link">
+      <a href="../../reference/security-privacy_zh/" class="md-nav__link">
         
   
   
@@ -10111,7 +10111,7 @@ def expensive_function(x, y):
 </span><span id="__span-0-187"><a id="__codelineno-0-187" name="__codelineno-0-187"></a>        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
 </span><span id="__span-0-188"><a id="__codelineno-0-188" name="__codelineno-0-188"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">upsert_pattern</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 </span><span id="__span-0-189"><a id="__codelineno-0-189" name="__codelineno-0-189"></a>
-</span><span id="__span-0-190"><a id="__codelineno-0-190" name="__codelineno-0-190"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">learn_from_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+</span><span id="__span-0-190"><a id="__codelineno-0-190" name="__codelineno-0-190"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">learn_from_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 </span><span id="__span-0-191"><a id="__codelineno-0-191" name="__codelineno-0-191"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-192"><a id="__codelineno-0-192" name="__codelineno-0-192"></a><span class="sd">        Extract successful patterns from .boring_memory SQLite storage.</span>
 </span><span id="__span-0-193"><a id="__codelineno-0-193" name="__codelineno-0-193"></a>
@@ -10776,6 +10776,7 @@ def expensive_function(x, y):
                 <code>storage</code>
             </td>
             <td>
+                  <code><span title="typing.Any">Any</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -10871,7 +10872,7 @@ def expensive_function(x, y):
 <span class="normal"><a href="#__codelineno-0-243">243</a></span>
 <span class="normal"><a href="#__codelineno-0-244">244</a></span>
 <span class="normal"><a href="#__codelineno-0-245">245</a></span>
-<span class="normal"><a href="#__codelineno-0-246">246</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-190"><a id="__codelineno-0-190" name="__codelineno-0-190"></a><span class="k">def</span><span class="w"> </span><span class="nf">learn_from_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="normal"><a href="#__codelineno-0-246">246</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-190"><a id="__codelineno-0-190" name="__codelineno-0-190"></a><span class="k">def</span><span class="w"> </span><span class="nf">learn_from_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 </span><span id="__span-0-191"><a id="__codelineno-0-191" name="__codelineno-0-191"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-192"><a id="__codelineno-0-192" name="__codelineno-0-192"></a><span class="sd">    Extract successful patterns from .boring_memory SQLite storage.</span>
 </span><span id="__span-0-193"><a id="__codelineno-0-193" name="__codelineno-0-193"></a>
@@ -21086,7 +21087,7 @@ ranker.record_skip(chunk_id, query, session_id)</p>
 </span><span id="__span-0-385"><a id="__codelineno-0-385" name="__codelineno-0-385"></a>
 </span><span id="__span-0-386"><a id="__codelineno-0-386" name="__codelineno-0-386"></a>    <span class="n">VERSION_FILE</span> <span class="o">=</span> <span class="s2">&quot;embedding_version.json&quot;</span>
 </span><span id="__span-0-387"><a id="__codelineno-0-387" name="__codelineno-0-387"></a>
-</span><span id="__span-0-388"><a id="__codelineno-0-388" name="__codelineno-0-388"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">persist_dir</span><span class="p">):</span>
+</span><span id="__span-0-388"><a id="__codelineno-0-388" name="__codelineno-0-388"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">persist_dir</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
 </span><span id="__span-0-389"><a id="__codelineno-0-389" name="__codelineno-0-389"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-390"><a id="__codelineno-0-390" name="__codelineno-0-390"></a><span class="sd">        Initialize version manager.</span>
 </span><span id="__span-0-391"><a id="__codelineno-0-391" name="__codelineno-0-391"></a>
@@ -21213,6 +21214,7 @@ ranker.record_skip(chunk_id, query, session_id)</p>
                 <code>persist_dir</code>
             </td>
             <td>
+                  <code><span title="typing.Any">Any</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -21240,7 +21242,7 @@ ranker.record_skip(chunk_id, query, session_id)</p>
 <span class="normal"><a href="#__codelineno-0-396">396</a></span>
 <span class="normal"><a href="#__codelineno-0-397">397</a></span>
 <span class="normal"><a href="#__codelineno-0-398">398</a></span>
-<span class="normal"><a href="#__codelineno-0-399">399</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-388"><a id="__codelineno-0-388" name="__codelineno-0-388"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">persist_dir</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-399">399</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-388"><a id="__codelineno-0-388" name="__codelineno-0-388"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">persist_dir</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
 </span><span id="__span-0-389"><a id="__codelineno-0-389" name="__codelineno-0-389"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-390"><a id="__codelineno-0-390" name="__codelineno-0-390"></a><span class="sd">    Initialize version manager.</span>
 </span><span id="__span-0-391"><a id="__codelineno-0-391" name="__codelineno-0-391"></a>
