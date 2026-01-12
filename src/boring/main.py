@@ -93,6 +93,25 @@ def main(
 console = Console()
 
 
+@app.command()
+def flow():
+    """
+    🐉 Start the One Dragon Workflow (Boring Flow).
+
+    Automatically detects project state and guides you through:
+    1. Setup (Constitution)
+    2. Design (Plan & Skills)
+    3. Build (Execution)
+    4. Polish (Verify & Evolve)
+    """
+    from boring.core.config import settings
+    from boring.flow.engine import FlowEngine
+
+    project_root = settings.PROJECT_ROOT
+    engine = FlowEngine(project_root)
+    engine.run()
+
+
 @app.command(hidden=True)
 def start(
     backend: str = typer.Option(

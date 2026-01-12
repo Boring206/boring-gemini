@@ -53,6 +53,10 @@ ULTRA_LITE_TOOLS_LIST = [
     "boring_help",  # Category discovery
     "boring_discover",  # On-demand tool schema (progressive disclosure)
 ]
+DISCOVERY_TOOLS = [
+    "boring_skills_browse",
+    "boring_skills_install",
+]
 
 GIT_TOOLS = [
     "boring_commit",
@@ -199,6 +203,7 @@ MINIMAL_TOOLS = (
     + VIBE_TOOLS[:1]  # Only boring_vibe_check
     + SHADOW_TOOLS[:1]  # Only boring_shadow_status
     + SUGGEST_TOOLS[:1]  # Only boring_suggest_next
+    + DISCOVERY_TOOLS[:1]  # boring_skills_browse
 )
 MINIMAL = ProfileConfig(
     name="minimal",
@@ -224,6 +229,7 @@ LITE_TOOLS = (
     + CONTEXT_TOOLS
     + SESSION_TOOLS  # Phase 10: Vibe Session Tools (Critical for Agentic Workflow)
     + ["boring_checkpoint"]  # Safe checkpointing for daily work
+    + DISCOVERY_TOOLS  # Allow installation in LITE
 )
 LITE = ProfileConfig(
     name="lite",
@@ -261,6 +267,7 @@ STANDARD_TOOLS = (
     + TASK_TOOLS
     + SPECKIT_TOOLS
     + EVAL_TOOLS
+    + DISCOVERY_TOOLS
 )
 STANDARD = ProfileConfig(
     name="standard",
