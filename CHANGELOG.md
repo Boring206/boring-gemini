@@ -1,3 +1,8 @@
+## [11.2.6] - 2026-01-12
+### ✅ Quality & Stabilization
+- **Security Guard**: Finalized B608 (SQL Injection) suppression markers to strictly adhere to CI security gates.
+- **Bootstrapper Sync**: Updated all installation scripts to v11.2.6.
+
 ## [11.2.5] - 2026-01-12
 ### ✅ Quality & Stabilization
 - **Security Fix**: Resolved High severity vulnerability (B602) in `extensions.py` related to `subprocess.run(shell=True)`.
