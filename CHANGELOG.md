@@ -1,11 +1,13 @@
-## [11.2.7] - 2026-01-12
+## [11.2.8] - 2026-01-12
 ### 🚀 Major Features
 - **Brain Map Evolution**: 
   - Integrated **Global MCP Brain** patterns into the Dashboard Brain Map.
   - Enhanced Visual Knowledge graph to distinguish between project-local and global patterns.
 - **Improved UX**:
   - Overhauled Dashboard empty state with interactive **Auto-Learning** guidance.
-  - Clarified the role of `boring learn` vs. the native `AutoLearner` mechanism.
+
+### 🔧 Fixes
+- **Lint**: Fixed W293 (trailing whitespace) in `dashboard.py` to satisfy CI quality gates.
 
 ## [11.2.6] - 2026-01-12
 ### ✅ Quality & Stabilization

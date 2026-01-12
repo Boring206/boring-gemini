@@ -164,7 +164,7 @@ Below you can explore the Brain Map (learned patterns) and system configuration.
         else:
             st.info(
                 """📝 **No logs yet**
-                
+
 Logs will appear here once you run `boring start`.
 
 **Quick Tips:**
@@ -180,12 +180,10 @@ Logs will appear here once you run `boring start`.
         # Load patterns from BOTH local storage AND global MCP brain
         local_patterns = storage.get_patterns(limit=500)
         global_patterns = load_global_brain_patterns()
-        
         # Mark local patterns with source
         for p in local_patterns:
             if "source" not in p:
                 p["source"] = "local_project"
-        
         # Merge patterns (global + local)
         all_patterns = global_patterns + local_patterns
 
