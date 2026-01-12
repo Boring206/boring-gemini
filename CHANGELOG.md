@@ -1,3 +1,10 @@
+## [11.2.12] - 2026-01-13
+### 🚀 Major Features
+- **Node.js Autonomy**: Introduced `NodeManager` for automatic Node.js download and installation.
+  - Automatically detects missing Node.js/gemini-cli and offers a portable v20 setup in `~/.boring/node`.
+  - Ensures seamless onboarding for users without a local Node.js environment.
+  - Integrated with `boring wizard` and `ExtensionsManager` for full environment isolation.
+
 ## [11.2.11] - 2026-01-13
 ### 🚑 Hotfix
 - **Package Integrity**: Included missing source files for One Dragon Engine (`detector.py`, `evolution.py`, `vibe_interface.py`) that were untracked in v11.2.10.

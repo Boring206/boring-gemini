@@ -8,7 +8,6 @@ Manages Gemini CLI extensions for enhanced AI capabilities:
 """
 
 import os
-import shutil
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -21,6 +20,8 @@ from .config import settings
 # MCP-compatible Rich Console (stderr, quiet in MCP mode)
 _is_mcp_mode = os.environ.get("BORING_MCP_MODE") == "1"
 console = Console(stderr=True, quiet=_is_mcp_mode)
+
+from .services.nodejs import NodeManager
 
 
 @dataclass
@@ -76,7 +77,8 @@ class ExtensionsManager:
 
     def __init__(self, project_root: Path = None):
         self.project_root = project_root or settings.PROJECT_ROOT
-        self.gemini_cmd = shutil.which("gemini")
+        self.node_manager = NodeManager(self.project_root)
+        self.gemini_cmd = self.node_manager.get_gemini_path()
         self.extensions_config_file = self.project_root / ".boring_extensions.json"
 
     def is_gemini_available(self) -> bool:

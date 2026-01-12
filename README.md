@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://smithery.ai/server/boring/boring"><img src="https://smithery.ai/badge/boring/boring" alt="Smithery Badge"></a>
-  <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/v/boring-aicoding.svg" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/v/boring-aicoding.svg?v=11.2.12" alt="PyPI version"></a>
   <a href="https://pepy.tech/project/boring-aicoding"><img src="https://static.pepy.tech/badge/boring-aicoding" alt="Downloads"></a>
   <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/pyversions/boring-aicoding.svg" alt="Python Versions"></a>
 </p>
@@ -46,8 +46,9 @@ Designed for the modern Python stack. Boring natively supports **[uv](https://gi
 ### ⚓ Pillar IV: [Production-Grade Safety (Safety Net)](docs/features/shadow-mode.md)
 Trust is built on safety. Boring automatically creates **Git Checkpoints** before any risky operation. Combined with **Shadow Mode**, you have a "undo" button for AI agentic actions, ensuring your repository remains stable even during complex refactors.
 
-### 🧬 Pillar V: [Cognitive Evolution (V11.2.3)](docs/features/cognitive.md)
-Not just execution, but evolution. V11.2.3 introduces **Web Skill Discovery**.
+### 🧬 Pillar V: [Cognitive Evolution (V11.2.12)](docs/features/cognitive.md)
+Not just execution, but evolution. V11.2.12 introduces **Web Skill Discovery** and **Node.js Autonomy**.
+- **Node.js Autonomy**: Automatic Node.js download/install to ensure `gemini-cli` works even on fresh systems.
 - **Web Skill Discovery**: New `find_skills` MCP Prompt allows users to leverage the AI's native web search to find "skill.md" resources.
 - **Critical Thinking**: Built-in multi-layered reasoning states ensuring the Agent performs deep analysis before executing complex logic.
 - **Active Causal Memory**: Automatically learns from errors, building a "intuition" library.
@@ -67,7 +68,8 @@ Not just execution, but evolution. V11.2.3 introduces **Web Skill Discovery**.
 | 🧪 | **[Vibe Check](docs/features/quality-gates.md)** | Gamified health scanning. Calculates a **Vibe Score** and generates a "One-Click Fix Prompt" for the agent. |
 | 🛡️ | **[Active Recall](docs/features/global-brain.md)** | Automatically learns from error patterns. Recalls past solutions to avoid repeating mistakes across sessions. |
 | 📚 | **[Full Tool Reference](docs/reference/APPENDIX_A_TOOL_REFERENCE.md)** | Complete catalog of 98+ tools with parameters and usage ([中文](docs/reference/APPENDIX_A_TOOL_REFERENCE_zh.md)). |
-| 🧬 | **[Skill Compilation](docs/features/cognitive.md)** | Distills repeated successfulpatterns into high-level **Strategic Skills**. |
+| 🧬 | **[Skill Compilation](docs/features/cognitive.md)** | Distills repeated successful patterns into high-level **Strategic Skills**. |
+| 🪢 | **[Node.js Autonomy](docs/features/nodejs.md)** | Zeroconf Node.js & gemini-cli setup. No manual installation required. |
 
 ---
 

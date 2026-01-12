@@ -261,18 +261,24 @@ def check_prompt_file(project_root: Path) -> HealthCheckResult:
 
 def check_gemini_cli() -> HealthCheckResult:
     """Check if Gemini CLI is available."""
-    gemini_cmd = shutil.which("gemini")
+    from boring.services.nodejs import NodeManager
+
+    nm = NodeManager()
+    gemini_cmd = nm.get_gemini_path()
 
     if gemini_cmd:
+        location = "System" if shutil.which("gemini") else "Portable (.boring/node)"
         return HealthCheckResult(
-            name="Gemini CLI", status=HealthStatus.PASS, message=f"Found at {gemini_cmd}"
+            name="Gemini CLI",
+            status=HealthStatus.PASS,
+            message=f"Found ({location}) at {gemini_cmd}",
         )
 
     return HealthCheckResult(
         name="Gemini CLI",
         status=HealthStatus.WARN,
         message="Not found (optional)",
-        suggestion="npm install -g @google/gemini-cli",
+        suggestion="Run 'boring wizard' to install Node.js and gemini-cli automatically",
     )
 
 

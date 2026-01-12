@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://smithery.ai/server/boring/boring"><img src="https://smithery.ai/badge/boring/boring" alt="Smithery Badge"></a>
-  <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/v/boring-aicoding.svg" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/v/boring-aicoding.svg?v=11.2.12" alt="PyPI version"></a>
   <a href="https://pepy.tech/project/boring-aicoding"><img src="https://static.pepy.tech/badge/boring-aicoding" alt="Downloads"></a>
   <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/pyversions/boring-aicoding.svg" alt="Python Versions"></a>
 </p>
@@ -45,8 +45,9 @@ Boring 實作了嚴謹的 **「規劃 -> 執行 -> 驗證」** 循環。它不�
 ### ⚓ 支柱四：[生產級安全 (Safety Net)](docs/features/shadow-mode_zh.md)
 信任建立在安全之上。Boring 在執行任何風險操作前都會自動建立 **Git 檢查點**。結合 **影子模式 (Shadow Mode)**，你擁有了 AI 代理行為的「後悔藥」，確保即使在複雜的重構過程中，程式碼庫依然穩如泰山。
 
-### 🧬 支柱五：[認知進化 (V11.2.3)](docs/features/cognitive_zh.md)
-不只是執行，而是進化。V11.2.3 導入了 **「Web 技能發現 (Web Skill Discovery)」**。
+### 🧬 支柱五：[認知進化 (V11.2.12)](docs/features/cognitive_zh.md)
+不只是執行，而是進化。V11.2.12 導入了 **「Node.js 自主權 (Node.js Autonomy)」** 與 **「Web 技能發現」**。
+- **Node.js 自主權**：自動下載/安裝 Node.js v20，確保即使在新系統也能執行 `gemini-cli`。
 - **Web 技能發現**：全新 `find_skills` MCP Prompt，讓使用者能利用 AI 原生的網路搜尋功能尋找網路上的 "skill.md" 資源。
 - **批判性思考 (Critical Thinking)**：內建多層次推理狀態，確保 Agent 在處理複雜邏輯前先進行深度分析。
 - **主動因果記憶 (Active Causal Memory)**：自動從錯誤中學習，建立專屬的「直覺庫」。
@@ -66,6 +67,7 @@ Boring 實作了嚴謹的 **「規劃 -> 執行 -> 驗證」** 循環。它不�
 | 🛡️ | **[Active Recall](docs/features/global-brain_zh.md)** | 自動從錯誤模式中學習。在多個對話 Session 間回憶解決方案，避免重複錯誤。 |
 | 📚 | **[完整工具參考](docs/reference/APPENDIX_A_TOOL_REFERENCE_zh.md)** | 包含 98+ 個工具的詳細 Schema、參數與用法說明 ([English](docs/reference/APPENDIX_A_TOOL_REFERENCE.md))。 |
 | 🧬 | **[技能萃取](docs/features/cognitive_zh.md)** | 將重複成功的模式萃取為高階的 **「戰略技能 (Strategic Skills)」**。 |
+| 🪢 | **[Node.js 自助安裝](docs/features/nodejs_zh.md)** | 免配置 Node.js 與 gemini-cli 設定，無需手動安裝環境。 |
 
 ---
 

@@ -5,6 +5,7 @@ V11.2.10 "One Dragon Evolution":
 - **One Dragon Engine**: New `boring_flow` MCP tool enabling AI to drive the entire SDLC via code.
 - **Headless Flow**: Refactored FlowEngine to support non-interactive, AI-driven execution.
 - **Auto-Alignment**: Improved Vibe Session alignment logic for better ambiguity resolution.
+- **Node.js Autonomy**: Automatic Node.js download/install for seamless `gemini-cli` setup.
 
 
 V11.1.0 "Turbo Mode & Wizard Upgrade":
@@ -72,7 +73,7 @@ Backward compatibility is maintained - old import paths still work.
 import importlib
 from typing import TYPE_CHECKING
 
-__version__ = "11.2.11"
+__version__ = "11.2.12"
 
 # =============================================================================
 # Lazy Loading Configuration

@@ -1,4 +1,4 @@
-# Smithery Configuration for  version: 11.2.11MCP Server
+# Smithery Configuration for version: 11.2.12 MCP Server
 # https://smithery.ai/docs/build/project-config
 
 runtime: "python"
