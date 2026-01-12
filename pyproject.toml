@@ -1,6 +1,6 @@
 [project]
 name = "boring-aicoding"
-version = "11.2.3"
+version = "11.2.4"
 description = "Boring: An AI-powered development support tool for autonomous reasoning, planning, and verification. Optimized for uv and agentic workflows."
 authors = [
     { name = "Boring206", email = "C112156246@nkust.edu.tw" }

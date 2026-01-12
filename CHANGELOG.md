@@ -1,3 +1,10 @@
+## [11.2.4] - 2026-01-12
+### ✅ Quality & Stabilization
+- **CI Stabilization**: Resolved Quality Gate failures (Lint, Test, Security) to ensure 100% release health.
+- **Test Integrity**: Fixed environment-dependent test isolation in `test_wizard.py`.
+- **Core Fixes**: Resolved `NameError` in `wizard.py` (standardized `sys.executable` usage).
+- **Environment Sync**: Synchronized `uv.lock` and version strings across all installation bootstrappers and extension configs.
+
 ## [11.2.3] - 2026-01-12
 ### 🚀 Major Features
 - **Web Skill Discovery**: New `find_skills` MCP Prompt allows users to leverage the AI's native web search to find "skill.md" resources and Agent Skills from the web, without requiring external API keys.
