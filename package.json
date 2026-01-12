@@ -1,12 +1,19 @@
 {
-    "name": "boring-gemini-phantom",
-    "version": "0.0.0",
-    "description": "Workaround for Smithery build erroneously expecting a Node.js project",
+    "name": "boring-gemini",
+    "version": "11.2.2",
+    "description": "Boring: An AI-powered development support tool for autonomous reasoning, planning, and verification. MCP Server for Smithery.",
     "private": true,
     "scripts": {
-        "test": "echo 'No tests here'",
-        "build": "echo 'Skipping npm build, using Dockerfile'"
+        "test": "echo 'Tests run via pytest in Docker'",
+        "build": "echo 'Build handled by Dockerfile'"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Boring206/boring-gemini"
+    },
+    "keywords": ["ai", "agent", "gemini", "mcp-server", "devops"],
+    "author": "Boring206",
+    "license": "Apache-2.0",
     "dependencies": {},
     "devDependencies": {}
 }

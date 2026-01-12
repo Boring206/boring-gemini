@@ -25,6 +25,9 @@ COPY src src
 # For full RAG support, use ".[mcp]" instead (requires ~4GB more disk space)
 RUN pip install --no-cache-dir ".[mcp-lite]"
 
+# Generate manifest for Smithery build system
+RUN python -c "import json; manifest = {'name': 'boring-gemini', 'version': '11.2.2', 'type': 'mcp-server', 'entrypoint': ['python', '-m', 'boring.mcp.http']}; open('manifest.json', 'w').write(json.dumps(manifest, indent=2))"
+
 # Note: HEALTHCHECK removed to prevent build-time failures on Smithery
 # Smithery handles container health separately
 

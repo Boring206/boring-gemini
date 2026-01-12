@@ -17,6 +17,8 @@ build:
   dockerBuildPath: "."
   # Explicitly prevent Smithery from trying to auto-detect npm
   dependencyManager: "pip"
+  # Generate manifest after build
+  manifestPath: "manifest.json"
 
 startCommand:
   type: "http"
