@@ -33,6 +33,7 @@ def mock_dependencies(mocker):
     mock_setup_ext = mocker.patch("boring.extensions.setup_project_extensions")
     mock_create_ct = mocker.patch("boring.extensions.create_criticalthink_command")
     mock_create_sk = mocker.patch("boring.extensions.create_speckit_command")
+    mock_ext_manager = mocker.patch("boring.extensions.ExtensionsManager")
 
     mock_health_check = mocker.patch("boring.health.run_health_check")
     mock_print_health = mocker.patch("boring.health.print_health_report")
@@ -80,6 +81,7 @@ def mock_dependencies(mocker):
         "hooks_mgr": mock_hooks_mgr,
         "mock_loop_local": mock_loop_local,
         "loop_direct": mock_loop_direct,
+        "ext_manager": mock_ext_manager,
     }
 
 
@@ -289,6 +291,8 @@ def test_circuit_commands(mock_dependencies):
 
 def test_setup_extensions(mock_dependencies):
     mocks = mock_dependencies
+    mock_mgr = mocks["ext_manager"].return_value
+    mock_mgr.register_boring_mcp.return_value = (True, "Installed")
 
     result = runner.invoke(app, ["setup-extensions"])
 
@@ -296,6 +300,7 @@ def test_setup_extensions(mock_dependencies):
     mocks["setup_ext"].assert_called_once()
     mocks["create_ct"].assert_called_once()
     mocks["create_sk"].assert_called_once()
+    mock_mgr.register_boring_mcp.assert_called_once()
 
 
 def test_memory_clear_exists(mock_dependencies, tmp_path, mocker):

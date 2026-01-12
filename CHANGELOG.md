@@ -7,6 +7,7 @@
   - Overhauled Dashboard empty state with interactive **Auto-Learning** guidance.
 
 ### 🔧 Fixes
+- **Tests**: Fixed `test_setup_extensions` PermissionError by mocking `ExtensionsManager`.
 - **Format**: Fixed `ruff format` issues in `dashboard.py` to satisfy CI quality gates.
 - **Lint**: Fixed W293 (trailing whitespace) in `dashboard.py`.
 
