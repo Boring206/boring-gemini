@@ -116,7 +116,8 @@ pip install "boring-aicoding[mcp]"    # MCP Server
 ### 💎 Top Interaction Triggers
 Just say these phrases to the AI in your IDE (Cursor/Claude):
 
-- **`start session`**: 🚀 **Ultimate Integration**. Activates Deep Thinking to autonomously manage the entire lifecycle of a complex task.
+- **`boring_flow`**: 🐉 **One Dragon Engine**. The ultimate autonomous workflow. Handles Setup -> Plan -> Build -> Polish automatically via code.
+- **`start session`**: 🚀 **Vibe Session**. Activates Deep Thinking to autonomously manage the entire lifecycle of a complex task.
 - **`/vibe_start`**: Kick off a new project from scratch.
 - **`quick_fix`**: Automatically repair all linting and formatting errors.
 - **`review_code`**: Request a technical audit of your current file.

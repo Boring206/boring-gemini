@@ -21,9 +21,8 @@
 
 ---
 
-## ⚡ 超越生成式 AI：代理式認知 (Agentic Cognition)
-
-Boring-Gemini 不僅僅是一組工具的集合；它是你 AI 開發工作流中的 **「大腦與思考層」**。當一般的 AI 模型還在「建議」程式碼時，Boring 已經在進行 **「推理、驗證與學習」**。
+## ⚡ 超越生成式 AI：一條龍引擎 (One Dragon Engine)
+Boring-Gemini 不僅僅是一組工具的集合；它是你 AI 開發工作流中的 **「大腦與思考層」**。透過全新的 `boring_flow` 命令，它實現了從需求對齊、規劃、實作到驗收的 **全自動化閉環**。當一般的 AI 模型還在「建議」程式碼時，Boring 已經在利用 **「推理、驗證與學習」** 為你交付成果。
 
 ### 🧞‍♂️ Vibe Coder 開發哲學
 > **「意圖 (Intent) 即實作。」**
@@ -100,6 +99,7 @@ pip install "boring-aicoding[all]"
 ## 💎 工作流觸發詞
 嘗試在 IDE (Cursor / VS Code / Claude) 中對 AI 說：
 
+- **「Boring Flow」** 或 **「使用 One Dragon 模式」** → 啟動 `boring_flow(instruction=...)`，全自動開發引擎。
 - **「根據 [連結] 的規格書啟動新專案」** → 啟動 `/vibe_start`。
 - **「執行健康檢查 (Vibe Check) 並修復所有問題」** → 觸發 `boring_vibe_check` + 自動修復。
 - **「修改這個函式的全域影響是什麼？」** → 觸發 `boring_impact_check`。
