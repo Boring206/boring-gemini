@@ -94,8 +94,9 @@ These are usually set in the `env` section of your Cursor/Claude MCP config.
 | Variable Name | Default | Description |
 | :--- | :--- | :--- |
 | **Core Settings** | | |
-| `BORING_MCP_PROFILE` | `lite` | Toolset Size (`minimal`, `lite`, `standard`, `full`) |
+| `BORING_MCP_PROFILE` | `lite` | Toolset Size (`minimal`, `lite`, `standard`, `full`, `ultra_lite`) |
 | `BORING_MCP_VERBOSITY`| `standard` | Output Verbosity (`minimal`, `standard`, `verbose`) |
+| `BORING_LAZY_MODE` | `0` | **Lazy Mode**: 0=Standard, 1=Lazy (Uses progressive disclosure to save 90% schema tokens) |
 | `BORING_LOG_LEVEL` | `INFO` | Log Level |
 | **Security Settings**| | |
 | `SHADOW_MODE_LEVEL` | `ENABLED` | Sandbox Level (`DISABLED`, `ENABLED`, `STRICT`) |

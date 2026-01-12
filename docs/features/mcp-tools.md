@@ -6,6 +6,32 @@
 
 ---
 
+## 🏗️ Architecture: Standardization
+
+V11.2.2 introduces **Architectural Lockdown**. All core MCP tools now return a standardized `BoringResult` (TypedDict). This ensures that AI agents (like Gemini 2.0 or Claude 3.5) receive perfectly structured data for multi-step reasoning.
+
+```python
+class BoringResult(TypedDict):
+    status: str      # "success" | "error"
+    message: str     # Markdown report for user/AI consumption
+    data: Any        # Structured machine-readable data (JSON)
+```
+
+> [!TIP]
+> This standardization enables **Deep Thinking** loops where the agent can programmatically verify its own work by inspecting the `data` field.
+
+---
+
+## 🛡️ Safety: Live Tool Sandbox
+
+Boring V11.2 implements a **Live Tool Sandbox** for synthesized tools. When the AI uses `boring_synth_tool` to create a new custom capability, the code is analyzed via **AST (Abstract Syntax Tree)** before execution.
+
+- **Forbidden Imports**: `os`, `sys`, `subprocess`, `requests`, etc. are blocked within synthesized tools.
+- **Forbidden Functions**: `exec`, `eval`, `open` are restricted to prevent escape from the project workspace.
+- **Audit Logging**: Every synthesis operation is logged and audited.
+
+---
+
 ## 🔎 Dynamic Discovery
 
 ### For AI Clients

@@ -1,10 +1,19 @@
 # 附錄 A：完整 MCP 工具參考指南 (Appendix A: Complete MCP Tool Reference)
 
-> **工具總數**：~55 個工具，組織為 14 個類別。
+> **工具總數**：98+ 個工具，組織為 18 個類別。
+> **版本**：V11.2.2 (架構鎖定)
 >
 > **💡 建議**：優先使用 Universal Router (`boring()`) 或 CLI (`boring-route`)。大多數情況下你不需要直接調用這些工具。
 
 ---
+
+## 0. 通用工具 (Universal Tools - 總體入口)
+
+| 工具 | 說明 | 關鍵參數 |
+|------|------|----------|
+| `boring` | **萬用路由**: 全工具的自然語言接口。 | `request` (自然語言) |
+| `boring_help` | 顯示所有可用類別與配置文件 (Profile) 資訊。 | - |
+| `boring_discover` | **進階發現**: 動態取得特定工具的完整 Schema。 | `tool_name` |
 
 ---
 
@@ -140,47 +149,53 @@
 
 ---
 
-### 13. 評估 (`boring_evaluate`)
-
-LLM 作為評審的代碼評分。
-
-```python
-boring_evaluate(
-    target="src/main.py",
-    level="DIRECT",         # DIRECT|PAIRWISE|RUBRIC
-    criteria=["correctness", "readability"],
-    verbosity="standard"    # minimal|standard|verbose
-)
-```
-
-### 14. 代碼健檢 (`boring_vibe_check`)
-
-全面的專案健康度檢查。
-
-```python
-boring_vibe_check(
-    target_path=".",
-    verbosity="minimal"     # minimal|standard|verbose
-)
-```
-
 ---
 
-## 15. 知識庫工具 (Knowledge Base Tools)
+## 13. Vibe Coder Pro 工具集
 
 | 工具 | 說明 | 關鍵參數 |
 |------|------|----------|
-| `boring_learn` | 消化最近變更 | - |
-| `boring_create_rubrics` | 建立評估標準 | - |
-| `boring_brain_summary` | 顯示知識庫摘要 | - |
+| `boring_test_gen` | **自動測試生成**: 分析程式碼並生成測試 (Py/JS/TS)。 | `file_path`, `output_dir` |
+| `boring_code_review` | **AI 程式碼審查**: 結合 Brain 模式匹配的質量分析。 | `file_path`, `verbosity` |
+| `boring_perf_tips` | **效能優化建議**: 檢測 N+1, 迴圈 I/O 等瓶頸。 | `file_path`, `verbosity` |
+| `boring_arch_check` | **架構審計**: 生成 Mermaid 依賴圖。 | `target_path`, `output_format` |
+| `boring_doc_gen` | **文檔自動生成**: 自動化生成 API 參考文件。 | `target_path` |
+| `boring_vibe_check` | **Vibe Score**: 健康檢查 (Lint + 安全 + 文檔) 與修復 Prompt。 | `target_path`, `verbosity` |
+| `boring_impact_check` | **衝擊分析**: 反向依賴追蹤，預判修改風險。 | `target_path`, `max_depth` |
 
 ---
 
-## 16. 評估工具 (Evaluation Tools)
+## 14. 智能工具集 (Intelligence Tools - V11.2)
 
 | 工具 | 說明 | 關鍵參數 |
 |------|------|----------|
-| `boring_evaluate` | 執行 LLM Judge 評估 | `target`, `rubric` |
+| `boring_predict_errors` | **錯誤預測**: 根據專案歷史預判潛在 Bug。 | `file_path`, `limit` |
+| `boring_health_score` | **執行效能評分**: 綜合分析成功率與解決速度。 | `project_path` |
+| `boring_predict_impact` | **風險預測**: 預估計畫中修改的風險等級。 | `file_path`, `action` |
+| `boring_risk_areas` | **風險熱點**: 識別代碼庫中故障率最高的區域。 | `limit` |
+| `boring_cache_insights` | **快取審計**: 洞察 AdaptiveCache 的命中與自動載入效能。 | - |
+| `boring_set_session_context` | **增強上下文**: 手動偏向 RAG/智能引擎。 | `keywords` |
+
+---
+
+## 15. 評估與 LLM Judge
+
+| 工具 | 說明 | 關鍵參數 |
+|------|------|----------|
+| `boring_evaluate` | **LLM Judge**: 自動化代碼評分 (支援 1-5 個目標)。 | `target`, `level`, `rubric` |
+| `boring_generate_rubric` | **標準工廠**: 生成詳細的評分標準與分級說明。 | `task`, `criteria` |
+| `boring_bias_report` | **偏差監測**: 檢測評分系統中的位置或長度偏差。 | `days` |
+| `boring_evaluation_metrics` | **系統指標**: 分析與人類評價的相關性。 | - |
+
+---
+
+## 16. 知識庫與 Brain 工具
+
+| 工具 | 說明 | 關鍵參數 |
+|------|------|----------|
+| `boring_learn` | **主動學習**: 從本次 Session 日誌提取模式。 | `topics` |
+| `boring_brain_summary` | **Brain 儀表板**: 持久化知識的概況統計。 | - |
+| `boring_create_rubrics` | 從專案規格書建立評定標準。 | - |
 
 ---
 

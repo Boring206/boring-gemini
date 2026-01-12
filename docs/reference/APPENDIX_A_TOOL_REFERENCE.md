@@ -1,10 +1,19 @@
 # Appendix A: Complete MCP Tool Reference
 
-> **Total Tools**: ~55 tools organized into 14 categories.
+> **Total Tools**: 98+ tools organized into 18 categories.
+> **Version**: V11.2.2 (Architectural Lockdown)
 >
 > **💡 Recommendation**: Use the Universal Router (`boring()`) or CLI (`boring-route`) for most tasks. You rarely need to call these tools directly.
 
 ---
+
+## 0. Universal Tools (The Gateway)
+
+| Tool | Description | Key Parameters |
+|------|-------------|----------------|
+| `boring` | **Universal Router**: Natural Language interface to all tools. | `request` (Natural Language) |
+| `boring_help` | Show all available categories and profile info. | - |
+| `boring_discover` | **Progressive Disclosure**: Get full schema for a tool. | `tool_name` |
 
 ---
 
@@ -140,47 +149,53 @@
 
 ---
 
-### 13. Evaluation (`boring_evaluate`)
-
-Run LLM Judge evaluation.
-
-```python
-boring_evaluate(
-    target="src/main.py",
-    level="DIRECT",         # DIRECT|PAIRWISE|RUBRIC
-    criteria=["correctness", "readability"],
-    verbosity="standard"    # minimal|standard|verbose
-)
-```
-
-### 14. Code Health (`boring_vibe_check`)
-
-Comprehensive project health check.
-
-```python
-boring_vibe_check(
-    target_path=".",
-    verbosity="minimal"     # minimal|standard|verbose
-)
-```
-
 ---
 
-## 15. Knowledge Base Tools
+## 13. Vibe Coder Pro Tools
 
 | Tool | Description | Key Parameters |
 |------|-------------|----------------|
-| `boring_learn` | Digest recent changes | - |
-| `boring_create_rubrics` | Create evaluation rubrics | - |
-| `boring_brain_summary` | Show knowledge summary | - |
+| `boring_test_gen` | **Auto-Test Generator**: Generates unit tests (Py/JS/TS). | `file_path`, `output_dir` |
+| `boring_code_review` | **AI Code Review**: Quality analysis with Brain pattern matching. | `file_path`, `verbosity` |
+| `boring_perf_tips` | **Performance Analysis**: Detects N+1, I/O in loops, etc. | `file_path`, `verbosity` |
+| `boring_arch_check` | **Architecture Audit**: Generates Mermaid dependency graphs. | `target_path`, `output_format` |
+| `boring_doc_gen` | **Documentation Generator**: Automated API reference generation. | `target_path` |
+| `boring_vibe_check` | **Vibe Score**: Health check (Lint + Security + Doc) with fix prompt. | `target_path`, `verbosity` |
+| `boring_impact_check` | **Impact Analysis**: Reverse dependency tracking for safe changes. | `target_path`, `max_depth` |
 
 ---
 
-## 16. Evaluation Tools
+## 14. Intelligence Tools (V11.2)
 
 | Tool | Description | Key Parameters |
 |------|-------------|----------------|
-| `boring_evaluate` | Run LLM Judge evaluation | `target`, `rubric`, `verbosity` |
+| `boring_predict_errors` | **Error Prediction**: Forecasts bugs based on local history. | `file_path`, `limit` |
+| `boring_health_score` | **Execution Efficiency**: Analyzes success rates & solving speed. | `project_path` |
+| `boring_predict_impact` | **Risk Prediction**: Estimates risk level for planned changes. | `file_path`, `action` |
+| `boring_risk_areas` | **Heatmap**: Identifies files prone to recurrent failures. | `limit` |
+| `boring_cache_insights` | **Cache Audit**: Insights into AdaptiveCache performance. | - |
+| `boring_set_session_context` | **Boost Context**: Manually bias RAG/Intelligence. | `keywords` |
+
+---
+
+## 15. Evaluation & LLM Judge
+
+| Tool | Description | Key Parameters |
+|------|-------------|----------------|
+| `boring_evaluate` | **LLM Judge**: Automated code scoring (1-5 targets). | `target`, `level`, `rubric` |
+| `boring_generate_rubric` | **Rubric Factory**: Creates detailed evaluation criteria. | `task`, `criteria` |
+| `boring_bias_report` | **Monitoring**: Detects position/length bias in scoring. | `days` |
+| `boring_evaluation_metrics` | **System Health**: Correlation with human judgments. | - |
+
+---
+
+## 16. Knowledge & Brain Tools
+
+| Tool | Description | Key Parameters |
+|------|-------------|----------------|
+| `boring_learn` | **Active Learning**: Extracts patterns from session logs. | `topics` |
+| `boring_brain_summary` | **Brain Dashboard**: High-level status of persistent knowledge. | - |
+| `boring_create_rubrics` | Create evaluation standards from project specs. | - |
 
 ---
 

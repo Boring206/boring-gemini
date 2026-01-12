@@ -10,6 +10,32 @@
 
 ---
 
+## 🏗️ 架構設計：標準化
+
+V11.2.2 引入了 **「架構鎖定 (Architectural Lockdown)」**。所有核心 MCP 工具現在均返回標準化的 `BoringResult` (TypedDict)。這確保了 AI 代理（如 Gemini 2.0 或 Claude 3.5）在進行多步推理時，能夠接收到結構完美的數據。
+
+```python
+class BoringResult(TypedDict):
+    status: str      # "success" | "error"
+    message: str     # 供使用者或 AI 閱讀的 Markdown 報表
+    data: Any        # 結構化的機器可讀數據 (JSON)
+```
+
+> [!TIP]
+> 這種標準化啟動了 **「深度思考 (Deep Thinking)」** 循環，代理可以透過檢查 `data` 欄位，以程式化方式驗證其自身的工作成果。
+
+---
+
+## 🛡️ 安全防護：動態工具沙箱
+
+Boring V11.2 為動態合成工具實現了 **「動態工具沙箱 (Live Tool Sandbox)」**。當 AI 使用 `boring_synth_tool` 建立新的自定義功能時，程式碼在執行前會先經過 **AST (抽象語法樹)** 的靜態分析。
+
+- **禁用導入 (Forbidden Imports)**：合成工具內禁止導入 `os`, `sys`, `subprocess`, `requests` 等模組。
+- **禁用函式 (Forbidden Functions)**：限制 `exec`, `eval`, `open` 等函式，防止 AI 脫離專案工作區。
+- **審計日誌 (Audit Logging)**：每一次合成操作都會被記錄並進行審計。
+
+---
+
 ## 🔎 動態發現
 
 ### AI 客戶端用

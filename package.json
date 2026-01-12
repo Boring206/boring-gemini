@@ -1,0 +1,11 @@
+{
+    "name": "boring-gemini-phantom",
+    "version": "0.0.0",
+    "description": "Workaround for Smithery build erroneously expecting a Node.js project",
+    "private": true,
+    "scripts": {
+        "test": "echo 'No tests here'"
+    },
+    "dependencies": {},
+    "devDependencies": {}
+}

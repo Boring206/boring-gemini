@@ -94,8 +94,9 @@ timeout_seconds = 300         # 檢查超時秒數
 | 變數名稱 | 預設值 | 說明 |
 | :--- | :--- | :--- |
 | **核心設定** | | |
-| `BORING_MCP_PROFILE` | `lite` | 工具組大小 (`minimal`, `lite`, `standard`, `full`) |
+| `BORING_MCP_PROFILE` | `lite` | 工具組大小 (`minimal`, `lite`, `standard`, `full`, `ultra_lite`) |
 | `BORING_MCP_VERBOSITY`| `standard` | 輸出詳細度 (`minimal`, `standard`, `verbose`) |
+| `BORING_LAZY_MODE` | `0` | **懶人模式 (Lazy Mode)**: 0=標準, 1=延遲加載 (利用進階發現節省 90% Schema Token) |
 | `BORING_LOG_LEVEL` | `INFO` | 日誌等級 |
 | **安全設定** | | |
 | `SHADOW_MODE_LEVEL` | `ENABLED` | 安全沙箱等級 (`DISABLED`, `ENABLED`, `STRICT`) |
