@@ -50,7 +50,9 @@ class NodeManager:
             return True
 
         if force_download:
-            console.print("[yellow]Node.js not found. Attempting to download portable version...[/yellow]")
+            console.print(
+                "[yellow]Node.js not found. Attempting to download portable version...[/yellow]"
+            )
             return self.download_node()
 
         console.print("[red]Node.js is not available and download was not requested.[/red]")
@@ -124,7 +126,7 @@ class NodeManager:
 
         try:
             # Download with progress bar
-            response = requests.get(url, stream=True)
+            response = requests.get(url, stream=True, timeout=30)
             total_size = int(response.headers.get("content-length", 0))
 
             with Progress(console=console) as progress:
@@ -136,12 +138,30 @@ class NodeManager:
 
             # Extract
             console.print(f"[blue]Extracting to {self.node_dir}...[/blue]")
+
+            def is_within_directory(directory, target):
+                abs_directory = os.path.abspath(directory)
+                abs_target = os.path.abspath(target)
+                prefix = os.path.commonprefix([abs_directory, abs_target])
+                return prefix == abs_directory
+
+            def safe_extract(tar, path=".", members=None, *, numeric_owner=False):
+                for member in tar.getmembers():
+                    member_path = os.path.join(path, member.name)
+                    if not is_within_directory(path, member_path):
+                        raise Exception("Attempted Path Traversal in Tar File")
+                tar.extractall(path, members, numeric_owner=numeric_owner)  # nosec B202
+
             if self.system == "Windows":
                 with zipfile.ZipFile(archive_path, "r") as zip_ref:
-                    zip_ref.extractall(self.node_dir)
+                    for member in zip_ref.namelist():
+                        member_path = os.path.join(self.node_dir, member)
+                        if not is_within_directory(self.node_dir, member_path):
+                            raise Exception("Attempted Path Traversal in Zip File")
+                    zip_ref.extractall(self.node_dir)  # nosec B202
             else:
                 with tarfile.open(archive_path, "r:gz") as tar_ref:
-                    tar_ref.extractall(self.node_dir)
+                    safe_extract(tar_ref, self.node_dir)
 
             # Cleanup archive
             archive_path.unlink()
@@ -218,9 +238,13 @@ class NodeManager:
                 # On Unix, global is node_dir/bin (actually node_dir)
                 env = os.environ.copy()
                 env["npm_config_prefix"] = str(self.node_dir)
-                result = subprocess.run(cmd, env=env, check=False, capture_output=True, text=True)
+                result = subprocess.run(  # nosec B603
+                    cmd, env=env, check=False, capture_output=True, text=True
+                )
             else:
-                result = subprocess.run(cmd, check=False, capture_output=True, text=True)
+                result = subprocess.run(  # nosec B603
+                    cmd, check=False, capture_output=True, text=True
+                )
 
             if result.returncode == 0:
                 console.print("[green]✅ gemini-cli installed successfully![/green]")

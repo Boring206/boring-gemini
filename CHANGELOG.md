@@ -1,3 +1,10 @@
+## [11.2.13] - 2026-01-13
+### 🛡️ Security Patch
+- **Safe Extraction**: Implemented safe Zip/Tar extraction in `NodeManager` to prevent path traversal vulnerabilities.
+- **Connection Safety**: Added mandatory timeouts to all `requests.get` calls in `nodejs.py` to prevent denial-of-service from hanging connections.
+- **SQL Hardening**: Refactored SQL query construction in `prediction_tracker.py` to mitigate potential injection risks from literal-formatted strings.
+- **Package Integrity**: Fixed CI failure caused by Bandit security scan and updated all project versions for stable release.
+
 ## [11.2.12] - 2026-01-13
 ### 🚀 Major Features
 - **Node.js Autonomy**: Introduced `NodeManager` for automatic Node.js download and installation.

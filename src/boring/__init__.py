@@ -73,7 +73,7 @@ Backward compatibility is maintained - old import paths still work.
 import importlib
 from typing import TYPE_CHECKING
 
-__version__ = "11.2.12"
+__version__ = "11.2.13"
 
 # =============================================================================
 # Lazy Loading Configuration

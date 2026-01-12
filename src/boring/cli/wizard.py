@@ -405,17 +405,28 @@ def run_wizard(auto_approve: bool = False):
     # Node.js & Gemini CLI Check (Optional Fallback)
     if not node_manager.is_node_available():
         console.print("\n[yellow]⚠️ Node.js not found on your system.[/yellow]")
-        console.print("[dim]Node.js is only required if you want to use the local Gemini CLI backend.[/dim]")
-        if Confirm.ask("Would you like Boring to download a portable Node.js and install Gemini CLI?", default=False):
+        console.print(
+            "[dim]Node.js is only required if you want to use the local Gemini CLI backend.[/dim]"
+        )
+        if Confirm.ask(
+            "Would you like Boring to download a portable Node.js and install Gemini CLI?",
+            default=False,
+        ):
             if not node_manager.ensure_node_ready(force_download=True):
-                console.print("[red]Node.js installation failed. Local CLI features will be unavailable.[/red]")
+                console.print(
+                    "[red]Node.js installation failed. Local CLI features will be unavailable.[/red]"
+                )
             else:
                 if node_manager.install_gemini_cli():
                     console.print("[green]✅ Portable Node.js and Gemini CLI are ready.[/green]")
                 else:
-                    console.print("[red]❌ Node.js is ready but Gemini CLI failed to install.[/red]")
+                    console.print(
+                        "[red]❌ Node.js is ready but Gemini CLI failed to install.[/red]"
+                    )
         else:
-            console.print("[dim]Skipping Node.js setup. You can still use the default API backend.[/dim]")
+            console.print(
+                "[dim]Skipping Node.js setup. You can still use the default API backend.[/dim]"
+            )
 
     if node_manager.is_node_available() and not node_manager.get_gemini_path():
         console.print("\n[yellow]⚠️ Gemini CLI (@google/gemini-cli) not found.[/yellow]")
