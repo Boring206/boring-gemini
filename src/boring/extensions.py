@@ -299,14 +299,13 @@ export PYTHONUTF8=1
                 if " " in wrapper_run_path:
                     wrapper_run_path = f'"{wrapper_run_path}"'
 
-                cmd_str = f"{gemini_cmd_str} mcp add boring {wrapper_run_path}"
+                cmd = [self.gemini_cmd, "mcp", "add", "boring", str(wrapper_path)]
 
                 process = subprocess.run(
-                    cmd_str,
+                    cmd,
                     stdin=subprocess.DEVNULL,
                     capture_output=True,
                     text=True,
-                    shell=True,
                 )
             else:
                 # Unix-like systems

@@ -1459,4 +1459,3 @@ Please perform a web search to find "skill.md" resources or "Agent Skills" relev
 3. If you find a useful skill, simplify it and modify it to fit this project context.
 4. Suggest how to integrate it as a new pattern in .boring/brain/ using boring_learn.
 """
-

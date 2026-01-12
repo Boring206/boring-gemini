@@ -19,13 +19,15 @@ def test_lite_profile_contains_session_tools():
 
     for tool_name in expected_tools:
         assert tool_name in profile.tools, f"{tool_name} should be in LITE profile"
-        assert should_register_tool(tool_name, profile), f"{tool_name} should be registered in LITE profile"
+        assert should_register_tool(tool_name, profile), (
+            f"{tool_name} should be registered in LITE profile"
+        )
+
 
 def test_full_profile_contains_session_tools():
     """Verify that the FULL profile includes session tools (implicit check)."""
     profile = get_profile("full")
-    assert profile.tools is None # All tools
+    assert profile.tools is None  # All tools
 
     # should_register_tool returns True for any tool name if tools is None
     assert should_register_tool("boring_session_start", profile)
-

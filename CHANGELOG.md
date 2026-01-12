@@ -1,3 +1,8 @@
+## [11.2.5] - 2026-01-12
+### ✅ Quality & Stabilization
+- **Security Fix**: Resolved High severity vulnerability (B602) in `extensions.py` related to `subprocess.run(shell=True)`.
+- **Lint & Format**: Applied project-wide formatting fixes via `ruff format` to ensure CI consistency.
+
 ## [11.2.4] - 2026-01-12
 ### ✅ Quality & Stabilization
 - **CI Stabilization**: Resolved Quality Gate failures (Lint, Test, Security) to ensure 100% release health.

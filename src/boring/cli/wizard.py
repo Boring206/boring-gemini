@@ -89,7 +89,9 @@ class WizardManager:
         if self.system == "Windows":
             base = self.appdata / "Cursor" / "User" / "globalStorage"
         elif self.system == "Darwin":
-            base = self.home / "Library" / "Application Support" / "Cursor" / "User" / "globalStorage"
+            base = (
+                self.home / "Library" / "Application Support" / "Cursor" / "User" / "globalStorage"
+            )
         elif self.system == "Linux":
             base = self.appdata / "Cursor" / "User" / "globalStorage"
         else:
@@ -130,9 +132,9 @@ class WizardManager:
             if path:
                 # For Cursor (V2), the 'cursor.mcp' folder might not verify until we verify grandparent
                 if name == "Cursor":
-                     if path.parent.exists() or path.parent.parent.exists():
-                         found[name] = path
-                     continue
+                    if path.parent.exists() or path.parent.parent.exists():
+                        found[name] = path
+                    continue
 
                 # For Claude, the file might not exist but folder does
                 if path.parent.exists():
@@ -177,8 +179,8 @@ class WizardManager:
 
         # VS Code Settings (JSONC Handling)
         if editor_name == "VS Code (Settings)":
-             self._install_vscode_settings(config_path, profile, extra_env)
-             return
+            self._install_vscode_settings(config_path, profile, extra_env)
+            return
 
         # ... (rest of the existing install logic)
         config_path.parent.mkdir(parents=True, exist_ok=True)
@@ -197,7 +199,9 @@ class WizardManager:
                 if not auto_approve and not Confirm.ask("Overwrite corrupted config?"):
                     return
                 if auto_approve:
-                    console.print("[yellow]Skipping corrupted config in auto-mode (Safety).[/yellow]")
+                    console.print(
+                        "[yellow]Skipping corrupted config in auto-mode (Safety).[/yellow]"
+                    )
                     return
 
         # 2. Backup
@@ -210,7 +214,9 @@ class WizardManager:
 
         # [Deep Health Check] Use Wrapper Script if available (Stable Mode)
         # Prevents stdout pollution (DeprecationWarning) and encoding errors.
-        wrapper_name = "gemini_mcp_wrapper.bat" if self.system == "Windows" else "gemini_mcp_wrapper.sh"
+        wrapper_name = (
+            "gemini_mcp_wrapper.bat" if self.system == "Windows" else "gemini_mcp_wrapper.sh"
+        )
         # We need project root. Wizard doesn't strictly know it, but we can guess relative to CWD
         # since wizard is usually run from project root.
         # Or look for .boring folder in CWD.
@@ -220,7 +226,7 @@ class WizardManager:
         if wrapper_path.exists():
             # Use absolute path to wrapper
             exe = str(wrapper_path.resolve())
-            args = [] # Wrapper handles args via %* or "$@"
+            args = []  # Wrapper handles args via %* or "$@"
             console.print(f"[dim]Using Wrapper Script: {wrapper_name} (Stable Logic)[/dim]")
         else:
             # Fallback (Legacy/Uninitialized)
@@ -272,20 +278,20 @@ class WizardManager:
         except Exception as e:
             console.print(f"[bold red]❌ Write failed: {e}[/bold red]")
 
-
     def _install_vscode_settings(
-        self,
-        config_path: Path,
-        profile: str,
-        extra_env: Optional[dict[str, str]]
+        self, config_path: Path, profile: str, extra_env: Optional[dict[str, str]]
     ):
         """Handle VS Code settings.json (Copilot MCP). safe print or manual edit."""
         console.print("[yellow]⚠️ VS Code 'settings.json' contains comments (JSONC).[/yellow]")
-        console.print("[dim]Direct modification is risky. Please add the following snippet manually:[/dim]")
+        console.print(
+            "[dim]Direct modification is risky. Please add the following snippet manually:[/dim]"
+        )
 
         # [Deep Health Check] Use Wrapper if available
         cwd = Path.cwd()
-        wrapper_name = "gemini_mcp_wrapper.bat" if self.system == "Windows" else "gemini_mcp_wrapper.sh"
+        wrapper_name = (
+            "gemini_mcp_wrapper.bat" if self.system == "Windows" else "gemini_mcp_wrapper.sh"
+        )
         wrapper_path = cwd / ".boring" / wrapper_name
 
         if wrapper_path.exists():
@@ -301,7 +307,7 @@ class WizardManager:
                 "boring": {
                     "command": cmd,
                     "args": args,
-                    "env": {"BORING_MCP_PROFILE": profile.lower()}
+                    "env": {"BORING_MCP_PROFILE": profile.lower()},
                 }
             }
         }
@@ -352,7 +358,7 @@ def configure_custom_profile() -> tuple[str, dict[str, str]]:
     if Confirm.ask("Enable Vector Memory (ChromaDB)?", default=False):
         env["BORING_USE_VECTOR_MEMORY"] = "true"
     else:
-        env["BORING_USE_VECTOR_MEMORY"] = "false" # Default off for speed
+        env["BORING_USE_VECTOR_MEMORY"] = "false"  # Default off for speed
 
     if Confirm.ask("Enable Diff Patching (Smart Edits)?", default=True):
         env["BORING_USE_DIFF_PATCHING"] = "true"
@@ -423,9 +429,11 @@ def run_wizard(auto_approve: bool = False):
     for name, path in found.items():
         should_install = auto_approve
         if not should_install:
-             should_install = Confirm.ask(f"Install for [bold]{name}[/bold]?", default=True)
+            should_install = Confirm.ask(f"Install for [bold]{name}[/bold]?", default=True)
 
         if should_install:
-            manager.install(name, path, profile=profile, extra_env=extra_env, auto_approve=auto_approve)
+            manager.install(
+                name, path, profile=profile, extra_env=extra_env, auto_approve=auto_approve
+            )
 
     console.print("\n[green]Wizard completed successfully![/green]")

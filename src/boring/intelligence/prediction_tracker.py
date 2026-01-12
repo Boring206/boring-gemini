@@ -280,8 +280,7 @@ class PredictionTracker:
             params.append(prediction_type)
 
         # Get totals
-        # nosec B608: static table/column names, safe
-        query_total = f"""
+        query_total = f"""  # nosec B608
             SELECT
                 COUNT(*) as total,
                 SUM(CASE WHEN was_correct IS NOT NULL THEN 1 ELSE 0 END) as resolved,

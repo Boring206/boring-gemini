@@ -99,7 +99,7 @@ if ($INSTALLED_VER) {
 
 # Simple check: If already installed, we could skip long update unless forced
 # For Vibe Coder, let's always ensure we at least try --upgrade but quietly
-# UNLESS we are already on latest (V11.2.4 is current, but we check PyPI)
+# V11.2.5 'Web Skill Discovery' (Stabilized)
 
 Write-Step "Syncing Boring (Latest)..."
 

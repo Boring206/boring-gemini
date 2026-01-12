@@ -232,4 +232,3 @@ if MCP_AVAILABLE and mcp is not None:
         description="Get relevant patterns (skills) for the current context.",
         annotations={"readOnlyHint": True},
     )(boring_get_relevant_patterns)
-
