@@ -1,3 +1,12 @@
+## [11.2.7] - 2026-01-12
+### 🚀 Major Features
+- **Brain Map Evolution**: 
+  - Integrated **Global MCP Brain** patterns into the Dashboard Brain Map.
+  - Enhanced Visual Knowledge graph to distinguish between project-local and global patterns.
+- **Improved UX**:
+  - Overhauled Dashboard empty state with interactive **Auto-Learning** guidance.
+  - Clarified the role of `boring learn` vs. the native `AutoLearner` mechanism.
+
 ## [11.2.6] - 2026-01-12
 ### ✅ Quality & Stabilization
 - **Security Guard**: Finalized B608 (SQL Injection) suppression markers to strictly adhere to CI security gates.

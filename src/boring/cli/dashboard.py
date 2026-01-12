@@ -15,6 +15,32 @@ STATUS_FILE = Path("status.json")
 LOG_FILE = Path("logs/boring.log")
 BRAIN_DIR = get_boring_path(PROJECT_ROOT, "brain", create=False)
 CIRCUIT_FILE = get_state_file(PROJECT_ROOT, "circuit_breaker_state")
+GLOBAL_BRAIN_FILE = Path.home() / ".boring" / "brain" / "global_patterns.json"
+
+
+def load_global_brain_patterns() -> list:
+    """Load patterns from global ~/.boring/brain/global_patterns.json (MCP Brain)."""
+    if GLOBAL_BRAIN_FILE.exists():
+        try:
+            data = json.loads(GLOBAL_BRAIN_FILE.read_text(encoding="utf-8"))
+            patterns = data.get("patterns", [])
+            # Normalize to list of dicts for pandas
+            result = []
+            for p in patterns:
+                result.append({
+                    "pattern_id": p.get("id", p.get("pattern_id", "unknown")),
+                    "pattern_type": p.get("type", p.get("pattern_type", "mcp_brain")),
+                    "description": p.get("description", ""),
+                    "context": p.get("error", p.get("context", "")),
+                    "solution": p.get("fix", p.get("solution", "")),
+                    "success_count": p.get("success_count", 1),
+                    "last_used": p.get("timestamp", p.get("last_used", "")),
+                    "source": "global_brain",
+                })
+            return result
+        except Exception:
+            return []
+    return []
 
 
 def load_json(path: Path):
@@ -82,8 +108,9 @@ def main():
         )
         col3.metric("API Calls (1h)", calls)
     else:
-        col1.metric("Loop Count", "N/A")
-        col2.metric("Status", "OFFLINE")
+        col1.metric("Loop Count", 0)
+        col2.metric("Status", "READY", help="Run 'boring start' to begin autonomous development")
+        col3.metric("API Calls (1h)", 0)
 
     if circuit_data:
         state = circuit_data.get("state", "CLOSED")
@@ -93,7 +120,22 @@ def main():
             "Circuit Breaker", f"{icon} {state}", f"{failures} Failures", delta_color="inverse"
         )
     else:
-        col4.metric("Circuit Breaker", "Unknown")
+        col4.metric("Circuit Breaker", "✅ CLOSED", help="Circuit breaker is ready")
+
+    # --- Welcome Banner (when no activity) ---
+    if not status_data:
+        st.info(
+            """👋 **Welcome to Boring Dashboard!**
+
+This dashboard monitors autonomous development loops. To see data:
+
+
+1. **Run a loop**: `boring start` in your project directory
+2. **Or use MCP tools**: The `boring_status` tool provides status via MCP
+
+Below you can explore the Brain Map (learned patterns) and system configuration.
+            """
+        )
 
     st.markdown("---")
 
@@ -120,28 +162,49 @@ def main():
             except Exception as e:
                 st.error(f"Error reading logs: {e}")
         else:
-            st.warning("No log file found.")
+            st.info(
+                """📝 **No logs yet**
+                
+Logs will appear here once you run `boring start`.
+
+**Quick Tips:**
+- Create a `PROMPT.md` file with your task description
+- Run `boring start` to begin the autonomous loop
+- Logs will stream here in real-time
+                """
+            )
 
     with tab2:
         st.subheader("Brain Map (Visual Knowledge)")
 
-        patterns = storage.get_patterns(limit=500)
+        # Load patterns from BOTH local storage AND global MCP brain
+        local_patterns = storage.get_patterns(limit=500)
+        global_patterns = load_global_brain_patterns()
+        
+        # Mark local patterns with source
+        for p in local_patterns:
+            if "source" not in p:
+                p["source"] = "local_project"
+        
+        # Merge patterns (global + local)
+        all_patterns = global_patterns + local_patterns
 
-        if patterns:
+        if all_patterns:
             import pandas as pd
             import streamlit.components.v1 as components
 
-            df = pd.DataFrame(patterns)
+            df = pd.DataFrame(all_patterns)
             if "success_count" not in df.columns:
                 df["success_count"] = 1
             if "pattern_type" not in df.columns:
                 df["pattern_type"] = "unknown"
 
-            # Metrics
-            c1, c2, c3 = st.columns(3)
-            c1.metric("Total Patterns", len(patterns))
+            # Metrics with source breakdown
+            c1, c2, c3, c4 = st.columns(4)
+            c1.metric("Total Patterns", len(all_patterns))
             c2.metric("Total Successes", df["success_count"].sum())
-            c3.metric("Pattern Types", df["pattern_type"].nunique())
+            c3.metric("From MCP Brain", len(global_patterns), help="Patterns from ~/.boring/brain/")
+            c4.metric("From Local Project", len(local_patterns), help="Patterns from .boring/")
 
             st.divider()
 
@@ -249,7 +312,24 @@ def main():
                 use_container_width=True,
             )
         else:
-            st.info("Brain is empty. Run some tasks to learn patterns!")
+            st.info(
+                """🧠 **Brain is empty - Ready to auto-learn!**
+
+The Brain **automatically learns** error→solution patterns as you work. No manual action needed!
+
+
+**Auto-Learning triggers:**
+- ✨ **MCP tools**: `boring_code_review`, `boring_vibe_check`, `boring_suggest_next` etc.
+- ✨ **Autonomous loops**: `boring start` captures patterns during development
+- ✨ **Error fixes**: When AI fixes an error, the pattern is auto-saved
+
+**Storage locations:**
+- `~/.boring/brain/` - Global MCP Brain (cross-project)
+- `.boring/` - Local project patterns
+
+Just start using Boring tools - the Brain will populate automatically! 🚀
+                """
+            )
 
     with tab3:
         st.subheader("Pattern Explorer (Database)")

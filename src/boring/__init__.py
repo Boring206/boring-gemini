@@ -1,11 +1,11 @@
 """
 Boring for Gemini - AI Coding Assistant
 
-V11.2.6 "Web Skill Discovery" (Stabilized)
+V11.2.7 "Brain Map Evolution" (Stabilized)
+- **Dashboard**: Integrated Global MCP Brain patterns into the Brain Map.
+- **Dashboard**: Optimized empty state with auto-learning guidance.
 - **Architectural Standardization**: All core tools now return `BoringResult` (TypedDict) for reliable agentic integration.
-- **Interactive Brain Map**: Physics-based network visualization of project knowledge in the Dashboard.
 - **SQLite Brain**: Migrated persistent knowledge to SQLite for scalability and ACID compliance.
-- **Lightweight Mode**: Zero-config execution with global cache fallback.
 - **Reflex Stability**: High-precision error analysis and Brain-driven automated fixes.
 
 V11.1.0 "Turbo Mode & Wizard Upgrade":
@@ -73,7 +73,7 @@ Backward compatibility is maintained - old import paths still work.
 import importlib
 from typing import TYPE_CHECKING
 
-__version__ = "11.2.6"
+__version__ = "11.2.7"
 
 # =============================================================================
 # Lazy Loading Configuration
