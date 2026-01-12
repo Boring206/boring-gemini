@@ -5,7 +5,7 @@
     "private": true,
     "scripts": {
         "test": "echo 'Tests run via pytest in Docker'",
-        "build": "npx @anthropic-ai/smithery build"
+        "build": "npx -y @anthropic-ai/smithery-cli build"
     },
     "repository": {
         "type": "git",
@@ -15,7 +15,5 @@
     "author": "Boring206",
     "license": "Apache-2.0",
     "dependencies": {},
-    "devDependencies": {
-        "@anthropic-ai/smithery": "^0.4.0"
-    }
+    "devDependencies": {}
 }
