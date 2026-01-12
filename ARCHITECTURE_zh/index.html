@@ -1492,6 +1492,90 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/feature-matrix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    📊 功能矩陣
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/sustainability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🌱 可持續性策略
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/llm-adapters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🤖 LLM 適配器指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2123,6 +2207,56 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#security-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🛡️ 安全架構 (Security Architecture)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🛡️ 安全架構 (Security Architecture)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-shadow-mode-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 影子模式 (Shadow Mode - 執行期守衛)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-synthesized-tool-sandbox-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 即時工具沙箱 (Synthesized Tool Sandbox - 驗證器)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-checkpoints-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 安全檢查點 (Checkpoints - 狀態安全)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2145,8 +2279,8 @@
 
 <h1 id="boring-for-gemini-">Boring for Gemini - 完整架構說明 (中文版)</h1>
 <blockquote>
-<p><strong>版本</strong>: V10.26.0<br />
-<strong>更新日期</strong>: 2026-01-09</p>
+<p><strong>版本</strong>: V11.2.2<br />
+<strong>更新日期</strong>: 2026-01-12</p>
 </blockquote>
 <hr />
 <h2 id="_1">🎯 核心使命</h2>
@@ -2163,10 +2297,10 @@
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    └───────┬───────┘ └───────┬───────┘ └───────┬───────┘ └───────┬───────┘
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>            │                 │                 │                 │
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>     ┌──────┴──────┐   ┌──────┴──────┐   ┌──────┴──────┐   ┌──────┴──────┐
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>     │ • RAG       │   │ • Judge     │   │ • Agent     │   │ • MCP Server│
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>     │ • Brain     │   │ • Verify    │   │ • Shadow    │   │ • Router    │
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>     │ • Predict   │   │ • Security  │   │ • Session   │   │ • Plugin    │
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>     │ • Context   │   │ • Vibe      │   │ • Git       │   │ • Workspace │
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>     │ • SQLite Brain  │   │ • Judge     │   │ • Agent     │   │ • MCP Server│
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>     │ • Brain Map   │   │ • Verify    │   │ • Shadow    │   │ • Router    │
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>     │ • Predict     │   │ • Security  │   │ • Session   │   │ • Plugin    │
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>     │ • Context     │   │ • Vibe      │   │ • Git       │   │ • Workspace │
 </span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>     └─────────────┘   └─────────────┘   └─────────────┘   └─────────────┘
 </span></code></pre></div>
 <hr />
@@ -2184,9 +2318,9 @@
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>│  │  語義搜尋    │   │  記憶學習   │   │   錯誤預測   │   │  上下文管理  │     │
 </span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>│  └──────┬──────┘   └──────┬──────┘   └──────┬──────┘   └──────┬──────┘     │
 </span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>│         │                 │                 │                 │            │
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>│  • rag_search      • learn          • predict_errors  • context           │
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>│  • rag_index       • recall         • predict_impact  • optimize_context  │
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>│  • rag_status      • forget         • risk_areas      • cache_insights    │
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>│  • rag_search      • SQLite Storage • predict_errors  • context           │
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>│  • rag_index       • Active Recall  • predict_impact  • optimize_context  │
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>│  • rag_status      • Brain Map      • risk_areas      • cache_insights    │
 </span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>│                    • brain_stats    • health_score                        │
 </span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>│                                                                              │
 </span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>└─────────────────────────────────────────────────────────────────────────────┘
@@ -2202,22 +2336,22 @@
 <tbody>
 <tr>
 <td><strong>RAG</strong></td>
-<td>向量化搜尋程式碼，語義理解</td>
+<td>語義搜尋代碼庫</td>
 <td><code>boring_rag_search</code>, <code>boring_rag_index</code></td>
 </tr>
 <tr>
 <td><strong>Brain</strong></td>
-<td>學習專案模式，累積經驗</td>
+<td>學習專案模式 (SQLite)</td>
 <td><code>boring_learn</code>, <code>boring_recall</code>, <code>boring_forget</code></td>
 </tr>
 <tr>
 <td><strong>Predict</strong></td>
-<td>預測錯誤和修改影響</td>
+<td>預測錯誤和影響</td>
 <td><code>boring_predict_errors</code>, <code>boring_predict_impact</code></td>
 </tr>
 <tr>
 <td><strong>Context</strong></td>
-<td>智能壓縮上下文，節省 Token</td>
+<td>智能上下文管理</td>
 <td><code>boring_context</code>, <code>boring_optimize_context</code></td>
 </tr>
 </tbody>
@@ -2343,10 +2477,10 @@
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>│  │   服務核心   │   │  自然語言路由 │   │   擴充系統   │   │   專案管理   │     │
 </span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>│  └──────┬──────┘   └──────┬──────┘   └──────┬──────┘   └──────┬──────┘     │
 </span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>│         │                 │                 │                 │            │
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>│  • boring_help     • boring()       • list_plugins    • workspace_add     │
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>│  • mcp_server      • profile_set    • run_plugin      • workspace_list    │
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>│  • prompts         • profile_get    • reload_plugins  • workspace_switch  │
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>│  • resources                                          • workspace_remove  │
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>│  • boring_help     • boring()       • list_plugins    • Lazy Init         │
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>│  • mcp_server      • profile_set    • run_plugin      • workspace_add     │
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>│  • prompts         • profile_get    • reload_plugins  • Dashboard (Vis.js)│
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>│  • resources                                          • Lightweight Mode  │
 </span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>│                                                                              │
 </span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>│  ┌─────────────┐   ┌─────────────┐                                          │
 </span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>│  │   SpecKit   │   │  Discovery  │                                          │
@@ -2370,23 +2504,23 @@
 <tbody>
 <tr>
 <td><strong>MCP Server</strong></td>
-<td>FastMCP 服務核心</td>
+<td>服務核心</td>
 <td><code>boring_help</code>, Prompts, Resources</td>
 </tr>
 <tr>
 <td><strong>Tool Router</strong></td>
-<td>自然語言路由到具體工具</td>
+<td>自然語言路由</td>
 <td><code>boring()</code> (萬用入口)</td>
 </tr>
 <tr>
 <td><strong>Plugin</strong></td>
-<td>自定義擴充功能</td>
+<td>擴充系統</td>
 <td><code>boring_list_plugins</code>, <code>boring_run_plugin</code></td>
 </tr>
 <tr>
 <td><strong>Workspace</strong></td>
-<td>多專案管理</td>
-<td><code>boring_workspace_add</code>, <code>boring_workspace_switch</code></td>
+<td>專案管理</td>
+<td><code>Lazy Init</code> (Lightweight Mode), Dashboard (Vis.js)</td>
 </tr>
 <tr>
 <td><strong>SpecKit</strong></td>
@@ -2596,6 +2730,30 @@
 `pip install boring-aicoding` | [GitHub](https://github.com/Boring206/boring-gemini) | [PyPI](https://pypi.org/project/boring-aicoding/)
 
 </div>
+
+<h2 id="security-architecture">🛡️ 安全架構 (Security Architecture)</h2>
+<p>Boring V11.2 實作了全面的「深度防禦」策略：</p>
+<h3 id="1-shadow-mode-">1. 影子模式 (Shadow Mode - 執行期守衛)</h3>
+<ul>
+<li><strong>角色</strong>：封鎖主動破壞性操作（檔案/程序/網絡）。</li>
+<li><strong>控制</strong>：使用者可配置等級 (<code>DISABLED</code>, <code>ENABLED</code> (預設), <code>STRICT</code>)。</li>
+<li><strong>機制</strong>：攔截 <code>boring_</code> 工具呼叫，並檢查是否包含敏感模式（金鑰、系統配置）。</li>
+</ul>
+<h3 id="2-synthesized-tool-sandbox-">2. 即時工具沙箱 (Synthesized Tool Sandbox - 驗證器)</h3>
+<ul>
+<li><strong>角色</strong>：防止在合成工具 (<code>boring_synth_tool</code>) 中注入惡意代碼。</li>
+<li><strong>機制</strong>：基於 AST 的靜態分析 (<code>SynthesizedToolValidator</code>)。</li>
+<li><strong>策略</strong>：<ul>
+<li><strong>禁止導入</strong>：<code>os</code>, <code>sys</code>, <code>subprocess</code>, <code>shutil</code>, <code>socket</code></li>
+<li><strong>禁止函數</strong>：<code>exec()</code>, <code>eval()</code>, <code>open()</code>, <code>compile()</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="3-checkpoints-">3. 安全檢查點 (Checkpoints - 狀態安全)</h3>
+<ul>
+<li><strong>角色</strong>：在執行高風險操作前自動進行 Git 提交 (<code>boring_checkpoint</code>)。</li>
+<li><strong>恢復</strong>：透過 <code>git reset</code> 實現一鍵回滾。</li>
+</ul>
 
 
 

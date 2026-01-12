@@ -23,7 +23,7 @@
     
     
       
-        <title>Pillar V: Cognitive Evolution (Deep Thinking) - Boring-Gemini</title>
+        <title>Pillar V: Cognitive Evolution (Deep & Critical Thinking) - Boring-Gemini</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#pillar-v-cognitive-evolution-deep-thinking" class="md-skip">
+        <a href="#pillar-v-cognitive-evolution-deep-critical-thinking" class="md-skip">
           跳轉至
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Pillar V: Cognitive Evolution (Deep Thinking)
+              Pillar V: Cognitive Evolution (Deep &amp; Critical Thinking)
             
           </span>
         </div>
@@ -1492,6 +1492,90 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/feature-matrix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    📊 功能矩陣
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/sustainability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🌱 可持續性策略
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/llm-adapters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🤖 LLM 適配器指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2115,13 +2199,13 @@
   
 
 
-<h1 id="pillar-v-cognitive-evolution-deep-thinking">Pillar V: Cognitive Evolution (Deep Thinking)</h1>
+<h1 id="pillar-v-cognitive-evolution-deep-critical-thinking">Pillar V: Cognitive Evolution (Deep &amp; Critical Thinking)</h1>
 <p>Boring for Gemini V11.0+ introduces <strong>Cognitive Evolution</strong>, a paradigm shift from simple tool execution to autonomous reasoning and self-optimization. This "Pillar V" architecture enables the agent to think before acting, learn from its own mistakes, and synthesize new capabilities on the fly.</p>
 <h2 id="system-2-reasoning-slow-thinking">🧠 System 2 Reasoning (Slow Thinking)</h2>
 <p>Inspired by the "Dual Process" theory of cognition, Boring implements a <strong>Talker-Reasoner</strong> architecture:</p>
 <ul>
 <li><strong>System 1 (ThinkingState)</strong>: Fast, intuitive tool selection for routine tasks.</li>
-<li><strong>System 2 (ReasoningState)</strong>: Triggered automatically when task complexity is high (Score ≥ 0.7). It uses deep thinking frameworks (like Chain of Thought) to decompose problems before making changes.</li>
+<li><strong>System 2 (ReasoningState)</strong>: Triggered automatically for high-complexity tasks. It leverages the <strong>Critical Thinking</strong> loop (Chain of Thought) to verify hypotheses before making changes.</li>
 </ul>
 <h3 id="trigger-mechanism-assess_complexity">Trigger Mechanism: <code>assess_complexity</code></h3>
 <p>The <code>ToolRouter</code> analyzes your query for:
