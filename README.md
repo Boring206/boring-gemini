@@ -60,7 +60,7 @@ Introduction of **Self-Awareness** and **Adaptive Safety**.
 - **Anomaly Safety Net (P5)**: Automatically halts "stuck" loops (same tool + same args > 50 times) to save tokens and prevent crashes.
 - **Contextual Prompts (P6)**: Adaptive Profile now injects specific guides (e.g., *Testing Guide*) only when you need them.
 
-### 🛡️ Pillar VII: [The True One Dragon (V12.0.0)](docs/features/flow_zh.md)
+### 🛡️ Pillar VII: [The True One Dragon (V12.0.0)](docs/features/flow_zh.md) `[EXPERIMENTAL]`
 Introduction of a **State-Machine Workflow** and **Deep Shadow Mode**.
 - **Unified Flow Graph**: Dynamic orchestration (Architect -> Builder -> Healer -> Polish -> Evolver).
 - **Deep Shadow Mode**: `HealerNode` activates **STRICT** safety enforcement during auto-repairs.
@@ -77,7 +77,7 @@ Introduction of a **State-Machine Workflow** and **Deep Shadow Mode**.
 | 🕵️ | **[Hybrid RAG](docs/features/rag.md)** | Combined Vector + Dependency Graph search. Understands not just *what* code says, but *how* it's used globally. Now with **HyDE** expansion. |
 | 🧪 | **[Vibe Check](docs/features/quality-gates.md)** | Gamified health scanning. Calculates a **Vibe Score** and generates a "One-Click Fix Prompt" for the agent. |
 | 🛡️ | **[Active Recall](docs/features/global-brain.md)** | Automatically learns from error patterns. Recalls past solutions to avoid repeating mistakes across sessions. |
-| 📚 | **[Full Tool Reference](docs/reference/APPENDIX_A_TOOL_REFERENCE.md)** | Complete catalog of **60+ tools** with parameters and usage ([中文](docs/reference/APPENDIX_A_TOOL_REFERENCE_zh.md)). |
+| 📚 | **[Full Tool Reference](docs/reference/APPENDIX_A_TOOL_REFERENCE.md)** | Complete catalog of **67+ tools** with parameters and usage ([中文](docs/reference/APPENDIX_A_TOOL_REFERENCE_zh.md)). |
 | 🧬 | **[Skill Compilation](docs/features/cognitive.md)** | Distills repeated successful patterns into high-level **Strategic Skills**. |
 | 🪢 | **[Node.js Autonomy](docs/features/nodejs.md)** | Zeroconf Node.js & gemini-cli setup. No manual installation required. |
 
@@ -85,8 +85,8 @@ Introduction of a **State-Machine Workflow** and **Deep Shadow Mode**.
 
 ## 🎛️ Intelligent Tool Profiles (V10.26+)
 Boring adapts to your environment to save tokens and context:
-- **LITE (Default)**: Essential tools for daily coding using ~5% of context window.
-- **FULL**: All 60+ tools active.
+- **LITE (Default)**: Essential tools for daily coding (43 tools) using ~15% of context window.
+- **FULL**: All 67+ tools active.
 - **ADAPTIVE (Recommended)**: Automatically builds a custom profile based on your top 20 most frequently used tools + Prompt Injection.
   - Enable: `export BORING_MCP_PROFILE=adaptive`
 

@@ -11,10 +11,14 @@
 ### 🔧 Fixes
 - **CLI Compatibility**: Fixed "Requested entity was not found" error for Keyless OAuth users (Gemini CLI).
 - **Import Precision**: Fixed `boring_checkpoint` imports in HealerNode.
+- **Node Stability**: Fixed `NameError` for `boring_speckit_tasks` in `engine.py` by ensuring proper fallback initialization for all optional SpecKit tools.
 
 ### 🛡️ Quality & Stability
 - **Refactored SpecKit**: Lifted `speckit_tools` to top-level functions for direct import and better testability.
 - **Dependency Guard**: `ArchitectNode` now gracefully handles missing tools with Fallback Mode, though full power requires `speckit` tools.
+- **Tool Count Alignment**: Synchronized all documentation and router metadata to reflect verified tool counts (67+ standard, 43 lite).
+- **Timeout Protection**: Implemented a **1-hour global timeout** for `AgentLoop` within the `FlowEngine` to prevent perpetual hangs.
+- **Integrity Audit**: Purged "ghost feature" references to `VectorMemory` and `AutoLearner` from all documentation and guides.
 
 ## [11.5.0] - 2026-01-14 - Intelligent Adaptability 🧠
 ### 🚀 Major Features

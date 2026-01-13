@@ -21,6 +21,7 @@ except ImportError:
     # or circular imports prevent direct access.
     # In a real scenario, we might invoke them via a Tool Registry or localized import.
     boring_speckit_plan = None
+    boring_speckit_tasks = None
 
 try:
     from boring.mcp.tools.vibe import boring_vibe_check
@@ -143,7 +144,8 @@ class FlowEngine:
                 )
 
                 console.print("[green]🐉 Dragon is breathing fire (Agent Started)...[/green]")
-                loop.run()
+                # [ONE DRAGON STABILITY] Set 1-hour global timeout for the agent loop
+                loop.run(max_duration=3600)
                 # utilize loop.run() which runs until completion signals
             except Exception as e:
                 console.print(f"[red]Agent Loop failed: {e}[/red]")
@@ -247,7 +249,8 @@ class FlowEngine:
                         verification_level="STANDARD",
                         prompt_file=None,
                     )
-                    loop.run()
+                    # [ONE DRAGON STABILITY] Set 1-hour global timeout
+                    loop.run(max_duration=3600)
                     response.append("✅ Agent Loop Completed.")
                 except Exception as e:
                     response.append(f"❌ Loop Failed: {e}")

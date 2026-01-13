@@ -172,7 +172,7 @@ boring_rag_reload(project_path=".")
 
 ---
 
-## 📚 Patterns, AutoLearner & Active Recall
+## 📚 Patterns, FeedbackLearner & Active Recall
 
 ### Cognitive Reflexes (Active Recall)
 
@@ -188,7 +188,7 @@ Starting in **V10.31**, the Agent possesses **Active Recall**. When it encounter
 
 ```
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│ AI Response  │ ──▶ │ AutoLearner  │ ──▶ │ Pattern DB   │
+│ AI Response  │ ──▶ │FeedbackLearner│ ──▶ │ Pattern DB   │
 │ "Fixed by X" │     │ (extraction) │     │ (.boring/brain)│
 └──────────────┘     └──────────────┘     └──────────────┘
                              │

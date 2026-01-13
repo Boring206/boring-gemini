@@ -232,7 +232,7 @@ exclude_lines = [
     "raise NotImplementedError",
 ]
 
-# Smithery Configuration for version: 11.5.0 MCP Server
+# Smithery Configuration for version: 12.0.0 MCP Server
 [tool.smithery]
 server = "boring.mcp.server:create_server"
 

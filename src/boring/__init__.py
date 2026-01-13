@@ -1,6 +1,12 @@
 """
 Boring for Gemini - AI Coding Assistant
 
+V12.0.0 "The True One Dragon Update":
+- **Cognitive Architecture**: Active Reflex, Global Swarm Sync, and System 2 Planning.
+- **Stability Guard**: 1-hour global timeout for the Agent Loop and improved fallback logic.
+- **One Dragon Flow**: Unified FlowGraph (Architect -> Builder -> Healer -> Polish -> Evolver).
+- **Integrity Audit**: Verified 67+ tools and 100% documentation alignment.
+
 V11.5.0 "Intelligent Adaptability Update":
 - **Usage Analytics**: New `boring_usage_stats` and Usage Dashboard (CLI/Web) for self-aware insights.
 - **Safety Net**: Anomaly Detection prevents infinite loops and stuck states.

@@ -38,25 +38,19 @@ new_pattern = LearnedPattern(
 brain.learn_pattern(new_pattern)
 ```
 
-### 2. 向量記憶 (VectorMemory)
+### 2. 混合 RAG (RAGRetriever)
 
-如果您的環境支援 ChromaDB，可以使用 `VectorMemory` 進行語義搜索。
+使用高階的 `RAGRetriever` 進行語義搜尋與依賴擴展。
 
 ```python
-from boring.intelligence.vector_memory import VectorMemory
+from boring.rag.rag_retriever import RAGRetriever
 
-memory = VectorMemory(persist_path="./.boring/brain/vector_store")
+retriever = RAGRetriever(project_path=".")
 
-# 儲存經驗
-memory.add_experience(
-    text="Use Context Managers for file I/O to ensure closure",
-    metadata={"tag": "best_practice", "lang": "python"}
-)
-
-# 語義搜索 (RAG)
-results = memory.search("safe file handling", n_results=3)
+# 語義搜尋 (RAG)
+results = retriever.search("safe file handling", top_k=3)
 for res in results:
-    print(f"Found: {res.text}")
+    print(f"Found in {res['path']}: {res['snippet']}")
 ```
 
 ---

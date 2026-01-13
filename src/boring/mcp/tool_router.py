@@ -3,12 +3,12 @@
 """
 Tool Router - Unified Gateway for MCP Tools (V10.31)
 
-Problem: 98 individual tools overwhelms LLM context and causes selection confusion.
+Problem: 67 individual tools overwhelms LLM context and causes selection confusion.
 
 Solution: Provide a single smart router that:
 1. Accepts natural language requests
 2. Routes to the appropriate underlying tool
-3. Reduces exposed tools from 98 to ~10 core + 1 router
+3. Reduces exposed tools from 67 to ~10 core + 1 router
 
 Architecture:
     User Query → boring() → Tool Router → Appropriate Tool → Response
