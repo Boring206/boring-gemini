@@ -46,8 +46,8 @@ Designed for the modern Python stack. Boring natively supports **[uv](https://gi
 ### ⚓ Pillar IV: [Production-Grade Safety (Safety Net)](docs/features/shadow-mode.md)
 Trust is built on safety. Boring automatically creates **Git Checkpoints** before any risky operation. Combined with **Shadow Mode**, you have a "undo" button for AI agentic actions, ensuring your repository remains stable even during complex refactors.
 
-### 🧬 Pillar V: [Full-Power Boring (V11.4.2)](docs/features/cognitive.md)
-Not just execution, but evolution. V11.3.0 achieves **Full-Power** status by activating all high-value cognitive tools.
+### 🧬 Pillar V: [The Diet & Skills Update (V11.4.2)](docs/features/cognitive.md)
+Boring achieved **Full-Power** status by activating all high-value cognitive tools.
 - **SpecKit Activation**: Enabled full Specification-Driven Development tools (`plan`, `tasks`, `analyze`) for methodical planning.
 - **Global Brain Tools**: Unlocked cross-project knowledge sharing (`boring_global_export`) to recycle success patterns.
 - **Skills Autonomy**: New `boring_skills_install` allows the Agent to autonomously install missing Python packages.
@@ -60,8 +60,8 @@ Introduction of **Self-Awareness** and **Adaptive Safety**.
 - **Anomaly Safety Net (P5)**: Automatically halts "stuck" loops (same tool + same args > 50 times) to save tokens and prevent crashes.
 - **Contextual Prompts (P6)**: Adaptive Profile now injects specific guides (e.g., *Testing Guide*) only when you need them.
 
-### 🛡️ Pillar VII: [The True One Dragon (V12.0.0)](docs/features/flow_zh.md) `[EXPERIMENTAL]`
-Introduction of a **State-Machine Workflow** and **Deep Shadow Mode**.
+### 🛡️ Pillar VII: [The True One Dragon (V12.0.0)](docs/features/flow.md)
+The current production standard. Introduction of a **State-Machine Workflow** and **Deep Shadow Mode**.
 - **Unified Flow Graph**: Dynamic orchestration (Architect -> Builder -> Healer -> Polish -> Evolver).
 - **Deep Shadow Mode**: `HealerNode` activates **STRICT** safety enforcement during auto-repairs.
 - **Cognitive Reflex**: Semantic Search integrated into the Brain for fuzzy error correction.
@@ -163,7 +163,7 @@ Boring comes bundled with elite tools to boost AI performance:
 
 
 ## 📄 License & Links
-- **License**: [MIT](LICENSE)
+- **License**: [Apache 2.0](LICENSE)
 - **Repository**: [GitHub](https://github.com/Boring206/boring-gemini)
 - **Smithery**: [Boring Server](https://smithery.ai/server/boring/boring)
 

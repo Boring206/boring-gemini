@@ -77,5 +77,5 @@ boring wizard
 在終端機輸入：
 ```bash
 boring --version
-# Output: boring v10.32.1 (or newer)
+# Output: boring v12.0.0 (or newer)
 ```

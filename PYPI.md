@@ -38,15 +38,15 @@ npx -y @smithery/cli@latest install boring/boring --client cursor
 
 ---
 
-## 🧐 Cognitive Evolution (Pillar V)
+## 🧐 Cognitive Evolution (Pillar VII)
 
-V11.2.2 transforms Boring from a simple loop into a **Self-Improving Intelligence System**:
+V12.0.0 transforms Boring into the **True One Dragon Autonomous Engine**:
 
-- **🧘‍♀️ Deep & Critical Thinking**: Decomposes complex problems using multi-layered reasoning states (System 2).
-- **⚡ Brain Reflex (Active Recall)**: Instantly recalls past debug patterns. No more "searching"—it remembers how you fixed that `AttributeError` last time.
-- **🏆 Skill Compilation**: High-frequency successful patterns are distilled into **Strategic Skills**, making your local agent uniquely expert in your stack.
-- **🛠️ Live Tool Synthesis**: The agent can now **generate its own tools** in Python to solve hyper-specific problems on-the-fly.
-- **🌐 Knowledge Swarm**: Sync learned patterns across your team via Git-based synchronization.
+- **🐉 One Dragon Flow**: Integrated State-Machine (Architect -> Builder -> Healer -> Polish -> Evolver).
+- **🧘‍♀️ Deep & Critical Thinking**: System 2 reasoning states for complex problem decomposition.
+- **⚡ Brain Reflex (Cognitive Reflex)**: Semantic search integrated into the Brain for fuzzy error correction.
+- **🏆 Skill Compilation**: High-frequency successful patterns distilled into Strategic Skills.
+- **🌐 Global Swarm Sync**: Real-time knowledge synchronization via Git.
 
 ---
 
@@ -84,7 +84,7 @@ V11.2.2 transforms Boring from a simple loop into a **Self-Improving Intelligenc
 
 ## 🔧 Key Features
 
-- **60+ MCP Tools**: RAG, Testing, Review, Security, Git, and more
+- **67+ MCP Tools**: RAG, Testing, Review, Security, Git, and more
 - **Multi-Language**: Python, JavaScript, TypeScript support
 - **Quality Gates**: CI/CD integration with multi-tier verification
 - **Memory System**: Persistent learning and pattern recognition
