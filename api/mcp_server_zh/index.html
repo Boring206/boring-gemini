@@ -2320,7 +2320,7 @@ Use this for direct access without Smithery decorators (e.g. for http.py).</p>
 
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/boring/mcp/server.py</code></summary>
+              <summary>Source code in <code>src\boring\mcp\server.py</code></summary>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-93"> 93</a></span>
 <span class="normal"><a href="#__codelineno-0-94"> 94</a></span>
 <span class="normal"><a href="#__codelineno-0-95"> 95</a></span>
@@ -2367,7 +2367,7 @@ Use this for direct access without Smithery decorators (e.g. for http.py).</p>
 <span class="normal"><a href="#__codelineno-0-136">136</a></span>
 <span class="normal"><a href="#__codelineno-0-137">137</a></span>
 <span class="normal"><a href="#__codelineno-0-138">138</a></span>
-<span class="normal"><a href="#__codelineno-0-139">139</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_server_instance</span><span class="p">():</span>
+<span class="normal"><a href="#__codelineno-0-139">139</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93"></a><span class="k">def</span> <span class="nf">get_server_instance</span><span class="p">():</span>
 </span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-95"><a id="__codelineno-0-95" name="__codelineno-0-95"></a><span class="sd">    Get the configured FastMCP server instance (raw).</span>
 </span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="sd">    Use this for direct access without Smithery decorators (e.g. for http.py).</span>
@@ -2379,7 +2379,7 @@ Use this for direct access without Smithery decorators (e.g. for http.py).</p>
 </span><span id="__span-0-102"><a id="__codelineno-0-102" name="__codelineno-0-102"></a>
 </span><span id="__span-0-103"><a id="__codelineno-0-103" name="__codelineno-0-103"></a>    <span class="c1"># Register Resources</span>
 </span><span id="__span-0-104"><a id="__codelineno-0-104" name="__codelineno-0-104"></a>    <span class="nd">@instance</span><span class="o">.</span><span class="n">mcp</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s2">&quot;boring://logs&quot;</span><span class="p">)</span>
-</span><span id="__span-0-105"><a id="__codelineno-0-105" name="__codelineno-0-105"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_logs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-0-105"><a id="__codelineno-0-105" name="__codelineno-0-105"></a>    <span class="k">def</span> <span class="nf">get_logs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 </span><span id="__span-0-106"><a id="__codelineno-0-106" name="__codelineno-0-106"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get recent server logs.&quot;&quot;&quot;</span>
 </span><span id="__span-0-107"><a id="__codelineno-0-107" name="__codelineno-0-107"></a>        <span class="k">return</span> <span class="s2">&quot;Log access not implemented in stdio mode&quot;</span>
 </span><span id="__span-0-108"><a id="__codelineno-0-108" name="__codelineno-0-108"></a>
@@ -2438,7 +2438,7 @@ It must be decorated with @smithery.server() and return a FastMCP instance.</p>
 
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/boring/mcp/server.py</code></summary>
+              <summary>Source code in <code>src\boring\mcp\server.py</code></summary>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-142">142</a></span>
 <span class="normal"><a href="#__codelineno-0-143">143</a></span>
 <span class="normal"><a href="#__codelineno-0-144">144</a></span>
@@ -2454,7 +2454,7 @@ It must be decorated with @smithery.server() and return a FastMCP instance.</p>
 <span class="normal"><a href="#__codelineno-0-154">154</a></span>
 <span class="normal"><a href="#__codelineno-0-155">155</a></span>
 <span class="normal"><a href="#__codelineno-0-156">156</a></span>
-<span class="normal"><a href="#__codelineno-0-157">157</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-142"><a id="__codelineno-0-142" name="__codelineno-0-142"></a><span class="k">def</span><span class="w"> </span><span class="nf">create_server</span><span class="p">():</span>
+<span class="normal"><a href="#__codelineno-0-157">157</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-142"><a id="__codelineno-0-142" name="__codelineno-0-142"></a><span class="k">def</span> <span class="nf">create_server</span><span class="p">():</span>
 </span><span id="__span-0-143"><a id="__codelineno-0-143" name="__codelineno-0-143"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-144"><a id="__codelineno-0-144" name="__codelineno-0-144"></a><span class="sd">    Create and return a FastMCP server instance for Smithery deployment.</span>
 </span><span id="__span-0-145"><a id="__codelineno-0-145" name="__codelineno-0-145"></a>
@@ -2492,7 +2492,7 @@ Used for local CLI execution: boring-mcp</p>
 
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/boring/mcp/server.py</code></summary>
+              <summary>Source code in <code>src\boring\mcp\server.py</code></summary>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-165">165</a></span>
 <span class="normal"><a href="#__codelineno-0-166">166</a></span>
 <span class="normal"><a href="#__codelineno-0-167">167</a></span>
@@ -2672,7 +2672,7 @@ Used for local CLI execution: boring-mcp</p>
 <span class="normal"><a href="#__codelineno-0-341">341</a></span>
 <span class="normal"><a href="#__codelineno-0-342">342</a></span>
 <span class="normal"><a href="#__codelineno-0-343">343</a></span>
-<span class="normal"><a href="#__codelineno-0-344">344</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-165"><a id="__codelineno-0-165" name="__codelineno-0-165"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_server</span><span class="p">():</span>
+<span class="normal"><a href="#__codelineno-0-344">344</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-165"><a id="__codelineno-0-165" name="__codelineno-0-165"></a><span class="k">def</span> <span class="nf">run_server</span><span class="p">():</span>
 </span><span id="__span-0-166"><a id="__codelineno-0-166" name="__codelineno-0-166"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-167"><a id="__codelineno-0-167" name="__codelineno-0-167"></a><span class="sd">    Main entry point for the Boring MCP server (stdio transport).</span>
 </span><span id="__span-0-168"><a id="__codelineno-0-168" name="__codelineno-0-168"></a><span class="sd">    Used for local CLI execution: boring-mcp</span>
@@ -2691,7 +2691,7 @@ Used for local CLI execution: boring-mcp</p>
 </span><span id="__span-0-181"><a id="__codelineno-0-181" name="__codelineno-0-181"></a>
 </span><span id="__span-0-182"><a id="__codelineno-0-182" name="__codelineno-0-182"></a>    <span class="c1"># --- Renaissance V2: Core Tools Registration ---</span>
 </span><span id="__span-0-183"><a id="__codelineno-0-183" name="__codelineno-0-183"></a>    <span class="c1"># register_core_tools registers tools that must ALWAYS be exposed</span>
-</span><span id="__span-0-184"><a id="__codelineno-0-184" name="__codelineno-0-184"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">boring.mcp.tools.core</span>  <span class="c1"># noqa: F401</span>
+</span><span id="__span-0-184"><a id="__codelineno-0-184" name="__codelineno-0-184"></a>    <span class="kn">import</span> <span class="nn">boring.mcp.tools.core</span>  <span class="c1"># noqa: F401</span>
 </span><span id="__span-0-185"><a id="__codelineno-0-185" name="__codelineno-0-185"></a>    <span class="c1"># --- End Renaissance ---</span>
 </span><span id="__span-0-186"><a id="__codelineno-0-186" name="__codelineno-0-186"></a>
 </span><span id="__span-0-187"><a id="__codelineno-0-187" name="__codelineno-0-187"></a>    <span class="c1"># 2. Register Modular Tools (formerly V9)</span>
@@ -2705,12 +2705,12 @@ Used for local CLI execution: boring-mcp</p>
 </span><span id="__span-0-195"><a id="__codelineno-0-195" name="__codelineno-0-195"></a>    <span class="n">register_plugin_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
 </span><span id="__span-0-196"><a id="__codelineno-0-196" name="__codelineno-0-196"></a>    <span class="n">register_assistant_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
 </span><span id="__span-0-197"><a id="__codelineno-0-197" name="__codelineno-0-197"></a>    <span class="c1"># knowledge tools registered via import side-effect (top-level)</span>
-</span><span id="__span-0-198"><a id="__codelineno-0-198" name="__codelineno-0-198"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">knowledge</span>  <span class="c1"># noqa: F401 - V10: Knowledge System (boring_learn)</span>
+</span><span id="__span-0-198"><a id="__codelineno-0-198" name="__codelineno-0-198"></a>    <span class="kn">from</span> <span class="nn">.tools</span> <span class="kn">import</span> <span class="n">knowledge</span>  <span class="c1"># noqa: F401 - V10: Knowledge System (boring_learn)</span>
 </span><span id="__span-0-199"><a id="__codelineno-0-199" name="__codelineno-0-199"></a>
 </span><span id="__span-0-200"><a id="__codelineno-0-200" name="__codelineno-0-200"></a>    <span class="n">register_v10_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
 </span><span id="__span-0-201"><a id="__codelineno-0-201" name="__codelineno-0-201"></a>
 </span><span id="__span-0-202"><a id="__codelineno-0-202" name="__codelineno-0-202"></a>    <span class="c1"># 3.5 [ONE DRAGON] Register Flow Tool</span>
-</span><span id="__span-0-203"><a id="__codelineno-0-203" name="__codelineno-0-203"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">boring.mcp.tools.flow_tool</span>  <span class="c1"># noqa: F401</span>
+</span><span id="__span-0-203"><a id="__codelineno-0-203" name="__codelineno-0-203"></a>    <span class="kn">import</span> <span class="nn">boring.mcp.tools.flow_tool</span>  <span class="c1"># noqa: F401</span>
 </span><span id="__span-0-204"><a id="__codelineno-0-204" name="__codelineno-0-204"></a>
 </span><span id="__span-0-205"><a id="__codelineno-0-205" name="__codelineno-0-205"></a>    <span class="c1"># 4. Register Advanced Tools (Security, Transactions, Background, Context)</span>
 </span><span id="__span-0-206"><a id="__codelineno-0-206" name="__codelineno-0-206"></a>    <span class="n">register_advanced_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">)</span>
@@ -2728,23 +2728,23 @@ Used for local CLI execution: boring-mcp</p>
 </span><span id="__span-0-218"><a id="__codelineno-0-218" name="__codelineno-0-218"></a>    <span class="n">register_intelligence_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
 </span><span id="__span-0-219"><a id="__codelineno-0-219" name="__codelineno-0-219"></a>
 </span><span id="__span-0-220"><a id="__codelineno-0-220" name="__codelineno-0-220"></a>    <span class="c1"># Register SpecKit Tools (Spec-Driven Development Workflows)</span>
-</span><span id="__span-0-221"><a id="__codelineno-0-221" name="__codelineno-0-221"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">.speckit_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_speckit_tools</span>
+</span><span id="__span-0-221"><a id="__codelineno-0-221" name="__codelineno-0-221"></a>    <span class="kn">from</span> <span class="nn">.speckit_tools</span> <span class="kn">import</span> <span class="n">register_speckit_tools</span>
 </span><span id="__span-0-222"><a id="__codelineno-0-222" name="__codelineno-0-222"></a>
 </span><span id="__span-0-223"><a id="__codelineno-0-223" name="__codelineno-0-223"></a>    <span class="n">register_speckit_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
 </span><span id="__span-0-224"><a id="__codelineno-0-224" name="__codelineno-0-224"></a>
 </span><span id="__span-0-225"><a id="__codelineno-0-225" name="__codelineno-0-225"></a>    <span class="c1"># Register Brain Tools (V10.23 Enhanced: boring_brain_health, boring_global_*)</span>
-</span><span id="__span-0-226"><a id="__codelineno-0-226" name="__codelineno-0-226"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">.brain_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_brain_tools</span>
+</span><span id="__span-0-226"><a id="__codelineno-0-226" name="__codelineno-0-226"></a>    <span class="kn">from</span> <span class="nn">.brain_tools</span> <span class="kn">import</span> <span class="n">register_brain_tools</span>
 </span><span id="__span-0-227"><a id="__codelineno-0-227" name="__codelineno-0-227"></a>
 </span><span id="__span-0-228"><a id="__codelineno-0-228" name="__codelineno-0-228"></a>    <span class="n">register_brain_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">,</span> <span class="n">audited</span><span class="p">,</span> <span class="n">helpers</span><span class="p">)</span>
 </span><span id="__span-0-229"><a id="__codelineno-0-229" name="__codelineno-0-229"></a>
 </span><span id="__span-0-230"><a id="__codelineno-0-230" name="__codelineno-0-230"></a>    <span class="c1"># Register Skills Tools</span>
 </span><span id="__span-0-231"><a id="__codelineno-0-231" name="__codelineno-0-231"></a>    <span class="c1"># V11.4: Register Metrics &amp; Guidance Tools (Project Jarvis)</span>
-</span><span id="__span-0-232"><a id="__codelineno-0-232" name="__codelineno-0-232"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">boring.mcp.tools.metrics</span>  <span class="c1"># noqa: F401</span>
-</span><span id="__span-0-233"><a id="__codelineno-0-233" name="__codelineno-0-233"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">boring.mcp.tools.skills</span>  <span class="c1"># noqa: F401</span>
+</span><span id="__span-0-232"><a id="__codelineno-0-232" name="__codelineno-0-232"></a>    <span class="kn">import</span> <span class="nn">boring.mcp.tools.metrics</span>  <span class="c1"># noqa: F401</span>
+</span><span id="__span-0-233"><a id="__codelineno-0-233" name="__codelineno-0-233"></a>    <span class="kn">import</span> <span class="nn">boring.mcp.tools.skills</span>  <span class="c1"># noqa: F401</span>
 </span><span id="__span-0-234"><a id="__codelineno-0-234" name="__codelineno-0-234"></a>
 </span><span id="__span-0-235"><a id="__codelineno-0-235" name="__codelineno-0-235"></a>    <span class="c1"># V10.24: Register Tool Router (Universal Natural Language Gateway)</span>
 </span><span id="__span-0-236"><a id="__codelineno-0-236" name="__codelineno-0-236"></a>    <span class="c1"># Refactored in V11.4 (Renaissance) to dedicated module</span>
-</span><span id="__span-0-237"><a id="__codelineno-0-237" name="__codelineno-0-237"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">.tools.router_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_router_tools</span>
+</span><span id="__span-0-237"><a id="__codelineno-0-237" name="__codelineno-0-237"></a>    <span class="kn">from</span> <span class="nn">.tools.router_tools</span> <span class="kn">import</span> <span class="n">register_router_tools</span>
 </span><span id="__span-0-238"><a id="__codelineno-0-238" name="__codelineno-0-238"></a>    <span class="n">register_router_tools</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">mcp</span><span class="p">)</span>
 </span><span id="__span-0-239"><a id="__codelineno-0-239" name="__codelineno-0-239"></a>
 </span><span id="__span-0-240"><a id="__codelineno-0-240" name="__codelineno-0-240"></a>    <span class="n">profile</span> <span class="o">=</span> <span class="n">get_profile</span><span class="p">()</span>
@@ -2753,7 +2753,7 @@ Used for local CLI execution: boring-mcp</p>
 </span><span id="__span-0-243"><a id="__codelineno-0-243" name="__codelineno-0-243"></a>    <span class="c1"># V10.29: Post-registration PROMPT filtering based on profile</span>
 </span><span id="__span-0-244"><a id="__codelineno-0-244" name="__codelineno-0-244"></a>    <span class="c1"># FastMCP stores prompts in _prompts dict. We filter it directly.</span>
 </span><span id="__span-0-245"><a id="__codelineno-0-245" name="__codelineno-0-245"></a>    <span class="c1"># This prevents context window bloat (52 prompts -&gt; ~5 in LITE)</span>
-</span><span id="__span-0-246"><a id="__codelineno-0-246" name="__codelineno-0-246"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">.tool_profiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">should_register_prompt</span>
+</span><span id="__span-0-246"><a id="__codelineno-0-246" name="__codelineno-0-246"></a>    <span class="kn">from</span> <span class="nn">.tool_profiles</span> <span class="kn">import</span> <span class="n">should_register_prompt</span>
 </span><span id="__span-0-247"><a id="__codelineno-0-247" name="__codelineno-0-247"></a>
 </span><span id="__span-0-248"><a id="__codelineno-0-248" name="__codelineno-0-248"></a>    <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">prompts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># None means FULL profile (all prompts)</span>
 </span><span id="__span-0-249"><a id="__codelineno-0-249" name="__codelineno-0-249"></a>        <span class="c1"># Access internal prompts storage</span>
@@ -2806,7 +2806,7 @@ Used for local CLI execution: boring-mcp</p>
 </span><span id="__span-0-296"><a id="__codelineno-0-296" name="__codelineno-0-296"></a>
 </span><span id="__span-0-297"><a id="__codelineno-0-297" name="__codelineno-0-297"></a>    <span class="c1"># Vibe Coder Tutorial Hook - Show MCP intro on first launch</span>
 </span><span id="__span-0-298"><a id="__codelineno-0-298" name="__codelineno-0-298"></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="__span-0-299"><a id="__codelineno-0-299" name="__codelineno-0-299"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">..tutorial</span><span class="w"> </span><span class="kn">import</span> <span class="n">TutorialManager</span>
+</span><span id="__span-0-299"><a id="__codelineno-0-299" name="__codelineno-0-299"></a>        <span class="kn">from</span> <span class="nn">..tutorial</span> <span class="kn">import</span> <span class="n">TutorialManager</span>
 </span><span id="__span-0-300"><a id="__codelineno-0-300" name="__codelineno-0-300"></a>
 </span><span id="__span-0-301"><a id="__codelineno-0-301" name="__codelineno-0-301"></a>        <span class="n">TutorialManager</span><span class="p">()</span><span class="o">.</span><span class="n">show_tutorial</span><span class="p">(</span><span class="s2">&quot;mcp_intro&quot;</span><span class="p">)</span>
 </span><span id="__span-0-302"><a id="__codelineno-0-302" name="__codelineno-0-302"></a>    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -2815,7 +2815,7 @@ Used for local CLI execution: boring-mcp</p>
 </span><span id="__span-0-305"><a id="__codelineno-0-305" name="__codelineno-0-305"></a>    <span class="c1"># 4. Configured logging</span>
 </span><span id="__span-0-306"><a id="__codelineno-0-306" name="__codelineno-0-306"></a>    <span class="k">with</span> <span class="n">_configure_logging</span><span class="p">():</span>
 </span><span id="__span-0-307"><a id="__codelineno-0-307" name="__codelineno-0-307"></a>        <span class="c1"># Always check for optional RAG dependencies at startup</span>
-</span><span id="__span-0-308"><a id="__codelineno-0-308" name="__codelineno-0-308"></a>        <span class="kn">import</span><span class="w"> </span><span class="nn">importlib.util</span>
+</span><span id="__span-0-308"><a id="__codelineno-0-308" name="__codelineno-0-308"></a>        <span class="kn">import</span> <span class="nn">importlib.util</span>
 </span><span id="__span-0-309"><a id="__codelineno-0-309" name="__codelineno-0-309"></a>
 </span><span id="__span-0-310"><a id="__codelineno-0-310" name="__codelineno-0-310"></a>        <span class="n">rag_ok</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;chromadb&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span>
 </span><span id="__span-0-311"><a id="__codelineno-0-311" name="__codelineno-0-311"></a>            <span class="s2">&quot;sentence_transformers&quot;</span>
