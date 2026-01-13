@@ -122,7 +122,7 @@ def main():
 
     # Get port from environment (Smithery sets this)
     port = int(os.environ.get("PORT", 8000))
-    host = os.environ.get("HOST", "0.0.0.0")  # nosec B104: Intended for container binding
+    host = os.environ.get("HOST", "0.0.0.0")  # nosec B104  # Intended for container binding
 
     logger.info(f"Starting Boring MCP HTTP server on {host}:{port}")
 

@@ -1,3 +1,21 @@
+## [12.0.0] - 2026-01-14 - The True One Dragon 🐉🧠
+### 🚀 Major Features
+- **Cognitive Architecture (Pillar V Complete)**:
+    - **Active Reflex**: `BrainManager` uses Semantic Search (`InvertedIndex`) to find solutions for fuzzy errors.
+    - **Global Swarm**: `ArchitectNode` syncs with Global Brain (Git) before planning; `EvolverNode` pushes verified insights.
+    - **System 2 Planning**: `ArchitectNode` intelligently injects "Mastered Skills" into the planning prompt, preventing repeated mistakes.
+    - **Safety Net**: `Healer` automatically creates a `boring_checkpoint` before risky `pip install` operations.
+- **Unified Flow Graph**: Replaced legacy linear engine with a dynamic `FlowGraph` (Nodes: Architect -> Builder -> Healer -> Polish -> Evolver).
+- **Dynamic Shadow Mode**: `HealerNode` now activates **STRICT** Shadow Mode during repairs, preventing cascading damage.
+
+### 🔧 Fixes
+- **CLI Compatibility**: Fixed "Requested entity was not found" error for Keyless OAuth users (Gemini CLI).
+- **Import Precision**: Fixed `boring_checkpoint` imports in HealerNode.
+
+### 🛡️ Quality & Stability
+- **Refactored SpecKit**: Lifted `speckit_tools` to top-level functions for direct import and better testability.
+- **Dependency Guard**: `ArchitectNode` now gracefully handles missing tools with Fallback Mode, though full power requires `speckit` tools.
+
 ## [11.5.0] - 2026-01-14 - Intelligent Adaptability 🧠
 ### 🚀 Major Features
 - **Adaptive Profile (P6)**: The system now "learns" from your usage. If you frequently test code, it automatically injects the `Testing Guide` prompt into your context.
@@ -611,9 +629,9 @@ All Quality Gate checks now passing:
 - **`AgentHandoff`**: 標準化 Agent 交接流程
 
 #### 🎛️ Tool Router & Profiles - NEW!
-- **`ToolRouter`**: 統一入口，自然語言路由到 98+ 工具
+- **`ToolRouter`**: 統一入口，自然語言路由到 60+ 工具
 - **17 Tool Categories**: RAG、Review、Testing、Git、Security 等分類
-- **`ToolProfile`**: minimal (8) / lite (20) / standard (50) / full (98+)
+- **`ToolProfile`**: minimal (8) / lite (20) / standard (50) / full (60+)
 - **Context Reduction**: 減少 80%+ LLM 上下文佔用
 - **`.boring.toml` Integration**: `[boring.mcp] profile = "lite"`
 - **Environment Variable**: `BORING_MCP_PROFILE=lite`

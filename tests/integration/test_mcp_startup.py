@@ -53,15 +53,17 @@ class TestMCPServerStartup:
 
         if os.environ.get("BORING_MCP_MODE") != "1":
             os.environ["BORING_MCP_MODE"] = "1"
-        
+
+
         # Force FULL profile to ensure all tools (including Shadow Mode) are registered
         os.environ["BORING_MCP_PROFILE"] = "full"
 
         import importlib
-        import boring.mcp.tool_profiles
+
         import boring.mcp.instance
         import boring.mcp.server
-        
+        import boring.mcp.tool_profiles
+
         # Reload modules to pick up new profile env var
         importlib.reload(boring.mcp.tool_profiles)
         importlib.reload(boring.mcp.instance)

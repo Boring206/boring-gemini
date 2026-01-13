@@ -368,7 +368,7 @@ Boring V10.24 introduces **Tool Profiles** to reduce LLM context usage:
 | `minimal` | 8 | ~2k tokens | Chat / Q&A |
 | `lite` | 20 | ~5k tokens | **Default** / General Dev |
 | `standard` | 50 | ~15k tokens | Complex Refactoring |
-| `full` | 98+ | ~30k tokens | Admin / Deep Debug |
+| `full` | 60+ | ~30k tokens | Admin / Deep Debug |
 | `adaptive` | Dynamic | Low-Med | **Recommended (V11.5)** |
 
 Enable via `.boring.toml`, env `BORING_MCP_PROFILE=adaptive`, or use the **[Boring Wizard](../guides/getting-started/wizard.md)**.

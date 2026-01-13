@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://smithery.ai/server/boring/boring"><img src="https://smithery.ai/badge/boring/boring" alt="Smithery Badge"></a>
-  <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/v/boring-aicoding.svg?v=11.5.0" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/v/boring-aicoding.svg?v=12.0.0" alt="PyPI version"></a>
   <a href="https://pepy.tech/project/boring-aicoding"><img src="https://static.pepy.tech/badge/boring-aicoding" alt="Downloads"></a>
   <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/pyversions/boring-aicoding.svg" alt="Python Versions"></a>
 </p>
@@ -60,6 +60,13 @@ Introduction of **Self-Awareness** and **Adaptive Safety**.
 - **Anomaly Safety Net (P5)**: Automatically halts "stuck" loops (same tool + same args > 50 times) to save tokens and prevent crashes.
 - **Contextual Prompts (P6)**: Adaptive Profile now injects specific guides (e.g., *Testing Guide*) only when you need them.
 
+### 🛡️ Pillar VII: [The True One Dragon (V12.0.0)](docs/features/flow_zh.md)
+Introduction of a **State-Machine Workflow** and **Deep Shadow Mode**.
+- **Unified Flow Graph**: Dynamic orchestration (Architect -> Builder -> Healer -> Polish -> Evolver).
+- **Deep Shadow Mode**: `HealerNode` activates **STRICT** safety enforcement during auto-repairs.
+- **Cognitive Reflex**: Semantic Search integrated into the Brain for fuzzy error correction.
+
+
 ---
 
 ## 🛠️ Key Capabilities
@@ -67,10 +74,10 @@ Introduction of **Self-Awareness** and **Adaptive Safety**.
 | | Feature | Description |
 | :--- | :--- | :--- |
 | 🧠 | **[Unified Gateway (Cognitive Router)](docs/features/mcp-tools.md)** | The `boring` tool is now your single entry point. Use `boring "check security"`, `boring help`, or `boring discover "rag"` to access all capabilities. |
-| 🕵️ | **[Hybrid RAG](docs/features/rag.md)** | Combined Vector + Dependency Graph search. Understands not just *what* code says, but *how* it's used globally. |
+| 🕵️ | **[Hybrid RAG](docs/features/rag.md)** | Combined Vector + Dependency Graph search. Understands not just *what* code says, but *how* it's used globally. Now with **HyDE** expansion. |
 | 🧪 | **[Vibe Check](docs/features/quality-gates.md)** | Gamified health scanning. Calculates a **Vibe Score** and generates a "One-Click Fix Prompt" for the agent. |
 | 🛡️ | **[Active Recall](docs/features/global-brain.md)** | Automatically learns from error patterns. Recalls past solutions to avoid repeating mistakes across sessions. |
-| 📚 | **[Full Tool Reference](docs/reference/APPENDIX_A_TOOL_REFERENCE.md)** | Complete catalog of 98+ tools with parameters and usage ([中文](docs/reference/APPENDIX_A_TOOL_REFERENCE_zh.md)). |
+| 📚 | **[Full Tool Reference](docs/reference/APPENDIX_A_TOOL_REFERENCE.md)** | Complete catalog of **60+ tools** with parameters and usage ([中文](docs/reference/APPENDIX_A_TOOL_REFERENCE_zh.md)). |
 | 🧬 | **[Skill Compilation](docs/features/cognitive.md)** | Distills repeated successful patterns into high-level **Strategic Skills**. |
 | 🪢 | **[Node.js Autonomy](docs/features/nodejs.md)** | Zeroconf Node.js & gemini-cli setup. No manual installation required. |
 
@@ -79,7 +86,7 @@ Introduction of **Self-Awareness** and **Adaptive Safety**.
 ## 🎛️ Intelligent Tool Profiles (V10.26+)
 Boring adapts to your environment to save tokens and context:
 - **LITE (Default)**: Essential tools for daily coding using ~5% of context window.
-- **FULL**: All 98+ tools active.
+- **FULL**: All 60+ tools active.
 - **ADAPTIVE (Recommended)**: Automatically builds a custom profile based on your top 20 most frequently used tools + Prompt Injection.
   - Enable: `export BORING_MCP_PROFILE=adaptive`
 
@@ -106,6 +113,9 @@ curl -fsSL https://raw.githubusercontent.com/Boring206/boring-gemini/main/script
 pip install boring-aicoding
 boring wizard
 ```
+
+> [!NOTE]
+> Once installed, please refer to the **[AI Connection Guide (Gemini / Ollama)](docs/guides/connection.md)** to set up your models.
 
 <details>
 <summary><b>🔧 Advanced Installation (uv, modular)</b></summary>

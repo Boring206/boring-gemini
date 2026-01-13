@@ -39,7 +39,9 @@ from typing import Optional
 
 from .code_indexer import CodeChunk, CodeIndexer, IndexStats
 from .graph_builder import DependencyGraph, GraphStats
+from .hyde import HyDEResult, get_hyde_expander
 from .index_state import IndexState
+from .reranker import get_ensemble_reranker
 
 logger = logging.getLogger(__name__)
 
@@ -384,6 +386,8 @@ class RAGRetriever:
         file_filter: Optional[str] = None,
         chunk_types: Optional[list[str]] = None,
         threshold: float = 0.0,
+        use_hyde: bool = True,
+        use_rerank: bool = True,
     ) -> list[RetrievalResult]:
         """
         Retrieve relevant code chunks with caching.
@@ -395,6 +399,8 @@ class RAGRetriever:
             file_filter: Filter by file path substring (e.g., "auth")
             chunk_types: Filter by chunk types (e.g., ["function", "class"])
             threshold: Minimum relevance score (0.0 to 1.0)
+            use_hyde: Whether to use HyDE query expansion (V10.24+)
+            use_rerank: Whether to use Cross-Encoder reranking (V10.24+)
 
         Returns:
             List of RetrievalResult sorted by relevance
@@ -403,7 +409,7 @@ class RAGRetriever:
             return []
 
         # Generate cache key
-        cache_key = f"{query}:{n_results}:{expand_graph}:{file_filter}:{chunk_types}:{threshold}"
+        cache_key = f"{query}:{n_results}:{expand_graph}:{file_filter}:{chunk_types}:{threshold}:{use_hyde}:{use_rerank}"
 
         # Check cache
         with _cache_lock:
@@ -414,7 +420,14 @@ class RAGRetriever:
 
         # Perform actual retrieval
         results = self._retrieve_impl(
-            query, n_results, expand_graph, file_filter, chunk_types, threshold
+            query,
+            n_results,
+            expand_graph,
+            file_filter,
+            chunk_types,
+            threshold,
+            use_hyde=use_hyde,
+            use_rerank=use_rerank,
         )
 
         # Update cache
@@ -431,10 +444,24 @@ class RAGRetriever:
         file_filter: Optional[str] = None,
         chunk_types: Optional[list[str]] = None,
         threshold: float = 0.0,
+        use_hyde: bool = True,
+        use_rerank: bool = True,
     ) -> list[RetrievalResult]:
         """
         Internal implementation of retrieve without caching.
         """
+
+        # 1. HyDE Expansion (V10.24+)
+        search_query = query
+        hyde_result: Optional[HyDEResult] = None
+        if use_hyde:
+            try:
+                expander = get_hyde_expander()
+                hyde_result = expander.expand_query(query)
+                search_query = hyde_result.hypothetical_code
+                logger.debug(f"HyDE expansion applied for query: {query[:50]}...")
+            except Exception as e:
+                logger.warning(f"HyDE expansion failed: {e}")
 
         # Build ChromaDB filter
         where_filter = self._build_where_filter(file_filter, chunk_types)
@@ -442,8 +469,8 @@ class RAGRetriever:
         # Vector search
         try:
             results = self.collection.query(
-                query_texts=[query],
-                n_results=min(n_results * 2, 50),  # Fetch extra for graph expansion
+                query_texts=[search_query],
+                n_results=min(n_results * 2, 50),  # Fetch extra for graph expansion/reranking
                 where=where_filter,
             )
         except Exception as e:
@@ -571,6 +598,32 @@ class RAGRetriever:
             # V10.23: Pass session context to ranker
             context = {"session": session_ctx} if session_ctx else None
             retrieved = ranker.rerank(query, retrieved, top_k=n_results * 2, context=context)
+
+        # =================================================================
+        # HYBRID RAG: Cross-Encoder Reranking (V10.24+)
+        # =================================================================
+        if use_rerank and len(retrieved) > 1:
+            try:
+                reranker = get_ensemble_reranker()
+                # Use ensemble reranker to combine semantic CE scores with metadata
+                reranked_indices = reranker.rerank(
+                    query=query,
+                    chunks=[r.chunk for r in retrieved],
+                    original_scores=[r.score for r in retrieved],
+                    top_k=n_results,
+                )
+
+                # Reconstruct RetrievalResult list in new order
+                new_retrieved = []
+                for original_idx, score in reranked_indices:
+                    res = retrieved[original_idx]
+                    res.score = score  # Update with reranked score
+                    new_retrieved.append(res)
+
+                retrieved = new_retrieved
+                logger.debug(f"Cross-Encoder reranking applied to {len(retrieved)} results")
+            except Exception as e:
+                logger.warning(f"Reranking failed: {e}")
 
         # Sort by score and limit
         retrieved.sort(key=lambda x: x.score, reverse=True)

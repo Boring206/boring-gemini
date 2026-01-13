@@ -251,6 +251,14 @@ def register_rag_tools(mcp: Any, helpers: dict):
                 description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory. Example: '.' or '/path/to/project'."
             ),
         ] = None,
+        use_hyde: Annotated[
+            bool,
+            Field(description="Enable HyDE query expansion for better semantic alignment. Default: True."),
+        ] = True,
+        use_rerank: Annotated[
+            bool,
+            Field(description="Enable high-precision Cross-Encoder reranking. Default: True."),
+        ] = True,
     ) -> BoringResult:
         """
         Search the codebase using semantic RAG retrieval.
@@ -266,6 +274,8 @@ def register_rag_tools(mcp: Any, helpers: dict):
             threshold: Minimum relevance score (0.0 to 1.0)
             verbosity: Output detail level (minimal/standard/verbose)
             project_path: Optional explicit path to project root
+            use_hyde: Enable HyDE expansion (default True)
+            use_rerank: Enable Cross-Encoder reranking (default True)
 
         Returns:
             Formatted search results with code snippets
@@ -311,6 +321,8 @@ def register_rag_tools(mcp: Any, helpers: dict):
             expand_graph=expand_graph,
             file_filter=file_filter,
             threshold=threshold,
+            use_hyde=use_hyde,
+            use_rerank=use_rerank,
         )
 
         if not results:

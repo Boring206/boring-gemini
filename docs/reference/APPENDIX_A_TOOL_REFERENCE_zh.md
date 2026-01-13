@@ -1,6 +1,6 @@
 # 附錄 A：完整 MCP 工具參考指南 (Appendix A: Complete MCP Tool Reference)
 
-> **工具總數**：98+ 個工具，組織為 19 個類別。
+> **工具總數**：60+ 個工具，組織為 19 個類別。
 > **版本**：V11.3.0 (Full-Power Update)
 >
 > **💡 建議**：優先使用 Universal Router (`boring()`) 或 CLI (`boring-route`)。大多數情況下你不需要直接調用這些工具。

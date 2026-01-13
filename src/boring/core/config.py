@@ -64,7 +64,7 @@ class Settings(BaseSettings):
 
     # Gemini Settings
     GOOGLE_API_KEY: Optional[str] = Field(default=None)
-    DEFAULT_MODEL: str = "models/gemini-2.5-flash"
+    DEFAULT_MODEL: str = "default"
     TIMEOUT_MINUTES: int = 15
     MCP_PROFILE: str = Field(default="lite", description="Tool profile: ultra_lite, minimal, lite, standard, full")
 

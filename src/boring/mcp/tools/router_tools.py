@@ -12,7 +12,7 @@ def boring(request: str) -> str:
     """
     🎯 Universal Router - Natural Language Tool Interface
 
-    Instead of remembering 98+ tool names, just describe what you want:
+    Instead of remembering 60+ tool names, just describe what you want:
     - "search for authentication code" → boring_rag_search
     - "review my code for security" → boring_security_scan
     - "generate tests for user.py" → boring_test_gen

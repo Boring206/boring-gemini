@@ -12,7 +12,7 @@ from .vibe_interface import VibeInterface
 # [ONE DRAGON WIRING]
 # Importing real tools to power the engine
 try:
-    from boring.mcp.tools.speckit import (
+    from boring.mcp.speckit_tools import (
         boring_speckit_plan,
         boring_speckit_tasks,
     )
@@ -105,7 +105,7 @@ class FlowEngine:
             # Note: In a full implementation, we'd handle the 'mcp' context/dependencies properly.
             # Here we assume standalone capability or rely on the tool's internal robustness.
             try:
-                result = boring_speckit_plan(task=refined_goal, project_path=str(self.root))
+                result = boring_speckit_plan(context=refined_goal, project_path=str(self.root))
                 console.print(Panel(str(result), title="Speckit Plan Result"))
             except Exception as e:
                 console.print(f"[red]Error executing plan tool: {e}[/red]")
@@ -117,7 +117,7 @@ class FlowEngine:
         # Generate tasks immediately after planning
         if boring_speckit_tasks:
             try:
-                boring_speckit_tasks(project_path=str(self.root))
+                boring_speckit_tasks(context=str(result), project_path=str(self.root))
             except Exception:
                 (self.root / "task.md").write_text("- [ ] Task 1 (Auto-generated fallback)")
         else:
@@ -218,7 +218,7 @@ class FlowEngine:
                 response.append("⚡ Generating Plan...")
                 if boring_speckit_plan:
                     try:
-                        res = boring_speckit_plan(task=refined_goal, project_path=str(self.root))
+                        res = boring_speckit_plan(context=refined_goal, project_path=str(self.root))
                         response.append(f"Plan Result: {res}")
                     except Exception as e:
                         response.append(f"Plan Error: {e}")
@@ -228,7 +228,7 @@ class FlowEngine:
 
                 if boring_speckit_tasks:
                     try:
-                        boring_speckit_tasks(project_path=str(self.root))
+                        boring_speckit_tasks(context=str(res), project_path=str(self.root))
                     except Exception:
                         pass
                 else:

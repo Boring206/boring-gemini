@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://smithery.ai/server/boring/boring"><img src="https://smithery.ai/badge/boring/boring" alt="Smithery Badge"></a>
-  <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/v/boring-aicoding.svg?v=11.5.0" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/v/boring-aicoding.svg?v=12.0.0" alt="PyPI version"></a>
   <a href="https://pepy.tech/project/boring-aicoding"><img src="https://static.pepy.tech/badge/boring-aicoding" alt="Downloads"></a>
   <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/pyversions/boring-aicoding.svg" alt="Python Versions"></a>
 </p>
@@ -59,6 +59,13 @@ Boring 實作了嚴謹的 **「規劃 -> 執行 -> 驗證」** 循環。它不�
 - **異常安全網 (P5)**：自動攔截「卡死」循環（相同工具+相同參數重複 50 次以上），節省 Token 並防止崩潰。
 - **情境提示詞 (P6)**：Adaptive Profile 現在會根據使用習慣，僅在需要時動態注入特定指南（如 *測試指南*）。
 
+### 🛡️ 支柱七：[真·一條龍引擎 (V12.0.0)](docs/features/flow_zh.md)
+引入 **狀態機工作流 (FlowGraph)** 與 **深度影子模式**。
+- **統一流程圖**：動態編排 (Architect -> Builder -> Healer -> Polish -> Evolver)。
+- **深度影子模式**：`HealerNode` 在自動修復期間啟動 **STRICT** 等級的安全強制執行。
+- **認知反射**：語義搜尋整合至大腦，實現模糊錯誤糾正。
+
+
 ---
 
 ## 🛠️ 核心能力一覽
@@ -66,10 +73,10 @@ Boring 實作了嚴謹的 **「規劃 -> 執行 -> 驗證」** 循環。它不�
 | | 功能 | 描述 |
 | :--- | :--- | :--- |
 | 🧠 | **[統一入口 (全能路由)](docs/features/mcp-tools_zh.md)** | `boring` 工具現在是您的單一入口。使用 `boring "檢查安全性"`, `boring help` 或 `boring discover "rag"` 來訪問所有能力。 |
-| 🕵️ | **[混合 RAG](docs/features/rag_zh.md)** | 結合向量搜尋與「依賴圖」擴展，深度理解程式碼的底層上下文與調用關係。 |
+| 🕵️ | **[混合 RAG](docs/features/rag_zh.md)** | 結合向量搜尋與「依賴圖」擴展，深度理解程式碼的底層上下文與調用關係。現已整合 **HyDE** 查詢擴展。 |
 | 🧪 | **[Vibe Check](docs/features/quality-gates_zh.md)** | 遊戲化的健康評分系統，一鍵生成讓 AI 代理修復程式碼的「萬能提示詞」。 |
 | 🛡️ | **[Active Recall](docs/features/global-brain_zh.md)** | 自動從錯誤模式中學習。在多個對話 Session 間回憶解決方案，避免重複錯誤。 |
-| 📚 | **[完整工具參考](docs/reference/APPENDIX_A_TOOL_REFERENCE_zh.md)** | 包含 98+ 個工具的詳細 Schema、參數與用法說明 ([English](docs/reference/APPENDIX_A_TOOL_REFERENCE.md))。 |
+| 📚 | **[完整工具參考](docs/reference/APPENDIX_A_TOOL_REFERENCE_zh.md)** | 包含 **60+ 個工具** 的詳細 Schema、參數與用法說明 ([English](docs/reference/APPENDIX_A_TOOL_REFERENCE.md))。 |
 | 🧬 | **[技能萃取](docs/features/cognitive_zh.md)** | 將重複成功的模式萃取為高階的 **「戰略技能 (Strategic Skills)」**。 |
 | 🪢 | **[Node.js 自助安裝](docs/features/nodejs_zh.md)** | 免配置 Node.js 與 gemini-cli 設定，無需手動安裝環境。 |
 
@@ -78,7 +85,7 @@ Boring 實作了嚴謹的 **「規劃 -> 執行 -> 驗證」** 循環。它不�
 ## 🎛️ 智慧工具設定檔 (Intelligent Tool Profiles)
 Boring 能適應您的環境以節省 Token 與上下文：
 - **LITE (預設)**：僅載入日常開發必備工具，佔用約 5% 上下文視窗。
-- **FULL (全功能)**：啟用所有 98+ 個工具。
+- **FULL (全功能)**：啟用所有 60+ 個工具。
 - **ADAPTIVE (推薦)**：根據Top 20 常用工具自動建立個人化設定檔 + 動態 Prompt 注入。
   - 啟用方式：`export BORING_MCP_PROFILE=adaptive`
 
@@ -108,6 +115,9 @@ uv pip install "boring-aicoding[all]"
 # 標準安裝
 pip install "boring-aicoding[all]"
 ```
+
+> [!NOTE]
+> 安裝完成後，請參考 **[AI 連接指南 (Gemini / Ollama)](docs/guides/connection_zh.md)** 進行模型設定。
 
 ---
 

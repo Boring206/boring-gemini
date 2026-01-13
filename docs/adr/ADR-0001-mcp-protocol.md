@@ -31,7 +31,7 @@ We will adopt the **Model Context Protocol (MCP)** as the primary integration me
 
 ### Approach
 1. Implement MCP server in `src/boring/mcp/`
-2. Expose all 98+ tools via MCP interfaces
+2. Expose all 60+ tools via MCP interfaces
 3. Support both FastMCP (lite) and full MCP with vector capabilities
 4. Maintain CLI compatibility for legacy workflows
 

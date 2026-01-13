@@ -115,6 +115,15 @@ class BrainManager:
 
         self.log_dir = log_dir or self.project_root / "logs"
 
+        # Subdirectories (Keep for backward compatibility)
+        (self.brain_dir / "patterns").mkdir(exist_ok=True)
+        (self.brain_dir / "rubrics").mkdir(exist_ok=True)
+
+        # [ONE DRAGON GAP FIX] Phase 4.1: Inverted Index Integration
+        from .search import InvertedIndex
+        self.index = InvertedIndex()
+        self._rebuild_index() # Populate index from storage
+
         # Subdirectories (Keep for backward compatibility during migration)
         self.adaptations_dir = self.brain_dir / "workflow_adaptations"
         self.patterns_dir = self.brain_dir / "learned_patterns"
@@ -125,6 +134,20 @@ class BrainManager:
 
         # Auto-migrate if legacy patterns exist but DB is empty
         self._migrate_to_sqlite()
+
+
+    def _rebuild_index(self):
+        """Load persistent patterns into the inverted index."""
+        try:
+            # Query all patterns from SQLite
+            patterns = self.storage.get_patterns(limit=1000)
+            for p in patterns:
+                # p is dict with 'pattern_id', 'description', 'solution'
+                content = f"{p.get('description', '')} {p.get('solution', '')} {p.get('context', '')}"
+                self.index.add_document(p.get('pattern_id'), content, metadata=p)
+        except Exception:
+            # Silent fail on index rebuild if storage not ready
+            pass
 
     def _ensure_structure(self):
         """Create directory structure if not exists."""
@@ -329,45 +352,21 @@ class BrainManager:
 
     def get_relevant_patterns(self, context: str, limit: int = 5) -> list[dict]:
         """
-        Get patterns relevant to given context (SQLite optimized).
+        Get patterns relevant to given context (Semantic Search).
         """
         if not context:
             return self.storage.get_patterns(limit=limit)
 
-        # 1. Try SQL-based filtering first (fast)
-        patterns = self.storage.get_patterns(context_like=context, limit=limit * 2)
+        # [ONE DRAGON GAP FIX] Phase 4.1: Use Semantic Search
+        results = self.index.search(context, limit=limit)
 
-        # 2. If SQL didn't return enough (fuzzy match limitation), or we want better ranking:
-        # Re-rank strictly in python if needed.
-        # The SQL 'LIKE' is crude.
-        # Let's do a refined ranking on the SQL results.
+        if results:
+            # results is List[Dict] with 'score', 'doc_id', 'metadata'
+            # We return the metadata (which is the pattern dict)
+            return [r["metadata"] for r in results]
 
-        scored = []
-        context_lower = context.lower()
-
-        for p in patterns:
-            score = 0.0
-            p_context = p.get("context", "").lower()
-            p_desc = p.get("description", "").lower()
-
-            # Exact substring bonus
-            if context_lower in p_context:
-                score += 3.0
-            if context_lower in p_desc:
-                score += 2.0
-
-            # Context is substring of Query (Reflexive)
-            if p_context and len(p_context) > 5 and p_context in context_lower:
-                score += 3.0
-
-            scored.append((score, p))
-
-        scored.sort(key=lambda x: x[0], reverse=True)
-
-        # If we have very few results from strict LIKE, maybe fallback?
-        # For now, this is "Brain Scalability" phase, so SQL usage is priority.
-
-        return [p for _, p in scored[:limit]]
+        # Fallback to crude SQL matching if index empty or no hits
+        return self.storage.get_patterns(context_like=context, limit=limit)
 
     def create_rubric(self, name: str, description: str, criteria: list[dict]) -> dict[str, Any]:
         """

@@ -11,7 +11,7 @@
 
 **No Code Needed.** Just describe the vibe.
 
-Boring-Gemini features a **Universal Natural Language Router**. You don't need to remember 98+ complex tools. Just say what you want:
+Boring-Gemini features a **Universal Natural Language Router**. You don't need to remember 60+ complex tools. Just say what you want:
 
 > "Search for authentication logic"  
 > "Review my code for security issues"  
@@ -84,7 +84,7 @@ V11.2.2 transforms Boring from a simple loop into a **Self-Improving Intelligenc
 
 ## 🔧 Key Features
 
-- **55+ MCP Tools**: RAG, Testing, Review, Security, Git, and more
+- **60+ MCP Tools**: RAG, Testing, Review, Security, Git, and more
 - **Multi-Language**: Python, JavaScript, TypeScript support
 - **Quality Gates**: CI/CD integration with multi-tier verification
 - **Memory System**: Persistent learning and pattern recognition

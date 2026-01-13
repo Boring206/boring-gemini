@@ -46,7 +46,7 @@ class GeminiCLIAdapter(LLMProvider):
 
     def __init__(
         self,
-        model_name: str = "gemini-2.0-flash-exp",
+        model_name: str = "default",
         log_dir: Optional[Path] = None,
         timeout_seconds: int = 300,
         cwd: Optional[Path] = None,
@@ -56,8 +56,17 @@ class GeminiCLIAdapter(LLMProvider):
         self.timeout_seconds = timeout_seconds
         self.cwd = cwd
 
-        # Verify CLI is available (shutil.which returns None if not found)
+        # Verify CLI is available
         self.cli_path = shutil.which("gemini")
+
+        # Fallback to NodeManager if not in PATH (Portable Install support)
+        if not self.cli_path:
+            try:
+                from boring.services.nodejs import NodeManager
+                self.cli_path = NodeManager().get_gemini_path()
+            except ImportError:
+                pass
+
         if self.cli_path:
             log_status(
                 self.log_dir,
@@ -311,7 +320,7 @@ If no tool is needed, just respond with normal text.
 
 
 def create_cli_adapter(
-    model_name: str = "gemini-2.0-flash-exp", log_dir: Optional[Path] = None
+    model_name: str = "default", log_dir: Optional[Path] = None
 ) -> Optional[GeminiCLIAdapter]:
     """
     Factory function to create a CLI adapter.

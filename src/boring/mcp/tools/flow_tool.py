@@ -7,7 +7,6 @@ from pydantic import Field
 
 from ...audit import audited
 from ...core.config import settings
-from ...flow.engine import FlowEngine
 from ...types import BoringResult, create_error_result, create_success_result
 from ..utils import check_rate_limit, detect_project_root
 
@@ -45,12 +44,37 @@ def boring_flow(
         # Fallback to default if detection fails
         root = settings.PROJECT_ROOT
 
+    # [ONE DRAGON WIRING]
+    # Instantiate the Graph Engine
+    from ...flow.graph import FlowGraph
+    from ...flow.nodes.architect import ArchitectNode
+    from ...flow.nodes.base import FlowContext
+    from ...flow.nodes.builder import BuilderNode
+    from ...flow.nodes.evolver import EvolverNode
+    from ...flow.nodes.healer import HealerNode
+    from ...flow.nodes.polish import PolishNode
+
+    context = FlowContext(
+        project_root=root,
+        user_goal=instruction or "Improve the project"
+    )
+
+    graph = FlowGraph(context)
+
+    # Add Nodes
+    graph.add_node(ArchitectNode(), is_start=True)
+    graph.add_node(BuilderNode())
+    graph.add_node(HealerNode())
+    graph.add_node(PolishNode())
+    graph.add_node(EvolverNode())
+
+    # Execute
     try:
-        engine = FlowEngine(root)
-        result_text = engine.run_headless(user_input=instruction)
+        final_msg = graph.run()
 
         return create_success_result(
-            message=result_text, data={"status": "success", "engine_output": result_text}
+            message=final_msg,
+            data={"status": "success", "graph_output": final_msg}
         )
     except Exception as e:
         return create_error_result(f"🐉 Dragon Stumbled: {str(e)}")

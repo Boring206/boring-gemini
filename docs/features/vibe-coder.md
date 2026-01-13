@@ -2,7 +2,7 @@
 
 > **Philosophy**: "Don't write code. Just describe the vibe."
 
-The **Vibe Coder** feature set in Boring-Gemini V10.24 is designed for the modern AI-assisted developer who prefers natural language over manual configuration. It transforms the 98+ complex MCP tools into a seamless, conversational interface.
+The **Vibe Coder** feature set in Boring-Gemini V10.24 is designed for the modern AI-assisted developer who prefers natural language over manual configuration. It transforms the 60+ complex MCP tools into a seamless, conversational interface.
 
 ## 🎯 The Universal Router
 
@@ -58,7 +58,7 @@ To further optimize your experience and save LLM token usage, we introduced **To
 | **Minimal** | 8 | Pure conversation, minimal overhead |
 | **Lite** (Default) | 19 | Everyday Vibe Coding (Router + Essentials) |
 | **Standard** | 50 | Heavy development tasks |
-| **Full** | 98+ | Power user, full control |
+| **Full** | 60+ | Power user, full control |
 
 ### Configuration
 
@@ -71,7 +71,7 @@ enable_router = true
 
 ## 🚀 Why This Matters
 
-1.  **Context Efficiency**: Reduces context window usage by ~80% (19 tools vs 98 tools).
+1.  **Context Efficiency**: Reduces context window usage by ~80% (19 tools vs 60 tools).
 2.  **Accuracy**: The router logic helps the LLM avoid "hallucinating" tool names.
 3.  **Speed**: Faster tool selection means faster turnaround time.
 4.  **Simplicity**: You only need to know **one** function: `boring()`.

@@ -420,6 +420,9 @@ def run_wizard(auto_approve: bool = False):
             else:
                 if node_manager.install_gemini_cli():
                     console.print("[green]✅ Portable Node.js and Gemini CLI are ready.[/green]")
+
+                    if Confirm.ask("Would you like to authenticate with your Google Account now?", default=True):
+                         node_manager.run_gemini_login()
                 else:
                     console.print(
                         "[red]❌ Node.js is ready but Gemini CLI failed to install.[/red]"

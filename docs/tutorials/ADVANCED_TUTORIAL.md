@@ -59,7 +59,7 @@ To reduce LLM context, use profiles:
 | `minimal` | 8 | Simple single-tool workflows |
 | `lite` | 20 | **Default** - daily dev work |
 | `standard` | 50 | Full-featured projects |
-| `full` | 98+ | Power users, everything exposed |
+| `full` | 60+ | Power users, everything exposed |
 
 **Config** (`.boring.toml`):
 ```toml

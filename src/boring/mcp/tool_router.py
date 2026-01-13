@@ -1039,7 +1039,7 @@ def create_router_tool_description() -> str:
     """Create the description for the router tool."""
     return """🎯 **Boring Universal Router** - Natural Language Tool Interface
 
-Instead of remembering 98+ specific tools, just describe what you want:
+Instead of remembering 60+ specific tools, just describe what you want:
 
 - "boring go" → Start autonomous execution flow
 - "boring fix" → Automatically heal detected issues
@@ -1109,7 +1109,7 @@ Examples:
     boring-route "我想做登入功能"
 
 This tool routes your natural language request to the appropriate Boring tool.
-No need to remember 98+ tool names - just describe what you want!
+No need to remember 60+ tool names - just describe what you want!
         """)
         return
 

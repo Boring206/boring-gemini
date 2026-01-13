@@ -193,8 +193,12 @@ class AgentLoop:
                 log_status(self.log_dir, "WARN", "No files changed in this loop.")
 
                 # === EMPTY OUTPUT FEEDBACK (Fix #2) ===
-                # If AI produced output but we couldn't parse it, tell the AI
-                if len(output_content) > 100:  # AI did output something
+                # If AI produced output but we couldn't parse it, telling the AI
+                if len(output_content) > 0:  # AI did output something
+                    # [V12.0 Enhancement] Print the output for the user (One-Shot Mode support)
+                    console.print(Panel(output_content, title="[bold blue]Gemini Response[/bold blue]", border_style="blue"))
+
+                if len(output_content) > 100:
                     console.print(
                         "[bold yellow]⚠️ AI output could not be parsed into file changes.[/bold yellow]"
                     )
