@@ -839,6 +839,90 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/adaptive-profile_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🧠 適應性設定檔 (Adaptive)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/usage-dashboard_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    📊 使用量看板 (Usage)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/anomaly-safety_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🛡️ 異常偵測 (Safety)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1670,34 +1754,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/agents_zh/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Agents
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../api/intelligence_zh/" class="md-nav__link">
         
   
@@ -2223,6 +2279,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#17-speckit-tools-specification-driven-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. SpecKit Tools (Specification-Driven Development)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#18-skills-discovery-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18. Skills &amp; Discovery Tools
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mcp-resources" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2266,8 +2344,8 @@
 
 <h1 id="appendix-a-complete-mcp-tool-reference">Appendix A: Complete MCP Tool Reference</h1>
 <blockquote>
-<p><strong>Total Tools</strong>: 98+ tools organized into 18 categories.
-<strong>Version</strong>: V11.2.2 (Architectural Lockdown)</p>
+<p><strong>Total Tools</strong>: 98+ tools organized into 19 categories.
+<strong>Version</strong>: V11.3.0 (Full-Power Update)</p>
 <p><strong>💡 Recommendation</strong>: Use the Universal Router (<code>boring()</code>) or CLI (<code>boring-route</code>) for most tasks. You rarely need to call these tools directly.</p>
 </blockquote>
 <hr />
@@ -2466,6 +2544,11 @@
 <td><code>boring_rag_expand</code></td>
 <td>Expand dependency graph</td>
 <td><code>chunk_id</code>, <code>depth</code></td>
+</tr>
+<tr>
+<td><code>boring_rag_graph</code></td>
+<td><strong>Visual Graph</strong>: Visualize code dependency graph.</td>
+<td><code>target_path</code>, <code>depth</code>, <code>output_format</code></td>
 </tr>
 <tr>
 <td><code>boring_rag_status</code></td>
@@ -2810,9 +2893,95 @@
 <td>-</td>
 </tr>
 <tr>
+<td><code>boring_brain_health</code></td>
+<td><strong>Health Report</strong>: Pattern decay and usage stats.</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>boring_global_export</code></td>
+<td><strong>Share</strong>: Export high-value patterns to Global Brain.</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>boring_global_import</code></td>
+<td><strong>Learn</strong>: Import patterns from Global Brain.</td>
+<td><code>tags</code></td>
+</tr>
+<tr>
 <td><code>boring_create_rubrics</code></td>
 <td>Create evaluation standards from project specs.</td>
 <td>-</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="17-speckit-tools-specification-driven-development">17. SpecKit Tools (Specification-Driven Development)</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+<th>Key Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>boring_speckit_plan</code></td>
+<td><strong>Plan</strong>: Generate implementation plan from plan.md.</td>
+<td><code>workflow_file</code></td>
+</tr>
+<tr>
+<td><code>boring_speckit_tasks</code></td>
+<td><strong>Breakdown</strong>: Create actionable task list.</td>
+<td><code>workflow_file</code></td>
+</tr>
+<tr>
+<td><code>boring_speckit_analyze</code></td>
+<td><strong>Analyze</strong>: Check spec consistency.</td>
+<td><code>workflow_file</code></td>
+</tr>
+<tr>
+<td><code>boring_speckit_clarify</code></td>
+<td><strong>Clarify</strong>: Identify ambiguities in spec.</td>
+<td><code>workflow_file</code></td>
+</tr>
+<tr>
+<td><code>boring_speckit_checklist</code></td>
+<td><strong>Verify</strong>: Generate verification checklist.</td>
+<td><code>workflow_file</code></td>
+</tr>
+<tr>
+<td><code>boring_speckit_constitution</code></td>
+<td><strong>Rules</strong>: Create project guiding principles.</td>
+<td><code>workflow_file</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="18-skills-discovery-tools">18. Skills &amp; Discovery Tools</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+<th>Key Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>boring_skills_install</code></td>
+<td><strong>Install</strong>: Install Agent Skill.</td>
+<td><code>name</code></td>
+</tr>
+<tr>
+<td><code>boring_skills_list</code></td>
+<td><strong>List</strong>: List Skills Catalog.</td>
+<td><code>platform</code></td>
+</tr>
+<tr>
+<td><code>boring_skills_search</code></td>
+<td><strong>Search</strong>: Search Skills Catalog.</td>
+<td><code>query</code></td>
 </tr>
 </tbody>
 </table>
@@ -2905,7 +3074,7 @@
 </tbody>
 </table>
 <hr />
-<p><em>Last updated: V10.18.1</em></p>
+<p><em>Last updated: V11.3.0</em></p>
 
 
 

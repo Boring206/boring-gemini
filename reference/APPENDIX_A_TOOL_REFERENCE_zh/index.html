@@ -845,6 +845,90 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/adaptive-profile_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🧠 適應性設定檔 (Adaptive)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/usage-dashboard_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    📊 使用量看板 (Usage)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/anomaly-safety_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🛡️ 異常偵測 (Safety)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1589,6 +1673,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#17-speckit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. SpecKit 工具 (規格驅動開發工具)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#18-skills-discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18. 技能與發現工具 (Skills &amp; Discovery)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mcp-resources" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1917,34 +2023,6 @@
     
   
     索引
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/agents_zh/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Agents
   
 
     
@@ -2490,6 +2568,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#17-speckit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. SpecKit 工具 (規格驅動開發工具)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#18-skills-discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18. 技能與發現工具 (Skills &amp; Discovery)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mcp-resources" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2533,8 +2633,8 @@
 
 <h1 id="a-mcp-appendix-a-complete-mcp-tool-reference">附錄 A：完整 MCP 工具參考指南 (Appendix A: Complete MCP Tool Reference)</h1>
 <blockquote>
-<p><strong>工具總數</strong>：98+ 個工具，組織為 18 個類別。
-<strong>版本</strong>：V11.2.2 (架構鎖定)</p>
+<p><strong>工具總數</strong>：98+ 個工具，組織為 19 個類別。
+<strong>版本</strong>：V11.3.0 (Full-Power Update)</p>
 <p><strong>💡 建議</strong>：優先使用 Universal Router (<code>boring()</code>) 或 CLI (<code>boring-route</code>)。大多數情況下你不需要直接調用這些工具。</p>
 </blockquote>
 <hr />
@@ -2733,6 +2833,11 @@
 <td><code>boring_rag_expand</code></td>
 <td>展開依賴關係圖</td>
 <td><code>chunk_id</code>, <code>depth</code></td>
+</tr>
+<tr>
+<td><code>boring_rag_graph</code></td>
+<td><strong>視覺化圖表</strong>: 視覺化代碼依賴圖。</td>
+<td><code>target_path</code>, <code>depth</code>, <code>output_format</code></td>
 </tr>
 <tr>
 <td><code>boring_rag_status</code></td>
@@ -3077,9 +3182,95 @@
 <td>-</td>
 </tr>
 <tr>
+<td><code>boring_brain_health</code></td>
+<td><strong>健康報告</strong>: Pattern 衰減與使用統計。</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>boring_global_export</code></td>
+<td><strong>分享</strong>: 匯出高價值模式到全域大腦。</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>boring_global_import</code></td>
+<td><strong>學習</strong>: 從全域大腦匯入模式。</td>
+<td><code>tags</code></td>
+</tr>
+<tr>
 <td><code>boring_create_rubrics</code></td>
 <td>從專案規格書建立評定標準。</td>
 <td>-</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="17-speckit">17. SpecKit 工具 (規格驅動開發工具)</h2>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>說明</th>
+<th>關鍵參數</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>boring_speckit_plan</code></td>
+<td><strong>實作計畫</strong>: 從 plan.md 生成實作計畫。</td>
+<td><code>workflow_file</code></td>
+</tr>
+<tr>
+<td><code>boring_speckit_tasks</code></td>
+<td><strong>任務分解</strong>: 建立可執行的任務清單。</td>
+<td><code>workflow_file</code></td>
+</tr>
+<tr>
+<td><code>boring_speckit_analyze</code></td>
+<td><strong>分析</strong>: 檢查規格一致性。</td>
+<td><code>workflow_file</code></td>
+</tr>
+<tr>
+<td><code>boring_speckit_clarify</code></td>
+<td><strong>釐清</strong>: 識別規格中的模糊點。</td>
+<td><code>workflow_file</code></td>
+</tr>
+<tr>
+<td><code>boring_speckit_checklist</code></td>
+<td><strong>驗收</strong>: 生成驗收核對清單。</td>
+<td><code>workflow_file</code></td>
+</tr>
+<tr>
+<td><code>boring_speckit_constitution</code></td>
+<td><strong>原則</strong>: 建立專案指導原則。</td>
+<td><code>workflow_file</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="18-skills-discovery">18. 技能與發現工具 (Skills &amp; Discovery)</h2>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>說明</th>
+<th>關鍵參數</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>boring_skills_install</code></td>
+<td><strong>安裝</strong>: 安裝 Agent Skill。</td>
+<td><code>name</code></td>
+</tr>
+<tr>
+<td><code>boring_skills_list</code></td>
+<td><strong>列表</strong>: 顯示技能目錄。</td>
+<td><code>platform</code></td>
+</tr>
+<tr>
+<td><code>boring_skills_search</code></td>
+<td><strong>搜尋</strong>: 搜尋技能目錄。</td>
+<td><code>query</code></td>
 </tr>
 </tbody>
 </table>
@@ -3172,7 +3363,7 @@
 </tbody>
 </table>
 <hr />
-<p><em>最後更新: V10.26.0</em></p>
+<p><em>最後更新: V11.3.0</em></p>
 
 
 

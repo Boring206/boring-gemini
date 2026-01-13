@@ -839,6 +839,90 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adaptive-profile_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🧠 適應性設定檔 (Adaptive)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage-dashboard_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    📊 使用量看板 (Usage)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../anomaly-safety_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🛡️ 異常偵測 (Safety)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1670,34 +1754,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/agents_zh/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Agents
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../api/intelligence_zh/" class="md-nav__link">
         
   
@@ -2109,6 +2165,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#usage-analytics-new-in-v115" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔍 Usage Analytics (New in V11.5)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#circuit-breaker" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2273,11 +2340,18 @@ Note the hyphen! <code>boring-monitor</code> is a standalone command, not a subc
 <li><strong>Loop Count</strong>: Current autonomous loop iteration.</li>
 <li><strong>Status</strong>: Is the Agent <code>THINKING</code>, <code>CODING</code>, or <code>SLEEPING</code>.</li>
 <li><strong>API Calls</strong>: Monitor token usage and API call frequency.</li>
+<li><strong>Personal Stats</strong>: See your top tools and usage patterns. <a href="../usage-dashboard/">Learn more</a>.</li>
 </ul>
+<h3 id="usage-analytics-new-in-v115">🔍 Usage Analytics (New in V11.5)</h3>
+<p>The Monitor now includes a dedicated <strong>Usage Stats</strong> tab for introspection.
+- See which tools you use most.
+- Identify efficiency bottlenecks.
+- View data powered by <code>boring_usage_stats</code>.</p>
 <h3 id="circuit-breaker">🛑 Circuit Breaker</h3>
 <ul>
 <li>View breaker status (<code>CLOSED</code>/<code>OPEN</code>).</li>
 <li>If the Agent gets stuck or fails repeatedly, the breaker trips to protect your API Quota.</li>
+<li><strong>Anomaly Detection</strong>: View loop anomalies blocked by the P5 Safety Net. <a href="../anomaly-safety/">Learn more</a>.</li>
 </ul>
 <h3 id="brain-explorer">🧠 Brain Explorer</h3>
 <p>See your Agent's <strong>RAG Memory</strong> and <strong>Learning Patterns</strong>.

@@ -890,10 +890,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#boring_skills_browse" class="md-nav__link">
+  <a href="#boring_skills_search" class="md-nav__link">
     <span class="md-ellipsis">
       
-        技能發現 (boring_skills_browse)
+        技能發現 (boring_skills_search)
       
     </span>
   </a>
@@ -934,10 +934,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#0-boring_skills_browse" class="md-nav__link">
+  <a href="#0-boring_skills_search" class="md-nav__link">
     <span class="md-ellipsis">
       
-        0. 技能發現 (boring_skills_browse)
+        0. 技能發現 (boring_skills_search)
       
     </span>
   </a>
@@ -1177,6 +1177,90 @@
     
   
     🧪 品質閘門
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adaptive-profile_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🧠 適應性設定檔 (Adaptive)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage-dashboard_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    📊 使用量看板 (Usage)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../anomaly-safety_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🛡️ 異常偵測 (Safety)
   
 
     
@@ -2021,34 +2105,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/agents_zh/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Agents
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../api/intelligence_zh/" class="md-nav__link">
         
   
@@ -2444,10 +2500,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#boring_skills_browse" class="md-nav__link">
+  <a href="#boring_skills_search" class="md-nav__link">
     <span class="md-ellipsis">
       
-        技能發現 (boring_skills_browse)
+        技能發現 (boring_skills_search)
       
     </span>
   </a>
@@ -2488,10 +2544,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#0-boring_skills_browse" class="md-nav__link">
+  <a href="#0-boring_skills_search" class="md-nav__link">
     <span class="md-ellipsis">
       
-        0. 技能發現 (boring_skills_browse)
+        0. 技能發現 (boring_skills_search)
       
     </span>
   </a>
@@ -2741,10 +2797,10 @@
 </span></code></pre></div>
 <hr />
 <h3 id="0-skills-ecosystem">0. 技能生態系 (Skills Ecosystem)</h3>
-<h4 id="boring_skills_browse">技能發現 (<code>boring_skills_browse</code>)</h4>
-<p>互動式瀏覽社群 Skills 和 Extensions。</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">boring_skills_browse</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;web&quot;</span><span class="p">)</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1"># 回傳結果會包含安裝建議</span>
+<h4 id="boring_skills_search">技能發現 (<code>boring_skills_search</code>)</h4>
+<p>搜尋技能目錄 (Skills Catalog) 中的能力。</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">boring_skills_search</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;web framework&quot;</span><span class="p">)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">boring_skills_list</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s2">&quot;fastapi&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <h4 id="boring_skills_install">技能安裝 (<code>boring_skills_install</code>)</h4>
 <p>一鍵安裝指定的 Skill (基於 <code>skills_catalog.py</code> 的白名單)。</p>
@@ -2752,12 +2808,10 @@
 </span></code></pre></div>
 <hr />
 <h2 id="_4">🧰 核心工具類別</h2>
-<h3 id="0-boring_skills_browse">0. 技能發現 (<code>boring_skills_browse</code>)</h3>
-<p>互動式瀏覽並發現由社群維護的 Gemini/Claude Skills 與 MCP Servers。</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">boring_skills_browse</span><span class="p">(</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;web automation&quot;</span><span class="p">,</span>   <span class="c1"># 關鍵字：&#39;web&#39;, &#39;database&#39;, &#39;auth&#39;</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">platform</span><span class="o">=</span><span class="s2">&quot;all&quot;</span>            <span class="c1"># all|gemini|claude</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="p">)</span>
+<h3 id="0-boring_skills_search">0. 技能發現 (<code>boring_skills_search</code>)</h3>
+<p>搜尋並安裝 Agent Skills (Extensions, Templates) 以擴展能力。</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">boring_skills_search</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;web scraper&quot;</span><span class="p">)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">boring_skills_install</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;awesome-claude-skills&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <p><strong>用途</strong>：
 - 尋找適合當前任務的擴充工具
@@ -2996,27 +3050,32 @@
 <tbody>
 <tr>
 <td>1</td>
-<td><code>speckit_constitution</code></td>
+<td><code>boring_speckit_constitution</code></td>
 <td>建立原則</td>
 </tr>
 <tr>
 <td>2</td>
-<td><code>speckit_clarify</code></td>
+<td><code>boring_speckit_clarify</code></td>
 <td>澄清需求</td>
 </tr>
 <tr>
 <td>3</td>
-<td><code>speckit_plan</code></td>
+<td><code>boring_speckit_plan</code></td>
 <td>建立實作計畫</td>
 </tr>
 <tr>
 <td>4</td>
-<td><code>speckit_checklist</code></td>
-<td>建立驗收標準</td>
+<td><code>boring_speckit_tasks</code></td>
+<td>分解為任務</td>
 </tr>
 <tr>
 <td>5</td>
-<td><code>speckit_analyze</code></td>
+<td><code>boring_speckit_checklist</code></td>
+<td>建立驗收標準</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>boring_speckit_analyze</code></td>
 <td>驗證一致性</td>
 </tr>
 </tbody>

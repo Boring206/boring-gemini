@@ -839,6 +839,90 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adaptive-profile_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🧠 適應性設定檔 (Adaptive)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage-dashboard_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    📊 使用量看板 (Usage)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../anomaly-safety_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🛡️ 異常偵測 (Safety)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1670,34 +1754,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/agents_zh/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Agents
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../api/intelligence_zh/" class="md-nav__link">
         
   
@@ -2093,10 +2149,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#discovery-boring_skills_browse" class="md-nav__link">
+  <a href="#discovery-boring_skills_search" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Discovery (boring_skills_browse)
+        Discovery (boring_skills_search)
       
     </span>
   </a>
@@ -2135,17 +2191,6 @@
   
     <nav class="md-nav" aria-label="🧰 Core Tool Categories">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#0-skills-discovery-boring_skills_browse" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        0. Skills Discovery (boring_skills_browse)
-      
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#1-security-boring_security_scan" class="md-nav__link">
@@ -2280,6 +2325,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#13-usage-analytics-boring_usage_stats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Usage Analytics (boring_usage_stats)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#13-external-intelligence-boring_external" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2404,10 +2460,10 @@ This standardization enables <strong>Deep Thinking</strong> loops where the agen
 </span></code></pre></div>
 <hr />
 <h3 id="0-skills-ecosystem">0. Skills Ecosystem</h3>
-<h4 id="discovery-boring_skills_browse">Discovery (<code>boring_skills_browse</code>)</h4>
-<p>Interactively browse community Skills and Extensions.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">boring_skills_browse</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;web&quot;</span><span class="p">)</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1"># Result will include installation suggestions</span>
+<h4 id="discovery-boring_skills_search">Discovery (<code>boring_skills_search</code>)</h4>
+<p>Search Skills Catalog for capabilities.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">boring_skills_search</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;web framework&quot;</span><span class="p">)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">boring_skills_list</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s2">&quot;fastapi&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <h4 id="installation-boring_skills_install">Installation (<code>boring_skills_install</code>)</h4>
 <p>One-click install for specific Skills (based on <code>skills_catalog.py</code> allowlist).</p>
@@ -2415,12 +2471,9 @@ This standardization enables <strong>Deep Thinking</strong> loops where the agen
 </span></code></pre></div>
 <hr />
 <h2 id="core-tool-categories">🧰 Core Tool Categories</h2>
-<h3 id="0-skills-discovery-boring_skills_browse">0. Skills Discovery (<code>boring_skills_browse</code>)</h3>
-<p>Interactively browse and discover community-maintained Gemini/Claude Skills and MCP Servers.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">boring_skills_browse</span><span class="p">(</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;web automation&quot;</span><span class="p">,</span>   <span class="c1"># Keywords: &#39;web&#39;, &#39;database&#39;, &#39;auth&#39;</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">platform</span><span class="o">=</span><span class="s2">&quot;all&quot;</span>            <span class="c1"># all|gemini|claude</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="p">)</span>
+<p>Search and install Agent Skills (Extensions, Templates) to extend capabilities.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">boring_skills_search</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;web scraper&quot;</span><span class="p">)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">boring_skills_install</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;awesome-claude-skills&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <p><strong>Use Cases</strong>:
 - Find extensions for your current task
@@ -2602,6 +2655,13 @@ This standardization enables <strong>Deep Thinking</strong> loops where the agen
 </span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="p">)</span>
 </span></code></pre></div>
 <hr />
+<h3 id="13-usage-analytics-boring_usage_stats">13. Usage Analytics (<code>boring_usage_stats</code>)</h3>
+<p>Internal introspection tool for the Agent to understand its own efficiency.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">boring_usage_stats</span><span class="p">()</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="c1"># Returns: {&quot;total_calls&quot;: 128, &quot;top_tools&quot;: [&quot;read_file&quot;, ...], &quot;anomalies&quot;: 0}</span>
+</span></code></pre></div>
+<p>See <strong><a href="../usage-dashboard/">Usage Dashboard</a></strong> for details.</p>
+<hr />
 <h3 id="13-external-intelligence-boring_external">13. External Intelligence (<code>boring_external</code>)</h3>
 <p>Integrates powerful external MCP servers for enhanced thinking and knowledge.</p>
 <ul>
@@ -2642,11 +2702,11 @@ This standardization enables <strong>Deep Thinking</strong> loops where the agen
 <hr />
 <h2 id="speckit-workflow">📋 SpecKit Workflow</h2>
 <p>Specification-driven development in 5 steps:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>graph LR
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>    A[Constitution] --&gt; B[Clarify]
-</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>    B --&gt; C[Plan]
-</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>    C --&gt; D[Checklist]
-</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>    D --&gt; E[Analyze]
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>graph LR
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>    A[Constitution] --&gt; B[Clarify]
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>    B --&gt; C[Plan]
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>    C --&gt; D[Checklist]
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>    D --&gt; E[Analyze]
 </span></code></pre></div>
 <table>
 <thead>
@@ -2659,28 +2719,33 @@ This standardization enables <strong>Deep Thinking</strong> loops where the agen
 <tbody>
 <tr>
 <td>1</td>
-<td><code>speckit_constitution</code></td>
+<td><code>boring_speckit_constitution</code></td>
 <td>Establish principles</td>
 </tr>
 <tr>
 <td>2</td>
-<td><code>speckit_clarify</code></td>
+<td><code>boring_speckit_clarify</code></td>
 <td>Clarify requirements</td>
 </tr>
 <tr>
 <td>3</td>
-<td><code>speckit_plan</code></td>
+<td><code>boring_speckit_plan</code></td>
 <td>Create implementation plan</td>
 </tr>
 <tr>
 <td>4</td>
-<td><code>speckit_checklist</code></td>
-<td>Build acceptance criteria</td>
+<td><code>boring_speckit_tasks</code></td>
+<td>Break down into tasks</td>
 </tr>
 <tr>
 <td>5</td>
-<td><code>speckit_analyze</code></td>
-<td>Lint (100 files)</td>
+<td><code>boring_speckit_checklist</code></td>
+<td>Build acceptance criteria</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>boring_speckit_analyze</code></td>
+<td>Verify spec consistency</td>
 </tr>
 </tbody>
 </table>
@@ -2720,9 +2785,16 @@ This standardization enables <strong>Deep Thinking</strong> loops where the agen
 <td>~30k tokens</td>
 <td>Admin / Deep Debug</td>
 </tr>
+<tr>
+<td><code>adaptive</code></td>
+<td>Dynamic</td>
+<td>Low-Med</td>
+<td><strong>Recommended (V11.5)</strong></td>
+</tr>
 </tbody>
 </table>
-<p>Enable via <code>.boring.toml</code> or env <code>BORING_MCP_PROFILE=lite</code>.</p>
+<p>Enable via <code>.boring.toml</code>, env <code>BORING_MCP_PROFILE=adaptive</code>, or use the <strong><a href="../guides/getting-started/wizard.md">Boring Wizard</a></strong>.
+See <strong><a href="../adaptive-profile/">Adaptive Profile</a></strong> for details.</p>
 <h2 id="see-also">See Also</h2>
 <ul>
 <li><a href="../shadow-mode/">Shadow Mode</a> - Security details</li>
