@@ -2240,7 +2240,7 @@
 <p><code>boring.intelligence</code> 模組提供了知識管理、模式學習和向量記憶功能。</p>
 <h3 id="1-brainmanager">1. 管理知識庫 (BrainManager)</h3>
 <p>使用 <code>BrainManager</code> 來存取或更新 <code>.boring/brain</code> 中的長期記憶與學習模式。</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">boring.intelligence.brain_manager</span> <span class="kn">import</span> <span class="n">BrainManager</span><span class="p">,</span> <span class="n">LearnedPattern</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">boring.intelligence.brain_manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">BrainManager</span><span class="p">,</span> <span class="n">LearnedPattern</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># 初始化 (自動載入 .boring/brain)</span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">brain</span> <span class="o">=</span> <span class="n">BrainManager</span><span class="p">(</span><span class="n">project_path</span><span class="o">=</span><span class="s2">&quot;./my_project&quot;</span><span class="p">)</span>
@@ -2260,7 +2260,7 @@
 </span></code></pre></div>
 <h3 id="2-vectormemory">2. 向量記憶 (VectorMemory)</h3>
 <p>如果您的環境支援 ChromaDB，可以使用 <code>VectorMemory</code> 進行語義搜索。</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">boring.intelligence.vector_memory</span> <span class="kn">import</span> <span class="n">VectorMemory</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">boring.intelligence.vector_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">VectorMemory</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">memory</span> <span class="o">=</span> <span class="n">VectorMemory</span><span class="p">(</span><span class="n">persist_path</span><span class="o">=</span><span class="s2">&quot;./.boring/brain/vector_store&quot;</span><span class="p">)</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
@@ -2280,7 +2280,7 @@
 <p><code>boring.judge</code> 模組提供了結構化的評估框架，適合用於 LLM 輸出的品質控管。</p>
 <h3 id="rubric">定義評估準則 (Rubric)</h3>
 <p>您可以定義自己的 <code>Rubric</code> 並將其應用於評估流程。</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">boring.judge.rubrics</span> <span class="kn">import</span> <span class="n">Rubric</span><span class="p">,</span> <span class="n">Criterion</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">boring.judge.rubrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rubric</span><span class="p">,</span> <span class="n">Criterion</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># 1. 定義準則</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">security_rubric</span> <span class="o">=</span> <span class="n">Rubric</span><span class="p">(</span>
@@ -2303,13 +2303,13 @@
 <p><code>boring.loop</code> 模組提供了安全防護和原子操作，非常適合構建強健的自動化腳本。</p>
 <h3 id="1-shadow-mode-shadowmodeguard">1. Shadow Mode 保護 (ShadowModeGuard)</h3>
 <p>將您的腳本包裹在 Shadow Mode 中，防止意外的毀滅性操作。</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">boring.loop.shadow_mode</span> <span class="kn">import</span> <span class="n">ShadowModeGuard</span><span class="p">,</span> <span class="n">OperationSeverity</span><span class="p">,</span> <span class="n">ShadowModeLevel</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">boring.loop.shadow_mode</span><span class="w"> </span><span class="kn">import</span> <span class="n">ShadowModeGuard</span><span class="p">,</span> <span class="n">OperationSeverity</span><span class="p">,</span> <span class="n">ShadowModeLevel</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># 初始化守衛 (嚴格模式)</span>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">ShadowModeGuard</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">ShadowModeLevel</span><span class="o">.</span><span class="n">STRICT</span><span class="p">)</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1"># 嘗試執行操作</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">def</span> <span class="nf">delete_database</span><span class="p">():</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">delete_database</span><span class="p">():</span>
 </span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">op</span> <span class="o">=</span> <span class="n">guard</span><span class="o">.</span><span class="n">create_operation</span><span class="p">(</span>
 </span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
 </span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>        <span class="n">target</span><span class="o">=</span><span class="s2">&quot;./data.db&quot;</span><span class="p">,</span>
@@ -2327,7 +2327,7 @@
 </span></code></pre></div>
 <h3 id="2-transactionmanager">2. 原子交易 (TransactionManager)</h3>
 <p>確保一組檔案操作要麼全部成功，要麼全部回滾。</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">boring.loop.transactions</span> <span class="kn">import</span> <span class="n">TransactionManager</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">boring.loop.transactions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransactionManager</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">tx</span> <span class="o">=</span> <span class="n">TransactionManager</span><span class="p">(</span><span class="n">project_path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
