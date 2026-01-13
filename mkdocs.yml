@@ -56,6 +56,9 @@ nav:
       - 🛠️ MCP 工具集: features/mcp-tools_zh.md
       - 📈 效能分析: features/performance_zh.md
       - 🧪 品質閘門: features/quality-gates_zh.md
+      - 🧠 適應性設定檔 (Adaptive): features/adaptive-profile_zh.md
+      - 📊 使用量看板 (Usage): features/usage-dashboard_zh.md
+      - 🛡️ 異常偵測 (Safety): features/anomaly-safety_zh.md
   - 📖 指南 (Guides):
       - 🍳 Vibe 食譜 (Cookbook): guides/cookbook_zh.md
       - 🧞‍♂️ Vibe Coder (Router): features/vibe-coder_zh.md
@@ -81,7 +84,6 @@ nav:
       - 🤖 LLM 適配器指南: reference/llm-adapters.md
   - 🔌 API 參考:
       - 索引: api/index_zh.md
-      - Agents: api/agents_zh.md
       - Intelligence: api/intelligence_zh.md
       - Loop: api/loop_zh.md
       - Judge: api/judge_zh.md
