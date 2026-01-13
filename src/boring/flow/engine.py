@@ -182,7 +182,18 @@ class FlowEngine:
         response = []
 
         response.append(f"🐲 **Boring Flow (Phase: {state.stage.value})**")
-        response.append(f"Suggestion: {state.suggestion}")
+        response.append(f"📊 Progress: {state.progress_bar}")
+
+        # P0: Task-Aware Skill Suggestion
+        skill = state.suggested_skill
+        # If detector found errors/failures, suggest Healer
+        if "fail" in state.suggestion.lower() or "error" in state.suggestion.lower():
+            skill = "Healer"
+
+        if skill:
+             response.append(f"💡 Suggestion: Use `boring_active_skill('{skill}')` to unlock {skill} tools.")
+
+        response.append(f"Advice: {state.suggestion}")
 
         if state.stage == FlowStage.SETUP:
             if not (self.root / "constitution.md").exists():

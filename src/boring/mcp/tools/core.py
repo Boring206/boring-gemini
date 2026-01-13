@@ -463,3 +463,85 @@ if MCP_AVAILABLE and mcp is not None:
         description="Signal to clear LLM context to maintain accuracy (Context Hygiene)",
         annotations={"readOnlyHint": False, "openWorldHint": False, "destructiveHint": True},
     )(boring_forget_all)
+
+    # --- Renaissance V2 Tools ---
+    from ..registry import internal_registry
+
+    @mcp.tool(
+        description="Execute an internal Boring tool by name and arguments.",
+        annotations={"readOnlyHint": False, "openWorldHint": True},
+    )
+    def boring_call(tool_name: str, arguments: dict = None) -> any:
+        """Execute an internal Boring tool by name and arguments."""
+        if arguments is None:
+            arguments = {}
+        tool = internal_registry.get_tool(tool_name)
+        if not tool:
+            return f"Error: Tool '{tool_name}' not found."
+        return tool.func(**arguments)
+
+    @mcp.tool(
+        description="Get the full JSON schema and usage for an internal tool.",
+        annotations={"readOnlyHint": True},
+    )
+    def boring_inspect_tool(tool_name: str) -> dict:
+        """Get the full JSON schema and usage for an internal tool."""
+        tool = internal_registry.get_tool(tool_name)
+        if not tool:
+            return {"error": f"Tool '{tool_name}' not found."}
+        return {
+            "name": tool.name,
+            "description": tool.description,
+            "category": tool.category,
+            "schema": tool.schema,
+        }
+
+    @mcp.tool(
+        description="Activate a specific skill set to optimize the tool environment. Injects relevant tools dynamically.",
+        annotations={"readOnlyHint": False},
+    )
+    def boring_active_skill(skill_name: str) -> dict:
+        """Activate a specific skill set and inject tools into the active context."""
+        import os
+
+        from ..instance import mcp as smart_mcp
+
+        os.environ["BORING_ACTIVE_SKILL"] = skill_name
+
+        # Renaissance V2: Filter by category (Skill)
+        matching_tools = [t for t in internal_registry.tools.values() if t.category.lower() == skill_name.lower()]
+
+        if not matching_tools:
+            return {
+                "status": "error",
+                "message": f"Skill set '{skill_name}' not found.",
+                "available_skills": list(internal_registry.categories.keys())
+            }
+
+        injected = []
+        for tool in matching_tools:
+            if smart_mcp.inject_tool(tool.name):
+                injected.append(tool.name)
+
+        return {
+            "status": "success",
+            "message": f"✅ Skill **{skill_name}** activated. {len(injected)} tools injected.",
+            "injected_tools": injected,
+            "instruction": "These tools may now be available in your tool list. If not visible, you can still use them via boring_call()."
+        }
+
+    @mcp.tool(
+        description="Reset the tool environment by removing all dynamically injected tools. Useful for Context Hygiene.",
+    )
+    def boring_reset_skills() -> str:
+        """Reset the tool environment by removing all dynamically injected tools."""
+        from ..instance import mcp as smart_mcp
+        count = smart_mcp.reset_injected_tools()
+        return f"🧹 Tool environment reset. {count} injected tools cleared from profile tracking."
+
+    @mcp.tool(
+        description="Execute a multi-step objective by orchestrating internal tools.",
+    )
+    def boring_orchestrate(goal: str) -> str:
+        """Execute a multi-step objective by orchestrating internal tools."""
+        return f"Orchestrating goal: '{goal}'. [Coming soon]"

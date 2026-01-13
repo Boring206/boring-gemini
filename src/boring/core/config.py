@@ -66,6 +66,7 @@ class Settings(BaseSettings):
     GOOGLE_API_KEY: Optional[str] = Field(default=None)
     DEFAULT_MODEL: str = "models/gemini-2.5-flash"
     TIMEOUT_MINUTES: int = 15
+    MCP_PROFILE: str = Field(default="lite", description="Tool profile: ultra_lite, minimal, lite, standard, full")
 
     # LLM Settings (V10.13 Modular)
     LLM_PROVIDER: str = Field(
@@ -80,7 +81,7 @@ class Settings(BaseSettings):
 
     # V4.0 Feature Flags
     USE_FUNCTION_CALLING: bool = True  # Use structured function calls
-    USE_VECTOR_MEMORY: bool = False  # Use ChromaDB for semantic memory (requires extra deps)
+
     USE_INTERACTIONS_API: bool = False  # Use new stateful Interactions API (experimental)
     USE_DIFF_PATCHING: bool = True  # Prefer search/replace over full file rewrites
 
@@ -189,6 +190,38 @@ def load_toml_config():
     except Exception:
         # Fail silently during config load to avoid breaking startup
         pass
+
+
+def update_toml_config(key: str, value: any):
+    """Update a key in .boring.toml."""
+    config_file = settings.PROJECT_ROOT / ".boring.toml"
+
+    # Load existing or create empty
+    data = {}
+    if config_file.exists():
+        try:
+            import toml
+            with open(config_file) as f:
+                data = toml.load(f)
+        except Exception:
+            pass
+
+    if "boring" not in data:
+        data["boring"] = {}
+
+    data["boring"][key.lower()] = value
+
+    try:
+        import toml
+        with open(config_file, "w") as f:
+            toml.dump(data, f)
+        # Update current settings object too
+        key_upper = key.upper()
+        if hasattr(settings, key_upper):
+            setattr(settings, key_upper, value)
+        return True
+    except Exception:
+        return False
 
 
 def discover_tools():

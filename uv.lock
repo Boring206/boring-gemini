@@ -250,7 +250,7 @@ wheels = [
 
 [[package]]
 name = "boring-aicoding"
-version = "11.2.13"
+version = "11.5.0"
 source = { editable = "." }
 dependencies = [
     { name = "duckduckgo-search" },
@@ -263,8 +263,8 @@ dependencies = [
     { name = "rich" },
     { name = "structlog" },
     { name = "tenacity" },
-    { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "typer" },
+    { name = "watchdog" },
 ]
 
 [package.optional-dependencies]
@@ -393,13 +393,13 @@ requires-dist = [
     { name = "streamlit", marker = "extra == 'gui'", specifier = ">=1.30.0" },
     { name = "structlog", specifier = ">=24.0.0" },
     { name = "tenacity", specifier = ">=8.0.0" },
-    { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2.0.0" },
     { name = "tree-sitter", marker = "extra == 'vector'", specifier = "==0.25.2" },
     { name = "tree-sitter-languages", marker = "extra == 'vector'", specifier = "==1.10.2" },
     { name = "typer", extras = ["all"], specifier = ">=0.9.0" },
     { name = "types-python-dateutil", marker = "extra == 'dev'" },
     { name = "types-requests", marker = "extra == 'dev'" },
     { name = "uvicorn", marker = "extra == 'mcp-lite'", specifier = ">=0.30.0" },
+    { name = "watchdog", specifier = ">=3.0.0" },
     { name = "win10toast", marker = "sys_platform == 'win32' and extra == 'mcp'", specifier = ">=0.9" },
 ]
 provides-extras = ["gui", "dev", "vector", "mcp-lite", "mcp", "all"]

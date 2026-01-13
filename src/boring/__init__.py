@@ -1,11 +1,14 @@
 """
 Boring for Gemini - AI Coding Assistant
 
-V11.2.10 "One Dragon Evolution":
-- **One Dragon Engine**: New `boring_flow` MCP tool enabling AI to drive the entire SDLC via code.
-- **Headless Flow**: Refactored FlowEngine to support non-interactive, AI-driven execution.
-- **Auto-Alignment**: Improved Vibe Session alignment logic for better ambiguity resolution.
-- **Node.js Autonomy**: Automatic Node.js download/install for seamless `gemini-cli` setup.
+V11.5.0 "Intelligent Adaptability Update":
+- **Usage Analytics**: New `boring_usage_stats` and Usage Dashboard (CLI/Web) for self-aware insights.
+- **Safety Net**: Anomaly Detection prevents infinite loops and stuck states.
+- **Adaptive Intelligence**: Smart Prompt Injection dynamically loads relevant guides (Testing, Standards) based on usage context.
+- **Code Quality**: Enhanced thread safety, logging, and rigorous type checking.
+
+V11.4.2 "Renaissance Hardening":
+- **Universal Semantic Gating**: Intelligent tool filtering based on project capabilities.
 
 
 V11.1.0 "Turbo Mode & Wizard Upgrade":
@@ -73,7 +76,7 @@ Backward compatibility is maintained - old import paths still work.
 import importlib
 from typing import TYPE_CHECKING
 
-__version__ = "11.2.13"
+__version__ = "11.5.0"
 
 # =============================================================================
 # Lazy Loading Configuration
@@ -95,10 +98,6 @@ _IMPORT_MAP = {
     "Pattern": "boring.intelligence.pattern_mining",
     "PatternMiner": "boring.intelligence.pattern_mining",
     "get_pattern_miner": "boring.intelligence.pattern_mining",
-    "CHROMADB_AVAILABLE": "boring.intelligence.vector_memory",
-    "Experience": "boring.intelligence.vector_memory",
-    "VectorMemory": "boring.intelligence.vector_memory",
-    "create_vector_memory": "boring.intelligence.vector_memory",
     # Judge
     "CODE_QUALITY_RUBRIC": "boring.judge.rubrics",
     "RUBRIC_REGISTRY": "boring.judge.rubrics",
@@ -130,7 +129,6 @@ _IMPORT_MAP = {
 _MODULE_ALIASES = {
     "brain_manager": "boring.intelligence.brain_manager",
     "memory": "boring.intelligence.memory",
-    "vector_memory": "boring.intelligence.vector_memory",
     "feedback_learner": "boring.intelligence.feedback_learner",
     "auto_learner": "boring.intelligence.auto_learner",
     "pattern_mining": "boring.intelligence.pattern_mining",
@@ -156,7 +154,6 @@ if TYPE_CHECKING:
         feedback_learner,
         memory,
         pattern_mining,
-        vector_memory,
     )
     from boring.intelligence.auto_learner import AutoLearner, ErrorSolutionPair
     from boring.intelligence.brain_manager import (
@@ -167,12 +164,6 @@ if TYPE_CHECKING:
     from boring.intelligence.feedback_learner import FeedbackEntry, FeedbackLearner
     from boring.intelligence.memory import LoopMemory, MemoryManager, ProjectMemory
     from boring.intelligence.pattern_mining import Pattern, PatternMiner, get_pattern_miner
-    from boring.intelligence.vector_memory import (
-        CHROMADB_AVAILABLE,
-        Experience,
-        VectorMemory,
-        create_vector_memory,
-    )
     from boring.judge import rubrics
 
     # Judge
@@ -237,10 +228,6 @@ __all__ = [
     "Pattern",
     "PatternMiner",
     "get_pattern_miner",
-    "CHROMADB_AVAILABLE",
-    "Experience",
-    "VectorMemory",
-    "create_vector_memory",
     # Judge
     "CODE_QUALITY_RUBRIC",
     "RUBRIC_REGISTRY",
@@ -269,7 +256,6 @@ __all__ = [
     # Module Aliases
     "brain_manager",
     "memory",
-    "vector_memory",
     "shadow_mode",
     "workflow_manager",
     "workflow_evolver",

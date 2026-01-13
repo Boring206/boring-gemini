@@ -25,6 +25,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
+from .tool_registry_data import TOOL_CATEGORIES
+
 
 class ToolProfile(Enum):
     """Available tool exposure profiles."""
@@ -34,6 +36,7 @@ class ToolProfile(Enum):
     LITE = "lite"  # 15-20 common
     STANDARD = "standard"  # 40-50 balanced
     FULL = "full"  # All tools
+    ADAPTIVE = "adaptive"  # P3: Personalized based on usage
 
 
 @dataclass
@@ -51,7 +54,11 @@ class ProfileConfig:
 ULTRA_LITE_TOOLS_LIST = [
     "boring",  # Universal NL router
     "boring_help",  # Category discovery
-    "boring_discover",  # On-demand tool schema (progressive disclosure)
+    "boring_discover",  # On-demand tool schema search
+    "boring_call",  # NEW: The Renaissance Bridge
+    "boring_inspect_tool",  # NEW: Tool inspector
+    "boring_active_skill",  # NEW: Skill activator
+    "boring_orchestrate",  # NEW: High-level achiever
 ]
 DISCOVERY_TOOLS = [
     "boring_skills_browse",
@@ -307,6 +314,67 @@ PROFILES = {
 }
 
 
+
+def _get_adaptive_profile() -> ProfileConfig:
+    """Generate a personalized profile based on usage stats."""
+    # Start with LITE as baseline for safety/common tools
+    base_tools = set(LITE_TOOLS)
+
+    tracker = None
+    top_tools = set()
+
+    try:
+        from ..intelligence.usage_tracker import get_tracker
+        tracker = get_tracker()
+        # Add top 20 most frequently used tools
+        usage_tools = tracker.get_top_tools(limit=20)
+        base_tools.update(usage_tools)
+        top_tools = set(usage_tools)
+
+        # Verify: Ensure we don't accidentally add internal-only or incompatible tools
+        # For now, we assume tracked tools are safe to regular users.
+
+    except Exception:
+        # Fallback to pure LITE if tracker fails
+        pass
+
+    # P6: Smart Prompt Injection
+    # Map high-usage categories to prompts
+    category_prompts = []
+
+    # Simple mapping: If any tool from a category is in top tools, enable that category's prompts
+    # Note: Currently using dummy prompts or existing LITE prompts.
+    # For V11, we assume specific prompts exist for categories.
+
+    CATEGORY_PROMPT_MAPPING = {
+        "review": "coding_standards",       # prompts/coding_standards.md
+        "test": "testing_guide",            # prompts/testing_guide.md
+        "intelligence": "reasoning_framework", # prompts/reasoning_framework.md
+        "rag": "search_tips"                # prompts/search_tips.md
+    }
+
+    if tracker and top_tools: # Only proceed if tracker was successfully initialized
+        active_categories = set()
+        for cat_id, category in TOOL_CATEGORIES.items():
+            # Check intersection between category tools and user's top tools
+            if not set(category.tools).isdisjoint(top_tools):
+                active_categories.add(cat_id)
+
+        for cat_id in active_categories:
+            prompt = CATEGORY_PROMPT_MAPPING.get(cat_id)
+            if prompt:
+                category_prompts.append(prompt)
+
+    # Combine base prompts + injected prompts
+    final_prompts = list(set((LITE.prompts or []) + category_prompts))
+
+    return ProfileConfig(
+        name="adaptive",
+        description="Personalized profile based on usage patterns",
+        tools=list(base_tools),
+        prompts=final_prompts, # P6: Injected Prompts
+    )
+
 def get_profile(profile_name: Optional[str] = None) -> ProfileConfig:
     """
     Get the tool profile configuration.
@@ -327,10 +395,8 @@ def get_profile(profile_name: Optional[str] = None) -> ProfileConfig:
     if not name:
         # Try to load from config
         try:
-            from boring.config import get_config
-
-            config = get_config()
-            name = getattr(config, "mcp_profile", "lite")
+            from boring.config import settings
+            name = settings.MCP_PROFILE
         except Exception:
             name = "lite"  # Default
 
@@ -341,12 +407,19 @@ def get_profile(profile_name: Optional[str] = None) -> ProfileConfig:
         # Fallback to defaults if name doesn't match an enum value
         profile_enum = ToolProfile.LITE
 
+    # P3: Dynamic Profile Generation
+    if profile_enum == ToolProfile.ADAPTIVE:
+        return _get_adaptive_profile()
+
     return PROFILES.get(profile_enum, PROFILES[ToolProfile.LITE])
 
 
 def should_register_tool(tool_name: str, profile: Optional[ProfileConfig] = None) -> bool:
     """
-    Check if a tool should be registered based on current profile.
+    Check if a tool should be registered based on current profile and project context.
+
+    This implements "Universal Semantic Gating" - even in FULL mode, irrelevant
+    tools (like Git tools in a non-Git project) are hidden.
 
     Args:
         tool_name: Name of the tool to check
@@ -358,11 +431,37 @@ def should_register_tool(tool_name: str, profile: Optional[ProfileConfig] = None
     if profile is None:
         profile = get_profile()
 
-    # FULL profile includes everything (tools=None)
-    if profile.tools is None:
-        return True
+    # 1. Profile-based filtering
+    # If a tool list is defined, it must be in the list.
+    if profile.tools is not None and tool_name not in profile.tools:
+        return False
 
-    return tool_name in profile.tools
+    # 2. Universal Semantic Gating
+    # This applies to all profiles, including FULL.
+    try:
+        from .capabilities import get_capabilities
+
+        caps = get_capabilities()
+
+        # Git Tools Gating
+        if not caps.is_git:
+            # List of tool names that strictly require Git
+            git_only = ["boring_commit", "boring_checkpoint", "boring_hooks_status", "boring_shadow_approve"]
+            if tool_name in git_only:
+                return False
+
+        # Future: Add language-specific gating if we add more specialized tools
+        # if not caps.is_node and tool_name.startswith("boring_npm_"):
+        #     return False
+
+    except ImportError:
+        # If capabilities module not available (e.g. during minimal setup)
+        pass
+    except Exception:
+        # Silent fail for context detection to ensure server still starts
+        pass
+
+    return True
 
 
 def should_register_prompt(prompt_name: str, profile: Optional[ProfileConfig] = None) -> bool:
@@ -466,6 +565,6 @@ class ToolRegistrationFilter:
 
 # Convenience function for quick checks
 def is_lite_mode() -> bool:
-    """Check if running in LITE or MINIMAL mode."""
+    """Check if running in LITE, MINIMAL, or ADAPTIVE mode."""
     profile = get_profile()
-    return profile.name in ["Minimal", "Lite"]
+    return profile.name in ["minimal", "lite", "adaptive"]

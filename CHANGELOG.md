@@ -1,3 +1,70 @@
+## [11.5.0] - 2026-01-14 - Intelligent Adaptability 🧠
+### 🚀 Major Features
+- **Adaptive Profile (P6)**: The system now "learns" from your usage. If you frequently test code, it automatically injects the `Testing Guide` prompt into your context.
+- **Usage Analytics Dashboard (P4)**:
+  - **Self-Awareness**: New `boring_usage_stats` MCP tool exposes usage metrics to the Agent.
+  - **Visualization**: CLI Monitor and Web Dashboard now feature a "Personal Stats" panel.
+- **Anomaly Detection (P5)**:
+  - **Safety Net**: Automatically detects and blocks infinite tool loops (same tool + same args > 50 times).
+  - **Smart Tracking**: Distinguishes between identical calls and valid batch operations.
+
+### 🛡️ Quality & Stability
+- **Thread Safety**: Implemented double-check locking for `UsageTracker` singleton.
+- **Observability**: Added logging for silent exceptions in persistence layers.
+- **Code Audit**: Resolved all critical issues from the P0-P6 deep audit (clean code, type safety).
+- **Refactoring**: Decoupled `tool_router` data to prevent circular imports.
+
+## [11.4.2] - 2026-01-13 - Renaissance Hardening 🛡️
+### 🚀 Major Features
+- **Universal Semantic Gating**: Intelligent tool filtering based on project capabilities.
+  - Automatically hides Git tools (Commit, Checkpoint, etc.) in non-Git projects to prevent context pollution.
+  - Context-aware filtering even in `FULL` profile, maintaining "Tool Overload" immunity.
+- **Dynamic Skill Injection**: Role-based tool "unlocking" via `boring_active_skill`.
+  - Activating a skill (e.g., Surveyor, Healer) now dynamically injects those tools into the main MCP instance.
+  - Native integration with `SmartMCP` for on-demand tool exposure.
+- **Router Auto-Injection**: High-confidence tool matches (>95%) are now automatically injected into the MCP context.
+- **TUI Profile Switcher**: Interactive menu in Boring Console to switch between tool profiles (Ultra Lite, Lite, Full).
+- **Skill Reset Utility**: New `boring_reset_skills` tool to clear dynamically injected tools for context maintenance.
+- **TUI Refresh Loop**: Enhanced Boring Console with `rich.live` for real-time status and integrity updates.
+
+### 🔧 Fixes
+- **Stability**: Fixed circular dependency and initialization errors in `SmartMCP`.
+- **Capabilities**: Fixed `default_factory` bug in `ProjectCapabilities` affecting Windows performance.
+
+## [11.4.0] - 2026-01-13 - Project Jarvis (UX Overhaul) 🛸
+### 🚀 Major Features
+- **Project Jarvis (UX Overhaul)**: Transformed Boring from a CLI tool into an interactive "Cognitive Partner".
+  - **Unified Console (TUI)**: Running `boring` now launches a rich, interactive dashboard with menus for Fix, Check, Evolve, and Save.
+  - **Active Guidance**: The AI proactively suggests the "Best Next Action" (e.g., "Tests failed → Run Fix") based on project state.
+  - **Integrity Score**: Real-time project health scoring (0-100) based on Lint, Tests, Docs, and Git hygiene.
+- **MCP-Native Architecture**: All new UX features are built on pure MCP tools (`boring_integrity_score`, `boring_best_next_action`), ensuring accessibility to external agents (Cursor/VSCode).
+- **MCP Renaissance V2**: Solved "Tool Overload Trap" via Metadata-Only Disclosure and Skill-based Partitioning (~30% token saving).
+- **Universal Intent Router**: Smart natural language routing with on-demand schema hydration.
+
+### 🛠️ Improvements
+- **Contextual Onboarding**: Seamless flow from "New Project" wizard to "Active Dashboard".
+- **Tool Router Update**: Added natural language routing for "Project Health" and "Next Step" queries.
+
+## [11.3.0] - 2026-01-13 - "The Full-Power Update" ⚡🧠
+### 🚀 Major Features
+- **Full-Power Activation**: Activated 17+ high-value tools previously dormant or disconnected.
+  - **SpecKit**: Full Specification-Driven Development suite (`boring_speckit_plan`, `tasks`, `analyze`) for methodical planning.
+  - **Global Brain**: Cross-project knowledge sharing tools (`boring_global_export`, `boring_global_import`).
+  - **Skills Autonomy**: New `boring_skills_install` allows the Agent to autonomously install Python dependencies.
+  - **GraphRAG Visualization**: New `boring_rag_graph` tool to visualize the Dependency Graph for deep code understanding.
+
+### 🧹 Architecture & Cleanup (Ghost Feature Analysis)
+- **Vector Memory Retirement**: Removed legacy `VectorMemory` module, fully superseded by **Hybrid RAG** (ChromaDB + Dependency Graph).
+- **Ghost Feature Elimination**: Purged unused or "ghost" features:
+  - Removed `boring_quality_trend` (Unused).
+  - Removed `boring_transaction_start` (Duplicate).
+  - Cleaned up `discovery.py` to remove stale tool references.
+
+### 🔧 Fixes
+- **Tool Router Sync**: Resolved conflicts between `brain_tools` (Global) and `intelligence_tools` (Local).
+- **Import Repairs**: Fixed relative import errors in `speckit_tools.py` causing `ModuleNotFoundError`.
+- **Stability**: Fixed `pattern_mining.py` compatibility layer for `assistant.py`.
+
 ## [11.2.13] - 2026-01-13
 ### 🛡️ Security Patch
 - **Safe Extraction**: Implemented safe Zip/Tar extraction in `NodeManager` to prevent path traversal vulnerabilities.
@@ -1118,8 +1185,9 @@ Complete prompt ecosystem for AI-first development workflows:
 
 ### Changed
 - **Tool Registration**: `server.py` now uses module-level imports and dynamic registration
-- **Architecture**: Moved to "Discovery-First" architecture for MCP interaction
-- **Workflow Integration**: `smart_commit` prompt now explicitly uses `boring_commit` tool
+- **MCP-Native Architecture**: Entire UX system exposed as native MCP tools for AI-first interaction.
+- **MCP Renaissance V2**: Solved 'Tool Overload Trap' via Metadata-Only Disclosure and Skill-based Partitioning (~30% token saving).
+- **Universal Intent Router**: Smart natural language routing with on-demand schema hydration.
 
 ## [10.15.0] - 2026-01-05
 ### Added

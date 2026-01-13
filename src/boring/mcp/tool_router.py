@@ -81,6 +81,7 @@ TOOL_CATEGORIES = {
             "boring_rag_expand",
             "boring_rag_status",
             "boring_rag_reload",
+            "boring_rag_graph",
         ],
     ),
     "review": ToolCategory(
@@ -107,13 +108,13 @@ TOOL_CATEGORIES = {
             "健康",
             "review程式碼",
             "code review",
+            "boring check", # The Commandment
         ],
         tools=[
             "boring_code_review",
             "boring_vibe_check",
             "boring_perf_tips",
             "boring_arch_check",
-            "boring_quality_trend",
         ],
     ),
     "test": ToolCategory(
@@ -141,36 +142,36 @@ TOOL_CATEGORIES = {
             "git",
             "commit",
             "branch",
-            "push",
-            "diff",
+            "version",
             "history",
-            "提交",
-            "推送",
-            "版本",
-            "分支",
-            "歷史",
             "checkpoint",
-            "restore",
-            "rollback",
+            "save code",
+            "backup",
+            "hooks",
+            "pre-commit",
+            "undo",
             "revert",
+            "restore",
+            "版本",
+            "提交",
+            "存檔",
+            "備份",
+            "鉤子",
+            "還原",
+            "復原",
             "save",
-            "create",
+            "save as",
+            "rollback",
+            "回退",
+            "建立",
+            "標記",
             "list",
             "show",
-            "還原",
-            "回退",
-            "存檔",
-            "救命",
-            "標記",
-            "狀態",
-            "備份",
             "清單",
             "列表",
-            "還原到",
-            "回退到",
-            "建立存檔",
-            "Knowledge Swarm",
-            "知識群",
+            "檢查點",
+            "救命", # Safety keyword
+            "boring save", # The Commandment
         ],
         tools=[
             "boring_commit",
@@ -178,7 +179,7 @@ TOOL_CATEGORIES = {
             "boring_hooks_status",
             "boring_hooks_uninstall",
             "boring_checkpoint",
-            "boring_brain_sync",
+            "boring_commit", # boring save
         ],
     ),
     "docs": ToolCategory(
@@ -300,6 +301,8 @@ TOOL_CATEGORIES = {
             "pattern",
             "intelligence",
             "suggest",
+            "Knowledge Swarm",
+            "Brain Sync",
             "預測",
             "學習",
             "大腦",
@@ -307,6 +310,8 @@ TOOL_CATEGORIES = {
             "智能",
             "建議",
             "接下來",
+            "知識群",
+            "同步大腦",
         ],
         tools=[
             "boring_predict_impact",
@@ -318,6 +323,7 @@ TOOL_CATEGORIES = {
             "boring_pattern_stats",
             "boring_prune_patterns",
             "boring_suggest_next",
+            "boring_brain_sync",
         ],
     ),
     "session": ToolCategory(
@@ -352,13 +358,20 @@ TOOL_CATEGORIES = {
         description="Manage project context and memory",
         keywords=[
             "context",
-            "memory",
+            "session",
+            "remember",
+            "save memory",
+            "load memory",
             "profile",
-            "transaction",
+            "preferences",
+            "context sync",
             "上下文",
             "記憶",
-            "設定檔",
-            "交易",
+            "記住",
+            "保存",
+            "讀取",
+            "偏好",
+            "同步",
         ],
         tools=[
             "boring_set_session_context",
@@ -399,6 +412,7 @@ TOOL_CATEGORIES = {
             "解決",
             "錯誤",
             "幫我修",
+            "boring fix", # The Commandment
         ],
         tools=["boring_prompt_fix"],
     ),
@@ -407,16 +421,25 @@ TOOL_CATEGORIES = {
         description="Generate diagrams, visualize architecture",
         keywords=[
             "visualize",
-            "diagram",
             "graph",
             "chart",
-            "mermaid",
+            "diagram",
+            "plot",
+            "see",
+            "show",
+            "dependency graph",
+            "call graph",
+            "structure",
             "視覺化",
             "圖表",
+            "畫圖",
+            "顯示",
+            "依賴圖",
+            "結構圖",
             "架構圖",
             "流程圖",
         ],
-        tools=["boring_visualize"],
+        tools=["boring_visualize", "boring_rag_graph"],
     ),
     "delegate": ToolCategory(
         name="Delegation",
@@ -513,7 +536,7 @@ TOOL_CATEGORIES = {
             "安裝 skill",
             "下載",
         ],
-        tools=["boring_skills_browse", "boring_skills_install"],
+        tools=["boring_skills_list", "boring_skills_search", "boring_skills_install"],
     ),
     "speckit": ToolCategory(
         name="Speckit",
@@ -530,6 +553,8 @@ TOOL_CATEGORIES = {
             "憲法",
         ],
         tools=[
+            "boring_speckit_plan",
+            "boring_speckit_tasks",
             "boring_speckit_clarify",
             "boring_speckit_checklist",
             "boring_speckit_constitution",
@@ -584,6 +609,67 @@ TOOL_CATEGORIES = {
             "boring_generate_rubric",
         ],
     ),
+    "metrics": ToolCategory(
+        name="Project Metrics & Integrity",
+        description="Project Health Scores & Integrity Checks",
+        keywords=[
+            "integrity",
+            "health",
+            "score",
+            "lint score",
+            "test score",
+            "git score",
+            "專案健康",
+            "完整性",
+            "分數",
+            "得分",
+            "專案狀態",
+        ],
+        tools=["boring_integrity_score"],
+    ),
+    "guidance": ToolCategory(
+        name="Active Guidance (The Oracle)",
+        description="Next step recommendations and help",
+        keywords=[
+            "next",
+            "guide",
+            "tip",
+            "suggestion",
+            "what now",
+            "what next",
+            "boring guide",  # The Commandment
+            "help",
+            "manual",
+            "下一步",
+            "建議",
+            "引導",
+            "可以做什麼",
+            "boring guide", # The Commandment
+            "提示",
+            "說明",
+            "手冊",
+        ],
+        tools=["boring_help", "boring_best_next_action"],
+    ),
+    "flow": ToolCategory(
+        name="One Dragon Flow (The Go Command)",
+        description="Autonomous development loop strategies",
+        keywords=[
+            "flow",
+            "go",
+            "boring go",  # The Commandment
+            "auto",
+            "autonomous",
+            "loop",
+            "one dragon",
+            "start",
+            "一條龍",
+            "全自動",
+            "啟動",
+            "開始",
+        ],
+        tools=["boring_flow", "boring_session_auto"],
+    ),
 }
 
 
@@ -632,7 +718,6 @@ class ToolRouter:
             score = self._score_category(query_lower, category)
             if score > 0:
                 category_scores[cat_name] = score
-                # print(f"DEBUG: Category {cat_name} score: {score}")
 
         if not category_scores:
             # Default to RAG search for unknown queries
@@ -747,7 +832,7 @@ class ToolRouter:
         # V10.31: Global Safety Checkpoint Boost
         if category.name == "Git & Version Control" and any(
             kw in query
-            for kw in ["checkpoint", "還原", "回退", "存檔", "rollback", "revert", "restore"]
+            for kw in ["checkpoint", "還原", "回退", "存檔", "rollback", "revert", "restore", "save as"]
         ):
             score += 10.0
 
@@ -956,16 +1041,11 @@ def create_router_tool_description() -> str:
 
 Instead of remembering 98+ specific tools, just describe what you want:
 
-**Examples:**
-- "start session to build auth" → boring_session_start (Leverages Deep Thinking)
-- "search for authentication code" → boring_rag_search
-- "review my code for security" → boring_security_scan
-- "generate tests for user.py" → boring_test_gen
-- "check project health" → boring_vibe_check
-- "commit my changes" → boring_commit
-- "評估這段程式碼" → boring_evaluate
-- "show bias report" → boring_bias_report
-- "generate rubric for API" → boring_generate_rubric
+- "boring go" → Start autonomous execution flow
+- "boring fix" → Automatically heal detected issues
+- "boring check" → Comprehensive project health scan
+- "boring save" → Create safety checkpoint
+- "boring guide" → AI-recommended next steps
 - "還原到重構前" → boring_checkpoint
 
 **Categories:**
@@ -1001,7 +1081,7 @@ def route_query(query: str) -> RoutingResult:
     return get_tool_router().route(query)
 
 
-def cli_route():
+def cli_route(query: Optional[str] = None, thinking_mode: bool = False):
     """
     CLI entry point for boring-route command.
 
@@ -1012,8 +1092,8 @@ def cli_route():
     """
     import sys
 
-    # Handle --help
-    if len(sys.argv) < 2 or sys.argv[1] in ["-h", "--help"]:
+    # Handle --help if called from command line
+    if query is None and (len(sys.argv) < 2 or sys.argv[1] in ["-h", "--help"]):
         print("""
 🎯 Boring Route - Natural Language Tool Router
 
@@ -1033,8 +1113,13 @@ No need to remember 98+ tool names - just describe what you want!
         """)
         return
 
-    # Get query from arguments
-    query = " ".join(sys.argv[1:])
+    # Get query from arguments if not provided
+    if query is None:
+        query = " ".join(sys.argv[1:])
+
+    if thinking_mode:
+        query = f"Use deep thinking (sequentialthinking) to analyze: {query}"
+        print("[🧠 Thinking Mode Enabled]")
 
     # Route the query
     result = route_query(query)

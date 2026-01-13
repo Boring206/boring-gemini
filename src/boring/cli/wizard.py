@@ -356,10 +356,7 @@ def configure_custom_profile() -> tuple[str, dict[str, str]]:
         env["BORING_RAG_ENABLED"] = "false"
 
     # 4. Feature Flags
-    if Confirm.ask("Enable Vector Memory (ChromaDB)?", default=False):
-        env["BORING_USE_VECTOR_MEMORY"] = "true"
-    else:
-        env["BORING_USE_VECTOR_MEMORY"] = "false"  # Default off for speed
+
 
     if Confirm.ask("Enable Diff Patching (Smart Edits)?", default=True):
         env["BORING_USE_DIFF_PATCHING"] = "true"

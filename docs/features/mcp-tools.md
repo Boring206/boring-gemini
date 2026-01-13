@@ -52,13 +52,13 @@ boring://tools/agents
 
 ### 0. Skills Ecosystem
 
-#### Discovery (`boring_skills_browse`)
+#### Discovery (`boring_skills_search`)
 
-Interactively browse community Skills and Extensions.
+Search Skills Catalog for capabilities.
 
 ```python
-boring_skills_browse(query="web")
-# Result will include installation suggestions
+boring_skills_search(query="web framework")
+boring_skills_list(pattern="fastapi")
 ```
 
 #### Installation (`boring_skills_install`)
@@ -73,15 +73,11 @@ boring_skills_install(name="awesome-gemini-cli-extensions")
 
 ## 🧰 Core Tool Categories
 
-### 0. Skills Discovery (`boring_skills_browse`)
-
-Interactively browse and discover community-maintained Gemini/Claude Skills and MCP Servers.
+Search and install Agent Skills (Extensions, Templates) to extend capabilities.
 
 ```python
-boring_skills_browse(
-    query="web automation",   # Keywords: 'web', 'database', 'auth'
-    platform="all"            # all|gemini|claude
-)
+boring_skills_search(query="web scraper")
+boring_skills_install(name="awesome-claude-skills")
 ```
 
 **Use Cases**:
@@ -343,11 +339,12 @@ graph LR
 
 | Step | Tool | Purpose |
 |------|------|---------|
-| 1 | `speckit_constitution` | Establish principles |
-| 2 | `speckit_clarify` | Clarify requirements |
-| 3 | `speckit_plan` | Create implementation plan |
-| 4 | `speckit_checklist` | Build acceptance criteria |
-| 5 | `speckit_analyze` | Lint (100 files) | ~15s | < 2s |
+| 1 | `boring_speckit_constitution` | Establish principles |
+| 2 | `boring_speckit_clarify` | Clarify requirements |
+| 3 | `boring_speckit_plan` | Create implementation plan |
+| 4 | `boring_speckit_tasks` | Break down into tasks |
+| 5 | `boring_speckit_checklist` | Build acceptance criteria |
+| 6 | `boring_speckit_analyze` | Verify spec consistency |
 
 ### Context Optimization (Tool Profiles)
 

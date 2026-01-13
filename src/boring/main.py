@@ -58,8 +58,9 @@ app = typer.Typer(
 )
 
 
-@app.callback()
+@app.callback(invoke_without_command=True)
 def main(
+    ctx: typer.Context,
     provider: str = typer.Option(
         None, "--provider", "-P", help="LLM Provider: gemini, ollama, openai_compat"
     ),
@@ -89,8 +90,84 @@ def main(
         os.environ["BORING_LAZY_MODE"] = "1"
         # We don't print here to keep output clean, but individual commands might notify.
 
+    # Contextual Onboarding (Project OMNI)
+    if ctx.invoked_subcommand is None:
+        from boring.cli.tui import run_console
+        run_console()
+
 
 console = Console()
+
+
+console = Console()
+
+
+# --- The 5 Commandments (Project OMNI) ---
+
+@app.command()
+def go():
+    """🚀 Start the One Dragon autonomous workflow (Alias for flow)."""
+    flow()
+
+
+@app.command()
+def fix(think: bool = typer.Option(False, "--think", "-t", help="Enable Deep Thinking")):
+    """🔧 Auto-repair linting and code errors."""
+    _run_one_shot(
+        "Fix all linting and code errors in this project",
+        thinking_mode=think,
+        self_heal=True,
+        command_name="fix"
+    )
+
+
+@app.command()
+def check(think: bool = typer.Option(False, "--think", "-t", help="Enable Deep Thinking")):
+    """✅ Run Vibe Check health scan."""
+    _run_one_shot("Run boring_vibe_check", thinking_mode=think, command_name="check")
+
+
+@app.command()
+def save(think: bool = typer.Option(False, "--think", "-t", help="Enable Deep Thinking")):
+    """💾 Smart commit with generated message."""
+    _run_one_shot("Generate a smart commit message and commit changes", thinking_mode=think, command_name="save")
+
+
+@app.command()
+def guide(query: Optional[str] = typer.Argument(None)):
+    """❓ Interactive tool guide and helper."""
+    from rich.prompt import Prompt
+
+    from boring.mcp.tool_router import cli_route, get_tool_router
+
+    if query:
+        cli_route(query)
+        return
+
+    router = get_tool_router()
+    router.get_categories_summary()
+
+    q = Prompt.ask("\n[bold]Ask anything:[/bold]")
+    if q:
+        cli_route(q)
+
+
+@app.command()
+def watch():
+    """👁️ Sentinel Mode: Watch for file changes and suggest fixes."""
+    from boring.cli.watch import run_watch
+    run_watch(settings.PROJECT_ROOT)
+
+
+@app.command()
+def evolve(
+    goal: str = typer.Argument(..., help="Evolution goal (e.g. 'Fix all tests')"),
+    verify: str = typer.Option("pytest", "--verify", "-v", help="Verification command"),
+    steps: int = typer.Option(5, "--steps", "-s", help="Max iterations")
+):
+    """🧬 God Mode: Autonomous goal-seeking loop."""
+    from boring.loop.evolve import run_evolve
+    run_evolve(goal, verify, steps)
 
 
 @app.command()
@@ -256,11 +333,27 @@ def run(
     Execute a single instruction immediately (One-Shot Mode).
     Creates a temporary prompt file and runs the agent loop.
     """
+def _run_one_shot(
+    instruction: str,
+    backend: str = "api",
+    model: str = settings.DEFAULT_MODEL,
+    verbose: bool = False,
+    verification: str = "STANDARD",
+    debug: bool = False,
+    self_heal: bool = False,
+    thinking_mode: bool = False,
+    command_name: Optional[str] = None,
+):
+    """Internal helper to run one-shot commands."""
+    if thinking_mode:
+        instruction = f"Use deep thinking (sequentialthinking) to analyze: {instruction}"
+        console.print("[🧠 Thinking Mode Enabled]")
+
+
     # Validate backend
     backend = backend.lower()
     if backend not in ["api", "cli"]:
         console.print(f"[bold red]Invalid backend: {backend}[/bold red]")
-        console.print("Valid options: 'api' or 'cli'")
         raise typer.Exit(code=1)
 
     # Create temporary prompt file
@@ -273,11 +366,9 @@ def run(
         settings.PROMPT_FILE = str(tmp_prompt)
         use_cli = backend == "cli"
 
-        # Initialize components (mirroring start command)
+        # Initialize components
         from .debugger import BoringDebugger
         from .loop import AgentLoop
-
-        # Ensure V10 tools are registered
         from .mcp import tools  # noqa
 
         console.print(f"[bold green]Running One-Shot Task:[/bold green] {instruction}")
@@ -296,22 +387,29 @@ def run(
 
         if self_heal:
             console.print(
-                "[bold yellow]🚑 Self-Healing Enabled: I will attempt to fix crashes automatically.[/bold yellow]"
+                "[bold yellow]🚑 Self-Healing Enabled[/bold yellow]"
             )
 
-        # Execute
         debugger.run_with_healing(loop.run)
+
+        # Smart Suggestions (Project OMNI - Phase 2)
+        try:
+            from boring.cli.suggestions import run_suggestions
+            run_suggestions(settings.PROJECT_ROOT, last_command=command_name)
+        except Exception:
+            pass # Fail silently for suggestions
 
     except Exception as e:
         import traceback
-
         traceback.print_exc()
         console.print(f"[bold red]Fatal Error:[/bold red] {e}")
         raise typer.Exit(code=1)
     finally:
-        # Cleanup
         if tmp_prompt.exists():
             tmp_prompt.unlink()
+
+
+
 
 
 @app.command()

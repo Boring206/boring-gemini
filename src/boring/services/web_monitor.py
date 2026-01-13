@@ -359,6 +359,10 @@ def get_dashboard_html() -> str:
             <div id="pending-count" class="stat-value">-</div>
         </div>
         <div class="card">
+            <h2>Current Goal / Action</h2>
+            <div id="last-action" style="font-size: 1.2rem; font-weight: 500; font-family: monospace;">-</div>
+        </div>
+        <div class="card">
             <h2>RAG Indexed</h2>
             <div id="rag-status" class="stat-value">-</div>
         </div>
@@ -384,6 +388,7 @@ def get_dashboard_html() -> str:
             document.getElementById('patterns-count').textContent = stats.patterns_count || 0;
             document.getElementById('pending-count').textContent = stats.pending_approvals || 0;
             document.getElementById('rag-status').textContent = stats.rag_indexed ? '✓' : '✗';
+            document.getElementById('last-action').textContent = status.last_action || '-';
 
             // Logs
             const logs = await fetch('/api/logs').then(r => r.json());

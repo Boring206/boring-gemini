@@ -21,7 +21,7 @@ from .prompts import register_prompts
 
 # V10.24: Tool Profiles and Router
 from .tool_profiles import ToolRegistrationFilter, get_profile
-from .tool_router import create_router_tool_description, get_tool_router
+from .tool_router import get_tool_router
 
 # Import git tools to trigger @mcp.tool registration (boring_commit, boring_visualize)
 # Import session tools to trigger @mcp.tool registration (boring_session_*)
@@ -128,7 +128,7 @@ def get_server_instance():
     register_discovery_resources(instance.mcp)
 
     # Register Prompts
-    register_prompts(instance.mcp)
+    register_prompts(instance.mcp, helpers)
 
     # Register Vibe Coder Pro Tools
     register_vibe_tools(instance.mcp, audited, helpers)
@@ -177,8 +177,12 @@ def run_server():
         sys.exit(1)
 
     # 1. Install stdout interceptor immediately
-    # This prevents any print() statement from corrupting the JSON-RPC stream
     interceptors.install_interceptors()
+
+    # --- Renaissance V2: Core Tools Registration ---
+    # register_core_tools registers tools that must ALWAYS be exposed
+    import boring.mcp.tools.core  # noqa: F401
+    # --- End Renaissance ---
 
     # 2. Register Modular Tools (formerly V9)
     helpers = {
@@ -191,6 +195,7 @@ def run_server():
     register_plugin_tools(instance.mcp, audited, helpers)
     register_assistant_tools(instance.mcp, audited, helpers)
     # knowledge tools registered via import side-effect (top-level)
+    from .tools import knowledge  # noqa: F401 - V10: Knowledge System (boring_learn)
 
     register_v10_tools(instance.mcp, audited, helpers)
 
@@ -204,7 +209,7 @@ def run_server():
     register_discovery_resources(instance.mcp)
 
     # Register Prompts
-    register_prompts(instance.mcp)
+    register_prompts(instance.mcp, helpers)
 
     # Register Vibe Coder Pro Tools
     register_vibe_tools(instance.mcp, audited, helpers)
@@ -212,9 +217,28 @@ def run_server():
     # Register Intelligence Tools (V10.23: PredictiveAnalyzer, AdaptiveCache, Session Context)
     register_intelligence_tools(instance.mcp, audited, helpers)
 
+    # Register SpecKit Tools (Spec-Driven Development Workflows)
+    from .speckit_tools import register_speckit_tools
+
+    register_speckit_tools(instance.mcp, audited, helpers)
+
+    # Register Brain Tools (V10.23 Enhanced: boring_brain_health, boring_global_*)
+    from .brain_tools import register_brain_tools
+
+    register_brain_tools(instance.mcp, audited, helpers)
+
+    # Register Skills Tools
+    # V11.4: Register Metrics & Guidance Tools (Project Jarvis)
+    import boring.mcp.tools.metrics  # noqa: F401
+    import boring.mcp.tools.skills  # noqa: F401
+
     # V10.24: Register Tool Router (Universal Natural Language Gateway)
+    # Refactored in V11.4 (Renaissance) to dedicated module
+    from .tools.router_tools import register_router_tools
+    register_router_tools(instance.mcp)
+
     profile = get_profile()
-    router = get_tool_router()
+    get_tool_router()
 
     # V10.29: Post-registration PROMPT filtering based on profile
     # FastMCP stores prompts in _prompts dict. We filter it directly.
@@ -244,104 +268,6 @@ def run_server():
             sys.stderr.write(
                 "[boring-mcp] ⚠️ Could not filter prompts: internal structure changed\n"
             )
-
-    @instance.mcp.tool(
-        description=create_router_tool_description(),
-        annotations={"readOnlyHint": True, "openWorldHint": True},
-    )
-    def boring(request: str) -> str:
-        """
-        🎯 Universal Router - Natural Language Tool Interface
-
-        Instead of remembering 98+ tool names, just describe what you want:
-        - "search for authentication code" → boring_rag_search
-        - "review my code for security" → boring_security_scan
-        - "generate tests for user.py" → boring_test_gen
-
-        Args:
-            request: Natural language description of what you want to do
-
-        Returns:
-            Routing result with matched tool and suggested parameters
-        """
-        result = router.route(request)
-        return (
-            f"🎯 **Routed to:** `{result.matched_tool}`\n"
-            f"📊 **Confidence:** {result.confidence:.0%}\n"
-            f"📁 **Category:** {result.category}\n"
-            f"📝 **Suggested params:** {result.suggested_params}\n"
-            f"🔄 **Alternatives:** {', '.join(result.alternatives) if result.alternatives else 'None'}\n\n"
-            f"💡 Call `{result.matched_tool}` with the suggested parameters."
-        )
-
-    @instance.mcp.tool(
-        description="Show all available tool categories and help.",
-        annotations={"readOnlyHint": True},
-    )
-    def boring_help() -> str:
-        """Get help on available Boring tools and categories."""
-        summary = router.get_categories_summary()
-        profile_info = (
-            f"\n## 🎛️ Current Profile: **{profile.name}** ({len(profile.tools) or 'all'} tools)\n"
-        )
-        return summary + profile_info
-
-    @instance.mcp.tool(
-        description="Get full schema for a tool (progressive disclosure).",
-        annotations={"readOnlyHint": True},
-    )
-    def boring_discover(tool_name: str) -> str:
-        """
-        Progressive Disclosure: Get full schema for a specific tool.
-
-        Use this in ULTRA_LITE mode to fetch tool details on-demand,
-        saving ~97% token overhead compared to loading all schemas upfront.
-
-        Args:
-            tool_name: Name of the tool to discover (e.g., 'boring_rag_search')
-
-        Returns:
-            Full JSON schema for the tool, or error if not found
-        """
-        import json
-
-        # Access all registered tools (before filtering)
-        all_tools = getattr(instance, "_all_tools_cache", None)
-        if all_tools is None:
-            # Cache wasn't set, use current tools
-            all_tools = instance.mcp._tools
-
-        if tool_name not in all_tools:
-            # Try to find similar tools
-            similar = [t for t in all_tools.keys() if tool_name.lower() in t.lower()]
-            if similar:
-                return f"❌ Tool `{tool_name}` not found. Did you mean: {', '.join(similar[:5])}?"
-            return (
-                f"❌ Tool `{tool_name}` not found. Use `boring_help` to see available categories."
-            )
-
-        tool = all_tools[tool_name]
-        # Extract schema information
-        schema_info = {
-            "name": tool_name,
-            "description": getattr(tool, "description", str(tool)),
-        }
-
-        # Try to get input schema if available
-        if hasattr(tool, "inputSchema"):
-            schema_info["input_schema"] = tool.inputSchema
-        elif hasattr(tool, "parameters"):
-            schema_info["parameters"] = tool.parameters
-
-        return (
-            f"## 🔍 Tool: `{tool_name}`\n\n"
-            f"**Description:** {schema_info.get('description', 'N/A')}\n\n"
-            f"<!-- CACHEABLE_CONTENT_START -->\n"
-            f"**Schema:**\n```json\n{json.dumps(schema_info, indent=2, default=str)}\n```\n"
-            f"<!-- CACHEABLE_CONTENT_END -->\n\n"
-            f"💡 You can now call `{tool_name}` with the parameters above.\n"
-            f"ℹ️  This schema is stable and can be cached for the session."
-        )
 
     # V10.26: Cache all tools BEFORE filtering for boring_discover
     # FastMCP 2.x uses various internal structures; use robust accessor

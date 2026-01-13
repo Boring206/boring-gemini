@@ -30,10 +30,11 @@
 | **RAG Search** | ✅ Stable | v10.0 | `chromadb`, `sentence-transformers` | @Boring206 | 語義代碼搜索 |
 | **RAG Index** | ✅ Stable | v10.0 | `tree-sitter` | @Boring206 | 代碼索引建立 |
 | **Brain Manager** | ✅ Stable | v10.26 | SQLite | @Boring206 | 模式學習與記憶 |
-| **Vector Memory** | ✅ Stable | v10.0 | `chromadb` | @Boring206 | 向量記憶存儲 |
+| **Vector Memory** | ❌ Removed | v10.0 | `chromadb` | @Boring206 | 向量記憶存儲 (Moved to RAG) |
 | **Pattern Mining** | 🔵 Beta | v10.28 | - | @Boring206 | 模式挖掘 |
 | **Predictive Analyzer** | 🧪 Experimental | v11.0 | - | @Boring206 | 錯誤預測 |
 | **Adaptive Cache** | 🧪 Experimental | v11.2 | - | @Boring206 | 智能快取預熱 |
+| **GraphRAG** | ✅ Stable | v11.3 | `chromadb`, `networkx` | @Boring206 | 依賴圖視覺化 |
 
 ### 依賴關係圖
 
@@ -76,6 +77,8 @@ Brain Manager ◄─── Pattern Mining
 | **Multi-Agent** | 🔵 Beta | v10.25 | - | @Boring206 | 多代理協作 |
 | **Background Agent** | 🧪 Experimental | v10.30 | Threading | @Boring206 | 後台任務 |
 | **Workflow Evolver** | 🧪 Experimental | v11.0 | - | @Boring206 | 工作流進化 |
+| **Global Brain** | ✅ Stable | v11.3 | Git, JSON | @Boring206 | 跨專案知識共享 |
+| **Skills Autonomy** | ✅ Stable | v11.3 | Skills Catalog | @Boring206 | Agent 技能管理 |
 
 ---
 
@@ -87,7 +90,7 @@ Brain Manager ◄─── Pattern Mining
 | **Tool Router** | ✅ Stable | v10.15 | - | @Boring206 | 自然語言路由 |
 | **Plugin System** | ✅ Stable | v10.20 | - | @Boring206 | 插件擴展系統 |
 | **Workspace Manager** | ✅ Stable | v10.10 | - | @Boring206 | 多專案管理 |
-| **SpecKit** | 🔵 Beta | v10.28 | LLM Provider | @Boring206 | 規格驅動開發 |
+| **SpecKit** | ✅ Stable | v10.28 | LLM Provider | @Boring206 | 規格驅動開發 |
 | **HTTP API** | 🔵 Beta | v10.25 | `starlette` | @Boring206 | REST API |
 | **Web Monitor** | 🧪 Experimental | v10.30 | `streamlit` | @Boring206 | Web 監控面板 |
 | **VSCode Server** | 🧪 Experimental | v11.0 | - | @Boring206 | VSCode 整合 |

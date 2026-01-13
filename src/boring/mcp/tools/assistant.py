@@ -22,7 +22,7 @@ from typing import Annotated, Any, Optional
 
 from pydantic import Field
 
-from ...pattern_mining import get_pattern_miner
+from ...intelligence.pattern_mining import get_pattern_miner
 from ...streaming import get_streaming_manager
 from ...verification import CodeVerifier
 

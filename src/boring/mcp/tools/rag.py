@@ -626,3 +626,69 @@ def register_rag_tools(mcp: Any, helpers: dict):
             )
 
         return create_success_result("\n".join(parts), data={"results_count": len(results)})
+
+    @mcp.tool(
+        description="Visualize the code dependency graph.",
+        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
+    )
+    def boring_rag_graph(
+        format: Annotated[
+            str,
+            Field(description="Output format: 'mermaid' (for diagrams) or 'json' (for data analysis). Default: 'mermaid'."),
+        ] = "mermaid",
+        max_nodes: Annotated[
+            int,
+            Field(description="Maximum number of nodes to include in visualization to prevent overcrowding. Default: 50."),
+        ] = 50,
+        project_path: Annotated[
+            str,
+            Field(
+                description="Optional explicit path to project root. If not provided, automatically detects project root by searching for common markers (pyproject.toml, package.json, etc.) starting from current directory. Example: '.' or '/path/to/project'."
+            ),
+        ] = None,
+    ) -> BoringResult:
+        """
+        Visualize the dependency graph.
+
+        Returns a Mermaid diagram (flowchart) or JSON structure representing
+        the relationship between code chunks (callers/callees).
+        Useful for understanding system architecture.
+
+        Args:
+            format: "mermaid" or "json"
+            max_nodes: Limit nodes for readability
+            project_path: Optional project root
+
+        Returns:
+            Visualization string
+        """
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return create_error_result(error.get("message"))
+        retriever = get_retriever(project_root)
+        if retriever is None or not retriever.is_available:
+            pip_cmd = f"{sys.executable} -m pip install boring-aicoding[vector]"
+            return create_error_result(
+                "❌ RAG module not available.\n\n"
+                f"[AUTO-FIX] Run: {pip_cmd}\n\n"
+                "Then run `boring_rag_reload` to enable RAG.\n\n"
+                "💡 [AI Action]: Execute the pip install command above, then call boring_rag_reload."
+            )
+
+        if not retriever.graph:
+            # Force load if graph usage is requested
+            retriever._load_chunks_from_db()
+            if not retriever.graph:
+                 return create_error_result(
+                    "❌ Graph not initialized or empty. Run `boring_rag_index` first."
+                )
+
+        viz = retriever.graph.visualize(format=format, max_nodes=max_nodes)
+
+        if format == "mermaid":
+            msg = f"## 🕸️ Dependency Graph ({retriever.graph.get_stats().total_nodes} nodes)\n\n{viz}"
+            return create_success_result(msg, data={"format": "mermaid"})
+        else:
+            return create_success_result(
+                "Graph data generated.", data={"json": viz}
+            )

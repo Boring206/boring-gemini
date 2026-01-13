@@ -1,7 +1,7 @@
 # 附錄 A：完整 MCP 工具參考指南 (Appendix A: Complete MCP Tool Reference)
 
-> **工具總數**：98+ 個工具，組織為 18 個類別。
-> **版本**：V11.2.2 (架構鎖定)
+> **工具總數**：98+ 個工具，組織為 19 個類別。
+> **版本**：V11.3.0 (Full-Power Update)
 >
 > **💡 建議**：優先使用 Universal Router (`boring()`) 或 CLI (`boring-route`)。大多數情況下你不需要直接調用這些工具。
 
@@ -79,6 +79,7 @@
 | `boring_rag_search` | 語義搜尋代碼 | `query`, `max_results`, `verbosity` |
 | `boring_rag_context` | 取得代碼上下文 | `file_path`, `function_name` |
 | `boring_rag_expand` | 展開依賴關係圖 | `chunk_id`, `depth` |
+| `boring_rag_graph` | **視覺化圖表**: 視覺化代碼依賴圖。 | `target_path`, `depth`, `output_format` |
 | `boring_rag_status` | 檢查索引健康度 | - |
 
 ---
@@ -195,7 +196,33 @@
 |------|------|----------|
 | `boring_learn` | **主動學習**: 從本次 Session 日誌提取模式。 | `topics` |
 | `boring_brain_summary` | **Brain 儀表板**: 持久化知識的概況統計。 | - |
+| `boring_brain_health` | **健康報告**: Pattern 衰減與使用統計。 | - |
+| `boring_global_export` | **分享**: 匯出高價值模式到全域大腦。 | - |
+| `boring_global_import` | **學習**: 從全域大腦匯入模式。 | `tags` |
 | `boring_create_rubrics` | 從專案規格書建立評定標準。 | - |
+
+---
+
+## 17. SpecKit 工具 (規格驅動開發工具)
+
+| 工具 | 說明 | 關鍵參數 |
+|------|------|----------|
+| `boring_speckit_plan` | **實作計畫**: 從 plan.md 生成實作計畫。 | `workflow_file` |
+| `boring_speckit_tasks` | **任務分解**: 建立可執行的任務清單。 | `workflow_file` |
+| `boring_speckit_analyze` | **分析**: 檢查規格一致性。 | `workflow_file` |
+| `boring_speckit_clarify` | **釐清**: 識別規格中的模糊點。 | `workflow_file` |
+| `boring_speckit_checklist`| **驗收**: 生成驗收核對清單。 | `workflow_file` |
+| `boring_speckit_constitution` | **原則**: 建立專案指導原則。 | `workflow_file` |
+
+---
+
+## 18. 技能與發現工具 (Skills & Discovery)
+
+| 工具 | 說明 | 關鍵參數 |
+|------|------|----------|
+| `boring_skills_install` | **安裝**: 安裝 Agent Skill。 | `name` |
+| `boring_skills_list` | **列表**: 顯示技能目錄。 | `platform` |
+| `boring_skills_search` | **搜尋**: 搜尋技能目錄。 | `query` |
 
 ---
 
@@ -229,4 +256,4 @@
 
 ---
 
-*最後更新: V10.26.0*
+*最後更新: V11.3.0*

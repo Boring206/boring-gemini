@@ -2,7 +2,7 @@
 Tests for SpecKit MCP Tools.
 """
 
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -29,27 +29,27 @@ def mock_helpers():
     return {}
 
 
-@pytest.fixture
-def mock_execute_workflow():
-    """Create a mock workflow executor."""
-    return MagicMock(return_value={"status": "success"})
 
 
-def test_register_speckit_tools(mock_mcp, mock_audited, mock_helpers, mock_execute_workflow):
+
+@patch("boring.mcp.speckit_tools._execute_workflow")
+def test_register_speckit_tools(mock_execute, mock_mcp, mock_audited, mock_helpers):
     """Test registering SpecKit tools."""
     # The function doesn't return anything, it just registers tools
     # So we check that it doesn't raise an exception
     try:
-        register_speckit_tools(mock_mcp, mock_audited, mock_helpers, mock_execute_workflow)
+        register_speckit_tools(mock_mcp, mock_audited, mock_helpers)
         # If we get here without exception, the test passes
         assert True
     except Exception as e:
         pytest.fail(f"register_speckit_tools raised an exception: {e}")
 
 
-def test_speckit_plan_default_params(mock_mcp, mock_audited, mock_helpers, mock_execute_workflow):
+@patch("boring.mcp.speckit_tools._execute_workflow")
+def test_speckit_plan_default_params(mock_execute, mock_mcp, mock_audited, mock_helpers):
     """Test speckit_plan with default parameters."""
-    register_speckit_tools(mock_mcp, mock_audited, mock_helpers, mock_execute_workflow)
+    mock_execute.return_value = {"status": "success"}
+    register_speckit_tools(mock_mcp, mock_audited, mock_helpers)
 
     # The tools should be registered, get them from the decorator calls
     # Since we mocked mcp.tool to return the function itself, we can call it
@@ -68,15 +68,16 @@ def test_speckit_plan_default_params(mock_mcp, mock_audited, mock_helpers, mock_
 
     mcp.tool = tool_decorator
 
-    reg(mcp, mock_audited, mock_helpers, mock_execute_workflow)
+    reg(mcp, mock_audited, mock_helpers)
 
     # Test speckit_plan
-    registered_tools["speckit_plan"]()
-    assert mock_execute_workflow.called
-    mock_execute_workflow.assert_called_with("speckit-plan", None, None)
+    registered_tools["boring_speckit_plan"]()
+    assert mock_execute.called
+    mock_execute.assert_called_with("speckit-plan", None, None)
 
 
-def test_speckit_tasks_with_context(mock_mcp, mock_audited, mock_helpers, mock_execute_workflow):
+@patch("boring.mcp.speckit_tools._execute_workflow")
+def test_speckit_tasks_with_context(mock_execute, mock_mcp, mock_audited, mock_helpers):
     """Test speckit_tasks with context."""
     mcp = MagicMock()
     registered_tools = {}
@@ -92,14 +93,15 @@ def test_speckit_tasks_with_context(mock_mcp, mock_audited, mock_helpers, mock_e
 
     from boring.mcp.speckit_tools import register_speckit_tools
 
-    register_speckit_tools(mcp, mock_audited, mock_helpers, mock_execute_workflow)
+    register_speckit_tools(mcp, mock_audited, mock_helpers)
 
-    registered_tools["speckit_tasks"](context="Test context")
-    mock_execute_workflow.assert_called_with("speckit-tasks", "Test context", None)
+    registered_tools["boring_speckit_tasks"](context="Test context")
+    mock_execute.assert_called_with("speckit-tasks", "Test context", None)
 
 
+@patch("boring.mcp.speckit_tools._execute_workflow")
 def test_speckit_analyze_with_project_path(
-    mock_mcp, mock_audited, mock_helpers, mock_execute_workflow
+    mock_execute, mock_mcp, mock_audited, mock_helpers
 ):
     """Test speckit_analyze with project path."""
     mcp = MagicMock()
@@ -116,13 +118,13 @@ def test_speckit_analyze_with_project_path(
 
     from boring.mcp.speckit_tools import register_speckit_tools
 
-    register_speckit_tools(mcp, mock_audited, mock_helpers, mock_execute_workflow)
+    register_speckit_tools(mcp, mock_audited, mock_helpers)
 
-    registered_tools["speckit_analyze"](project_path="/test/path")
-    mock_execute_workflow.assert_called_with("speckit-analyze", None, "/test/path")
+    registered_tools["boring_speckit_analyze"](project_path="/test/path")
+    mock_execute.assert_called_with("speckit-analyze", None, "/test/path")
 
 
-def test_all_speckit_tools_registered(mock_mcp, mock_audited, mock_helpers, mock_execute_workflow):
+def test_all_speckit_tools_registered(mock_mcp, mock_audited, mock_helpers):
     """Test that all SpecKit tools are registered."""
     mcp = MagicMock()
     registered_tools = {}
@@ -138,15 +140,15 @@ def test_all_speckit_tools_registered(mock_mcp, mock_audited, mock_helpers, mock
 
     from boring.mcp.speckit_tools import register_speckit_tools
 
-    register_speckit_tools(mcp, mock_audited, mock_helpers, mock_execute_workflow)
+    register_speckit_tools(mcp, mock_audited, mock_helpers)
 
     expected_tools = [
-        "speckit_plan",
-        "speckit_tasks",
-        "speckit_analyze",
-        "speckit_clarify",
-        "speckit_checklist",
-        "speckit_constitution",
+        "boring_speckit_plan",
+        "boring_speckit_tasks",
+        "boring_speckit_analyze",
+        "boring_speckit_clarify",
+        "boring_speckit_checklist",
+        "boring_speckit_constitution",
     ]
 
     for tool_name in expected_tools:

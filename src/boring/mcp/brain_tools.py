@@ -237,181 +237,6 @@ def register_brain_tools(mcp, audited, helpers):
                 "note": "V10.23 health report not available, using summary",
             }
 
-    @mcp.tool(
-        description="即時學習單一錯誤 (Learn from single error). 適合: '記住這個錯誤', 'Learn this error', '學這個 bug'. V10.23 新功能！",
-        annotations={"readOnlyHint": False, "openWorldHint": False, "idempotentHint": False},
-    )
-    @audited
-    def boring_incremental_learn(
-        error_message: Annotated[
-            str,
-            Field(description="The error message to learn from"),
-        ],
-        solution: Annotated[
-            str,
-            Field(description="The solution or fix for this error"),
-        ],
-        file_path: Annotated[
-            str,
-            Field(description="File where error occurred (optional)"),
-        ] = "",
-        project_path: Annotated[
-            str,
-            Field(description="Optional explicit path to project root."),
-        ] = None,
-    ) -> dict:
-        """
-        V10.23: Learn from a single error in real-time.
-
-        Unlike boring_learn which extracts patterns from memory,
-        this allows immediate learning from a specific error-solution pair.
-        Great for capturing fixes as they happen!
-        """
-        from ..config import settings
-        from ..intelligence.brain_manager import BrainManager
-
-        project_root, error = _get_project_root_or_error(project_path)
-        if error:
-            return error
-
-        _configure_runtime_for_project(project_root)
-
-        brain = BrainManager(project_root, settings.LOG_DIR)
-
-        try:
-            result = brain.incremental_learn(
-                error_message=error_message, solution=solution, file_path=file_path
-            )
-            return {
-                "status": "SUCCESS",
-                "message": "✅ 已學習錯誤模式！",
-                "pattern_id": result.get("pattern_id", "unknown"),
-                "vibe_summary": f"🧠 **即時學習完成**\n"
-                f"- 錯誤: `{error_message[:50]}...`\n"
-                f"- 解法已儲存！下次會自動建議",
-            }
-        except AttributeError:
-            # Fallback to learn_pattern for older BrainManager
-            result = brain.learn_pattern(
-                pattern_type="error_solution",
-                description=f"Error: {error_message[:100]}",
-                context=file_path or "unknown",
-                solution=solution,
-            )
-            return {
-                "status": "SUCCESS",
-                "message": "✅ 已學習（使用傳統方式）",
-                "result": result,
-            }
-
-    @mcp.tool(
-        description="查看 Pattern 統計 (Pattern statistics). 適合: 'Show pattern stats', '統計有多少 pattern', 'Pattern breakdown'. V10.23 新功能！",
-        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
-    )
-    @audited
-    def boring_pattern_stats(
-        project_path: Annotated[
-            str,
-            Field(description="Optional explicit path to project root."),
-        ] = None,
-    ) -> dict:
-        """
-        V10.23: Get detailed pattern statistics.
-
-        Returns:
-        - Pattern count by type (error_solution, code_style, etc.)
-        - Pattern count by decay status (active, decaying, dormant)
-        - Top performing patterns
-        - Least used patterns (candidates for pruning)
-        """
-        from ..config import settings
-        from ..intelligence.brain_manager import BrainManager
-
-        project_root, error = _get_project_root_or_error(project_path)
-        if error:
-            return error
-
-        _configure_runtime_for_project(project_root)
-
-        brain = BrainManager(project_root, settings.LOG_DIR)
-
-        try:
-            stats = brain.get_pattern_stats()
-            return {
-                "status": "SUCCESS",
-                "stats": stats,
-                "vibe_summary": f"📊 **Pattern 統計**\n"
-                f"- 總數: {stats.get('total', 0)}\n"
-                f"- 活躍: {stats.get('active', 0)}\n"
-                f"- 衰減中: {stats.get('decaying', 0)}\n"
-                f"- 休眠: {stats.get('dormant', 0)}",
-            }
-        except AttributeError:
-            # Fallback for older BrainManager
-            summary = brain.get_brain_summary()
-            return {
-                "status": "SUCCESS",
-                "stats": {"patterns": summary.get("patterns", {})},
-                "note": "V10.23 stats not available, using summary",
-            }
-
-    @mcp.tool(
-        description="清理低價值 Pattern (Prune patterns). 適合: 'Clean up brain', '清理舊 pattern', 'Prune unused patterns'. V10.23 新功能！",
-        annotations={"readOnlyHint": False, "openWorldHint": False, "idempotentHint": False},
-    )
-    @audited
-    def boring_prune_patterns(
-        min_score: Annotated[
-            float,
-            Field(
-                description="Minimum score threshold (0.0-1.0). Patterns below this will be removed. Default: 0.1"
-            ),
-        ] = 0.1,
-        project_path: Annotated[
-            str,
-            Field(description="Optional explicit path to project root."),
-        ] = None,
-    ) -> dict:
-        """
-        V10.23: Prune low-value patterns from the brain.
-
-        Removes patterns that:
-        - Have low usage frequency
-        - Haven't been accessed recently
-        - Have decayed below the threshold
-
-        This keeps the brain lean and focused on valuable patterns.
-        """
-        from ..config import settings
-        from ..intelligence.brain_manager import BrainManager
-
-        project_root, error = _get_project_root_or_error(project_path)
-        if error:
-            return error
-
-        _configure_runtime_for_project(project_root)
-
-        brain = BrainManager(project_root, settings.LOG_DIR)
-
-        try:
-            result = brain.prune_patterns(min_score=min_score)
-            pruned_count = result.get("pruned_count", 0)
-            return {
-                "status": "SUCCESS",
-                "message": f"🧹 已清理 {pruned_count} 個低價值 Pattern",
-                "pruned_count": pruned_count,
-                "remaining": result.get("remaining", 0),
-                "vibe_summary": f"🧹 **Brain 清理完成**\n"
-                f"- 清理數量: {pruned_count}\n"
-                f"- 保留數量: {result.get('remaining', 0)}\n"
-                f"- 閾值: {min_score}",
-            }
-        except AttributeError:
-            return {
-                "status": "NOT_AVAILABLE",
-                "message": "V10.23 prune_patterns 功能未啟用",
-            }
-
     # =========================================================================
     # Global Brain Tools (Cross-Project Knowledge Sharing)
     # =========================================================================
@@ -596,6 +421,186 @@ def register_brain_tools(mcp, audited, helpers):
                 "message": f"❌ List failed: {str(e)}",
             }
 
+    # =========================================================================
+    # Brain Manager Tools (V10.24 Resurrection)
+    # =========================================================================
+
+    @mcp.tool(
+        description="增量學習模式 (Incremental Learn). "
+        "適合: 'Learn from this error', '記住這個解決方案', 'After fixing a bug'. "
+        "V10.24 新功能！讓 AI 即時學習新的錯誤模式與解決方案。",
+        annotations={"readOnlyHint": False, "openWorldHint": False, "idempotentHint": True},
+    )
+    @audited
+    def boring_incremental_learn(
+        error_type: Annotated[str, Field(description="Type of error (e.g. 'ImportError')")],
+        solution: Annotated[str, Field(description="The solution that worked")],
+        context: Annotated[str, Field(description="Error message or context")] = "",
+        project_path: Annotated[
+            str,
+            Field(description="Optional explicit path to project root."),
+        ] = None,
+    ) -> dict:
+        """
+        V10.24: Incrementally learn from a user-provided success or resolution.
+        """
+        from ..intelligence.brain_manager import BrainManager
+
+        project_root, error = _get_project_root_or_error(project_path)
+        if error:
+            return error
+
+        _configure_runtime_for_project(project_root)
+
+        try:
+            brain = BrainManager(project_root)
+            result = brain.incremental_learn(
+                error_type=error_type,
+                error_message=context,
+                solution=solution,
+            )
+            return {
+                "status": "SUCCESS",
+                "result": result,
+                "vibe_summary": f"🧠 **已學習新模式**\n"
+                f"- 類型: `{error_type}`\n"
+                f"- ID: {result.get('pattern_id')}\n"
+                f"- 成功次數: {result.get('success_count', 1)}",
+            }
+        except Exception as e:
+            return {"status": "ERROR", "message": f"學習失敗: {str(e)}"}
+
+    @mcp.tool(
+        description="查看模式統計 (Pattern Stats). "
+        "適合: 'Show brain stats', '學習了多少模式?', 'Knowledge base stats'. "
+        "V10.24 新功能！",
+        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
+    )
+    @audited
+    def boring_pattern_stats(
+        project_path: Annotated[
+            str,
+            Field(description="Optional explicit path to project root."),
+        ] = None,
+    ) -> dict:
+        """V10.24: Get statistics about learned patterns."""
+        from ..intelligence.brain_manager import BrainManager
+
+        project_root, error = _get_project_root_or_error(project_path)
+        if error:
+            return error
+
+        _configure_runtime_for_project(project_root)
+
+        try:
+            brain = BrainManager(project_root)
+            stats = brain.get_pattern_stats()
+            return {
+                "status": "SUCCESS",
+                "stats": stats,
+                "vibe_summary": f"📊 **知識庫統計**\n"
+                f"- 總模式數: {stats.get('total', 0)}\n"
+                f"- 平均成功率: {stats.get('avg_success_count', 0)}\n"
+                f"- 健康度: {stats.get('avg_decay_score', 0):.2f}",
+            }
+        except Exception as e:
+            return {"status": "ERROR", "message": f"統計失敗: {str(e)}"}
+
+    @mcp.tool(
+        description="修剪過期模式 (Prune Patterns). "
+        "適合: 'Clean up brain', 'Prune patterns', 'optimize knowledge'. "
+        "V10.24 新功能！",
+        annotations={"readOnlyHint": False, "openWorldHint": False, "idempotentHint": True},
+    )
+    @audited
+    def boring_prune_patterns(
+        min_score: Annotated[float, Field(description="Minimum scores to keep")] = 0.1,
+        project_path: Annotated[
+            str,
+            Field(description="Optional explicit path to project root."),
+        ] = None,
+    ) -> dict:
+        """V10.24: Prune low-value patterns."""
+        from ..intelligence.brain_manager import BrainManager
+
+        project_root, error = _get_project_root_or_error(project_path)
+        if error:
+            return error
+
+        _configure_runtime_for_project(project_root)
+
+        try:
+            brain = BrainManager(project_root)
+            result = brain.prune_patterns(min_score=min_score)
+            return {
+                "status": "SUCCESS",
+                "result": result,
+                "vibe_summary": f"🧹 **知識庫清理**\n"
+                f"- 狀態: {result.get('status')}\n"
+                f"- 移除: {result.get('pruned_count', 0)} 個模式\n"
+                f"- 剩餘: {result.get('remaining', 0)} 個模式",
+            }
+        except Exception as e:
+            return {"status": "ERROR", "message": f"清理失敗: {str(e)}"}
+
+    @mcp.tool(
+        description="智能建議下一步 (Suggest Next). "
+        "適合: 'What should I do?', 'Give me a suggestion', 'Next steps'. "
+        "V10.24 新功能！基於上下文與歷史模式提供建議。",
+        annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
+    )
+    @audited
+    def boring_suggest_next(
+        context: Annotated[str, Field(description="Optional context")] = "general",
+        file_path: Annotated[str, Field(description="Current file focus")] = "",
+        project_path: Annotated[
+            str,
+            Field(description="Optional explicit path to project root."),
+        ] = None,
+    ) -> dict:
+        """V10.24: Suggest next actions based on intelligence."""
+        from ..config import settings
+        from ..intelligence.brain_manager import BrainManager
+        from ..intelligence.predictive_analyzer import PredictiveAnalyzer
+
+        project_root, error = _get_project_root_or_error(project_path)
+        if error:
+            return error
+
+        _configure_runtime_for_project(project_root)
+
+        try:
+            brain = BrainManager(project_root)
+            analyzer = PredictiveAnalyzer(project_root, settings.LOG_DIR)
+
+            # 1. Get learned patterns
+            patterns = brain.get_relevant_patterns(context, limit=3)
+
+            # 2. Get risk areas
+            risks = analyzer.get_risk_areas(limit=3)
+
+            suggestions = []
+            if patterns:
+                suggestions.append("🧠 **基於歷史模式**:")
+                for p in patterns:
+                    suggestions.append(f"- {p.get('description')} (成功: {p.get('success_count')})")
+
+            if risks:
+                suggestions.append("\n⚠️ **注意風險區域**:")
+                for r in risks:
+                    suggestions.append(f"- {r.get('file')} (錯誤: {r.get('error_count')})")
+
+            if not suggestions:
+                suggestions.append("✅目前無特殊風險或建議，請繼續保持！")
+
+            return {
+                "status": "SUCCESS",
+                "suggestions": suggestions,
+                "vibe_summary": "\n".join(suggestions)
+            }
+        except Exception as e:
+            return {"status": "ERROR", "message": f"建議失敗: {str(e)}"}
+
     return {
         "boring_learn": boring_learn,
         "boring_create_rubrics": boring_create_rubrics,
@@ -603,11 +608,13 @@ def register_brain_tools(mcp, audited, helpers):
         "boring_learn_pattern": boring_learn_pattern,
         # V10.23 new tools
         "boring_brain_health": boring_brain_health,
-        "boring_incremental_learn": boring_incremental_learn,
-        "boring_pattern_stats": boring_pattern_stats,
-        "boring_prune_patterns": boring_prune_patterns,
         # Global Brain tools
         "boring_global_export": boring_global_export,
         "boring_global_import": boring_global_import,
         "boring_global_list": boring_global_list,
+        # Brain Manager (Resurrected)
+        "boring_incremental_learn": boring_incremental_learn,
+        "boring_pattern_stats": boring_pattern_stats,
+        "boring_prune_patterns": boring_prune_patterns,
+        "boring_suggest_next": boring_suggest_next,
     }

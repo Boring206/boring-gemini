@@ -147,9 +147,46 @@ Below you can explore the Brain Map (learned patterns) and system configuration.
     storage = create_storage(PROJECT_ROOT)
 
     # --- Main Layout ---
-    tab1, tab2, tab3, tab4 = st.tabs(
-        ["📊 Live Logs", "🧠 Brain Map", "🧬 Patterns", "⚙️ System Info"]
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(
+        ["📊 Live Logs", "📈 Usage Stats", "🧠 Brain Map", "🧬 Patterns", "⚙️ System Info"]
     )
+
+    with tab2:
+        st.subheader("Personal Usage Analytics")
+        try:
+             # Lazy import
+            from boring.intelligence.usage_tracker import get_tracker
+            tracker = get_tracker()
+            stats = tracker.stats
+
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Total Tool Calls", stats.total_calls)
+            c2.metric("Distinct Tools Used", len(stats.tools))
+            if stats.last_updated:
+                from datetime import datetime
+                c3.metric("Last Activity", datetime.fromtimestamp(stats.last_updated).strftime("%H:%M:%S"))
+
+            st.divider()
+
+            # Prepare data for charts
+            if stats.tools:
+                import pandas as pd
+                data = []
+                for tname, usage in stats.tools.items():
+                    data.append({"Tool": tname, "Calls": usage.count, "Last Used": usage.last_used})
+
+                df_usage = pd.DataFrame(data).sort_values("Calls", ascending=False)
+
+                # Chart
+                st.bar_chart(df_usage, x="Tool", y="Calls")
+
+                # Table
+                st.dataframe(df_usage, use_container_width=True)
+            else:
+                st.info("No usage data recorded yet.")
+
+        except Exception as e:
+            st.error(f"Could not load usage stats: {e}")
 
     with tab1:
         st.subheader("Live Logs")

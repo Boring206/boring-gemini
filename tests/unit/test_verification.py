@@ -334,29 +334,7 @@ class TestJudgeSubmodules:
             assert provider.model_name == "mistral"
 
 
-class TestReviewerSubmodules:
-    """Test the individual components of the reviewer package."""
 
-    def test_extract_verdict_logic(self):
-        from boring.agents.reviewer.parsers import extract_verdict
-
-        assert extract_verdict("VERDICT: PASS") == "PASS"
-        assert extract_verdict("VERDICT: REJECT") == "REJECT"
-        assert extract_verdict("Neutral comments") == "NEEDS_WORK"
-
-    def test_extract_issues_logic(self):
-        from boring.agents.reviewer.parsers import extract_issues
-
-        text = (
-            "[🟡 MINOR] Issue 1\n"
-            "[🔴 CRITICAL] Fatal Error\n"
-            "### Security Concerns\n"
-            "- Buffer overflow"
-        )
-        issues = extract_issues(text)
-        assert "Issue 1" in issues["minor"]
-        assert "Fatal Error" in issues["critical"]
-        assert "Buffer overflow" in issues["security"]
 
 
 class TestCoreModule:

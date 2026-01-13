@@ -4,10 +4,11 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 # Mock streamlit before importing dashboard
-# Mock streamlit before importing dashboard
 mock_st_module = MagicMock()
 mock_st_module.__version__ = "1.0.0"
 sys.modules["streamlit"] = mock_st_module
+sys.modules["streamlit.components"] = MagicMock()
+sys.modules["streamlit.components.v1"] = MagicMock()
 
 from boring.cli.dashboard import load_json, main
 
@@ -67,8 +68,8 @@ class TestDashboard:
         # Mock session state to allow attribute access
         mock_st.session_state.last_refresh = time.time()
 
-        # Mock tabs - dashboard now has 4 tabs
-        mock_st.tabs.return_value = [MagicMock(), MagicMock(), MagicMock(), MagicMock()]
+        # Mock tabs - dashboard now has 5 tabs
+        mock_st.tabs.return_value = [MagicMock(), MagicMock(), MagicMock(), MagicMock(), MagicMock()]
 
         # Run main
         main()
@@ -77,14 +78,14 @@ class TestDashboard:
         mock_st.sidebar.header.assert_called_with("Controls")
         mock_st.sidebar.markdown.assert_any_call("**Version**: 1.0.0")
 
-        # Verify Metrics
-        mock_col1.metric.assert_called_with("Loop Count", 5)
-        mock_col2.metric.assert_called_with("Status", "RUNNING", delta_color="normal")
+        # Verify Metrics - Use assert_any_call as columns are reused in Brain Map
+        mock_col1.metric.assert_any_call("Loop Count", 5)
+        mock_col2.metric.assert_any_call("Status", "RUNNING", delta_color="normal")
         mock_col4.metric.assert_called()
 
-        # Verify Tabs - updated to match new 4-tab layout
+        # Verify Tabs - updated to match new 5-tab layout
         mock_st.tabs.assert_called_with(
-            ["📊 Live Logs", "🧠 Brain Map", "🧬 Patterns", "⚙️ System Info"]
+            ["📊 Live Logs", "📈 Usage Stats", "🧠 Brain Map", "🧬 Patterns", "⚙️ System Info"]
         )
 
     @patch("boring.cli.dashboard.st")
@@ -97,7 +98,7 @@ class TestDashboard:
         mock_st.columns.side_effect = (
             lambda x: [MagicMock()] * 4 if x == 4 else [MagicMock(), MagicMock()]
         )
-        mock_st.tabs.return_value = [MagicMock(), MagicMock(), MagicMock(), MagicMock()]
+        mock_st.tabs.return_value = [MagicMock(), MagicMock(), MagicMock(), MagicMock(), MagicMock()]
         mock_st.session_state.last_refresh = time.time()
 
         main()
@@ -121,9 +122,9 @@ class TestDashboard:
             patch("pathlib.Path.exists", return_value=True),
             patch("pathlib.Path.read_text", return_value="# Content"),
         ):
-            # Trigger tab2 context - now 4 tabs
+            # Trigger tab2 context - now 5 tabs
             mock_tab2 = MagicMock()
-            mock_st.tabs.return_value = [MagicMock(), mock_tab2, MagicMock(), MagicMock()]
+            mock_st.tabs.return_value = [MagicMock(), mock_tab2, MagicMock(), MagicMock(), MagicMock()]
 
             main()
 

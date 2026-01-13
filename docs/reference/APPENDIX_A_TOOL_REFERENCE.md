@@ -1,7 +1,7 @@
 # Appendix A: Complete MCP Tool Reference
 
-> **Total Tools**: 98+ tools organized into 18 categories.
-> **Version**: V11.2.2 (Architectural Lockdown)
+> **Total Tools**: 98+ tools organized into 19 categories.
+> **Version**: V11.3.0 (Full-Power Update)
 >
 > **💡 Recommendation**: Use the Universal Router (`boring()`) or CLI (`boring-route`) for most tasks. You rarely need to call these tools directly.
 
@@ -79,6 +79,7 @@
 | `boring_rag_search` | Semantic code search | `query`, `max_results`, `verbosity` |
 | `boring_rag_context` | Get code context | `file_path`, `function_name` |
 | `boring_rag_expand` | Expand dependency graph | `chunk_id`, `depth` |
+| `boring_rag_graph` | **Visual Graph**: Visualize code dependency graph. | `target_path`, `depth`, `output_format` |
 | `boring_rag_status` | Check index health | - |
 
 ---
@@ -195,7 +196,33 @@
 |------|-------------|----------------|
 | `boring_learn` | **Active Learning**: Extracts patterns from session logs. | `topics` |
 | `boring_brain_summary` | **Brain Dashboard**: High-level status of persistent knowledge. | - |
+| `boring_brain_health` | **Health Report**: Pattern decay and usage stats. | - |
+| `boring_global_export` | **Share**: Export high-value patterns to Global Brain. | - |
+| `boring_global_import` | **Learn**: Import patterns from Global Brain. | `tags` |
 | `boring_create_rubrics` | Create evaluation standards from project specs. | - |
+
+---
+
+## 17. SpecKit Tools (Specification-Driven Development)
+
+| Tool | Description | Key Parameters |
+|------|-------------|----------------|
+| `boring_speckit_plan` | **Plan**: Generate implementation plan from plan.md. | `workflow_file` |
+| `boring_speckit_tasks` | **Breakdown**: Create actionable task list. | `workflow_file` |
+| `boring_speckit_analyze` | **Analyze**: Check spec consistency. | `workflow_file` |
+| `boring_speckit_clarify` | **Clarify**: Identify ambiguities in spec. | `workflow_file` |
+| `boring_speckit_checklist`| **Verify**: Generate verification checklist. | `workflow_file` |
+| `boring_speckit_constitution` | **Rules**: Create project guiding principles. | `workflow_file` |
+
+---
+
+## 18. Skills & Discovery Tools
+
+| Tool | Description | Key Parameters |
+|------|-------------|----------------|
+| `boring_skills_install` | **Install**: Install Agent Skill. | `name` |
+| `boring_skills_list` | **List**: List Skills Catalog. | `platform` |
+| `boring_skills_search` | **Search**: Search Skills Catalog. | `query` |
 
 ---
 
@@ -229,4 +256,4 @@
 
 ---
 
-*Last updated: V10.18.1*
+*Last updated: V11.3.0*

@@ -69,9 +69,9 @@ class TestBrainTools:
 
         mock_brain.return_value.incremental_learn.return_value = {"pattern_id": "test-123"}
 
-        result = inc_tool(error_message="msg", solution="sol")
+        result = inc_tool(context="msg", solution="sol", error_type="ImportError")
         assert result["status"] == "SUCCESS"
-        assert result["pattern_id"] == "test-123"
+        assert result["result"]["pattern_id"] == "test-123"
 
     @patch("boring.intelligence.brain_manager.get_global_knowledge_store")
     def test_boring_global_export(self, mock_global, mock_mcp, helpers):

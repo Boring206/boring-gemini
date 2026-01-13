@@ -11,12 +11,12 @@ AI can "discover" what tools are available instead of loading them all at once.
 CAPABILITIES = {
     "verification": {
         "description": "Code quality verification and syntax checking",
-        "tools": ["boring_verify", "boring_verify_file", "boring_auto_fix"],
+        "tools": ["boring_verify_file"],
         "docs": "Verify code correctness and fix lint issues.",
     },
     "plugins": {
         "description": "Plugin management and execution",
-        "tools": ["boring_list_plugins", "boring_run_plugin", "boring_reload_plugins"],
+        "tools": ["boring_list_plugins", "boring_run_plugin"],
         "docs": "Manage and run external boring plugins.",
     },
     "workspace": {
@@ -31,12 +31,26 @@ CAPABILITIES = {
     },
     "knowledge_base": {
         "description": "Project learning and rubric management",
-        "tools": ["boring_learn", "boring_create_rubrics", "boring_brain_summary"],
+        "tools": [
+            "boring_learn",
+            "boring_create_rubrics",
+            "boring_brain_summary",
+            "boring_brain_health",
+            "boring_incremental_learn",
+            "boring_pattern_stats",
+            "boring_global_export",
+            "boring_global_import",
+        ],
         "docs": "Store and retrieve learned knowledge about the project.",
     },
     "evaluation": {
         "description": "Code evaluation and scoring",
-        "tools": ["boring_evaluate"],
+        "tools": [
+            "boring_evaluate",
+            "boring_evaluation_metrics",
+            "boring_bias_report",
+            "boring_generate_rubric",
+        ],
         "docs": "Evaluate code quality against defined rubrics.",
     },
     "security": {
@@ -46,58 +60,67 @@ CAPABILITIES = {
     },
     "transactions": {
         "description": "Atomic operations with rollback support (Git-based)",
-        "tools": ["boring_transaction_start", "boring_transaction_commit", "boring_rollback"],
+        "tools": ["boring_transaction"],
         "docs": "Start a transaction before risky changes. Use rollback if verification fails.",
     },
     "background_tasks": {
         "description": "Async task execution for long-running operations",
-        "tools": ["boring_background_task", "boring_task_status", "boring_list_tasks"],
+        "tools": ["boring_background_task", "boring_task_status"],
         "docs": "Offload linting, testing, or verification to background threads.",
     },
     "context_memory": {
         "description": "Cross-session memory and context persistence",
-        "tools": ["boring_save_context", "boring_load_context", "boring_list_contexts"],
+        "tools": [
+            "boring_save_context",
+            "boring_load_context",
+            "boring_set_session_context",
+            "boring_get_session_context",
+        ],
         "docs": "Save your state before ending a session to resume later.",
     },
     "user_profile": {
         "description": "User preferences and learned fix patterns",
-        "tools": ["boring_get_profile", "boring_learn_fix"],
+        "tools": ["boring_get_profile"],
         "docs": "Access user's coding style and apply learned fixes for errors.",
     },
     "git_automation": {
         "description": "Git hooks and automated commit management",
-        "tools": ["boring_hooks_install", "boring_commit", "boring_visualize"],
+        "tools": ["boring_hooks_install", "boring_commit", "boring_visualize", "boring_checkpoint"],
         "docs": "Manage git hooks and create semantic commits.",
     },
     "rag_search": {
         "description": "Semantic code search and dependency graph analysis",
-        "tools": ["boring_rag_search", "boring_rag_context", "boring_rag_expand"],
+        "tools": [
+            "boring_rag_search",
+            "boring_rag_context",
+            "boring_rag_expand",
+            "boring_rag_graph",
+            "boring_rag_index",
+            "boring_rag_status",
+        ],
         "docs": "Search code using natural language queries.",
     },
     "multi_agent": {
         "description": "Orchestrate specialized agents (Architect, Coder, Reviewer)",
-        "tools": ["boring_multi_agent", "boring_agent_plan", "boring_delegate"],
-        "docs": "Delegate complex tasks to specialized sub-agents.",
+        "tools": ["boring_flow", "boring_flow_status", "boring_delegate"],
+        "docs": "Delegate complex tasks to specialized sub-agents via FlowEngine.",
     },
     "shadow_mode": {
         "description": "Safe execution environment with approval workflow",
         "tools": [
             "boring_shadow_mode",
-            "boring_shadow_approve",
-            "boring_shadow_reject",
-            "boring_shadow_status",
-            "boring_shadow_clear",
         ],
         "docs": "Execute dangerous operations in shadow mode for safety.",
     },
     "speckit": {
         "description": "Specification-driven development workflows",
         "tools": [
-            "speckit_clarify",
-            "speckit_plan",
-            "speckit_tasks",
-            "speckit_analyze",
-            "speckit_checklist",
+            "boring_speckit_plan",
+            "boring_speckit_tasks",
+            "boring_speckit_clarify",
+            "boring_speckit_analyze",
+            "boring_speckit_checklist",
+            "boring_speckit_constitution",
         ],
         "docs": "Use SpecKit to clarify requirements, create plans, and generate tasks.",
     },
@@ -108,12 +131,12 @@ CAPABILITIES = {
     },
     "diagnostics": {
         "description": "Error analysis and debugging assistance",
-        "tools": ["boring_diagnose", "boring_health_check", "boring_status"],
+        "tools": ["boring_diagnose"],
         "docs": "Analyze errors and check system health.",
     },
     "quickstart": {
         "description": "Project initialization and setup",
-        "tools": ["boring_quickstart", "boring_hooks_install", "boring_setup_extensions"],
+        "tools": ["boring_wizard"],
         "docs": "Initialize new projects with best practices.",
     },
 }

@@ -199,6 +199,77 @@ def boring_get_relevant_patterns(
 
 
 # ==============================================================================
+# P4: USAGE ANALYTICS DASHBOARD
+# ==============================================================================
+
+@audited
+def boring_usage_stats(
+    limit: Annotated[int, Field(description="Number of top tools to show (default: 10)")] = 10,
+) -> str:
+    """
+    Show your personal tool usage statistics (Adaptive Profile Dashboard).
+
+    Returns a formatted markdown report of your most frequently used tools,
+    helping you understand your workflow patterns.
+    """
+    import time
+    from datetime import datetime
+
+    try:
+        from ...intelligence.usage_tracker import get_tracker
+
+        tracker = get_tracker()
+        stats = tracker.stats
+
+        if stats.total_calls == 0:
+            return (
+                "## 📊 Usage Statistics\n\n"
+                "No usage data yet. Start using Boring tools to build your profile!\n\n"
+                "💡 Enable `BORING_MCP_PROFILE=adaptive` to auto-personalize your toolset."
+            )
+
+        # Build markdown report
+        lines = ["## 📊 Usage Statistics\n"]
+
+        # Summary
+        last_updated = datetime.fromtimestamp(stats.last_updated).strftime("%Y-%m-%d %H:%M")
+        lines.append(f"**Total Calls:** {stats.total_calls}")
+        lines.append(f"**Last Activity:** {last_updated}")
+        lines.append(f"**Tools Tracked:** {len(stats.tools)}\n")
+
+        # Top tools table
+        lines.append("### 🏆 Top Tools\n")
+        lines.append("| Rank | Tool | Calls | Last Used |")
+        lines.append("|------|------|-------|-----------|")
+
+        top_tools = tracker.get_top_tools(limit=limit)
+
+        for i, tool_name in enumerate(top_tools, 1):
+            usage = stats.tools.get(tool_name)
+            if usage:
+                # Relative time
+                seconds_ago = time.time() - usage.last_used
+                if seconds_ago < 60:
+                    relative = "just now"
+                elif seconds_ago < 3600:
+                    relative = f"{int(seconds_ago/60)}m ago"
+                elif seconds_ago < 86400:
+                    relative = f"{int(seconds_ago/3600)}h ago"
+                else:
+                    relative = f"{int(seconds_ago/86400)}d ago"
+
+                lines.append(f"| {i} | `{tool_name}` | {usage.count} | {relative} |")
+
+        lines.append("\n---")
+        lines.append("💡 Use `BORING_MCP_PROFILE=adaptive` to auto-include your top tools!")
+
+        return "\n".join(lines)
+
+    except Exception as e:
+        return f"❌ Failed to retrieve usage stats: {e}"
+
+
+# ==============================================================================
 # TOOL REGISTRATION
 # ==============================================================================
 
@@ -232,3 +303,9 @@ if MCP_AVAILABLE and mcp is not None:
         description="Get relevant patterns (skills) for the current context.",
         annotations={"readOnlyHint": True},
     )(boring_get_relevant_patterns)
+
+    # P4: Usage Analytics Dashboard
+    mcp.tool(
+        description="Show your personal tool usage statistics (Adaptive Profile Dashboard).",
+        annotations={"readOnlyHint": True},
+    )(boring_usage_stats)

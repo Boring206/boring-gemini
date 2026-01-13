@@ -11,7 +11,7 @@ import sys
 from pydantic import Field
 
 
-def register_prompts(mcp):
+def register_prompts(mcp, helpers=None):
     """Register prompts with the MCP server."""
 
     @mcp.prompt(
@@ -379,21 +379,50 @@ Review all pending operations that require human approval:
         ),
     ) -> str:
         """Run semantic code search."""
-        return f"""🔍 **Semantic Code Search**
+        try:
+            # 1. Resolve Project Root
+            project_root = None
+            if helpers:
+                get_root = helpers.get("get_project_root_or_error")
+                if get_root:
+                    root_obj, error = get_root(None)
+                    if not error:
+                        project_root = root_obj
 
-Query: {query}
+            # Fallback for standalone usage
+            if not project_root:
+                from boring.utils import detect_project_root
 
-Execute search:
+                project_root = detect_project_root()
 
-1. Check RAG status: `boring_rag_status` (If dependencies are missing, run `pip install "boring-aicoding[vector]"` and then run `boring_rag_reload`)
-2. If not indexed, run: `boring_rag_index` (force=True if needed)
-3. Search: `boring_rag_search(query='{query}', expand_graph=True)`
-4. If search fails with dependency errors, run `boring_rag_reload` after fixing the environment.
-4. For each result:
-   - Show file path and line numbers
-   - Display code snippet
-   - Show related callers/callees
-"""
+            if not project_root:
+                return "❌ Error: Could not detect project root. Please invoke in a valid project."
+
+            # 2. Get Retriever (Late Import to avoid circular deps)
+            from boring.mcp.tools.rag import get_retriever
+
+            retriever = get_retriever(project_root)
+
+            if not retriever or not retriever.is_available:
+                return (
+                    "❌ RAG System not available.\n\n"
+                    "Calculated Context:\n"
+                    "1. Install dependencies: `pip install boring-aicoding[vector]`\n"
+                    "2. Reload: `boring_rag_reload`\n"
+                )
+
+            # 3. Generate Context
+            context = retriever.generate_context_injection(query)
+            if not context:
+                return f"🔍 No relevant code found for query: '**{query}**'. Try `boring_rag_index(force=True)` if the index is stale."
+
+            return f"🔍 **Semantic Search Results** for '{query}':\n\n{context}"
+
+        except Exception as e:
+            return (
+                f"❌ Semantic Search Error: {str(e)}\n\n"
+                f"Fallback: Use `boring_rag_search(query='{query}')` tool directly."
+            )
 
     @mcp.prompt(
         name="save_session", description="Save current session context for later resumption"

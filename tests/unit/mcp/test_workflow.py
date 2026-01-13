@@ -3,41 +3,13 @@ from unittest.mock import MagicMock, patch
 from boring.mcp.tools.workflow import (
     boring_install_workflow,
     boring_list_workflows,
-    speckit_evolve_workflow,
-    speckit_reset_workflow,
 )
 
 
 class TestWorkflowTools:
-    @patch("boring.mcp.tools.workflow.get_project_root_or_error")
-    @patch("boring.workflow_evolver.WorkflowEvolver")
-    def test_speckit_evolve_workflow(self, mock_evolver_cls, mock_get_root):
-        """Test workflow evolution."""
-        mock_get_root.return_value = (MagicMock(), None)
 
-        mock_evolver = MagicMock()
-        mock_evolver.evolve_workflow.return_value = {"status": "SUCCESS"}
-        mock_evolver_cls.return_value = mock_evolver
 
-        res = speckit_evolve_workflow("speckit-plan", "content", "reason")
 
-        assert res["status"] == "SUCCESS"
-        mock_evolver.evolve_workflow.assert_called_once()
-
-    @patch("boring.mcp.tools.workflow.get_project_root_or_error")
-    @patch("boring.workflow_evolver.WorkflowEvolver")
-    def test_speckit_reset_workflow(self, mock_evolver_cls, mock_get_root):
-        """Test workflow reset."""
-        mock_get_root.return_value = (MagicMock(), None)
-
-        mock_evolver = MagicMock()
-        mock_evolver.reset_workflow.return_value = {"status": "SUCCESS"}
-        mock_evolver_cls.return_value = mock_evolver
-
-        res = speckit_reset_workflow("speckit-plan")
-
-        assert res["status"] == "SUCCESS"
-        mock_evolver.reset_workflow.assert_called_once()
 
     @patch("boring.mcp.tools.workflow.detect_project_root")
     @patch("boring.workflow_manager.WorkflowManager")

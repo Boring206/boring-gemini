@@ -471,6 +471,8 @@ def register_intelligence_tools(mcp, audited, helpers):
                 "message": f"取得失敗: {str(e)}",
             }
 
+
+
     return {
         # PredictiveAnalyzer
         "boring_predict_impact": boring_predict_impact,
@@ -482,4 +484,5 @@ def register_intelligence_tools(mcp, audited, helpers):
         # Session Context
         "boring_set_session_context": boring_set_session_context,
         "boring_get_session_context": boring_get_session_context,
+
     }

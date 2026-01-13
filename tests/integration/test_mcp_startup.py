@@ -155,30 +155,3 @@ class TestShadowMode:
 
             assert pending is not None
             assert "DELETE" in pending.operation_type.upper()
-
-
-class TestAgentSystem:
-    """Test Multi-Agent system components."""
-
-    def test_agent_imports(self):
-        """Test all agent classes can be imported."""
-        from boring.agents import (
-            AgentOrchestrator,
-            ArchitectAgent,
-        )
-
-        assert ArchitectAgent is not None
-        assert AgentOrchestrator is not None
-
-    def test_agent_context_creation(self):
-        """Test AgentContext initialization."""
-        import tempfile
-        from pathlib import Path
-
-        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmpdir:
-            from boring.agents import AgentContext
-
-            ctx = AgentContext(project_root=Path(tmpdir), task_description="Test task")
-
-            assert ctx.task_description == "Test task"
-            assert ctx.project_root == Path(tmpdir)

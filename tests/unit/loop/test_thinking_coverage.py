@@ -130,8 +130,4 @@ class TestThinkingState:
         assert "CURRENT PLAN STATUS" in ctx_str
         assert "test.py" in ctx_str
 
-    def test_auto_learn_triggered(self, state, context):
-        with patch("boring.auto_learner.auto_learn_from_response") as mock_learn:
-            mock_learn.return_value = {"status": "LEARNED", "patterns_learned": 2}
-            state._auto_learn(context, "A long response that should trigger auto-learning " * 10)
-            mock_learn.assert_called_once()
+

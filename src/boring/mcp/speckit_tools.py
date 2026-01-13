@@ -1,15 +1,15 @@
-# Copyright 2025 Boring for Gemini Authors
+# Copyright 2025-2026 Boring for Gemini Authors
 # SPDX-License-Identifier: Apache-2.0
 """
 SpecKit MCP Tools - Spec-Driven Development workflow tools.
 
 This module contains tools for structured development:
-- speckit_plan: Create implementation plans
-- speckit_tasks: Break plans into tasks
-- speckit_analyze: Consistency analysis
-- speckit_clarify: Requirement clarification
-- speckit_checklist: Quality checklists
-- speckit_constitution: Project principles
+- boring_speckit_plan: Create implementation plans
+- boring_speckit_tasks: Break plans into tasks
+- boring_speckit_analyze: Consistency analysis
+- boring_speckit_clarify: Requirement clarification
+- boring_speckit_checklist: Quality checklists
+- boring_speckit_constitution: Project principles
 """
 
 from typing import Annotated, Any
@@ -17,7 +17,56 @@ from typing import Annotated, Any
 from pydantic import Field
 
 
-def register_speckit_tools(mcp: Any, audited: Any, helpers: dict, execute_workflow: Any):
+def _execute_workflow(workflow_name: str, context: str, project_path: str) -> dict:
+    """
+    Execute a SpecKit workflow by reading and returning its content.
+
+    Args:
+        workflow_name: Name of the workflow (e.g., 'speckit-plan')
+        context: Additional context provided by user
+        project_path: Optional project root path
+
+    Returns:
+        dict with workflow instructions and context
+    """
+    from .utils import detect_project_root
+
+    project_root = detect_project_root(project_path)
+    if not project_root:
+        return {"status": "ERROR", "error": "No valid Boring project found. Run in project root."}
+
+    # Look for workflow file in .agent/workflows/
+    workflow_file = project_root / ".agent" / "workflows" / f"{workflow_name}.md"
+
+    if not workflow_file.exists():
+        # Try without speckit- prefix
+        alt_name = workflow_name.replace("speckit-", "")
+        alt_file = project_root / ".agent" / "workflows" / f"{alt_name}.md"
+        if alt_file.exists():
+            workflow_file = alt_file
+        else:
+            return {
+                "status": "ERROR",
+                "error": f"Workflow not found: {workflow_file}",
+                "suggestion": f"Create {workflow_file} or run 'boring-setup' to initialize workflows.",
+            }
+
+    try:
+        content = workflow_file.read_text(encoding="utf-8")
+    except Exception as e:
+        return {"status": "ERROR", "error": f"Failed to read workflow: {e}"}
+
+    return {
+        "status": "SUCCESS",
+        "workflow": workflow_name,
+        "instructions": content,
+        "context": context or "No additional context provided",
+        "tip": "Follow the steps in this workflow to complete your task.",
+        "project_root": str(project_root),
+    }
+
+
+def register_speckit_tools(mcp: Any, audited: Any, helpers: dict):
     """
     Register SpecKit tools with the MCP server.
 
@@ -25,7 +74,6 @@ def register_speckit_tools(mcp: Any, audited: Any, helpers: dict, execute_workfl
         mcp: FastMCP server instance
         audited: Audit decorator function
         helpers: Dict of helper functions
-        execute_workflow: Function to execute workflows
     """
 
     @mcp.tool(
@@ -33,7 +81,7 @@ def register_speckit_tools(mcp: Any, audited: Any, helpers: dict, execute_workfl
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
-    def speckit_plan(
+    def boring_speckit_plan(
         context: Annotated[
             str,
             Field(
@@ -53,14 +101,14 @@ def register_speckit_tools(mcp: Any, audited: Any, helpers: dict, execute_workfl
         Analyzes project requirements and generates a structured implementation plan
         including file changes, dependencies, and step-by-step instructions.
         """
-        return execute_workflow("speckit-plan", context, project_path)
+        return _execute_workflow("speckit-plan", context, project_path)
 
     @mcp.tool(
         description="把計畫拆成具體的任務清單 (Break into tasks). 適合: '拆成步驟', 'Break into tasks', '給我一個清單', 'What should I do first?'.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
-    def speckit_tasks(
+    def boring_speckit_tasks(
         context: Annotated[
             str,
             Field(
@@ -80,14 +128,14 @@ def register_speckit_tools(mcp: Any, audited: Any, helpers: dict, execute_workfl
         Converts the implementation plan into a prioritized task checklist
         with clear acceptance criteria.
         """
-        return execute_workflow("speckit-tasks", context, project_path)
+        return _execute_workflow("speckit-tasks", context, project_path)
 
     @mcp.tool(
         description="檢查需求和程式碼是否一致 (Check consistency). 適合: '對照一下需求', 'Check if code matches spec', '有沒有漏掉什麼'.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
-    def speckit_analyze(
+    def boring_speckit_analyze(
         context: Annotated[
             str,
             Field(
@@ -107,14 +155,14 @@ def register_speckit_tools(mcp: Any, audited: Any, helpers: dict, execute_workfl
         Compares specifications against implementation to identify gaps,
         inconsistencies, and missing coverage areas.
         """
-        return execute_workflow("speckit-analyze", context, project_path)
+        return _execute_workflow("speckit-analyze", context, project_path)
 
     @mcp.tool(
         description="釐清模糊的需求、問我問題 (Clarify requirements). 適合: '有什麼不清楚的嗎', 'Ask me questions', '釐清需求', 'What do you need to know?'.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
-    def speckit_clarify(
+    def boring_speckit_clarify(
         context: Annotated[
             str,
             Field(
@@ -134,14 +182,14 @@ def register_speckit_tools(mcp: Any, audited: Any, helpers: dict, execute_workfl
         Generates targeted questions to resolve ambiguities in requirements
         before implementation begins.
         """
-        return execute_workflow("speckit-clarify", context, project_path)
+        return _execute_workflow("speckit-clarify", context, project_path)
 
     @mcp.tool(
         description="建立專案的指導原則和規範 (Set project rules). 適合: '定義規範', 'Set coding standards', '這個專案的規則'.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
-    def speckit_constitution(
+    def boring_speckit_constitution(
         context: Annotated[
             str,
             Field(
@@ -161,14 +209,14 @@ def register_speckit_tools(mcp: Any, audited: Any, helpers: dict, execute_workfl
         Establishes core principles, architectural decisions, and constraints
         that guide all implementation decisions.
         """
-        return execute_workflow("speckit-constitution", context, project_path)
+        return _execute_workflow("speckit-constitution", context, project_path)
 
     @mcp.tool(
         description="建立品質驗收清單 (Create quality checklist). 適合: '做完要檢查什麼', 'Quality checklist', '驗收標準'.",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
     )
     @audited
-    def speckit_checklist(
+    def boring_speckit_checklist(
         context: Annotated[
             str,
             Field(
@@ -188,13 +236,13 @@ def register_speckit_tools(mcp: Any, audited: Any, helpers: dict, execute_workfl
         Creates a comprehensive checklist for validating implementation quality
         and requirement coverage.
         """
-        return execute_workflow("speckit-checklist", context, project_path)
+        return _execute_workflow("speckit-checklist", context, project_path)
 
     return {
-        "speckit_plan": speckit_plan,
-        "speckit_tasks": speckit_tasks,
-        "speckit_analyze": speckit_analyze,
-        "speckit_clarify": speckit_clarify,
-        "speckit_constitution": speckit_constitution,
-        "speckit_checklist": speckit_checklist,
+        "boring_speckit_plan": boring_speckit_plan,
+        "boring_speckit_tasks": boring_speckit_tasks,
+        "boring_speckit_analyze": boring_speckit_analyze,
+        "boring_speckit_clarify": boring_speckit_clarify,
+        "boring_speckit_constitution": boring_speckit_constitution,
+        "boring_speckit_checklist": boring_speckit_checklist,
     }

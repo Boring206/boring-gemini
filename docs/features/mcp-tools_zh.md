@@ -56,13 +56,13 @@ boring://tools/agents
 
 ### 0. 技能生態系 (Skills Ecosystem)
 
-#### 技能發現 (`boring_skills_browse`)
+#### 技能發現 (`boring_skills_search`)
 
-互動式瀏覽社群 Skills 和 Extensions。
+搜尋技能目錄 (Skills Catalog) 中的能力。
 
 ```python
-boring_skills_browse(query="web")
-# 回傳結果會包含安裝建議
+boring_skills_search(query="web framework")
+boring_skills_list(pattern="fastapi")
 ```
 
 #### 技能安裝 (`boring_skills_install`)
@@ -77,15 +77,13 @@ boring_skills_install(name="awesome-gemini-cli-extensions")
 
 ## 🧰 核心工具類別
 
-### 0. 技能發現 (`boring_skills_browse`)
+### 0. 技能發現 (`boring_skills_search`)
 
-互動式瀏覽並發現由社群維護的 Gemini/Claude Skills 與 MCP Servers。
+搜尋並安裝 Agent Skills (Extensions, Templates) 以擴展能力。
 
 ```python
-boring_skills_browse(
-    query="web automation",   # 關鍵字：'web', 'database', 'auth'
-    platform="all"            # all|gemini|claude
-)
+boring_skills_search(query="web scraper")
+boring_skills_install(name="awesome-claude-skills")
 ```
 
 **用途**：
@@ -347,11 +345,12 @@ graph LR
 
 | 步驟 | 工具 | 目的 |
 |------|------|------|
-| 1 | `speckit_constitution` | 建立原則 |
-| 2 | `speckit_clarify` | 澄清需求 |
-| 3 | `speckit_plan` | 建立實作計畫 |
-| 4 | `speckit_checklist` | 建立驗收標準 |
-| 5 | `speckit_analyze` | 驗證一致性 |
+| 1 | `boring_speckit_constitution` | 建立原則 |
+| 2 | `boring_speckit_clarify` | 澄清需求 |
+| 3 | `boring_speckit_plan` | 建立實作計畫 |
+| 4 | `boring_speckit_tasks` | 分解為任務 |
+| 5 | `boring_speckit_checklist` | 建立驗收標準 |
+| 6 | `boring_speckit_analyze` | 驗證一致性 |
 
 ---
 

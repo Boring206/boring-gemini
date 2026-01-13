@@ -144,6 +144,37 @@ def get_circuit_panel() -> Panel:
         return Panel(Text("Cannot read circuit state", style="dim"), title="🔌 Circuit Breaker")
 
 
+def get_usage_panel() -> Panel:
+    """Creates a Rich Panel for usage statistics (P4)."""
+    try:
+        # Lazy import to avoid heavy loads if not needed
+        from ..intelligence.usage_tracker import get_tracker
+
+        tracker = get_tracker()
+        stats = tracker.stats
+
+        table = Table.grid(expand=True)
+        table.add_column(style="bold cyan", width=12)
+        table.add_column()
+
+        table.add_row("Total Calls:", str(stats.total_calls))
+
+        top_tools = tracker.get_top_tools(limit=3)
+        if top_tools:
+            tools_str = ", ".join(top_tools)
+            table.add_row("Top Tools:", tools_str)
+        else:
+            table.add_row("Top Tools:", Text("None yet", style="dim"))
+
+        return Panel(
+            table,
+            title="[bold magenta]📊 Personal Stats[/bold magenta]",
+            border_style="magenta"
+        )
+    except Exception:
+        return Panel(Text("No usage data", style="dim"), title="📊 Personal Stats")
+
+
 def get_logs_panel() -> Panel:
     """Creates a Rich Panel for recent log entries."""
     log_content = []
@@ -182,7 +213,17 @@ def generate_layout() -> Layout:
     )
 
     layout["main"].split_row(Layout(name="left", ratio=2), Layout(name="right", ratio=1))
-    layout["left"].split(get_status_panel(), get_logs_panel())
+
+    # Split left column: Top (Status + Usage), Bottom (Logs)
+    layout["left"].split(
+        Layout(name="top_left", size=8),
+        Layout(name="bottom_left")
+    )
+    layout["left"]["top_left"].split_row(
+        get_status_panel(),
+        get_usage_panel()
+    )
+    layout["left"]["bottom_left"].update(get_logs_panel())
 
     progress_panel = get_progress_panel()
     if progress_panel:

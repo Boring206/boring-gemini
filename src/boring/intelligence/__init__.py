@@ -15,7 +15,7 @@ Submodules:
 V10.26 Reorganization:
 - brain_manager: Knowledge base management (moved from root)
 - memory: Persistent memory system (moved from root)
-- vector_memory: Semantic search memory (moved from root)
+
 - feedback_learner: Review feedback learning (moved from root)
 - auto_learner: Automatic pattern learning (moved from root)
 - pattern_mining: Pattern extraction and suggestions (moved from root)
@@ -34,23 +34,35 @@ V10.23 Features (maintained):
 - Sliding window memory management
 """
 
-from .adaptive_cache import AdaptiveCache, CacheStats
-from .auto_learner import AutoLearner, ErrorSolutionPair
+from dataclasses import dataclass
 
-# V10.26 Reorganized Modules (moved from root)
+from .adaptive_cache import AdaptiveCache, CacheStats
 from .brain_manager import BrainManager, LearnedPattern
 from .cache_warming import CacheWarmer, StartupOptimizer, warm_on_startup
 from .context_optimizer import ContextOptimizer, ContextStats, SmartContextBuilder
 from .feedback_learner import FeedbackEntry, FeedbackLearner
 from .intelligent_ranker import IntelligentRanker, UsageRecord
 from .memory import LoopMemory, MemoryManager, ProjectMemory
+from .pattern_clustering import PatternCluster, PatternClusterer
 
-# V10.24 New Modules
-from .pattern_clustering import EmbeddingVersionManager, PatternCluster, PatternClusterer
-from .pattern_mining import Pattern, PatternMiner
+# from .pattern_mining import PatternMiner  <-- REMOVED to avoid F811 conflict
 from .prediction_tracker import ABTestResult, AccuracyMetrics, PredictionTracker
 from .predictive_analyzer import ErrorPrediction, PredictiveAnalyzer
-from .vector_memory import CHROMADB_AVAILABLE, Experience, VectorMemory
+
+
+@dataclass
+class ErrorSolutionPair:
+    """Legacy compatibility stub."""
+
+    error: str
+    solution: str
+
+
+# Legacy Aliases (Ghost Feature Resurrection)
+AutoLearner = FeedbackLearner
+PatternMiner = PatternClusterer
+Pattern = PatternCluster
+
 
 __all__ = [
     # V10.23 Core
@@ -79,11 +91,9 @@ __all__ = [
     "MemoryManager",
     "LoopMemory",
     "ProjectMemory",
-    "VectorMemory",
-    "Experience",
-    "CHROMADB_AVAILABLE",
     "FeedbackLearner",
     "FeedbackEntry",
+    # Resurrected Legacy Interfaces
     "AutoLearner",
     "ErrorSolutionPair",
     "PatternMiner",
