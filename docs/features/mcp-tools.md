@@ -299,6 +299,19 @@ boring_evaluate(
 ```
 
 ---
+
+### 13. Usage Analytics (`boring_usage_stats`)
+
+Internal introspection tool for the Agent to understand its own efficiency.
+
+```python
+boring_usage_stats()
+# Returns: {"total_calls": 128, "top_tools": ["read_file", ...], "anomalies": 0}
+```
+
+See **[Usage Dashboard](./usage-dashboard.md)** for details.
+
+---
     
 ### 13. External Intelligence (`boring_external`)
 
@@ -356,8 +369,10 @@ Boring V10.24 introduces **Tool Profiles** to reduce LLM context usage:
 | `lite` | 20 | ~5k tokens | **Default** / General Dev |
 | `standard` | 50 | ~15k tokens | Complex Refactoring |
 | `full` | 98+ | ~30k tokens | Admin / Deep Debug |
+| `adaptive` | Dynamic | Low-Med | **Recommended (V11.5)** |
 
-Enable via `.boring.toml` or env `BORING_MCP_PROFILE=lite`.
+Enable via `.boring.toml`, env `BORING_MCP_PROFILE=adaptive`, or use the **[Boring Wizard](../guides/getting-started/wizard.md)**.
+See **[Adaptive Profile](./adaptive-profile.md)** for details.
 
 
 ## See Also

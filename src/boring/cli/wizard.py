@@ -41,6 +41,10 @@ PROFILES = {
         "desc": "Power User: Manually configure environment variables.",
         "tokens": "Varies",
     },
+    "adaptive": {
+        "desc": "Smart: Learns from usage. Auto-injects guides & tools.",
+        "tokens": "Dynamic (Low-Med)",
+    },
 }
 
 
@@ -449,8 +453,8 @@ def run_wizard(auto_approve: bool = False):
     else:
         profile = Prompt.ask(
             "Choose a profile",
-            choices=["ultra_lite", "minimal", "lite", "standard", "full", "custom"],
-            default="standard",
+            choices=["ultra_lite", "minimal", "lite", "standard", "full", "adaptive", "custom"],
+            default="adaptive",
         )
 
     extra_env = None

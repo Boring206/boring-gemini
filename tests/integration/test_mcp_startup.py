@@ -53,6 +53,19 @@ class TestMCPServerStartup:
 
         if os.environ.get("BORING_MCP_MODE") != "1":
             os.environ["BORING_MCP_MODE"] = "1"
+        
+        # Force FULL profile to ensure all tools (including Shadow Mode) are registered
+        os.environ["BORING_MCP_PROFILE"] = "full"
+
+        import importlib
+        import boring.mcp.tool_profiles
+        import boring.mcp.instance
+        import boring.mcp.server
+        
+        # Reload modules to pick up new profile env var
+        importlib.reload(boring.mcp.tool_profiles)
+        importlib.reload(boring.mcp.instance)
+        importlib.reload(boring.mcp.server)
 
         from boring.mcp import instance
 
@@ -89,6 +102,9 @@ class TestMCPServerStartup:
         assert "boring_shadow_approve" in tool_names
         assert "boring_shadow_reject" in tool_names
         assert "boring_shadow_clear" in tool_names
+
+        # V11.5 Usage Stats (P4)
+        assert "boring_usage_stats" in tool_names
 
 
 class TestRAGSystem:

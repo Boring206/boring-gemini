@@ -44,10 +44,18 @@ boring-dashboard
 - **Loop Count**: Current autonomous loop iteration.
 - **Status**: Is the Agent `THINKING`, `CODING`, or `SLEEPING`.
 - **API Calls**: Monitor token usage and API call frequency.
+- **Personal Stats**: See your top tools and usage patterns. [Learn more](./usage-dashboard.md).
+
+### 🔍 Usage Analytics (New in V11.5)
+The Monitor now includes a dedicated **Usage Stats** tab for introspection.
+- See which tools you use most.
+- Identify efficiency bottlenecks.
+- View data powered by `boring_usage_stats`.
 
 ### 🛑 Circuit Breaker
 - View breaker status (`CLOSED`/`OPEN`).
 - If the Agent gets stuck or fails repeatedly, the breaker trips to protect your API Quota.
+- **Anomaly Detection**: View loop anomalies blocked by the P5 Safety Net. [Learn more](./anomaly-safety.md).
 
 ### 🧠 Brain Explorer
 See your Agent's **RAG Memory** and **Learning Patterns**.
