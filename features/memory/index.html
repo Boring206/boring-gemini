@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V12.0.0)">
+        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V12.1.2)">
       
       
         <meta name="author" content="Boring206">
@@ -2246,7 +2246,7 @@
 </blockquote>
 <p>Most AI coding assistants reset their brain every session. <strong>Boring-Gemini remembers.</strong> It learns from your codebase, your corrections, and its own mistakes to get smarter over time.</p>
 <h2 id="the-knowledge-brain-boringbrain">🧩 The Knowledge Brain (<code>.boring/brain</code>)</h2>
-<p>Boring maintains a persistent SQLite vector database in your home directory (<code>~/.boring/brain</code>). This is its long-term memory.</p>
+<p>Boring uses <strong>SQLite</strong> for persistent storage (patterns, preferences, history) and <strong>ChromaDB</strong> for vector similarity search (RAG features) in your home directory (<code>~/.boring/brain</code>). This is its long-term memory.</p>
 <h3 id="what-it-remembers">What it Remembers</h3>
 <ol>
 <li><strong>Code Patterns</strong>: "This project prefers <code>pydantic</code> v2 over v1."</li>

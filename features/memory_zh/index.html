@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V12.0.0)">
+        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V12.1.2)">
       
       
         <meta name="author" content="Boring206">
@@ -2246,7 +2246,7 @@
 </blockquote>
 <p>大多數 AI 程式助理每次對話都會重置大腦。<strong>Boring-Gemini 記得一切。</strong> 它會從你的程式庫、你的修正以及它自己的錯誤中學習，隨著時間變得越來越聰明。</p>
 <h2 id="boringbrain">🧩 知識大腦 (<code>.boring/brain</code>)</h2>
-<p>Boring 在你的家目錄 (<code>~/.boring/brain</code>) 中維護一個持久的 SQLite 向量資料庫。這就是它的長期記憶。</p>
+<p>Boring 在你的家目錄 (<code>~/.boring/brain</code>) 中使用 <strong>SQLite</strong> 進行持久化儲存（模式、偏好、歷史），並使用 <strong>ChromaDB</strong> 進行向量相似度搜索（RAG 功能）。這就是它的長期記憶。</p>
 <h3 id="_1">它記得什麼</h3>
 <ol>
 <li><strong>程式模式 (Patterns)</strong>: "這個專案偏好 <code>pydantic</code> v2 而不是 v1。"</li>
