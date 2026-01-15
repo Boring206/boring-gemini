@@ -34,68 +34,91 @@ V10.23 Features (maintained):
 - Sliding window memory management
 """
 
-from dataclasses import dataclass
+from typing import TYPE_CHECKING, Any, Optional  # noqa: F401
 
-from .adaptive_cache import AdaptiveCache, CacheStats
-from .brain_manager import BrainManager, LearnedPattern
-from .cache_warming import CacheWarmer, StartupOptimizer, warm_on_startup
-from .context_optimizer import ContextOptimizer, ContextStats, SmartContextBuilder
-from .feedback_learner import FeedbackEntry, FeedbackLearner
-from .intelligent_ranker import IntelligentRanker, UsageRecord
-from .memory import LoopMemory, MemoryManager, ProjectMemory
-from .pattern_clustering import PatternCluster, PatternClusterer
+if TYPE_CHECKING:
+    from .adaptive_cache import AdaptiveCache, CacheStats  # noqa: F401
+    from .brain_manager import BrainManager, LearnedPattern  # noqa: F401
+    from .cache_warming import CacheWarmer, StartupOptimizer, warm_on_startup  # noqa: F401
+    from .context_optimizer import ContextOptimizer, ContextStats, SmartContextBuilder  # noqa: F401
+    from .feedback_learner import FeedbackEntry, FeedbackLearner  # noqa: F401
+    from .intelligent_ranker import IntelligentRanker, UsageRecord  # noqa: F401
+    from .memory import LoopMemory, MemoryManager, ProjectMemory  # noqa: F401
+    from .pattern_clustering import PatternCluster, PatternClusterer  # noqa: F401
+    from .prediction_tracker import ABTestResult, AccuracyMetrics, PredictionTracker  # noqa: F401
+    from .predictive_analyzer import ErrorPrediction, PredictiveAnalyzer  # noqa: F401
 
-# from .pattern_mining import PatternMiner  <-- REMOVED to avoid F811 conflict
-from .prediction_tracker import ABTestResult, AccuracyMetrics, PredictionTracker
-from .predictive_analyzer import ErrorPrediction, PredictiveAnalyzer
+# Mapping of exported name -> (module_name, attribute_name)
+_EXPORT_MAP = {
+    # .adaptive_cache
+    "AdaptiveCache": ("adaptive_cache", "AdaptiveCache"),
+    "CacheStats": ("adaptive_cache", "CacheStats"),
+    # .brain_manager
+    "BrainManager": ("brain_manager", "BrainManager"),
+    "LearnedPattern": ("brain_manager", "LearnedPattern"),
+    # .cache_warming
+    "CacheWarmer": ("cache_warming", "CacheWarmer"),
+    "StartupOptimizer": ("cache_warming", "StartupOptimizer"),
+    "warm_on_startup": ("cache_warming", "warm_on_startup"),
+    # .context_optimizer
+    "ContextOptimizer": ("context_optimizer", "ContextOptimizer"),
+    "ContextStats": ("context_optimizer", "ContextStats"),
+    "SmartContextBuilder": ("context_optimizer", "SmartContextBuilder"),
+    # .feedback_learner
+    "FeedbackLearner": ("feedback_learner", "FeedbackLearner"),
+    "FeedbackEntry": ("feedback_learner", "FeedbackEntry"),
+    # .intelligent_ranker
+    "IntelligentRanker": ("intelligent_ranker", "IntelligentRanker"),
+    "UsageRecord": ("intelligent_ranker", "UsageRecord"),
+    # .memory
+    "LoopMemory": ("memory", "LoopMemory"),
+    "MemoryManager": ("memory", "MemoryManager"),
+    "ProjectMemory": ("memory", "ProjectMemory"),
+    # .pattern_clustering
+    "PatternClusterer": ("pattern_clustering", "PatternClusterer"),
+    "PatternCluster": ("pattern_clustering", "PatternCluster"),
+    # .prediction_tracker
+    "PredictionTracker": ("prediction_tracker", "PredictionTracker"),
+    "AccuracyMetrics": ("prediction_tracker", "AccuracyMetrics"),
+    "ABTestResult": ("prediction_tracker", "ABTestResult"),
+    # .predictive_analyzer
+    "PredictiveAnalyzer": ("predictive_analyzer", "PredictiveAnalyzer"),
+    "ErrorPrediction": ("predictive_analyzer", "ErrorPrediction"),
+}
+
+# Legacy Legacy Map (Ghost Feature Resurrection)
+_LEGACY_MAP = {
+    "AutoLearner": ("feedback_learner", "FeedbackLearner"),
+    "PatternMiner": ("pattern_clustering", "PatternClusterer"),
+    "Pattern": ("pattern_clustering", "PatternCluster"),
+}
 
 
-@dataclass
-class ErrorSolutionPair:
-    """Legacy compatibility stub."""
+def __getattr__(name: str):
+    if name == "ErrorSolutionPair":
+        from dataclasses import dataclass
+        @dataclass
+        class ErrorSolutionPair:
+            error: str
+            solution: str
+        return ErrorSolutionPair
 
-    error: str
-    solution: str
+    if name in _EXPORT_MAP:
+        module_name, attr_name = _EXPORT_MAP[name]
+        module = __import__(f"{__name__}.{module_name}", fromlist=[attr_name])
+        return getattr(module, attr_name)
+
+    if name in _LEGACY_MAP:
+        module_name, attr_name = _LEGACY_MAP[name]
+        module = __import__(f"{__name__}.{module_name}", fromlist=[attr_name])
+        return getattr(module, attr_name)
+
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-# Legacy Aliases (Ghost Feature Resurrection)
-AutoLearner = FeedbackLearner
-PatternMiner = PatternClusterer
-Pattern = PatternCluster
+def __dir__():
+    return list(_EXPORT_MAP.keys()) + list(_LEGACY_MAP.keys()) + ["ErrorSolutionPair"]
 
 
-__all__ = [
-    # V10.23 Core
-    "IntelligentRanker",
-    "UsageRecord",
-    "PredictiveAnalyzer",
-    "ErrorPrediction",
-    "ContextOptimizer",
-    "ContextStats",
-    "SmartContextBuilder",
-    "AdaptiveCache",
-    "CacheStats",
-    # V10.24 New
-    "PatternClusterer",
-    "PatternCluster",
-    "EmbeddingVersionManager",
-    "PredictionTracker",
-    "AccuracyMetrics",
-    "ABTestResult",
-    "CacheWarmer",
-    "StartupOptimizer",
-    "warm_on_startup",
-    # V10.26 Reorganized
-    "BrainManager",
-    "LearnedPattern",
-    "MemoryManager",
-    "LoopMemory",
-    "ProjectMemory",
-    "FeedbackLearner",
-    "FeedbackEntry",
-    # Resurrected Legacy Interfaces
-    "AutoLearner",
-    "ErrorSolutionPair",
-    "PatternMiner",
-    "Pattern",
-]
+__all__ = list(_EXPORT_MAP.keys()) + list(_LEGACY_MAP.keys()) + ["ErrorSolutionPair"]
+

@@ -9,6 +9,7 @@ and guides them to the most likely next action.
 """
 
 import os
+import subprocess
 from pathlib import Path
 
 from rich.console import Console
@@ -115,7 +116,7 @@ class OnboardingManager:
         elif choice == "3":
             repo = Prompt.ask("Repo URL")
             if repo:
-                os.system(f"git clone {repo}")
+                subprocess.run(["git", "clone", repo], check=True)
                 console.print("[green]Cloned! Please cd into the directory and run boring.[/green]")
             return False
 

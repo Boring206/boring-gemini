@@ -1,3 +1,83 @@
+## [13.0.0] - 2026-01-15 - Multi-Agent & Performance (Async Evolution) ⚡🤖
+### 🚀 Major Features
+- **Async Agent Evolution (Phase 8)**:
+    - **Parallel Orchestration**: Introduced `AsyncAgentRunner` for simultaneous execution of Architect, Coder, and Reviewer.
+    - **Performance Scoring**: `AgentScorer` now evaluates agent quality in real-time to optimize routing.
+    - **OpenAI Compatible Protocol**: Standardized `boring.agents.protocol` for seamless integration with external providers.
+- **Incremental Performance Tuning (Phase 1)**:
+    - **Prompt Cache**: Smart context reuse in `ThinkingState` reduces token costs by ~15-30% for iterative loops.
+    - **Incremental RAG**: Git-aware indexing only processes modified files, significantly reducing RAG startup time.
+    - **Import Lazy-Loading**: Overhauled `boring.intelligence` and `boring.mcp` imports for <500ms startup latency.
+- **Semantic Storage Fallback (V13 Core)**:
+    - **FAISS Integration**: Full fallback support for semantic search using local FAISS and `sentence-transformers` when ChromaDB is unavailable.
+    - **Batch Indexing**: Optimized `BrainManager` to perform batch upserts for patterns, significantly speeding up index rebuilds.
+    - **Pure Semantic Search API**: New `get_relevant_patterns_embedding` method for direct semantic retrieval without keyword fallback.
+- **Enhanced Observability (Phase 5)**:
+    - **Token Tracker**: Real-time dollar-cost and token tracking integrated into `boring_usage_stats`.
+    - **Timeline View**: Dashboard now supports event-driven timeline visualization of the entire development loop.
+    - **Structured Logging**: Switched to JSON-based structured logs for enterprise-grade auditability.
+
+### 🧩 MCP Tools & Support
+- **Multi-Agent CLI (boring_multi_agent)**: Fully upgraded to async execution mode.
+- **Cross-Language Support**: Added high-precision AST parsing for Rust, Java, Kotlin, and Scala.
+- **Enterprise Git**: Native support for GitLab and Gitee repositories.
+- **Batch Processing**: New `boring_batch` tool for sequential automation of independent tasks.
+
+### 🔧 Fixes & Stabilization
+- **Test Integrity**: Achieved 1479+ passing tests. Fixed major regression blockers in `ThinkingState` context and async mocking.
+- **CLI Modernization**: Deprecated `memory-clear` in favor of unified `clean --all` command.
+- **RAG Robustness**: Fixed stale file deletion logic in `RAGRetriever` for accurate vector searches.
+- **Path Handling**: Enhanced absolute path support for Windows environments in all Vibe Coder tools.
+
+## [12.1.2] - 2026-01-14 - Honesty & Hardening 🛡️
+### 🛡️ Quality & Integrity
+- **Documentation Honesty (100%)**:
+    - Conducted a "Deep Verification" audit to ensure all command examples and feature descriptions match the exact v12.1.2 implementation.
+    - Synchronized `expand_graph` parameter usage across all 12+ guide files.
+    - Clarified SQLite vs. ChromaDB responsibilities in Architecture guides.
+- **Codebase Hygiene**:
+    - Removed all "ghost" features and experimental directories (`MagicMock`, `Self-Healing`).
+    - Purged temporary state files to ensure a clean release artifact.
+- **Verification Hardening**:
+    - Verified `boring verify --level FULL` works with zero configuration.
+    - Confirmed `uv` and `smithery` installation paths are robust in `installation.md`.
+- **Documentation Overhaul**:
+    - Added **Hybrid Architecture** (Cyborg vs Autonomous) to READMEs.
+    - Created dedicated **Skill Management Guide** (`docs/guides/skills_guide.md`).
+    - Added "One Dragon" workflow recipe to `cookbook.md`.
+    - Clarified **Data Persistence** & Global Brain privacy guarantees.
+- **🚀 Feature Acceleration (V12.2 Preview)**:
+    - **Allow-List Skill Installation**: `boring_skills_install` now supports installing from trusted URLs (`github.com`, `skillsmp.com`).
+    - **SkillsMP Integration**: Added strict allow-list validation to securely enable community skill downloads. Intelligent error handling guides users to GitHub URLs.
+    - **Universal Skills System (BUSS)**: New cross-platform skill loader (`UniversalSkillLoader`) scans `.boring/`, `.gemini/`, `.claude/`, `.antigravity/`, `.codex/` for local SKILL.md files. New MCP tools: `boring_skill_discover`, `boring_skill_activate`, `boring_skill_create`, `boring_skill_download`. Auto-sync to all client directories.
+    - **Codex Compatibility**: Full support for OpenAI Codex CLI skill format (`.codex/skills` directory structure with `scripts/`, `references/`, `assets/` subdirectories).
+    - **Context-Aware Skill Recommendation**: New `boring_skills_recommend` tool auto-detects project type (Python/Node/Docker) and suggests relevant skills from Catalog.
+    - **AI Web Search Recommendation**: `boring_skills_recommend(online=True)` uses DuckDuckGo to dynamically search GitHub for SKILL.md files matching your project context.
+    - **Garbage Cleanup**: Auto-removes non-essential files from downloaded skills (keeps only `SKILL.md`, `scripts/`, `examples/`, `resources/`, `assets/`, `references/`).
+    - **BoringDone Notification System**: New `boring_done` MCP tool sends desktop notifications (Windows Toast/macOS/Linux), sound alerts, and terminal bell when AI tasks complete. Users don't need to watch the screen!
+
+## [12.0.0] - 2026-01-14 - The True One Dragon 🐉🧠
+### 🚀 Major Features
+- **Cognitive Architecture (Pillar V Complete)**:
+    - **Active Reflex**: `BrainManager` uses Semantic Search (`InvertedIndex`) to find solutions for fuzzy errors.
+    - **Global Swarm**: `ArchitectNode` syncs with Global Brain (Git) before planning; `EvolverNode` pushes verified insights.
+    - **System 2 Planning**: `ArchitectNode` intelligently injects "Mastered Skills" into the planning prompt, preventing repeated mistakes.
+    - **Safety Net**: `Healer` automatically creates a `boring_checkpoint` before risky `pip install` operations.
+- **Unified Flow Graph**: Replaced legacy linear engine with a dynamic `FlowGraph` (Nodes: Architect -> Builder -> Healer -> Polish -> Evolver).
+- **Dynamic Shadow Mode**: `HealerNode` now activates **STRICT** Shadow Mode during repairs, preventing cascading damage.
+
+### 🔧 Fixes
+- **CLI Compatibility**: Fixed "Requested entity was not found" error for Keyless OAuth users (Gemini CLI).
+- **Import Precision**: Fixed `boring_checkpoint` imports in HealerNode.
+- **Node Stability**: Fixed `NameError` for `boring_speckit_tasks` in `engine.py` by ensuring proper fallback initialization for all optional SpecKit tools.
+
+### 🛡️ Quality & Stability
+- **Refactored SpecKit**: Lifted `speckit_tools` to top-level functions for direct import and better testability.
+- **Dependency Guard**: `ArchitectNode` now gracefully handles missing tools with Fallback Mode, though full power requires `speckit` tools.
+- **Tool Count Alignment**: Synchronized all documentation and router metadata to reflect verified tool counts (67+ standard, 43 lite).
+- **Timeout Protection**: Implemented a **1-hour global timeout** for `AgentLoop` within the `FlowEngine` to prevent perpetual hangs.
+- **Integrity Audit**: Purged "ghost feature" references to `VectorMemory` and `AutoLearner` from all documentation and guides.
+
 ## [11.5.0] - 2026-01-14 - Intelligent Adaptability 🧠
 ### 🚀 Major Features
 - **Adaptive Profile (P6)**: The system now "learns" from your usage. If you frequently test code, it automatically injects the `Testing Guide` prompt into your context.
@@ -611,9 +691,9 @@ All Quality Gate checks now passing:
 - **`AgentHandoff`**: 標準化 Agent 交接流程
 
 #### 🎛️ Tool Router & Profiles - NEW!
-- **`ToolRouter`**: 統一入口，自然語言路由到 98+ 工具
+- **`ToolRouter`**: 統一入口，自然語言路由到 60+ 工具
 - **17 Tool Categories**: RAG、Review、Testing、Git、Security 等分類
-- **`ToolProfile`**: minimal (8) / lite (20) / standard (50) / full (98+)
+- **`ToolProfile`**: minimal (8) / lite (20) / standard (50) / full (60+)
 - **Context Reduction**: 減少 80%+ LLM 上下文佔用
 - **`.boring.toml` Integration**: `[boring.mcp] profile = "lite"`
 - **Environment Variable**: `BORING_MCP_PROFILE=lite`

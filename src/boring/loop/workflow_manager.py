@@ -121,7 +121,7 @@ class WorkflowManager:
     def _fetch_url(self, url: str) -> str:
         """Fetch URL content with retry logic."""
         log_status(self.project_root / "logs", "INFO", f"Downloading workflow from {url}...")
-        with urllib.request.urlopen(url, timeout=10) as response:  # nosec B310: URL is user-supplied and supported
+        with urllib.request.urlopen(url, timeout=10) as response:  # nosec B310  # URL is user-supplied and supported
             return response.read().decode("utf-8")
 
     def list_local_workflows(self) -> list[str]:
@@ -277,7 +277,7 @@ class WorkflowManager:
                 method="POST",
             )
 
-            with urllib.request.urlopen(req) as response:  # nosec B310: URL is trusted GitHub Gist
+            with urllib.request.urlopen(req) as response:  # nosec B310  # URL is trusted GitHub Gist
                 result = json.loads(response.read().decode("utf-8"))
                 result.get("html_url")
                 # Get raw url of the file

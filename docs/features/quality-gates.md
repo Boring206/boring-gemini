@@ -144,18 +144,18 @@ jobs:
 
 ### Verify Command
 
-```python
+```bash
 # Quick syntax check
-boring_verify(level="BASIC")
+boring verify --level BASIC
 
 # Standard with linting
-boring_verify(level="STANDARD", incremental=True)
+boring verify --level STANDARD --incremental
 
 # Full with tests
-boring_verify(level="FULL")
+boring verify --level FULL
 
 # AI semantic review
-boring_verify(level="SEMANTIC")
+boring verify --level SEMANTIC
 ```
 
 #### ✨ Vibe Coder CLI

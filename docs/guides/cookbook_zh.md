@@ -59,11 +59,48 @@ AI 會生成一個計畫 (`.boring/plans/google-auth.md`)。
 
 ---
 
+### 食譜 5：一條龍運行 (The One Dragon Run) 🐉
+
+**目標**：在你離開鍵盤 (AFK) 時，自動構建完整功能。
+
+**食材**：
+*   `boring start` (CLI 指令)
+*   一個 `task.md` 檔案
+*   一杯咖啡 ☕
+
+**做法**：
+
+1.  **定義任務**：在專案根目錄建立 `task.md`。
+    ```markdown
+    # Task: 建立登入頁面
+    - [ ] 使用 Bootstrap 建立 login.html
+    - [ ] 建立 styles.css (深色模式)
+    - [ ] 撰寫 logic.js 進行驗證
+    - [ ] 驗證功能運作正常
+    ```
+
+2.  **釋放惡龍**：
+    打開你的終端機並執行：
+    ```bash
+    boring start
+    ```
+
+3.  **監控 (選用)**：
+    打開另一個終端機看大腦如何運作：
+    ```bash
+    boring-monitor
+    ```
+
+4.  **結果**：
+    Boring 會無限迴圈執行 規劃 -> 寫碼 -> 測試 -> 修復，直到 `task.md` 中所有方框都被打勾 `[x]`。
+
+---
+
 ## 🍰 甜點：品質與安全 (Quality & Security)
 
 上線前的最後檢查。
 
-### 食譜 5：Vibe Check (專案健檢)
+### 食譜 6：Vibe Check (專案健檢)
 **情境**：你想知道專案現在健不健康。
 **做法**：
 > 「Vibe Check!」
@@ -73,7 +110,7 @@ AI 會生成一個計畫 (`.boring/plans/google-auth.md`)。
 - **90+**: 米其林三星 🌟
 - **60-**: 需要進廚房重練 🧹
 
-### 食譜 6：安全掃描
+### 食譜 7：安全掃描
 **情境**：怕把 API Key 推到 GitHub。
 **做法**：
 > 「做一次安全掃描」
@@ -85,15 +122,15 @@ AI 會生成一個計畫 (`.boring/plans/google-auth.md`)。
 
 ## 🍹 特調：進階技巧 (Pro Tips) {: #pro-tips }
 
-### 食譜 7：RAG 知識庫查詢 {: #recipe-7 }
+### 食譜 8：RAG 知識庫查詢 {: #recipe-8 }
 **情境**：接手別人的專案，看不懂這是幹嘛的。
 **做法**：
 > 「解釋一下這邊的 DB 連線是怎麼處理的？」
 > 「Where is the authentication logic?」
 
-**背後原理**：AI 會用 `boring_rag_search` 去翻閱整個專案的知識庫，把相關的程式碼片段找出來解釋給你聽。
+**背後原理**：AI 會用 `boring_rag_search` 去翻閱整個專案的知識庫，並利用 `expand_graph=True` 自動追蹤相關依賴，把相關的程式碼片段找出來解釋給你聽。
 
-### 食譜 8：影子模式 (Shadow Mode)
+### 食譜 9：影子模式 (Shadow Mode)
 **情境**：你信任 AI，但不想讓它亂改重要檔案。
 **做法**：
 > 「開啟 Shadow Mode」

@@ -1,4 +1,4 @@
-# 專業技巧與最佳實踐
+# 專業技巧與最佳實踐 (Pro Tips)
 
 > 最大化 Boring 生產力的專家級技巧。從初學者到資深開發者。
 
@@ -26,7 +26,9 @@ Boring：讓我先問幾個問題...
 ### 讓 AI 閱讀你的錯誤
 ```
 你：我遇到 "ModuleNotFoundError: No module named 'foo'"
-Boring：執行 boring_diagnose... 
+Boring：遇到 ❌ ModuleNotFoundError。
+        執行 Active Recall...
+        發現模式：「缺少依賴」
         解決方案：pip install foo
 ```
 
@@ -51,11 +53,11 @@ graph LR
 ### 技巧 2：使用混合模式
 
 | 任務類型 | 建議方法 |
-|----------|----------|
+|-----------|---------------------|
 | 小型錯誤修復 | `boring_apply_patch` |
-| 新功能 | `boring_multi_agent` + SpecKit |
-| 代碼審查 | `boring_evaluate` |
-| 重構 | `boring run "重構 X"` |
+| 新功能 | `boring start` + SpecKit |
+| 代碼審查 | `boring_code_review` |
+| 重構 | `boring_checkpoint` + `boring run` |
 
 ### 技巧 3：增量驗證
 
@@ -140,58 +142,22 @@ boring_shadow_mode(action="set_level", level="STRICT")
 ## 🧠 認知進化 (V11.2)
 
 ### 技巧 9：善用深度思考 (Deep Thinking)
-對於架構設計或複雜重構，指示 AI 進入深度思考模式。
+對於架構設計或複雜重構，使用「深度思考」。
 ```
 「使用『深度思考』分析此架構，並提供三個重構路徑。」
 ```
 
 ### 技巧 10：批判性思維審計 (Critical Thinking)
-對於安全性檢查或邏輯驗證，要求進行批判性思維審計。
+對於安全性檢查或邏輯驗證，使用「批判性思維」。
 ```
 「對此支付流程進行『批判性思維』審計，找出可能的 Race Condition。」
 ```
 
 ---
 
-## 🏢 團隊
-
-### 技巧 12：共享配置
-
-```bash
-# 將 .boring.toml 提交到 repo
-git add .boring.toml
-git commit -m "新增團隊品質標準"
-```
-
-每個人使用相同的品質閘道。
-
-### 技巧 13：CI/CD 整合
-
-```yaml
-# .github/workflows/quality-gates.yml
-jobs:
-  verify:
-    steps:
-      - uses: actions/checkout@v4
-      - run: pip install boring-aicoding
-      - run: boring verify --level FULL
-```
-
-### 技巧 14：跨專案知識分享 {: #tip-11 }
-
-```bash
-# 專案完成時
-boring_learn --topics "error-handling,testing,patterns"
-
-# 知識儲存到 ~/.boring/brain/
-# 所有未來專案都可用
-```
-
----
-
 ## 🔧 效能技巧
 
-### 技巧 12：預熱快取
+### 技巧 14：預熱快取
 
 ```bash
 # 第一次執行建立快取
@@ -201,7 +167,7 @@ boring verify
 boring verify  # 使用快取
 ```
 
-### 技巧 13：平行驗證
+### 技巧 15：平行驗證
 
 ```toml
 # .boring.toml
@@ -209,7 +175,7 @@ boring verify  # 使用快取
 parallel_workers = 8  # 使用所有 CPU 核心
 ```
 
-### 技巧 14：選擇性 RAG 索引
+### 技巧 16：選擇性 RAG 索引
 
 ```bash
 # 只索引特定目錄
@@ -220,7 +186,7 @@ boring rag index --paths "src/" "lib/"
 
 ## 🛡️ 安全技巧
 
-### 技巧 15：生產環境始終使用影子模式
+### 技巧 17：生產環境始終使用影子模式
 
 ```yaml
 # smithery.yaml 或 MCP 配置
@@ -228,19 +194,37 @@ SHADOW_MODE_LEVEL: "STRICT"
 BORING_ALLOW_DANGEROUS: false
 ```
 
-### 技巧 16：受保護的檔案操作
+### 技巧 18：受保護的檔案操作
 
 ```python
 # 使用 boring_write_file 而非原生 write_file
 boring_write_file(path="config.py", content="...")
 ```
 
-### 技巧 17：密鑰掃描
+### 技巧 19：密鑰掃描
 
 ```bash
 # 提交前掃描
 boring_security_scan --scan-type secrets
 ```
+
+---
+
+## 🔔 BoringDone 通知
+
+### 技巧 20：完成通知 (V12.2)
+
+讓 AI 完成時自動通知你，不用盯著螢幕！
+
+```python
+# AI 自動在任務完成時發送桌面通知
+boring_done(task_name="Code Review", success=True)
+```
+
+**自動整合位置**：
+- ✅ `FlowEngine` 完成時
+- ✅ `AgentLoop` 完成時
+- ✅ `boring verify` 完成時
 
 ---
 

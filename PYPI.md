@@ -11,7 +11,7 @@
 
 **No Code Needed.** Just describe the vibe.
 
-Boring-Gemini features a **Universal Natural Language Router**. You don't need to remember 98+ complex tools. Just say what you want:
+Boring-Gemini features a **Universal Natural Language Router**. You don't need to remember 60+ complex tools. Just say what you want:
 
 > "Search for authentication logic"  
 > "Review my code for security issues"  
@@ -38,15 +38,16 @@ npx -y @smithery/cli@latest install boring/boring --client cursor
 
 ---
 
-## 🧐 Cognitive Evolution (Pillar V)
+## 🧐 Async Evolution (V13.0.0)
 
-V11.2.2 transforms Boring from a simple loop into a **Self-Improving Intelligence System**:
+V13.0.0 marks the **Async Evolution** era, focusing on multi-agent collaboration and extreme performance:
 
-- **🧘‍♀️ Deep & Critical Thinking**: Decomposes complex problems using multi-layered reasoning states (System 2).
-- **⚡ Brain Reflex (Active Recall)**: Instantly recalls past debug patterns. No more "searching"—it remembers how you fixed that `AttributeError` last time.
-- **🏆 Skill Compilation**: High-frequency successful patterns are distilled into **Strategic Skills**, making your local agent uniquely expert in your stack.
-- **🛠️ Live Tool Synthesis**: The agent can now **generate its own tools** in Python to solve hyper-specific problems on-the-fly.
-- **🌐 Knowledge Swarm**: Sync learned patterns across your team via Git-based synchronization.
+- **⚡ Async Agent Runner**: Simultaneous execution of Architect, Coder, and Reviewer for 3x development speed.
+- **📂 Semantic Storage Fallback**: Full FAISS integration for local vector search when ChromaDB is unavailable.
+- **🚀 Prompt Caching**: Smart context reuse reduces token costs by ~15-30% for iterative loops.
+- **🐉 One Dragon Flow**: Integrated State-Machine (Architect -> Builder -> Healer -> Polish -> Evolver).
+- **🏆 Skill Compilation**: High-frequency successful patterns distilled into Strategic Skills.
+- **🌐 Global Swarm Sync**: Real-time knowledge synchronization via Git.
 
 ---
 
@@ -84,7 +85,7 @@ V11.2.2 transforms Boring from a simple loop into a **Self-Improving Intelligenc
 
 ## 🔧 Key Features
 
-- **55+ MCP Tools**: RAG, Testing, Review, Security, Git, and more
+- **67+ MCP Tools**: RAG, Testing, Review, Security, Git, and more
 - **Multi-Language**: Python, JavaScript, TypeScript support
 - **Quality Gates**: CI/CD integration with multi-tier verification
 - **Memory System**: Persistent learning and pattern recognition

@@ -1,104 +1,120 @@
-# 🎯 Skills Guide: Gemini & Claude 資源大全
+# Agent Skills Guide (Universal System)
 
-Boring Agent 專注於品質保證與自動化。對於專案範本與工作流程，我們推薦使用官方與社群維護的 **Skills 生態系統**，它們品質更高、更新更快。
+## Overview
 
----
+Boring V12.3 introduces the **Universal Skills System (BUSS)**. This system unifies skill management across multiple AI platforms, allowing you to use the same skills in **Gemini CLI**, **Claude Code**, **Antigravity**, and **Boring Flow**.
 
-## 🟢 Gemini CLI Skills
+### Key Features
 
-### 📚 Awesome Lists (必收藏)
-| Repo | 說明 |
-|:-----|:-----|
-| [Piebald-AI/awesome-gemini-cli](https://github.com/Piebald-AI/awesome-gemini-cli) | 🌟 最完整的 Gemini CLI 資源清單 (Tools, Extensions, MCP Servers) |
-| [Piebald-AI/awesome-gemini-cli-extensions](https://github.com/Piebald-AI/awesome-gemini-cli-extensions) | Extensions 專區，可用 `gemini extension install <url>` 安裝 |
-
-### 🔧 使用方式
-```bash
-# 安裝 Gemini CLI
-npm install -g @google/gemini-cli
-
-# 查看可用 Skills
-/skills
-
-# 安裝 Extension
-gemini extension install <git-url>
-```
-
-### 📂 目錄結構
-```
-.gemini/
-├── skills/           # 專案級 Skills
-│   └── my-skill/
-│       └── SKILL.md
-├── commands/         # 自訂 Slash Commands
-└── extensions/       # 已安裝的 Extensions
-```
+1.  **Write Once, Run Anywhere**: Skills written in standard Markdown (`SKILL.md`) work across all supported platforms.
+2.  **Local "Brain"**: Skills are stored locally in your project, giving the agent persistent, project-specific expertise.
+3.  **Auto-Sync**: Skills created or downloaded via Boring are automatically synchronized to `.gemini/skills` and `.claude/skills` directories.
+4.  **Flow Integration**: The Boring Flow Engine automatically discovers and uses these skills during autonomous execution.
 
 ---
 
-## 🟣 Claude Skills
+## Universal Skill Structure
 
-### 📚 Awesome Lists (必收藏)
-| Repo | 說明 |
-|:-----|:-----|
-| [travisvn/awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills) | 🌟 Claude Skills 資源總表，含官方與社群 |
-| [VoltAgent/awesome-claude-skills](https://github.com/VoltAgent/awesome-claude-skills) | 分類清楚的 Skills 清單 (2026 更新) |
-| [hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) | Claude Code 專用工具與 Workflows |
-| [BehiSecc/awesome-claude-skills](https://github.com/BehiSecc/awesome-claude-skills) | 按功能分類：Document, Dev, Data 等 |
+A Universal Skill is simply a directory containing a `SKILL.md` file with a YAML frontmatter header.
 
-### 🛠️ 實用工具
-| Repo | 說明 |
-|:-----|:-----|
-| [davila7/claude-code-templates](https://github.com/davila7/claude-code-templates) | 🔥 100+ 元件的 CLI 工具，含 Web 介面瀏覽器 |
-| [bhancockio/claude-crash-course-templates](https://github.com/bhancockio/claude-crash-course-templates) | 快速上手範本：Master Plan, Project Stub, Full Code |
+**File Path**: `.boring/skills/my-skill/SKILL.md`
 
-### 🔧 使用方式
-```bash
-# 在 Claude Code 中
-/skills              # 查看已安裝 Skills
-/skill-creator       # 互動式建立新 Skill
+```markdown
+---
+name: my-skill
+description: A clear description of what this skill does. The Agent uses this to activate it.
+---
 
-# 安裝社群 Skills
-git clone <skill-repo> ~/.claude/skills/<skill-name>
+# My Skill Title
+
+## Instructions
+1. Step one...
+2. Step two...
+
+## Rules
+- Always do X...
+- Never do Y...
+```markdown
+---
+name: my-skill
+description: A clear description of what this skill does. The Agent uses this to activate it.
+---
+
+# My Skill Title
+
+## Instructions
+1. Step one...
+2. Step two...
+
+## Rules
+- Always do X...
+- Never do Y...
 ```
 
-### 📂 目錄結構
+### Advanced Directory Structure (OpenAI Codex / SkillsMP Compatible)
+
+For more complex skills, you can use the standard directory structure which Boring automatically detects:
+
+```text
+my-skill/
+├── SKILL.md        (Required: Instructions & Metadata)
+├── scripts/        (Optional: Executable Python/Bash scripts)
+├── references/     (Optional: PDF/Text documentation)
+└── assets/         (Optional: Templates, Images, Resources)
 ```
-.claude/
-└── skills/
-    └── api-designer/
-        ├── SKILL.md       # 主要指令
-        ├── scripts/       # 可執行腳本
-        └── resources/     # 範本檔案
+
+**Boring automatically exposes:**
+- Scripts in `scripts/` are listed in the activation prompt.
+- Documents in `references/` are listed as available context.
+
+
+---
+
+## Managing Skills
+
+### 1. Discovering Skills
+Boring automatically scans the following directories for skills:
+- `.boring/skills/` (Primary Hub)
+- `.antigravity/skills/`
+- `.gemini/skills/`
+- `.claude/skills/`
+
+Use the command (or let the Agent use it):
+```python
+boring_skill_discover()
+```
+
+### 2. Creating a Skill
+You can ask the Agent to create a skill for you:
+> "Create a skill for reviewing python code security"
+
+Or manually create one using the template above.
+
+### 3. Downloading Skills (The "App Store")
+You can download verified skills from trusted community repositories:
+
+```python
+boring_skill_download(url="https://github.com/boring-stack/skill-python-expert")
+```
+
+This will:
+1. Download the skill to `.boring/skills/python-expert`
+2. **Auto-Sync**: Copy it to `.gemini/skills/` and `.claude/skills/` so your other tools can use it too!
+
+### 4. Direct Activation
+The Agent can activate a skill dynamically based on need:
+
+```python
+boring_skill_activate(skill_name="code-reviewer")
 ```
 
 ---
 
-## 🌐 通用資源
+## Best Practices
 
-| 資源 | 說明 |
-|:----|:----|
-| [Smithery.ai](https://smithery.ai) | MCP Server 市集，可一鍵安裝各種整合 |
-| [MCP Servers](https://github.com/topics/mcp-server) | GitHub 上的 MCP Server 專案集合 |
+- **Descriptive Names**: Use hyphen-case (e.g., `api-designer`, `bug-hunter`).
+- **Clear Descriptions**: The `description` field in the frontmatter is the **most important** part. It's what the AI "sees" before loading the full skill. Make it precise.
+- **Atomic Expertise**: Keep skills focused on a single domain or task.
 
----
-
-## 💡 為什麼推薦外部 Skills？
-
-1. **品質**: 社群驗證，經過實戰考驗。
-2. **更新**: 作者持續維護與優化。
-3. **多元**: 覆蓋各種專業領域 (設計、DevOps、資料分析)。
-4. **整合**: Gemini/Claude 能自動發現並載入。
-
----
-
-## 🔧 Boring Agent 的角色
-
-Boring Agent 專注於這些核心能力：
-- ✅ **自動化驗證**: `boring verify`, `boring evaluate`
-- 🧠 **RAG 記憶體**: `boring_rag_search`, `boring_rag_index`
-- 🛡️ **Security Guard**: `boring_security_scan`
-- 🔒 **Shadow Mode**: 高風險操作保護
-- 📊 **品質監控**: `boring_suggest_next`
-
-**讓專業的 Skills 系統處理「範本」，我們負責「品質保證」。**
+## Legacy Catalog
+The old `Boring Skills Catalog` (`boring_skills_install`) is still available for backward compatibility and for discovering external tool-based extensions.

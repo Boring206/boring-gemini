@@ -34,6 +34,9 @@ class TestRAGRetrieverUtility:
         assert get_session_context() is None
 
     def test_get_intelligent_ranker_fallback(self, tmp_path):
+        import boring.rag.rag_retriever as rag_retriever
+        rag_retriever._intelligent_ranker = None
+
         with patch("boring.intelligence.IntelligentRanker", side_effect=ImportError):
             ranker = _get_intelligent_ranker(tmp_path)
             assert ranker is None
@@ -125,12 +128,14 @@ class TestRAGRetrieverCore:
 
         with patch.object(retriever.indexer, "collect_files", return_value=[]):
             with patch.object(retriever.index_state, "get_changed_files", return_value=[]):
-                with patch.object(
-                    retriever.index_state, "get_stale_files", return_value=["old.py"]
-                ):
-                    retriever.build_index()
-                    mock_collection.delete.assert_called_with(ids=["c1", "c2"])
-                    assert "old.py" not in retriever.index_state.state
+                with patch.object(retriever.index_state, "get_last_commit", return_value="hash1"):
+                    with patch("subprocess.check_output", return_value="hash1"):
+                        with patch.object(
+                            retriever.index_state, "get_stale_files", return_value=["old.py"]
+                        ):
+                            retriever.build_index()
+                            mock_collection.delete.assert_called_with(ids=["c1", "c2"])
+                            assert "old.py" not in retriever.index_state.state
 
     def test_build_index_force(self, retriever, mock_chroma):
         mock_client, mock_collection = mock_chroma

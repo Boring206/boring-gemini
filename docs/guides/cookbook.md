@@ -13,16 +13,18 @@
 ### 🔧 Daily Workflows
 - [Recipe 3: Quick Bug Fix](#recipe-3-quick-bug-fix)
 - [Recipe 4: Feature Development](#recipe-4-feature-development)
-- [Recipe 5: Code Review](#recipe-5-code-review)
+- [Recipe 5: The "One Dragon" Run](#recipe-5-the-one-dragon-run-autonomous-dev-)
+- [Recipe 6: Code Review](#recipe-6-code-review)
 
-### 🔒 Security
-- [Recipe 6: Security Audit](#recipe-6-security-audit)
-- [Recipe 7: Shadow Mode Setup](#recipe-7-shadow-mode-setup)
+### 🔒 Security & Quality
+- [Recipe 7: Vibe Check](#recipe-7-vibe-check-quality-police)
+- [Recipe 8: Security Audit](#recipe-8-security-audit)
+- [Recipe 9: Shadow Mode Setup](#recipe-9-shadow-mode-setup)
 
 ### 🧠 Advanced
-- [Recipe 8: Multi-Agent Workflow](#recipe-8-multi-agent-workflow)
-- [Recipe 9: RAG Knowledge Base](#recipe-9-rag-knowledge-base)
-- [Recipe 10: CI/CD Integration](#recipe-10-cicd-integration)
+- [Recipe 10: Multi-Agent Workflow](#recipe-10-multi-agent-workflow)
+- [Recipe 11: RAG Knowledge Base](#recipe-11-rag-knowledge-base)
+- [Recipe 12: CI/CD Integration](#recipe-12-cicd-integration)
 
 ---
 
@@ -43,9 +45,9 @@ pip install boring-aicoding
 boring-setup my-project
 cd my-project
 
-# 3. Start development
-# 3. Start development
-boring start
+### Quick Start
+
+Before starting development, we recommend running the health check:
 
 # Or use Vibe Coder CLI directly
 boring-route "Initialize a new project called my-project"
@@ -151,7 +153,44 @@ speckit_constitution(project_path=".")
 
 ---
 
-## Recipe 5: Code Review
+## Recipe 5: The "One Dragon" Run (Autonomous Dev) 🐉
+
+**Goal**: Build a complete feature while you are AFK (Away From Keyboard).
+
+**Ingredients**:
+*   `boring start` (CLI)
+*   A `task.md` file
+*   Coffee ☕
+
+**Steps**:
+
+1.  **Define the Mission**: Create a `task.md` in your project root.
+    ```markdown
+    # Task: Build Login Page
+    - [ ] Create login.html with Bootstrap
+    - [ ] Create styles.css (Dark Mode)
+    - [ ] Write logic.js for validation
+    - [ ] Verify functionality
+    ```
+
+2.  **Launch the Dragon**:
+    Open your terminal and run:
+    ```bash
+    boring start
+    ```
+
+3.  **Monitor (Optional)**:
+    Open another terminal to watch the brain at work:
+    ```bash
+    boring-monitor
+    ```
+
+4.  **Result**:
+    Boring will loop through Plan -> Code -> Test -> Fix until all checkboxes in `task.md` are marked `[x]`.
+
+---
+
+## Recipe 6: Code Review
 
 ### Direct Evaluation
 ```python
@@ -182,7 +221,20 @@ boring_evaluate(
 
 ---
 
-## Recipe 6: Security Audit
+## Recipe 7: Vibe Check (Quality Police)
+
+### Project Health Check
+```python
+boring_vibe_check(
+    target_path="src/",
+    verbosity="standard"
+)
+# Returns a Vibe Score (0-100)
+```
+
+---
+
+## Recipe 8: Security Audit
 
 ### Full Security Scan
 ```python
@@ -211,7 +263,7 @@ boring_security_scan(
 
 ---
 
-## Recipe 7: Shadow Mode Setup
+## Recipe 9: Shadow Mode Setup
 
 ### Enable for Production
 ```python
@@ -234,7 +286,7 @@ Edit `~/.boring/brain/shadow_config.json`:
 
 ---
 
-## Recipe 8: Multi-Agent Workflow
+## Recipe 10: Multi-Agent Workflow
 
 ### Plan and Implement
 ```python
@@ -261,7 +313,7 @@ boring_multi_agent(
 
 ---
 
-## Recipe 9: RAG Knowledge Base {: #recipe-9-rag-knowledge-base }
+## Recipe 11: RAG Knowledge Base {: #recipe-11-rag-knowledge-base }
 
 ### Build Index
 ```python
@@ -277,7 +329,7 @@ boring_rag_search(
     query="authentication middleware",
     project_path=".",
     top_k=10,
-    expand_deps=True
+    expand_graph=True
 )
 ```
 
@@ -294,7 +346,7 @@ boring_rag_search(
 
 ---
 
-## Recipe 10: CI/CD Integration
+## Recipe 12: CI/CD Integration
 
 ### GitHub Actions
 

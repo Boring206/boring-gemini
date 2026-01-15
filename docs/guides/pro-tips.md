@@ -153,57 +153,11 @@ Use "Critical Thinking" for security reviews or logic verification.
 "Perform a Critical Thinking audit on this payment flow for potential race conditions."
 ```
 
-### Tip 11: Cross-Project Knowledge Sharing {: #tip-11 }
-
-```bash
-# On project completion
-boring_global_export --all
-
-# Knowledge saved to ~/.boring/brain/
-# Available for all future projects via Active Recall
-```
-
----
-
-## 🏢 For Teams
-
-### Tip 12: Shared Configuration
-
-```bash
-# Commit .boring.toml to repo
-git add .boring.toml
-git commit -m "Add team quality standards"
-```
-
-Everyone uses the same quality gates.
-
-### Tip 13: CI/CD Integration
-
-```yaml
-# .github/workflows/quality-gates.yml
-jobs:
-  verify:
-    steps:
-      - uses: actions/checkout@v4
-      - run: pip install boring-aicoding
-      - run: boring verify --level FULL
-```
-
-### Tip 11: Cross-Project Knowledge Sharing {: #tip-11 }
-
-```bash
-# On project completion
-boring_global_export --all
-
-# Knowledge saved to ~/.boring/brain/
-# Available for all future projects via Active Recall
-```
-
 ---
 
 ## 🔧 Performance Tips
 
-### Tip 12: Warm the Cache
+### Tip 14: Warm the Cache
 
 ```bash
 # First run builds cache
@@ -213,7 +167,7 @@ boring verify
 boring verify  # Uses cache
 ```
 
-### Tip 13: Parallel Verification
+### Tip 15: Parallel Verification
 
 ```toml
 # .boring.toml
@@ -221,7 +175,7 @@ boring verify  # Uses cache
 parallel_workers = 8  # Use all CPU cores
 ```
 
-### Tip 14: Selective RAG Indexing
+### Tip 16: Selective RAG Indexing
 
 ```bash
 # Only index specific directories
@@ -232,7 +186,7 @@ boring rag index --paths "src/" "lib/"
 
 ## 🛡️ Security Tips
 
-### Tip 15: Always Use Shadow Mode in Production
+### Tip 17: Always Use Shadow Mode in Production
 
 ```yaml
 # smithery.yaml or MCP config
@@ -240,19 +194,37 @@ SHADOW_MODE_LEVEL: "STRICT"
 BORING_ALLOW_DANGEROUS: false
 ```
 
-### Tip 16: Protected File Operations
+### Tip 18: Protected File Operations
 
 ```python
 # Use boring_write_file instead of native write_file
 boring_write_file(path="config.py", content="...")
 ```
 
-### Tip 17: Secret Scanning
+### Tip 19: Secret Scanning
 
 ```bash
 # Scan before commit
 boring_security_scan --scan-type secrets
 ```
+
+---
+
+## 🔔 BoringDone Notifications
+
+### Tip 20: Completion Notifications (V12.2)
+
+Get notified when AI tasks complete, so you don't have to watch the screen!
+
+```python
+# AI automatically notifies you when a task is done
+boring_done(task_name="Code Review", success=True)
+```
+
+**Automatic Integrations**:
+- ✅ `FlowEngine` completion
+- ✅ `AgentLoop` completion
+- ✅ `boring verify` completion
 
 ---
 

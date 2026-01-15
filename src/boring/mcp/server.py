@@ -95,6 +95,7 @@ def get_server_instance():
     Get the configured FastMCP server instance (raw).
     Use this for direct access without Smithery decorators (e.g. for http.py).
     """
+    # <!-- CACHEABLE_CONTENT_START -->
     os.environ["BORING_MCP_MODE"] = "1"
 
     if not instance.MCP_AVAILABLE:
@@ -112,14 +113,22 @@ def get_server_instance():
         "detect_project_root": detect_project_root,
         "configure_runtime": configure_runtime_for_project,
     }
+    # --- Renaissance V2: Core Tools Registration ---
+    import boring.mcp.tools.core  # noqa: F401
+    # --- End Renaissance ---
+
     # register_v9_tools(instance.mcp, audited, helpers)
     register_workspace_tools(instance.mcp, audited, helpers)
     register_plugin_tools(instance.mcp, audited, helpers)
     register_assistant_tools(instance.mcp, audited, helpers)
-    # register_knowledge_tools(instance.mcp, audited, helpers)
+    from .tools.knowledge import register_knowledge_tools
+    register_knowledge_tools(instance.mcp, audited, helpers)
 
     # Register V10 Tools (RAG, Multi-Agent, Shadow Mode)
     register_v10_tools(instance.mcp, audited, helpers)
+
+    # 3.5 [ONE DRAGON] Register Flow Tool
+    import boring.mcp.tools.flow_tool  # noqa: F401
 
     # Register Advanced Tools (Security, Transactions, Background, Context)
     register_advanced_tools(instance.mcp)
@@ -136,6 +145,23 @@ def get_server_instance():
     # Register Intelligence Tools (V10.23: PredictiveAnalyzer, AdaptiveCache, Session Context)
     register_intelligence_tools(instance.mcp, audited, helpers)
 
+    # Register SpecKit Tools (Spec-Driven Development Workflows)
+    from .speckit_tools import register_speckit_tools
+    register_speckit_tools(instance.mcp, audited, helpers)
+
+    # Register Brain Tools (V10.23 Enhanced: boring_brain_health, boring_global_*)
+    from .brain_tools import register_brain_tools
+    register_brain_tools(instance.mcp, audited, helpers)
+
+    # Register Skills Tools
+    import boring.mcp.tools.metrics  # noqa: F401
+    import boring.mcp.tools.skills  # noqa: F401
+
+    # Register Tool Router
+    from .tools.router_tools import register_router_tools
+    register_router_tools(instance.mcp)
+
+    # <!-- CACHEABLE_CONTENT_END -->
     return instance.mcp
 
 
@@ -318,8 +344,9 @@ def run_server():
             )
 
         # V10.24: Show profile info
+        tool_count = len(profile.tools) if profile.tools else "all"
         sys.stderr.write(
-            f"[boring-mcp] 🎛️ Tool Profile: {profile.name} ({len(profile.tools) or 'all'} tools)\n"
+            f"[boring-mcp] 🎛️ Tool Profile: {profile.name} ({tool_count} tools)\n"
         )
 
         if os.environ.get("BORING_MCP_DEBUG") == "1":

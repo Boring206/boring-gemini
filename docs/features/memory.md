@@ -7,7 +7,7 @@ Most AI coding assistants reset their brain every session. **Boring-Gemini remem
 
 ## 🧩 The Knowledge Brain (`.boring/brain`)
 
-Boring maintains a persistent SQLite vector database in your home directory (`~/.boring/brain`). This is its long-term memory.
+Boring uses **SQLite** for persistent storage (patterns, preferences, history) and **ChromaDB** for vector similarity search (RAG features) in your home directory (`~/.boring/brain`). This is its long-term memory.
 
 ### What it Remembers
 

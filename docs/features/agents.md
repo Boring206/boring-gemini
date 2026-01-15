@@ -15,7 +15,7 @@ Boring-Gemini operates as a Multi-Agent System (MAS). When you give a complex ta
 ### 2. Architect (The Planner)
 *   **Role**: Senior Engineer.
 *   **Job**: Designs the solution, creates `implementation_plan.md`, checks for architectural consistency, and reviews major changes.
-*   **Tool**: `prompt_plan`
+*   **Tool**: `boring_prompt_plan`
 
 ### 3. Coder (The Builder)
 *   **Role**: Software Engineer.

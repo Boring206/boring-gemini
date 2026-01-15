@@ -316,7 +316,13 @@ class IntelligentRanker:
         self._load_boost_cache()
 
         # V10.23: Get task context for task-aware boosting
-        current_task = context.current_task if context else None
+        current_task = None
+        if context:
+            if hasattr(context, "current_task"):
+                current_task = context.current_task
+            elif isinstance(context, dict):
+                current_task = context.get("current_task")
+
         task_multipliers = self.TASK_BOOST_MULTIPLIERS.get(current_task, {})
 
         # V10.23: Check for predicted chunks from similar queries

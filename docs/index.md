@@ -64,10 +64,10 @@ Core capabilities explained in depth.
 | [🕵️ Hybrid RAG](./features/rag.md) | **POWER**: HyDE + Cross-Encoder + Graph ([中文](./features/rag_zh.md)) |
 | [🧠 Memory System](./features/memory.md) | **BRAIN**: Persistent Learning & Recall ([中文](./features/memory_zh.md)) |
 | [🤖 Autonomous Agents](./features/agents.md) | **LOOP**: Planner, Coder, Reviewer Squad ([中文](./features/agents_zh.md)) |
-| [MCP Toolset](./features/mcp-tools.md) | 98+ Tools, Profiles, Router ([中文](./features/mcp-tools_zh.md)) |
+| [MCP Toolset](./features/mcp-tools.md) | 60+ Tools, Profiles, Router ([中文](./features/mcp-tools_zh.md)) |
 | [Shadow Mode](features/shadow-mode.md) | Security Sandbox ([中文](features/shadow-mode_zh.md)) |
 | [📉 Token Optimization](features/token-optimization.md) | **NEW**: Verbosity & Caching ([中文](features/token-optimization_zh.md)) |
-| [🧬 Cognitive Evolution](features/cognitive.md) | **V11.2**: Memory, Reasoning, Skills ([中文](features/cognitive_zh.md)) |
+| [🧬 Cognitive Evolution](features/cognitive.md) | **V13.0**: Memory, Reasoning, Skills ([中文](features/cognitive_zh.md)) |
 | [🪢 Node.js Autonomy](features/nodejs.md) | **NEW**: Zero-config Node.js management ([中文](features/nodejs_zh.md)) |
 | [Quality Gates](features/quality-gates.md) | CI/CD integration and verification levels |
 | [💎 Hidden Gems](features/hidden-gems.md) | **Pro**: Advanced tips & secrets ([中文](features/hidden-gems_zh.md)) |
@@ -144,9 +144,9 @@ Deep dive technical documentation.
 | [效能與架構](./features/performance_zh.md) | 增量驗證、快取、平行化 |
 | [📉 Token 優化](./features/token-optimization_zh.md) | **最新**: Verbosity 控制與 Prompt Caching |
 | [Vibe Coder Pro](./guides/vibe-coder_zh.md) | **最新**: 文件生成、測試生成、衝擊分析、友善審查 |
-| [🧬 認知進化](./features/cognitive_zh.md) | **V11.0**: 記憶、推理、技能、合成 |
+| [🧬 認知進化](./features/cognitive_zh.md) | **V13.0**: 記憶、推理、技能、合成 |
 | [🪢 Node.js 自主權](./features/nodejs_zh.md) | **最新**: 自動下載與管理環境 |
-| [MCP 工具集](./features/mcp-tools_zh.md) | 98+ 工具及範例 |
+| [MCP 工具集](./features/mcp-tools_zh.md) | 60+ 工具及範例 |
 | [影子模式](./features/shadow-mode_zh.md) | AI 操作的安全沙箱 |
 | [品質閘道](./features/quality-gates_zh.md) | CI/CD 整合和驗證級別 |
 

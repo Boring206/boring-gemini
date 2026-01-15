@@ -7,7 +7,7 @@
 
 ## 🧩 知識大腦 (`.boring/brain`)
 
-Boring 在你的家目錄 (`~/.boring/brain`) 中維護一個持久的 SQLite 向量資料庫。這就是它的長期記憶。
+Boring 在你的家目錄 (`~/.boring/brain`) 中使用 **SQLite** 進行持久化儲存（模式、偏好、歷史），並使用 **ChromaDB** 進行向量相似度搜索（RAG 功能）。這就是它的長期記憶。
 
 ### 它記得什麼
 

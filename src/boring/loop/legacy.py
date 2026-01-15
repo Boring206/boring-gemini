@@ -96,8 +96,9 @@ class AgentLoop:
             ext_report = self.extensions.create_extensions_report()
             console.print(f"[dim]{ext_report}[/dim]")
 
-    def run(self):
+    def run(self, max_duration: Optional[int] = None):
         """Start the main loop."""
+        start_time = time.time()
         if should_halt_execution():
             console.print("[bold red]Circuit Breaker is OPEN. Execution halted.[/bold red]")
             log_status(self.log_dir, "CRITICAL", "Circuit Breaker is OPEN.")
@@ -146,6 +147,12 @@ class AgentLoop:
 
         loop_count = 0
         while loop_count < settings.MAX_LOOPS:
+            # Check for global timeout
+            if max_duration and (time.time() - start_time) > max_duration:
+                console.print(f"[bold red]Global timeout of {max_duration}s reached. Aborting.[/bold red]")
+                log_status(self.log_dir, "WARN", f"AgentLoop aborted: reached {max_duration}s timeout")
+                break
+
             loop_count += 1
 
             # rate limit check
@@ -193,8 +200,12 @@ class AgentLoop:
                 log_status(self.log_dir, "WARN", "No files changed in this loop.")
 
                 # === EMPTY OUTPUT FEEDBACK (Fix #2) ===
-                # If AI produced output but we couldn't parse it, tell the AI
-                if len(output_content) > 100:  # AI did output something
+                # If AI produced output but we couldn't parse it, telling the AI
+                if len(output_content) > 0:  # AI did output something
+                    # [V12.0 Enhancement] Print the output for the user (One-Shot Mode support)
+                    console.print(Panel(output_content, title="[bold blue]Gemini Response[/bold blue]", border_style="blue"))
+
+                if len(output_content) > 100:
                     console.print(
                         "[bold yellow]⚠️ AI output could not be parsed into file changes.[/bold yellow]"
                     )

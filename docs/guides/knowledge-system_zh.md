@@ -157,7 +157,7 @@ boring_rag_index(project_path=".", force=False)
 boring_rag_search(
     query="authentication middleware",
     top_k=10,
-    expand_deps=True
+    expand_graph=True
 )
 
 # 重新載入
@@ -172,7 +172,7 @@ boring_rag_reload(project_path=".")
 
 ---
 
-## 📚 Patterns, AutoLearner 與 Active Recall
+## 📚 Patterns, FeedbackLearner 與 Active Recall
 
 ### 認知反射 (Active Recall)
 
@@ -188,7 +188,7 @@ boring_rag_reload(project_path=".")
 
 ```
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│  AI 回應     │ ──▶ │ AutoLearner  │ ──▶ │  Pattern DB  │
+│  AI 回應     │ ──▶ │FeedbackLearner│ ──▶ │  Pattern DB  │
 │ "透過 X 修復" │     │   (提取)     │     │(.boring/brain)│
 └──────────────┘     └──────────────┘     └──────────────┘
                              │

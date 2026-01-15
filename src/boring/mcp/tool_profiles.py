@@ -3,14 +3,14 @@
 """
 MCP Tool Profiles - Configurable Tool Exposure (V10.26)
 
-Problem: 98 tools overwhelms LLM context window (~5000 tokens).
+Problem: 60 tools overwhelms LLM context window (~3000 tokens).
 
 Solution: Provide different profiles for different use cases:
 - ULTRA_LITE: 3 essential tools (router + help + discover) - 97% token savings
 - MINIMAL: 8 essential tools only
 - LITE: 15-20 commonly used tools
 - STANDARD: 40-50 balanced toolset
-- FULL: All 98+ tools (for power users)
+- FULL: All 60+ tools (for power users)
 
 Configure via .boring.toml:
     [mcp]

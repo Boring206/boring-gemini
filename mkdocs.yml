@@ -1,5 +1,5 @@
 site_name: Boring-Gemini
-site_description: Autonomous AI Development Agent with Vibe Coder
+site_description: The True One Dragon Autonomous AI Development Agent (V13.0.0)
 site_author: Boring206
 repo_url: https://github.com/Boring206/boring-gemini
 edit_uri: edit/main/docs/
@@ -65,7 +65,8 @@ nav:
       - 🧩 外掛系統: guides/plugins_zh.md
       - 🏗️ 架構師模式: guides/architect_mode_zh.md
       - 🤝 人類對齊: guides/human-alignment_zh.md
-      - 🎓 Skills 指南: guides/skills_guide.md
+      - 🎓 Skills 指南: guides/skills_guide_zh.md
+      - 💡 專業技巧: guides/pro-tips_zh.md
   - 📚 教學 (Tutorials):
       - 基礎教學: tutorials/TUTORIAL.md
       - 進階教學: tutorials/ADVANCED_TUTORIAL_zh.md
@@ -90,7 +91,11 @@ nav:
       - MCP Server: api/mcp_server_zh.md
       - Tools: api/tools_zh.md
   - 📋 更新日誌:
-      - V11 (Current): changelog/v11.md
+      - V13 (Current): changelog/v13.md
+      - V13 (繁中): changelog/v13_zh.md
+      - V12: changelog/v12.md
+      - V12 (繁中): changelog/v12_zh.md
+      - V11: changelog/v11.md
       - V11 (繁中): changelog/v11_zh.md
       - V10: changelog/v10.md
       - V10 (繁中): changelog/v10_zh.md

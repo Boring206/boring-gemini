@@ -194,7 +194,7 @@ boring_rag_search(
     query="authentication middleware",
     project_path=".",
     top_k=10,
-    expand_deps=True        # 包含依賴
+    expand_graph=True        # 包含依賴
 )
 ```
 

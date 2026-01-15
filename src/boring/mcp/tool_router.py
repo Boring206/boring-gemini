@@ -3,12 +3,12 @@
 """
 Tool Router - Unified Gateway for MCP Tools (V10.31)
 
-Problem: 98 individual tools overwhelms LLM context and causes selection confusion.
+Problem: 67 individual tools overwhelms LLM context and causes selection confusion.
 
 Solution: Provide a single smart router that:
 1. Accepts natural language requests
 2. Routes to the appropriate underlying tool
-3. Reduces exposed tools from 98 to ~10 core + 1 router
+3. Reduces exposed tools from 67 to ~10 core + 1 router
 
 Architecture:
     User Query → boring() → Tool Router → Appropriate Tool → Response
@@ -1039,7 +1039,7 @@ def create_router_tool_description() -> str:
     """Create the description for the router tool."""
     return """🎯 **Boring Universal Router** - Natural Language Tool Interface
 
-Instead of remembering 98+ specific tools, just describe what you want:
+Instead of remembering 60+ specific tools, just describe what you want:
 
 - "boring go" → Start autonomous execution flow
 - "boring fix" → Automatically heal detected issues
@@ -1109,7 +1109,7 @@ Examples:
     boring-route "我想做登入功能"
 
 This tool routes your natural language request to the appropriate Boring tool.
-No need to remember 98+ tool names - just describe what you want!
+No need to remember 60+ tool names - just describe what you want!
         """)
         return
 

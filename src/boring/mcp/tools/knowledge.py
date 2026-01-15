@@ -3,7 +3,6 @@ from typing import Annotated, Optional
 from pydantic import Field
 
 from ...audit import audited
-from ..instance import MCP_AVAILABLE, mcp
 from ..utils import (
     configure_runtime_for_project,
     detect_context_capabilities,
@@ -274,7 +273,8 @@ def boring_usage_stats(
 # ==============================================================================
 
 
-if MCP_AVAILABLE and mcp is not None:
+def register_knowledge_tools(mcp, audited, helpers):
+    """Refactored registration for knowledge tools."""
     mcp.tool(
         description="Learn patterns from memory (brain).",
         annotations={"readOnlyHint": False, "destructiveHint": False},
@@ -298,6 +298,7 @@ if MCP_AVAILABLE and mcp is not None:
         description="Distill patterns into Strategic Skills (Skill Compilation).",
         annotations={"readOnlyHint": False},
     )(boring_distill_skills)
+
 
     mcp.tool(
         description="Get relevant patterns (skills) for the current context.",

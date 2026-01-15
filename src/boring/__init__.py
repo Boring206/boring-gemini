@@ -1,5 +1,15 @@
 """
-Boring for Gemini - AI Coding Assistant
+V13.0.0 "The Semantic Core Update":
+- **FAISS Integration**: Full fallback support for semantic search when ChromaDB is unavailable.
+- **Enhanced BrainManager**: Optimized pattern indexing and retrieval with batch processing.
+- **Dependency Isolation**: Modularized extras for leaner installations ([vector], [mcp]).
+- **Strict Verification**: 100% test passing and deepened CI protocols.
+
+V12.0.0 "The True One Dragon Update":
+- **Cognitive Architecture**: Active Reflex, Global Swarm Sync, and System 2 Planning.
+- **Stability Guard**: 1-hour global timeout for the Agent Loop and improved fallback logic.
+- **One Dragon Flow**: Unified FlowGraph (Architect -> Builder -> Healer -> Polish -> Evolver).
+- **Integrity Audit**: Verified 67+ tools and 100% documentation alignment.
 
 V11.5.0 "Intelligent Adaptability Update":
 - **Usage Analytics**: New `boring_usage_stats` and Usage Dashboard (CLI/Web) for self-aware insights.
@@ -76,7 +86,7 @@ Backward compatibility is maintained - old import paths still work.
 import importlib
 from typing import TYPE_CHECKING
 
-__version__ = "11.5.0"
+__version__ = "13.0.0"
 
 # =============================================================================
 # Lazy Loading Configuration

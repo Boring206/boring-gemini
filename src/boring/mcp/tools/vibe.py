@@ -27,17 +27,27 @@ from ...security import SecurityScanner  # Phase 14 Enhancement
 
 # V11.2.2: Standardization
 from ...types import BoringResult, create_error_result, create_success_result
-from ...vibe.engine import VibeEngine
-from ...vibe.handlers.generic import GenericHandler
-from ...vibe.handlers.javascript import JavascriptHandler
-from ...vibe.handlers.python import PythonHandler
 from ..verbosity import is_minimal, is_standard, is_verbose
 
-# Initialize Engine
-vibe_engine = VibeEngine()
-vibe_engine.register_handler(PythonHandler())
-vibe_engine.register_handler(JavascriptHandler())
-vibe_engine.register_handler(GenericHandler())
+# Lazy loaded engine
+_vibe_engine = None
+
+
+def get_vibe_engine():
+    """Get the VibeEngine singleton, initializing it lazily."""
+    global _vibe_engine
+    if _vibe_engine is None:
+        from ...vibe.engine import VibeEngine
+        from ...vibe.handlers.generic import GenericHandler
+        from ...vibe.handlers.javascript import JavascriptHandler
+        from ...vibe.handlers.python import PythonHandler
+
+        _vibe_engine = VibeEngine()
+        _vibe_engine.register_handler(PythonHandler())
+        _vibe_engine.register_handler(JavascriptHandler())
+        _vibe_engine.register_handler(GenericHandler())
+
+    return _vibe_engine
 
 
 # =============================================================================
@@ -87,12 +97,322 @@ def _get_rag_retriever(project_root: Path):
     return None
 
 
+
+def _get_project_root_or_error_impl(project_path_str: Optional[str]) -> tuple[Optional[str], Optional[dict]]:
+    """Module-level implementation of get_project_root_or_error."""
+    if project_path_str:
+        path = Path(project_path_str)
+        try:
+            if not path.exists():
+                return None, {"message": f"Project path does not exist: {path}"}
+            return str(path), None
+        except Exception as e:
+            return None, {"message": f"Invalid project path: {e}"}
+
+    # Fallback to settings
+    try:
+        from ...core.config import settings
+        return str(settings.PROJECT_ROOT), None
+    except ImportError:
+        return ".", None
+
+
+def run_vibe_check(
+    target_path: str = ".",
+    project_path: Optional[str] = None,
+    max_files: int = 10,
+    verbosity: str = "standard",
+) -> BoringResult:
+    """
+    Module-level Vibe Check implementation.
+    Can be called directly by FlowEngine or other components.
+    """
+    root_str, error = _get_project_root_or_error_impl(project_path)
+    if error:
+        return create_error_result(error.get("message", "Unknown error"))
+
+    project_root = Path(root_str)
+    # Handle both absolute and relative paths
+    if target_path.startswith("/") or (len(target_path) > 1 and target_path[1] == ":"):
+        # Absolute path (Unix-style or Windows-style)
+        target = Path(target_path)
+    elif target_path == ".":
+        target = project_root
+    else:
+        # Relative path
+        target = project_root / target_path
+
+    if not target.exists():
+        return create_error_result(f"❌ 找不到目標: {target}")
+
+    # 1. 收集檔案
+    files_to_check = []
+    if target.is_file():
+        files_to_check.append(target)
+    else:
+        candidates = [
+            p
+            for p in target.rglob("*")
+            if p.is_file()
+            and p.suffix in [".py", ".js", ".ts"]
+            and not any(x in p.parts for x in ["node_modules", ".git", "venv"])
+        ][:max_files]
+        files_to_check.extend(candidates)
+
+    if not files_to_check:
+        return create_error_result("⚠️ 找不到可分析的程式碼檔案 (.py, .js, .ts)")
+
+    # Scoring Variables
+    base_score = 100
+    deductions = 0
+    issues_found = []
+    doc_missing = 0
+    security_issues = []
+
+    # Lazy load engine
+    engine = get_vibe_engine()
+
+    # 2. 逐檔分析
+    for f in files_to_check:
+        try:
+            content = f.read_text(encoding="utf-8", errors="ignore")
+
+            # A. Code Review (Lint/Quality)
+            rev_res = engine.perform_code_review(str(f), content, focus="all")
+            for issue in rev_res.issues:
+                deduction = (
+                    5 if issue.severity == "low" else 10 if issue.severity == "medium" else 15
+                )
+                deductions += deduction
+                issues_found.append(f"[{f.name}:{issue.line}] {issue.message}")
+
+            # B. Doc Check
+            doc_res = engine.extract_documentation(str(f), content)
+            for item in doc_res.items:
+                if not item.docstring:
+                    deductions += 5
+                    doc_missing += 1
+
+        except Exception:
+            continue
+
+    # 3. Security Scan (Phase 14 Enhancement)
+    try:
+        scanner = SecurityScanner(project_root)
+        sec_report = scanner.scan_for_secrets(target if target.is_dir() else target.parent)
+        for sec_issue in sec_report.issues:
+            severity_deduction = (
+                20
+                if sec_issue.severity == "CRITICAL"
+                else 15
+                if sec_issue.severity == "HIGH"
+                else 10
+            )
+            deductions += severity_deduction
+            security_issues.append(
+                f"🔒 [{sec_issue.severity}] {sec_issue.description} ({sec_issue.file_path}:{sec_issue.line_number})"
+            )
+    except Exception:
+        pass  # Security scan is optional enhancement
+
+    # 3.5 Memory Injection (Phase 20 Enhancement)
+    brain_advice = []
+    try:
+        from ...intelligence import BrainManager
+        brain = BrainManager(project_root)
+
+        seen_patterns = set()
+        for issue in issues_found:
+            msg_part = issue.split("] ", 1)[-1] if "] " in issue else issue
+            patterns = brain.match_error_pattern(msg_part)
+            if patterns:
+                best_match = patterns[0]
+                if best_match.pattern_id not in seen_patterns:
+                    brain_advice.append(
+                        f"🧠 Brain Recall: For '{msg_part}', previously solving by: {best_match.solution}"
+                    )
+                    seen_patterns.add(best_match.pattern_id)
+                    deductions -= 5
+    except Exception:
+        pass
+
+    # 4. 計算分數
+    final_score = max(0, base_score - deductions)
+
+    # 5. 評級
+    if final_score >= 95:
+        tier = "S-Tier (God Like) 🏆"
+    elif final_score >= 85:
+        tier = "A-Tier (Professional) 🥇"
+    elif final_score >= 75:
+        tier = "B-Tier (Solid) 🥈"
+    elif final_score >= 60:
+        tier = "C-Tier (Meh) 🥉"
+    else:
+        tier = "F-Tier (Spaghetti) 🍝"
+
+    # 6. 生成 One-Click Fix Prompt
+    fix_prompt = ""
+    if final_score < 100:
+        fix_prompt = f"Please act as a Senior Engineer to fix the low Vibe Score ({final_score}) for the following files:\n"
+        fix_prompt += f"Target: `{target_path}`\n\n"
+        fix_prompt += "Tasks:\n"
+
+        if issues_found:
+            fix_prompt += "1. Fix the following code quality issues:\n"
+            for i in issues_found[:10]:
+                fix_prompt += f"   - {i}\n"
+            if len(issues_found) > 10:
+                fix_prompt += f"   - ... and {len(issues_found) - 10} more issues.\n"
+
+        if doc_missing > 0:
+            fix_prompt += f"2. Add missing docstrings/JSDoc to {doc_missing} functions/classes to meet Google Style Guide.\n"
+
+        if security_issues:
+            fix_prompt += "3. ⚠️ CRITICAL: Remove or rotate the following exposed secrets:\n"
+            for sec in security_issues[:5]:
+                fix_prompt += f"   - {sec}\n"
+
+        fix_prompt += "\nReturn the corrected code directly."
+    else:
+        fix_prompt = "🎉 Perfect Score! No fixes needed. Maybe go touch some grass? 🌱"
+
+    # 7. V10.21: Storage 歷史追蹤
+    score_trend = ""
+    previous_score = None
+    storage = _get_storage(project_root)
+    if storage:
+        try:
+            # 記錄本次分數
+            storage.record_metric(
+                name="vibe_score",
+                value=float(final_score),
+                metadata={
+                    "target": target_path,
+                    "issues": len(issues_found),
+                    "doc_missing": doc_missing,
+                    "security_issues": len(security_issues),
+                    "tier": tier,
+                },
+            )
+
+            # 取得歷史分數
+            history = storage.get_metrics("vibe_score", limit=5)
+            if len(history) > 1:
+                previous_score = history[1].get("metric_value")
+                if previous_score is not None:
+                    diff = final_score - previous_score
+                    if diff > 0:
+                        score_trend = f"📈 +{diff:.0f} (vs 上次 {previous_score:.0f})"
+                    elif diff < 0:
+                        score_trend = f"📉 {diff:.0f} (vs 上次 {previous_score:.0f})"
+                    else:
+                        score_trend = f"➡️ 維持 {previous_score:.0f}"
+        except Exception:
+            pass
+
+    storage_status = "✅ 分數已記錄" if storage else "⚠️ Storage 未啟用"
+
+    # Import verbosity control
+    from boring.mcp.verbosity import Verbosity, get_verbosity
+
+    verb_level = get_verbosity(verbosity)
+
+    # Generate vibe_summary based on verbosity
+    if verb_level == Verbosity.MINIMAL:
+        # MINIMAL: Only score and tier (~50 tokens)
+        vibe_summary = f"📊 Vibe Score: {final_score}/100 | {tier}"
+        if score_trend:
+            vibe_summary += f"\n{score_trend}"
+        vibe_summary += "\n💡 Use verbosity='standard' for details"
+
+    elif verb_level == Verbosity.VERBOSE:
+        # VERBOSE: Full detailed report (~800+ tokens)
+        summary_lines = [
+            f"📊 Vibe Check: `{target_path}`",
+            f"Score: {final_score}/100 | {tier}",
+            "",
+        ]
+
+        if score_trend:
+            summary_lines.append(f"{score_trend}\n")
+
+        # Code Quality Issues
+        if issues_found:
+            summary_lines.append(f"🔍 Code Quality Issues ({len(issues_found)}):")
+            for issue in issues_found[:20]:  # Show up to 20
+                summary_lines.append(f"  - {issue}")
+            if len(issues_found) > 20:
+                summary_lines.append(f"  ... and {len(issues_found) - 20} more")
+            summary_lines.append("")
+
+        # Security Issues
+        if security_issues:
+            summary_lines.append(f"🔒 Security Issues ({len(security_issues)}):")
+            for sec in security_issues[:10]:
+                summary_lines.append(f"  - {sec}")
+            if len(security_issues) > 10:
+                summary_lines.append(f"  ... and {len(security_issues) - 10} more")
+            summary_lines.append("")
+
+        # Documentation
+        if doc_missing > 0:
+            summary_lines.append(f"📝 Documentation: {doc_missing} missing docstrings")
+            summary_lines.append("")
+
+        summary_lines.append(f"🔗 {storage_status}")
+        vibe_summary = "\n".join(summary_lines)
+
+    else:  # STANDARD
+        # STANDARD: Score + top issues (~300 tokens)
+        summary_lines = [f"📊 Vibe Score: {final_score}/100 | {tier}", ""]
+
+        if score_trend:
+            summary_lines.append(f"{score_trend}\n")
+
+        # Top 5 quality issues
+        if issues_found:
+            summary_lines.append(
+                f"🔍 Top Issues ({min(5, len(issues_found))}/{len(issues_found)}):"
+            )
+            for issue in issues_found[:5]:
+                summary_lines.append(f"  - {issue}")
+            if len(issues_found) > 5:
+                summary_lines.append(f"  ... and {len(issues_found) - 5} more")
+            summary_lines.append("")
+
+        # Critical security issues
+        if security_issues:
+            critical_sec = [s for s in security_issues if "CRITICAL" in s or "HIGH" in s]
+            if critical_sec:
+                summary_lines.append(f"🔒 Critical Security ({len(critical_sec)}):")
+                for sec in critical_sec[:3]:
+                    summary_lines.append(f"  - {sec}")
+                summary_lines.append("")
+
+        if doc_missing > 0:
+            summary_lines.append(f"📝 {doc_missing} missing docstrings\n")
+
+        summary_lines.append(f"🔗 {storage_status}")
+        summary_lines.append("\n💡 Use verbosity='verbose' for full report")
+        vibe_summary = "\n".join(summary_lines)
+
+    return create_success_result(
+        message=vibe_summary,
+        data={
+            "vibe_score": final_score,
+            "tier": tier,
+            "vibe_summary": vibe_summary,
+        },
+    )
+
+
 def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factory=None):
     """
     Register Vibe Coder Pro tools with the MCP server.
     """
     _get_project_root_or_error = helpers["get_project_root_or_error"]
-    global_engine = engine or vibe_engine
+    global_engine = engine or get_vibe_engine()
     _get_brain = brain_manager_factory or _get_brain_manager
 
     # === boring_test_gen ===
@@ -597,6 +917,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
                 rel_path = file_path.relative_to(project_root).as_posix()
                 content = file_path.read_text(encoding="utf-8", errors="ignore")
 
+                vibe_engine = get_vibe_engine()
                 deps = vibe_engine.extract_dependencies(str(file_path), content)
 
                 if deps:
@@ -709,6 +1030,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
                 content = file_path.read_text(encoding="utf-8", errors="ignore")
                 rel_path = file_path.relative_to(project_root).as_posix()
 
+                vibe_engine = get_vibe_engine()
                 result = vibe_engine.extract_documentation(str(file_path), content)
 
                 if not result.items and not result.module_doc:
@@ -767,290 +1089,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         - Storage: 記錄 Vibe Score 歷史，追蹤專案健康趨勢
         - 顯示與上次分數的對比
         """
-        root_str, error = _get_project_root_or_error(project_path)
-        if error:
-            return create_error_result(error.get("message", "Unknown error"))
-
-        project_root = Path(root_str)
-        # Handle both absolute and relative paths
-        if target_path.startswith("/") or (len(target_path) > 1 and target_path[1] == ":"):
-            # Absolute path (Unix-style or Windows-style)
-            target = Path(target_path)
-        elif target_path == ".":
-            target = project_root
-        else:
-            # Relative path
-            target = project_root / target_path
-
-        if not target.exists():
-            return create_error_result(f"❌ 找不到目標: {target}")
-
-        # 1. 收集檔案
-        files_to_check = []
-        if target.is_file():
-            files_to_check.append(target)
-        else:
-            candidates = [
-                p
-                for p in target.rglob("*")
-                if p.is_file()
-                and p.suffix in [".py", ".js", ".ts"]
-                and not any(x in p.parts for x in ["node_modules", ".git", "venv"])
-            ][:max_files]
-            files_to_check.extend(candidates)
-
-        if not files_to_check:
-            return create_error_result("⚠️ 找不到可分析的程式碼檔案 (.py, .js, .ts)")
-
-        # Scoring Variables
-        base_score = 100
-        deductions = 0
-        issues_found = []
-        doc_missing = 0
-        security_issues = []
-
-        # 2. 逐檔分析
-        for f in files_to_check:
-            try:
-                content = f.read_text(encoding="utf-8", errors="ignore")
-
-                # A. Code Review (Lint/Quality)
-                rev_res = vibe_engine.perform_code_review(str(f), content, focus="all")
-                for issue in rev_res.issues:
-                    deduction = (
-                        5 if issue.severity == "low" else 10 if issue.severity == "medium" else 15
-                    )
-                    deductions += deduction
-                    issues_found.append(f"[{f.name}:{issue.line}] {issue.message}")
-
-                # B. Doc Check
-                doc_res = vibe_engine.extract_documentation(str(f), content)
-                for item in doc_res.items:
-                    if not item.docstring:
-                        deductions += 5
-                        doc_missing += 1
-
-            except Exception:
-                continue
-
-        # 3. Security Scan (Phase 14 Enhancement)
-        try:
-            scanner = SecurityScanner(project_root)
-            sec_report = scanner.scan_for_secrets(target if target.is_dir() else target.parent)
-            for sec_issue in sec_report.issues:
-                severity_deduction = (
-                    20
-                    if sec_issue.severity == "CRITICAL"
-                    else 15
-                    if sec_issue.severity == "HIGH"
-                    else 10
-                )
-                deductions += severity_deduction
-                security_issues.append(
-                    f"🔒 [{sec_issue.severity}] {sec_issue.description} ({sec_issue.file_path}:{sec_issue.line_number})"
-                )
-        except Exception:
-            pass  # Security scan is optional enhancement
-
-        # 3.5 Memory Injection (Phase 20 Enhancement)
-        # Attempt to match error codes with Brain Memory
-        brain_advice = []
-        try:
-            from boring.intelligence.brain_manager import BrainManager
-
-            brain = BrainManager(project_root)
-
-            seen_patterns = set()
-            for issue in issues_found:
-                # Naive pattern extraction: "[file:line] Message" -> "Message"
-                # Better: Extract error code if available (e.g. F401)
-                # Here we just take the message part
-                msg_part = issue.split("] ", 1)[-1] if "] " in issue else issue
-
-                # Query brain
-                patterns = brain.match_error_pattern(msg_part)
-                if patterns:
-                    best_match = patterns[0]  # Take top match
-                    if best_match.pattern_id not in seen_patterns:
-                        brain_advice.append(
-                            f"🧠 Brain Recall: For '{msg_part}', previously solving by: {best_match.solution}"
-                        )
-                        seen_patterns.add(best_match.pattern_id)
-
-                        # Apply to fix prompt
-                        deductions -= 5  # Bonus for having a known solution!
-        except Exception:
-            pass
-
-        # 4. 計算分數
-        final_score = max(0, base_score - deductions)
-
-        # 5. 評級
-        if final_score >= 95:
-            tier = "S-Tier (God Like) 🏆"
-        elif final_score >= 85:
-            tier = "A-Tier (Professional) 🥇"
-        elif final_score >= 75:
-            tier = "B-Tier (Solid) 🥈"
-        elif final_score >= 60:
-            tier = "C-Tier (Meh) 🥉"
-        else:
-            tier = "F-Tier (Spaghetti) 🍝"
-
-        # 6. 生成 One-Click Fix Prompt
-        fix_prompt = ""
-        if final_score < 100:
-            fix_prompt = f"Please act as a Senior Engineer to fix the low Vibe Score ({final_score}) for the following files:\n"
-            fix_prompt += f"Target: `{target_path}`\n\n"
-            fix_prompt += "Tasks:\n"
-
-            if issues_found:
-                fix_prompt += "1. Fix the following code quality issues:\n"
-                for i in issues_found[:10]:
-                    fix_prompt += f"   - {i}\n"
-                if len(issues_found) > 10:
-                    fix_prompt += f"   - ... and {len(issues_found) - 10} more issues.\n"
-
-            if doc_missing > 0:
-                fix_prompt += f"2. Add missing docstrings/JSDoc to {doc_missing} functions/classes to meet Google Style Guide.\n"
-
-            if security_issues:
-                fix_prompt += "3. ⚠️ CRITICAL: Remove or rotate the following exposed secrets:\n"
-                for sec in security_issues[:5]:
-                    fix_prompt += f"   - {sec}\n"
-
-            fix_prompt += "\nReturn the corrected code directly."
-        else:
-            fix_prompt = "🎉 Perfect Score! No fixes needed. Maybe go touch some grass? 🌱"
-
-        # 7. V10.21: Storage 歷史追蹤
-        score_trend = ""
-        previous_score = None
-        storage = _get_storage(project_root)
-        if storage:
-            try:
-                # 記錄本次分數
-                storage.record_metric(
-                    name="vibe_score",
-                    value=float(final_score),
-                    metadata={
-                        "target": target_path,
-                        "issues": len(issues_found),
-                        "doc_missing": doc_missing,
-                        "security_issues": len(security_issues),
-                        "tier": tier,
-                    },
-                )
-
-                # 取得歷史分數
-                history = storage.get_metrics("vibe_score", limit=5)
-                if len(history) > 1:
-                    previous_score = history[1].get("metric_value")
-                    if previous_score is not None:
-                        diff = final_score - previous_score
-                        if diff > 0:
-                            score_trend = f"📈 +{diff:.0f} (vs 上次 {previous_score:.0f})"
-                        elif diff < 0:
-                            score_trend = f"📉 {diff:.0f} (vs 上次 {previous_score:.0f})"
-                        else:
-                            score_trend = f"➡️ 維持 {previous_score:.0f}"
-            except Exception:
-                pass  # Storage is optional enhancement
-
-        storage_status = "✅ 分數已記錄" if storage else "⚠️ Storage 未啟用"
-
-        # Import verbosity control
-        from boring.mcp.verbosity import Verbosity, get_verbosity
-
-        verb_level = get_verbosity(verbosity)
-
-        # Generate vibe_summary based on verbosity
-        if verb_level == Verbosity.MINIMAL:
-            # MINIMAL: Only score and tier (~50 tokens)
-            vibe_summary = f"📊 Vibe Score: {final_score}/100 | {tier}"
-            if score_trend:
-                vibe_summary += f"\n{score_trend}"
-            vibe_summary += "\n💡 Use verbosity='standard' for details"
-
-        elif verb_level == Verbosity.VERBOSE:
-            # VERBOSE: Full detailed report (~800+ tokens)
-            summary_lines = [
-                f"📊 Vibe Check: `{target_path}`",
-                f"Score: {final_score}/100 | {tier}",
-                "",
-            ]
-
-            if score_trend:
-                summary_lines.append(f"{score_trend}\n")
-
-            # Code Quality Issues
-            if issues_found:
-                summary_lines.append(f"🔍 Code Quality Issues ({len(issues_found)}):")
-                for issue in issues_found[:20]:  # Show up to 20
-                    summary_lines.append(f"  - {issue}")
-                if len(issues_found) > 20:
-                    summary_lines.append(f"  ... and {len(issues_found) - 20} more")
-                summary_lines.append("")
-
-            # Security Issues
-            if security_issues:
-                summary_lines.append(f"🔒 Security Issues ({len(security_issues)}):")
-                for sec in security_issues[:10]:
-                    summary_lines.append(f"  - {sec}")
-                if len(security_issues) > 10:
-                    summary_lines.append(f"  ... and {len(security_issues) - 10} more")
-                summary_lines.append("")
-
-            # Documentation
-            if doc_missing > 0:
-                summary_lines.append(f"📝 Documentation: {doc_missing} missing docstrings")
-                summary_lines.append("")
-
-            summary_lines.append(f"🔗 {storage_status}")
-            vibe_summary = "\n".join(summary_lines)
-
-        else:  # STANDARD
-            # STANDARD: Score + top issues (~300 tokens)
-            summary_lines = [f"📊 Vibe Score: {final_score}/100 | {tier}", ""]
-
-            if score_trend:
-                summary_lines.append(f"{score_trend}\n")
-
-            # Top 5 quality issues
-            if issues_found:
-                summary_lines.append(
-                    f"🔍 Top Issues ({min(5, len(issues_found))}/{len(issues_found)}):"
-                )
-                for issue in issues_found[:5]:
-                    summary_lines.append(f"  - {issue}")
-                if len(issues_found) > 5:
-                    summary_lines.append(f"  ... and {len(issues_found) - 5} more")
-                summary_lines.append("")
-
-            # Critical security issues
-            if security_issues:
-                critical_sec = [s for s in security_issues if "CRITICAL" in s or "HIGH" in s]
-                if critical_sec:
-                    summary_lines.append(f"🔒 Critical Security ({len(critical_sec)}):")
-                    for sec in critical_sec[:3]:
-                        summary_lines.append(f"  - {sec}")
-                    summary_lines.append("")
-
-            if doc_missing > 0:
-                summary_lines.append(f"📝 {doc_missing} missing docstrings\n")
-
-            summary_lines.append(f"🔗 {storage_status}")
-            summary_lines.append("\n💡 Use verbosity='verbose' for full report")
-            vibe_summary = "\n".join(summary_lines)
-
-        return create_success_result(
-            message=vibe_summary,
-            data={
-                "vibe_score": final_score,
-                "tier": tier,
-                "vibe_summary": vibe_summary,
-            },
-        )
+        return run_vibe_check(target_path, project_path, max_files, verbosity)
 
     # === boring_impact_check ===
     @mcp.tool(
@@ -1136,6 +1175,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         dep_graph = {}
         file_stems = {}  # stem -> [rel_paths]
 
+        vibe_engine = get_vibe_engine()
         for f in files_to_scan:
             try:
                 content = f.read_text(encoding="utf-8", errors="ignore")
@@ -1540,6 +1580,47 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
             },
         )
 
+    # === boring_done (BoringDone Notification) ===
+    @mcp.tool(
+        description="🔔 完成通知 (Completion Notification). "
+        "說: '任務完成通知我', 'Notify me when done', '好了叫我'. "
+        "我會發送桌面通知、音效提醒，讓你不用盯著螢幕！",
+        annotations={"readOnlyHint": False, "openWorldHint": False, "idempotentHint": False},
+    )
+    @audited
+    def boring_done(
+        task_name: Annotated[str, Field(description="任務名稱")] = "AI Task",
+        success: Annotated[bool, Field(description="任務是否成功")] = True,
+        details: Annotated[str, Field(description="額外詳情")] = "",
+    ) -> BoringResult:
+        """
+        🔔 BoringDone - 完成通知系統。
+
+        當 AI 任務完成時發送通知:
+        - 桌面彈窗 (Windows Toast / macOS / Linux)
+        - 音效提醒
+        - Terminal Bell
+
+        讓使用者可以放心做其他事，完成後會收到通知！
+        """
+        try:
+            from ...services.notifier import done as notify_done
+
+            result = notify_done(task_name=task_name, success=success, details=details)
+            return create_success_result(
+                message=f"🔔 已發送通知: {result['title']}",
+                data=result,
+            )
+        except ImportError:
+            # Fallback: simple terminal bell
+            print("\a", end="", flush=True)
+            return create_success_result(
+                message=f"🔔 Terminal Bell: {task_name} {'✅ Complete' if success else '❌ Failed'}",
+                data={"fallback": True},
+            )
+        except Exception as e:
+            return create_error_result(f"❌ 通知失敗: {str(e)}")
+
     return {
         "boring_test_gen": boring_test_gen,
         "boring_code_review": boring_code_review,
@@ -1552,4 +1633,6 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         "boring_predict_errors": boring_predict_errors,
         "boring_health_score": boring_health_score,
         "boring_optimize_context": boring_optimize_context,
+        # V12.2 BoringDone
+        "boring_done": boring_done,
     }

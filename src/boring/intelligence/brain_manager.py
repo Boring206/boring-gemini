@@ -115,6 +115,31 @@ class BrainManager:
 
         self.log_dir = log_dir or self.project_root / "logs"
 
+        # Subdirectories (Keep for backward compatibility)
+        (self.brain_dir / "patterns").mkdir(exist_ok=True)
+        (self.brain_dir / "rubrics").mkdir(exist_ok=True)
+
+        # [ONE DRAGON GAP FIX] Phase 4.1: Inverted Index Integration
+        from .search import InvertedIndex
+        self.index = InvertedIndex()
+
+        # V12.4: Audit Logger
+        try:
+            from ..services.audit import AuditLogger
+            self.audit = AuditLogger(self.project_root)
+        except ImportError:
+            self.audit = None
+
+        # Phase 2.1: Semantic Pattern Search (Vector Store)
+        self.vector_store = None
+        self.embedding_function = None
+        self.vector_store_client = None  # Added from snippet
+        self.faiss_index = None
+        self.faiss_patterns = []
+        self._init_vector_store()
+
+        self._rebuild_index() # Populate index from storage
+
         # Subdirectories (Keep for backward compatibility during migration)
         self.adaptations_dir = self.brain_dir / "workflow_adaptations"
         self.patterns_dir = self.brain_dir / "learned_patterns"
@@ -125,6 +150,96 @@ class BrainManager:
 
         # Auto-migrate if legacy patterns exist but DB is empty
         self._migrate_to_sqlite()
+
+
+    def _init_vector_store(self):
+        """Initialize ChromaDB or FAISS for semantic search if available."""
+        # 1. Try ChromaDB first
+        try:
+            import chromadb
+            from chromadb.utils import embedding_functions
+
+            db_path = self.project_root / ".boring" / "vector_store"
+            self.chroma_client = chromadb.PersistentClient(path=str(db_path))
+            self.embedding_function = embedding_functions.DefaultEmbeddingFunction()
+
+            self.vector_store = self.chroma_client.get_or_create_collection(
+                name="boring_brain_patterns",
+                embedding_function=self.embedding_function,
+                metadata={"description": "Boring Brain Semantic Patterns"},
+            )
+            log_status(self.log_dir, "INFO", "Brain Memory: Vector Search Enabled (ChromaDB)")
+            return
+        except ImportError:
+            pass
+        except Exception as e:
+            log_status(self.log_dir, "WARNING", f"Brain Memory: ChromaDB Init Failed: {e}")
+
+        # 2. Fallback to FAISS
+        try:
+            import faiss  # noqa: F401
+            import numpy as np  # noqa: F401
+            from sentence_transformers import SentenceTransformer  # noqa: F401
+
+            # Use sentence-transformers for local embeddings
+            self.embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+            # Dimension for all-MiniLM-L6-v2 is 384
+            self.faiss_index = faiss.IndexFlatL2(384)
+            log_status(self.log_dir, "INFO", "Brain Memory: Vector Search Enabled (FAISS)")
+        except ImportError:
+            log_status(
+                self.log_dir,
+                "WARNING",
+                "Brain Memory: Vector Search Disabled (ChromaDB/FAISS not found).",
+            )
+        except Exception as e:
+            log_status(self.log_dir, "ERROR", f"Brain Memory: FAISS Init Failed: {e}")
+
+    def _rebuild_index(self):
+        """Load persistent patterns into the inverted index and vector store."""
+
+        try:
+            # Query all patterns from SQLite
+            patterns = self.storage.get_patterns(limit=1000)
+
+            # Prepare vector batch
+            ids = []
+            documents = []
+            metadatas = []
+
+            for p in patterns:
+                # p is dict with 'pattern_id', 'description', 'solution'
+                content = f"{p.get('description', '')} {p.get('solution', '')} {p.get('context', '')}"
+                self.index.add_document(p.get('pattern_id'), content, metadata=p)
+
+                if self.vector_store or self.faiss_index:
+                    ids.append(p.get('pattern_id'))
+                    documents.append(content)
+                    # Helper to filter None values for metadata (Chroma requires it)
+                    clean_meta = {k: v for k, v in p.items() if v is not None and isinstance(v, (str, int, float, bool))}
+                    metadatas.append(clean_meta)
+
+            # Batch upsert to Chroma/FAISS
+            if (self.vector_store or self.faiss_index) and ids:
+                try:
+                    if self.vector_store:
+                        self.vector_store.upsert(ids=ids, documents=documents, metadatas=metadatas)
+                    elif self.faiss_index:
+                        import numpy as np
+
+                        embeddings = self.embedding_model.encode(documents)
+                        self.faiss_index.add(np.array(embeddings).astype("float32"))
+                        self.faiss_patterns = patterns  # Store patterns for FAISS retrieval
+
+                    log_status(
+                        self.log_dir, "INFO", f"Brain Memory: Indexed {len(ids)} patterns."
+                    )
+                except Exception as e:
+                    log_status(self.log_dir, "ERROR", f"Brain Memory: Vector Upsert Failed: {e}")
+
+        except Exception as e:
+            # Silent fail on index rebuild if storage not ready
+            log_status(self.log_dir, "WARNING", f"Brain Index Rebuild Warning: {e}")
 
     def _ensure_structure(self):
         """Create directory structure if not exists."""
@@ -180,12 +295,41 @@ class BrainManager:
 
         return patterns
 
+    def _sync_patterns_to_vector(self, patterns: list[dict]):
+        """Sync a list of patterns to the vector store."""
+        if (not self.vector_store and not self.faiss_index) or not patterns:
+            return
+
+        try:
+            ids = []
+            documents = []
+            metadatas = []
+
+            for p in patterns:
+                content = f"{p.get('description', '')} {p.get('solution', '')} {p.get('context', '')}"
+                ids.append(p.get('pattern_id'))
+                documents.append(content)
+                # Helper to filter None values for metadata
+                clean_meta = {k: v for k, v in p.items() if v is not None and isinstance(v, (str, int, float, bool))}
+                metadatas.append(clean_meta)
+
+            if self.vector_store:
+                self.vector_store.upsert(ids=ids, documents=documents, metadatas=metadatas)
+            elif self.faiss_index:
+                import numpy as np
+                embeddings = self.embedding_model.encode(documents)
+                self.faiss_index.add(np.array(embeddings).astype("float32"))
+                self.faiss_patterns.extend(patterns)
+        except Exception as e:
+            log_status(self.log_dir, "ERROR", f"Brain Memory: Vector Sync Failed: {e}")
+
     def _save_patterns(self, patterns: list[dict]):
         """Legacy save method (Deprecated). Now saves to SQLite."""
         # For compatibility with existing methods that might modify local list and call save.
         # Ideally, we should update those methods to call upsert directly.
         for p in patterns:
             self.storage.upsert_pattern(p)
+
 
     def learn_from_memory(self, storage: Any) -> dict[str, Any]:
         """
@@ -209,6 +353,7 @@ class BrainManager:
             # Extract patterns
             patterns = self._load_patterns()
             new_count = 0
+            updated_patterns_cache = []
 
             for err in solved_patterns:
                 pattern_id = f"ERR_{err['error_type'][:20]}"
@@ -219,6 +364,7 @@ class BrainManager:
                     # Update success count
                     existing[0]["success_count"] = existing[0].get("success_count", 0) + 1
                     existing[0]["last_used"] = datetime.now().isoformat()
+                    updated_patterns_cache.append(existing[0])
                 else:
                     # Create new pattern
                     new_pattern = LearnedPattern(
@@ -232,9 +378,13 @@ class BrainManager:
                         last_used=datetime.now().isoformat(),
                     )
                     patterns.append(asdict(new_pattern))
+                    updated_patterns_cache.append(asdict(new_pattern))
                     new_count += 1
 
             self._save_patterns(patterns)
+
+            # Sync to Vector Store
+            self._sync_patterns_to_vector(updated_patterns_cache)
 
             log_status(
                 self.log_dir, "INFO", f"Learned {new_count} new patterns, total: {len(patterns)}"
@@ -325,49 +475,102 @@ class BrainManager:
         self.storage.upsert_pattern(pattern)
         log_status(self.log_dir, "INFO", f"{status} pattern: {pattern_id}")
 
+        if self.audit:
+            self.audit.log(
+                event_type="PATTERN_LEARNED",
+                resource=pattern_id,
+                action="UPDATE" if status == "UPDATED" else "CREATE",
+                details={"type": pattern_type, "desc": description[:50]}
+            )
+
         return {"status": status, "pattern_id": pattern_id}
 
     def get_relevant_patterns(self, context: str, limit: int = 5) -> list[dict]:
         """
-        Get patterns relevant to given context (SQLite optimized).
+        Get patterns relevant to given context (Vector Search > Keyword Search).
         """
         if not context:
             return self.storage.get_patterns(limit=limit)
 
-        # 1. Try SQL-based filtering first (fast)
-        patterns = self.storage.get_patterns(context_like=context, limit=limit * 2)
+        results = []
 
-        # 2. If SQL didn't return enough (fuzzy match limitation), or we want better ranking:
-        # Re-rank strictly in python if needed.
-        # The SQL 'LIKE' is crude.
-        # Let's do a refined ranking on the SQL results.
+        # 1. Try Vector Search (Semantic)
+        if self.vector_store:
+            try:
+                # Query Chroma
+                vector_results = self.vector_store.query(query_texts=[context], n_results=limit)
 
-        scored = []
-        context_lower = context.lower()
+                if (
+                    vector_results
+                    and vector_results["metadatas"]
+                    and vector_results["metadatas"][0]
+                ):
+                    return vector_results["metadatas"][0]
+            except Exception as e:
+                log_status(
+                    self.log_dir, "WARNING", f"Chroma Search Failed: {e}. Falling back."
+                )
 
-        for p in patterns:
-            score = 0.0
-            p_context = p.get("context", "").lower()
-            p_desc = p.get("description", "").lower()
+        # 2. Try FAISS Search
+        if self.faiss_index:
+            try:
+                import numpy as np
 
-            # Exact substring bonus
-            if context_lower in p_context:
-                score += 3.0
-            if context_lower in p_desc:
-                score += 2.0
+                query_vector = self.embedding_model.encode([context])
+                distances, indices = self.faiss_index.search(
+                    np.array(query_vector).astype("float32"), limit
+                )
 
-            # Context is substring of Query (Reflexive)
-            if p_context and len(p_context) > 5 and p_context in context_lower:
-                score += 3.0
+                results = []
+                for idx in indices[0]:
+                    if 0 <= idx < len(self.faiss_patterns):
+                        results.append(self.faiss_patterns[idx])
+                if results:
+                    return results
+            except Exception as e:
+                log_status(self.log_dir, "WARNING", f"FAISS Search Failed: {e}. Falling back.")
 
-            scored.append((score, p))
+        # 3. Fallback to Inverted Index (Keyword)
+        index_results = self.index.search(context, limit=limit)
+        if index_results:
+            return [r["metadata"] for r in index_results]
 
-        scored.sort(key=lambda x: x[0], reverse=True)
+        # 4. Last Resort: SQL LIKE
+        return self.storage.get_patterns(context_like=context, limit=limit)
 
-        # If we have very few results from strict LIKE, maybe fallback?
-        # For now, this is "Brain Scalability" phase, so SQL usage is priority.
+    def get_relevant_patterns_embedding(self, context: str, limit: int = 5) -> list[dict]:
+        """
+        Force semantic search for patterns (Embedding only).
+        """
+        # 1. Try Chroma
+        if self.vector_store:
+            try:
+                vector_results = self.vector_store.query(query_texts=[context], n_results=limit)
+                if (
+                    vector_results
+                    and vector_results["metadatas"]
+                    and vector_results["metadatas"][0]
+                ):
+                    return vector_results["metadatas"][0]
+            except Exception:
+                pass
 
-        return [p for _, p in scored[:limit]]
+        # 2. Try FAISS
+        if self.faiss_index:
+            try:
+                import numpy as np
+
+                query_vector = self.embedding_model.encode([context])
+                _, indices = self.faiss_index.search(np.array(query_vector).astype("float32"), limit)
+                results = []
+                for idx in indices[0]:
+                    if 0 <= idx < len(self.faiss_patterns):
+                        results.append(self.faiss_patterns[idx])
+                return results
+            except Exception:
+                pass
+
+        return []
 
     def create_rubric(self, name: str, description: str, criteria: list[dict]) -> dict[str, Any]:
         """
@@ -649,6 +852,10 @@ class BrainManager:
                 existing["solution"] = solution
 
             self._save_patterns(patterns)
+
+            # Sync to Vector Store
+            self._sync_patterns_to_vector([existing])
+
             return {
                 "status": "UPDATED",
                 "pattern_id": pattern_id,
@@ -671,6 +878,9 @@ class BrainManager:
         )
         patterns.append(asdict(new_pattern))
         self._save_patterns(patterns)
+
+        # Sync to Vector Store
+        self._sync_patterns_to_vector([asdict(new_pattern)])
 
         return {"status": "SUCCESS", "pattern_id": pattern_id, "total_patterns": len(patterns)}
 
@@ -744,6 +954,10 @@ class BrainManager:
             "remaining": len(patterns_to_keep),
         }
 
+    def is_classic_knowledge(self, pattern: dict) -> bool:
+        """Check if pattern is 'Classic Knowledge' (High Success) and should be immortal."""
+        return pattern.get("success_count", 0) > 10
+
     def update_pattern_decay(self) -> dict[str, Any]:
         """V10.23: Update decay scores for all patterns based on usage recency."""
         patterns = self._load_patterns()
@@ -751,6 +965,13 @@ class BrainManager:
         now = datetime.now()
 
         for p in patterns:
+            # Skip if Classic Knowledge (Immortal)
+            if self.is_classic_knowledge(p):
+                if p.get("decay_score", 1.0) < 1.0:
+                     p["decay_score"] = 1.0
+                     updated_count += 1
+                continue
+
             last_used_str = p.get("last_used")
             if not last_used_str:
                 continue
@@ -769,6 +990,7 @@ class BrainManager:
 
         if updated_count > 0:
             self._save_patterns(patterns)
+
 
         return {"status": "SUCCESS", "updated": updated_count}
 
@@ -1179,6 +1401,40 @@ class GlobalKnowledgeStore:
         patterns.append(asdict(new_pattern))
         self._save_global_patterns(patterns)
         return {"status": "CREATED", "pattern_id": pattern_id}
+
+    def get_relevant_patterns_embedding(self, context: str, limit: int = 5) -> list[dict]:
+        """
+        Force semantic search for patterns (Embedding only).
+        """
+        # 1. Try Chroma
+        if self.vector_store:
+            try:
+                vector_results = self.vector_store.query(query_texts=[context], n_results=limit)
+                if (
+                    vector_results
+                    and vector_results["metadatas"]
+                    and vector_results["metadatas"][0]
+                ):
+                    return vector_results["metadatas"][0]
+            except Exception:
+                pass
+
+        # 2. Try FAISS
+        if self.faiss_index:
+            try:
+                import numpy as np
+
+                query_vector = self.embedding_model.encode([context])
+                _, indices = self.faiss_index.search(np.array(query_vector).astype("float32"), limit)
+                results = []
+                for idx in indices[0]:
+                    if 0 <= idx < len(self.faiss_patterns):
+                        results.append(self.faiss_patterns[idx])
+                return results
+            except Exception:
+                pass
+
+        return []
 
     def get_brain_health_report(self) -> str:
         """V10.23: Get a human-readable health report for the global brain."""

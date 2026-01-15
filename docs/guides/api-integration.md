@@ -38,25 +38,19 @@ new_pattern = LearnedPattern(
 brain.learn_pattern(new_pattern)
 ```
 
-### 2. Vector Memory (VectorMemory)
+### 2. Hybrid RAG (RAGRetriever)
 
-If your environment supports ChromaDB, use `VectorMemory` for semantic search.
+Use the high-level `RAGRetriever` for semantic search and dependency expansion.
 
 ```python
-from boring.intelligence.vector_memory import VectorMemory
+from boring.rag.rag_retriever import RAGRetriever
 
-memory = VectorMemory(persist_path="./.boring/brain/vector_store")
-
-# Store experience
-memory.add_experience(
-    text="Use Context Managers for file I/O to ensure closure",
-    metadata={"tag": "best_practice", "lang": "python"}
-)
+retriever = RAGRetriever(project_path=".")
 
 # Semantic Search (RAG)
-results = memory.search("safe file handling", n_results=3)
+results = retriever.search("safe file handling", top_k=3)
 for res in results:
-    print(f"Found: {res.text}")
+    print(f"Found in {res['path']}: {res['snippet']}")
 ```
 
 ---

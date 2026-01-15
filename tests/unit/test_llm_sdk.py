@@ -2,6 +2,7 @@
 Unit tests for boring.llm.sdk module.
 """
 
+import os
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -39,12 +40,17 @@ class TestGeminiClient:
     def test_init_without_api_key_cli_available(self, temp_project):
         """Test initialization without API key but CLI available."""
         with (
+            patch("boring.llm.sdk.settings") as mock_settings,
             patch("boring.llm.sdk.GENAI_AVAILABLE", True),
             patch("boring.cli_client.check_cli_available", return_value=True),
             patch("boring.cli_client.GeminiCLIAdapter") as mock_adapter,
             patch("boring.llm.sdk.get_boring_tools", return_value=[]),
             patch("boring.llm.sdk.log_status"),
+            patch("boring.llm.sdk.os.environ", {"PATH": os.environ.get("PATH", "")}),
+            patch("boring.cli.cli_client.shutil.which", return_value="/mock/gemini"),
         ):
+            mock_settings.GOOGLE_API_KEY = None
+            mock_settings.OFFLINE_MODE = False
             mock_adapter_instance = MagicMock()
             mock_adapter.return_value = mock_adapter_instance
 

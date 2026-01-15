@@ -255,3 +255,21 @@ class NodeManager:
         except Exception as e:
             console.print(f"[red]Error during gemini-cli installation: {e}[/red]")
             return False
+            return False
+
+    def run_gemini_login(self) -> bool:
+        """Run interactive gemini login."""
+        gemini_path = self.get_gemini_path()
+        if not gemini_path:
+            console.print("[red]Gemini CLI not found.[/red]")
+            return False
+
+        console.print("[bold blue]Launching Gemini Login (Browser)...[/bold blue]")
+        try:
+            # Interactive subprocess
+            subprocess.run([gemini_path, "login"], check=True)
+            console.print("[green]✅ Authenticated successfully![/green]")
+            return True
+        except Exception as e:
+            console.print(f"[red]Login failed: {e}[/red]")
+            return False

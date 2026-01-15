@@ -1,6 +1,6 @@
 # Appendix A: Complete MCP Tool Reference
 
-> **Total Tools**: 98+ tools organized into 19 categories.
+> **Total Tools**: 60+ tools organized into 19 categories.
 > **Version**: V11.3.0 (Full-Power Update)
 >
 > **💡 Recommendation**: Use the Universal Router (`boring()`) or CLI (`boring-route`) for most tasks. You rarely need to call these tools directly.
