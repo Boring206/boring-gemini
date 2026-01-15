@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Autonomous AI Development Agent with Vibe Coder">
+        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V12.0.0)">
       
       
         <meta name="author" content="Boring206">
@@ -364,7 +364,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../changelog/v11/" class="md-tabs__link">
+        <a href="../../changelog/v12/" class="md-tabs__link">
           
   
   
@@ -1953,6 +1953,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../changelog/v12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V12 (Current)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/v12_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V12 (繁中)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../changelog/v11/" class="md-nav__link">
         
   
@@ -1960,7 +2016,7 @@
   <span class="md-ellipsis">
     
   
-    V11 (Current)
+    V11
   
 
     
@@ -2126,10 +2182,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-vectormemory" class="md-nav__link">
+  <a href="#2-rag-ragretriever" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. 向量記憶 (VectorMemory)
+        2. 混合 RAG (RAGRetriever)
       
     </span>
   </a>
@@ -2258,22 +2314,16 @@
 </span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="p">)</span>
 </span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="n">brain</span><span class="o">.</span><span class="n">learn_pattern</span><span class="p">(</span><span class="n">new_pattern</span><span class="p">)</span>
 </span></code></pre></div>
-<h3 id="2-vectormemory">2. 向量記憶 (VectorMemory)</h3>
-<p>如果您的環境支援 ChromaDB，可以使用 <code>VectorMemory</code> 進行語義搜索。</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">boring.intelligence.vector_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">VectorMemory</span>
+<h3 id="2-rag-ragretriever">2. 混合 RAG (RAGRetriever)</h3>
+<p>使用高階的 <code>RAGRetriever</code> 進行語義搜尋與依賴擴展。</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">boring.rag.rag_retriever</span><span class="w"> </span><span class="kn">import</span> <span class="n">RAGRetriever</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">memory</span> <span class="o">=</span> <span class="n">VectorMemory</span><span class="p">(</span><span class="n">persist_path</span><span class="o">=</span><span class="s2">&quot;./.boring/brain/vector_store&quot;</span><span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">retriever</span> <span class="o">=</span> <span class="n">RAGRetriever</span><span class="p">(</span><span class="n">project_path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># 儲存經驗</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">memory</span><span class="o">.</span><span class="n">add_experience</span><span class="p">(</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Use Context Managers for file I/O to ensure closure&quot;</span><span class="p">,</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tag&quot;</span><span class="p">:</span> <span class="s2">&quot;best_practice&quot;</span><span class="p">,</span> <span class="s2">&quot;lang&quot;</span><span class="p">:</span> <span class="s2">&quot;python&quot;</span><span class="p">}</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">)</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1"># 語義搜索 (RAG)</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">results</span> <span class="o">=</span> <span class="n">memory</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;safe file handling&quot;</span><span class="p">,</span> <span class="n">n_results</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found: </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># 語義搜尋 (RAG)</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">results</span> <span class="o">=</span> <span class="n">retriever</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;safe file handling&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found in </span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;snippet&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <hr />
 <h2 id="judge-api">⚖️ Judge API (評估與準則)</h2>

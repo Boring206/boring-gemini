@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Autonomous AI Development Agent with Vibe Coder">
+        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V12.0.0)">
       
       
         <meta name="author" content="Boring206">
@@ -364,7 +364,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../changelog/v11/" class="md-tabs__link">
+        <a href="../../changelog/v12/" class="md-tabs__link">
           
   
   
@@ -1953,6 +1953,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../changelog/v12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V12 (Current)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/v12_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V12 (繁中)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../changelog/v11/" class="md-nav__link">
         
   
@@ -1960,7 +2016,7 @@
   <span class="md-ellipsis">
     
   
-    V11 (Current)
+    V11
   
 
     
@@ -2342,15 +2398,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#patterns-autolearner-active-recall" class="md-nav__link">
+  <a href="#patterns-feedbacklearner-active-recall" class="md-nav__link">
     <span class="md-ellipsis">
       
-        📚 Patterns, AutoLearner 與 Active Recall
+        📚 Patterns, FeedbackLearner 與 Active Recall
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="📚 Patterns, AutoLearner 與 Active Recall">
+    <nav class="md-nav" aria-label="📚 Patterns, FeedbackLearner 與 Active Recall">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2663,7 +2719,7 @@
 <li><strong>重建</strong>：如果缺失則自動建立</li>
 </ul>
 <hr />
-<h2 id="patterns-autolearner-active-recall">📚 Patterns, AutoLearner 與 Active Recall</h2>
+<h2 id="patterns-feedbacklearner-active-recall">📚 Patterns, FeedbackLearner 與 Active Recall</h2>
 <h3 id="active-recall">認知反射 (Active Recall)</h3>
 <p>從 <strong>V10.31</strong> 開始，Agent 具備了 <strong>Active Recall（主動回想）</strong> 能力。當遇到錯誤（如 <code>pytest</code> 失敗）時，它不會只是「重試」，而是會查詢全域 Brain 尋找類似的過去錯誤並檢索已驗證的解決方案。</p>
 <p><strong>流程:</strong>
@@ -2673,7 +2729,7 @@
 4.  <strong>解決方案注入</strong>: 如果找到高信心的匹配（如 95%），解決方案將直接注入 Agent 上下文中。</p>
 <h3 id="patterns">Patterns 如何學習</h3>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>│  AI 回應     │ ──▶ │ AutoLearner  │ ──▶ │  Pattern DB  │
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>│  AI 回應     │ ──▶ │FeedbackLearner│ ──▶ │  Pattern DB  │
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>│ &quot;透過 X 修復&quot; │     │   (提取)     │     │(.boring/brain)│
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>└──────────────┘     └──────────────┘     └──────────────┘
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>                             │

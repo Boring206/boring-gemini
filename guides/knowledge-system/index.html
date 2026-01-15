@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Autonomous AI Development Agent with Vibe Coder">
+        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V12.0.0)">
       
       
         <meta name="author" content="Boring206">
@@ -364,7 +364,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../changelog/v11/" class="md-tabs__link">
+        <a href="../../changelog/v12/" class="md-tabs__link">
           
   
   
@@ -1953,6 +1953,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../changelog/v12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V12 (Current)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/v12_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V12 (繁中)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../changelog/v11/" class="md-nav__link">
         
   
@@ -1960,7 +2016,7 @@
   <span class="md-ellipsis">
     
   
-    V11 (Current)
+    V11
   
 
     
@@ -2342,15 +2398,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#patterns-autolearner-active-recall" class="md-nav__link">
+  <a href="#patterns-feedbacklearner-active-recall" class="md-nav__link">
     <span class="md-ellipsis">
       
-        📚 Patterns, AutoLearner &amp; Active Recall
+        📚 Patterns, FeedbackLearner &amp; Active Recall
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="📚 Patterns, AutoLearner &amp; Active Recall">
+    <nav class="md-nav" aria-label="📚 Patterns, FeedbackLearner &amp; Active Recall">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2663,7 +2719,7 @@
 <li><strong>Regeneration</strong>: Automatic if missing</li>
 </ul>
 <hr />
-<h2 id="patterns-autolearner-active-recall">📚 Patterns, AutoLearner &amp; Active Recall</h2>
+<h2 id="patterns-feedbacklearner-active-recall">📚 Patterns, FeedbackLearner &amp; Active Recall</h2>
 <h3 id="cognitive-reflexes-active-recall">Cognitive Reflexes (Active Recall)</h3>
 <p>Starting in <strong>V10.31</strong>, the Agent possesses <strong>Active Recall</strong>. When it encounters an error (e.g., <code>pytest</code> failure), it doesn't just "try again." It queries the global Brain for similar past errors and retrieves proven solutions.</p>
 <p><strong>Flow:</strong>
@@ -2673,7 +2729,7 @@
 4.  <strong>Solution Injection</strong>: If a high-confidence match (e.g., 95%) is found, the solution is injected directly into the Agent's context.</p>
 <h3 id="how-patterns-are-learned">How Patterns Are Learned</h3>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>│ AI Response  │ ──▶ │ AutoLearner  │ ──▶ │ Pattern DB   │
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>│ AI Response  │ ──▶ │FeedbackLearner│ ──▶ │ Pattern DB   │
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>│ &quot;Fixed by X&quot; │     │ (extraction) │     │ (.boring/brain)│
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>└──────────────┘     └──────────────┘     └──────────────┘
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>                             │
