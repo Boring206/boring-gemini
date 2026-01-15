@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V12.1.2)">
+        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V13.0.0)">
       
       
         <meta name="author" content="Boring206">
@@ -364,7 +364,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../changelog/v12/" class="md-tabs__link">
+        <a href="../../changelog/v13/" class="md-tabs__link">
           
   
   
@@ -1129,7 +1129,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../skills_guide/" class="md-nav__link">
+      <a href="../skills_guide_zh/" class="md-nav__link">
         
   
   
@@ -1137,6 +1137,34 @@
     
   
     🎓 Skills 指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pro-tips_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    💡 專業技巧
   
 
     
@@ -1953,6 +1981,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../changelog/v13/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V13 (Current)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/v13_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V13 (繁中)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../changelog/v12/" class="md-nav__link">
         
   
@@ -1960,7 +2044,7 @@
   <span class="md-ellipsis">
     
   
-    V12 (Current)
+    V12
   
 
     
@@ -2459,6 +2543,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#boringdone-notifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔔 BoringDone Notifications
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔔 BoringDone Notifications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tip-20-completion-notifications-v122" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tip 20: Completion Notifications (V12.2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#see-also" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2653,6 +2765,17 @@ Automatically fixes all linting errors, import sorting, and formatting issues.</
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># Scan before commit</span>
 </span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>boring_security_scan<span class="w"> </span>--scan-type<span class="w"> </span>secrets
 </span></code></pre></div>
+<hr />
+<h2 id="boringdone-notifications">🔔 BoringDone Notifications</h2>
+<h3 id="tip-20-completion-notifications-v122">Tip 20: Completion Notifications (V12.2)</h3>
+<p>Get notified when AI tasks complete, so you don't have to watch the screen!</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># AI automatically notifies you when a task is done</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">boring_done</span><span class="p">(</span><span class="n">task_name</span><span class="o">=</span><span class="s2">&quot;Code Review&quot;</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></code></pre></div>
+<p><strong>Automatic Integrations</strong>:
+- ✅ <code>FlowEngine</code> completion
+- ✅ <code>AgentLoop</code> completion
+- ✅ <code>boring verify</code> completion</p>
 <hr />
 <h2 id="see-also">See Also</h2>
 <ul>

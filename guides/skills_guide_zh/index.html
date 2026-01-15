@@ -6,13 +6,17 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V12.1.2)">
+        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V13.0.0)">
       
       
         <meta name="author" content="Boring206">
       
       
       
+        <link rel="prev" href="../human-alignment_zh/">
+      
+      
+        <link rel="next" href="../pro-tips_zh/">
       
       
         
@@ -23,7 +27,7 @@
     
     
       
-        <title>技能管理指南 (Skill Management) - Boring-Gemini</title>
+        <title>🎓 Skills 指南 - Boring-Gemini</title>
       
     
     
@@ -76,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#skill-management" class="md-skip">
+        <a href="#agent-skills-universal-system" class="md-skip">
           跳轉至
         </a>
       
@@ -110,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              技能管理指南 (Skill Management)
+              🎓 Skills 指南
             
           </span>
         </div>
@@ -280,10 +284,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../cookbook_zh/" class="md-tabs__link">
           
   
@@ -364,7 +370,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../changelog/v12/" class="md-tabs__link">
+        <a href="../../changelog/v13/" class="md-tabs__link">
           
   
   
@@ -934,26 +940,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -971,7 +982,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1126,10 +1137,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../skills_guide/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🎓 Skills 指南
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1137,6 +1175,193 @@
     
   
     🎓 Skills 指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目錄">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目錄
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        概覽
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="概覽">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        主要功能
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#universal-skill-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        通用技能結構 (Universal Skill Structure)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="通用技能結構 (Universal Skill Structure)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#openai-codex-skillsmp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        進階目錄結構 (OpenAI Codex / SkillsMP 相容)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        管理技能
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="管理技能">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 發現技能
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 建立技能
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-app-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 下載技能 ("App Store")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 直接激活
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        最佳實踐
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#legacy-catalog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        舊版目錄 (Legacy Catalog)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pro-tips_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    💡 專業技巧
   
 
     
@@ -1953,6 +2178,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../changelog/v13/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V13 (Current)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/v13_zh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V13 (繁中)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../changelog/v12/" class="md-nav__link">
         
   
@@ -1960,7 +2241,7 @@
   <span class="md-ellipsis">
     
   
-    V12 (Current)
+    V12
   
 
     
@@ -2151,19 +2432,47 @@
   <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🏗️ 技能系統概念
+        概覽
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="🏗️ 技能系統概念">
+    <nav class="md-nav" aria-label="概覽">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        技能類型
+        主要功能
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#universal-skill-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        通用技能結構 (Universal Skill Structure)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="通用技能結構 (Universal Skill Structure)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#openai-codex-skillsmp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        進階目錄結構 (OpenAI Codex / SkillsMP 相容)
       
     </span>
   </a>
@@ -2179,19 +2488,19 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        📦 如何安裝技能
+        管理技能
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="📦 如何安裝技能">
+    <nav class="md-nav" aria-label="管理技能">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. 搜尋目錄
+        1. 發現技能
       
     </span>
   </a>
@@ -2202,7 +2511,7 @@
   <a href="#2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. 安裝技能
+        2. 建立技能
       
     </span>
   </a>
@@ -2210,10 +2519,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3" class="md-nav__link">
+  <a href="#3-app-store" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. 使用技能
+        3. 下載技能 ("App Store")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 直接激活
       
     </span>
   </a>
@@ -2226,21 +2546,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#roadmap" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🌐 從網路安裝 (Roadmap)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🏆 推薦技能
+        最佳實踐
       
     </span>
   </a>
@@ -2248,10 +2557,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#legacy-catalog" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ❓ 常見問題
+        舊版目錄 (Legacy Catalog)
       
     </span>
   </a>
@@ -2278,80 +2587,83 @@
   
 
 
-<h1 id="skill-management">技能管理指南 (Skill Management)</h1>
-<blockquote>
-<p><strong>學習如何擴充 Boring 的能力 (MCP Servers 與 Templates)。</strong></p>
-</blockquote>
-<hr />
-<h2 id="_1">🏗️ 技能系統概念</h2>
-<p>Boring 的「技能系統」允許您動態注入新工具。將其視為「外掛」或「擴充套件」，讓您的 Agent 獲得新超能力。</p>
-<h3 id="_2">技能類型</h3>
+<h1 id="agent-skills-universal-system">Agent Skills 指南 (Universal System)</h1>
+<h2 id="_1">概覽</h2>
+<p>Boring V12.3 推出了 <strong>通用技能系統 (Universal Skills System, BUSS)</strong>。此系統統一了跨多個 AI 平台的技能管理，讓您可以在 <strong>Gemini CLI</strong>、<strong>Claude Code</strong>、<strong>Antigravity</strong> 和 <strong>Boring Flow</strong> 中使用相同的技能。</p>
+<h3 id="_2">主要功能</h3>
 <ol>
-<li><strong>MCP Servers</strong>：完整的 Python 套件，增加新工具 (例如 <code>google-maps</code>, <code>slack-integration</code>)。</li>
-<li><strong>Templates</strong>：結構化的提示詞 (Markdown 檔案)，教會 Boring 扮演特定角色 (例如 <code>Architect</code>, <code>Security Auditor</code>)。</li>
+<li><strong>一次編寫，處處運行</strong>：使用標準 Markdown (<code>SKILL.md</code>) 編寫的技能可在所有支援的平台上運作。</li>
+<li><strong>本地「大腦」</strong>：技能儲存在您的專案本地，賦予 Agent 持久且專屬於專案的專業知識。</li>
+<li><strong>自動同步</strong>：透過 Boring 建立或下載的技能會自動同步到 <code>.gemini/skills</code> 和 <code>.claude/skills</code> 目錄。</li>
+<li><strong>Flow 整合</strong>：Boring Flow Engine 在自主執行期間會自動發現並使用這些技能。</li>
 </ol>
 <hr />
-<h2 id="_3">📦 如何安裝技能</h2>
-<p><strong>當前狀態 (v12.1.2)</strong>：為了安全考量，僅限安裝 <strong>官方驗證目錄 (Verified Catalog)</strong> 中的技能。</p>
-<h3 id="1">1. 搜尋目錄</h3>
-<p>使用 <code>boring_skills_search</code> 查找可用資源：</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># 在對話窗中說：</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="s2">&quot;搜尋 web 相關的技能&quot;</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># 或列出全部：</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="s2">&quot;列出所有可用技能&quot;</span>
+<h2 id="universal-skill-structure">通用技能結構 (Universal Skill Structure)</h2>
+<p>通用技能只是一個包含帶有 YAML 前言 (frontmatter) 標頭的 <code>SKILL.md</code> 檔案的目錄。</p>
+<p><strong>檔案路徑</strong>：<code>.boring/skills/my-skill/SKILL.md</code></p>
+<div class="language-markdown highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>---
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>name: my-skill
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gu">description: 清楚描述此技能的功能。Agent 會使用此描述來決定何時激活它。</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gu">---</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gh"># 我的技能標題</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gu">## 指引 (Instructions)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="k">1.</span> 步驟一...
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">2.</span> 步驟二...
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gu">## 規則 (Rules)</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="k">-</span><span class="w"> </span>務必做 X...
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="k">-</span><span class="w"> </span>絕不做 Y...
 </span></code></pre></div>
-<h3 id="2">2. 安裝技能</h3>
-<p>知道名稱後，一鍵安裝：</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># 指令：</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="s2">&quot;安裝 awesome-gemini-extensions&quot;</span>
+<h3 id="openai-codex-skillsmp">進階目錄結構 (OpenAI Codex / SkillsMP 相容)</h3>
+<p>對於更複雜的技能，您可以使用 Boring 自動偵測的標準目錄結構：</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>my-skill/
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── SKILL.md        (必要：指引與元數據)
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├── scripts/        (可選：可執行的 Python/Bash 腳本)
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>├── references/     (可選：PDF/文字文件)
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>└── assets/         (可選：範本、圖片、資源)
 </span></code></pre></div>
-<h3 id="3">3. 使用技能</h3>
-<p>新工具會自動註冊。您可以立刻說：
-"使用 google 搜尋工具來找..."</p>
+<p><strong>Boring 會自動公開：</strong>
+- <code>scripts/</code> 中的腳本會列在激活提示詞 (prompt) 中。
+- <code>references/</code> 中的文件會列為可用的上下文。</p>
 <hr />
-<h2 id="roadmap">🌐 從網路安裝 (Roadmap)</h2>
+<h2 id="_3">管理技能</h2>
+<h3 id="1">1. 發現技能</h3>
+<p>Boring 會自動掃描以下目錄中的技能：
+- <code>.boring/skills/</code> (主要樞紐 Hub)
+- <code>.antigravity/skills/</code>
+- <code>.gemini/skills/</code>
+- <code>.claude/skills/</code></p>
+<p>使用指令 (或讓 Agent 使用)：
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">boring_skill_discover</span><span class="p">()</span>
+</span></code></pre></div></p>
+<h3 id="2">2. 建立技能</h3>
+<p>您可以要求 Agent 為您建立技能：</p>
 <blockquote>
-<p><strong>「我可以從網址抓取技能嗎？」</strong></p>
+<p>"Create a skill for reviewing python code security" (建立一個審查 python 代碼安全的技能)</p>
 </blockquote>
-<p><strong>V12.1.2 (目前)</strong>：為了確保穩定性與安全性 (<strong>Honest by Design</strong>)，<strong>直接網址安裝功能暫未開放</strong>。您只能安裝經過審核並加入 <code>skills_catalog.py</code> 的技能。</p>
-<p><strong>V12.2 (未來)</strong>：我們正在開發 <code>白名單 (Allow-List)</code> 機制，屆時將允許從受信任的 GitHub URL 安裝：
-<code>boring skills install https://github.com/user/my-skill</code></p>
+<p>或者使用上面的範本手動建立。</p>
+<h3 id="3-app-store">3. 下載技能 ("App Store")</h3>
+<p>您可以從受信任的社群存儲庫下載經過驗證的技能：</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">boring_skill_download</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://github.com/boring-stack/skill-python-expert&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<p>這將會：
+1. 下載技能到 <code>.boring/skills/python-expert</code>
+2. <strong>自動同步</strong>：將其複製到 <code>.gemini/skills/</code> 和 <code>.claude/skills/</code>，以便您的其他工具也能使用！</p>
+<h3 id="4">4. 直接激活</h3>
+<p>Agent 可以根據需求動態激活技能：</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">boring_skill_activate</span><span class="p">(</span><span class="n">skill_name</span><span class="o">=</span><span class="s2">&quot;code-reviewer&quot;</span><span class="p">)</span>
+</span></code></pre></div>
 <hr />
-<h2 id="_4">🏆 推薦技能</h2>
-<table>
-<thead>
-<tr>
-<th>技能名稱</th>
-<th>描述</th>
-<th>角色</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>claude-architect-template</code></td>
-<td>增加結構化規劃工具</td>
-<td>架構師 (Architect)</td>
-</tr>
-<tr>
-<td><code>gemini-research-suite</code></td>
-<td>進階網頁搜尋與整合</td>
-<td>測量員 (Surveyor)</td>
-</tr>
-<tr>
-<td><code>python-data-analyst</code></td>
-<td>Pandas/Matplotlib 助手</td>
-<td>賢者 (Sage)</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="_5">❓ 常見問題</h2>
-<p><strong>Q: 技能安裝在哪裡？</strong>
-A: 它們安裝在您的 <code>~/.boring/skills/</code> 目錄 (全域大腦)。</p>
-<p><strong>Q: 每個專案都要重新安裝嗎？</strong>
-A: 不用！技能是全域的。一次安裝，處處可用。</p>
-<p><strong>Q: 如何移除技能？</strong>
-A: 使用 <code>boring_skills_uninstall(name="...")</code>。</p>
+<h2 id="_4">最佳實踐</h2>
+<ul>
+<li><strong>描述性名稱</strong>：使用連字符命名法 (hyphen-case) (例如 <code>api-designer</code>, <code>bug-hunter</code>)。</li>
+<li><strong>清晰的描述</strong>：前言中的 <code>description</code> 欄位是 <strong>最重要</strong> 的部分。這是 AI 在載入完整技能之前「看到」的內容。請務必精確。</li>
+<li><strong>原子化專業知識</strong>：保持技能專注於單一領域或任務。</li>
+</ul>
+<h2 id="legacy-catalog">舊版目錄 (Legacy Catalog)</h2>
+<p>舊版的 <code>Boring Skills Catalog</code> (<code>boring_skills_install</code>) 仍然可用，以保持向後相容性，並用於發現基於外部工具的擴充功能。</p>
 
 
 
