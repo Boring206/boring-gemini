@@ -22,14 +22,22 @@ class TestBrainManagerEmbedding:
         """Test FAISS initialization when ChromaDB is unavailable."""
         mock_faiss_mod = MagicMock()
         mock_st_mod = MagicMock()
+        # Mock the SentenceTransformer class within the module
+        mock_st_mod.SentenceTransformer = MagicMock()
 
         with patch.dict(
-            "sys.modules", {"faiss": mock_faiss_mod, "sentence_transformers": mock_st_mod}
+            "sys.modules",
+            {
+                "chromadb": None,
+                "faiss": mock_faiss_mod,
+                "sentence_transformers": mock_st_mod,
+            },
         ):
-            with patch("chromadb.PersistentClient", side_effect=ImportError):
-                manager = BrainManager(temp_project)
-                assert manager.faiss_index is not None
-                assert manager.vector_store is None
+            # No need to patch chromadb.PersistentClient since chromadb: None 
+            # will cause the 'import chromadb' inside BrainManager to raise ImportError
+            manager = BrainManager(temp_project)
+            assert manager.faiss_index is not None
+            assert manager.vector_store is None
 
     def test_get_relevant_patterns_faiss(self, temp_project):
         """Test semantic search using FAISS (mocked)."""
