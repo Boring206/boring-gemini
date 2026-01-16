@@ -2,8 +2,9 @@
 Tests for gemini_client module.
 """
 
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 class TestGetBoringTools:
