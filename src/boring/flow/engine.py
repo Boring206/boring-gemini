@@ -1,12 +1,17 @@
 import logging
+import os
 import time
 
 import typer
 
 logger = logging.getLogger(__name__)
+from concurrent.futures import ThreadPoolExecutor
+
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
+
+from boring.services.behavior import BehaviorLogger
 
 from .detector import FlowDetector
 from .events import FlowEvent, FlowEventBus
@@ -113,24 +118,48 @@ class FlowEngine:
         if self.offline_mode:
             console.print("[bold yellow]📴 Offline Mode Active (One Dragon Flow)[/bold yellow]")
 
-    def run(self):
+        # Shadow Adoption Tracker
+        self.behavior = BehaviorLogger(self.root)
+        self.executor = ThreadPoolExecutor(max_workers=1)
+        self._diag_future = None
+        self.advisory_mode = os.environ.get("BORING_ADVISORY_MODE", "false").lower() == "true"
+
+    def run(self, auto: bool = False):
         """Main entry point for 'boring flow'"""
-        state = self.detector.detect()
+        self.auto_mode = auto
+        self.behavior.log("command_run", "flow", auto=auto)
 
-        if self.offline_mode:
-            # Adjust suggestion for offline mode
-            state.suggestion += " (Offline Mode Optimization)"
+        try:
+            state = self.detector.detect()
 
-        self._display_header(state)
+            if self.offline_mode:
+                # Adjust suggestion for offline mode
+                state.suggestion += " (Offline Mode Optimization)"
 
-        if state.stage == FlowStage.SETUP:
-            self._run_setup()
-        elif state.stage == FlowStage.DESIGN:
-            self._run_design()
-        elif state.stage == FlowStage.BUILD:
-            self._run_build(state.pending_tasks)
-        elif state.stage == FlowStage.POLISH:
-            self._run_polish()
+            self._display_header(state)
+
+            if state.stage == FlowStage.SETUP:
+                self._run_setup()
+                # If auto mode, chain into design immediately
+                if self.auto_mode:
+                    console.print(
+                        "[bold cyan]🚀 Auto-Mode: Continuing to Design Phase...[/bold cyan]"
+                    )
+                    time.sleep(1)
+                    self.run(auto=True)
+            elif state.stage == FlowStage.DESIGN:
+                self._run_design()
+            elif state.stage == FlowStage.BUILD:
+                self._run_build(state.pending_tasks)
+            elif state.stage == FlowStage.POLISH:
+                self._run_polish()
+        except KeyboardInterrupt:
+            self.behavior.log("abort", "flow", reason="ctrl_c")
+            console.print("\n[yellow]Boring Flow Interrupted by User.[/yellow]")
+            raise typer.Exit(1)
+        except Exception as e:
+            self.behavior.log("error", "flow", error=str(e))
+            raise
 
     def _display_header(self, state):
         status_text = f"[bold yellow]Phase: {state.stage.value}[/bold yellow]"
@@ -151,64 +180,52 @@ class FlowEngine:
         FlowEventBus.emit(FlowEvent.PRE_SETUP, project_path=str(self.root))
         # ...
         # Mocking the constitution creation for now
-        if typer.confirm("Start Setup Wizard?"):
+        if self.auto_mode or typer.confirm("Start Setup Wizard?"):
             # In real impl, calls boring_speckit_constitution
             console.print("[green]Creating constitution.md...[/green]")
             (self.root / "constitution.md").touch()
-            console.print(
-                "[bold green]Setup Complete! Run 'boring flow' again to enter Design Phase.[/bold green]"
-            )
+            if not self.auto_mode:
+                console.print(
+                    "[bold green]Setup Complete! Run 'boring flow' again to enter Design Phase.[/bold green]"
+                )
         FlowEventBus.emit(FlowEvent.POST_SETUP, project_path=str(self.root))
 
     @track_performance("design_phase")
     def _run_design(self):
         """Stage 2: Design"""
         FlowEventBus.emit(FlowEvent.PRE_DESIGN, project_path=str(self.root))
-        goal = Prompt.ask("What is your goal for this sprint? (or say 'unknown')")
+        if self.auto_mode:
+            goal = "unknown"
+            console.print(
+                "[cyan]🚀 Auto-Mode: Using default 'unknown' goal (blueprint whole project).[/cyan]"
+            )
+        else:
+            goal = Prompt.ask("What is your goal for this sprint? (or say 'unknown')")
 
         # 1. Vibe Check (Ambiguity Resolution)
         refined_goal = self.vibe.resolve_ambiguity(goal)
         if refined_goal != goal:
             console.print(f"[cyan]✨ Vibe Interpreted:[/cyan] {refined_goal}")
 
-        # 1.5 Predictive Risk Analysis (V14)
-        if boring_predict_errors:
-            try:
-                console.print("[dim]🔮 Running Predictive Analysis...[/dim]")
-                # Using the MCP tool for standardized prediction
-                res = boring_predict_errors(file_path=".", project_path=str(self.root))
+        # 1.5 Predictive Risk Analysis (V14) - ASYNC/BACKGROUND
+        if boring_predict_errors or Predictor:
+            console.print("[dim]🔮 Backgrounding Predictive Analysis...[/dim]")
 
-                # Check for success and display
-                # Note: BoringResult usually has status, message, and data
-                if hasattr(res, "status") and res.status == "success":
-                    vibe_summary = res.data.get("vibe_summary") if res.data else None
-                    if not vibe_summary:
-                        vibe_summary = str(res.message)
-                    console.print(
-                        Panel(
-                            vibe_summary, title="🔮 Predictive Risk Report", border_style="yellow"
-                        )
-                    )
-                else:
-                    msg = getattr(res, "message", str(res))
-                    console.print(f"[dim]Prediction skipped: {msg}[/dim]")
-            except Exception as e:
-                console.print(f"[dim]Prediction failed: {e}[/dim]")
-        elif Predictor:
-            try:
-                console.print("[dim]🔮 Running Predictive Analysis (Fallback)...[/dim]")
-                predictor = Predictor(self.root)
-                # Quick diagnostic
-                diag = predictor.deep_diagnostic()
-                if diag.get("risk_score", 0) > 20:
-                    panel_text = f"Risk Score: {diag['risk_score']}/100\n\nIssues Found: {len(diag.get('issues', []))}"
-                    if diag.get("issues"):
-                        panel_text += "\n" + "\n".join([f"- {i}" for i in diag["issues"][:3]])
-                    console.print(
-                        Panel(panel_text, title="🔮 Predictive Risk Report", border_style="yellow")
-                    )
-            except Exception as e:
-                console.print(f"[dim]Prediction fallback skipped: {e}[/dim]")
+            def run_background_diag():
+                try:
+                    if boring_predict_errors:
+                        return boring_predict_errors(file_path=".", project_path=str(self.root))
+                    elif Predictor:
+                        predictor = Predictor(self.root)
+                        return predictor.deep_diagnostic()
+                except Exception as e:
+                    logger.debug(f"Background diagnostic failed: {e}")
+                    return None
+
+            self._diag_future = self.executor.submit(run_background_diag)
+
+        # 1.6 Adaptive Conflict Detection (V14.1)
+        self._analyze_manual_overrides(refined_goal)
 
         # 2. Skill Advice
         skill_tips = self.skills.suggest_skills(refined_goal)
@@ -242,14 +259,53 @@ class FlowEngine:
         else:
             (self.root / "task.md").write_text("- [ ] Task 1 (Auto-generated fallback)")
 
+        # Display background diag if finished
+        if self._diag_future and self._diag_future.done():
+            res = self._diag_future.result()
+            if res:
+                console.print(
+                    Panel(
+                        str(res),
+                        title="🔮 Predictive Risk Report (Completed)",
+                        border_style="yellow",
+                    )
+                )
+
         console.print(
             "[bold green]Blueprint Created! Run 'boring flow' to start Building.[/bold green]"
         )
         FlowEventBus.emit(FlowEvent.POST_DESIGN, project_path=str(self.root), goal=refined_goal)
 
+    def _analyze_manual_overrides(self, goal):
+        """Phase IV: Adaptive Learning Logic"""
+        task_file = self.root / "task.md"
+        if not task_file.exists():
+            return
+
+        # Check if user manually edited the task list
+        # In a real impl, we'd use git diff or a checksum.
+        # For simulation, we check for 'Authority' keywords.
+        content = task_file.read_text(encoding="utf-8")
+        if "CONFIRMED BY SENIOR" in content or "MANUAL OVERRIDE" in content:
+            console.print(
+                "[bold yellow]🧠 Adaptive Learning: Detected manual overrides in task.md.[/bold yellow]"
+            )
+            self.behavior.log("adaptive_learning", "conflict_resolved", file="task.md")
+            # Inject this into the vibe interface for next reasoning cycle
+            self.vibe.resolve_ambiguity(f"User priorities shifted manually: {content[:100]}...")
+
     @track_performance("build_phase")
     def _run_build(self, pending_tasks: list[str]):
         """Stage 3: Build (with Self-Healing)"""
+        if self.advisory_mode:
+            console.print(
+                "[bold yellow]🛡️ Advisory Mode Active: Skipping automated code writes.[/bold yellow]"
+            )
+            console.print(
+                "[dim]In this mode, Boring will suggest changes but will not execute AgentLoop.[/dim]"
+            )
+            return
+
         FlowEventBus.emit(FlowEvent.PRE_BUILD, project_path=str(self.root))
 
         max_retries = 3
