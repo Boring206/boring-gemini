@@ -322,8 +322,6 @@ def test_setup_extensions(mock_dependencies):
     mock_mgr.register_boring_mcp.assert_called_once()
 
 
-
-
 def test_health_check_healthy(mock_dependencies):
     mocks = mock_dependencies
     mocks["print_health"].return_value = True

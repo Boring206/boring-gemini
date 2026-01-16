@@ -22,8 +22,10 @@ class TestBrainManagerEmbedding:
         """Test FAISS initialization when ChromaDB is unavailable."""
         mock_faiss_mod = MagicMock()
         mock_st_mod = MagicMock()
-        
-        with patch.dict("sys.modules", {"faiss": mock_faiss_mod, "sentence_transformers": mock_st_mod}):
+
+        with patch.dict(
+            "sys.modules", {"faiss": mock_faiss_mod, "sentence_transformers": mock_st_mod}
+        ):
             with patch("chromadb.PersistentClient", side_effect=ImportError):
                 manager = BrainManager(temp_project)
                 assert manager.faiss_index is not None
