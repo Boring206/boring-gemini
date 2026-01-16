@@ -88,9 +88,7 @@ class TestWebMonitor:
         # Setup pending
         memory_dir = tmp_path / ".boring" / "memory"
         memory_dir.mkdir(parents=True, exist_ok=True)
-        (memory_dir / "pending_ops.json").write_text(
-            "[{}, {}, {}]", encoding="utf-8"
-        )
+        (memory_dir / "pending_ops.json").write_text("[{}, {}, {}]", encoding="utf-8")
 
         # Setup RAG
         (memory_dir / "rag_db").mkdir()
