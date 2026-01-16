@@ -6,8 +6,8 @@ Supports: English, Chinese (Traditional), Spanish, Hindi, Arabic.
 """
 
 import locale
-from rich.console import Console
 
+from rich.console import Console
 
 # Supported Languages
 # Code -> Native Name
@@ -176,10 +176,11 @@ _TRANSLATIONS = {
 }
 
 
-
 class LocalizedConsole(Console):
     """Console that supports localized output."""
+
     pass
+
 
 class I18nManager:
     """Simple i18n manager for Boring CLI."""
@@ -219,7 +220,7 @@ class I18nManager:
             text = default or key
         else:
             text = translations.get(self.language, translations.get("en", default or key))
-        
+
         if kwargs:
             try:
                 return text.format(**kwargs)
@@ -234,4 +235,3 @@ class I18nManager:
 # Global instance
 i18n = I18nManager()
 T = i18n.t
-
