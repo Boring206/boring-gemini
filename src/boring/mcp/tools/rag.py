@@ -96,7 +96,7 @@ def reload_rag_dependencies() -> dict:
     }
 
 
-def get_retriever(project_root: Path) -> RAGRetriever | None:
+def get_retriever(project_root: Path) -> "RAGRetriever | None":
     """Get or create RAG retriever for a project. Returns None if RAG is not available."""
     if create_rag_retriever is None:
         return None

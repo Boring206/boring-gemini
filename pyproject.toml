@@ -60,6 +60,7 @@ dev = [
     "mkdocs-material>=9.5.0",
     "mkdocstrings[python]>=0.24.0",
     "psutil>=5.9.0",
+    "numpy>=1.26.0",
 ]
 vector = [
     "chromadb>=0.4.0",
