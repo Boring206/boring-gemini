@@ -64,6 +64,19 @@ class WizardManager:
             self.appdata = Path(os.getenv("APPDATA"))
         else:
             self.appdata = self.home / "Library" / "Application Support"
+        self.project_root = Path.cwd()
+
+    def _get_editor_config_path(self, *subdirs: str, check_parent_exists: bool = True) -> Path | None:
+        """Helper to get a common editor config path based on OS."""
+        if self.system == "Windows":
+            path = self.appdata.joinpath(*subdirs)
+        elif self.system == "Darwin":
+            path = self.home / "Library" / "Application Support" / Path(*subdirs)
+        elif self.system == "Linux":
+            path = self.appdata.joinpath(*subdirs)
+        else:
+            return None
+        return path if not check_parent_exists or path.parent.exists() else None
 
         # Define common config paths
         self.editors = {
@@ -76,79 +89,39 @@ class WizardManager:
         }
 
     def _get_claude_path(self) -> Path | None:
-        if self.system == "Windows":
-            path = self.appdata / "Claude" / "claude_desktop_config.json"
-        elif self.system == "Darwin":
-            path = self.appdata / "Claude" / "claude_desktop_config.json"
-        elif self.system == "Linux":
-            path = self.appdata / "Claude" / "claude_desktop_config.json"
-        else:
-            return None
-        return path if path.parent.exists() else None
+        return self._get_editor_config_path("Claude", "claude_desktop_config.json")
 
     def _get_cursor_path(self) -> Path | None:
-        # Cursor usually stores MCP settings in globalStorage
-        # V2 (Modern): cursor.mcp/config.json
-        # V1 (Legacy): cursor_mcp_config.json
-
-        # We prefer V2. If globalStorage exists, we allow V2 path even if directory misses.
-        # install() creates directories.
-
-        if self.system == "Windows":
-            base = self.appdata / "Cursor" / "User" / "globalStorage"
-        elif self.system == "Darwin":
-            base = (
-                self.home / "Library" / "Application Support" / "Cursor" / "User" / "globalStorage"
-            )
-        elif self.system == "Linux":
-            base = self.appdata / "Cursor" / "User" / "globalStorage"
-        else:
-            return None
-
-        if base.exists():
+        """Get Cursor MCP config path."""
+        base = self._get_editor_config_path(
+            "Cursor", "User", "globalStorage", check_parent_exists=False
+        )
+        if base:
             return base / "cursor.mcp" / "config.json"
-
         return None
 
     def _get_vscode_path(self) -> Path | None:
-        if self.system == "Windows":
-            path = self.appdata / "Code" / "User" / "globalStorage" / "vscode_mcp_config.json"
-        elif self.system == "Darwin":
-            path = self.appdata / "Code" / "User" / "globalStorage" / "vscode_mcp_config.json"
-        elif self.system == "Linux":
-            path = self.appdata / "Code" / "User" / "globalStorage" / "vscode_mcp_config.json"
-        else:
-            return None
-        return path if path.parent.exists() else None
+        return self._get_editor_config_path(
+            "Code", "User", "globalStorage", "vscode_mcp_config.json"
+        )
 
     def _get_vscode_settings_path(self) -> Path | None:
         """Get VS Code User settings.json path."""
-        if self.system == "Windows":
-            path = self.appdata / "Code" / "User" / "settings.json"
-        elif self.system == "Darwin":
-            path = self.appdata / "Code" / "User" / "settings.json"
-        elif self.system == "Linux":
-            path = self.appdata / "Code" / "User" / "settings.json"
-        else:
-            return None
-        return path if path.exists() else None
+        path = self._get_editor_config_path("Code", "User", "settings.json", check_parent_exists=False)
+        return path if path and path.exists() else None
 
     def scan_editors(self) -> dict[str, Path]:
         """Scan for installed editors with valid config paths."""
         found = {}
         for name, path in self.editors.items():
             if path:
-                # For Cursor (V2), the 'cursor.mcp' folder might not verify until we verify grandparent
-                if name == "Cursor":
-                    if path.parent.exists() or path.parent.parent.exists():
+                # For Claude, the file might not exist but folder does
+                if name == "Claude":
+                    if path.parent.exists():
                         found[name] = path
                     continue
 
-                # For Claude, the file might not exist but folder does
-                if path.parent.exists():
-                    found[name] = path
-
-        # Check for Gemini CLI
+                found[name] = path
         ext_manager = ExtensionsManager()
         if ext_manager.is_gemini_available():
             # Use a dummy path for Gemini CLI since it manages its own config
@@ -211,10 +184,12 @@ class WizardManager:
     def _get_goose_path(self) -> Path | None:
         """Get Goose config.yaml path."""
         if self.system == "Windows":
-            path = self.appdata / "goose" / "config.yaml"
+            path = self._get_editor_config_path("goose", "config.yaml")
         else:
             path = self.home / ".config" / "goose" / "config.yaml"
-        return path if path.parent.exists() else None
+            if not path.parent.exists():
+                path = None
+        return path
 
     def _get_continue_path(self) -> Path | None:
         """Get Continue config.json path."""
@@ -223,74 +198,46 @@ class WizardManager:
 
     def _get_claude_code_path(self) -> Path | None:
         """Get Claude Code config path (or just detect presence)."""
-        # Claude Code is a CLI, so we check for the binary mostly.
-        # But config is at ~/.claude.json usually.
-        path = self.home / ".claude.json"
+        path = self._get_editor_config_path(".claude.json", check_parent_exists=False)
         if shutil.which("claude"):
-            return path  # Even if file doesn't exist, we can use CLI
+            return path
         return None
 
     def _get_windsurf_path(self) -> Path | None:
         """Get Windsurf MCP config path."""
-        if self.system == "Windows":
-            base = self.appdata / "Windsurf" / "User" / "globalStorage"
-        elif self.system == "Darwin":
-            base = (
-                self.home
-                / "Library"
-                / "Application Support"
-                / "Windsurf"
-                / "User"
-                / "globalStorage"
-            )
-        elif self.system == "Linux":
-            base = self.appdata / "Windsurf" / "User" / "globalStorage"
-        else:
-            return None
-
-        if base.exists():
+        base = self._get_editor_config_path(
+            "Windsurf", "User", "globalStorage", check_parent_exists=False
+        )
+        if base and base.exists():
             return base / "windsurf.mcp" / "config.json"
         return None
 
     def _get_openhands_path(self) -> Path | None:
         """Get OpenHands config.json path."""
-        path = self.home / ".openhands" / "config.json"
-        return path if path.parent.exists() else None
+        path = self._get_editor_config_path(".openhands", "config.json", check_parent_exists=False)
+        return path if path and path.parent.exists() else None
 
     def _get_trae_path(self) -> Path | None:
         """Get Trae MCP config path."""
-        if self.system == "Windows":
-            base = self.appdata / "Trae" / "User" / "globalStorage"
-        elif self.system == "Darwin":
-            base = self.home / "Library" / "Application Support" / "Trae" / "User" / "globalStorage"
-        elif self.system == "Linux":
-            base = self.appdata / "Trae" / "User" / "globalStorage"
-        else:
-            return None
-
-        if base.exists():
+        base = self._get_editor_config_path(
+            "Trae", "User", "globalStorage", check_parent_exists=False
+        )
+        if base and base.exists():
             return base / "trae.mcp" / "config.json"
         return None
 
     def _get_void_path(self) -> Path | None:
         """Get Void MCP config path."""
-        if self.system == "Windows":
-            base = self.appdata / "Void" / "User" / "globalStorage"
-        elif self.system == "Darwin":
-            base = self.home / "Library" / "Application Support" / "Void" / "User" / "globalStorage"
-        elif self.system == "Linux":
-            base = self.appdata / "Void" / "User" / "globalStorage"
-        else:
-            return None
-
-        if base.exists():
+        base = self._get_editor_config_path(
+            "Void", "User", "globalStorage", check_parent_exists=False
+        )
+        if base and base.exists():
             return base / "void.mcp" / "config.json"
         return None
 
     def _get_aider_path(self) -> Path | None:
         """Get Aider config path."""
         path = self.home / ".aider.conf.yml"
-        # Aider uses a config file but might not exist. If binary present, we'll allow registration.
         if shutil.which("aider"):
             return path
         return None
