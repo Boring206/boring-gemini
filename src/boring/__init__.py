@@ -1,4 +1,10 @@
 """
+V14.0.0 "The Intelligence Leap Update":
+- **Predictive Error Detection**: AI-powered anti-pattern detection and proactive warnings.
+- **AI Git Bisect**: Semantic analysis of commit history to pinpoint bug sources.
+- **Local LLM Support**: llama-cpp-python integration for 100% offline operation.
+- **Lazy loading System**: Optimized MCP startup (<500ms) and background pre-warming.
+
 V13.0.0 "The Semantic Core Update":
 - **FAISS Integration**: Full fallback support for semantic search when ChromaDB is unavailable.
 - **Enhanced BrainManager**: Optimized pattern indexing and retrieval with batch processing.
@@ -86,7 +92,7 @@ Backward compatibility is maintained - old import paths still work.
 import importlib
 from typing import TYPE_CHECKING
 
-__version__ = "13.0.0"
+__version__ = "14.0.0"
 
 # =============================================================================
 # Lazy Loading Configuration

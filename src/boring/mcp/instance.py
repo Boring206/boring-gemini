@@ -13,16 +13,19 @@ if DependencyManager.check_mcp():
 
     def _create_tracking_wrapper(func, tool_name: str):
         """Create a wrapper that tracks tool usage and detects anomalies."""
+
         @functools.wraps(func)
         def tracking_wrapper(*args, **kwargs):
             try:
                 from ..intelligence.usage_tracker import AnomalyDetectedError, get_tracker
+
                 get_tracker().track(tool_name, tool_args=(args, kwargs))
             except AnomalyDetectedError as e:
                 return f"⛔ **ANOMALY DETECTED**: You have called `{tool_name}` {e.count} times consecutively with IDENTICAL arguments. Please STOP and rethink your approach."
             except Exception:
                 pass
             return func(*args, **kwargs)
+
         return tracking_wrapper
 
     class SmartMCP:
@@ -30,6 +33,7 @@ if DependencyManager.check_mcp():
         The Renaissance Wrapper: Selectively révèle tools to the context
         while keeping all tools accessible via internal execution.
         """
+
         def __init__(self, raw_mcp):
             object.__setattr__(self, "_raw_mcp", raw_mcp)
             object.__setattr__(self, "_exposed_tools", set())
@@ -50,7 +54,12 @@ if DependencyManager.check_mcp():
                     category = "Surveyor"
                 elif "brain" in module_name:
                     category = "Sage"
-                elif "fix" in module_name or "patch" in module_name or "lint" in module_name or "metrics" in module_name:
+                elif (
+                    "fix" in module_name
+                    or "patch" in module_name
+                    or "lint" in module_name
+                    or "metrics" in module_name
+                ):
                     category = "Healer"
 
                 # Renaissance V2: Always register in internal registry for discovery/router hydration
@@ -64,6 +73,7 @@ if DependencyManager.check_mcp():
                     return self._raw_mcp.tool(**kwargs)(wrapped_func)
 
                 return func
+
             return wrapper
 
         def inject_tool(self, tool_name: str) -> bool:

@@ -46,6 +46,51 @@ boring wizard
 
 ---
 
+## 🖥️ 支援的編輯器與客戶端 (Supported Clients)
+
+Boring **Wizard** (V14+) 支援自動偵測與配置以下 **15+** 種 AI 客戶端：
+
+### 🟢 IDEs & Editors
+- **Cursor** (原生支援)
+- **VS Code** (配合 Cline / Continue)
+- **Windsurf** (Codeium)
+- **Trae** (ByteDance)
+- **Void** (Fork of Cursor)
+- **OpenCode**
+
+### 🔵 CLI Agents
+- **Claude Code** (Anthropic)
+- **Goose** (Block)
+- **Aider** (Pair Programming)
+- **Gemini CLI** (Google)
+- **Qwen Code**
+
+### 🟣 Autonomous Agents
+- **OpenHands** (All-in-One)
+- **Cline** (Autonomous)
+- **Continue.dev** (Extension)
+
+> 💡 **提示**: 只需執行 `boring wizard`，系統會自動掃描您已安裝的軟體並提供配置選項。
+
+<details>
+<summary><b>🛠️ 手動配置參考 (Manual Config Reference)</b></summary>
+
+若您需要手動配置 MCP，以下是各客戶端的標準配置路徑：
+
+| 客戶端 | 配置檔路徑 | 格式 |
+|--------|------------|------|
+| **Claude** | `~/.claude.json` | JSON |
+| **Goose** | `~/.config/goose/config.yaml` | YAML |
+| **Continue** | `~/.continue/mcpServers/boring.yaml` | YAML |
+| **Windsurf** | `~/.../Windsurf/User/globalStorage/mcpServers.json` | JSON |
+| **Trae** | `~/.../Trae/User/globalStorage/mcpServers.json` | JSON |
+| **Aider** | `.aider.conf.yml` | YAML |
+| **Cline** | VSCode Settings (`cline.mcpServers`) | JSON |
+
+</details>
+
+---
+
 ## ⚡ 方式 3: 進階用戶 (Smithery / uv)
 
 <details>
@@ -77,5 +122,28 @@ boring wizard
 在終端機輸入：
 ```bash
 boring --version
-# Output: boring v13.0.0 (or newer)
+# Output: boring v14.0.0 (or newer)
 ```
+
+---
+
+## 🔌 方式 4: 離線優先模式 (Offline-First)
+
+如果您需要零網路依賴的開發環境：
+
+### 1. 安裝包含本地支援的套件
+```bash
+pip install "boring-aicoding[local]"
+```
+
+### 2. 下載模型
+```bash
+boring model download
+```
+
+### 3. 啟用離線模式
+```bash
+boring offline enable
+```
+
+> 📖 **詳情請見**: [離線模式快速入門](../guides/offline-quickstart_zh.md)

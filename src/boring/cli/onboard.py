@@ -76,8 +76,9 @@ class OnboardingManager:
     def _handle_no_config(self):
         """Handle first-time setup."""
         if Confirm.ask("⚠️  No configuration detected. Run Setup Wizard?", default=True):
-             from boring.cli.wizard import run_wizard
-             run_wizard(auto_approve=False)
+            from boring.cli.wizard import run_wizard
+
+            run_wizard(auto_approve=False)
 
     def _handle_new_environment(self) -> bool:
         """
@@ -105,14 +106,16 @@ class OnboardingManager:
 
         if choice == "1":
             from boring.cli.quickstart import QuickStartOrchestrator
+
             idea = Prompt.ask("What do you want to build?")
             qs = QuickStartOrchestrator(idea=idea)
             qs.run()
-            return True # Assume success for now
+            return True  # Assume success for now
         elif choice == "2":
             from boring.cli.wizard import run_wizard
+
             run_wizard()
-            return False # Wizard doesn't create project context usually
+            return False  # Wizard doesn't create project context usually
         elif choice == "3":
             repo = Prompt.ask("Repo URL")
             if repo:
@@ -121,6 +124,7 @@ class OnboardingManager:
             return False
 
         return False
+
 
 def run_onboarding() -> bool:
     """Entry point for onboarding. Returns True if project active."""

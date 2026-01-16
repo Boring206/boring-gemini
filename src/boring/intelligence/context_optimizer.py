@@ -20,7 +20,6 @@ import threading
 from dataclasses import dataclass, field
 from difflib import SequenceMatcher
 from pathlib import Path
-from typing import Optional
 
 # Constants
 CHARS_PER_TOKEN = 4  # Rough estimate
@@ -96,7 +95,7 @@ class ContextOptimizer:
     def __init__(
         self,
         max_tokens: int = 8000,
-        project_root: Optional[Path] = None,
+        project_root: Path | None = None,
         enable_semantic_dedup: bool = True,
         similarity_threshold: float = 0.85,
     ):
@@ -258,8 +257,18 @@ class ContextOptimizer:
             # Step 5: Select sections to fit limit (V10.23: with smart truncation)
             selected, sections_removed = self._select_to_fit_smart(compressed)
 
-            # Step 6: Build final context
-            final_context = self._build_context(selected)
+            # Step 5.5 (V14.0): LLMLingua-style aggressive compression if we lost sections
+            if sections_removed > 0:
+                from .compression import ContextCompressor
+
+                compressor = ContextCompressor(target_tokens=self.max_tokens)
+                # Instead of just taking 'selected', we take ALL 'compressed' sections
+                # and let the compressor decide how to fit them all.
+                final_context = compressor.compress_sections(compressed)
+                self._smart_truncations += 1
+            else:
+                # Step 6: Build final context
+                final_context = self._build_context(selected)
 
             optimized_tokens = len(final_context) // CHARS_PER_TOKEN
             compression_ratio = optimized_tokens / original_tokens if original_tokens > 0 else 1.0
@@ -512,7 +521,7 @@ class ContextOptimizer:
 
         return selected, removed
 
-    def _smart_truncate(self, section: ContextSection, max_tokens: int) -> Optional[ContextSection]:
+    def _smart_truncate(self, section: ContextSection, max_tokens: int) -> ContextSection | None:
         """
         V10.23: Intelligently truncate content preserving important parts.
 
@@ -642,9 +651,9 @@ class SmartContextBuilder:
             .build()
     """
 
-    def __init__(self, max_tokens: int = 8000, project_root: Optional[Path] = None):
+    def __init__(self, max_tokens: int = 8000, project_root: Path | None = None):
         self.optimizer = ContextOptimizer(max_tokens, project_root)
-        self._stats: Optional[ContextStats] = None
+        self._stats: ContextStats | None = None
 
     def with_error(self, error: str, priority: float = 1.0) -> "SmartContextBuilder":
         """Add error context (highest priority)."""
@@ -690,7 +699,7 @@ class SmartContextBuilder:
         return context
 
     @property
-    def stats(self) -> Optional[ContextStats]:
+    def stats(self) -> ContextStats | None:
         """Get stats from last build."""
         return self._stats
 
@@ -776,7 +785,7 @@ class ReasoningCache:
         """Compute cache key from content."""
         return hashlib.sha256(content.encode()).hexdigest()
 
-    def get(self, content: str) -> Optional[ReasoningEntry]:
+    def get(self, content: str) -> ReasoningEntry | None:
         """
         Get cached reasoning for content.
 
@@ -855,7 +864,7 @@ class ReasoningCache:
 
     def compare_with_cache(
         self, content_a: str, content_b: str
-    ) -> tuple[Optional[ReasoningEntry], Optional[ReasoningEntry]]:
+    ) -> tuple[ReasoningEntry | None, ReasoningEntry | None]:
         """
         Get cached reasoning for both contents (PREPAIR comparison).
 
@@ -891,7 +900,7 @@ class ReasoningCache:
 
 
 # Global singleton for cross-tool caching
-_reasoning_cache: Optional[ReasoningCache] = None
+_reasoning_cache: ReasoningCache | None = None
 
 
 def get_reasoning_cache() -> ReasoningCache:

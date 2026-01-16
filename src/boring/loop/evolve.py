@@ -17,6 +17,7 @@ from boring.core.logger import update_status
 
 console = Console()
 
+
 class EvolveLoop:
     def __init__(self, goal: str, verify_cmd: str, max_iterations: int = 5):
         self.goal = goal
@@ -33,10 +34,10 @@ class EvolveLoop:
                 max_calls=settings.MAX_HOURLY_CALLS,
                 last_action=last_action,
                 status=status,
-                calls_made=0 # Evolve doesn't track calls precisely yet
+                calls_made=0,  # Evolve doesn't track calls precisely yet
             )
         except Exception:
-            pass # Don't crash if reporting fails
+            pass  # Don't crash if reporting fails
 
     def run(self) -> bool:
         """Run the evolution loop."""
@@ -57,7 +58,9 @@ class EvolveLoop:
             except Exception as e:
                 console.print(f"[red]Execution failed: {e}[/red]")
                 success = False
-                result = subprocess.CompletedProcess(args=shlex.split(self.verify_cmd), returncode=1, stdout="", stderr=str(e))
+                result = subprocess.CompletedProcess(
+                    args=shlex.split(self.verify_cmd), returncode=1, stdout="", stderr=str(e)
+                )
 
             if success:
                 console.print("[bold green]✨ Goal Achieved![/bold green]")
@@ -80,6 +83,7 @@ class EvolveLoop:
         """Save the successful pattern to the Brain."""
         try:
             from boring.intelligence.brain_manager import BrainManager
+
             brain = BrainManager(settings.PROJECT_ROOT)
 
             # Simple heuristic: If we succeeded after >1 attempt, we learned something.
@@ -91,7 +95,9 @@ class EvolveLoop:
                 solution=f"Solved in {final_attempt} iterations via autonomous evolution.",
             ).get("pattern_id")
 
-            console.print(f"[bold blue]🧠 Knowledge Saved:[/bold blue] Pattern {pattern_id} learned.")
+            console.print(
+                f"[bold blue]🧠 Knowledge Saved:[/bold blue] Pattern {pattern_id} learned."
+            )
         except Exception as e:
             console.print(f"[dim]Failed to learn pattern: {e}[/dim]")
 
@@ -121,7 +127,9 @@ The following error occurred during verification:
 """
 
         # Create temp prompt
-        with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".md", encoding="utf-8") as f:
+        with tempfile.NamedTemporaryFile(
+            mode="w", delete=False, suffix=".md", encoding="utf-8"
+        ) as f:
             f.write(instruction)
             tmp_path = Path(f.name)
 
@@ -132,9 +140,9 @@ The following error occurred during verification:
             debugger = BoringDebugger(enable_healing=True)
             loop = AgentLoop(
                 model_name=settings.DEFAULT_MODEL,
-                use_cli=False, # Assume API or default
+                use_cli=False,  # Assume API or default
                 verification_level="STANDARD",
-                prompt_file=tmp_path
+                prompt_file=tmp_path,
             )
 
             console.print("[🧠 Evolving solution...]")

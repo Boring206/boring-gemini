@@ -2,7 +2,7 @@ from typing import Annotated
 
 from pydantic import Field
 
-from ...audit import audited
+from ...services.audit import audited
 from ..instance import MCP_AVAILABLE, mcp
 from ..utils import configure_runtime_for_project, detect_project_root, get_project_root_or_error
 

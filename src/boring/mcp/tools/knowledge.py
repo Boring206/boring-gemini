@@ -1,8 +1,8 @@
-from typing import Annotated, Optional
+from typing import Annotated
 
 from pydantic import Field
 
-from ...audit import audited
+from ...services.audit import audited
 from ..utils import (
     configure_runtime_for_project,
     detect_context_capabilities,
@@ -13,7 +13,7 @@ from ..utils import (
 @audited
 def boring_learn(
     project_path: Annotated[
-        Optional[str], Field(description="Optional explicit path to project root")
+        str | None, Field(description="Optional explicit path to project root")
     ] = None,
 ) -> dict:
     """
@@ -47,7 +47,7 @@ def boring_learn(
 @audited
 def boring_create_rubrics(
     project_path: Annotated[
-        Optional[str], Field(description="Optional explicit path to project root")
+        str | None, Field(description="Optional explicit path to project root")
     ] = None,
 ) -> dict:
     """
@@ -73,7 +73,7 @@ def boring_create_rubrics(
 @audited
 def boring_brain_status(
     project_path: Annotated[
-        Optional[str], Field(description="Optional explicit path to project root")
+        str | None, Field(description="Optional explicit path to project root")
     ] = None,
 ) -> dict:
     """
@@ -113,7 +113,7 @@ def boring_brain_status(
 @audited
 def boring_brain_sync(
     remote_url: Annotated[
-        Optional[str], Field(description="Git remote URL. If None, uses configured origin.")
+        str | None, Field(description="Git remote URL. If None, uses configured origin.")
     ] = None,
 ) -> dict:
     """
@@ -157,7 +157,7 @@ def boring_distill_skills(
 def boring_get_relevant_patterns(
     limit: Annotated[int, Field(description="Maximum patterns to return")] = 5,
     project_path: Annotated[
-        Optional[str], Field(description="Optional explicit path to project root")
+        str | None, Field(description="Optional explicit path to project root")
     ] = None,
 ) -> dict:
     """
@@ -200,6 +200,7 @@ def boring_get_relevant_patterns(
 # ==============================================================================
 # P4: USAGE ANALYTICS DASHBOARD
 # ==============================================================================
+
 
 @audited
 def boring_usage_stats(
@@ -251,11 +252,11 @@ def boring_usage_stats(
                 if seconds_ago < 60:
                     relative = "just now"
                 elif seconds_ago < 3600:
-                    relative = f"{int(seconds_ago/60)}m ago"
+                    relative = f"{int(seconds_ago / 60)}m ago"
                 elif seconds_ago < 86400:
-                    relative = f"{int(seconds_ago/3600)}h ago"
+                    relative = f"{int(seconds_ago / 3600)}h ago"
                 else:
-                    relative = f"{int(seconds_ago/86400)}d ago"
+                    relative = f"{int(seconds_ago / 86400)}d ago"
 
                 lines.append(f"| {i} | `{tool_name}` | {usage.count} | {relative} |")
 
@@ -298,7 +299,6 @@ def register_knowledge_tools(mcp, audited, helpers):
         description="Distill patterns into Strategic Skills (Skill Compilation).",
         annotations={"readOnlyHint": False},
     )(boring_distill_skills)
-
 
     mcp.tool(
         description="Get relevant patterns (skills) for the current context.",

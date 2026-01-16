@@ -65,7 +65,7 @@ def register_intelligence_tools(mcp, audited, helpers):
         """
 
         from ..config import settings
-        from ..intelligence.predictive_analyzer import PredictiveAnalyzer
+        from ..intelligence import PredictiveAnalyzer
 
         project_root, error = _get_project_root_or_error(project_path)
         if error:
@@ -126,7 +126,7 @@ def register_intelligence_tools(mcp, audited, helpers):
         identifies files/modules most likely to cause issues.
         """
         from ..config import settings
-        from ..intelligence.predictive_analyzer import PredictiveAnalyzer
+        from ..intelligence import PredictiveAnalyzer
 
         project_root, error = _get_project_root_or_error(project_path)
         if error:
@@ -188,7 +188,7 @@ def register_intelligence_tools(mcp, audited, helpers):
         - Correlation prefetch effectiveness
         - Temporal pattern detection
         """
-        from ..intelligence.adaptive_cache import AdaptiveCache
+        from ..intelligence import AdaptiveCache
 
         project_root, error = _get_project_root_or_error(project_path)
         if error:
@@ -270,7 +270,7 @@ def register_intelligence_tools(mcp, audited, helpers):
 
         # AdaptiveCache
         try:
-            from ..intelligence.adaptive_cache import AdaptiveCache
+            from ..intelligence import AdaptiveCache
 
             cache = AdaptiveCache(project_root)
             cache_stats = cache.get_stats()
@@ -283,7 +283,7 @@ def register_intelligence_tools(mcp, audited, helpers):
 
         # PredictiveAnalyzer
         try:
-            from ..intelligence.predictive_analyzer import PredictiveAnalyzer
+            from ..intelligence import PredictiveAnalyzer
 
             analyzer = PredictiveAnalyzer(project_root, settings.LOG_DIR)
             report = analyzer.get_prediction_report()
@@ -471,8 +471,6 @@ def register_intelligence_tools(mcp, audited, helpers):
                 "message": f"取得失敗: {str(e)}",
             }
 
-
-
     return {
         # PredictiveAnalyzer
         "boring_predict_impact": boring_predict_impact,
@@ -484,5 +482,4 @@ def register_intelligence_tools(mcp, audited, helpers):
         # Session Context
         "boring_set_session_context": boring_set_session_context,
         "boring_get_session_context": boring_get_session_context,
-
     }

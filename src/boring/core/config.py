@@ -1,8 +1,10 @@
+import logging
 from pathlib import Path
-from typing import Optional
 
 from pydantic import ConfigDict, Field
 from pydantic_settings import BaseSettings
+
+logger = logging.getLogger(__name__)
 
 # V4.0 Supported Models
 SUPPORTED_MODELS = [
@@ -24,7 +26,7 @@ def _find_project_root() -> Path:
     2. Then try __file__ location and its parents (for MCP server)
     3. Fall back to CWD if nothing found
     """
-    anchor_files = [".git", ".boring_brain", ".agent"]
+    anchor_files = [".git", ".boring", ".boring_brain", ".agent"]
 
     # Strategy 1: Search from CWD
     current = Path.cwd()
@@ -63,21 +65,24 @@ class Settings(BaseSettings):
     CACHE_DIR: Path = Field(default=Path(".boring/cache"))
 
     # Gemini Settings
-    GOOGLE_API_KEY: Optional[str] = Field(default=None)
+    GOOGLE_API_KEY: str | None = Field(default=None)
     DEFAULT_MODEL: str = "default"
     TIMEOUT_MINUTES: int = 15
-    MCP_PROFILE: str = Field(default="lite", description="Tool profile: ultra_lite, minimal, lite, standard, full")
+    MCP_PROFILE: str = Field(
+        default="lite", description="Tool profile: ultra_lite, minimal, lite, standard, full"
+    )
+    LANGUAGE: str = Field(default="zh", description="UI language preference (e.g., zh, en)")
 
     # LLM Settings (V10.13 Modular)
     LLM_PROVIDER: str = Field(
         default="gemini-cli", description="gemini-cli, claude-code, mcp-gateway, sdk, ollama"
     )
-    LLM_BASE_URL: Optional[str] = Field(default=None)
-    LLM_MODEL: Optional[str] = Field(default=None)
+    LLM_BASE_URL: str | None = Field(default=None)
+    LLM_MODEL: str | None = Field(default=None)
 
     # Tool Discovery
-    CLAUDE_CLI_PATH: Optional[str] = None
-    GEMINI_CLI_PATH: Optional[str] = None
+    CLAUDE_CLI_PATH: str | None = None
+    GEMINI_CLI_PATH: str | None = None
 
     # V4.0 Feature Flags
     USE_FUNCTION_CALLING: bool = True  # Use structured function calls
@@ -113,6 +118,67 @@ class Settings(BaseSettings):
     )
     LINTER_CONFIGS: dict = Field(default_factory=dict)  # Map tool name -> list of args
     PROMPTS: dict = Field(default_factory=dict)  # Map prompt name -> template string
+
+    # V13.1: Performance Tuning
+    CACHE_TTL_SECONDS: float = Field(
+        default=120.0,
+        description="TTL for query caches (RAG, Brain). Higher = faster but less fresh.",
+    )
+    LAZY_LOAD_VECTOR_STORE: bool = Field(
+        default=True, description="Defer vector store initialization until first use."
+    )
+    PREWARM_ON_STARTUP: bool = Field(
+        default=True, description="Pre-warm heavy modules in background after startup."
+    )
+    STARTUP_PROFILE: bool = Field(
+        default=False, description="Enable startup profiling (set via BORING_STARTUP_PROFILE env)."
+    )
+
+    # V13.2: Local LLM Settings
+    LOCAL_LLM_MODEL: str | None = Field(
+        default=None, description="Path to local GGUF model for offline operation."
+    )
+    LOCAL_LLM_CONTEXT_SIZE: int = Field(
+        default=4096, description="Context window size for local LLM."
+    )
+    OFFLINE_MODE: bool = Field(default=False, description="Force offline mode (no API calls).")
+
+    # V14.0: Semantic Cache Settings
+    SEMANTIC_CACHE_ENABLED: bool = Field(
+        default=True, description="Enable fuzzy query matching for LLM responses."
+    )
+    SEMANTIC_CACHE_THRESHOLD: float = Field(
+        default=0.95, description="Similarity threshold for semantic cache hits."
+    )
+
+    # V14.1: Notifications
+    NOTIFICATIONS_ENABLED: bool = Field(
+        default=True, description="Enable/Disable all notifications (Desktop, Sound, External)."
+    )
+    SLACK_WEBHOOK: str | None = Field(
+        default=None, description="Slack Webhook URL for task notifications."
+    )
+    DISCORD_WEBHOOK: str | None = Field(
+        default=None, description="Discord Webhook URL for task notifications."
+    )
+    EMAIL_NOTIFY: str | None = Field(
+        default=None, description="Email address for notifications."
+    )
+    GMAIL_USER: str | None = Field(
+        default=None, description="Gmail address used as sender."
+    )
+    GMAIL_PASSWORD: str | None = Field(
+        default=None, description="Gmail App Password."
+    )
+    LINE_NOTIFY_TOKEN: str | None = Field(
+        default=None, description="LINE Notify personal access token."
+    )
+    MESSENGER_ACCESS_TOKEN: str | None = Field(
+        default=None, description="Facebook Messenger Page Access Token."
+    )
+    MESSENGER_RECIPIENT_ID: str | None = Field(
+        default=None, description="Facebook Messenger Recipient PSID."
+    )
 
 
 settings = Settings()
@@ -187,9 +253,18 @@ def load_toml_config():
             if hasattr(settings, key_upper):
                 setattr(settings, key_upper, value)
 
-    except Exception:
-        # Fail silently during config load to avoid breaking startup
-        pass
+        # Special handling for notifications (V12.2)
+        if "notifications" in overrides:
+            try:
+                from ..services import notifier
+
+                notifier.configure(**overrides["notifications"])
+            except Exception as e:
+                logger.debug("Failed to configure notifier: %s", e)
+
+    except Exception as e:
+        # Log but don't crash during config load
+        logger.debug("Failed to load .boring.toml overrides: %s", e)
 
 
 def update_toml_config(key: str, value: any):
@@ -201,10 +276,11 @@ def update_toml_config(key: str, value: any):
     if config_file.exists():
         try:
             import toml
+
             with open(config_file) as f:
                 data = toml.load(f)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug("Failed to load existing .boring.toml: %s", e)
 
     if "boring" not in data:
         data["boring"] = {}
@@ -213,6 +289,7 @@ def update_toml_config(key: str, value: any):
 
     try:
         import toml
+
         with open(config_file, "w") as f:
             toml.dump(data, f)
         # Update current settings object too
@@ -241,4 +318,6 @@ def discover_tools():
 
 # Auto-load configuration overrides
 load_toml_config()
-discover_tools()
+
+# Note: discover_tools() is now called lazily when needed paths are accessed
+# or explicitly by components that need CLI tools.

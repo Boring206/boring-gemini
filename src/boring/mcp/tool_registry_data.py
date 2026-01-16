@@ -73,7 +73,7 @@ TOOL_CATEGORIES = {
             "健康",
             "review程式碼",
             "code review",
-            "boring check", # The Commandment
+            "boring check",  # The Commandment
         ],
         tools=[
             "boring_code_review",
@@ -166,10 +166,10 @@ TOOL_CATEGORIES = {
             "boring_brain_status",
             "boring_distill_skills",
             "boring_get_relevant_patterns",
-            "boring_usage_stats", # P4
+            "boring_usage_stats",  # P4
         ],
     ),
-     "evaluation": ToolCategory(
+    "evaluation": ToolCategory(
         name="Evaluation & Metrics",
         description="Judge rubrics, bias analysis, consistency checks",
         keywords=[

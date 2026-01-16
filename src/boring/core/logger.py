@@ -10,7 +10,7 @@ import logging
 import os
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import structlog
 from rich.console import Console
@@ -54,6 +54,38 @@ _logger = get_logger()
 logger = _logger
 
 
+class JSONFormatter(logging.Formatter):
+    """Formats log records as JSON objects."""
+
+    def format(self, record):
+        log_obj = {
+            "timestamp": datetime.fromtimestamp(record.created).isoformat(),
+            "level": record.levelname,
+            "message": record.getMessage(),
+            "logger": record.name,
+        }
+        if hasattr(record, "props"):
+            log_obj.update(record.props)
+        return json.dumps(log_obj)
+
+
+def setup_file_logging(log_dir: Path):
+    """Configure robust file logging (Text + JSON)."""
+    log_dir.mkdir(parents=True, exist_ok=True)
+
+    # 1. Standard Text Log
+    text_handler = logging.FileHandler(log_dir / "boring.log", encoding="utf-8")
+    text_handler.setFormatter(
+        logging.Formatter("[%(asctime)s] [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+    )
+    _logger.addHandler(text_handler)
+
+    # 2. Structured JSON Log (Phase 5.2)
+    json_handler = logging.FileHandler(log_dir / "boring.json.log", encoding="utf-8")
+    json_handler.setFormatter(JSONFormatter())
+    _logger.addHandler(json_handler)
+
+
 def log_status(log_dir: Any, level: str, message: str, **kwargs: Any):
     """
     Logs status messages using structlog with console and file output.
@@ -66,13 +98,15 @@ def log_status(log_dir: Any, level: str, message: str, **kwargs: Any):
     """
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    # Setup file logging lazily if needed
     if log_dir:
         if isinstance(log_dir, str):
             log_dir = Path(log_dir)
-        log_dir.mkdir(parents=True, exist_ok=True)
-        log_file = log_dir / "boring.log"
-    else:
-        log_file = None
+
+        # Check if handlers need setup (simple check to avoid adding multiple handlers)
+        has_file_handler = any(isinstance(h, logging.FileHandler) for h in _logger.handlers)
+        if not has_file_handler:
+            setup_file_logging(log_dir)
 
     # Console output with Rich colors
     color_map = {
@@ -110,16 +144,16 @@ def log_status(log_dir: Any, level: str, message: str, **kwargs: Any):
 
     console.print(f"[{timestamp}] [[{level.upper()}]] {emoji}{message}{extra_str}", style=style)
 
-    # File output in JSON Lines format for analysis
-    if log_file:
-        log_entry = {"timestamp": timestamp, "level": level.upper(), "message": message, **kwargs}
+    # Log to standard python logger (handled by file handlers)
+    # We pass kwargs as 'props' to be picked up by JSONFormatter
+    level_int = getattr(logging, level.upper(), logging.INFO)
+    if level.upper() in ["SUCCESS", "LOOP", "PLAN", "VIBE"]:
+        level_int = logging.INFO  # Map custom levels to INFO for standardized handling
 
-        with open(log_file, "a", encoding="utf-8") as f:
-            f.write(json.dumps(log_entry) + "\n")
-
-    # Also log via structlog for consistent observability
-    log_method = getattr(_logger, level.lower(), _logger.info)
-    log_method(message, **kwargs)
+    record = logging.LogRecord("boring", level_int, "", 0, message, args=(), exc_info=None)
+    record.props = kwargs
+    record.created = datetime.now().timestamp()  # Sync time
+    _logger.handle(record)
 
 
 def update_status(
@@ -129,7 +163,7 @@ def update_status(
     last_action: str,
     status: str,
     exit_reason: str = "",
-    calls_made: Optional[int] = None,
+    calls_made: int | None = None,
 ):
     """
     Updates the status.json file for external monitoring.

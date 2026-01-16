@@ -16,9 +16,9 @@ Features:
 import os
 import subprocess
 import sys
+from collections.abc import Callable
 from enum import Enum
 from pathlib import Path
-from typing import Callable, Optional
 
 from rich.console import Console
 from rich.panel import Panel
@@ -61,9 +61,9 @@ class InteractiveSession:
     def __init__(
         self,
         reason: str = "Manual intervention requested",
-        project_root: Optional[Path] = None,
-        log_dir: Optional[Path] = None,
-        recent_errors: Optional[list] = None,
+        project_root: Path | None = None,
+        log_dir: Path | None = None,
+        recent_errors: list | None = None,
     ):
         self.reason = reason
         self.project_root = project_root or settings.PROJECT_ROOT
@@ -264,10 +264,10 @@ class InteractiveSession:
 
 def enter_interactive_mode(
     reason: str = "Manual intervention",
-    project_root: Optional[Path] = None,
-    recent_errors: Optional[list] = None,
-    on_resume: Optional[Callable] = None,
-    on_abort: Optional[Callable] = None,
+    project_root: Path | None = None,
+    recent_errors: list | None = None,
+    on_resume: Callable | None = None,
+    on_abort: Callable | None = None,
 ) -> bool:
     """
     Enter interactive mode and return True if should resume.
@@ -325,7 +325,7 @@ class MainMenu:
         ("q", "❌ Quit", "quit"),
     ]
 
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root: Path | None = None):
         self.project_root = project_root or settings.PROJECT_ROOT
         self._running = True
 

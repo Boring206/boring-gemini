@@ -47,6 +47,7 @@ if TYPE_CHECKING:
     from .pattern_clustering import PatternCluster, PatternClusterer  # noqa: F401
     from .prediction_tracker import ABTestResult, AccuracyMetrics, PredictionTracker  # noqa: F401
     from .predictive_analyzer import ErrorPrediction, PredictiveAnalyzer  # noqa: F401
+    from .semantic_cache import SemanticCache, get_semantic_cache  # noqa: F401
 
 # Mapping of exported name -> (module_name, attribute_name)
 _EXPORT_MAP = {
@@ -84,6 +85,12 @@ _EXPORT_MAP = {
     # .predictive_analyzer
     "PredictiveAnalyzer": ("predictive_analyzer", "PredictiveAnalyzer"),
     "ErrorPrediction": ("predictive_analyzer", "ErrorPrediction"),
+    # .semantic_cache
+    "SemanticCache": ("semantic_cache", "SemanticCache"),
+    "get_semantic_cache": ("semantic_cache", "get_semantic_cache"),
+    # .compression
+    "ContextCompressor": ("compression", "ContextCompressor"),
+    "compress_context": ("compression", "compress_context"),
 }
 
 # Legacy Legacy Map (Ghost Feature Resurrection)
@@ -97,10 +104,12 @@ _LEGACY_MAP = {
 def __getattr__(name: str):
     if name == "ErrorSolutionPair":
         from dataclasses import dataclass
+
         @dataclass
         class ErrorSolutionPair:
             error: str
             solution: str
+
         return ErrorSolutionPair
 
     if name in _EXPORT_MAP:
@@ -121,4 +130,3 @@ def __dir__():
 
 
 __all__ = list(_EXPORT_MAP.keys()) + list(_LEGACY_MAP.keys()) + ["ErrorSolutionPair"]
-

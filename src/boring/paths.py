@@ -63,6 +63,8 @@ STATE_FILES = [
     ".circuit_breaker_history",
     ".boring_transaction",
     ".boring_tutorial.json",
+    ".response_analysis",
+    ".exit_signals",
 ]
 
 

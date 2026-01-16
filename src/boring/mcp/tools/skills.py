@@ -15,11 +15,11 @@ Features:
 import logging
 import shutil
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 from pydantic import Field
 
-from ...audit import audited
+from ...services.audit import audited
 from ...skills.sync_manager import SyncManager
 from ...skills.universal_loader import UniversalSkillLoader
 from ...skills_catalog import (
@@ -33,6 +33,7 @@ from ..instance import mcp
 logger = logging.getLogger(__name__)
 
 # --- Legacy Catalog Tools (External Resources) ---
+
 
 @mcp.tool(
     description="安裝 Agent Skill (Install skill). 適合: 'Install extensions', '我需要 Claude template'.",
@@ -76,6 +77,7 @@ def boring_skills_install(
         "data": {"skill": match.name, "url": match.repo_url},
     }
 
+
 @mcp.tool(
     description="列出可用 Skills (List skills). 適合: 'List catalog', '有什麼 extensions', 'Show skills'.",
     annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
@@ -90,6 +92,7 @@ def boring_skills_list(
     for skill in skills:
         display_text.append(f"- **{skill.name}** (`{skill.platform}`): {skill.description}")
     return {"status": "success", "message": "\n".join(display_text)}
+
 
 @mcp.tool(
     description="搜尋 Skills (Search skills). 適合: 'Search templates', '找電商 skill', 'Find extension'.",
@@ -109,6 +112,7 @@ def boring_skills_search(
     for skill in matches:
         display_text.append(format_skill_for_display(skill))
     return {"status": "success", "message": "\n".join(display_text)}
+
 
 @mcp.tool(
     description="智能推薦 Skills (Smart Recommend). 根據專案內容自動推薦適合的 Skills。",
@@ -137,13 +141,15 @@ def boring_skills_recommend(project_path: str = ".", online: bool = False) -> di
             keywords.add("docker")
         if "package.json" in str(context.detected_files):
             keywords.add("node")
-        if "pyproject.toml" in str(context.detected_files) or "requirements.txt" in str(context.detected_files):
+        if "pyproject.toml" in str(context.detected_files) or "requirements.txt" in str(
+            context.detected_files
+        ):
             keywords.add("python")
 
         display_text = [
             f"## 🤖 Recommended Skills for '{context.project_type}' Project",
             f"Detected Context: {', '.join(keywords)}",
-            ""
+            "",
         ]
 
         # 1. Local Catalog Search
@@ -169,6 +175,7 @@ def boring_skills_recommend(project_path: str = ".", online: bool = False) -> di
         if online:
             try:
                 from duckduckgo_search import DDGS
+
                 display_text.append("\n### 🌐 AI Web Search Results (DuckDuckGo)")
 
                 # Construct Query
@@ -183,9 +190,9 @@ def boring_skills_recommend(project_path: str = ".", online: bool = False) -> di
 
                 if results:
                     for res in results:
-                        title = res.get('title', 'Unknown Title')
-                        url = res.get('href', '#')
-                        body = res.get('body', '')
+                        title = res.get("title", "Unknown Title")
+                        url = res.get("href", "#")
+                        body = res.get("body", "")
 
                         display_text.append(f"#### {title}")
                         display_text.append(f"🔗 {url}")
@@ -193,7 +200,7 @@ def boring_skills_recommend(project_path: str = ".", online: bool = False) -> di
                         display_text.append(f"Install: `boring_skill_download('{url}')`")
                         display_text.append("---")
                 else:
-                     display_text.append("_(No relevant results found online)_")
+                    display_text.append("_(No relevant results found online)_")
 
             except ImportError:
                 display_text.append("\n⚠️ `duckduckgo-search` not installed. Cannot search online.")
@@ -206,6 +213,7 @@ def boring_skills_recommend(project_path: str = ".", online: bool = False) -> di
         return {"status": "error", "message": "Project Analysis module not available."}
     except Exception as e:
         return {"status": "error", "message": f"Recommendation failed: {str(e)}"}
+
 
 @mcp.tool(description="Discover local skills across all platforms (.gemini, .claude, .boring)")
 @audited
@@ -224,15 +232,13 @@ def boring_skill_discover(project_path: str = ".") -> dict:
     return {
         "status": "success",
         "message": "\n".join(text),
-        "data": {"skills": [s.name for s in skills]}
+        "data": {"skills": [s.name for s in skills]},
     }
+
 
 @mcp.tool(description="Activate a Universal Skill and inject its instructions")
 @audited
-def boring_skill_activate(
-    skill_name: str,
-    project_path: str = "."
-) -> dict:
+def boring_skill_activate(skill_name: str, project_path: str = ".") -> dict:
     """Load the content of a skill and return it for context injection."""
     loader = UniversalSkillLoader(project_path)
     skill = loader.load_by_name(skill_name)
@@ -243,15 +249,14 @@ def boring_skill_activate(
     return {
         "status": "success",
         "message": f"✅ Activated Skill: **{skill.name}**\n\n{skill.description}",
-        "data": {"content": skill.activation_prompt, "name": skill.name}
+        "data": {"content": skill.activation_prompt, "name": skill.name},
     }
+
 
 @mcp.tool(description="Download a skill from URL and sync to clients")
 @audited
 def boring_skill_download(
-    url: str,
-    name_override: Optional[str] = None,
-    project_path: str = "."
+    url: str, name_override: str | None = None, project_path: str = "."
 ) -> dict:
     """
     Download a skill from a trusted URL (GitHub/Gist) to .boring/skills.
@@ -260,7 +265,7 @@ def boring_skill_download(
     if not is_trusted_url(url):
         return {
             "status": "error",
-            "message": f"❌ URL not trusted: {url}. Trusted: GitHub, SkillsMP."
+            "message": f"❌ URL not trusted: {url}. Trusted: GitHub, SkillsMP.",
         }
 
     # Logic to clone or download file
@@ -280,13 +285,13 @@ def boring_skill_download(
         url = url.replace("/blob/", "/tree/")
         # Strip filename to get parent directory
         if url.endswith(".md") or url.endswith(".py") or url.endswith(".txt"):
-             url = "/".join(url.split("/")[:-1])
+            url = "/".join(url.split("/")[:-1])
 
     # Handle SkillsMP URLs (UX Improvement)
     if "skillsmp.com" in url:
         return {
             "status": "error",
-            "message": "⚠️ **SkillsMP Download**: Direct download is protected by Cloudflare.\n👉 Please open the link, find the **'View on GitHub'** button, and use that GitHub URL instead."
+            "message": "⚠️ **SkillsMP Download**: Direct download is protected by Cloudflare.\n👉 Please open the link, find the **'View on GitHub'** button, and use that GitHub URL instead.",
         }
 
     if "github.com" in url and "/tree/" in url:
@@ -312,7 +317,7 @@ def boring_skill_download(
                     dest_name = clean_path.split("/")[-1]
                     # If empty (e.g. root), use repo name
                     if not dest_name:
-                         dest_name = repo_url.split("/")[-1]
+                        dest_name = repo_url.split("/")[-1]
 
                     hub_dir = project_root / ".boring" / "skills" / dest_name
         except Exception as e:
@@ -323,7 +328,7 @@ def boring_skill_download(
         return {
             "status": "info",
             "message": f"Skill '{dest_name}' already exists. Use `boring_skill_sync('{dest_name}')` to update.",
-            "data": {"path": str(hub_dir)}
+            "data": {"path": str(hub_dir)},
         }
 
     try:
@@ -334,7 +339,18 @@ def boring_skill_download(
             hub_dir.mkdir(parents=True, exist_ok=True)
 
             # 1. Clone with --sparse
-            cmd_clone = ["git", "clone", "--depth", "1", "--filter=blob:none", "--sparse", "--branch", branch, repo_url, str(hub_dir)]
+            cmd_clone = [
+                "git",
+                "clone",
+                "--depth",
+                "1",
+                "--filter=blob:none",
+                "--sparse",
+                "--branch",
+                branch,
+                repo_url,
+                str(hub_dir),
+            ]
             subprocess.run(cmd_clone, check=True, capture_output=True)
 
             # 2. Set sparse-checkout path
@@ -376,7 +392,7 @@ def boring_skill_download(
             if item.is_dir():
                 if item.name in ALLOWED_DIRS:
                     is_allowed = True
-            else: # File
+            else:  # File
                 if item.name in ALLOWED_FILES or item.name.startswith("LICENSE"):
                     is_allowed = True
 
@@ -399,18 +415,15 @@ def boring_skill_download(
         return {
             "status": "success",
             "message": msg + "\nSynced to:\n" + "\n".join(targets),
-            "data": {"path": str(hub_dir), "synced": targets, "cleaned": cleaned_items}
+            "data": {"path": str(hub_dir), "synced": targets, "cleaned": cleaned_items},
         }
     except Exception as e:
         return {"status": "error", "message": f"Download failed: {str(e)}"}
 
+
 @mcp.tool(description="Create a new skill from a description")
 @audited
-def boring_skill_create(
-    name: str,
-    goal: str,
-    project_path: str = "."
-) -> dict:
+def boring_skill_create(name: str, goal: str, project_path: str = ".") -> dict:
     """Template for creating a new skill."""
     template = f"""---
 name: {name}
@@ -432,8 +445,9 @@ description: {goal}
     return {
         "status": "success",
         "message": f"Created template for **{name}** at {path}",
-        "data": {"path": str(path)}
+        "data": {"path": str(path)},
     }
+
 
 # --- Dynamic Skill Injection (Role-Based) ---
 
@@ -442,8 +456,9 @@ SKILL_CATEGORIES = {
     "Surveyor": ["boring_rag_search", "boring_rag_graph"],
     "Watcher": ["boring_commit", "boring_checkpoint"],
     "Healer": ["boring_fix", "boring_verify"],
-    "Sage": ["boring_skill_discover", "boring_skill_activate", "boring_skill_download"]
+    "Sage": ["boring_skill_discover", "boring_skill_activate", "boring_skill_download"],
 }
+
 
 @mcp.tool(description="啟用技能角色 (Activate Skill Role).")
 @audited
@@ -460,6 +475,7 @@ def boring_active_skill(skill_name: str) -> dict:
             injected.append(t)
 
     return {"status": "success", "message": f"Activated {skill_key} with {len(injected)} tools."}
+
 
 @mcp.tool(description="Reset injected skills.")
 @audited

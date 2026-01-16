@@ -5,13 +5,12 @@ import subprocess
 import tarfile
 import zipfile
 from pathlib import Path
-from typing import Optional
 
 import requests
 from rich.console import Console
 from rich.progress import Progress
 
-from boring.config import settings
+from boring.core.config import settings
 
 # MCP-compatible Rich Console (stderr)
 _is_mcp_mode = os.environ.get("BORING_MCP_MODE") == "1"
@@ -26,7 +25,7 @@ class NodeManager:
     Implements 'system-first, fallback-download' strategy.
     """
 
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root: Path | None = None):
         self.project_root = project_root or settings.PROJECT_ROOT
         self.system = platform.system()
         self.machine = platform.machine().lower()
@@ -58,7 +57,7 @@ class NodeManager:
         console.print("[red]Node.js is not available and download was not requested.[/red]")
         return False
 
-    def get_node_path(self) -> Optional[str]:
+    def get_node_path(self) -> str | None:
         """Get path to node executable (system first, then portable)."""
         # 1. System node
         system_node = shutil.which("node")
@@ -71,7 +70,7 @@ class NodeManager:
 
         return None
 
-    def get_npm_path(self) -> Optional[str]:
+    def get_npm_path(self) -> str | None:
         """Get path to npm executable."""
         # 1. System npm
         system_npm = shutil.which("npm")
@@ -88,7 +87,7 @@ class NodeManager:
         """Check if node is available."""
         return self.get_node_path() is not None
 
-    def get_gemini_path(self) -> Optional[str]:
+    def get_gemini_path(self) -> str | None:
         """Get path to gemini CLI."""
         # 1. System gemini
         system_gemini = shutil.which("gemini")
@@ -182,7 +181,7 @@ class NodeManager:
             console.print(f"[red]Failed to download Node.js: {e}[/red]")
             return False
 
-    def _get_download_url(self) -> Optional[str]:
+    def _get_download_url(self) -> str | None:
         base_url = f"https://nodejs.org/dist/{NODE_VERSION}"
 
         # Architecture mapping

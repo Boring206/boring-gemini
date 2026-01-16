@@ -47,6 +47,7 @@ def mock_context(temp_project):
     context.storage = None
     context.loop_count = 1
     context.status_report = {}
+    context.prompt_cache = {}
     return context
 
 

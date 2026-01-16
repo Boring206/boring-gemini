@@ -12,7 +12,7 @@ Note: This is experimental and requires google-genai package.
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from .logger import log_status
 
@@ -46,7 +46,7 @@ class InteractionResult:
     function_calls: list[dict[str, Any]]
     interaction_id: str
     success: bool
-    error: Optional[str] = None
+    error: str | None = None
 
 
 class InteractionsClient:
@@ -63,7 +63,7 @@ class InteractionsClient:
     def __init__(
         self,
         model: str = "gemini-3-flash-preview",
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         log_dir: Path = Path("logs"),
     ):
         """
@@ -76,7 +76,7 @@ class InteractionsClient:
         """
         self.log_dir = log_dir
         self.model = model
-        self.previous_interaction_id: Optional[str] = None
+        self.previous_interaction_id: str | None = None
         self.enabled = False
 
         if not INTERACTIONS_API_AVAILABLE:
@@ -101,7 +101,7 @@ class InteractionsClient:
         self,
         prompt: str,
         system_instruction: str = "",
-        tools: Optional[list[dict]] = None,
+        tools: list[dict] | None = None,
         continue_conversation: bool = True,
     ) -> InteractionResult:
         """
@@ -207,7 +207,7 @@ class InteractionsClient:
 
 def create_interactions_client(
     model: str = "gemini-3-flash-preview", log_dir: Path = Path("logs")
-) -> Optional[InteractionsClient]:
+) -> InteractionsClient | None:
     """
     Factory function to create an InteractionsClient.
 

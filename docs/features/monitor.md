@@ -6,35 +6,60 @@ Boring provides three ways to monitor your autonomous loop, depending on your en
 
 ---
 
-## 🛠️ Monitoring Variants
+## 🛠️ Interface Comparison
+
+Boring interfaces are categorized into **TUI (Terminal-based)** and **Dashboard (Web-based)**.
+
+| Type | Name | Trigger Command | Trigger Type | Core Features |
+| :--- | :--- | :--- | :--- | :--- |
+| **TUI** | **Boring Flow** | `boring flow` | **Automatic** (via `boring start`) | Shows state-machine activity, Architect/Builder/Healer progress. |
+| **TUI** | **Boring Watch** | `boring watch` | **Manual** | Real-time file monitoring with **Automatic Ruff/Lint** checks and AI fix suggestions. |
+| **TUI** | **Boring Monitor** | `boring-monitor` | **Manual** | Real-time Token cost, success rates, ASCII dependency graphs. |
+| **Component** | **RAG Watcher** | *(Background)* | **Automatic** | **Invisible Feature**: Auto-detects file changes and updates RAG vector index silently. |
+| **Web** | **Boring Dashboard** | `boring-dashboard` | **Manual** | Web Analytics: Token trends, Quality Score history, Log Explorer. |
+
+---
+
+## 🚀 Interface Detailed Guide
 
 ### 1. 📊 Boring Monitor (TUI)
-A terminal-based real-time dashboard. Perfect for fast monitoring without leaving the console.
+The fastest, most direct way to monitor. No browser needed.
 
-**Command:**
+**Trigger:**
 ```bash
 boring-monitor
 ```
-> [!IMPORTANT]
-> Note the hyphen! `boring-monitor` is a standalone command, not a subcommand of `boring`.
 
-### 2. 🌐 Boring Monitor (Web/FastAPI)
-A lightweight web dashboard powered by FastAPI. Good for low-resource environments.
+### 4. 👁️ Boring Watch (TUI)
+A dedicated monitoring mode that listens for code changes:
+- **Auto-check**: Automatically runs `ruff`, `mypy`, or tests whenever you save a file.
+- **AI Fix**: Displays immediate AI fix suggestions in the terminal when errors are detected.
 
-**Command:**
 ```bash
-boring-monitor --web
+boring watch
 ```
-*Requires `pip install fastapi uvicorn`.*
 
-### 3. 🤖 Boring Dashboard (GUI/Streamlit)
-The most comprehensive visual dashboard. Includes the **Brain Explorer** and log visualizer.
+### 🧠 Automatic RAG Indexing (Hidden Feature)
+There is also an "invisible trigger". Boring V13+ includes a **RAG Watcher**. While you are in a `boring start` loop, the system **automatically detects** your file changes and updates the local vector database (RAG). This ensures the AI always has the latest code context without requiring manual re-indexing.
 
-**Command:**
+### 2. 🐉 Boring Flow (TUI)
+Automatically enabled when running `boring start` or the "One Dragon" workflow. No manual trigger required during active loops.
+
+**Trigger:**
+```bash
+boring flow
+# OR automatically via start
+boring start
+```
+
+### 3. 🤖 Boring Dashboard (Web/Streamlit)
+Best for beautiful analytics and deep RAG Brain inspection.
+
+**Trigger:**
 ```bash
 boring-dashboard
 ```
-*Requires `pip install "boring-aicoding[gui]"`.*
+*Note: If the command isn't found, try `python -m boring dashboard`.*
 
 ---
 

@@ -17,9 +17,19 @@ import hashlib
 import logging
 from dataclasses import dataclass, field
 from difflib import SequenceMatcher
-from typing import Any, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class HierarchicalLabel:
+    """A hierarchical label for a pattern cluster."""
+
+    name: str
+    level: int  # 0 = root, 1 = sub-category
+    confidence: float
+    parent: str | None = None
 
 
 @dataclass
@@ -32,6 +42,7 @@ class PatternCluster:
     similarity_threshold: float = 0.0
     total_success_count: int = 0
     merged_contexts: list[str] = field(default_factory=list)
+    labels: list[HierarchicalLabel] = field(default_factory=list)
 
 
 @dataclass
@@ -278,13 +289,50 @@ class PatternClusterer:
 
         return total_sim / count if count > 0 else 0.0
 
+    def _generate_labels(self, patterns: list[dict]) -> list[HierarchicalLabel]:
+        """Generate hierarchical labels for a group of patterns."""
+        if not patterns:
+            return []
+
+        labels = []
+
+        # Level 1: Common Error Type (if available)
+        error_types = [
+            p.get("pattern_id", "").split("_")[1]
+            for p in patterns
+            if "ERR_" in p.get("pattern_id", "")
+        ]
+        if error_types:
+            from collections import Counter
+
+            common_type = Counter(error_types).most_common(1)[0][0]
+            labels.append(HierarchicalLabel(name=common_type, level=0, confidence=0.8))
+
+        # Level 2: Top Keywords from Description
+        descriptions = [p.get("description", "") for p in patterns]
+        text = " ".join(descriptions).lower()
+        words = [w for w in text.split() if w not in self._stopwords and len(w) > 3]
+
+        if words:
+            from collections import Counter
+
+            top_words = Counter(words).most_common(3)
+            for word, count in top_words:
+                labels.append(
+                    HierarchicalLabel(
+                        name=word,
+                        level=1,
+                        confidence=min(1.0, count / len(patterns)),
+                        parent=labels[0].name if labels else None,
+                    )
+                )
+
+        return labels
+
     def _merge_cluster(self, patterns: list[dict]) -> PatternCluster:
         """Merge patterns in a cluster into a single representative."""
         if not patterns:
-            return PatternCluster(
-                cluster_id="empty",
-                representative_pattern={},
-            )
+            return PatternCluster(cluster_id="empty", representative_pattern={}, labels=[])
 
         # Find the pattern with highest success_count as representative
         representative = max(patterns, key=lambda p: p.get("success_count", 0))
@@ -303,6 +351,9 @@ class PatternClusterer:
                 merged_contexts.append(p["context"])
             total_success += p.get("success_count", 0)
 
+        # Generate hierarchy
+        labels = self._generate_labels(patterns)
+
         # Update representative with merged data
         representative = dict(representative)
         representative["cluster_id"] = cluster_id
@@ -314,7 +365,8 @@ class PatternClusterer:
             member_patterns=patterns,
             similarity_threshold=self.similarity_threshold,
             total_success_count=total_success,
-            merged_contexts=list(set(merged_contexts))[:10],  # Limit contexts
+            merged_contexts=list(set(merged_contexts))[:10],
+            labels=labels,
         )
 
     def deduplicate_patterns(self, patterns: list[dict], aggressive: bool = False) -> list[dict]:
@@ -469,7 +521,7 @@ class EmbeddingVersionManager:
 
 
 # Singleton instances
-_pattern_clusterer: Optional[PatternClusterer] = None
+_pattern_clusterer: PatternClusterer | None = None
 
 
 def get_pattern_clusterer(threshold: float = 0.75) -> PatternClusterer:

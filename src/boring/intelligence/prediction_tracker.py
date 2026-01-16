@@ -20,7 +20,6 @@ import threading
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -36,10 +35,10 @@ class PredictionRecord:
     prediction_type: str  # "error", "impact", "risk"
     predicted_value: str
     confidence: float
-    actual_outcome: Optional[str] = None
-    was_correct: Optional[bool] = None
+    actual_outcome: str | None = None
+    was_correct: bool | None = None
     created_at: str = ""
-    resolved_at: Optional[str] = None
+    resolved_at: str | None = None
     context: dict = field(default_factory=dict)
 
 
@@ -155,7 +154,7 @@ class PredictionTracker:
         predicted_value: str,
         confidence: float,
         strategy: str = "default",
-        context: Optional[dict] = None,
+        context: dict | None = None,
     ):
         """
         Record a new prediction.
@@ -257,7 +256,7 @@ class PredictionTracker:
         conn.commit()
 
     def get_accuracy_metrics(
-        self, prediction_type: Optional[str] = None, days: int = 30
+        self, prediction_type: str | None = None, days: int = 30
     ) -> AccuracyMetrics:
         """
         Compute accuracy metrics.
@@ -482,7 +481,7 @@ class PredictionTracker:
             p_value=p_value,
         )
 
-    def get_calibration_chart_data(self, prediction_type: Optional[str] = None) -> dict:
+    def get_calibration_chart_data(self, prediction_type: str | None = None) -> dict:
         """
         Get data for a calibration chart (reliability diagram).
 
@@ -553,7 +552,7 @@ class PredictionTracker:
 
 
 # Singleton instance
-_prediction_tracker: Optional[PredictionTracker] = None
+_prediction_tracker: PredictionTracker | None = None
 
 
 def get_prediction_tracker(project_root: Path) -> PredictionTracker:

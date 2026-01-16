@@ -40,6 +40,10 @@ function Print-Status {
 # =============================================================================
 Print-Section "TIER 1: Linting & Formatting"
 
+Write-Host "Running version consistency check..."
+$versionCheck = python scripts/verify_version.py
+Print-Status ($LASTEXITCODE -eq 0) "Version consistency"
+
 Write-Host "Running Ruff linter..."
 $ruffCheck = ruff check src/ tests/ --output-format=github
 Print-Status ($LASTEXITCODE -eq 0) "Ruff linting"

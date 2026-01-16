@@ -17,7 +17,6 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 # =============================================================================
 # Performance: Configuration cache
@@ -34,7 +33,7 @@ class Project:
     path: Path
     description: str = ""
     added_at: datetime = field(default_factory=datetime.now)
-    last_accessed: Optional[datetime] = None
+    last_accessed: datetime | None = None
     tags: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict:
@@ -72,11 +71,11 @@ class WorkspaceManager:
     Performance: Uses lazy loading and deferred saves.
     """
 
-    def __init__(self, config_dir: Optional[Path] = None):
+    def __init__(self, config_dir: Path | None = None):
         self.config_dir = config_dir or (Path.home() / ".boring")
         self.config_file = self.config_dir / "workspace.json"
         self.projects: dict[str, Project] = {}
-        self.active_project: Optional[str] = None
+        self.active_project: str | None = None
         self._dirty = False
         self._last_save_time = 0.0
 
@@ -144,7 +143,7 @@ class WorkspaceManager:
             self._save()
 
     def add_project(
-        self, name: str, path: str, description: str = "", tags: Optional[list[str]] = None
+        self, name: str, path: str, description: str = "", tags: list[str] | None = None
     ) -> dict:
         """
         Add a project to the workspace.
@@ -203,13 +202,13 @@ class WorkspaceManager:
             "path": str(self.projects[name].path),
         }
 
-    def get_active(self) -> Optional[Project]:
+    def get_active(self) -> Project | None:
         """Get the currently active project."""
         if self.active_project and self.active_project in self.projects:
             return self.projects[self.active_project]
         return None
 
-    def list_projects(self, tag: Optional[str] = None) -> list[dict]:
+    def list_projects(self, tag: str | None = None) -> list[dict]:
         """
         List all projects in the workspace.
 
@@ -226,7 +225,7 @@ class WorkspaceManager:
             for p in sorted(projects, key=lambda x: x.last_accessed or x.added_at, reverse=True)
         ]
 
-    def get_project_path(self, name: Optional[str] = None) -> Optional[Path]:
+    def get_project_path(self, name: str | None = None) -> Path | None:
         """
         Get path for a project (or active project if name is None).
         """
@@ -241,7 +240,7 @@ class WorkspaceManager:
 
 
 # Global instance
-_workspace: Optional[WorkspaceManager] = None
+_workspace: WorkspaceManager | None = None
 
 
 def get_workspace_manager() -> WorkspaceManager:

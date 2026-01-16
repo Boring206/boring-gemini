@@ -1,6 +1,6 @@
 [project]
 name = "boring-aicoding"
-version = "13.0.0"
+version = "14.0.0"
 description = "Boring: An AI-powered development support tool for autonomous reasoning, planning, and verification. Optimized for uv and agentic workflows."
 authors = [
     { name = "Boring206", email = "C112156246@nkust.edu.tw" }
@@ -86,8 +86,13 @@ mcp = [
     "sentence-transformers>=2.2.0",
     "win10toast>=0.9; platform_system=='Windows'",
 ]
+# V13.2: Local LLM support for offline operation
+local = [
+    "llama-cpp-python>=0.2.50",
+    "onnxruntime>=1.16.0",
+]
 all = [
-    "boring-aicoding[gui,dev,vector,mcp]",
+    "boring-aicoding[gui,dev,vector,mcp,local]",
 ]
 
 [project.scripts]
@@ -119,7 +124,7 @@ boring = ["py.typed", "templates/**/*", "templates/workflows/*", "templates/spec
 # Ruff linter configuration
 [tool.ruff]
 line-length = 100
-target-version = "py39"
+target-version = "py310"
 lint.select = [
     "E",   # pycodestyle errors
     "F",   # pyflakes
@@ -144,7 +149,7 @@ lint.ignore = [
 
 # Mypy type checker configuration
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.10"
 
 # Strictness flags
 strict = true
@@ -242,3 +247,7 @@ server = "boring.mcp.server:create_server"
 dev = [
     "psutil>=7.2.1",
 ]
+
+[tool.bandit]
+skips = ["B110", "B112", "B404", "B603", "B607"]
+exclude = ["tests"]

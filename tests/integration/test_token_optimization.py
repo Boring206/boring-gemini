@@ -112,7 +112,7 @@ class TestTokenOptimization:
             assert "issues" in result_verb
             assert len(result_verb["issues"]) == 15
 
-    @patch("boring.mcp.tools.vibe.vibe_engine.perform_code_review")
+    @patch("boring.vibe.engine.VibeEngine.perform_code_review")
     def test_perf_tips_verbosity(self, mock_review):
         """Test boring_perf_tips output formats via factory."""
         from pathlib import Path

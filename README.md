@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://smithery.ai/server/boring/boring"><img src="https://smithery.ai/badge/boring/boring" alt="Smithery Badge"></a>
-  <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/v/boring-aicoding.svg?v=13.0.0" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/v/boring-aicoding.svg" alt="PyPI version"></a>
   <a href="https://pepy.tech/project/boring-aicoding"><img src="https://static.pepy.tech/badge/boring-aicoding" alt="Downloads"></a>
   <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/pyversions/boring-aicoding.svg" alt="Python Versions"></a>
 </p>
@@ -61,10 +61,23 @@ Introduction of **Self-Awareness** and **Adaptive Safety**.
 - **Contextual Prompts (P6)**: Adaptive Profile now injects specific guides (e.g., *Testing Guide*) only when you need them.
 
 ### 🛡️ Pillar VII: [The True One Dragon (V12.0.0)](docs/features/flow.md)
-The current production standard. Introduction of a **State-Machine Workflow** and **Deep Shadow Mode**.
+The legacy production standard. Introduction of a **State-Machine Workflow** and **Deep Shadow Mode**.
 - **Unified Flow Graph**: Dynamic orchestration (Architect -> Builder -> Healer -> Polish -> Evolver).
 - **Deep Shadow Mode**: `HealerNode` activates **STRICT** safety enforcement during auto-repairs.
 - **Cognitive Reflex**: Semantic Search integrated into the Brain for fuzzy error correction.
+
+### 🧐 Pillar VIII: [Async Evolution (V13.0.0)](docs/changelog/v13.md)
+The current high-performance standard. Focused on **Parallel Orchestration** and **Hybrid Storage**.
+- **Async Agent Runner**: Parallel execution of sub-tasks for faster completion.
+- **Semantic Storage Fallback**: FAISS integration for robust vector search when ChromaDB is unavailable.
+- **One Dragon 2.0**: Enhanced state management for complex "One Dragon" workflows.
+
+### 🔮 Pillar IX: [Intelligence & Offline (V13.1 - V14.0)](docs/features/predictive_zh.md)
+The cutting edge. Shifting from reactive to **Predictive** and **Local-First**.
+- **[Offline-First Mode](docs/guides/offline-mode_zh.md)**: Local LLM support (llama-cpp-python) for 100% privacy and zero-network operation.
+- **Predictive Error Detection**: AI-powered anti-pattern detection and proactive warnings *before* errors occur.
+- **AI Git Bisect**: Semantic analysis of commit history to instantly identify bug sources.
+- **Lazy Loading System**: Optimized MCP startup (<500ms) for high-performance developer environments.
 
 
 ---
@@ -80,6 +93,9 @@ The current production standard. Introduction of a **State-Machine Workflow** an
 | 📚 | **[Full Tool Reference](docs/reference/APPENDIX_A_TOOL_REFERENCE.md)** | Complete catalog of **67+ tools** with parameters and usage ([中文](docs/reference/APPENDIX_A_TOOL_REFERENCE_zh.md)). |
 | 🧬 | **[Skill Compilation](docs/features/cognitive.md)** | Distills repeated successful patterns into high-level **Strategic Skills**. |
 | 🪢 | **[Node.js Autonomy](docs/features/nodejs.md)** | Zeroconf Node.js & gemini-cli setup. No manual installation required. |
+| 🔌 | **[Offline-First](docs/guides/offline-mode_zh.md)** | Zero-network operation with local LLMs (Phi-3, Qwen) for maximum privacy. |
+| 🔮 | **[Predictive AI](docs/features/predictive_zh.md)** | Prevents issues before they happen with pattern-based error prediction. |
+| 🕵️ | **[AI Git Bisect](docs/features/predictive_zh.md)** | Semantic diagnostics for commit history. Finds the root cause of bugs instantly. |
 
 ---
 
@@ -89,6 +105,26 @@ Boring adapts to your environment to save tokens and context:
 - **FULL**: All 67+ tools active.
 - **ADAPTIVE (Recommended)**: Automatically builds a custom profile based on your top 20 most frequently used tools + Prompt Injection.
   - Enable: `export BORING_MCP_PROFILE=adaptive`
+
+---
+
+## 🔔 Enterprise Notifications (V14.0+)
+Boring supports multi-channel task notifications to keep you informed:
+- **Desktop**: Windows Toast, macOS, Linux notifications.
+- **Webhooks**: Slack, Discord.
+- **Messaging**: LINE Notify, Facebook Messenger.
+- **Email**: Gmail (via SMTP).
+
+Configure these in `.boring.toml`:
+```toml
+[boring]
+slack_webhook = "..."
+discord_webhook = "..."
+line_notify_token = "..."
+gmail_user = "..."
+gmail_password = "..."
+email_notify = "..."
+```
 
 ---
 
@@ -109,6 +145,12 @@ Boring is a **Hybrid Agent** that adapts to your workflow. It works in two disti
 *   **Role**: Your "unattended worker". It runs as a standalone process.
 *   **Usage**: Run `boring start` (NOT `boring run`). It reads `task.md`, executes the plan loop (Plan -> Code -> Test -> Fix), and stops when done.
 *   **Best For**: Bulk refactoring, massive migrations, or long-running tasks while you sleep.
+
+### 3. VS Code Extension (GUI Helper) 🖥️
+*   **Where**: `extensions/vscode-boring/`
+*   **Role**: A graphical interface for the CLI Agent inside VS Code.
+*   **Features**: One-click Start/Stop, Live Dashboard, and Status Bar integration.
+*   **How to use**: Open the directory in VS Code, press `F5` to debug, or compile with `npm run compile`.
 
 ---
 

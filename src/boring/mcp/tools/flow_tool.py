@@ -5,8 +5,8 @@ from typing import Annotated
 
 from pydantic import Field
 
-from ...audit import audited
 from ...core.config import settings
+from ...services.audit import audited
 from ...types import BoringResult, create_error_result, create_success_result
 from ..utils import check_rate_limit, detect_project_root
 
@@ -54,10 +54,7 @@ def boring_flow(
     from ...flow.nodes.healer import HealerNode
     from ...flow.nodes.polish import PolishNode
 
-    context = FlowContext(
-        project_root=root,
-        user_goal=instruction or "Improve the project"
-    )
+    context = FlowContext(project_root=root, user_goal=instruction or "Improve the project")
 
     graph = FlowGraph(context)
 
@@ -73,8 +70,7 @@ def boring_flow(
         final_msg = graph.run()
 
         return create_success_result(
-            message=final_msg,
-            data={"status": "success", "graph_output": final_msg}
+            message=final_msg, data={"status": "success", "graph_output": final_msg}
         )
     except Exception as e:
         return create_error_result(f"🐉 Dragon Stumbled: {str(e)}")

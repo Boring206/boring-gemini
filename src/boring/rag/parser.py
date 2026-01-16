@@ -15,7 +15,6 @@ V11.0 Enhancements:
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -41,8 +40,8 @@ class ParsedChunk:
     start_line: int  # 1-indexed
     end_line: int  # 1-indexed
     content: str
-    receiver: Optional[str] = None  # For Go method receivers
-    signature: Optional[str] = None  # Function/method signature
+    receiver: str | None = None  # For Go method receivers
+    signature: str | None = None  # Function/method signature
 
 
 class TreeSitterParser:
@@ -64,6 +63,9 @@ class TreeSitterParser:
         ".rs": "rust",
         ".rb": "ruby",
         ".php": "php",
+        ".kt": "kotlin",
+        ".kts": "kotlin",
+        ".scala": "scala",
     }
 
     # S-expression queries for extracting definitions
@@ -276,6 +278,27 @@ class TreeSitterParser:
             (trait_declaration
                 name: (name) @name) @class
         """,
+        "kotlin": """
+            (class_declaration
+                (type_identifier) @name) @class
+            (object_declaration
+                (type_identifier) @name) @class
+            (function_declaration
+                (simple_identifier) @name) @function
+            (property_declaration
+                (variable_declaration
+                    (simple_identifier) @name)) @method
+        """,
+        "scala": """
+            (class_definition
+                name: (identifier) @name) @class
+            (object_definition
+                name: (identifier) @name) @class
+            (trait_definition
+                name: (identifier) @name) @interface
+            (function_definition
+                name: (identifier) @name) @function
+        """,
     }
 
     def __init__(self):
@@ -285,7 +308,7 @@ class TreeSitterParser:
         """Check if tree-sitter is available."""
         return HAS_TREE_SITTER
 
-    def get_language_for_file(self, file_path: Path) -> Optional[str]:
+    def get_language_for_file(self, file_path: Path) -> str | None:
         """Determine language from file extension."""
         return self.EXT_TO_LANG.get(file_path.suffix.lower())
 

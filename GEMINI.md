@@ -1,4 +1,4 @@
-# GEMINI.md - Boring for Gemini (V11.1.0)
+# GEMINI.md - Boring for Gemini (V14.0.0)
 
 ## Project Overview
 
@@ -11,7 +11,10 @@ The system is built entirely in **Python**, using modern CLI frameworks and rich
 - **Intelligent Exit Detection:** The loop automatically terminates when it detects project completion through multiple signals (done signals, task list completion, test saturation).
 - **Safeguards:** Implements rate limiting (to manage API costs), a circuit breaker (to prevent getting stuck in failing loops), and graceful handling of API usage limits.
 - **Live Monitoring:** Provides real-time monitoring of the agent's status, logs, and API call usage via `boring-monitor`.
-- **🆕 Zero-Config Wizard (V10.32):** One-click `boring wizard` to auto-configure MCP for Claude Desktop, Cursor, and VS Code.
+- **🆕 Predictive Intelligence (V14.0):** AI-powered error prediction (`boring predict`) and semantic git bisect (`boring bisect`).
+- **🆕 Offline-First (V14.0):** 100% offline operation capability using local LLMs (`llama-cpp-python`).
+- **🆕 Diagnostic Engine (V14.0):** Deep project health analysis via `boring diagnostic` and `boring doctor`.
+- **🆕 Diagnostic Engine (V14.0):** Deep project health analysis via `boring diagnostic` and `boring doctor`.
 - **🆕 Brain Reflex (V10.31):** Active Recall mechanism that automatically retrieves solutions for known errors from the Brain.
 - **🆕 Cognitive Architecture (V11.0):** System 2 ReasoningState, Active Causal Memory, and Live Tool Synthesis (`boring_synth_tool`).
 - **🆕 Safety Net (V10.31):** Autonomous Git Checkpoints (`boring_checkpoint`) allowing the Agent to save/restore state before risky ops.
@@ -61,9 +64,6 @@ cd boring-gemini
 
 # Install in development mode
 pip install -e .
-
-# Configure Editor
-boring wizard
 ```
 
 This installs the following CLI commands:
@@ -160,7 +160,10 @@ pytest tests/test_core.py
 | Command | Description |
 |---------|-------------|
 | `boring start` | Start the autonomous development loop |
-| `boring wizard` | **(New)** Zero-Config Setup Wizard for MCP |
+| `boring predict` | **(New)** Scan codebase for potential risks |
+| `boring bisect` | **(New)** Trace bug sources using AI |
+| `boring diagnostic` | **(New)** Run deep project health analysis |
+| `boring doctor` | **(New)** Check system and dependencies health |
 | `boring status` | Show current loop status |
 | `boring circuit-status` | Show circuit breaker state |
 | `boring reset-circuit` | Reset circuit breaker to CLOSED |

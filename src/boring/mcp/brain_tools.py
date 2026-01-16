@@ -13,6 +13,7 @@ This module contains tools for AI learning and evaluation:
 - 🆕 boring_pattern_stats: Pattern statistics (V10.23)
 """
 
+import re
 from typing import Annotated
 
 from pydantic import Field
@@ -454,16 +455,36 @@ def register_brain_tools(mcp, audited, helpers):
 
         try:
             brain = BrainManager(project_root)
+
+            normalized_type = (error_type or "").strip()
+            normalized_context = (context or "").strip()
+            if not normalized_type or normalized_type.lower() in ("error", "exception", "unknown"):
+                match = re.search(r"([A-Za-z_]+Error|Exception)", normalized_context)
+                if match:
+                    normalized_type = match.group(1)
+            if not normalized_type:
+                normalized_type = "UnknownError"
+
+            if normalized_context:
+                lines = [line.strip() for line in normalized_context.splitlines() if line.strip()]
+                filtered = [line for line in lines if not line.startswith("File ") and "Traceback" not in line]
+                normalized_context = (filtered[0] if filtered else lines[0]) if lines else ""
+
+            normalized_context = normalized_context[:500]
+            file_match = re.search(r'File "([^"]+)"', context or "")
+            file_path = file_match.group(1) if file_match else ""
+
             result = brain.incremental_learn(
-                error_type=error_type,
-                error_message=context,
+                error_type=normalized_type,
+                error_message=normalized_context,
                 solution=solution,
+                file_path=file_path,
             )
             return {
                 "status": "SUCCESS",
                 "result": result,
                 "vibe_summary": f"🧠 **已學習新模式**\n"
-                f"- 類型: `{error_type}`\n"
+                f"- 類型: `{normalized_type}`\n"
                 f"- ID: {result.get('pattern_id')}\n"
                 f"- 成功次數: {result.get('success_count', 1)}",
             }
@@ -596,7 +617,7 @@ def register_brain_tools(mcp, audited, helpers):
             return {
                 "status": "SUCCESS",
                 "suggestions": suggestions,
-                "vibe_summary": "\n".join(suggestions)
+                "vibe_summary": "\n".join(suggestions),
             }
         except Exception as e:
             return {"status": "ERROR", "message": f"建議失敗: {str(e)}"}

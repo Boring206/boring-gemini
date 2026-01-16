@@ -12,7 +12,7 @@ V10.23 Enhancements:
 
 import shutil
 from pathlib import Path
-from typing import Optional
+from typing import Any
 
 from rich.panel import Panel
 
@@ -30,6 +30,12 @@ from ..verification import CodeVerifier
 from .base import LoopState
 from .context import LoopContext
 from .states import ThinkingState
+
+# BoringDone Notification
+try:
+    from ..services.notifier import done as notify_done
+except ImportError:
+    notify_done = None
 
 
 class StatefulAgentLoop:
@@ -54,8 +60,8 @@ class StatefulAgentLoop:
         model_name: str = settings.DEFAULT_MODEL,
         use_cli: bool = False,
         verbose: bool = False,
-        prompt_file: Optional[Path] = None,
-        context_file: Optional[Path] = None,
+        prompt_file: Path | None = None,
+        context_file: Path | None = None,
         verification_level: str = "STANDARD",
         interactive: bool = False,
     ):
@@ -78,10 +84,10 @@ class StatefulAgentLoop:
         self._init_subsystems()
 
         # Initial state
-        self._current_state: Optional[LoopState] = None
+        self._current_state: LoopState | None = None
 
         # RAG Watcher for auto-indexing
-        self._rag_watcher: Optional[RAGWatcher] = None
+        self._rag_watcher: RAGWatcher | None = None
 
     def _init_subsystems(self) -> None:
         """Initialize all subsystems and inject into context."""
@@ -128,7 +134,7 @@ class StatefulAgentLoop:
         if ctx.verbose:
             console.print(f"[dim]Memory: {ctx.memory.memory_dir}[/dim]")
             console.print(
-                f"[dim]Verifier: ruff={ctx.verifier.has_ruff}, pytest={ctx.verifier.has_pytest}[/dim]"
+                f"[dim]Verifier: ruff={ctx.verifier.tools.is_available('ruff')}, pytest={ctx.verifier.tools.is_available('pytest')}[/dim]"
             )
 
     def run(self) -> None:
@@ -145,6 +151,22 @@ class StatefulAgentLoop:
 
         # Display startup banner
         self._show_banner()
+
+        # P4.2: Progress Persistence - Resume Session?
+        progress = self._init_progress_manager()
+        if progress and progress.has_progress():
+            from rich.prompt import Confirm
+
+            # Only ask if interactive or strict mode, otherwise maybe auto-resume?
+            # For safety, let's ask if console is interactive.
+            if not console.quiet and Confirm.ask(
+                "[bold magenta]Found previous saved session. Resume?[/bold magenta]"
+            ):
+                if progress.restore_context(ctx):
+                    console.print(f"[green]Restored session at Loop #{ctx.loop_count}[/green]")
+                    log_status(
+                        ctx.log_dir, "INFO", f"Restored session state (Loop {ctx.loop_count})"
+                    )
 
         # Initialize tracking files
         init_call_tracking(
@@ -175,39 +197,70 @@ class StatefulAgentLoop:
                 log_status(ctx.log_dir, "WARN", f"[RAG] Watcher failed to start: {e}")
 
         # Main loop
-        while ctx.should_continue():
-            # Check rate limits
-            if not can_make_call(settings.PROJECT_ROOT / ".call_count", settings.MAX_HOURLY_CALLS):
-                if console.quiet:
-                    ctx.mark_exit("Rate limit reached (Quiet/MCP mode)")
-                    break
-                wait_for_reset(
-                    settings.PROJECT_ROOT / ".call_count",
-                    settings.PROJECT_ROOT / ".last_reset",
-                    settings.MAX_HOURLY_CALLS,
-                )
-                console.print("[yellow]Rate limit reset. Resuming...[/yellow]")
+        try:
+            from ..services.interrupt import InterruptHandler, start_interactive_shell
 
-            # V10.23: Memory compaction check before each loop
-            self._v10_23_pre_loop_maintenance()
+            interrupt_handler = InterruptHandler(
+                save_callback=lambda: progress.save_progress(ctx) if progress else None
+            )
 
-            # Start new iteration
-            ctx.increment_loop()
-            log_status(ctx.log_dir, "LOOP", f"=== Starting Loop #{ctx.loop_count} ===")
-            console.print(f"\n[bold purple]=== Loop #{ctx.loop_count} ===[/bold purple]")
+            while ctx.should_continue():
+                try:
+                    # Check rate limits
+                    if not can_make_call(
+                        settings.PROJECT_ROOT / ".call_count", settings.MAX_HOURLY_CALLS
+                    ):
+                        if console.quiet:
+                            ctx.mark_exit("Rate limit reached (Quiet/MCP mode)")
+                            break
+                        wait_for_reset(
+                            settings.PROJECT_ROOT / ".call_count",
+                            settings.PROJECT_ROOT / ".last_reset",
+                            settings.MAX_HOURLY_CALLS,
+                        )
+                        console.print("[yellow]Rate limit reset. Resuming...[/yellow]")
 
-            # V10.23: Record task for session tracking
-            ctx.record_task("loop_iteration", {"loop_count": ctx.loop_count})
+                    # V10.23: Memory compaction check before each loop
+                    self._v10_23_pre_loop_maintenance()
 
-            # Run state machine for this iteration
-            self._run_state_machine()
+                    # Start new iteration
+                    ctx.increment_loop()
+                    log_status(ctx.log_dir, "LOOP", f"=== Starting Loop #{ctx.loop_count} ===")
+                    console.print(f"\n[bold purple]=== Loop #{ctx.loop_count} ===[/bold purple]")
 
-            # V10.23: Sync session context to RAG after each iteration
-            self._v10_23_sync_session_context()
+                    # V10.23: Record task for session tracking
+                    ctx.record_task("loop_iteration", {"loop_count": ctx.loop_count})
 
-            # Check for exit
-            if ctx.should_exit:
-                break
+                    # Run state machine for this iteration
+                    self._run_state_machine()
+
+                    # V10.23: Sync session context to RAG after each iteration
+                    self._v10_23_sync_session_context()
+
+                    # P4.2: Save Progress
+                    if progress:
+                        progress.save_progress(ctx)
+
+                    # Check for exit
+                    if ctx.should_exit:
+                        break
+
+                except KeyboardInterrupt:
+                    action = interrupt_handler.handle_interrupt()
+                    if action == "exit":
+                        break
+                    elif action == "shell":
+                        start_interactive_shell(ctx)
+                        # Optionally continue after shell
+                        continue
+                    elif action == "continue":
+                        continue
+
+        except Exception as e:
+            # Fatal error in loop
+            console.print(f"[bold red]Fatal Loop Error:[/bold red] {e}")
+            log_status(ctx.log_dir, "CRITICAL", f"Fatal loop error: {e}")
+            raise e
 
         # Cleanup
         if self._rag_watcher:
@@ -219,6 +272,15 @@ class StatefulAgentLoop:
         if ctx.exit_reason:
             console.print(f"[dim]Exit: {ctx.exit_reason}[/dim]")
         console.print("[dim]Agent loop finished.[/dim]")
+
+        # BoringDone: Notify user that agent loop is complete
+        if notify_done:
+            success = not ctx.exit_reason or "error" not in ctx.exit_reason.lower()
+            notify_done(
+                task_name="Agent Loop",
+                success=success,
+                details=f"Completed {ctx.loop_count} iterations. {ctx.exit_reason or 'Ready for review.'}",
+            )
 
     def _run_state_machine(self) -> None:
         """Execute the state machine for a single iteration."""
@@ -427,3 +489,12 @@ class StatefulAgentLoop:
 
         except Exception as e:
             log_status(ctx.log_dir, "DEBUG", f"[V10.23] Result recording failed: {e}")
+
+    def _init_progress_manager(self) -> Any | None:
+        """Initialize progress manager safely."""
+        try:
+            from ..services.progress import ProgressManager
+
+            return ProgressManager(self.context.project_root)
+        except ImportError:
+            return None

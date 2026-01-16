@@ -23,8 +23,9 @@ Token Savings:
 """
 
 import os
+from collections.abc import Callable
 from enum import Enum
-from typing import Any, Optional
+from typing import Any
 
 
 class Verbosity(Enum):
@@ -35,7 +36,7 @@ class Verbosity(Enum):
     VERBOSE = "verbose"  # Full details (~2000+ tokens)
 
 
-def get_verbosity(verbosity: Optional[str] = None) -> Verbosity:
+def get_verbosity(verbosity: str | None = None) -> Verbosity:
     """
     Get verbosity level with fallback priority.
 
@@ -102,7 +103,7 @@ def truncate_text(text: str, max_length: int, suffix: str = "...") -> str:
 
 
 def format_minimal_list(
-    items: list[Any], max_items: int = 3, item_formatter: Optional[callable] = None
+    items: list[Any], max_items: int = 3, item_formatter: Callable[..., Any] | None = None
 ) -> str:
     """
     Format a list with truncation for minimal output.
@@ -192,16 +193,16 @@ def format_table_minimal(data: dict[str, Any], max_rows: int = 5) -> str:
 
 
 # Convenience function for checking verbosity level
-def is_minimal(verbosity: Optional[str] = None) -> bool:
+def is_minimal(verbosity: str | None = None) -> bool:
     """Check if verbosity is MINIMAL."""
     return get_verbosity(verbosity) == Verbosity.MINIMAL
 
 
-def is_standard(verbosity: Optional[str] = None) -> bool:
+def is_standard(verbosity: str | None = None) -> bool:
     """Check if verbosity is STANDARD."""
     return get_verbosity(verbosity) == Verbosity.STANDARD
 
 
-def is_verbose(verbosity: Optional[str] = None) -> bool:
+def is_verbose(verbosity: str | None = None) -> bool:
     """Check if verbosity is VERBOSE."""
     return get_verbosity(verbosity) == Verbosity.VERBOSE

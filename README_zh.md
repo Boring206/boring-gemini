@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://smithery.ai/server/boring/boring"><img src="https://smithery.ai/badge/boring/boring" alt="Smithery Badge"></a>
-  <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/v/boring-aicoding.svg?v=13.0.0" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/v/boring-aicoding.svg" alt="PyPI version"></a>
   <a href="https://pepy.tech/project/boring-aicoding"><img src="https://static.pepy.tech/badge/boring-aicoding" alt="Downloads"></a>
   <a href="https://pypi.org/project/boring-aicoding/"><img src="https://img.shields.io/pypi/pyversions/boring-aicoding.svg" alt="Python Versions"></a>
 </p>
@@ -60,10 +60,23 @@ Boring 達成了 **全能 (Full-Power)** 狀態，激活了所有高價值認知
 - **情境提示詞 (P6)**：Adaptive Profile 現在會根據使用習慣，僅在需要時動態注入特定指南（如 *測試指南*）。
 
 ### 🛡️ 支柱七：[真·一條龍引擎 (V12.0.0)](docs/features/flow_zh.md)
-當前生產環境標準。引入 **狀態機工作流 (FlowGraph)** 與 **深度影子模式**。
+過往的生產環境標準。引入 **狀態機工作流 (FlowGraph)** 與 **深度影子模式**。
 - **統一流程圖**：動態編排 (Architect -> Builder -> Healer -> Polish -> Evolver)。
 - **深度影子模式**：`HealerNode` 在自動修復期間啟動 **STRICT** 等級的安全強制執行。
 - **認知反射**：語義搜尋整合至大腦，實現模糊錯誤糾正。
+
+### 🧐 支柱八：[非同步進化 (V13.0.0)](docs/changelog/v13_zh.md)
+當前的高效能標準。專注於 **並行編排** 與 **混合存儲**。
+- **非同步 Agent 執行器**：並行執行子任務，加速任務完成。
+- **語義存儲備援**：整合 FAISS，當 ChromaDB 不可用時提供強大的向量搜尋。
+- **一條龍 2.0**：針對複雜「一條龍」工作流的強化狀態管理。
+
+### 🔮 支柱九：[智慧與離線 (V13.1 - V14.0)](docs/features/predictive_zh.md)
+目前的尖端技術。從被動反應轉向 **「預測性」** 與 **「本地優先」**。
+- **[離線優先模式](docs/guides/offline-mode_zh.md)**：支援本地 LLM (llama-cpp-python)，實現 100% 隱私與零網路操作。
+- **預測性錯誤偵測**：AI 驅動的反模式偵測，在錯誤發生前發出主動警告。
+- **AI Git Bisect**：Commit 歷史的語義分析，即時定位故障根源。
+- **延遲載入系統**：優化 MCP 啟動速度 (<500ms)，適用於高效能開發環境。
 
 
 ---
@@ -79,6 +92,9 @@ Boring 達成了 **全能 (Full-Power)** 狀態，激活了所有高價值認知
 | 📚 | **[完整工具參考](docs/reference/APPENDIX_A_TOOL_REFERENCE_zh.md)** | 包含 **67+ 個工具** 的詳細 Schema、參數與用法說明 ([English](docs/reference/APPENDIX_A_TOOL_REFERENCE.md))。 |
 | 🧬 | **[技能萃取](docs/features/cognitive_zh.md)** | 將重複成功的模式萃取為高階的 **「戰略技能 (Strategic Skills)」**。 |
 | 🪢 | **[Node.js 自助安裝](docs/features/nodejs_zh.md)** | 免配置 Node.js 與 gemini-cli 設定，無需手動安裝環境。 |
+| 🔌 | **[離線優先](docs/guides/offline-mode_zh.md)** | 支援本地 LLM (Phi-3, Qwen)，實現零網路操作與極致隱私保護。 |
+| 🔮 | **[預測性 AI](docs/features/predictive_zh.md)** | 透過模式偵測在問題發生前進行攔截預警。 |
+| 🕵️ | **[AI Git Bisect](docs/features/predictive_zh.md)** | Commit 歷史的語義診斷，精確定位 Bug 引入源。 |
 
 ---
 
@@ -88,6 +104,26 @@ Boring 能適應您的環境以節省 Token 與上下文：
 - **FULL (全功能)**：啟用所有 67+ 個工具。
 - **ADAPTIVE (推薦)**：根據Top 20 常用工具自動建立個人化設定檔 + 動態 Prompt 注入。
   - 啟用方式：`export BORING_MCP_PROFILE=adaptive`
+
+---
+
+## 🔔 企業級任務通知 (V14.0+)
+Boring 支援多渠道任務通知，讓您無需時刻盯著螢幕：
+- **桌面端**：Windows Toast、macOS、Linux 系統通知。
+- **Webhook**：Slack、Discord。
+- **通訊軟體**：LINE Notify、Facebook Messenger。
+- **郵件**：Gmail (透過 SMTP)。
+
+您可以在 `.boring.toml` 中進行配置：
+```toml
+[boring]
+slack_webhook = "..."
+discord_webhook = "..."
+line_notify_token = "..."
+gmail_user = "..."
+gmail_password = "..."
+email_notify = "..."
+```
 
 ---
 
@@ -106,6 +142,12 @@ Boring 是一個 **混合型 Agent**，能適應您的兩種工作流：
 *   **角色**：您的「無人值守工人」。它作為獨立程序在背景運行。
 *   **用法**：執行 `boring start` (注意：不存在 `boring run` 指令)。它會讀取 `task.md`，進入自動迴圈 (規劃 -> 寫碼 -> 測試 -> 修復)，直到任務完成。
 *   **適合**：批量重構、大型遷移、或在您睡覺時跑的長任務。
+
+### 3. VS Code 擴充功能 (GUI 助手) 🖥️
+*   **位置**：`extensions/vscode-boring/`
+*   **角色**：在 VS Code 內部提供 CLI Agent 的圖形化操作介面。
+*   **功能**：一鍵啟動/停止、實時儀表板 (Dashboard) 整合以及狀態欄顯示。
+*   **如何使用**：在專案中進入該目錄執行 `npm install` 與 `npm run compile`，或直接在 VS Code 開啟資料夾後按 `F5` 進行偵錯啟動。
 
 ---
 

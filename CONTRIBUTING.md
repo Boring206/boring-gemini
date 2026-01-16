@@ -285,7 +285,7 @@ Level 5: Project Steward (項目管理者)
 - 🌱 [可持續性策略](docs/reference/sustainability.md)
 - 📊 [功能矩陣](docs/reference/feature-matrix.md)
 
-## 專案結構 (V10.24 - Vibe Coder Architecture)
+## 專案結構 (V14.0.0 - Predictive & Offline Architecture)
 
 ```
 boring-gemini/

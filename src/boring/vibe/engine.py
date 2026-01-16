@@ -16,7 +16,8 @@ import hashlib
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
+
+from boring.utils.i18n import T
 
 from .analysis import DocResult, ReviewResult, TestGenResult
 from .handlers.base import BaseHandler
@@ -62,7 +63,7 @@ class VibeEngine:
 
     def __init__(self):
         self._handlers: dict[str, BaseHandler] = {}
-        self._default_handler: Optional[BaseHandler] = None
+        self._default_handler: BaseHandler | None = None
 
         # V10.23: Analysis cache (key -> (result, timestamp))
         self._analysis_cache: dict[str, tuple] = {}
@@ -76,7 +77,7 @@ class VibeEngine:
         for ext in handler.supported_extensions:
             self._handlers[ext.lower()] = handler
 
-    def get_handler(self, file_path: str) -> Optional[BaseHandler]:
+    def get_handler(self, file_path: str) -> BaseHandler | None:
         """Get the appropriate handler for a file path."""
         ext = Path(file_path).suffix.lower()
         return self._handlers.get(ext, self._default_handler)
@@ -119,7 +120,10 @@ class VibeEngine:
         handler = self.get_handler(file_path)
         if not handler:
             raise ValueError(
-                f"Unsupported file type: {Path(file_path).suffix} (No handler registered)"
+                T(
+                    "vibe_unsupported_file_type",
+                    suffix=Path(file_path).suffix,
+                )
             )
 
         # V10.23: Check cache
@@ -149,7 +153,10 @@ class VibeEngine:
         handler = self.get_handler(file_path)
         if not handler:
             raise ValueError(
-                f"Unsupported file type: {Path(file_path).suffix} (No handler registered)"
+                T(
+                    "vibe_unsupported_file_type",
+                    suffix=Path(file_path).suffix,
+                )
             )
 
         # V10.23: Check cache (include focus in key)
@@ -176,7 +183,7 @@ class VibeEngine:
         """Route test generation string creation."""
         handler = self.get_handler(result.file_path)
         if not handler:
-            raise ValueError(f"No handler found for {result.file_path}")
+            raise ValueError(T("vibe_no_handler_found", file_path=result.file_path))
 
         start = time.time()
         code = handler.generate_test_code(result, project_root)

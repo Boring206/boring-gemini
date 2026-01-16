@@ -8,9 +8,10 @@ blocking the MCP connection during execution.
 """
 
 import asyncio
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from functools import wraps
-from typing import Any, Callable
+from typing import Any
 
 # Thread pool for running blocking operations
 _executor = ThreadPoolExecutor(max_workers=4, thread_name_prefix="boring-async-")

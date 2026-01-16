@@ -9,7 +9,7 @@ import json
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from boring.paths import get_boring_path
 
@@ -22,7 +22,7 @@ class TrustRule:
 
     tool_name: str  # e.g., "boring_commit", "*" for all
     auto_approve: bool = True
-    path_pattern: Optional[str] = None  # e.g., "src/*" - if set, only matches these paths
+    path_pattern: str | None = None  # e.g., "src/*" - if set, only matches these paths
     max_severity: str = "high"  # auto-approve up to this severity: low, medium, high
     description: str = ""
 
@@ -109,7 +109,7 @@ class TrustRuleManager:
         self,
         tool_name: str,
         auto_approve: bool = True,
-        path_pattern: Optional[str] = None,
+        path_pattern: str | None = None,
         max_severity: str = "high",
         description: str = "",
     ) -> TrustRule:
@@ -135,7 +135,7 @@ class TrustRuleManager:
         logger.info(f"Added trust rule: {tool_name} (auto_approve={auto_approve})")
         return rule
 
-    def remove_rule(self, tool_name: str, path_pattern: Optional[str] = None) -> bool:
+    def remove_rule(self, tool_name: str, path_pattern: str | None = None) -> bool:
         """Remove a trust rule."""
         original_count = len(self.rules)
         self.rules = [
@@ -151,7 +151,7 @@ class TrustRuleManager:
 
     def check_trust(
         self, op_name: str, args: dict[str, Any], severity: str = "medium"
-    ) -> Optional[TrustRule]:
+    ) -> TrustRule | None:
         """
         Check if an operation is trusted (should be auto-approved).
 

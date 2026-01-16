@@ -8,7 +8,8 @@ This state is responsible for:
 """
 
 import time
-from typing import TYPE_CHECKING, Optional
+from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
 from rich.live import Live
 from rich.panel import Panel
@@ -22,6 +23,43 @@ if TYPE_CHECKING:
 
 from ...config import settings
 from ...logger import console, log_status
+
+
+class PromptCache:
+    """
+    V12.2: Incremental caching for prompt components.
+
+    Uses file mtime and content hashes to avoid redundant I/O and rebuilding.
+    Stores state in the provided dictionary (LoopContext.prompt_cache).
+    """
+
+    def __init__(self, store: dict[str, Any]):
+        self.store = store
+        if "hashes" not in self.store:
+            self.store["hashes"] = {}
+        if "content" not in self.store:
+            self.store["content"] = {}
+
+    def get_file_content(self, file_path: Path) -> str:
+        """Get file content with mtime-based caching."""
+        if not file_path.exists():
+            return ""
+
+        try:
+            mtime = file_path.stat().st_mtime
+            key = str(file_path)
+            cached_mtime = self.store["hashes"].get(key)
+
+            if cached_mtime == mtime and key in self.store["content"]:
+                return self.store["content"][key]
+
+            # Rebuild
+            content = file_path.read_text(encoding="utf-8")
+            self.store["hashes"][key] = mtime
+            self.store["content"][key] = content
+            return content
+        except Exception:
+            return ""  # Fallback to empty on error
 
 
 class ThinkingState(LoopState):
@@ -105,7 +143,7 @@ class ThinkingState(LoopState):
         context.mark_exit("Delegated to Host")
         return StateResult.EXIT
 
-    def next_state(self, context: LoopContext, result: StateResult) -> Optional[LoopState]:
+    def next_state(self, context: LoopContext, result: StateResult) -> LoopState | None:
         """Determine next state based on generation result."""
         # Record telemetry
         self._record_metrics(context, result)
@@ -136,28 +174,31 @@ class ThinkingState(LoopState):
                 return None  # Exit this iteration
 
     def _build_prompt(self, context: LoopContext) -> str:
-        """Read and prepare the prompt file."""
-        if context.prompt_file.exists():
-            return context.prompt_file.read_text(encoding="utf-8")
+        """Read and prepare the prompt file (Cached)."""
+        cache = PromptCache(context.prompt_cache)
+        content = cache.get_file_content(context.prompt_file)
+        if content:
+            return content
         return "No prompt found. Please check PROMPT.md"
 
     def _build_context(self, context: LoopContext) -> str:
-        """Build context injection string."""
+        """Build context injection string (Partially Cached)."""
         parts = []
+        cache = PromptCache(context.prompt_cache)
 
-        # 1. Memory context
+        # 1. Memory context (Dynamic - always rebuild)
         if context.memory:
             memory_ctx = context.memory.generate_context_injection()
             if memory_ctx:
                 parts.append(memory_ctx)
 
-        # 2. Task plan
+        # 2. Task plan (Cached)
         task_file = context.project_root / settings.TASK_FILE
-        if task_file.exists():
-            task_content = task_file.read_text(encoding="utf-8")
+        task_content = cache.get_file_content(task_file)
+        if task_content:
             parts.append(f"\n# CURRENT PLAN STATUS (@fix_plan.md)\n{task_content}\n")
 
-        # 3. Project structure (limited)
+        # 3. Project structure (Dynamic - fast enough)
         try:
             src_dir = context.project_root / "src"
             if src_dir.exists():
@@ -172,7 +213,7 @@ class ThinkingState(LoopState):
         except Exception:
             pass
 
-        # 4. Extensions
+        # 4. Extensions (Dynamic)
         if context.extensions:
             ext_ctx = context.extensions.setup_auto_extensions()
             if ext_ctx:
@@ -261,12 +302,12 @@ class ThinkingState(LoopState):
 
         # Inject instruction for Text-based Tools if likely needed
         text_tools_instruction = (
-            "\n\nSYSTEM: You are in CLI Mode. Tools are not available natively.\n"
-            "To write files, use:\n"
-            "# File: path/to/file\n"
-            "```code\ncontent\n```\n\n"
-            "To edit, use SEARCH/REPLACE blocks.\n"
-            'To finish, say: boring_done(message="...")'
+            "\n\n[SYSTEM: CLI MODE]\n"
+            "Tools are not available natively. Usage:\n"
+            "1. WRITE: '# File: path/to/file' followed by ```code block\n"
+            "2. EDIT: Use SEARCH/REPLACE blocks\n"
+            "3. FINISH (REQUIRED): When tasks are done, you MUST output this signal to stop:\n"
+            '   boring_done(message="All tasks completed")'
         )
         cli_prompt = prompt + text_tools_instruction
 
@@ -304,7 +345,7 @@ class ThinkingState(LoopState):
             if 'boring_done(message="' in response_text:
                 try:
                     msg = response_text.split('boring_done(message="')[1].split('"')[0]
-                except:
+                except Exception:
                     pass
             context.function_calls.append(
                 {

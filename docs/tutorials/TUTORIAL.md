@@ -238,7 +238,7 @@ boring_list_tasks()
 
 ---
 
-### 3.5 Auto-Learning 自動學習 (v10.18)
+### 3.5 Auto-Learning (V14.0 Updated)
 
 Boring 會觀察你的修正，自動進化：
 
@@ -292,7 +292,7 @@ Boring 會觀察你的修正，自動進化：
 
 ---
 
-### 4.3 Dynamic Discovery
+### 4.3 Dynamic Discovery (V14.0)
 
 AI 自動探索可用工具:
 
@@ -465,10 +465,14 @@ boring_evaluate(target="src/", rubric="my_rules")
 ## 下一步
 
 - 📖 [進階開發者指南](./ADVANCED_TUTORIAL_zh.md) — 深入架構與內部機制
-- 📚 [完整工具清單](../reference/APPENDIX_A_TOOL_REFERENCE_zh.md) — 所有 55 個工具
+- 📚 [完整工具清單](../reference/APPENDIX_A_TOOL_REFERENCE_zh.md) — 所有 60+ 個工具
 - ❓ [常見問題 FAQ](../reference/APPENDIX_B_FAQ_zh.md) — 疑難排解
 - 🏛️ [Prompt 設計哲學](../reference/APPENDIX_C_PROMPT_PHILOSOPHY_zh.md) — 架構師人設設計
 
 ---
 
 *Built with ❤️ by the Boring for Gemini team*
+
+---
+
+*最後更新: V14.0.0*

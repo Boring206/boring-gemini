@@ -447,27 +447,67 @@ def verify_lint_generic(
 
 
 def verify_imports_python(file_path: Path, project_root: Path) -> VerificationResult:
+    """
+    Verify python imports by shelling out to the project's virtual environment
+    if it exists. This is more reliable than using __import__ in the current process.
+    """
     try:
         content = file_path.read_text(encoding="utf-8")
         import_pattern = r"^(?:from\s+([\w.]+)\s+)?import\s+([\w.]+(?:\s*,\s*[\w.]+)*)"
         imports = re.findall(import_pattern, content, re.MULTILINE)
         missing_imports = []
+
+        # Prefer python from venv for checking imports
+        python_executable = None
+        venv_path = project_root / ".venv"
+        if venv_path.is_dir():
+            if sys.platform == "win32":
+                python_executable = venv_path / "Scripts" / "python.exe"
+            else:
+                python_executable = venv_path / "bin" / "python"
+
+        if not python_executable or not python_executable.exists():
+            python_executable = sys.executable
+
         for from_module, import_names in imports:
-            module = from_module or import_names.split(",")[0].strip()
-            if module.startswith(".") or module in sys.stdlib_module_names:
-                continue
-            try:
-                __import__(module.split(".")[0])
-            except ImportError:
-                missing_imports.append(module)
+            # Handle cases like `import a, b, c`
+            all_modules = [name.strip() for name in import_names.split(',')]
+            if from_module:
+                 # `from a.b import c, d` -> check `a.b`
+                all_modules = [from_module]
+
+            for module_name in all_modules:
+                # Skip relative imports
+                if module_name.startswith("."):
+                    continue
+
+                # Get the root module, e.g., 'os.path' -> 'os'
+                root_module = module_name.split(".")[0]
+
+                # Skip stdlib (optimization)
+                stdlib = getattr(sys, "stdlib_module_names", set())
+                if root_module in stdlib:
+                    continue
+
+                try:
+                    # Use a subprocess to check the import in the correct environment
+                    subprocess.run(
+                        [str(python_executable), "-c", f"import {root_module}"],
+                        check=True,
+                        capture_output=True,
+                        timeout=5,
+                    )
+                except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+                    missing_imports.append(root_module)
 
         if missing_imports:
+            unique_missing = sorted(set(missing_imports))
             return VerificationResult(
                 passed=False,
                 check_type="import",
                 message=f"Missing imports: {file_path.name}",
-                details=missing_imports[:5],
-                suggestions=[f"pip install {m}" for m in missing_imports[:3]],
+                details=unique_missing[:5],
+                suggestions=[f"pip install {m}" for m in unique_missing[:3]],
             )
         return VerificationResult(
             passed=True,

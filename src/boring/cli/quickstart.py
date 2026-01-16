@@ -6,7 +6,6 @@ Quick Start Orchestrator for Vibe Coders.
 Provides a one-command experience to go from idea to working code.
 """
 
-from typing import Optional
 
 from rich.console import Console
 from rich.panel import Panel
@@ -73,7 +72,7 @@ class QuickStartOrchestrator:
     Clarify → Plan → Execute → Verify
     """
 
-    def __init__(self, idea: str, template: Optional[str] = None, auto_approve: bool = False):
+    def __init__(self, idea: str, template: str | None = None, auto_approve: bool = False):
         self.idea = idea
         self.template = template
         self.auto_approve = auto_approve
@@ -257,6 +256,6 @@ def list_templates() -> list[dict]:
     ]
 
 
-def get_template(template_id: str) -> Optional[dict]:
+def get_template(template_id: str) -> dict | None:
     """Get a specific template by ID."""
     return TEMPLATES.get(template_id)

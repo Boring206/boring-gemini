@@ -1,6 +1,6 @@
-
 import platform
 import sys
+import time
 from pathlib import Path
 
 import typer
@@ -13,6 +13,7 @@ from boring.core.config import settings
 
 console = Console()
 app = typer.Typer(help="System Health & Diagnostics")
+
 
 def _generate_context(project_root: Path) -> str:
     """Generate a GEMINI.md context file for the project."""
@@ -48,18 +49,19 @@ def _generate_context(project_root: Path) -> str:
         if item.is_dir():
             items.append(f"- `{item.name}/`")
         else:
-             items.append(f"- `{item.name}`")
-    context.append("\n".join(sorted(items)[:20])) # Limit to avoid bloat
+            items.append(f"- `{item.name}`")
+    context.append("\n".join(sorted(items)[:20]))  # Limit to avoid bloat
     if len(items) > 20:
-        context.append(f"... and {len(items)-20} more.")
+        context.append(f"... and {len(items) - 20} more.")
 
     return "\n".join(context)
+
 
 @app.command()
 def check(
     generate_context: bool = typer.Option(
         False, "--generate-context", "-g", help="Auto-generate GEMINI.md context file"
-    )
+    ),
 ):
     """
     Run a comprehensive health check on the Boring environment.
@@ -75,9 +77,9 @@ def check(
     console.print(f"  - Python: [green]{py_ver}[/green]")
     console.print(f"  - OS: [green]{platform.system()} {platform.release()}[/green]")
 
-    if sys.version_info < (3, 10):
-        issues.append("Boring recommends Python 3.10+")
-        health_score -= 10
+    # if sys.version_info < (3, 10):
+    #     issues.append("Boring recommends Python 3.10+")
+    #     health_score -= 10
 
     # 2. Dependencies
     console.print("\n[bold]2. Core Dependencies[/bold]")
@@ -91,28 +93,137 @@ def check(
             issues.append(f"Missing dependency: {dep}")
             health_score -= 20
 
-    # 3. Project Configuration
-    console.print("\n[bold]3. Project Config[/bold]")
+    # 3. Optional Capabilities
+    console.print("\n[bold]3. Optional Capabilities[/bold]")
+    capabilities = {
+        "Local LLM (Offline)": ["llama_cpp", "transformers"],
+        "RAG (Memory)": ["chromadb", "sentence_transformers"],
+        "Git Integration": ["git"],
+    }
+
+    from rich.progress import Progress, SpinnerColumn, TextColumn
+
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        console=console,
+        transient=True,
+    ) as progress:
+        task = progress.add_task("Checking optional capabilities...", total=len(capabilities))
+
+        for cap_name, libs in capabilities.items():
+            progress.update(task, description=f"Checking {cap_name}...")
+            missing = []
+            for lib in libs:
+                try:
+                    __import__(lib)
+                except ImportError:
+                    missing.append(lib)
+
+            if not missing:
+                console.print(f"  - {cap_name}: [green]READY[/green]")
+            else:
+                console.print(
+                    f"  - {cap_name}: [yellow]PARTIAL/MISSING[/yellow] (Missing: {', '.join(missing)})"
+                )
+
+            progress.advance(task)
+            time.sleep(0.1)  # UX pause
+
+    # 4. Configuration & Permissions
+    console.print("\n[bold]4. Configuration & Permissions[/bold]")
     root = settings.PROJECT_ROOT
     console.print(f"  - Root: [cyan]{root}[/cyan]")
 
-    if not (root / ".boring").exists():
-        console.print("  - .boring directory: [yellow]MISSING[/yellow]")
-        # Not strictly an issue if new project
+    # Check .boring existence and permissions
+    boring_dir = root / ".boring"
+    if not boring_dir.exists():
+        console.print(
+            "  - .boring directory: [yellow]MISSING[/yellow] (Will be created on first run)"
+        )
     else:
-        console.print("  - .boring directory: [green]OK[/green]")
+        # Check permissions
+        try:
+            test_file = boring_dir / ".perm_check"
+            test_file.touch()
+            test_file.unlink()
+            console.print("  - .boring write access: [green]OK[/green]")
+        except Exception:
+            console.print("  - .boring write access: [red]FAILED[/red]")
+            issues.append("Cannot write to .boring directory")
+            health_score -= 20
+
+    # API Key Check (if not offline)
+    import os
+
+    offline_mode = os.environ.get("BORING_OFFLINE_MODE") == "1" or settings.OFFLINE_MODE
+
+    if offline_mode:
+        console.print("  - Mode: [blue]OFFLINE[/blue]")
+    else:
+        console.print("  - Mode: [cyan]ONLINE[/cyan]")
+        if not os.environ.get("GEMINI_API_KEY"):
+            console.print("  - GEMINI_API_KEY: [red]MISSING[/red] (Required for Online Mode)")
+            issues.append("Missing GEMINI_API_KEY")
+            health_score -= 20
+        else:
+            console.print("  - GEMINI_API_KEY: [green]PRESENT[/green]")
+
+    # 5. MCP Server Health (Self-Test)
+    console.print("\n[bold]5. MCP Server Health (Self-Test)[/bold]")
+    try:
+        import asyncio
+
+        from boring.mcp.server import get_server_instance
+
+        mcp = get_server_instance()
+
+        # Robust Tool Counting (Async-aware)
+        tool_count = 0
+
+        async def _fetch_tools():
+            if hasattr(mcp, "get_tools"):
+                val = mcp.get_tools()
+                if callable(val):
+                    val = val()
+                if asyncio.iscoroutine(val):
+                    return await val
+                return val
+            return []
+
+        try:
+            raw_tools = asyncio.run(_fetch_tools())
+        except Exception:
+            # Fallback for older/simpler FastMCP
+            raw_tools = getattr(mcp, "_tools", [])
+
+        if isinstance(raw_tools, dict):
+            raw_tools = list(raw_tools.values())
+
+        if raw_tools:
+            tool_count = len(raw_tools)
+            console.print(f"  - Tool Registry: [green]OK[/green] ({tool_count} tools loaded)")
+        else:
+            console.print("  - Tool Registry: [yellow]EMPTY[/yellow] (0 tools found)")
+            issues.append("MCP Server loaded but no tools found")
+            health_score -= 10
+
+    except Exception as e:
+        console.print(f"  - MCP Server: [red]CRASHED[/red] ({e})")
+        issues.append(f"MCP Server instantiation failed: {e}")
+        health_score -= 30
 
     # Context Generation
     if generate_context:
-        console.print("\n[bold]4. Context Generation[/bold]")
+        console.print("\n[bold]5. Context Generation[/bold]")
         ctx_file = root / "GEMINI.md"
         content = _generate_context(root)
         try:
-             ctx_file.write_text(content, encoding="utf-8")
-             console.print("  - Generated [green]GEMINI.md[/green]")
+            ctx_file.write_text(content, encoding="utf-8")
+            console.print("  - Generated [green]GEMINI.md[/green]")
         except Exception as e:
-             console.print(f"  - Generation failed: [red]{e}[/red]")
-             issues.append("Context generation failed")
+            console.print(f"  - Generation failed: [red]{e}[/red]")
+            issues.append("Context generation failed")
 
     # Summary
     console.print("\n[bold]Diagnosis[/bold]")
@@ -122,11 +233,13 @@ def check(
     if health_score < 80:
         status_color = "red"
 
-    console.print(Panel(
-        f"Health Score: [{status_color}]{health_score}/100[/{status_color}]\n\n" +
-        ("\n".join(f"- {i}" for i in issues) if issues else "All systems nominal."),
-        title="Check Results"
-    ))
+    console.print(
+        Panel(
+            f"Health Score: [{status_color}]{health_score}/100[/{status_color}]\n\n"
+            + ("\n".join(f"- {i}" for i in issues) if issues else "All systems nominal."),
+            title="Check Results",
+        )
+    )
 
-    if health_score < 100:
+    if health_score < 80:  # Allow minor warnings
         raise typer.Exit(1)

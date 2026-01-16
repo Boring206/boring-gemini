@@ -16,7 +16,6 @@ Features:
 
 import math
 from dataclasses import dataclass, field
-from typing import Optional
 
 
 @dataclass
@@ -37,7 +36,7 @@ class AgreementMetrics:
     """Metrics for comparing automated evaluation with human judgment."""
 
     cohens_kappa: float
-    weighted_kappa: Optional[float] = None
+    weighted_kappa: float | None = None
     observed_agreement: float = 0.0
     expected_agreement: float = 0.0
     interpretation: str = ""
@@ -71,10 +70,10 @@ class PairwiseMetrics:
 class EvaluationMetricsReport:
     """Comprehensive evaluation metrics report."""
 
-    classification: Optional[ClassificationMetrics] = None
-    agreement: Optional[AgreementMetrics] = None
-    correlation: Optional[CorrelationMetrics] = None
-    pairwise: Optional[PairwiseMetrics] = None
+    classification: ClassificationMetrics | None = None
+    agreement: AgreementMetrics | None = None
+    correlation: CorrelationMetrics | None = None
+    pairwise: PairwiseMetrics | None = None
     sample_size: int = 0
     evaluation_type: str = ""
     warnings: list = field(default_factory=list)
@@ -100,7 +99,7 @@ def precision(predictions: list[int], ground_truth: list[int]) -> float:
     if len(predictions) != len(ground_truth):
         raise ValueError("Predictions and ground truth must have same length")
 
-    true_positives = sum(1 for p, g in zip(predictions, ground_truth) if p == 1 and g == 1)
+    true_positives = sum(1 for p, g in zip(predictions, ground_truth, strict=True) if p == 1 and g == 1)
     predicted_positives = sum(predictions)
 
     return true_positives / predicted_positives if predicted_positives > 0 else 0.0
@@ -120,7 +119,7 @@ def recall(predictions: list[int], ground_truth: list[int]) -> float:
     if len(predictions) != len(ground_truth):
         raise ValueError("Predictions and ground truth must have same length")
 
-    true_positives = sum(1 for p, g in zip(predictions, ground_truth) if p == 1 and g == 1)
+    true_positives = sum(1 for p, g in zip(predictions, ground_truth, strict=True) if p == 1 and g == 1)
     actual_positives = sum(ground_truth)
 
     return true_positives / actual_positives if actual_positives > 0 else 0.0
@@ -158,10 +157,10 @@ def classification_metrics(
     if len(predictions) != len(ground_truth):
         raise ValueError("Predictions and ground truth must have same length")
 
-    tp = sum(1 for p, g in zip(predictions, ground_truth) if p == 1 and g == 1)
-    fp = sum(1 for p, g in zip(predictions, ground_truth) if p == 1 and g == 0)
-    fn = sum(1 for p, g in zip(predictions, ground_truth) if p == 0 and g == 1)
-    tn = sum(1 for p, g in zip(predictions, ground_truth) if p == 0 and g == 0)
+    tp = sum(1 for p, g in zip(predictions, ground_truth, strict=True) if p == 1 and g == 1)
+    fp = sum(1 for p, g in zip(predictions, ground_truth, strict=True) if p == 1 and g == 0)
+    fn = sum(1 for p, g in zip(predictions, ground_truth, strict=True) if p == 0 and g == 1)
+    tn = sum(1 for p, g in zip(predictions, ground_truth, strict=True) if p == 0 and g == 0)
 
     prec = tp / (tp + fp) if (tp + fp) > 0 else 0.0
     rec = tp / (tp + fn) if (tp + fn) > 0 else 0.0
@@ -207,7 +206,7 @@ def cohens_kappa(judge1: list, judge2: list) -> float:
     categories = list(set(judge1) | set(judge2))
 
     # Count agreements
-    observed_agreement = sum(1 for j1, j2 in zip(judge1, judge2) if j1 == j2) / n
+    observed_agreement = sum(1 for j1, j2 in zip(judge1, judge2, strict=True) if j1 == j2) / n
 
     # Calculate expected agreement by chance
     expected_agreement = 0.0
@@ -248,7 +247,7 @@ def weighted_kappa(judge1: list[int], judge2: list[int], weights: str = "quadrat
     k = len(categories)
 
     if k < 2:
-        return 1.0 if all(j1 == j2 for j1, j2 in zip(judge1, judge2)) else 0.0
+        return 1.0 if all(j1 == j2 for j1, j2 in zip(judge1, judge2, strict=True)) else 0.0
 
     # Create category index mapping
     cat_to_idx = {cat: i for i, cat in enumerate(categories)}
@@ -267,7 +266,7 @@ def weighted_kappa(judge1: list[int], judge2: list[int], weights: str = "quadrat
 
     # Count confusion matrix
     confusion = [[0] * k for _ in range(k)]
-    for j1, j2 in zip(judge1, judge2):
+    for j1, j2 in zip(judge1, judge2, strict=True):
         i1 = cat_to_idx[j1]
         i2 = cat_to_idx[j2]
         confusion[i1][i2] += 1
@@ -319,7 +318,7 @@ def agreement_metrics(judge1: list, judge2: list, ordinal: bool = False) -> Agre
         AgreementMetrics with all metrics
     """
     n = len(judge1)
-    observed = sum(1 for j1, j2 in zip(judge1, judge2) if j1 == j2) / n if n > 0 else 0
+    observed = sum(1 for j1, j2 in zip(judge1, judge2, strict=True) if j1 == j2) / n if n > 0 else 0
 
     kappa = cohens_kappa(judge1, judge2)
     w_kappa = weighted_kappa(judge1, judge2) if ordinal else None
@@ -392,7 +391,7 @@ def spearmans_rho(scores1: list[float], scores2: list[float]) -> tuple[float, fl
     mean1 = sum(ranks1) / n
     mean2 = sum(ranks2) / n
 
-    numerator = sum((r1 - mean1) * (r2 - mean2) for r1, r2 in zip(ranks1, ranks2))
+    numerator = sum((r1 - mean1) * (r2 - mean2) for r1, r2 in zip(ranks1, ranks2, strict=True))
     denom1 = math.sqrt(sum((r1 - mean1) ** 2 for r1 in ranks1))
     denom2 = math.sqrt(sum((r2 - mean2) ** 2 for r2 in ranks2))
 
@@ -479,7 +478,7 @@ def pearsons_r(scores1: list[float], scores2: list[float]) -> tuple[float, float
     mean1 = sum(scores1) / n
     mean2 = sum(scores2) / n
 
-    numerator = sum((s1 - mean1) * (s2 - mean2) for s1, s2 in zip(scores1, scores2))
+    numerator = sum((s1 - mean1) * (s2 - mean2) for s1, s2 in zip(scores1, scores2, strict=True))
     denom1 = math.sqrt(sum((s1 - mean1) ** 2 for s1 in scores1))
     denom2 = math.sqrt(sum((s2 - mean2) ** 2 for s2 in scores2))
 
@@ -596,7 +595,7 @@ def agreement_rate(decisions1: list[str], decisions2: list[str]) -> float:
     if not decisions1:
         return 0.0
 
-    matches = sum(1 for d1, d2 in zip(decisions1, decisions2) if d1 == d2)
+    matches = sum(1 for d1, d2 in zip(decisions1, decisions2, strict=True) if d1 == d2)
     return matches / len(decisions1)
 
 
@@ -640,11 +639,11 @@ def pairwise_metrics(comparisons: list[dict]) -> PairwiseMetrics:
 
 
 def generate_metrics_report(
-    automated_scores: Optional[list[float]] = None,
-    human_scores: Optional[list[float]] = None,
-    predictions: Optional[list[int]] = None,
-    ground_truth: Optional[list[int]] = None,
-    pairwise_comparisons: Optional[list[dict]] = None,
+    automated_scores: list[float] | None = None,
+    human_scores: list[float] | None = None,
+    predictions: list[int] | None = None,
+    ground_truth: list[int] | None = None,
+    pairwise_comparisons: list[dict] | None = None,
     evaluation_type: str = "general",
 ) -> EvaluationMetricsReport:
     """

@@ -4,13 +4,12 @@ Exceptions Module for Boring V4.0
 Defines custom exception hierarchy for consistent error handling.
 """
 
-from typing import Optional
 
 
 class BoringError(Exception):
     """Base exception for all Boring errors."""
 
-    def __init__(self, message: str, details: Optional[list[str]] = None):
+    def __init__(self, message: str, details: list[str] | None = None):
         super().__init__(message)
         self.message = message
         self.details = details or []
@@ -35,7 +34,7 @@ class APIError(BoringError):
 class RateLimitError(APIError):
     """Raised when API rate limit is exceeded."""
 
-    def __init__(self, message: str = "Rate limit exceeded", retry_after: Optional[int] = None):
+    def __init__(self, message: str = "Rate limit exceeded", retry_after: int | None = None):
         super().__init__(message)
         self.retry_after = retry_after
 
@@ -50,7 +49,7 @@ class AuthenticationError(APIError):
 class TimeoutError(APIError):
     """Raised when API request times out."""
 
-    def __init__(self, message: str = "Request timed out", timeout_seconds: Optional[int] = None):
+    def __init__(self, message: str = "Request timed out", timeout_seconds: int | None = None):
         super().__init__(message)
         self.timeout_seconds = timeout_seconds
 
@@ -83,8 +82,7 @@ class PathSecurityError(FileError):
         self.reason = reason
 
 
-# TODO(V12.0): Rename to BoringFileNotFoundError to avoid shadowing builtin
-class FileNotFoundError(FileError):
+class BoringFileNotFoundError(FileError):
     """Raised when a required file is not found."""
 
     def __init__(self, path: str):
@@ -113,8 +111,7 @@ class VerificationError(BoringError):
     pass
 
 
-# TODO(V12.0): Rename to BoringSyntaxError to avoid shadowing builtin
-class SyntaxError(VerificationError):
+class BoringSyntaxError(VerificationError):
     """Raised when Python syntax check fails."""
 
     def __init__(self, file_path: str, line: int, message: str):
@@ -191,7 +188,7 @@ class ConfigurationError(BoringError):
 class DependencyError(BoringError):
     """Raised when a required dependency is missing."""
 
-    def __init__(self, package: str, install_command: Optional[str] = None):
+    def __init__(self, package: str, install_command: str | None = None):
         install_hint = f"Install with: {install_command}" if install_command else ""
         super().__init__(f"Missing dependency: {package}", [install_hint] if install_hint else [])
         self.package = package

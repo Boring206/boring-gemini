@@ -5,7 +5,6 @@ import threading
 import time
 from dataclasses import asdict
 from pathlib import Path
-from typing import Optional
 
 from .config import settings
 from .models import VerificationResult
@@ -25,7 +24,7 @@ class VerificationCache:
 
     CACHE_FILENAME = "verification.json"
 
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root: Path | None = None):
         self.project_root = project_root or settings.PROJECT_ROOT
         self.cache_dir = settings.CACHE_DIR
         self.cache_path = self.cache_dir / self.CACHE_FILENAME
@@ -65,7 +64,7 @@ class VerificationCache:
         except ValueError:
             return str(path)
 
-    def get(self, file_path: Path) -> Optional[VerificationResult]:
+    def get(self, file_path: Path) -> VerificationResult | None:
         """Return cached result if file content matches hash."""
         rel_path = self._get_rel_path(file_path)
         if rel_path not in self.cache:

@@ -19,6 +19,7 @@ class TestThinkingState:
         ctx.log_dir = tmp_path / "logs"
         ctx.log_dir.mkdir()
         ctx.prompt_file = tmp_path / "PROMPT.md"
+        ctx.prompt_cache = {}
         ctx.memory = None
         ctx.extensions = None
         ctx.interactive = False

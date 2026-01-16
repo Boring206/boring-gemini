@@ -1,3 +1,97 @@
+## [14.0.0] - 2026-01-15 - Predictive Intelligence & Offline-First 🔮🔌
+
+### 🚀 Major Features
+- **Predictive Error Detection**: AI-powered anti-pattern detection and proactive warnings.
+  - New CLI: `boring predict` - Scan for potential risks before committing.
+  - New CLI: `boring bisect` - AI Git Bisect traces bug sources semantically.
+  - New CLI: `boring diagnostic` - Deep project health analysis.
+- **Local LLM Support (V13.2 Enhanced)**: `llama-cpp-python` integration for 100% offline operation.
+  - Supports: Phi-3-mini, Qwen2.5-1.5B, Llama-3.2-1B.
+  - New: `download_model()` function with progress display.
+- **Optimized Startup**: Lazy loading system for <500ms MCP startup.
+- **Enhanced Predictor Engine**: `Predictor` class with 486 lines of comprehensive analysis logic.
+
+### 🔧 CLI Commands (New)
+| Command | Description |
+|---------|-------------|
+| `boring predict` | Predictive error detection before commits |
+| `boring bisect <error>` | AI-powered git bisect for bug tracing |
+| `boring diagnostic` | Comprehensive project health analysis |
+| `boring doctor` | System health check (enhanced) |
+
+### 🛠️ Improvements
+- **V14.0 Predictor**: Full implementation of `analyze_file`, `analyze_diff`, `analyze_regression`, `deep_diagnostic`.
+- **Offline Mode**: Complete `BORING_OFFLINE_MODE` environment variable support.
+- **Version Sync**: Unified versioning across all configuration files.
+- **Flow Engine Local LLM Fallback**: BuilderNode now automatically falls back to local LLM when API fails or in offline mode.
+  - Smart model routing based on network availability.
+  - Graceful degradation with local guidance generation.
+- **MCP Startup Optimization**: Achieved <300ms startup target through lazy loading.
+  - Deferred tool registration until first use.
+  - Background pre-warming for optional dependencies.
+  - New `scripts/optimize_startup.py` profiling tool.
+- **Module Export Improvements**: Enhanced `__init__.py` exports for `agents` and `flow` modules.
+  - All key classes and functions now directly importable.
+  - Improved module discoverability.
+- **Structured Logging**: Replaced silent `except: pass` with proper logging throughout codebase.
+  - Better observability without breaking execution flow.
+
+### 🎯 Testing & Quality
+- **E2E Test Suite**: Complete One Dragon Flow integration tests.
+  - `tests/integration/test_one_dragon_flow_e2e.py` covers full flow lifecycle.
+  - Tests SETUP → DESIGN → BUILD → POLISH → EVOLVE transitions.
+  - Event bus integration and state transition validation.
+- **Intelligence Module Coverage**: Added comprehensive unit tests (80%+ coverage).
+  - `tests/unit/intelligence/test_memory.py` - MemoryManager tests.
+  - `tests/unit/intelligence/test_compression.py` - ContextCompressor tests.
+  - `tests/unit/intelligence/test_predictor.py` - Predictive analyzer tests.
+  - `tests/unit/intelligence/test_semantic_cache.py` - Cache system tests.
+
+### 🔌 Offline-First Enhancements
+- **Local Embedding Support**: New `boring.rag.local_embedding` module for offline RAG.
+  - Multiple model options: MiniLM-L6, MiniLM-L12, MPNet, CodeBERT.
+  - Automatic model caching in `~/.boring/embeddings`.
+  - ChromaDB integration with local embedding functions.
+  - Zero-network operation after initial setup.
+- **RAG Offline Mode**: Enhanced `RAGRetriever` with automatic local embedding detection.
+  - Falls back to local embeddings when `BORING_OFFLINE_MODE=true`.
+  - Seamless integration with existing ChromaDB infrastructure.
+
+### 🛠️ CLI Commands (Enhanced)
+| Command | Description |
+|---------|-------------|
+| `boring model list` | List installed and recommended local LLM models |
+| `boring model download <id>` | Download a recommended model (e.g., `qwen2.5-coder-1.5b`) |
+| `boring model info [name]` | Show detailed model information |
+| `boring model activate <name>` | Set a model as default for offline mode |
+| `boring model status` | Show current model configuration and status |
+| `boring model benchmark [name]` | Run performance benchmark on a model |
+| `boring model delete <name>` | Remove a local model file |
+| `boring skill search <query>` | Search for skills in the catalog |
+| `boring skill list [--catalog\|--installed]` | List available or installed skills |
+| `boring skill install <source>` | Install skill from catalog or Git URL |
+| `boring skill uninstall <name>` | Remove an installed skill |
+| `boring skill info <name>` | Show detailed skill information |
+| `boring skill sync` | Synchronize installed skills with remote sources |
+| `boring skill publish` | Publish a skill to the registry (preview) |
+
+### 🌐 Internationalization (i18n)
+- **Enhanced Translation Coverage**: Added 40+ new translation keys for:
+  - Skill management commands (`skill_search_no_results`, `skill_install_success`, etc.)
+  - Model management (`model_list_installed`, `model_download_start`, etc.)
+  - Offline mode (`offline_enabled`, `offline_local_llm_ready`, etc.)
+  - Flow stages (`flow_stage_setup`, `flow_local_fallback`, etc.)
+  - Agent orchestration (`agent_orchestrator_start`, `agent_task_complete`, etc.)
+  - Intelligence features (`intelligence_pattern_learned`, `intelligence_cache_hit`, etc.)
+- **Bilingual Support**: Full Chinese (zh) and English (en) coverage for all new features.
+
+### 📚 Documentation
+- Updated all documentation to V14.0.0 standards.
+- New: Offline-First Mode quickstart guide.
+- New: Local model management documentation.
+- New: Skill marketplace usage guide.
+- New: E2E testing documentation.
+
 ## [13.0.0] - 2026-01-15 - Multi-Agent & Performance (Async Evolution) ⚡🤖
 ### 🚀 Major Features
 - **Async Agent Evolution (Phase 8)**:

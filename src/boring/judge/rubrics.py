@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass
@@ -229,7 +228,7 @@ RUBRIC_REGISTRY = {
 }
 
 
-def get_rubric(name: str) -> Optional[Rubric]:
+def get_rubric(name: str) -> Rubric | None:
     """Get a rubric by name from the registry."""
     return RUBRIC_REGISTRY.get(name.lower().replace(" ", "_"))
 

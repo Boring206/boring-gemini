@@ -43,6 +43,14 @@ OVERALL_STATUS=0
 # =============================================================================
 print_section "TIER 1: Linting & Formatting"
 
+echo "Running version consistency check..."
+if python scripts/verify_version.py; then
+    print_status 0 "Version consistency passed"
+else
+    print_status 1 "Version consistency failed"
+    OVERALL_STATUS=1
+fi
+
 echo "Running Ruff linter..."
 if ruff check src/ tests/ --output-format=github; then
     print_status 0 "Ruff linting passed"

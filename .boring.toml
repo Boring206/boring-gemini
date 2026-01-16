@@ -6,7 +6,7 @@
 
 [boring]
 # Project metadata
-version = "10.26.0"
+version = "12.1.2"
 min_python = "3.9"
 
 # ==============================================================================
@@ -200,3 +200,19 @@ java = "mvn test"
 # Override default prompts (advanced usage)
 # judge_system = "You are a code quality expert..."
 # reviewer_system = "You are a security-focused code reviewer..."
+
+# ==============================================================================
+# BORINGDONE NOTIFICATIONS (V12.2)
+# ==============================================================================
+[boring.notifications]
+# Enable desktop notifications (Windows Toast / macOS / Linux)
+enable_toast = true
+
+# Enable sound alert on completion
+enable_sound = true
+
+# Enable terminal bell
+enable_terminal_bell = true
+
+# Custom sound file (optional, leave empty for system default)
+# sound_file = "~/.boring/sounds/complete.wav"

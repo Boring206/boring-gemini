@@ -9,7 +9,6 @@ Refactored in Phase 4 for Polyglot & Data-Driven Logic.
 
 import subprocess
 from pathlib import Path
-from typing import Optional
 
 from rich.console import Console
 
@@ -29,7 +28,7 @@ class SuggestionEngine:
                 cwd=self.root,
                 capture_output=True,
                 text=True,
-                timeout=2
+                timeout=2,
             )
             return len(result.stdout.strip()) > 0
         except (subprocess.SubprocessError, FileNotFoundError):
@@ -49,7 +48,7 @@ class SuggestionEngine:
             return "python"
         return "generic"
 
-    def analyze(self, last_command: Optional[str] = None) -> list[tuple[str, str]]:
+    def analyze(self, last_command: str | None = None) -> list[tuple[str, str]]:
         """Analyze project state and return list of (command, description)."""
         suggestions = []
         project_type = self._detect_project_type()
@@ -63,30 +62,30 @@ class SuggestionEngine:
         # 2. Post-Fix Verification (Polyglot)
         # If we just ran fix, suggest running a check
         if last_command == "fix":
-             suggestions.append(("boring check", "Verify fixes with Vibe Check"))
+            suggestions.append(("boring check", "Verify fixes with Vibe Check"))
 
-             # Specific test suggestion
-             if project_type == "node":
-                 suggestions.append(("npm test", "Run Node.js tests"))
-             elif project_type == "rust":
-                 suggestions.append(("cargo test", "Run Rust tests"))
-             elif project_type == "go":
-                 suggestions.append(("go test ./...", "Run Go tests"))
-             elif project_type == "python":
-                 suggestions.append(("pytest", "Run Python tests"))
+            # Specific test suggestion
+            if project_type == "node":
+                suggestions.append(("npm test", "Run Node.js tests"))
+            elif project_type == "rust":
+                suggestions.append(("cargo test", "Run Rust tests"))
+            elif project_type == "go":
+                suggestions.append(("go test ./...", "Run Go tests"))
+            elif project_type == "python":
+                suggestions.append(("pytest", "Run Python tests"))
 
         # 3. Commit Suggestion (Smart Git Check)
         # If we have uncommitted changes, suggest saving
         if self._has_uncommitted_changes():
-             suggestions.append(("boring save", "Commit your changes"))
+            suggestions.append(("boring save", "Commit your changes"))
 
         # 4. God Mode Hint
         if not suggestions and last_command in ["flow", "evolve"]:
-             suggestions.append(("boring evolve", "Start autonomous evolution loop"))
+            suggestions.append(("boring evolve", "Start autonomous evolution loop"))
 
         return suggestions
 
-    def get_best_next_action(self, last_command: Optional[str] = None) -> tuple[str, str]:
+    def get_best_next_action(self, last_command: str | None = None) -> tuple[str, str]:
         """
         Get the single best recommended action.
 
@@ -103,8 +102,7 @@ class SuggestionEngine:
         # Default: encourage exploration via AI
         return ("boring check", "Run a health check with AI analysis")
 
-    def show(self, last_command: Optional[str] = None):
-
+    def show(self, last_command: str | None = None):
         """Print suggestions to console."""
         suggestions = self.analyze(last_command)
 
@@ -117,10 +115,11 @@ class SuggestionEngine:
             console.print(f"  👉 [bold cyan]{cmd}[/bold cyan] [dim]- {desc}[/dim]")
 
 
-def run_suggestions(project_root: Optional[Path] = None, last_command: Optional[str] = None):
+def run_suggestions(project_root: Path | None = None, last_command: str | None = None):
     """Helper entry point."""
     if project_root is None:
         from boring.core.config import settings
+
         project_root = settings.PROJECT_ROOT
 
     engine = SuggestionEngine(project_root)

@@ -18,6 +18,7 @@ console = Console()
 
 class IntegrityReport(TypedDict):
     """Detailed Integrity Score breakdown."""
+
     total_score: int
     lint_score: int
     test_score: int
@@ -55,7 +56,7 @@ def calculate_integrity_score(project_root: Path) -> IntegrityReport:
         test_score=test_score,
         docs_score=docs_score,
         git_score=git_score,
-        details={}
+        details={},
     )
 
 
@@ -70,6 +71,7 @@ def _calculate_lint_score(project_root: Path) -> int:
     """
     try:
         from boring.verification.verifier import CodeVerifier
+
         verifier = CodeVerifier(project_root)
         result = verifier.run_ruff()
 
@@ -161,20 +163,14 @@ def _calculate_git_score(project_root: Path) -> int:
     try:
         # Check for uncommitted changes
         result = subprocess.run(
-            ["git", "status", "--porcelain"],
-            capture_output=True,
-            text=True,
-            cwd=project_root
+            ["git", "status", "--porcelain"], capture_output=True, text=True, cwd=project_root
         )
         if result.returncode == 0 and not result.stdout.strip():
             score += 10  # Clean tree
 
         # Check for recent commit
         result = subprocess.run(
-            ["git", "log", "-1", "--format=%ct"],
-            capture_output=True,
-            text=True,
-            cwd=project_root
+            ["git", "log", "-1", "--format=%ct"], capture_output=True, text=True, cwd=project_root
         )
         if result.returncode == 0 and result.stdout.strip():
             last_commit_ts = int(result.stdout.strip())
@@ -221,8 +217,10 @@ def display_integrity_report(report: IntegrityReport) -> None:
     table.add_row("", "", "")
     table.add_row(f"[{color}]Total[/{color}]", f"[{color}]{total}[/{color}]", "100")
 
-    console.print(Panel(
-        table,
-        title=f"[{color}]Project Integrity: {grade} ({total}%)[/{color}]",
-        border_style=color.replace("bold ", "")
-    ))
+    console.print(
+        Panel(
+            table,
+            title=f"[{color}]Project Integrity: {grade} ({total}%)[/{color}]",
+            border_style=color.replace("bold ", ""),
+        )
+    )

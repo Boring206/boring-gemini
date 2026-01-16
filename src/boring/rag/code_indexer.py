@@ -33,7 +33,6 @@ import os
 from collections.abc import Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -50,10 +49,10 @@ class CodeChunk:
     start_line: int
     end_line: int
     dependencies: list[str] = field(default_factory=list)  # Functions/classes this chunk calls
-    parent: Optional[str] = None  # Parent class if method
-    receiver: Optional[str] = None  # Go method receiver type (V11.0)
-    signature: Optional[str] = None  # Function/class signature for quick reference
-    docstring: Optional[str] = None
+    parent: str | None = None  # Parent class if method
+    receiver: str | None = None  # Go method receiver type (V11.0)
+    signature: str | None = None  # Function/class signature for quick reference
+    docstring: str | None = None
 
 
 @dataclass
@@ -111,6 +110,22 @@ class CodeIndexer:
         ".boring_memory",
     }
 
+    IGNORED_DIRS: set[str] = {
+        ".git",
+        "__pycache__",
+        "node_modules",
+        ".venv",
+        "venv",
+        "htmlcov",
+        ".pytest_cache",
+        ".mypy_cache",
+        ".ruff_cache",
+        "dist",
+        "build",
+        "*.egg-info",
+        ".boring_memory",
+    }
+
     def __init__(
         self, project_root: Path, max_chunk_tokens: int = 500, include_init_files: bool = False
     ):
@@ -118,6 +133,42 @@ class CodeIndexer:
         self.max_chunk_tokens = max_chunk_tokens
         self.include_init_files = include_init_files
         self.stats = IndexStats()
+
+    def get_changed_files(self, since_commit: str) -> list[Path]:
+        """
+        Identify files changed between since_commit and HEAD.
+
+        Args:
+            since_commit: Git commit hash to compare against HEAD.
+
+        Returns:
+            List of absolute paths to changed files.
+        """
+        try:
+            import subprocess
+
+            # Check if this is a git repo
+            if not (self.project_root / ".git").exists():
+                return self.collect_files()
+
+            # Run git diff
+            cmd = ["git", "diff", "--name-only", "--diff-filter=ACMRT", since_commit, "HEAD"]
+            result = subprocess.run(
+                cmd, cwd=self.project_root, capture_output=True, text=True, check=True
+            )
+
+            changed_paths = []
+            for line in result.stdout.splitlines():
+                if not line.strip():
+                    continue
+                full_path = self.project_root / line.strip()
+                if full_path.exists() and not self._should_skip_path(full_path):
+                    changed_paths.append(full_path)
+
+            return changed_paths
+        except Exception as e:
+            logger.warning(f"Git diff failed, falling back to full scan: {e}")
+            return self.collect_files()
 
     def collect_files(self) -> list[Path]:
         """
@@ -138,16 +189,21 @@ class CodeIndexer:
                 files.append(file_path)
         return files
 
-    def index_project(self) -> Iterator[CodeChunk]:
+    def index_project(self, files_to_index: list[Path] | None = None) -> Iterator[CodeChunk]:
         """
-        Index all supported files in the project.
+        Index files in the project.
+
+        Args:
+            files_to_index: Optional list of files to process. If None, scans all.
 
         Yields:
             CodeChunk objects for each semantic unit
         """
         self.stats = IndexStats()
 
-        for file_path in self.collect_files():
+        target_files = files_to_index if files_to_index is not None else self.collect_files()
+
+        for file_path in target_files:
             try:
                 for chunk in self.index_file(file_path):
                     self.stats.total_chunks += 1
@@ -374,7 +430,7 @@ class CodeIndexer:
             yield chunk
 
     def _chunk_from_function(
-        self, node: ast.FunctionDef, file_path: str, lines: list[str], parent: Optional[str] = None
+        self, node: ast.FunctionDef, file_path: str, lines: list[str], parent: str | None = None
     ) -> CodeChunk:
         """Create chunk from function definition."""
         start = node.lineno - 1
@@ -493,7 +549,7 @@ class CodeIndexer:
 
         return sorted(deps - builtins)
 
-    def _extract_imports(self, tree: ast.Module, lines: list[str]) -> Optional[dict]:
+    def _extract_imports(self, tree: ast.Module, lines: list[str]) -> dict | None:
         """Extract import statements from module."""
         import_nodes = []
         modules = []
@@ -542,7 +598,7 @@ class CodeIndexer:
             node_end = node.end_lineno or node_start
 
             # Ensure it's not a node that was partially covered (rare but safe)
-            if any(l in covered_lines for l in range(node_start, node_end + 1)):
+            if any(line_num in covered_lines for line_num in range(node_start, node_end + 1)):
                 continue
 
             nodes_to_index.append((node_start, node_end))
@@ -560,7 +616,9 @@ class CodeIndexer:
             n_start, n_end = nodes_to_index[i]
 
             # If the gap between nodes contains any covered lines, we must split
-            has_gap_covered = any(l in covered_lines for l in range(current_chunk_end + 1, n_start))
+            has_gap_covered = any(
+                line_num in covered_lines for line_num in range(current_chunk_end + 1, n_start)
+            )
 
             if not has_gap_covered and n_start <= current_chunk_end + 5:  # Small gap allowed
                 current_chunk_end = n_end

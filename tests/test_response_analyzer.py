@@ -25,7 +25,7 @@ class TestAnalyzeResponse:
         logs_dir.mkdir()
 
         output_file = tmp_path / "nonexistent.log"
-        result = analyze_response(output_file, loop_number=1)
+        result = analyze_response(output_file, loop_number=1, project_root=tmp_path)
 
         assert result["loop_number"] == 1
         assert result["analysis"]["output_length"] == 0
@@ -50,7 +50,10 @@ class TestAnalyzeResponse:
         }
 
         result = analyze_response(
-            output_file, loop_number=5, function_call_results=function_results
+            output_file,
+            loop_number=5,
+            function_call_results=function_results,
+            project_root=tmp_path,
         )
 
         assert result["analysis"]["has_completion_signal"] is True
@@ -74,7 +77,7 @@ EXIT_SIGNAL: true
 More output...
 """)
 
-        result = analyze_response(output_file, loop_number=10)
+        result = analyze_response(output_file, loop_number=10, project_root=tmp_path)
 
         assert result["analysis"]["has_completion_signal"] is True
         assert result["analysis"]["exit_signal"] is True
@@ -91,7 +94,7 @@ More output...
         output_file = tmp_path / "output.log"
         output_file.write_text(content)
 
-        result = analyze_response(output_file, loop_number=1)
+        result = analyze_response(output_file, loop_number=1, project_root=tmp_path)
 
         assert result["analysis"]["output_length"] == 1000
 
@@ -117,7 +120,7 @@ More output...
             output_file = tmp_path / "output.log"
             output_file.write_text("Modified some files.")
 
-            result = analyze_response(output_file, loop_number=4)
+            result = analyze_response(output_file, loop_number=4, project_root=tmp_path)
 
         # Note: Git mocking in tests can be unreliable across platforms
         # We just verify the basic output structure is correct
@@ -143,7 +146,10 @@ More output...
         }
 
         result = analyze_response(
-            output_file, loop_number=3, function_call_results=function_results
+            output_file,
+            loop_number=3,
+            function_call_results=function_results,
+            project_root=tmp_path,
         )
 
         assert result["analysis"]["has_completion_signal"] is False
@@ -170,7 +176,10 @@ More output...
         }
 
         result = analyze_response(
-            output_file, loop_number=2, function_call_results=function_results
+            output_file,
+            loop_number=2,
+            function_call_results=function_results,
+            project_root=tmp_path,
         )
 
         # Function call takes priority
@@ -197,12 +206,11 @@ class TestUpdateExitSignals:
         analysis_file = tmp_path / ".response_analysis"
         analysis_file.write_text(json.dumps(analysis_data))
 
-        with patch("boring.response_analyzer.ANALYSIS_RESULT_FILE", analysis_file):
-            exit_signals_file = tmp_path / ".exit_signals"
-            update_exit_signals(exit_signals_file)
+        exit_signals_file = tmp_path / ".exit_signals"
+        update_exit_signals(exit_signals_file, analysis_file=analysis_file)
 
-            signals = json.loads(exit_signals_file.read_text())
-            assert 5 in signals["test_only_loops"]
+        signals = json.loads(exit_signals_file.read_text())
+        assert 5 in signals["test_only_loops"]
 
     def test_update_exit_signals_completion(self, tmp_path, monkeypatch):
         """Test updating signals for completion signal."""
@@ -220,12 +228,11 @@ class TestUpdateExitSignals:
         analysis_file = tmp_path / ".response_analysis"
         analysis_file.write_text(json.dumps(analysis_data))
 
-        with patch("boring.response_analyzer.ANALYSIS_RESULT_FILE", analysis_file):
-            exit_signals_file = tmp_path / ".exit_signals"
-            update_exit_signals(exit_signals_file)
+        exit_signals_file = tmp_path / ".exit_signals"
+        update_exit_signals(exit_signals_file, analysis_file=analysis_file)
 
-            signals = json.loads(exit_signals_file.read_text())
-            assert 8 in signals["done_signals"]
+        signals = json.loads(exit_signals_file.read_text())
+        assert 8 in signals["done_signals"]
 
     def test_update_exit_signals_high_confidence(self, tmp_path, monkeypatch):
         """Test updating signals for high confidence completion."""
@@ -243,12 +250,11 @@ class TestUpdateExitSignals:
         analysis_file = tmp_path / ".response_analysis"
         analysis_file.write_text(json.dumps(analysis_data))
 
-        with patch("boring.response_analyzer.ANALYSIS_RESULT_FILE", analysis_file):
-            exit_signals_file = tmp_path / ".exit_signals"
-            update_exit_signals(exit_signals_file)
+        exit_signals_file = tmp_path / ".exit_signals"
+        update_exit_signals(exit_signals_file, analysis_file=analysis_file)
 
-            signals = json.loads(exit_signals_file.read_text())
-            assert 12 in signals["completion_indicators"]
+        signals = json.loads(exit_signals_file.read_text())
+        assert 12 in signals["completion_indicators"]
 
     def test_update_exit_signals_progress_clears_test_only(self, tmp_path, monkeypatch):
         """Test that progress clears test_only_loops."""
@@ -274,11 +280,10 @@ class TestUpdateExitSignals:
         analysis_file = tmp_path / ".response_analysis"
         analysis_file.write_text(json.dumps(analysis_data))
 
-        with patch("boring.response_analyzer.ANALYSIS_RESULT_FILE", analysis_file):
-            update_exit_signals(exit_signals_file)
+        update_exit_signals(exit_signals_file, analysis_file=analysis_file)
 
-            signals = json.loads(exit_signals_file.read_text())
-            assert signals["test_only_loops"] == []
+        signals = json.loads(exit_signals_file.read_text())
+        assert signals["test_only_loops"] == []
 
 
 class TestLogAnalysisSummary:
@@ -289,8 +294,7 @@ class TestLogAnalysisSummary:
         monkeypatch.chdir(tmp_path)
 
         # Should not raise
-        with patch("boring.response_analyzer.ANALYSIS_RESULT_FILE", tmp_path / "nonexistent"):
-            log_analysis_summary()
+        log_analysis_summary(analysis_file=tmp_path / "nonexistent")
 
     def test_log_analysis_summary_with_data(self, tmp_path, monkeypatch, capsys):
         """Test that summary is logged correctly."""
@@ -312,11 +316,13 @@ class TestLogAnalysisSummary:
         analysis_file = tmp_path / ".response_analysis"
         analysis_file.write_text(json.dumps(analysis_data))
 
-        with patch("boring.response_analyzer.ANALYSIS_RESULT_FILE", analysis_file):
-            log_analysis_summary()
+        # Mock log_status to avoid filesystem dependency and path issues
+        with patch("boring.response_analyzer.log_status") as mock_log:
+            log_analysis_summary(analysis_file=analysis_file)
 
-        # Check log file was created
-        log_file = logs_dir / "boring.log"
-        assert log_file.exists()
-        log_content = log_file.read_text()
-        assert "Loop #3" in log_content
+            # Check log_status was called with expected content
+            mock_log.assert_called()
+            # Verify calls
+            calls = [str(call) for call in mock_log.call_args_list]
+            assert any("Loop #3" in c for c in calls)
+            assert any("Exit Signal: True" in c for c in calls)

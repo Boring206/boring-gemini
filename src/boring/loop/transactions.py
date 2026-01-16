@@ -16,11 +16,12 @@ import os
 import subprocess
 import sys
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from functools import wraps
 from pathlib import Path
-from typing import Callable, Optional, TypeVar
+from typing import TypeVar
 
 from rich.console import Console
 
@@ -234,7 +235,7 @@ class TransactionManager:
     def __init__(self, project_root: Path):
         self.project_root = Path(project_root)
         self.state_file = self.project_root / ".boring_transaction"
-        self.current_transaction: Optional[TransactionState] = None
+        self.current_transaction: TransactionState | None = None
 
     def _run_git(self, args: list[str], with_retry: bool = False) -> tuple[bool, str]:
         """

@@ -1,13 +1,17 @@
+import logging
 import shutil
 import subprocess
 import time
 from pathlib import Path
-from typing import Optional
 
 from rich.console import Console
+
+logger = logging.getLogger(__name__)
 from rich.live import Live
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
+
+from boring.core.utils import check_and_install_dependencies, check_syntax
 
 from ..backup import BackupManager
 from ..circuit import (
@@ -17,12 +21,12 @@ from ..circuit import (
 from ..config import init_directories, settings
 from ..extensions import ExtensionsManager
 from ..file_patcher import process_gemini_output
+from ..flow.events import FlowEvent, FlowEventBus
 from ..gemini_client import GeminiClient, create_gemini_client
 from ..intelligence.memory import LoopMemory, MemoryManager
 from ..limiter import can_make_call, increment_call_counter, init_call_tracking, wait_for_reset
 from ..logger import log_status
 from ..response_analyzer import analyze_response
-from ..utils import check_and_install_dependencies, check_syntax
 from ..verification import CodeVerifier
 
 console = Console()
@@ -44,8 +48,8 @@ class AgentLoop:
         model_name: str = settings.DEFAULT_MODEL,
         use_cli: bool = False,
         verbose: bool = False,
-        prompt_file: Optional[Path] = None,
-        context_file: Optional[Path] = None,
+        prompt_file: Path | None = None,
+        context_file: Path | None = None,
         verification_level: str = "STANDARD",  # BASIC, STANDARD, FULL
     ):
         init_directories()
@@ -71,8 +75,8 @@ class AgentLoop:
         self._errors_this_loop: list[str] = []
 
         # Initialize Gemini Client (for SDK mode)
-        self.gemini_client: Optional[GeminiClient] = None
-        self.gemini_cli_cmd: Optional[str] = None
+        self.gemini_client: GeminiClient | None = None
+        self.gemini_cli_cmd: str | None = None
 
         if self.use_cli:
             self.gemini_cli_cmd = shutil.which("gemini")
@@ -91,12 +95,12 @@ class AgentLoop:
         if self.verbose:
             console.print(f"[dim]Memory: {self.memory.memory_dir}[/dim]")
             console.print(
-                f"[dim]Verifier: ruff={self.verifier.has_ruff}, pytest={self.verifier.has_pytest}[/dim]"
+                f"[dim]Verifier: ruff={self.verifier.tools.is_available('ruff')}, pytest={self.verifier.tools.is_available('pytest')}[/dim]"
             )
             ext_report = self.extensions.create_extensions_report()
             console.print(f"[dim]{ext_report}[/dim]")
 
-    def run(self, max_duration: Optional[int] = None):
+    def run(self, max_duration: int | None = None):
         """Start the main loop."""
         start_time = time.time()
         if should_halt_execution():
@@ -149,8 +153,12 @@ class AgentLoop:
         while loop_count < settings.MAX_LOOPS:
             # Check for global timeout
             if max_duration and (time.time() - start_time) > max_duration:
-                console.print(f"[bold red]Global timeout of {max_duration}s reached. Aborting.[/bold red]")
-                log_status(self.log_dir, "WARN", f"AgentLoop aborted: reached {max_duration}s timeout")
+                console.print(
+                    f"[bold red]Global timeout of {max_duration}s reached. Aborting.[/bold red]"
+                )
+                log_status(
+                    self.log_dir, "WARN", f"AgentLoop aborted: reached {max_duration}s timeout"
+                )
                 break
 
             loop_count += 1
@@ -203,7 +211,13 @@ class AgentLoop:
                 # If AI produced output but we couldn't parse it, telling the AI
                 if len(output_content) > 0:  # AI did output something
                     # [V12.0 Enhancement] Print the output for the user (One-Shot Mode support)
-                    console.print(Panel(output_content, title="[bold blue]Gemini Response[/bold blue]", border_style="blue"))
+                    console.print(
+                        Panel(
+                            output_content,
+                            title="[bold blue]Gemini Response[/bold blue]",
+                            border_style="blue",
+                        )
+                    )
 
                 if len(output_content) > 100:
                     console.print(
@@ -244,6 +258,13 @@ class AgentLoop:
                     log_status(self.log_dir, "ERROR", f"Verification Failed: {error_msg[:200]}")
                     console.print("[bold red]Verification Failed[/bold red]")
 
+                    # V14: Emit Event
+                    FlowEventBus.emit(
+                        FlowEvent.ON_LINT_FAIL,
+                        project_path=str(settings.PROJECT_ROOT),
+                        error=error_msg,
+                    )
+
                     # Record failure and learn from error
                     record_loop_result(loop_count, files_changed, True, len(output_content))
                     self._save_loop_summary(
@@ -274,6 +295,14 @@ class AgentLoop:
                 self.memory.record_loop(loop_memory)
                 record_loop_result(loop_count, files_changed, False, len(output_content))
                 self._save_loop_summary(loop_count, "SUCCESS", f"Modified {files_changed} file(s).")
+
+                # V14: Emit Event
+                if files_changed > 0:
+                    FlowEventBus.emit(
+                        FlowEvent.POST_BUILD,
+                        project_path=str(settings.PROJECT_ROOT),
+                        modified_files=self._files_modified_this_loop,
+                    )
 
             # 6. Analyze & Update Task
             increment_call_counter(settings.PROJECT_ROOT / ".call_count")
@@ -367,8 +396,8 @@ class AgentLoop:
                         str(f.relative_to(settings.PROJECT_ROOT)) for f in src_dir.rglob("*.py")
                     ][:20]
                     context += "\n\n# PROJECT FILES\n```\n" + "\n".join(files) + "\n```\n"
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug("Failed to list project files: %s", e)
 
         # 4. Inject Recent Git Changes
         try:
@@ -382,8 +411,8 @@ class AgentLoop:
             )
             if git_result.returncode == 0 and git_result.stdout.strip():
                 context += f"\n\n# RECENT GIT CHANGES\n```\n{git_result.stdout[:1000]}\n```\n"
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug("Failed to get git changes: %s", e)
 
         # 5. Inject Extensions Info
         ext_context = self.extensions.setup_auto_extensions()
@@ -418,8 +447,8 @@ class AgentLoop:
         # Write output
         try:
             output_file.write_text(response_text, encoding="utf-8")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug("Failed to write output file: %s", e)
 
         return success, response_text, output_file
 
@@ -433,13 +462,26 @@ class AgentLoop:
         # We need to fix AgentLoop to accept an adapter or initialize it.
 
         # Let's fix this method to use the proper CLI structure
-        from ..cli_client import GeminiCLIAdapter
+        import os
 
-        adapter = GeminiCLIAdapter(
-            model_name=self.model_name,
-            log_dir=self.log_dir,
-            timeout_seconds=settings.TIMEOUT_MINUTES * 60,
-        )
+        if os.environ.get("BORING_OFFLINE_MODE") == "1":
+            from ..llm.local_llm import LocalLLM
+
+            console.print("[bold green]Using Offline Local LLM[/bold green]")
+            # LocalLLM needs to be compatible with adapter interface
+            adapter = LocalLLM(
+                model_path=self.model_name
+                if self.model_name.startswith("local/")
+                else None,
+            )
+        else:
+            from ..cli_client import GeminiCLIAdapter
+
+            adapter = GeminiCLIAdapter(
+                model_name=self.model_name,
+                log_dir=self.log_dir,
+                timeout_seconds=settings.TIMEOUT_MINUTES * 60,
+            )
 
         prompt = self.prompt_file.read_text(encoding="utf-8") if self.prompt_file.exists() else ""
 
@@ -488,28 +530,48 @@ class AgentLoop:
             response_text = response.text
             success = response.success
 
-            # TODO: Handle tool calls if any returned (currently just appends text)
+            # Handle tool calls if any returned
+            function_calls = None
             if hasattr(response, "function_calls") and response.function_calls:
-                console.print(
-                    f"[bold magenta]🛠️ CLI Tool Call Requested: {response.function_calls}[/bold magenta]"
-                )
+                function_calls = response.function_calls
             elif isinstance(response, dict) and "function_calls" in response:
-                console.print(
-                    f"[bold magenta]🛠️ CLI Tool Call Requested (Dict): {response['function_calls']}[/bold magenta]"
-                )
+                function_calls = response["function_calls"]
 
-            pass
+            if function_calls:
+                console.print(
+                    f"[bold magenta]🛠️ CLI Tool Call Requested: {function_calls}[/bold magenta]"
+                )
+                # Execute tool calls and append results
+                tool_results = []
+                for fc in function_calls:
+                    tool_name = fc.get("name") if isinstance(fc, dict) else getattr(fc, "name", None)
+                    tool_args = fc.get("args", {}) if isinstance(fc, dict) else getattr(fc, "args", {})
+
+                    if tool_name == "boring_web_search":
+                        try:
+                            result = boring_web_search(**tool_args)
+                            tool_results.append(f"[Tool Result: {tool_name}]\n{result}")
+                            console.print(f"[green]✅ Tool executed: {tool_name}[/green]")
+                        except Exception as e:
+                            tool_results.append(f"[Tool Error: {tool_name}] {e}")
+                            console.print(f"[red]❌ Tool failed: {tool_name} - {e}[/red]")
+                    else:
+                        console.print(f"[yellow]⚠️ Unknown tool: {tool_name}[/yellow]")
+
+                # Append tool results to response
+                if tool_results:
+                    response_text += "\n\n# Tool Execution Results\n" + "\n".join(tool_results)
 
         # Write output log
         try:
             output_file.write_text(response_text, encoding="utf-8")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug("Failed to write CLI output file: %s", e)
 
         return success, response_text, output_file
 
     def _verify_project_syntax(
-        self, files_to_check: Optional[list[str]] = None
+        self, files_to_check: list[str] | None = None
     ) -> tuple[bool, str]:
         """
         Checks syntax of Python files.
@@ -633,8 +695,8 @@ Please try again with the correct format.
 """
         try:
             summary_file.write_text(summary, encoding="utf-8")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug("Failed to write loop summary: %s", e)
 
     def _check_plan_completion(self) -> bool:
         """

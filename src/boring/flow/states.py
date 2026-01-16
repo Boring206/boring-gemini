@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional
 
 
 class FlowStage(Enum):
@@ -57,6 +56,6 @@ class FlowState:
         return get_progress_bar(self.progress_percent)
 
     @property
-    def suggested_skill(self) -> Optional[str]:
+    def suggested_skill(self) -> str | None:
         """Get the suggested skill role for the current stage."""
         return STAGE_SKILL_MAPPING.get(self.stage)

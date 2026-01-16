@@ -4,7 +4,6 @@ import time
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 # ==============================================================================
 # PER-TOOL RATE LIMITING
@@ -58,7 +57,7 @@ _ANCHOR_FILES = [
 ]
 
 
-def detect_project_root(explicit_path: Optional[str] = None) -> Optional[Path]:
+def detect_project_root(explicit_path: str | None = None) -> Path | None:
     """
     Detect project root dynamically.
 
@@ -194,8 +193,8 @@ def configure_runtime_for_project(project_root: Path) -> None:
 
 
 def get_project_root_or_error(
-    project_path: Optional[str] = None, auto_init: bool = True
-) -> tuple[Optional[Path], Optional[dict]]:
+    project_path: str | None = None, auto_init: bool = True
+) -> tuple[Path | None, dict | None]:
     """
     Get project root or return an error dict for MCP response.
 

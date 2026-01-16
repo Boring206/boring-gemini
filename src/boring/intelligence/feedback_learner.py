@@ -10,7 +10,7 @@ import time
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from ..config import settings
 from ..logger import get_logger
@@ -51,7 +51,7 @@ class FeedbackLearner:
         suggestions = learner.get_suggestions("auth.py")
     """
 
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root: Path | None = None):
         self.project_root = project_root or settings.PROJECT_ROOT
         self.brain_dir = self.project_root / settings.BRAIN_DIR
         self.feedback_file = self.brain_dir / "review_feedback.json"

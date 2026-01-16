@@ -1,13 +1,24 @@
+import logging
+import time
+
 import typer
+
+logger = logging.getLogger(__name__)
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
 
 from .detector import FlowDetector
-from .evolution import EvolutionEngine
+from .events import FlowEvent, FlowEventBus
 from .skills_advisor import SkillsAdvisor
 from .states import FlowStage
 from .vibe_interface import VibeInterface
+
+# BoringDone Notification
+try:
+    from boring.services.notifier import done as notify_done
+except ImportError:
+    notify_done = None
 
 # [ONE DRAGON WIRING]
 # Importing real tools to power the engine
@@ -24,14 +35,56 @@ except ImportError:
     boring_speckit_tasks = None
 
 try:
-    from boring.mcp.tools.vibe import boring_vibe_check
+    from boring.mcp.tools.vibe import boring_predict_errors, run_vibe_check
 except ImportError:
-    boring_vibe_check = None
+    boring_predict_errors = None
+    run_vibe_check = None
 
 try:
     from boring.loop import AgentLoop
 except ImportError:
     AgentLoop = None
+
+try:
+    from boring.mcp.tools.advanced import boring_security_scan
+except ImportError:
+    boring_security_scan = None
+
+try:
+    from boring.mcp.tools.knowledge import boring_learn
+except ImportError:
+    boring_learn = None
+
+try:
+    from boring.intelligence.predictor import Predictor
+except ImportError:
+    Predictor = None
+
+try:
+    from boring.metrics.performance import track_performance
+except ImportError:
+    # No-op decorator fallback
+    def track_performance(name=None):
+        def decorator(func):
+            return func
+
+        return decorator
+
+
+try:
+    from boring.flow.auto_handlers import register_auto_handlers
+except ImportError:
+    logger.debug("auto_handlers not available, skipping registration")
+
+try:
+    from boring.mcp.tools.knowledge import boring_learn
+except ImportError:
+    boring_learn = None
+
+try:
+    from boring.loop.workflow_evolver import WorkflowEvolver
+except ImportError:
+    WorkflowEvolver = None
 
 console = Console()
 
@@ -47,11 +100,26 @@ class FlowEngine:
         self.detector = FlowDetector(project_root)
         self.vibe = VibeInterface()
         self.skills = SkillsAdvisor()
-        self.evolution = EvolutionEngine()
+        self.evolution = WorkflowEvolver(self.root) if WorkflowEvolver else None
+
+        # V14: Register Auto-Handlers
+        if "register_auto_handlers" in globals():
+            register_auto_handlers()
+
+        # V14: Offline Mode Support
+        from boring.core.config import settings
+
+        self.offline_mode = settings.OFFLINE_MODE
+        if self.offline_mode:
+            console.print("[bold yellow]📴 Offline Mode Active (One Dragon Flow)[/bold yellow]")
 
     def run(self):
         """Main entry point for 'boring flow'"""
         state = self.detector.detect()
+
+        if self.offline_mode:
+            # Adjust suggestion for offline mode
+            state.suggestion += " (Offline Mode Optimization)"
 
         self._display_header(state)
 
@@ -65,16 +133,23 @@ class FlowEngine:
             self._run_polish()
 
     def _display_header(self, state):
+        status_text = f"[bold yellow]Phase: {state.stage.value}[/bold yellow]"
+        if self.offline_mode:
+            status_text += " [dim](OFFLINE)[/dim]"
+
         console.print(
             Panel(
-                f"[bold yellow]Phase: {state.stage.value}[/bold yellow]\n\n{state.suggestion}",
+                f"{status_text}\n\n{state.suggestion}",
                 title="🐉 Boring Flow (One Dragon)",
                 border_style="blue",
             )
         )
 
+    @track_performance("setup_phase")
     def _run_setup(self):
         """Stage 1: Setup"""
+        FlowEventBus.emit(FlowEvent.PRE_SETUP, project_path=str(self.root))
+        # ...
         # Mocking the constitution creation for now
         if typer.confirm("Start Setup Wizard?"):
             # In real impl, calls boring_speckit_constitution
@@ -83,15 +158,57 @@ class FlowEngine:
             console.print(
                 "[bold green]Setup Complete! Run 'boring flow' again to enter Design Phase.[/bold green]"
             )
+        FlowEventBus.emit(FlowEvent.POST_SETUP, project_path=str(self.root))
 
+    @track_performance("design_phase")
     def _run_design(self):
         """Stage 2: Design"""
+        FlowEventBus.emit(FlowEvent.PRE_DESIGN, project_path=str(self.root))
         goal = Prompt.ask("What is your goal for this sprint? (or say 'unknown')")
 
         # 1. Vibe Check (Ambiguity Resolution)
         refined_goal = self.vibe.resolve_ambiguity(goal)
         if refined_goal != goal:
             console.print(f"[cyan]✨ Vibe Interpreted:[/cyan] {refined_goal}")
+
+        # 1.5 Predictive Risk Analysis (V14)
+        if boring_predict_errors:
+            try:
+                console.print("[dim]🔮 Running Predictive Analysis...[/dim]")
+                # Using the MCP tool for standardized prediction
+                res = boring_predict_errors(file_path=".", project_path=str(self.root))
+
+                # Check for success and display
+                # Note: BoringResult usually has status, message, and data
+                if hasattr(res, "status") and res.status == "success":
+                    vibe_summary = res.data.get("vibe_summary") if res.data else None
+                    if not vibe_summary:
+                        vibe_summary = str(res.message)
+                    console.print(
+                        Panel(
+                            vibe_summary, title="🔮 Predictive Risk Report", border_style="yellow"
+                        )
+                    )
+                else:
+                    msg = getattr(res, "message", str(res))
+                    console.print(f"[dim]Prediction skipped: {msg}[/dim]")
+            except Exception as e:
+                console.print(f"[dim]Prediction failed: {e}[/dim]")
+        elif Predictor:
+            try:
+                console.print("[dim]🔮 Running Predictive Analysis (Fallback)...[/dim]")
+                predictor = Predictor(self.root)
+                # Quick diagnostic
+                diag = predictor.deep_diagnostic()
+                if diag.get("risk_score", 0) > 20:
+                    panel_text = f"Risk Score: {diag['risk_score']}/100\n\nIssues Found: {len(diag.get('issues', []))}"
+                    if diag.get("issues"):
+                        panel_text += "\n" + "\n".join([f"- {i}" for i in diag["issues"][:3]])
+                    console.print(
+                        Panel(panel_text, title="🔮 Predictive Risk Report", border_style="yellow")
+                    )
+            except Exception as e:
+                console.print(f"[dim]Prediction fallback skipped: {e}[/dim]")
 
         # 2. Skill Advice
         skill_tips = self.skills.suggest_skills(refined_goal)
@@ -101,6 +218,7 @@ class FlowEngine:
         console.print("[bold cyan]Executing Speckit Plan...[/bold cyan]")
 
         # Real Integration
+        result = ""
         if boring_speckit_plan:
             # We call the tool function directly.
             # Note: In a full implementation, we'd handle the 'mcp' context/dependencies properly.
@@ -127,45 +245,142 @@ class FlowEngine:
         console.print(
             "[bold green]Blueprint Created! Run 'boring flow' to start Building.[/bold green]"
         )
+        FlowEventBus.emit(FlowEvent.POST_DESIGN, project_path=str(self.root), goal=refined_goal)
 
-        console.print("[bold]Executing tasks via Agent Loop...[/bold]")
+    @track_performance("build_phase")
+    def _run_build(self, pending_tasks: list[str]):
+        """Stage 3: Build (with Self-Healing)"""
+        FlowEventBus.emit(FlowEvent.PRE_BUILD, project_path=str(self.root))
 
-        # [ONE DRAGON WIRING]
-        # Invoking the real Autonomous Agent
-        if AgentLoop:
-            try:
-                # Initialize loop with defaults (simulating 'boring start')
-                loop = AgentLoop(
-                    model_name="gemini-1.5-pro",  # Default
-                    use_cli=False,  # Default to API for smooth flow
-                    verbose=True,
-                    verification_level="STANDARD",
-                    prompt_file=None,
+        max_retries = 3
+        attempt = 0
+        success = False
+
+        while attempt < max_retries and not success:
+            attempt += 1
+            if attempt > 1:
+                console.print(
+                    f"[bold yellow]🔄 Self-Healing Attempt {attempt}/{max_retries}...[/bold yellow]"
                 )
 
-                console.print("[green]🐉 Dragon is breathing fire (Agent Started)...[/green]")
-                # [ONE DRAGON STABILITY] Set 1-hour global timeout for the agent loop
-                loop.run(max_duration=3600)
-                # utilize loop.run() which runs until completion signals
-            except Exception as e:
-                console.print(f"[red]Agent Loop failed: {e}[/red]")
-                console.print("[dim]Falling back to manual task check...[/dim]")
+            console.print("[bold]Executing tasks via Agent Loop...[/bold]")
+
+            if AgentLoop:
+                try:
+                    FlowEventBus.emit(
+                        FlowEvent.AGENT_START, project_path=str(self.root), attempt=attempt
+                    )
+
+                    # Initialize loop
+                    loop = AgentLoop(
+                        model_name="gemini-1.5-pro",
+                        use_cli=False,
+                        verbose=True,
+                        verification_level="STANDARD",
+                    )
+
+                    console.print("[green]🐉 Dragon is breathing fire (Agent Started)...[/green]")
+                    loop.run(max_duration=3600)
+
+                    FlowEventBus.emit(FlowEvent.AGENT_COMPLETE, project_path=str(self.root))
+                    success = True
+                except Exception as e:
+                    console.print(f"[red]Agent Loop failed (Attempt {attempt}): {e}[/red]")
+                    FlowEventBus.emit(FlowEvent.ON_ERROR, project_path=str(self.root), error=str(e))
+
+                    # 3. Bisect Fallback (V14) - Only on last attempt or if manual check
+                    if attempt == max_retries and Predictor:
+                        console.print("[bold yellow]🕵️ Analyzing Regression...[/bold yellow]")
+                        try:
+                            predictor = Predictor(self.root)
+                            analysis = predictor.analyze_regression(str(e))
+                            if analysis.get("recommendation"):
+                                console.print(
+                                    Panel(
+                                        analysis["recommendation"],
+                                        title="🤖 AI Bisect Recommendation",
+                                        border_style="red",
+                                    )
+                                )
+                                if typer.confirm("Run full 'boring bisect' now?"):
+                                    console.print("[bold yellow]Running AI Bisect...[/bold yellow]")
+                                    from boring.main import bisect as bisect_cmd
+
+                                    try:
+                                        bisect_cmd(error=str(e), file=None, depth=10)
+                                    except Exception as be:
+                                        console.print(
+                                            f"[dim]Command 'boring bisect' failed: {be}[/dim]"
+                                        )
+                        except Exception as ex:
+                            console.print(f"[dim]Bisect analysis failed: {ex}[/dim]")
+
+                    if attempt < max_retries:
+                        # [SUPER AUTOMATION] The ON_LINT_FAIL/ON_TEST_FAIL events emitted by AgentLoop
+                        # should have triggered auto-fixes in handlers.
+                        # Wait a bit or confirm?
+                        console.print("[dim]Checking if auto-fixers resolved issues...[/dim]")
+                        time.sleep(2)
 
         # Check tasks again after loop
-        # Mocking completion check for fallback
         if (self.root / "task.md").exists():
             console.print("[dim]Checking task completion status...[/dim]")
 
         console.print(
             "[bold green]Build Phase Cycle Complete. Entering Polish Phase...[/bold green]"
         )
+        FlowEventBus.emit(FlowEvent.POST_BUILD, project_path=str(self.root), modified_files=[])
+
+        # BoringDone: Notify build complete
+        if notify_done:
+            notify_done(task_name="Build Phase", success=success, details="Entering Polish Phase")
+
         self._run_polish()
 
+    @track_performance("polish_phase")
     def _run_polish(self):
         """Stage 4: Polish & Stage 5: Evolution"""
-        console.print("[bold]Running Vibe Check...[/bold]")
-        # Simulator
-        console.print("[green]Score: 98/100 (S-Tier)[/green]")
+        FlowEventBus.emit(FlowEvent.PRE_POLISH, project_path=str(self.root))
+        console.print("[bold cyan]💎 Entering Polish Phase...[/bold cyan]")
+
+        # 1. Vibe Check (V14)
+        if run_vibe_check:
+            console.print("[bold]Running Vibe Check...[/bold]")
+            try:
+                # Use a specific file or "." for whole project
+                res = run_vibe_check(target_path=".", project_path=str(self.root))
+                # res is BoringResult
+                if hasattr(res, "status") and res.status == "success":
+                    vibe_score = res.data.get("score", 0) if res.data else 0
+                    color = "green" if vibe_score > 80 else "yellow" if vibe_score > 50 else "red"
+                    console.print(f"[{color}]Vibe Score: {vibe_score}/100[/{color}]")
+                    if res.data and res.data.get("summary"):
+                        console.print(Panel(res.data["summary"], title="Vibe Report"))
+                else:
+                    console.print(f"[dim]Vibe Check skipped: {res.message}[/dim]")
+            except Exception as e:
+                console.print(f"[dim]Vibe Check failed: {e}[/dim]")
+        else:
+            console.print("[green]Score: 98/100 (S-Tier Simulation)[/green]")
+
+        # 4. Security Scan (V14)
+        if boring_security_scan:
+            console.print("[bold]🛡️ Running Security Scan...[/bold]")
+            try:
+                sec_result = boring_security_scan(project_path=str(self.root), scan_type="full")
+                # Check if it's a BoringResult or raw output
+                if hasattr(sec_result, "status") and sec_result.status == "success":
+                    msg = sec_result.message or "Security scan completed successfully."
+                    console.print(Panel(msg, title="🛡️ Security Report", border_style="red"))
+                else:
+                    console.print(
+                        Panel(str(sec_result), title="🛡️ Security Report", border_style="red")
+                    )
+            except Exception as e:
+                console.print(f"[red]Security scan error: {e}[/red]")
+
+        # 5. Brain Learning (V14) - Now handled via POST_POLISH Event
+        # (Wait for emit at the end of method)
 
         console.print(
             Panel(self.evolution.dream_next_steps(), title="Sage Mode", border_style="purple")
@@ -174,6 +389,15 @@ class FlowEngine:
         if typer.confirm("Archive this session and learn patterns?"):
             self.evolution.learn_from_session()
             console.print("[bold blue]Session Archived. You have evolved.[/bold blue]")
+            # BoringDone: Notify user flow is fully complete
+            if notify_done:
+                notify_done(
+                    task_name="Boring Flow",
+                    success=True,
+                    details="Session archived. Ready for next sprint!",
+                )
+
+        FlowEventBus.emit(FlowEvent.POST_POLISH, project_path=str(self.root))
 
     def run_headless(self, user_input: str = None) -> str:
         """
@@ -193,7 +417,9 @@ class FlowEngine:
             skill = "Healer"
 
         if skill:
-             response.append(f"💡 Suggestion: Use `boring_active_skill('{skill}')` to unlock {skill} tools.")
+            response.append(
+                f"💡 Suggestion: Use `boring_active_skill('{skill}')` to unlock {skill} tools."
+            )
 
         response.append(f"Advice: {state.suggestion}")
 
@@ -231,8 +457,8 @@ class FlowEngine:
                 if boring_speckit_tasks:
                     try:
                         boring_speckit_tasks(context=str(res), project_path=str(self.root))
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        logger.debug("speckit_tasks failed in headless mode: %s", e)
                 else:
                     (self.root / "task.md").write_text("- [ ] Auto task")
 
@@ -252,6 +478,9 @@ class FlowEngine:
                     # [ONE DRAGON STABILITY] Set 1-hour global timeout
                     loop.run(max_duration=3600)
                     response.append("✅ Agent Loop Completed.")
+                    # BoringDone: Headless notification
+                    if notify_done:
+                        notify_done(task_name="Agent Loop", success=True)
                 except Exception as e:
                     response.append(f"❌ Loop Failed: {e}")
 
@@ -264,9 +493,9 @@ class FlowEngine:
 
     def _run_polish_headless(self, response: list):
         response.append("💎 Running Vibe Check...")
-        if boring_vibe_check:
+        if run_vibe_check:
             try:
-                res = boring_vibe_check(target_path=".", project_path=str(self.root))
+                res = run_vibe_check(target_path=".", project_path=str(self.root))
                 response.append(f"Vibe Report: {res}")
             except Exception as e:
                 response.append(f"Vibe Failed: {e}")

@@ -25,7 +25,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from boring.core.logger import log_status
 
@@ -85,7 +85,7 @@ class ErrorPattern:
 
     error_type: str
     error_message: str
-    solution: Optional[str]
+    solution: str | None
     occurrence_count: int
     last_seen: str
     context: str = ""
@@ -101,7 +101,7 @@ class SQLiteStorage:
         recent = storage.get_recent_loops(5)
     """
 
-    def __init__(self, memory_dir: Path, log_dir: Optional[Path] = None):
+    def __init__(self, memory_dir: Path, log_dir: Path | None = None):
         self.memory_dir = Path(memory_dir)
         self.memory_dir.mkdir(parents=True, exist_ok=True)
         self.db_path = self.memory_dir / "memory.db"
@@ -318,7 +318,7 @@ class SQLiteStorage:
                 (solution, error_type, error_message[:500]),
             )
 
-    def get_solution_for_error(self, error_message: str) -> Optional[str]:
+    def get_solution_for_error(self, error_message: str) -> str | None:
         """Find a solution for an error message."""
         with self._get_connection() as conn:
             # Fuzzy match using LIKE
@@ -367,7 +367,7 @@ class SQLiteStorage:
 
     # --- Metrics Operations ---
 
-    def record_metric(self, name: str, value: float, metadata: Optional[dict] = None):
+    def record_metric(self, name: str, value: float, metadata: dict | None = None):
         """Record a performance metric."""
         with self._get_connection() as conn:
             conn.execute(
@@ -527,8 +527,8 @@ class SQLiteStorage:
 
     def get_patterns(
         self,
-        pattern_type: Optional[str] = None,
-        context_like: Optional[str] = None,
+        pattern_type: str | None = None,
+        context_like: str | None = None,
         limit: int = 100,
     ) -> list[dict[str, Any]]:
         """Retrieve patterns with optional filtering."""
@@ -550,6 +550,23 @@ class SQLiteStorage:
         with self._get_connection() as conn:
             rows = conn.execute(query, params).fetchall()
             return [dict(row) for row in rows]
+
+    def get_pattern_by_id(self, pattern_id: str) -> dict[str, Any] | None:
+        """Retrieve a single pattern by ID."""
+        with self._get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM brain_patterns WHERE pattern_id = ?",
+                (pattern_id,),
+            ).fetchone()
+            if not row:
+                return None
+            data = dict(row)
+            if data.get("embedding"):
+                try:
+                    data["embedding"] = json.loads(data["embedding"])
+                except json.JSONDecodeError:
+                    pass
+            return data
 
     def delete_pattern(self, pattern_id: str) -> bool:
         """Delete a pattern by ID."""
@@ -574,7 +591,7 @@ class SQLiteStorage:
             )
             return cursor.lastrowid
 
-    def get_rubric(self, name: str) -> Optional[dict[str, Any]]:
+    def get_rubric(self, name: str) -> dict[str, Any] | None:
         """Get rubric by name."""
         with self._get_connection() as conn:
             row = conn.execute("SELECT * FROM brain_rubrics WHERE name = ?", (name,)).fetchone()
@@ -816,7 +833,7 @@ class SQLiteStorage:
             return False
 
 
-def create_storage(project_root: Path, log_dir: Optional[Path] = None) -> SQLiteStorage:
+def create_storage(project_root: Path, log_dir: Path | None = None) -> SQLiteStorage:
     """Factory function to create storage instance."""
     try:
         from boring.paths import get_boring_path

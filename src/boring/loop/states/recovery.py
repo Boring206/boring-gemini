@@ -7,7 +7,6 @@ This state is responsible for:
 3. Triggering human intervention if needed
 """
 
-from typing import Optional
 
 from ...logger import console, log_status
 from ..base import LoopState, StateResult
@@ -61,7 +60,7 @@ class RecoveryState(LoopState):
         log_status(context.log_dir, "INFO", "Recovery prompt generated, retrying...")
         return StateResult.RETRY
 
-    def next_state(self, context: LoopContext, result: StateResult) -> Optional[LoopState]:
+    def next_state(self, context: LoopContext, result: StateResult) -> LoopState | None:
         """Determine next state based on recovery result."""
         # Record telemetry
         self._record_metrics(context, result)

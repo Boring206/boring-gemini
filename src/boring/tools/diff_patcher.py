@@ -13,7 +13,6 @@ Supported formats:
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 from boring.core.logger import log_status
 
@@ -26,7 +25,7 @@ class SearchReplaceOp:
     search: str
     replace: str
     success: bool = False
-    error: Optional[str] = None
+    error: str | None = None
 
 
 # Pattern for SEARCH_REPLACE blocks (Git-style conflict markers)
@@ -126,7 +125,7 @@ def extract_search_replace_blocks(output: str) -> list[dict[str, str]]:
 
 def apply_search_replace(
     file_path: Path, search: str, replace: str, log_dir: Path = Path("logs")
-) -> tuple[bool, Optional[str]]:
+) -> tuple[bool, str | None]:
     """
     Apply a single search-replace operation to a file.
 
@@ -176,7 +175,7 @@ def apply_search_replace(
 def apply_search_replace_blocks(
     blocks: list[dict[str, str]],
     project_root: Path,
-    default_file: Optional[Path] = None,
+    default_file: Path | None = None,
     log_dir: Path = Path("logs"),
 ) -> list[SearchReplaceOp]:
     """

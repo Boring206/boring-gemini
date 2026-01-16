@@ -31,12 +31,13 @@ boring verify --force
 | 全局索引搜尋 | ~4s | ~2s | 2x |
 | 驗證 (快取) | ~5s | ~3s | 1.6x |
 
-### 「Boring Diet」瘦身優化
+### 「Boring Diet」與 V13.1 效能優化
 
-Boring V10.28 移除了核心啟動路徑中的「贅肉」：
-- **移除預先載入**：所有重量級函式庫（Torch, ChromaDB, FastAPI）現在改為 **延遲載入 (Lazy-Loaded)**。
-- **模組化 Extras**：可選功能被隔離在 `DependencyManager` 後方。
-- **零延遲 Profile**：`lite` 設定檔現在是預設，僅消耗 ~3k tokens，CPU 開銷微乎其微。
+Boring V13.1 進一步優化了啟動路徑與執行效率：
+- **通用延遲載入 (Universal Lazy Loading)**：新增 `lazy_loader.py` 工具，確保所有重量級模組（如本地 LLM 引擎、向量數據庫）僅在實際調用時載入。
+- **可配置快取 TTL**：RAG 查詢快取現在支援自定義存活時間（TTL），預設 120 秒，可透過 `BORING_CACHE_TTL_SECONDS` 調整。
+- **背景預熱 (Background Pre-warming)**：模組在背景異步載入，減少使用者等待感。
+- **啟動追蹤 (Startup Profiling)**：開啟 `BORING_STARTUP_PROFILE=1` 可查看詳細的組件啟動耗時。
 
 ### 上下文優化 (Context Optimization)
 

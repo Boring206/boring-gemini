@@ -47,9 +47,9 @@ class _BytesInterceptor:
             try:
                 text = data_bytes.decode("utf-8", errors="replace")
                 sys.stderr.write(f"\n[STDOUT POLLUTION (BYTES)] {text[:200]}\n")
-            except:
+            except Exception:
                 sys.stderr.write(f"\n[STDOUT POLLUTION (BYTES)] {repr(data_bytes[:200])}\n")
-        except:
+        except Exception:
             pass
 
         # Return length to pretend we wrote it

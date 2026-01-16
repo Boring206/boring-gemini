@@ -9,20 +9,22 @@ the Universal Router or Discovery tools.
 """
 
 import inspect
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable, Optional
+from typing import Any
 
 
 @dataclass
 class InternalTool:
     """Metadata for an internal (non-exposed) tool."""
+
     name: str
     func: Callable
     description: str
     schema: dict[str, Any] = field(default_factory=dict)
     category: str = "general"
     is_core: bool = False
-    kwargs: dict[str, Any] = field(default_factory=dict) # Store registration options
+    kwargs: dict[str, Any] = field(default_factory=dict)  # Store registration options
 
 
 class DiscoveryRegistry:
@@ -37,6 +39,7 @@ class DiscoveryRegistry:
 
     def tool(self, description: str = "", category: str = "general", **kwargs):
         """Decorator replacement for @mcp.tool."""
+
         def wrapper(func: Callable):
             name = func.__name__
 
@@ -48,14 +51,15 @@ class DiscoveryRegistry:
                     "properties": {
                         p.name: {
                             "type": str(p.annotation).replace("<class '", "").replace("'>", ""),
-                            "default": p.default if p.default != inspect.Parameter.empty else None
+                            "default": p.default if p.default != inspect.Parameter.empty else None,
                         }
                         for p in sig.parameters.values()
                     },
                     "required": [
-                        p.name for p in sig.parameters.values()
+                        p.name
+                        for p in sig.parameters.values()
                         if p.default == inspect.Parameter.empty
-                    ]
+                    ],
                 }
             except Exception:
                 schema = {"type": "object", "properties": {}, "note": "Schema extraction failed"}
@@ -66,7 +70,7 @@ class DiscoveryRegistry:
                 description=description or func.__doc__ or "No description",
                 category=category,
                 schema=schema,
-                kwargs=kwargs
+                kwargs=kwargs,
             )
             self.tools[name] = tool_obj
 
@@ -76,9 +80,10 @@ class DiscoveryRegistry:
                 self.categories[category].append(name)
 
             return func
+
         return wrapper
 
-    def get_tool(self, name: str) -> Optional[InternalTool]:
+    def get_tool(self, name: str) -> InternalTool | None:
         """Retrieve a tool by name."""
         return self.tools.get(name)
 
@@ -88,6 +93,7 @@ class DiscoveryRegistry:
             {"name": t.name, "description": t.description, "category": t.category}
             for t in self.tools.values()
         ]
+
 
 # Global singleton for internal tools
 internal_registry = DiscoveryRegistry()

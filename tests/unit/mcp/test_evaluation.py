@@ -45,10 +45,16 @@ class TestEvaluationTools:
     @patch("boring.mcp.tools.evaluation.os.environ.get")
     @patch("boring.mcp.tools.evaluation.create_judge_provider")
     @patch("boring.mcp.tools.evaluation.LLMJudge")
+    @patch("boring.services.rbac.RoleManager")
     def test_boring_evaluate_interactive(
-        self, mock_judge_cls, mock_create_provider, mock_env, mock_limit, mock_root
+        self, mock_rbac_class, mock_judge_cls, mock_create_provider, mock_env, mock_limit, mock_root
     ):
         """Test interactive mode (prompt return)."""
+        # Mock RBAC to allow access
+        mock_rbac = MagicMock()
+        mock_rbac.check_access.return_value = True
+        mock_rbac_class.get_instance.return_value = mock_rbac
+
         mock_limit.return_value = (True, "")
         mock_root.return_value = Path("/tmp/project")
         mock_env.return_value = "1"  # Simulate MCP mode

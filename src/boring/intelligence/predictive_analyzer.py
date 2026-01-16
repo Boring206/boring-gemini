@@ -20,7 +20,6 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional
 
 # Thread-local connection
 _local = threading.local()
@@ -440,7 +439,7 @@ class PredictiveAnalyzer:
 
         conn.commit()
 
-    def get_trend(self, metric_name: str, days: int = 7) -> Optional[TrendData]:
+    def get_trend(self, metric_name: str, days: int = 7) -> TrendData | None:
         """Analyze trend for a metric over time."""
         conn = self._get_connection()
 
@@ -759,7 +758,7 @@ class PredictiveAnalyzer:
         )
         conn.commit()
 
-    def get_fix_snippet(self, error_type: str) -> Optional[str]:
+    def get_fix_snippet(self, error_type: str) -> str | None:
         """V10.23: Get a learned fix snippet for an error type."""
         conn = self._get_connection()
         row = conn.execute(

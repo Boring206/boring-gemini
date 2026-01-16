@@ -15,16 +15,40 @@ from rich.text import Text
 app = typer.Typer(help="Boring live monitoring dashboard.")
 console = Console()
 
-# Configuration
-STATUS_FILE = Path("status.json")
-LOG_FILE = Path("logs/boring.log")
-PROGRESS_FILE = Path(".progress.json")
 REFRESH_INTERVAL = 2  # seconds
+
+
+def _get_project_root(project_root: Path | None = None) -> Path:
+    if project_root is not None:
+        return project_root
+    from boring.core.config import settings
+
+    return settings.PROJECT_ROOT
+
+
+def _get_paths(project_root: Path | None = None) -> dict[str, Path]:
+    from boring.core.config import settings
+    from boring.paths import get_state_file
+
+    root = _get_project_root(project_root)
+    progress_file = root / ".boring_progress.json"
+    legacy_progress = root / ".progress.json"
+    if not progress_file.exists() and legacy_progress.exists():
+        progress_file = legacy_progress
+
+    return {
+        "status_file": root / settings.STATUS_FILE,
+        "log_file": root / "logs" / "boring.log",
+        "progress_file": progress_file,
+        "circuit_file": get_state_file(root, "circuit_breaker_state"),
+    }
 
 
 def get_status_panel() -> Panel:
     """Creates a Rich Panel for the main status information."""
-    if not STATUS_FILE.exists():
+    paths = _get_paths()
+    status_file = paths["status_file"]
+    if not status_file.exists():
         return Panel(
             Text("Status file not found. Boring may not be running.", style="bold red"),
             title="[bold cyan]Current Status[/bold cyan]",
@@ -32,7 +56,7 @@ def get_status_panel() -> Panel:
         )
 
     try:
-        status_data = json.loads(STATUS_FILE.read_text())
+        status_data = json.loads(status_file.read_text())
         loop_count = status_data.get("loop_count", 0)
         status = status_data.get("status", "unknown")
         calls_made = status_data.get("calls_made_this_hour", 0)
@@ -71,11 +95,13 @@ def get_status_panel() -> Panel:
 
 def get_progress_panel() -> Panel | None:
     """Creates a Rich Panel for the Gemini CLI execution progress."""
-    if not PROGRESS_FILE.exists():
+    paths = _get_paths()
+    progress_file = paths["progress_file"]
+    if not progress_file.exists():
         return None
 
     try:
-        progress_data = json.loads(PROGRESS_FILE.read_text())
+        progress_data = json.loads(progress_file.read_text())
         progress_status = progress_data.get("status", "idle")
 
         if progress_status == "executing":
@@ -107,8 +133,9 @@ def get_progress_panel() -> Panel | None:
 
 def get_circuit_panel() -> Panel:
     """Creates a Rich Panel for circuit breaker status."""
-    cb_file = Path(".circuit_breaker_state")
-    if not cb_file.exists():
+    paths = _get_paths()
+    circuit_file = paths["circuit_file"]
+    if not circuit_file.exists():
         return Panel(
             Text("Circuit Breaker: CLOSED", style="green"),
             title="[bold green]🔌 Circuit Status[/bold green]",
@@ -116,7 +143,7 @@ def get_circuit_panel() -> Panel:
         )
 
     try:
-        data = json.loads(cb_file.read_text())
+        data = json.loads(circuit_file.read_text())
         state = data.get("state", "CLOSED")
         failures = data.get("failures", 0)
 
@@ -167,20 +194,44 @@ def get_usage_panel() -> Panel:
             table.add_row("Top Tools:", Text("None yet", style="dim"))
 
         return Panel(
-            table,
-            title="[bold magenta]📊 Personal Stats[/bold magenta]",
-            border_style="magenta"
+            table, title="[bold magenta]📊 Personal Stats[/bold magenta]", border_style="magenta"
         )
     except Exception:
         return Panel(Text("No usage data", style="dim"), title="📊 Personal Stats")
 
 
+def get_token_usage_panel() -> Panel:
+    """Creates a Rich Panel for token usage statistics."""
+    try:
+        from ..metrics.token_tracker import TokenTracker
+
+        tracker = TokenTracker(_get_project_root())
+        stats = tracker.get_total_stats()
+
+        table = Table.grid(expand=True)
+        table.add_column(style="bold cyan", width=14)
+        table.add_column()
+
+        table.add_row("Input Tokens:", str(stats.get("total_input_tokens", 0)))
+        table.add_row("Output Tokens:", str(stats.get("total_output_tokens", 0)))
+        table.add_row("Total Cost:", f"${stats.get('total_cost', 0.0):.4f}")
+        table.add_row("Total Calls:", str(stats.get("total_calls", 0)))
+
+        return Panel(
+            table, title="[bold magenta]🧮 Token Usage[/bold magenta]", border_style="magenta"
+        )
+    except Exception:
+        return Panel(Text("No token usage data", style="dim"), title="🧮 Token Usage")
+
+
 def get_logs_panel() -> Panel:
     """Creates a Rich Panel for recent log entries."""
     log_content = []
-    if LOG_FILE.exists():
+    paths = _get_paths()
+    log_file = paths["log_file"]
+    if log_file.exists():
         try:
-            with open(LOG_FILE, encoding="utf-8") as f:
+            with open(log_file, encoding="utf-8") as f:
                 lines = f.readlines()
                 # Get last 8 lines
                 for line in lines[-8:]:
@@ -215,13 +266,9 @@ def generate_layout() -> Layout:
     layout["main"].split_row(Layout(name="left", ratio=2), Layout(name="right", ratio=1))
 
     # Split left column: Top (Status + Usage), Bottom (Logs)
-    layout["left"].split(
-        Layout(name="top_left", size=8),
-        Layout(name="bottom_left")
-    )
+    layout["left"].split(Layout(name="top_left", size=8), Layout(name="bottom_left"))
     layout["left"]["top_left"].split_row(
-        get_status_panel(),
-        get_usage_panel()
+        get_status_panel(), get_usage_panel(), get_token_usage_panel()
     )
     layout["left"]["bottom_left"].update(get_logs_panel())
 

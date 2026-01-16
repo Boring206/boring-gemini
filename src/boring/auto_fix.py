@@ -10,7 +10,6 @@ using the Boring agent, creating a self-healing development loop.
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 
 @dataclass
@@ -55,6 +54,7 @@ class AutoFixPipeline:
             Pipeline result with status and attempt history
         """
         previous_issue_count = float("inf")
+        seen_signatures: set[str] = set()
 
         for iteration in range(1, self.max_iterations + 1):
             start_time = time.time()
@@ -77,6 +77,21 @@ class AutoFixPipeline:
             issue_count = (
                 len(issues) if isinstance(issues, list) else verify_result.get("error_count", 1)
             )
+
+            signature = ""
+            if isinstance(issues, list) and issues:
+                signature = "|".join(sorted(str(i) for i in issues[:20]))
+            else:
+                signature = str(verify_result.get("message", "unknown"))
+            if signature in seen_signatures:
+                return {
+                    "status": "STALLED",
+                    "message": "Detected repeating issue set. Halting to avoid loops.",
+                    "iterations": iteration,
+                    "attempts": [a.__dict__ for a in self.attempts],
+                    "remaining_issues": issues,
+                }
+            seen_signatures.add(signature)
 
             # Check for progress
             if issue_count >= previous_issue_count:
@@ -175,7 +190,7 @@ def create_auto_fix_tool(mcp, audited, run_boring_func, verify_func, get_project
     def boring_auto_fix(
         max_iterations: int = 3,
         verification_level: str = "STANDARD",
-        project_path: Optional[str] = None,
+        project_path: str | None = None,
     ) -> dict:
         """
         Automated verify-and-fix loop.

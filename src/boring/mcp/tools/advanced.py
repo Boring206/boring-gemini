@@ -47,7 +47,7 @@ def boring_security_scan(
     """
     from pathlib import Path
 
-    from boring.config import settings
+    from boring.core.config import settings
     from boring.mcp.verbosity import get_verbosity, is_minimal, is_standard
     from boring.security import SecurityScanner
 
@@ -244,6 +244,44 @@ def boring_task(
         return {"status": "error", "message": f"Unknown action: {action}"}
 
 
+def boring_background_task(
+    task_type: Annotated[
+        str, Field(description="Task type: verify, test, lint, security_scan")
+    ],
+    task_args: Annotated[
+        dict | None, Field(default=None, description="Arguments for submit action")
+    ] = None,
+    project_path: Annotated[
+        str | None, Field(default=None, description="Path to project root")
+    ] = None,
+) -> dict:
+    """Legacy alias: submit a background task."""
+    return boring_task(
+        "submit",
+        task_type=task_type,
+        task_args=task_args,
+        project_path=project_path,
+    )
+
+
+def boring_task_status(
+    task_id: Annotated[str, Field(description="Task ID to check")],
+) -> dict:
+    """Legacy alias: check background task status."""
+    return boring_task("status", task_id=task_id)
+
+
+def boring_list_tasks(
+    status: Annotated[
+        str | None, Field(default=None, description="Optional status filter")
+    ] = None,
+) -> dict:
+    """Legacy alias: list background tasks."""
+    from boring.loop.background_agent import list_background_tasks
+
+    return list_background_tasks(status)
+
+
 # =============================================================================
 # CONTEXT TOOLS
 # =============================================================================
@@ -291,6 +329,39 @@ def boring_context(
         return {"status": "error", "message": f"Unknown action: {action}"}
 
 
+def boring_save_context(
+    context_name: Annotated[str, Field(description="Context name to save")],
+    data: Annotated[
+        str | dict, Field(description="Summary or payload to store for the context")
+    ],
+    project_path: Annotated[
+        str | None, Field(default=None, description="Path to project root")
+    ] = None,
+) -> dict:
+    """Legacy alias: save context summary."""
+    summary = data if isinstance(data, str) else str(data)
+    return boring_context("save", context_id=context_name, summary=summary, project_path=project_path)
+
+
+def boring_load_context(
+    context_name: Annotated[str, Field(description="Context name to load")],
+    project_path: Annotated[
+        str | None, Field(default=None, description="Path to project root")
+    ] = None,
+) -> dict:
+    """Legacy alias: load saved context."""
+    return boring_context("load", context_id=context_name, project_path=project_path)
+
+
+def boring_list_contexts(
+    project_path: Annotated[
+        str | None, Field(default=None, description="Path to project root")
+    ] = None,
+) -> dict:
+    """Legacy alias: list saved contexts."""
+    return boring_context("list", project_path=project_path)
+
+
 # =============================================================================
 # PROFILE TOOLS
 # =============================================================================
@@ -336,6 +407,64 @@ def boring_profile(
         return {"status": "error", "message": f"Unknown action: {action}"}
 
 
+def boring_get_profile() -> dict:
+    """Legacy alias: get user profile."""
+    return boring_profile("get")
+
+
+def boring_learn_fix(
+    error_pattern: Annotated[str, Field(description="Error pattern to learn")],
+    fix_pattern: Annotated[str, Field(description="Fix pattern to learn")],
+    context: Annotated[str, Field(default="", description="Optional context")] = "",
+) -> dict:
+    """Legacy alias: learn a fix pattern."""
+    return boring_profile(
+        "learn",
+        error_pattern=error_pattern,
+        fix_pattern=fix_pattern,
+        context=context,
+    )
+
+
+def boring_transaction_start(
+    message: Annotated[str, Field(default="Boring transaction", description="Checkpoint message")] = (
+        "Boring transaction"
+    ),
+    project_path: Annotated[
+        str | None, Field(default=None, description="Path to project root")
+    ] = None,
+) -> dict:
+    """Legacy alias: start a transaction."""
+    return boring_transaction("start", description=message, project_path=project_path)
+
+
+def boring_transaction_commit(
+    project_path: Annotated[
+        str | None, Field(default=None, description="Path to project root")
+    ] = None,
+) -> dict:
+    """Legacy alias: commit a transaction."""
+    return boring_transaction("commit", project_path=project_path)
+
+
+def boring_transaction_rollback(
+    project_path: Annotated[
+        str | None, Field(default=None, description="Path to project root")
+    ] = None,
+) -> dict:
+    """Legacy alias: rollback a transaction."""
+    return boring_transaction("rollback", project_path=project_path)
+
+
+def boring_rollback(
+    project_path: Annotated[
+        str | None, Field(default=None, description="Path to project root")
+    ] = None,
+) -> dict:
+    """Legacy alias: rollback a transaction."""
+    return boring_transaction("rollback", project_path=project_path)
+
+
 # =============================================================================
 # REGISTRATION
 # =============================================================================
@@ -354,9 +483,23 @@ def register_advanced_tools(mcp):
 
     # Background Tasks (1 tool)
     mcp.tool(description="Manage background tasks (submit/status/list)")(boring_task)
+    mcp.tool(description="Legacy alias: submit background task")(boring_background_task)
+    mcp.tool(description="Legacy alias: check background task status")(boring_task_status)
+    mcp.tool(description="Legacy alias: list background tasks")(boring_list_tasks)
 
     # Context (1 tool)
     mcp.tool(description="Manage conversation context (save/load/list)")(boring_context)
+    mcp.tool(description="Legacy alias: save context")(boring_save_context)
+    mcp.tool(description="Legacy alias: load context")(boring_load_context)
+    mcp.tool(description="Legacy alias: list contexts")(boring_list_contexts)
 
     # Profile (1 tool)
     mcp.tool(description="Manage user profile and learned memory")(boring_profile)
+    mcp.tool(description="Legacy alias: get profile")(boring_get_profile)
+    mcp.tool(description="Legacy alias: learn fix patterns")(boring_learn_fix)
+
+    # Transaction aliases
+    mcp.tool(description="Legacy alias: start transaction")(boring_transaction_start)
+    mcp.tool(description="Legacy alias: commit transaction")(boring_transaction_commit)
+    mcp.tool(description="Legacy alias: rollback transaction")(boring_transaction_rollback)
+    mcp.tool(description="Legacy alias: rollback transaction")(boring_rollback)

@@ -7,7 +7,6 @@ Defines the common data objects used across different language handlers.
 """
 
 from dataclasses import dataclass, field
-from typing import Optional
 
 
 @dataclass
@@ -18,7 +17,7 @@ class CodeIssue:
     message: str
     severity: str  # "high", "medium", "low"
     line: int
-    suggestion: Optional[str] = None
+    suggestion: str | None = None
 
 
 @dataclass
@@ -27,7 +26,7 @@ class CodeFunction:
 
     name: str
     args: list[str]
-    docstring: Optional[str]
+    docstring: str | None
     lineno: int
     is_async: bool = False
     is_exported: bool = True  # For JS/TS
@@ -39,7 +38,7 @@ class CodeClass:
 
     name: str
     methods: list[str]
-    docstring: Optional[str]
+    docstring: str | None
     lineno: int
     is_exported: bool = True
 

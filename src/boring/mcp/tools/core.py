@@ -4,7 +4,7 @@ from typing import Annotated
 
 from pydantic import Field
 
-from ...audit import audited
+from ...services.audit import audited
 from ..instance import MCP_AVAILABLE, mcp
 from ..utils import configure_runtime_for_project, get_project_root_or_error
 
@@ -184,7 +184,7 @@ def boring_health_check(
             try:
                 root = Path(project_path)
                 configure_runtime_for_project(root)
-            except:
+            except Exception:
                 pass
 
         # Detection logic is now centralized in GeminiClient, but for health report:
@@ -509,13 +509,15 @@ if MCP_AVAILABLE and mcp is not None:
         os.environ["BORING_ACTIVE_SKILL"] = skill_name
 
         # Renaissance V2: Filter by category (Skill)
-        matching_tools = [t for t in internal_registry.tools.values() if t.category.lower() == skill_name.lower()]
+        matching_tools = [
+            t for t in internal_registry.tools.values() if t.category.lower() == skill_name.lower()
+        ]
 
         if not matching_tools:
             return {
                 "status": "error",
                 "message": f"Skill set '{skill_name}' not found.",
-                "available_skills": list(internal_registry.categories.keys())
+                "available_skills": list(internal_registry.categories.keys()),
             }
 
         injected = []
@@ -527,7 +529,7 @@ if MCP_AVAILABLE and mcp is not None:
             "status": "success",
             "message": f"✅ Skill **{skill_name}** activated. {len(injected)} tools injected.",
             "injected_tools": injected,
-            "instruction": "These tools may now be available in your tool list. If not visible, you can still use them via boring_call()."
+            "instruction": "These tools may now be available in your tool list. If not visible, you can still use them via boring_call().",
         }
 
     @mcp.tool(
@@ -536,6 +538,7 @@ if MCP_AVAILABLE and mcp is not None:
     def boring_reset_skills() -> str:
         """Reset the tool environment by removing all dynamically injected tools."""
         from ..instance import mcp as smart_mcp
+
         count = smart_mcp.reset_injected_tools()
         return f"🧹 Tool environment reset. {count} injected tools cleared from profile tracking."
 

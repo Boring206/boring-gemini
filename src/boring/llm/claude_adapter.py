@@ -7,7 +7,7 @@ import re
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from ..config import settings
 from ..logger import get_logger, log_status
@@ -27,8 +27,8 @@ class ClaudeCLIAdapter(LLMProvider):
 
     def __init__(
         self,
-        model_name: Optional[str] = None,
-        log_dir: Optional[Path] = None,
+        model_name: str | None = None,
+        log_dir: Path | None = None,
         timeout_seconds: int = 600,
     ):
         self._model_name = model_name or "claude-3-5-sonnet"
@@ -131,6 +131,6 @@ class ClaudeCLIAdapter(LLMProvider):
                 if "tool_calls" in data:
                     for tc in data["tool_calls"]:
                         calls.append({"name": tc["name"], "args": tc["arguments"]})
-        except:
+        except Exception:
             pass
         return calls

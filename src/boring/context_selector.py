@@ -14,7 +14,6 @@ import re
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 from .logger import log_status
 
@@ -155,7 +154,7 @@ class ContextSelector:
     def __init__(
         self,
         project_root: Path,
-        log_dir: Optional[Path] = None,
+        log_dir: Path | None = None,
         max_file_size: int = 50000,  # 50KB max per file
     ):
         self.project_root = Path(project_root)

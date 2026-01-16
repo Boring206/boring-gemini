@@ -352,8 +352,8 @@ class TestAdvancedTools:
 
         advanced.register_advanced_tools(mock_mcp)
 
-        # Should register 5 tools
-        assert mock_mcp.tool.call_count == 5
+        # Should register 17 tools (5 main + 12 legacy aliases)
+        assert mock_mcp.tool.call_count == 17
 
         # Check tool descriptions
         [str(call) for call in mock_mcp.tool.call_args_list]

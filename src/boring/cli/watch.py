@@ -8,7 +8,6 @@ Refactored in Phase 4 for Polyglot Support via CodeVerifier.
 
 import time
 from pathlib import Path
-from typing import Optional
 
 from rich.console import Console
 
@@ -46,7 +45,22 @@ class BoringEventHandler(FileSystemEventHandler):
 
         # Filter for supported code files (let Verifier decide, but basic filter for perf)
         # Using a broad list of common source extensions
-        if not filename.endswith((".py", ".js", ".ts", ".jsx", ".tsx", ".rs", ".go", ".java", ".c", ".cpp", ".md", ".json")):
+        if not filename.endswith(
+            (
+                ".py",
+                ".js",
+                ".ts",
+                ".jsx",
+                ".tsx",
+                ".rs",
+                ".go",
+                ".java",
+                ".c",
+                ".cpp",
+                ".md",
+                ".json",
+            )
+        ):
             return
 
         self.last_run = current
@@ -78,7 +92,7 @@ class BoringEventHandler(FileSystemEventHandler):
             console.print("\n👉 [bold cyan]boring fix[/bold cyan] [dim]to auto-repair[/dim]")
 
 
-def run_watch(project_root: Optional[Path] = None):
+def run_watch(project_root: Path | None = None):
     """Start the Sentinel."""
     if Observer is None:
         console.print("[red]Error: 'watchdog' package not installed.[/red]")
@@ -87,6 +101,7 @@ def run_watch(project_root: Optional[Path] = None):
 
     if project_root is None:
         from boring.core.config import settings
+
         project_root = settings.PROJECT_ROOT
 
     console.print(f"[bold green]👁️  The Sentinel is watching {project_root}...[/bold green]")

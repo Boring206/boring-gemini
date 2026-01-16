@@ -7,9 +7,10 @@ Exposes Boring functionality via WebSocket/HTTP for IDE integration.
 
 import asyncio
 import json
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any
 
 from .config import settings
 from .logger import get_logger
@@ -24,7 +25,7 @@ class RPCRequest:
     jsonrpc: str
     method: str
     params: dict[str, Any]
-    id: Optional[int] = None
+    id: int | None = None
 
 
 @dataclass
@@ -33,8 +34,8 @@ class RPCResponse:
 
     jsonrpc: str = "2.0"
     result: Any = None
-    error: Optional[dict] = None
-    id: Optional[int] = None
+    error: dict | None = None
+    id: int | None = None
 
     def to_dict(self) -> dict:
         d = {"jsonrpc": self.jsonrpc, "id": self.id}
@@ -61,7 +62,7 @@ class VSCodeServer:
         await server.start(port=9876)
     """
 
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root: Path | None = None):
         self.project_root = project_root or settings.PROJECT_ROOT
         self._handlers: dict[str, Callable] = {}
         self._register_handlers()

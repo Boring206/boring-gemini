@@ -12,7 +12,7 @@ This module is imported by boring.gemini_client for backwards compatibility.
 import os
 import time
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 # New unified SDK imports
 try:
@@ -54,7 +54,7 @@ class GeminiClient:
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         model_name: str = DEFAULT_MODEL,
         log_dir: Path = Path("logs"),
     ):
@@ -106,9 +106,21 @@ class GeminiClient:
         self.tools = get_boring_tools()
         self.use_function_calling = len(self.tools) > 0
 
+        # V14: Semantic Cache (Lazy loaded)
+        self._semantic_cache = None
+
         log_status(self.log_dir, "INFO", f"Gemini SDK V10 initialized with model: {model_name}")
-        if self.use_function_calling:
-            log_status(self.log_dir, "INFO", "Function Calling enabled")
+
+    def _get_semantic_cache(self):
+        """Lazy load semantic cache."""
+        if self._semantic_cache is None:
+            if settings.SEMANTIC_CACHE_ENABLED:
+                from ..intelligence.semantic_cache import get_semantic_cache
+
+                self._semantic_cache = get_semantic_cache()
+            else:
+                self._semantic_cache = False  # Disabled
+        return self._semantic_cache if self._semantic_cache else None
 
     def generate(
         self,
@@ -119,16 +131,16 @@ class GeminiClient:
     ) -> tuple[str, bool]:
         """
         Generate content using Gemini.
-
-        Args:
-            prompt: The main prompt/instructions
-            context: Additional context to prepend
-            system_instruction: System-level instructions
-            timeout_seconds: Request timeout
-
-        Returns:
-            Tuple of (response_text, success_flag)
         """
+        # V14: Check Semantic Cache
+        cache = self._get_semantic_cache()
+        if cache:
+            # We cache by prompt + system_instruction to be safe
+            cache_key = f"{system_instruction}\n{prompt}"
+            cached_res = cache.get(cache_key)
+            if cached_res:
+                return cached_res, True
+
         # Build the full prompt
         full_prompt_parts = []
 
@@ -182,6 +194,9 @@ class GeminiClient:
 
             # Extract text from response (Pydantic model)
             if response and response.text:
+                # V14: Save to Semantic Cache
+                if cache:
+                    cache.set(cache_key, response.text)
                 return response.text, True
             else:
                 log_status(self.log_dir, "WARN", "Empty response from Gemini")
@@ -242,12 +257,21 @@ class GeminiClient:
         """
         Generate content using Gemini with Function Calling.
 
-        Returns:
-            Tuple of (text_response, function_calls, success_flag)
-            - text_response: Any text content from the response
-            - function_calls: List of dicts with 'name' and 'args' keys
-            - success_flag: Whether generation succeeded
         """
+        # V14: Check Semantic Cache
+        cache = self._get_semantic_cache()
+        cache_key = f"tools\n{context}\n{prompt}" if cache else None
+        if cache:
+            cached_res = cache.get(cache_key)
+            if cached_res:
+                try:
+                    import json
+
+                    data = json.loads(cached_res)
+                    return data.get("text", ""), data.get("function_calls", []), True
+                except Exception:
+                    pass
+
         full_prompt_parts = []
         if context:
             full_prompt_parts.append(f"# Context\n{context}")
@@ -323,6 +347,18 @@ class GeminiClient:
                     f"Received {len(function_calls)} function call(s): {[fc['name'] for fc in function_calls]}",
                 )
 
+            # V14: Save to Semantic Cache
+            if cache:
+                try:
+                    import json
+
+                    cache.set(
+                        cache_key,
+                        json.dumps({"text": text_response, "function_calls": function_calls}),
+                    )
+                except Exception:
+                    pass
+
             return text_response, function_calls, True
 
         except Exception as e:
@@ -340,7 +376,7 @@ class GeminiClient:
 
 def create_gemini_client(
     log_dir: Path = Path("logs"), model_name: str = DEFAULT_MODEL
-) -> Optional[GeminiClient]:
+) -> GeminiClient | None:
     """
     Factory function to create a GeminiClient.
 

@@ -7,8 +7,8 @@ Automatically detects file changes and triggers incremental RAG re-indexing.
 import logging
 import threading
 import time
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -76,13 +76,13 @@ class RAGWatcher:
         self.poll_interval = poll_interval
 
         self._running = False
-        self._thread: Optional[threading.Thread] = None
+        self._thread: threading.Thread | None = None
         self._file_mtimes: dict[str, float] = {}
         self._last_change_time: float = 0
         self._pending_reindex = False
-        self._on_change_callback: Optional[Callable[[], None]] = None
+        self._on_change_callback: Callable[[], None] | None = None
 
-    def start(self, on_change: Optional[Callable[[], None]] = None) -> bool:
+    def start(self, on_change: Callable[[], None] | None = None) -> bool:
         """
         Start watching for file changes.
 

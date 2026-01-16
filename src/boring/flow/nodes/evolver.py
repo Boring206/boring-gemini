@@ -15,6 +15,7 @@ from .base import BaseNode, FlowContext, NodeResult, NodeResultStatus
 
 console = Console()
 
+
 class EvolverNode(BaseNode):
     def __init__(self):
         super().__init__("Evolver")
@@ -23,7 +24,9 @@ class EvolverNode(BaseNode):
         """
         Analyze session and evolve.
         """
-        console.print(Panel("Entering Sage Mode (Evolution)...", title="Evolver", border_style="purple"))
+        console.print(
+            Panel("Entering Sage Mode (Evolution)...", title="Evolver", border_style="purple")
+        )
 
         # 1. Gather Stats (Mocking logic for now, utilizing context.stats)
         error_count = len(context.errors)
@@ -35,8 +38,13 @@ class EvolverNode(BaseNode):
 
             # Simple Evolution Rule: If we had a module error, ensure we verify deps next time
             if any("ModuleNotFoundError" in e for e in context.errors):
-                self._add_guideline(context.project_root, "Always check `pip install` before running code that imports new libraries.")
-                console.print("[bold green]🧬 Evolved: Added new verification guideline.[/bold green]")
+                self._add_guideline(
+                    context.project_root,
+                    "Always check `pip install` before running code that imports new libraries.",
+                )
+                console.print(
+                    "[bold green]🧬 Evolved: Added new verification guideline.[/bold green]"
+                )
 
         except Exception as e:
             console.print(f"[dim]Evolution skipped: {e}[/dim]")
@@ -50,14 +58,15 @@ class EvolverNode(BaseNode):
 
         return NodeResult(
             status=NodeResultStatus.SUCCESS,
-            next_node=None, # End of Flow
-            message="Evolution complete. System updated."
+            next_node=None,  # End of Flow
+            message="Evolution complete. System updated.",
         )
 
     def _sync_swarm(self, root: Path):
         """Sync .boring_brain with remote git (Knowledge Swarm)."""
         try:
             from ...intelligence.brain_manager import get_global_store
+
             store = get_global_store()
             start_count = len(store._load_global_patterns())
 
@@ -65,7 +74,9 @@ class EvolverNode(BaseNode):
             result = store.sync_with_remote()
 
             end_count = len(store._load_global_patterns())
-            console.print(f"[green]Swarm Sync: {result.get('status')} (Patterns: {start_count} -> {end_count})[/green]")
+            console.print(
+                f"[green]Swarm Sync: {result.get('status')} (Patterns: {start_count} -> {end_count})[/green]"
+            )
         except ImportError:
             console.print("[yellow]GlobalKnowledgeStore not found. Skipping Swarm Sync.[/yellow]")
         except Exception as e:
@@ -75,6 +86,7 @@ class EvolverNode(BaseNode):
         """Compile successful patterns into 'Mastery' files (Skill Distillation)."""
         try:
             from ...intelligence.brain_manager import get_global_store
+
             store = get_global_store()
 
             # Distill skills (min success = 3)
@@ -95,7 +107,7 @@ class EvolverNode(BaseNode):
 
         content = prompt_file.read_text(encoding="utf-8")
         if rule in content:
-            return # Already learned
+            return  # Already learned
 
         # Append to Evolution Section
         header = "\n## 🧬 System 2 Guidelines (Auto-Evolved)\n"

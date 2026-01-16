@@ -129,8 +129,13 @@ class TestEvaluationTools:
             patch("boring.mcp.tools.evaluation.detect_project_root", return_value=temp_project),
             patch("boring.mcp.tools.evaluation.create_judge_provider") as mock_provider_class,
             patch("boring.mcp.tools.evaluation.LLMJudge") as mock_judge_class,
-            patch("os.environ.get", return_value="0"),
+            patch.dict(os.environ, {"BORING_MCP_MODE": "0", "BORING_USER_ROLE": "admin"}),
+            patch("boring.services.rbac.RoleManager") as mock_rbac_class,
         ):
+            # Mock RBAC to allow access
+            mock_rbac = MagicMock()
+            mock_rbac.check_permission.return_value = True
+            mock_rbac_class.get_instance.return_value = mock_rbac
             mock_provider = MagicMock()
             mock_provider.is_available = True
             mock_provider_class.return_value = mock_provider

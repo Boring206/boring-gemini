@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 
 class NodeResultStatus(Enum):
@@ -41,7 +41,7 @@ class NodeResult:
     """Result of a node execution."""
 
     status: NodeResultStatus
-    next_node: Optional[str] = None
+    next_node: str | None = None
     output: Any = None
     message: str = ""
 

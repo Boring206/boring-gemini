@@ -11,17 +11,15 @@ import os
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 from rich.console import Console
 
 from .config import settings
+from .services.nodejs import NodeManager
 
 # MCP-compatible Rich Console (stderr, quiet in MCP mode)
 _is_mcp_mode = os.environ.get("BORING_MCP_MODE") == "1"
 console = Console(stderr=True, quiet=_is_mcp_mode)
-
-from .services.nodejs import NodeManager
 
 
 @dataclass
@@ -32,7 +30,7 @@ class Extension:
     repo_url: str
     description: str
     auto_use: bool = False  # Whether to automatically invoke in prompts
-    install_command: Optional[list[str]] = None  # Custom command to install/add the extension
+    install_command: list[str] | None = None  # Custom command to install/add the extension
 
 
 # Recommended extensions
@@ -214,7 +212,7 @@ When working with external libraries, invoke: `use context7`
 
         return prompt
 
-    def get_criticalthink_command(self) -> Optional[str]:
+    def get_criticalthink_command(self) -> str | None:
         """Get the criticalthink command if available."""
         installed = self.get_installed_extensions()
         if any("criticalthink" in ext.lower() for ext in installed):

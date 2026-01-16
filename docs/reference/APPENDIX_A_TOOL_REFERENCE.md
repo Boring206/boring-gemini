@@ -1,7 +1,7 @@
 # Appendix A: Complete MCP Tool Reference
 
-> **Total Tools**: 60+ tools organized into 19 categories.
-> **Version**: V11.3.0 (Full-Power Update)
+> **Total Tools**: 100+ tools organized into 20+ categories.
+> **Version**: V14.0.0 (Predictive Intelligence & Offline-First)
 >
 > **💡 Recommendation**: Use the Universal Router (`boring()`) or CLI (`boring-route`) for most tasks. You rarely need to call these tools directly.
 
@@ -226,6 +226,88 @@
 
 ---
 
+## 19. Predictive Intelligence Tools (V14.0)
+
+> These tools leverage historical data and Brain patterns to predict issues and optimize workflow.
+
+| Tool | Description | Key Parameters |
+|------|-------------|----------------|
+| `boring_predict_impact` | **Predict change impact**: Analyzes risk level and affected files based on history. | `file_path`, `change_type` |
+| `boring_risk_areas` | **Identify hotspots**: Shows files with high error frequency. | `limit` |
+| `boring_cache_insights` | **Cache analytics**: Shows hit rates and correlation prefetch stats. | - |
+| `boring_set_session_context` | **Optimize Context**: Tune RAG/Cache for specific task type (debug/feature). | `task_type`, `keywords` |
+| `boring_get_session_context` | **Check Context**: View current optimization parameters. | - |
+
+---
+
+## 20. Supplemental Registered Tools (V14.0)
+
+| Tool | Description | Key Parameters |
+|------|-------------|----------------|
+| `boring_active_skill` | Activate a skill category and inject tools | `skill_name` |
+| `boring_best_next_action` | Suggest best next action based on project state | - |
+| `boring_brain_status` | Brain status and context overview | - |
+| `boring_brain_sync` | Sync global brain patterns | - |
+| `boring_call` | Execute internal tool by name | `tool_name`, `arguments` |
+| `boring_checkpoint` | Create or restore project checkpoint | `action`, `message` |
+| `boring_context` | Manage context (save/load/list) | `action`, `context_id` |
+| `boring_distill_skills` | Distill learned patterns into skills | `project_path` |
+| `boring_done` | Completion notification | `message`, `title` |
+| `boring_flow` | Run Flow engine workflow | `goal`, `mode` |
+| `boring_get_relevant_patterns` | Get relevant brain patterns | `query`, `limit` |
+| `boring_global_list` | List global patterns | `limit` |
+| `boring_incremental_learn` | Incremental learning from changes | `project_path` |
+| `boring_inspect_tool` | Inspect internal tool schema | `tool_name` |
+| `boring_integrity_score` | Integrity score report | `project_path` |
+| `boring_intelligence_stats` | Intelligence usage stats | - |
+| `boring_learn_pattern` | Learn a single pattern | `pattern`, `solution` |
+| `boring_optimize_context` | Optimize context window | `text`, `goal` |
+| `boring_orchestrate` | Orchestrate multi-step workflow | `goal` |
+| `boring_pattern_stats` | Brain pattern stats | `project_path` |
+| `boring_profile` | Manage profile (get/learn) | `action`, `error_pattern` |
+| `boring_prompt_fix` | Prompt generator for fixes | `task` |
+| `boring_prompt_plan` | Prompt generator for planning | `task` |
+| `boring_prune_patterns` | Prune low-quality patterns | `limit` |
+| `boring_rag_reload` | Reload RAG dependencies | - |
+| `boring_reset_skills` | Reset injected skills | - |
+| `boring_session_auto` | Auto session workflow | `task` |
+| `boring_session_confirm` | Confirm session step | `step_id` |
+| `boring_session_load` | Load session | `session_id` |
+| `boring_session_pause` | Pause session | - |
+| `boring_session_start` | Start session | `goal` |
+| `boring_session_status` | Session status | - |
+| `boring_shadow_trust` | Trust path or command | `path` |
+| `boring_shadow_trust_list` | List trust rules | - |
+| `boring_shadow_trust_remove` | Remove trust rule | `path` |
+| `boring_skill_activate` | Activate skill | `skill_name` |
+| `boring_skill_create` | Create skill | `name`, `goal` |
+| `boring_skill_discover` | Discover local skills | `project_path` |
+| `boring_skill_download` | Download skill | `url` |
+| `boring_skills_recommend` | Recommend skills | `project_path` |
+| `boring_status` | Project status snapshot | - |
+| `boring_synth_tool` | Synthesize new tool | `description` |
+| `boring_task` | Background tasks (submit/status/list) | `action`, `task_type` |
+| `boring_transaction` | Transactions (start/commit/rollback) | `action`, `description` |
+| `boring_transaction_rollback` | Legacy rollback alias | `project_path` |
+| `boring_usage_stats` | Usage statistics | - |
+
+---
+
+## 21. CLI Integration (V14.0)
+
+> Some V14.0 features are best accessed via CLI directly.
+
+| Command | Description |
+|---------|-------------|
+| `boring predict` | Run predictive analysis on current changes. |
+| `boring bisect` | AI-powered git bisect to find bug sources. |
+| `boring diagnostic` | Deep project health check. |
+| `boring model` | Manage local LLMs (download/list/remove). |
+| `boring doctor` | System health and MCP connection check. |
+| `boring offline` | Toggle offline experience mode. |
+
+---
+
 ## MCP Resources
 
 | Resource URI | Description |
@@ -256,4 +338,4 @@
 
 ---
 
-*Last updated: V11.3.0*
+*Last updated: V14.0.0*

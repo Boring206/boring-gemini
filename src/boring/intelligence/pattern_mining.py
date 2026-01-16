@@ -13,7 +13,7 @@ The actual pattern mining functionality is now handled by:
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from .pattern_clustering import get_pattern_clusterer
 
@@ -116,8 +116,8 @@ class PatternMiner:
 
 
 # Singleton
-_pattern_miner: Optional[PatternMiner] = None
-_current_project_root: Optional[Path] = None
+_pattern_miner: PatternMiner | None = None
+_current_project_root: Path | None = None
 
 
 def get_pattern_miner(project_root: Any) -> PatternMiner:

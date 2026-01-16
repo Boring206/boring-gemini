@@ -7,7 +7,6 @@ This state is responsible for:
 3. Testing (pytest) if FULL mode
 """
 
-from typing import Optional
 
 from ...circuit import record_loop_result
 from ...config import settings
@@ -70,7 +69,7 @@ class VerifyingState(LoopState):
 
             return StateResult.FAILURE
 
-    def next_state(self, context: LoopContext, result: StateResult) -> Optional[LoopState]:
+    def next_state(self, context: LoopContext, result: StateResult) -> LoopState | None:
         """Determine next state based on verification result."""
         # Record telemetry
         self._record_metrics(context, result)

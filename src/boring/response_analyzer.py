@@ -9,16 +9,28 @@ import json
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
+from .core.config import settings
 from .logger import log_status
+from .paths import get_state_file
 
-ANALYSIS_RESULT_FILE = Path(".response_analysis")
-EXIT_SIGNALS_FILE = Path(".exit_signals")
+
+def _get_analysis_file(project_root: Path | None = None) -> Path:
+    root = project_root or settings.PROJECT_ROOT
+    return get_state_file(root, "response_analysis")
+
+
+def _get_exit_signals_file(project_root: Path | None = None) -> Path:
+    root = project_root or settings.PROJECT_ROOT
+    return get_state_file(root, "exit_signals")
 
 
 def analyze_response(
-    output_file: Path, loop_number: int, function_call_results: Optional[dict[str, Any]] = None
+    output_file: Path,
+    loop_number: int,
+    function_call_results: dict[str, Any] | None = None,
+    project_root: Path | None = None,
 ) -> dict[str, Any]:
     """
     Analyzes Gemini output and extracts signals.
@@ -57,6 +69,8 @@ def analyze_response(
         },
     }
 
+    analysis_file = _get_analysis_file(project_root)
+
     # === PRIORITY 1: Function Call Results (Most Reliable) ===
     if function_call_results:
         status_report = function_call_results.get("report_status") or function_call_results.get(
@@ -93,7 +107,7 @@ def analyze_response(
 
             # If we got function call data, save and return early (most reliable source)
             if analysis_results["analysis"]["confidence_score"] > 0:
-                ANALYSIS_RESULT_FILE.write_text(json.dumps(analysis_results, indent=4))
+                analysis_file.write_text(json.dumps(analysis_results, indent=4))
                 return analysis_results
 
     # === PRIORITY 2: Structured Status Block (Reliable) ===
@@ -105,7 +119,7 @@ def analyze_response(
             output_content = ""
     else:
         log_status(Path("logs"), "ERROR", f"Output file not found: {output_file}")
-        ANALYSIS_RESULT_FILE.write_text(json.dumps(analysis_results, indent=4))
+        analysis_file.write_text(json.dumps(analysis_results, indent=4))
         return analysis_results
 
     # Check for explicit structured output block
@@ -156,16 +170,17 @@ def analyze_response(
             analysis_results["analysis"]["source"] = "fallback"
 
     # Save analysis results
-    ANALYSIS_RESULT_FILE.write_text(json.dumps(analysis_results, indent=4))
+    analysis_file.write_text(json.dumps(analysis_results, indent=4))
     return analysis_results
 
 
-def update_exit_signals(exit_signals_file: Path):
+def update_exit_signals(exit_signals_file: Path, analysis_file: Path | None = None):
     """Updates the .exit_signals file based on the latest analysis."""
-    if not ANALYSIS_RESULT_FILE.exists():
+    analysis_path = analysis_file or _get_analysis_file()
+    if not analysis_path.exists():
         return
 
-    analysis_data = json.loads(ANALYSIS_RESULT_FILE.read_text())
+    analysis_data = json.loads(analysis_path.read_text())
 
     is_test_only = analysis_data["analysis"].get("is_test_only", False)
     has_completion_signal = analysis_data["analysis"].get("has_completion_signal", False)
@@ -205,12 +220,13 @@ def update_exit_signals(exit_signals_file: Path):
     exit_signals_file.write_text(json.dumps(signals_data, indent=4))
 
 
-def log_analysis_summary():
+def log_analysis_summary(analysis_file: Path | None = None):
     """Logs the analysis summary in a human-readable format."""
-    if not ANALYSIS_RESULT_FILE.exists():
+    analysis_path = analysis_file or _get_analysis_file()
+    if not analysis_path.exists():
         return
 
-    analysis_data = json.loads(ANALYSIS_RESULT_FILE.read_text())
+    analysis_data = json.loads(analysis_path.read_text())
     analysis = analysis_data["analysis"]
 
     log_status(Path("logs"), "INFO", f"Analysis Summary (Loop #{analysis_data['loop_number']}):")

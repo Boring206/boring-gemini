@@ -18,7 +18,7 @@ Performance optimizations:
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Annotated, Any, Optional
+from typing import Annotated, Any
 
 from pydantic import Field
 
@@ -65,7 +65,7 @@ def _check_git_changes(project_root: Path) -> list[dict[str, Any]]:
     return enhancements
 
 
-def _check_learned_patterns(args: tuple[Path, Optional[str]]) -> list[dict[str, Any]]:
+def _check_learned_patterns(args: tuple[Path, str | None]) -> list[dict[str, Any]]:
     """Check learned patterns from brain (runs in thread)."""
     project_root, error_message = args
     enhancements = []
@@ -243,7 +243,7 @@ def register_assistant_tools(mcp, audited, helpers: dict[str, Any]) -> int:
             Field(description="Verification strictness: 'BASIC', 'STANDARD', or 'FULL'."),
         ] = "STANDARD",
         project_path: Annotated[
-            Optional[str],
+            str | None,
             Field(description="Optional explicit path to project root."),
         ] = None,
     ) -> dict:
@@ -320,13 +320,13 @@ Requirements:
     def boring_suggest_next(
         limit: Annotated[int, Field(description="Maximum suggestions to return")] = 3,
         error_message: Annotated[
-            Optional[str],
+            str | None,
             Field(
                 description="The specific error message or context to find a solution for. Pass this to trigger Active Recall."
             ),
         ] = None,
         project_path: Annotated[
-            Optional[str], Field(description="Optional project root path")
+            str | None, Field(description="Optional project root path")
         ] = None,
     ) -> dict:
         """

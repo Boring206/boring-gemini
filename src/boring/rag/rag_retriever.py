@@ -35,21 +35,25 @@ import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 from .code_indexer import CodeChunk, CodeIndexer, IndexStats
-from .graph_builder import DependencyGraph, GraphStats
+from .graph_rag import GraphRAG, GraphStats
 from .hyde import HyDEResult, get_hyde_expander
 from .index_state import IndexState
+
+# from .graph_builder import DependencyGraph # Deprecated
 from .reranker import get_ensemble_reranker
 
 logger = logging.getLogger(__name__)
+
+# Constants
+_QUERY_CACHE_TTL = 300  # 5 minutes
 
 # =============================================================================
 # Intelligence: Optional IntelligentRanker integration (V10.23 Enhanced)
 # =============================================================================
 _intelligent_ranker = None
-_session_context: Optional[dict] = None  # V10.23: Global session context
+_session_context: dict | None = None  # V10.23: Global session context
 
 
 def _get_intelligent_ranker(project_root: Path):
@@ -69,8 +73,8 @@ def _get_intelligent_ranker(project_root: Path):
 
 def set_session_context(
     task_type: str = "general",
-    focus_files: Optional[list[str]] = None,
-    keywords: Optional[list[str]] = None,
+    focus_files: list[str] | None = None,
+    keywords: list[str] | None = None,
 ):
     """
     V10.23: Set session context for task-aware retrieval.
@@ -90,7 +94,7 @@ def set_session_context(
     logger.debug(f"Session context set: {task_type}, focus: {focus_files}")
 
 
-def get_session_context() -> Optional[dict]:
+def get_session_context() -> dict | None:
     """V10.23: Get current session context."""
     return _session_context
 
@@ -102,11 +106,20 @@ def clear_session_context():
 
 
 # =============================================================================
-# Performance: Query result cache
+# Performance: Query result cache (V13.1: Configurable TTL)
 # =============================================================================
 _query_cache: dict[str, tuple[list, float]] = {}  # query_hash -> (results, timestamp)
-_QUERY_CACHE_TTL = 30.0  # seconds
 _cache_lock = threading.RLock()
+
+
+def _get_cache_ttl() -> float:
+    """Get cache TTL from settings or use default."""
+    try:
+        from ..core.config import settings
+
+        return settings.CACHE_TTL_SECONDS
+    except (ImportError, AttributeError):
+        return 120.0  # V13.1 default: 120 seconds
 
 
 def _clear_query_cache():
@@ -129,7 +142,7 @@ class RetrievalResult:
     chunk: CodeChunk
     score: float
     retrieval_method: str  # "vector", "graph", "keyword", "session"
-    distance: Optional[float] = None
+    distance: float | None = None
     # V10.23: Enhanced metadata
     session_boost: float = 0.0  # Boost from session context
     task_relevance: float = 0.0  # Task-type relevance score
@@ -139,10 +152,10 @@ class RetrievalResult:
 class RAGStats:
     """Combined statistics for RAG system."""
 
-    index_stats: Optional[IndexStats] = None
-    graph_stats: Optional[GraphStats] = None
+    index_stats: IndexStats | None = None
+    graph_stats: GraphStats | None = None
     total_chunks_indexed: int = 0
-    last_index_time: Optional[str] = None
+    last_index_time: str | None = None
     chroma_available: bool = CHROMA_AVAILABLE
     # V10.23: Session stats
     session_context_active: bool = False
@@ -176,9 +189,9 @@ class RAGRetriever:
     def __init__(
         self,
         project_root: Path,
-        persist_dir: Optional[Path] = None,
-        collection_name: Optional[str] = None,
-        additional_roots: Optional[list[Path]] = None,
+        persist_dir: Path | None = None,
+        collection_name: str | None = None,
+        additional_roots: list[Path] | None = None,
     ):
         self.project_root = Path(project_root)
         self.persist_dir = persist_dir or (self.project_root / ".boring_memory" / "rag_db")
@@ -195,13 +208,14 @@ class RAGRetriever:
         # Components
         self.indexer = CodeIndexer(self.project_root)
         self.index_state = IndexState(self.project_root)
-        self.graph: Optional[DependencyGraph] = None
+        self.graph: GraphRAG | None = None
         self._chunks: dict[str, CodeChunk] = {}
         self._file_to_chunks: dict[str, list[str]] = {}  # file_path -> chunk_ids
 
         # ChromaDB client
         self.client = None
         self.collection = None
+        self._embedding_function = None
 
         if CHROMA_AVAILABLE:
             try:
@@ -212,14 +226,53 @@ class RAGRetriever:
                     path=str(self.persist_dir),
                     settings=ChromaSettings(anonymized_telemetry=False, allow_reset=True),
                 )
+
+                # V14.0: Use local embedding function for offline mode
+                self._embedding_function = self._get_embedding_function()
+
                 self.collection = self.client.get_or_create_collection(
-                    name=self.collection_name, metadata={"hnsw:space": "cosine"}
+                    name=self.collection_name,
+                    metadata={"hnsw:space": "cosine"},
+                    embedding_function=self._embedding_function,
                 )
                 logger.info(f"ChromaDB initialized at {self.persist_dir}")
             except Exception as e:
                 logger.warning(f"Failed to initialize ChromaDB: {e}")
                 self.client = None
                 self.collection = None
+
+    def _get_embedding_function(self):
+        """
+        V14.0: Get appropriate embedding function based on mode.
+
+        Prefers local embedding for offline mode or when API is unavailable.
+        """
+        import os
+
+        offline_mode = os.environ.get("BORING_OFFLINE_MODE", "").lower() == "true"
+
+        try:
+            from ..core.config import settings
+
+            offline_mode = offline_mode or getattr(settings, "OFFLINE_MODE", False)
+        except Exception:
+            pass
+
+        if offline_mode:
+            try:
+                from .local_embedding import get_chroma_embedding_function
+
+                ef = get_chroma_embedding_function(offline_mode=True)
+                if ef:
+                    logger.info("Using local embedding function for offline mode")
+                    return ef
+            except ImportError:
+                logger.debug("Local embedding not available")
+            except Exception as e:
+                logger.warning(f"Failed to load local embedding: {e}")
+
+        # Default: return None to use ChromaDB's default embedding
+        return None
 
     @property
     def is_available(self) -> bool:
@@ -271,15 +324,53 @@ class RAGRetriever:
             all_files.extend(indexer.collect_files())
 
         # 3. Determine Changes
-        if incremental and not force:
-            files_to_index = self.index_state.get_changed_files(all_files)
-            stale_files_rel = self.index_state.get_stale_files(all_files)
+        current_commit = ""
+        try:
+            # Get current git commit hash
+            import subprocess
+
+            cmd = ["git", "rev-parse", "HEAD"]
+            current_commit = subprocess.check_output(cmd, cwd=self.project_root, text=True).strip()
+        except Exception:
+            logger.debug("Could not get git commit hash")
+
+        last_commit = self.index_state.get_last_commit()
+
+        if incremental and not force and last_commit and current_commit:
+            files_to_index = self.indexer.get_changed_files(last_commit)
+            # For incremental diff based indexing, we don't easily know "stale" files
+            # unless we scan everything or trust git diff for deletions (which get_changed_files doesn't strictly handle for removals from index yet).
+            # Actually CodeIndexer.get_changed_files logic returns *existing* files that changed.
+            # It doesn't return deleted files.
+            # We need to handle deletions separately if we rely purely on git diff.
+            # But let's stick to the current hybrid approach:
+            # If we trust IndexState knows what IT thinks is indexed, we can check if those still exist?
+            # Or use git diff for deletions too?
+            # For simplicity in V1 (Phase 1.2), we will re-scan all for stale check (fast)
+            # but only INDEX changed_files (slow).
+
+            # Optimization: collect_files is fast (just os.walk). The heavy part is index_file (parsing).
+            # So we can still do collect_files() to find stale ones.
+            all_files_current = []
+            for root in self.all_project_roots:
+                idx = CodeIndexer(root)
+                all_files_current.extend(idx.collect_files())
+
+            stale_files_rel = self.index_state.get_stale_files(all_files_current)
+
+            # But files_to_index should only be the changed ones from git diff
+            # Note: get_changed_files from code_indexer uses git diff.
+            # But we passed `self.indexer` which is initialized with project_root.
+            # If changed_files are returned, we use them.
+            # What if files_to_index is empty? means nothing changed content-wise.
+            pass
         else:
+            # Full scan fallback
             files_to_index = all_files
             stale_files_rel = []
 
-        if not files_to_index and not stale_files_rel:
-            logger.info("Index is up to date.")
+        if not files_to_index and not stale_files_rel and (last_commit == current_commit):
+            logger.info("Index is up to date (commit match).")
             # We still need to load chunks into memory for graph building
             self._load_chunks_from_db()
             return existing_count
@@ -361,6 +452,8 @@ class RAGRetriever:
                     logger.error(f"Failed to upsert batch: {e}")
 
         # 7. Persist State
+        if current_commit:
+            self.index_state.update_commit(current_commit)
         self.index_state.save()
 
         # 8. Reload fully for graph building (Hybrid RAG needs graph)
@@ -383,8 +476,8 @@ class RAGRetriever:
         query: str,
         n_results: int = 10,
         expand_graph: bool = True,
-        file_filter: Optional[str] = None,
-        chunk_types: Optional[list[str]] = None,
+        file_filter: str | None = None,
+        chunk_types: list[str] | None = None,
         threshold: float = 0.0,
         use_hyde: bool = True,
         use_rerank: bool = True,
@@ -441,8 +534,8 @@ class RAGRetriever:
         query: str,
         n_results: int = 10,
         expand_graph: bool = True,
-        file_filter: Optional[str] = None,
-        chunk_types: Optional[list[str]] = None,
+        file_filter: str | None = None,
+        chunk_types: list[str] | None = None,
         threshold: float = 0.0,
         use_hyde: bool = True,
         use_rerank: bool = True,
@@ -453,7 +546,7 @@ class RAGRetriever:
 
         # 1. HyDE Expansion (V10.24+)
         search_query = query
-        hyde_result: Optional[HyDEResult] = None
+        hyde_result: HyDEResult | None = None
         if use_hyde:
             try:
                 expander = get_hyde_expander()
@@ -650,8 +743,8 @@ class RAGRetriever:
         query: str,
         n_results: int = 10,
         expand_graph: bool = True,
-        file_filter: Optional[str] = None,
-        chunk_types: Optional[list[str]] = None,
+        file_filter: str | None = None,
+        chunk_types: list[str] | None = None,
     ) -> list[RetrievalResult]:
         """
         Async version of retrieve for non-blocking operations.
@@ -666,7 +759,7 @@ class RAGRetriever:
         return await asyncio.to_thread(_sync_retrieve)
 
     def get_modification_context(
-        self, file_path: str, function_name: Optional[str] = None, class_name: Optional[str] = None
+        self, file_path: str, function_name: str | None = None, class_name: str | None = None
     ) -> dict[str, list[RetrievalResult]]:
         """
         Get comprehensive context for modifying a specific code location.
@@ -927,8 +1020,8 @@ class RAGRetriever:
         }
 
     def _build_where_filter(
-        self, file_filter: Optional[str], chunk_types: Optional[list[str]]
-    ) -> Optional[dict]:
+        self, file_filter: str | None, chunk_types: list[str] | None
+    ) -> dict | None:
         """Build ChromaDB where filter."""
         conditions = []
 
@@ -951,7 +1044,7 @@ class RAGRetriever:
 
     def _get_or_reconstruct_chunk(
         self, chunk_id: str, results: dict, index: int
-    ) -> Optional[CodeChunk]:
+    ) -> CodeChunk | None:
         """Get chunk from cache or reconstruct from query results."""
         if chunk_id in self._chunks:
             return self._chunks[chunk_id]
@@ -996,6 +1089,8 @@ class RAGRetriever:
 
                 # Rebuild graph
                 if self._chunks:
+                    from .graph_builder import DependencyGraph
+
                     self.graph = DependencyGraph(list(self._chunks.values()))
 
                 logger.info(f"Loaded {len(self._chunks)} chunks from existing index")
@@ -1017,7 +1112,7 @@ class RAGRetriever:
 
 
 def create_rag_retriever(
-    project_root: Optional[Path] = None, persist_dir: Optional[Path] = None
+    project_root: Path | None = None, persist_dir: Path | None = None
 ) -> RAGRetriever:
     """
     Factory function to create RAGRetriever with standard project paths.

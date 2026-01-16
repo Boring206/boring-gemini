@@ -8,7 +8,6 @@ import json
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional
 
 from .logger import console, log_status
 
@@ -130,7 +129,7 @@ MAX_CONSECUTIVE_TEST_LOOPS = 3
 MAX_CONSECUTIVE_DONE_SIGNALS = 2
 
 
-def should_exit_gracefully(exit_signals_file: Path) -> Optional[str]:
+def should_exit_gracefully(exit_signals_file: Path) -> str | None:
     """
     Determines if the loop should exit gracefully based on signals.
 

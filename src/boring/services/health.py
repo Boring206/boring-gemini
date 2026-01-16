@@ -14,7 +14,6 @@ import subprocess
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Optional
 
 from rich.console import Console
 from rich.panel import Panel
@@ -30,7 +29,7 @@ console = Console(stderr=True, quiet=_is_mcp_mode)
 class HealthStatus(Enum):
     """Health check status levels."""
 
-    PASS = "✅ PASS"
+    OK = "✅ OK"
     WARN = "⚠️ WARN"
     FAIL = "❌ FAIL"
     SKIP = "⏭️ SKIP"
@@ -43,7 +42,7 @@ class HealthCheckResult:
     name: str
     status: HealthStatus
     message: str
-    suggestion: Optional[str] = None
+    suggestion: str | None = None
 
 
 @dataclass
@@ -54,7 +53,7 @@ class HealthReport:
 
     @property
     def passed(self) -> int:
-        return sum(1 for c in self.checks if c.status == HealthStatus.PASS)
+        return sum(1 for c in self.checks if c.status == HealthStatus.OK)
 
     @property
     def warnings(self) -> int:
@@ -84,7 +83,7 @@ def check_api_key() -> HealthCheckResult:
     # Basic format validation (Google API keys start with AIza, allow MOCK_ for tests)
     if (api_key.startswith("AIza") or api_key.startswith("MOCK_AIza")) and len(api_key) >= 39:
         return HealthCheckResult(
-            name="API Key", status=HealthStatus.PASS, message="API key configured"
+            name="API Key", status=HealthStatus.OK, message="API key configured"
         )
     else:
         return HealthCheckResult(
@@ -136,7 +135,7 @@ def check_git_repo(project_root: Path) -> HealthCheckResult:
             )
 
         return HealthCheckResult(
-            name="Git Repository", status=HealthStatus.PASS, message="Clean working directory"
+            name="Git Repository", status=HealthStatus.OK, message="Clean working directory"
         )
     except Exception as e:
         return HealthCheckResult(
@@ -153,7 +152,7 @@ def check_python_version() -> HealthCheckResult:
     if version >= (3, 9):
         return HealthCheckResult(
             name="Python Version",
-            status=HealthStatus.PASS,
+            status=HealthStatus.OK,
             message=f"Python {version.major}.{version.minor}.{version.micro}",
         )
     else:
@@ -197,7 +196,7 @@ def check_required_dependencies() -> HealthCheckResult:
         )
 
     return HealthCheckResult(
-        name="Dependencies", status=HealthStatus.PASS, message="All required packages installed"
+        name="Dependencies", status=HealthStatus.OK, message="All required packages installed"
     )
 
 
@@ -228,7 +227,7 @@ def check_optional_dependencies() -> HealthCheckResult:
 
     return HealthCheckResult(
         name="Optional Features",
-        status=HealthStatus.PASS,
+        status=HealthStatus.OK,
         message=f"Available: {', '.join(available)}",
     )
 
@@ -255,7 +254,7 @@ def check_prompt_file(project_root: Path) -> HealthCheckResult:
         )
 
     return HealthCheckResult(
-        name="PROMPT.md", status=HealthStatus.PASS, message=f"Found ({len(content)} chars)"
+        name="PROMPT.md", status=HealthStatus.OK, message=f"Found ({len(content)} chars)"
     )
 
 
@@ -270,7 +269,7 @@ def check_gemini_cli() -> HealthCheckResult:
         location = "System" if shutil.which("gemini") else "Portable (.boring/node)"
         return HealthCheckResult(
             name="Gemini CLI",
-            status=HealthStatus.PASS,
+            status=HealthStatus.OK,
             message=f"Found ({location}) at {gemini_cmd}",
         )
 
@@ -287,7 +286,7 @@ def check_ruff() -> HealthCheckResult:
     ruff_cmd = shutil.which("ruff")
 
     if ruff_cmd:
-        return HealthCheckResult(name="Ruff Linter", status=HealthStatus.PASS, message="Available")
+        return HealthCheckResult(name="Ruff Linter", status=HealthStatus.OK, message="Available")
 
     return HealthCheckResult(
         name="Ruff Linter",
@@ -297,7 +296,7 @@ def check_ruff() -> HealthCheckResult:
     )
 
 
-def run_health_check(project_root: Optional[Path] = None, backend: str = "api") -> HealthReport:
+def run_health_check(project_root: Path | None = None, backend: str = "api") -> HealthReport:
     """Run all health checks and return report.
 
     Args:

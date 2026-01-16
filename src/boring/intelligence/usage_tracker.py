@@ -4,9 +4,10 @@ import logging
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class ToolUsage:
@@ -14,24 +15,31 @@ class ToolUsage:
     count: int = 0
     last_used: float = 0.0
 
+
 @dataclass
 class UsageStats:
     tools: dict[str, ToolUsage] = field(default_factory=dict)
     total_calls: int = 0
     last_updated: float = 0.0
 
+
 class AnomalyDetectedError(Exception):
     """Raised when an anomaly (stuck loop) is detected."""
+
     def __init__(self, tool_name: str, count: int):
         self.tool_name = tool_name
         self.count = count
-        super().__init__(f"Tool loop detected: {tool_name} called {count} times consecutively with identical arguments.")
+        super().__init__(
+            f"Tool loop detected: {tool_name} called {count} times consecutively with identical arguments."
+        )
+
 
 class UsageTracker:
     """
     Tracks usage of MCP tools to enable Adaptive Profiles.
     """
-    def __init__(self, persistence_path: Optional[Path] = None):
+
+    def __init__(self, persistence_path: Path | None = None):
         if persistence_path is None:
             # Default to ~/.boring/usage.json
             persistence_path = Path.home() / ".boring" / "usage.json"
@@ -44,8 +52,8 @@ class UsageTracker:
         self._load()
 
         # Anomaly Detection State (Ephemeral)
-        self.last_tool_name: Optional[str] = None
-        self.last_tool_args: Optional[str] = None
+        self.last_tool_name: str | None = None
+        self.last_tool_args: str | None = None
         self.repeat_count: int = 0
         self.ANOMALY_THRESHOLD = 50
 
@@ -71,9 +79,9 @@ class UsageTracker:
             self.repeat_count = 1
 
         if self.repeat_count > self.ANOMALY_THRESHOLD:
-             # Reset to avoid spamming exceptions on every subsequent call if caller ignores it?
-             # No, keeps warning.
-             raise AnomalyDetectedError(tool_name, self.repeat_count)
+            # Reset to avoid spamming exceptions on every subsequent call if caller ignores it?
+            # No, keeps warning.
+            raise AnomalyDetectedError(tool_name, self.repeat_count)
         # -----------------------------
 
         now = time.time()
@@ -102,11 +110,7 @@ class UsageTracker:
 
     def get_top_tools(self, limit: int = 20) -> list[str]:
         """Get the most frequently used tools."""
-        sorted_tools = sorted(
-            self.stats.tools.values(),
-            key=lambda x: x.count,
-            reverse=True
-        )
+        sorted_tools = sorted(self.stats.tools.values(), key=lambda x: x.count, reverse=True)
         return [t.tool_name for t in sorted_tools[:limit]]
 
     def _save(self):
@@ -117,7 +121,7 @@ class UsageTracker:
             data = {
                 "total_calls": self.stats.total_calls,
                 "last_updated": self.stats.last_updated,
-                "tools": {k: asdict(v) for k, v in self.stats.tools.items()}
+                "tools": {k: asdict(v) for k, v in self.stats.tools.items()},
             }
 
             with open(self.persistence_path, "w", encoding="utf-8") as f:
@@ -144,9 +148,11 @@ class UsageTracker:
             # Log and start fresh if corrupted
             logger.warning(f"Failed to load usage stats: {e}")
 
+
 # Singleton instance with thread safety
-_tracker: Optional[UsageTracker] = None
-_tracker_lock = __import__('threading').Lock()
+_tracker: UsageTracker | None = None
+_tracker_lock = __import__("threading").Lock()
+
 
 def get_tracker() -> UsageTracker:
     global _tracker

@@ -3,7 +3,6 @@ Gemini Provider Implementation (SDK & CLI fallback)
 """
 
 from pathlib import Path
-from typing import Optional
 
 from ..config import settings
 from ..logger import get_logger
@@ -31,9 +30,9 @@ class GeminiProvider(LLMProvider):
 
     def __init__(
         self,
-        model_name: Optional[str] = None,
-        api_key: Optional[str] = None,
-        log_dir: Optional[Path] = None,
+        model_name: str | None = None,
+        api_key: str | None = None,
+        log_dir: Path | None = None,
     ):
         self._model_name = model_name or settings.DEFAULT_MODEL
         self.log_dir = log_dir or settings.LOG_DIR

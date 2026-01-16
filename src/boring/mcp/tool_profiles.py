@@ -23,7 +23,6 @@ Or environment variable:
 import os
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
 
 from .tool_registry_data import TOOL_CATEGORIES
 
@@ -61,7 +60,8 @@ ULTRA_LITE_TOOLS_LIST = [
     "boring_orchestrate",  # NEW: High-level achiever
 ]
 DISCOVERY_TOOLS = [
-    "boring_skills_browse",
+    "boring_skills_list",
+    "boring_skills_search",
     "boring_skills_install",
 ]
 
@@ -95,6 +95,7 @@ RAG_TOOLS = [
     "boring_rag_context",
     "boring_rag_expand",
     "boring_rag_status",
+    "boring_rag_graph",  # V14
 ]
 
 VERIFY_TOOLS = [
@@ -128,6 +129,11 @@ CONTEXT_TOOLS = [
 BRAIN_TOOLS = [
     "boring_brain_health",
     "boring_incremental_learn",
+    "boring_pattern_stats",
+    "boring_prune_patterns",
+    "boring_brain_sync",  # V14 Team
+    "boring_brain_status",
+    "boring_learn",
 ]
 
 WORKSPACE_TOOLS = [
@@ -161,6 +167,17 @@ TASK_TOOLS = [
 SPECKIT_TOOLS = [
     "boring_speckit_clarify",
     "boring_speckit_checklist",
+    "boring_speckit_plan",
+    "boring_speckit_tasks",
+    "boring_speckit_constitution",
+    "boring_speckit_analyze",
+]
+
+PLUGIN_TOOLS = [
+    "boring_list_plugins",
+    "boring_run_plugin",
+    "boring_reload_plugins",
+    "boring_synth_tool",
 ]
 
 # New tools introduced in the user's MINIMAL_TOOLS list
@@ -184,7 +201,20 @@ SESSION_TOOLS = [
 
 # New tools introduced in the user's STANDARD_TOOLS list
 EVAL_TOOLS = [
-    "boring_evaluate_code",
+    "boring_evaluate",
+    "boring_evaluation_metrics",
+    "boring_bias_report",
+    "boring_generate_rubric",
+]
+
+REASONING_TOOLS = [
+    "sequentialthinking",
+    "criticalthinking",
+]
+
+EXTERNAL_DOCS_TOOLS = [
+    "context7_query-docs",
+    "context7_resolve-library-id",
 ]
 
 
@@ -237,6 +267,9 @@ LITE_TOOLS = (
     + SESSION_TOOLS  # Phase 10: Vibe Session Tools (Critical for Agentic Workflow)
     + ["boring_checkpoint"]  # Safe checkpointing for daily work
     + DISCOVERY_TOOLS  # Allow installation in LITE
+    + WORKSPACE_TOOLS  # V14: Manage workspace in LITE
+    + PLUGIN_TOOLS  # V14: Manage plugins in LITE
+    + BRAIN_TOOLS  # V14: Learning enabled in LITE
 )
 LITE = ProfileConfig(
     name="lite",
@@ -275,6 +308,8 @@ STANDARD_TOOLS = (
     + SPECKIT_TOOLS
     + EVAL_TOOLS
     + DISCOVERY_TOOLS
+    + REASONING_TOOLS
+    + EXTERNAL_DOCS_TOOLS
 )
 STANDARD = ProfileConfig(
     name="standard",
@@ -314,7 +349,6 @@ PROFILES = {
 }
 
 
-
 def _get_adaptive_profile() -> ProfileConfig:
     """Generate a personalized profile based on usage stats."""
     # Start with LITE as baseline for safety/common tools
@@ -325,6 +359,7 @@ def _get_adaptive_profile() -> ProfileConfig:
 
     try:
         from ..intelligence.usage_tracker import get_tracker
+
         tracker = get_tracker()
         # Add top 20 most frequently used tools
         usage_tools = tracker.get_top_tools(limit=20)
@@ -347,13 +382,13 @@ def _get_adaptive_profile() -> ProfileConfig:
     # For V11, we assume specific prompts exist for categories.
 
     CATEGORY_PROMPT_MAPPING = {
-        "review": "coding_standards",       # prompts/coding_standards.md
-        "test": "testing_guide",            # prompts/testing_guide.md
-        "intelligence": "reasoning_framework", # prompts/reasoning_framework.md
-        "rag": "search_tips"                # prompts/search_tips.md
+        "review": "coding_standards",  # prompts/coding_standards.md
+        "test": "testing_guide",  # prompts/testing_guide.md
+        "intelligence": "reasoning_framework",  # prompts/reasoning_framework.md
+        "rag": "search_tips",  # prompts/search_tips.md
     }
 
-    if tracker and top_tools: # Only proceed if tracker was successfully initialized
+    if tracker and top_tools:  # Only proceed if tracker was successfully initialized
         active_categories = set()
         for cat_id, category in TOOL_CATEGORIES.items():
             # Check intersection between category tools and user's top tools
@@ -372,10 +407,11 @@ def _get_adaptive_profile() -> ProfileConfig:
         name="adaptive",
         description="Personalized profile based on usage patterns",
         tools=list(base_tools),
-        prompts=final_prompts, # P6: Injected Prompts
+        prompts=final_prompts,  # P6: Injected Prompts
     )
 
-def get_profile(profile_name: Optional[str] = None) -> ProfileConfig:
+
+def get_profile(profile_name: str | None = None) -> ProfileConfig:
     """
     Get the tool profile configuration.
 
@@ -395,7 +431,8 @@ def get_profile(profile_name: Optional[str] = None) -> ProfileConfig:
     if not name:
         # Try to load from config
         try:
-            from boring.config import settings
+            from boring.core.config import settings
+
             name = settings.MCP_PROFILE
         except Exception:
             name = "lite"  # Default
@@ -414,7 +451,7 @@ def get_profile(profile_name: Optional[str] = None) -> ProfileConfig:
     return PROFILES.get(profile_enum, PROFILES[ToolProfile.LITE])
 
 
-def should_register_tool(tool_name: str, profile: Optional[ProfileConfig] = None) -> bool:
+def should_register_tool(tool_name: str, profile: ProfileConfig | None = None) -> bool:
     """
     Check if a tool should be registered based on current profile and project context.
 
@@ -446,7 +483,12 @@ def should_register_tool(tool_name: str, profile: Optional[ProfileConfig] = None
         # Git Tools Gating
         if not caps.is_git:
             # List of tool names that strictly require Git
-            git_only = ["boring_commit", "boring_checkpoint", "boring_hooks_status", "boring_shadow_approve"]
+            git_only = [
+                "boring_commit",
+                "boring_checkpoint",
+                "boring_hooks_status",
+                "boring_shadow_approve",
+            ]
             if tool_name in git_only:
                 return False
 
@@ -464,7 +506,7 @@ def should_register_tool(tool_name: str, profile: Optional[ProfileConfig] = None
     return True
 
 
-def should_register_prompt(prompt_name: str, profile: Optional[ProfileConfig] = None) -> bool:
+def should_register_prompt(prompt_name: str, profile: ProfileConfig | None = None) -> bool:
     """
     Check if a prompt should be registered based on current profile.
 
@@ -537,7 +579,7 @@ class ToolRegistrationFilter:
                 ...
     """
 
-    def __init__(self, profile_name: Optional[str] = None):
+    def __init__(self, profile_name: str | None = None):
         """
         Initialize filter with profile.
 

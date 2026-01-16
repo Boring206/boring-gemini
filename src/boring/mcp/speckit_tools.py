@@ -70,6 +70,7 @@ def _execute_workflow(workflow_name: str, context: str, project_path: str) -> di
 # TOOL DEFINITIONS (Top-Level for Import)
 # =============================================================================
 
+
 def boring_speckit_plan(
     context: Annotated[
         str,

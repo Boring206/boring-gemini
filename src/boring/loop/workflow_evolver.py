@@ -18,7 +18,7 @@ import json
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from ..logger import log_status
 
@@ -216,7 +216,7 @@ class WorkflowGapAnalyzer:
     def __init__(self, project_root: Path):
         self.project_root = Path(project_root)
         self.detector = ProjectContextDetector(project_root)
-        self._context: Optional[ProjectContext] = None
+        self._context: ProjectContext | None = None
 
     @property
     def context(self) -> ProjectContext:
@@ -388,7 +388,7 @@ class WorkflowGapAnalyzer:
                 pkg_content = (self.project_root / "package.json").read_text(encoding="utf-8")
                 if '"commitizen"' in pkg_content or '"semantic-release"' in pkg_content:
                     has_conflicting_tool = True
-            except:
+            except Exception:
                 pass
 
         if (
@@ -474,7 +474,7 @@ class WorkflowEvolver:
         "release-prep",
     ]
 
-    def __init__(self, project_root: Path, log_dir: Optional[Path] = None):
+    def __init__(self, project_root: Path, log_dir: Path | None = None):
         self.project_root = Path(project_root)
         self.workflows_dir = self.project_root / ".agent" / "workflows"
         self.base_dir = self.workflows_dir / "_base"
@@ -675,7 +675,7 @@ class WorkflowEvolver:
 
         return result
 
-    def get_evolution_history(self, workflow_name: Optional[str] = None) -> list[dict]:
+    def get_evolution_history(self, workflow_name: str | None = None) -> list[dict]:
         """Get evolution history, optionally filtered by workflow."""
         log = self._load_evolution_log()
 
@@ -847,6 +847,6 @@ class WorkflowEvolver:
         pref_path.write_text(json.dumps(prefs, indent=2), encoding="utf-8")
 
 
-def create_workflow_evolver(project_root: Path, log_dir: Optional[Path] = None) -> WorkflowEvolver:
+def create_workflow_evolver(project_root: Path, log_dir: Path | None = None) -> WorkflowEvolver:
     """Factory function to create WorkflowEvolver instance."""
     return WorkflowEvolver(project_root, log_dir)

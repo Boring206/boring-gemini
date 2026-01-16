@@ -14,7 +14,6 @@ Features:
 """
 
 from dataclasses import dataclass, field
-from typing import Optional
 
 
 @dataclass
@@ -349,7 +348,7 @@ def generate_rubric(
     criteria_names: list[str],
     scale: str = "1-5",
     strictness: str = "balanced",
-    weights: Optional[dict[str, float]] = None,
+    weights: dict[str, float] | None = None,
 ) -> DetailedRubric:
     """
     Generate a detailed rubric with level descriptions.
@@ -528,12 +527,12 @@ def format_rubric_json(rubric: DetailedRubric) -> dict:
                 "weight": c.weight,
                 "levels": [
                     {
-                        "score": l.score,
-                        "label": l.label,
-                        "description": l.description,
-                        "characteristics": l.characteristics,
+                        "score": level.score,
+                        "label": level.label,
+                        "description": level.description,
+                        "characteristics": level.characteristics,
                     }
-                    for l in c.levels
+                    for level in c.levels
                 ],
             }
             for c in rubric.criteria

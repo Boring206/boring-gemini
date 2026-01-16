@@ -1,6 +1,7 @@
 # Boring Documentation
 
 > **Boring for Gemini** - The autonomous AI development loop. Make AI development boring (in a good way).
+> **Current Version**: V14.0.0 (Predictive Intelligence & Offline-First)
 
 ---
 
@@ -70,6 +71,8 @@ Core capabilities explained in depth.
 | [🧬 Cognitive Evolution](features/cognitive.md) | **V13.0**: Memory, Reasoning, Skills ([中文](features/cognitive_zh.md)) |
 | [🪢 Node.js Autonomy](features/nodejs.md) | **NEW**: Zero-config Node.js management ([中文](features/nodejs_zh.md)) |
 | [Quality Gates](features/quality-gates.md) | CI/CD integration and verification levels |
+| [🔮 Predictive Intelligence](features/predictive.md) | **POWER**: AI Diagnostics & Prevention ([中文](features/predictive_zh.md)) |
+| [🔌 Offline-First Mode](guides/offline-mode.md) | **PRIVACY**: Zero-network operations ([中文](guides/offline-mode_zh.md)) |
 | [💎 Hidden Gems](features/hidden-gems.md) | **Pro**: Advanced tips & secrets ([中文](features/hidden-gems_zh.md)) |
 
 ### Guides (指南) {: #guides }
@@ -107,6 +110,7 @@ In-depth learning resources.
 | [Advanced Tutorial](./tutorials/ADVANCED_TUTORIAL.md) | Deep dive into advanced features |
 | [Practical Demo](./tutorials/PRACTICAL_DEMO.md) | Real-world project walkthrough |
 | [Professional Playbook](./tutorials/PROFESSIONAL_PLAYBOOK.md) | Enterprise usage patterns |
+| [Offline Quickstart](./guides/offline-quickstart.md) | **NEW**: Zero-network setup guide |
 
 ### Reference (參考) {: #reference }
 Deep dive technical documentation.
@@ -145,10 +149,10 @@ Deep dive technical documentation.
 | [📉 Token 優化](./features/token-optimization_zh.md) | **最新**: Verbosity 控制與 Prompt Caching |
 | [Vibe Coder Pro](./guides/vibe-coder_zh.md) | **最新**: 文件生成、測試生成、衝擊分析、友善審查 |
 | [🧬 認知進化](./features/cognitive_zh.md) | **V13.0**: 記憶、推理、技能、合成 |
-| [🪢 Node.js 自主權](./features/nodejs_zh.md) | **最新**: 自動下載與管理環境 |
-| [MCP 工具集](./features/mcp-tools_zh.md) | 60+ 工具及範例 |
-| [影子模式](./features/shadow-mode_zh.md) | AI 操作的安全沙箱 |
 | [品質閘道](./features/quality-gates_zh.md) | CI/CD 整合和驗證級別 |
+| [🔮 預測性智慧](./features/predictive_zh.md) | **最新**: AI 診斷與主動預警 |
+| [🔌 離線優先模式](./guides/offline-mode_zh.md) | **最新**: 零網路依賴與隱私保障 |
+| [🪢 Node.js 自主權](./features/nodejs_zh.md) | **最新**: 自動下載與管理環境 |
 
 ### 指南 {: #zh-guides }
 | 指南 | 說明 |

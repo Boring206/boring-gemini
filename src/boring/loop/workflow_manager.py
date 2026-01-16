@@ -6,7 +6,7 @@ import urllib.error
 import urllib.request
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from tenacity import retry, stop_after_attempt, wait_exponential
 
@@ -41,7 +41,7 @@ class WorkflowPackage:
 
     metadata: WorkflowMetadata
     content: str  # The markdown content
-    config: Optional[dict[str, Any]] = None  # Optional extra config
+    config: dict[str, Any] | None = None  # Optional extra config
 
     def to_json(self) -> str:
         """Serialize to JSON string."""
@@ -130,7 +130,7 @@ class WorkflowManager:
             return []
         return [f.stem for f in self.workflows_dir.glob("*.md")]
 
-    def export_workflow(self, name: str, author: str = "user") -> tuple[Optional[Path], str]:
+    def export_workflow(self, name: str, author: str = "user") -> tuple[Path | None, str]:
         """
         Package a local workflow into a .bwf.json file.
 

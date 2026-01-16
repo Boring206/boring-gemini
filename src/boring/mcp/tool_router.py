@@ -18,14 +18,50 @@ This approach:
 - Improves tool selection accuracy
 - Provides better discoverability
 - Maintains full functionality
+
+V14.0 Enhancement:
+- BORING_ENABLE_* environment variables control external tool availability
+- BORING_ENABLE_SEQUENTIAL=false disables Sequential Thinking routing
+- BORING_ENABLE_CRITICAL=false disables Critical Thinking routing
+- BORING_ENABLE_CONTEXT7=false disables Context7 routing
 """
 
 import logging
 import re
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Callable, Optional
+
+# V14.0: Import unified environment settings
+try:
+    from ..core.environment import is_extension_enabled
+except ImportError:
+    # Fallback if environment module not available
+    def is_extension_enabled(ext: str) -> bool:
+        import os
+
+        mapping = {
+            "sequential": "BORING_ENABLE_SEQUENTIAL",
+            "critical": "BORING_ENABLE_CRITICAL",
+            "context7": "BORING_ENABLE_CONTEXT7",
+        }
+        env_var = mapping.get(ext.lower())
+        if env_var:
+            return os.environ.get(env_var, "true").lower() != "false"
+        return True
+
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class FlowStage:
+    """Constants for One Dragon Flow Stages."""
+
+    DESIGN = "design"
+    IMPLEMENT = "implement"
+    POLISH = "polish"
+    VERIFY = "verify"
+    ALL = "all"
 
 
 @dataclass
@@ -36,6 +72,7 @@ class ToolCategory:
     description: str
     keywords: list[str]
     tools: list[str]  # Tool names in this category
+    stages: list[str] = field(default_factory=lambda: [FlowStage.ALL])  # P7.1: Flow Stages
 
 
 @dataclass
@@ -83,6 +120,7 @@ TOOL_CATEGORIES = {
             "boring_rag_reload",
             "boring_rag_graph",
         ],
+        stages=[FlowStage.ALL],
     ),
     "review": ToolCategory(
         name="Code Review & Quality",
@@ -108,7 +146,7 @@ TOOL_CATEGORIES = {
             "健康",
             "review程式碼",
             "code review",
-            "boring check", # The Commandment
+            "boring check",  # The Commandment
         ],
         tools=[
             "boring_code_review",
@@ -116,6 +154,7 @@ TOOL_CATEGORIES = {
             "boring_perf_tips",
             "boring_arch_check",
         ],
+        stages=[FlowStage.POLISH, FlowStage.VERIFY],
     ),
     "test": ToolCategory(
         name="Testing",
@@ -134,6 +173,7 @@ TOOL_CATEGORIES = {
             "測試覆蓋",
         ],
         tools=["boring_test_gen", "boring_verify", "boring_verify_file"],
+        stages=[FlowStage.IMPLEMENT, FlowStage.VERIFY],
     ),
     "git": ToolCategory(
         name="Git & Version Control",
@@ -170,8 +210,8 @@ TOOL_CATEGORIES = {
             "清單",
             "列表",
             "檢查點",
-            "救命", # Safety keyword
-            "boring save", # The Commandment
+            "救命",  # Safety keyword
+            "boring save",  # The Commandment
         ],
         tools=[
             "boring_commit",
@@ -179,8 +219,8 @@ TOOL_CATEGORIES = {
             "boring_hooks_status",
             "boring_hooks_uninstall",
             "boring_checkpoint",
-            "boring_commit", # boring save
         ],
+        stages=[FlowStage.ALL],
     ),
     "docs": ToolCategory(
         name="Documentation",
@@ -199,6 +239,7 @@ TOOL_CATEGORIES = {
             "幫我寫文件",
         ],
         tools=["boring_doc_gen"],
+        stages=[FlowStage.IMPLEMENT, FlowStage.POLISH],
     ),
     "security": ToolCategory(
         name="Security",
@@ -217,6 +258,7 @@ TOOL_CATEGORIES = {
             "風險",
         ],
         tools=["boring_security_scan"],
+        stages=[FlowStage.DESIGN, FlowStage.POLISH],
     ),
     "shadow": ToolCategory(
         name="Shadow Mode & Safety",
@@ -246,6 +288,7 @@ TOOL_CATEGORIES = {
             "boring_shadow_trust_remove",
             "boring_checkpoint",
         ],
+        stages=[FlowStage.ALL],
     ),
     "planning": ToolCategory(
         name="Planning & Architecture",
@@ -264,6 +307,7 @@ TOOL_CATEGORIES = {
             "我想做",
         ],
         tools=["boring_prompt_plan", "boring_multi_agent", "boring_agent_review"],
+        stages=[FlowStage.DESIGN],
     ),
     "workspace": ToolCategory(
         name="Workspace & Project",
@@ -290,6 +334,7 @@ TOOL_CATEGORIES = {
             "boring_workspace_remove",
             "boring_workspace_switch",
         ],
+        stages=[FlowStage.ALL],
     ),
     "intelligence": ToolCategory(
         name="AI Intelligence",
@@ -325,6 +370,7 @@ TOOL_CATEGORIES = {
             "boring_suggest_next",
             "boring_brain_sync",
         ],
+        stages=[FlowStage.DESIGN, FlowStage.POLISH],
     ),
     "session": ToolCategory(
         name="Vibe Session & Workflow",
@@ -352,6 +398,7 @@ TOOL_CATEGORIES = {
             "boring_session_pause",
             "boring_session_auto",
         ],
+        stages=[FlowStage.ALL],
     ),
     "context": ToolCategory(
         name="Context & Session Context",
@@ -380,6 +427,7 @@ TOOL_CATEGORIES = {
             "boring_profile",
             "boring_transaction",
         ],
+        stages=[FlowStage.ALL],
     ),
     "impact": ToolCategory(
         name="Impact & Analysis",
@@ -397,6 +445,7 @@ TOOL_CATEGORIES = {
             "分析",
         ],
         tools=["boring_impact_check"],
+        stages=[FlowStage.DESIGN, FlowStage.IMPLEMENT],
     ),
     "fix": ToolCategory(
         name="Fix & Repair",
@@ -412,9 +461,10 @@ TOOL_CATEGORIES = {
             "解決",
             "錯誤",
             "幫我修",
-            "boring fix", # The Commandment
+            "boring fix",  # The Commandment
         ],
         tools=["boring_prompt_fix"],
+        stages=[FlowStage.IMPLEMENT, FlowStage.VERIFY],
     ),
     "visualize": ToolCategory(
         name="Visualization",
@@ -440,6 +490,7 @@ TOOL_CATEGORIES = {
             "流程圖",
         ],
         tools=["boring_visualize", "boring_rag_graph"],
+        stages=[FlowStage.DESIGN, FlowStage.POLISH],
     ),
     "delegate": ToolCategory(
         name="Delegation",
@@ -457,18 +508,21 @@ TOOL_CATEGORIES = {
             "資料庫",
         ],
         tools=["boring_delegate"],
+        stages=[FlowStage.ALL],
     ),
     "plugin": ToolCategory(
         name="Plugins",
         description="Manage and run plugins",
         keywords=["plugin", "extend", "custom", "插件", "擴充", "自訂"],
         tools=["boring_list_plugins", "boring_reload_plugins", "boring_run_plugin"],
+        stages=[FlowStage.ALL],
     ),
     "health": ToolCategory(
         name="Health & Status",
         description="Check system health, status, progress",
         keywords=["health", "status", "progress", "check", "健康", "狀態", "進度", "檢查"],
         tools=["boring_get_progress", "boring_task"],
+        stages=[FlowStage.ALL],
     ),
     # V10.24: External Intelligence Integration
     "reasoning": ToolCategory(
@@ -492,6 +546,7 @@ TOOL_CATEGORIES = {
             "推理模式",
         ],
         tools=["sequentialthinking", "criticalthinking"],
+        stages=[FlowStage.ALL],
     ),
     "external_docs": ToolCategory(
         name="External Docs (Context7)",
@@ -511,6 +566,7 @@ TOOL_CATEGORIES = {
             "怎麼用",
         ],
         tools=["context7_query-docs", "context7_resolve-library-id"],
+        stages=[FlowStage.IMPLEMENT],
     ),
     "discovery": ToolCategory(
         name="Skills Discovery",
@@ -537,6 +593,7 @@ TOOL_CATEGORIES = {
             "下載",
         ],
         tools=["boring_skills_list", "boring_skills_search", "boring_skills_install"],
+        stages=[FlowStage.ALL],
     ),
     "speckit": ToolCategory(
         name="Speckit",
@@ -560,6 +617,7 @@ TOOL_CATEGORIES = {
             "boring_speckit_constitution",
             "boring_speckit_analyze",
         ],
+        stages=[FlowStage.DESIGN, FlowStage.VERIFY],
     ),
     # V10.25: Advanced Evaluation
     "evaluation": ToolCategory(
@@ -608,6 +666,7 @@ TOOL_CATEGORIES = {
             "boring_bias_report",
             "boring_generate_rubric",
         ],
+        stages=[FlowStage.POLISH, FlowStage.VERIFY],
     ),
     "metrics": ToolCategory(
         name="Project Metrics & Integrity",
@@ -626,6 +685,7 @@ TOOL_CATEGORIES = {
             "專案狀態",
         ],
         tools=["boring_integrity_score"],
+        stages=[FlowStage.POLISH],
     ),
     "guidance": ToolCategory(
         name="Active Guidance (The Oracle)",
@@ -644,12 +704,13 @@ TOOL_CATEGORIES = {
             "建議",
             "引導",
             "可以做什麼",
-            "boring guide", # The Commandment
+            "boring guide",  # The Commandment
             "提示",
             "說明",
             "手冊",
         ],
         tools=["boring_help", "boring_best_next_action"],
+        stages=[FlowStage.ALL],
     ),
     "flow": ToolCategory(
         name="One Dragon Flow (The Go Command)",
@@ -669,6 +730,7 @@ TOOL_CATEGORIES = {
             "開始",
         ],
         tools=["boring_flow", "boring_session_auto"],
+        stages=[FlowStage.ALL],
     ),
 }
 
@@ -690,7 +752,7 @@ class ToolRouter:
         → Routes to boring_security_scan
     """
 
-    def __init__(self, tool_registry: Optional[dict[str, Callable]] = None):
+    def __init__(self, tool_registry: dict[str, Callable] | None = None):
         """
         Initialize tool router.
 
@@ -698,7 +760,33 @@ class ToolRouter:
             tool_registry: Optional dict mapping tool names to functions
         """
         self.tool_registry = tool_registry or {}
-        self.categories = TOOL_CATEGORIES
+
+        # V14.0: Filter categories based on BORING_ENABLE_* environment variables
+        self.categories = {}
+        for cat_name, category in TOOL_CATEGORIES.items():
+            # Check if external extensions are enabled
+            if cat_name == "reasoning":
+                # Reasoning requires both sequential and critical thinking
+                if not is_extension_enabled("sequential") and not is_extension_enabled("critical"):
+                    continue  # Skip entire category
+                # Filter individual tools
+                filtered_tools = []
+                if is_extension_enabled("sequential"):
+                    filtered_tools.extend([t for t in category.tools if "sequential" in t])
+                if is_extension_enabled("critical"):
+                    filtered_tools.extend([t for t in category.tools if "critical" in t])
+                if filtered_tools:
+                    from copy import copy
+
+                    filtered_category = copy(category)
+                    filtered_category.tools = filtered_tools
+                    self.categories[cat_name] = filtered_category
+                continue
+            elif cat_name == "external_docs":
+                if not is_extension_enabled("context7"):
+                    continue  # Skip Context7 category
+
+            self.categories[cat_name] = category
 
     def route(self, query: str) -> RoutingResult:
         """
@@ -832,7 +920,16 @@ class ToolRouter:
         # V10.31: Global Safety Checkpoint Boost
         if category.name == "Git & Version Control" and any(
             kw in query
-            for kw in ["checkpoint", "還原", "回退", "存檔", "rollback", "revert", "restore", "save as"]
+            for kw in [
+                "checkpoint",
+                "還原",
+                "回退",
+                "存檔",
+                "rollback",
+                "revert",
+                "restore",
+                "save as",
+            ]
         ):
             score += 10.0
 
@@ -1065,7 +1162,7 @@ Just ask naturally - I'll route to the right tool!
 
 
 # Singleton instance
-_router: Optional[ToolRouter] = None
+_router: ToolRouter | None = None
 
 
 def get_tool_router() -> ToolRouter:
@@ -1081,7 +1178,7 @@ def route_query(query: str) -> RoutingResult:
     return get_tool_router().route(query)
 
 
-def cli_route(query: Optional[str] = None, thinking_mode: bool = False):
+def cli_route(query: str | None = None, thinking_mode: bool = False):
     """
     CLI entry point for boring-route command.
 

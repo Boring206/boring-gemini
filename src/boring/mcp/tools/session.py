@@ -27,11 +27,11 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 from pydantic import Field as PydanticField
 
-from ...audit import audited
+from ...services.audit import audited
 from ...types import BoringResult, create_error_result, create_success_result
 from ..instance import MCP_AVAILABLE, mcp
 from ..utils import check_rate_limit, detect_project_root
@@ -57,10 +57,10 @@ class SessionStep:
     id: int
     description: str
     status: str = "pending"  # pending, in_progress, completed, failed
-    score: Optional[float] = None
-    output: Optional[str] = None
+    score: float | None = None
+    output: str | None = None
     created_at: str = ""
-    completed_at: Optional[str] = None
+    completed_at: str | None = None
 
 
 @dataclass
@@ -92,7 +92,7 @@ class VibeSession:
 
     # Phase 4: Verification
     verification_results: dict = field(default_factory=dict)
-    final_score: Optional[float] = None
+    final_score: float | None = None
 
     # Learning
     learned_patterns: list = field(default_factory=list)
@@ -117,7 +117,7 @@ class VibeSessionManager:
         self.project_root = Path(project_root)
         self.session_dir = self.project_root / ".boring_memory" / "sessions"
         self.session_dir.mkdir(parents=True, exist_ok=True)
-        self._current_session: Optional[VibeSession] = None
+        self._current_session: VibeSession | None = None
 
     def _session_path(self, session_id: str) -> Path:
         return self.session_dir / f"{session_id}.json"
@@ -146,7 +146,7 @@ class VibeSessionManager:
         with open(path, "w", encoding="utf-8") as f:
             json.dump(session.to_dict(), f, indent=2, ensure_ascii=False)
 
-    def load_session(self, session_id: str) -> Optional[VibeSession]:
+    def load_session(self, session_id: str) -> VibeSession | None:
         """Load session from disk."""
         path = self._session_path(session_id)
         if not path.exists():
@@ -159,7 +159,7 @@ class VibeSessionManager:
         self._current_session = session
         return session
 
-    def get_current_session(self) -> Optional[VibeSession]:
+    def get_current_session(self) -> VibeSession | None:
         """Get current active session."""
         return self._current_session
 

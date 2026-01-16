@@ -56,5 +56,5 @@ class VibeInterface:
             pool.extend(python_suggestions)
 
         # Pick one random idea to be "Creative"
-        suggestion = random.choice(pool)
+        suggestion = random.choice(pool)  # nosec B311 - non-cryptographic suggestion
         return f"Suggestion: {suggestion} (Selected by Sage Mode)"

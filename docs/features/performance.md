@@ -31,12 +31,13 @@ boring verify --force
 | Full Index Search | ~4s | ~2s | 2x |
 | Verify (Cached) | ~5s | ~3s | 1.6x |
 
-### The "Boring Diet" Optimization
+### The "Boring Diet" & V13.1 Optimizations
 
-Boring V10.28 removes the "bloat" from the core startup path:
-- **Eager Import Removal**: All heavy libraries (Torch, ChromaDB, FastAPI) are now **Lazy-Loaded**.
-- **Modular Extras**: Optional features are gated behind `DependencyManager`.
-- **Zero-Latency Profile**: The `lite` profile is now the default, consuming only ~3k tokens with negligible CPU overhead.
+Boring V13.1 further optimizes the startup path and execution efficiency:
+- **Universal Lazy Loading**: New `lazy_loader.py` ensures heavy modules (Local LLM, Vector Stores) are only loaded when explicitly called.
+- **Configurable Cache TTL**: RAG query caches now support custom Time-To-Live (TTL), defaulting to 120s via `BORING_CACHE_TTL_SECONDS`.
+- **Background Pre-warming**: Modules can be pre-warmed in the background to eliminate the perceived delay during first use.
+- **Startup Profiling**: Enable `BORING_STARTUP_PROFILE=1` to see detailed timing for component initialization.
 
 Enable via `.boring.toml` or env `BORING_MCP_PROFILE=lite`.
 

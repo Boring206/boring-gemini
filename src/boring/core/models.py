@@ -10,9 +10,8 @@ This module provides type-safe data models for:
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class CircuitBreakerStateEnum(str, Enum):
@@ -44,8 +43,7 @@ class CircuitBreakerState(BaseModel):
         default_factory=LoopInfo, description="Information from the last loop"
     )
 
-    class Config:
-        use_enum_values = True
+    model_config = ConfigDict(use_enum_values=True)
 
 
 class ExitSignals(BaseModel):
@@ -72,10 +70,9 @@ class LoopStatus(BaseModel):
     last_action: str = Field(default="", description="Last action performed")
     status: str = Field(default="idle", description="Current status")
     exit_reason: str = Field(default="", description="Reason for exit if applicable")
-    next_reset: Optional[str] = Field(default=None, description="Time until rate limit reset")
+    next_reset: str | None = Field(default=None, description="Time until rate limit reset")
 
-    class Config:
-        json_encoders = {datetime: lambda v: v.isoformat()}
+    model_config = ConfigDict(json_encoders={datetime: lambda v: v.isoformat()})
 
 
 class CircuitBreakerHistoryEntry(BaseModel):
@@ -85,8 +82,7 @@ class CircuitBreakerHistoryEntry(BaseModel):
     state: str = Field(description="New state")
     reason: str = Field(description="Reason for state change")
 
-    class Config:
-        json_encoders = {datetime: lambda v: v.isoformat()}
+    model_config = ConfigDict(json_encoders={datetime: lambda v: v.isoformat()})
 
 
 class WorkflowStep(BaseModel):
@@ -104,12 +100,11 @@ class Workflow(BaseModel):
 
     name: str = Field(..., description="Workflow filename without extension")
     description: str = Field(..., description="Description from frontmatter")
-    version: Optional[str] = Field(None, description="Workflow version")
+    version: str | None = Field(None, description="Workflow version")
     steps: list[WorkflowStep] = Field(default_factory=list, description="Extracted steps")
     raw_content: str = Field(..., description="Full original markdown content")
 
-    class Config:
-        extra = "ignore"
+    model_config = ConfigDict(extra="ignore")
 
 
 @dataclass

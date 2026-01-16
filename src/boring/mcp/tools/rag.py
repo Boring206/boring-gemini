@@ -6,7 +6,7 @@ Exposes RAG functionality as MCP tools for AI agents.
 
 import sys
 from pathlib import Path
-from typing import Annotated, Any, Optional
+from typing import Annotated, Any
 
 from pydantic import Field
 
@@ -96,7 +96,7 @@ def reload_rag_dependencies() -> dict:
     }
 
 
-def get_retriever(project_root: Path) -> Optional[RAGRetriever]:
+def get_retriever(project_root: Path) -> RAGRetriever | None:
     """Get or create RAG retriever for a project. Returns None if RAG is not available."""
     if create_rag_retriever is None:
         return None
@@ -253,7 +253,9 @@ def register_rag_tools(mcp: Any, helpers: dict):
         ] = None,
         use_hyde: Annotated[
             bool,
-            Field(description="Enable HyDE query expansion for better semantic alignment. Default: True."),
+            Field(
+                description="Enable HyDE query expansion for better semantic alignment. Default: True."
+            ),
         ] = True,
         use_rerank: Annotated[
             bool,
@@ -646,11 +648,15 @@ def register_rag_tools(mcp: Any, helpers: dict):
     def boring_rag_graph(
         format: Annotated[
             str,
-            Field(description="Output format: 'mermaid' (for diagrams) or 'json' (for data analysis). Default: 'mermaid'."),
+            Field(
+                description="Output format: 'mermaid' (for diagrams) or 'json' (for data analysis). Default: 'mermaid'."
+            ),
         ] = "mermaid",
         max_nodes: Annotated[
             int,
-            Field(description="Maximum number of nodes to include in visualization to prevent overcrowding. Default: 50."),
+            Field(
+                description="Maximum number of nodes to include in visualization to prevent overcrowding. Default: 50."
+            ),
         ] = 50,
         project_path: Annotated[
             str,
@@ -691,16 +697,16 @@ def register_rag_tools(mcp: Any, helpers: dict):
             # Force load if graph usage is requested
             retriever._load_chunks_from_db()
             if not retriever.graph:
-                 return create_error_result(
+                return create_error_result(
                     "❌ Graph not initialized or empty. Run `boring_rag_index` first."
                 )
 
         viz = retriever.graph.visualize(format=format, max_nodes=max_nodes)
 
         if format == "mermaid":
-            msg = f"## 🕸️ Dependency Graph ({retriever.graph.get_stats().total_nodes} nodes)\n\n{viz}"
+            msg = (
+                f"## 🕸️ Dependency Graph ({retriever.graph.get_stats().total_nodes} nodes)\n\n{viz}"
+            )
             return create_success_result(msg, data={"format": "mermaid"})
         else:
-            return create_success_result(
-                "Graph data generated.", data={"json": viz}
-            )
+            return create_success_result("Graph data generated.", data={"json": viz})

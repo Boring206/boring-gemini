@@ -23,7 +23,7 @@ Preferred format (v4.0+):
 import re
 import warnings
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from boring.core.logger import log_status
 from boring.services.backup import BackupManager
@@ -64,7 +64,7 @@ def process_structured_calls(
     function_calls: list[dict[str, Any]],
     project_root: Path,
     log_dir: Path = Path("logs"),
-    loop_id: Optional[int] = None,
+    loop_id: int | None = None,
 ) -> tuple[int, list[str], list[str]]:
     """
     Process function calls from Gemini response (v4.0+ preferred method).
@@ -323,7 +323,7 @@ def apply_patches(
     project_root: Path,
     log_dir: Path = Path("logs"),
     dry_run: bool = False,
-    loop_id: Optional[int] = None,
+    loop_id: int | None = None,
 ) -> list[tuple[str, str]]:
     """
     Write extracted file content to actual files.
@@ -399,7 +399,7 @@ def process_gemini_output(
     project_root: Path,
     log_dir: Path = Path("logs"),
     dry_run: bool = False,
-    loop_id: Optional[int] = None,
+    loop_id: int | None = None,
 ) -> int:
     """
     Main entry point: Read Gemini output file and apply all patches.

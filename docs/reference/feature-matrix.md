@@ -32,7 +32,7 @@
 | **Brain Manager** | ✅ Stable | v10.26 | SQLite | @Boring206 | 模式學習與記憶 |
 | **Vector Memory** | ❌ Removed | v10.0 | `chromadb` | @Boring206 | 向量記憶存儲 (Moved to RAG) |
 | **Pattern Mining** | 🔵 Beta | v10.28 | - | @Boring206 | 模式挖掘 |
-| **Predictive Analyzer** | 🧪 Experimental | v11.0 | - | @Boring206 | 錯誤預測 |
+| **Predictive Analyzer** | 🔵 Beta | v14.0 | - | @Boring206 | 錯誤預測 (AI Bisect) |
 | **Adaptive Cache** | 🧪 Experimental | v11.2 | - | @Boring206 | 智能快取預熱 |
 | **GraphRAG** | ✅ Stable | v11.3 | `chromadb`, `networkx` | @Boring206 | 依賴圖視覺化 |
 
@@ -93,6 +93,8 @@ Brain Manager ◄─── Pattern Mining
 | **SpecKit** | ✅ Stable | v10.28 | LLM Provider | @Boring206 | 規格驅動開發 |
 | **HTTP API** | 🔵 Beta | v10.25 | `starlette` | @Boring206 | REST API |
 | **Web Monitor** | 🧪 Experimental | v10.30 | `streamlit` | @Boring206 | Web 監控面板 |
+| **Diagnostic Engine** | ✅ Stable | v14.0 | - | @Boring206 | 深度診斷 (Doctor) |
+| **Offline Mode** | ✅ Stable | v14.0 | `llama-cpp-python` | @Boring206 | 離線優先架構 |
 | **VSCode Server** | 🧪 Experimental | v11.0 | - | @Boring206 | VSCode 整合 |
 
 ---
@@ -228,4 +230,4 @@ Brain Manager ◄─── Pattern Mining
 
 ---
 
-*最後更新: 2026-01-12 | 版本: 1.0.0*
+*最後更新: 2026-01-15 | 版本: 14.0.0*

@@ -44,7 +44,7 @@ def test_show_tutorial_idempotency(temp_project):
 
 
 def test_generate_learning_note(temp_project):
-    from boring.audit import AuditLogger
+    from boring.services.audit import AuditLogger
 
     # Reset singleton to ensure we use the temp_project logs
     AuditLogger._instance = None

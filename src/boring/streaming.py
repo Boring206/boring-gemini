@@ -9,11 +9,11 @@ enabling better UX in IDE integrations.
 
 import json
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Callable, Optional
 
 
 class ProgressStage(Enum):
@@ -52,8 +52,8 @@ class ProgressReporter:
         self,
         task_id: str,
         total_stages: int = 4,
-        output_file: Optional[Path] = None,
-        callback: Optional[Callable[[ProgressEvent], None]] = None,
+        output_file: Path | None = None,
+        callback: Callable[[ProgressEvent], None] | None = None,
     ):
         self.task_id = task_id
         self.total_stages = total_stages
@@ -69,7 +69,7 @@ class ProgressReporter:
         stage: ProgressStage,
         message: str,
         sub_percentage: float = 0.0,
-        metadata: Optional[dict] = None,
+        metadata: dict | None = None,
     ):
         """
         Report a progress update.
@@ -121,7 +121,7 @@ class ProgressReporter:
         except Exception:
             pass
 
-    def get_latest(self) -> Optional[ProgressEvent]:
+    def get_latest(self) -> ProgressEvent | None:
         """Get the most recent progress event."""
         return self.events[-1] if self.events else None
 
@@ -158,7 +158,7 @@ class StreamingTaskManager:
         self._reporters: dict[str, ProgressReporter] = {}
 
     def create_reporter(
-        self, task_id: str, output_dir: Optional[Path] = None, callback: Optional[Callable] = None
+        self, task_id: str, output_dir: Path | None = None, callback: Callable | None = None
     ) -> ProgressReporter:
         """Create a new progress reporter for a task."""
         output_file = None
@@ -171,7 +171,7 @@ class StreamingTaskManager:
         self._reporters[task_id] = reporter
         return reporter
 
-    def get_reporter(self, task_id: str) -> Optional[ProgressReporter]:
+    def get_reporter(self, task_id: str) -> ProgressReporter | None:
         """Get an existing reporter by task ID."""
         return self._reporters.get(task_id)
 

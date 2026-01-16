@@ -1,7 +1,7 @@
 import json
 import warnings
 
-from ...audit import audited
+from ...services.audit import audited
 from ..registry import internal_registry
 from ..tool_profiles import get_profile
 from ..tool_router import get_tool_router
@@ -37,7 +37,9 @@ def boring(request: str) -> str:
             for alt in result.alternatives:
                 response += f"- `{alt}`\n"
 
-        response += "\n💡 **Tip:** Be more specific, e.g., 'check project health' instead of 'check'."
+        response += (
+            "\n💡 **Tip:** Be more specific, e.g., 'check project health' instead of 'check'."
+        )
         return response
 
     # High Confidence Path
@@ -54,6 +56,7 @@ def boring(request: str) -> str:
             # Note: instance variable reference might be tricky here if not imported correctly
             # But we imported 'mcp' from ..instance which is the SmartMCP instance
             from ..instance import mcp as smart_mcp
+
             if smart_mcp.inject_tool(tool.name):
                 auto_injected = True
 
@@ -66,7 +69,9 @@ def boring(request: str) -> str:
         if auto_injected:
             extra_info += f"✅ **Auto-Injected:** `{tool.name}` is now available in your tool list for direct use."
         else:
-            extra_info += f"💡 Use `boring_call(tool_name=\"{tool.name}\", arguments={{...}})` to execute."
+            extra_info += (
+                f'💡 Use `boring_call(tool_name="{tool.name}", arguments={{...}})` to execute.'
+            )
     else:
         # It's either real MCP or missing
         extra_info = f"\n💡 Call `{tool_name}` directly with the suggested parameters."
@@ -75,8 +80,7 @@ def boring(request: str) -> str:
         f"🎯 **Routed to:** `{tool_name}`\n"
         f"📊 **Confidence:** {result.confidence:.0%}\n"
         f"📁 **Category:** {result.category}\n"
-        f"📝 **Suggested params:** {json.dumps(result.suggested_params)}\n"
-        + extra_info
+        f"📝 **Suggested params:** {json.dumps(result.suggested_params)}\n" + extra_info
     )
 
 
@@ -84,9 +88,7 @@ def boring(request: str) -> str:
 def boring_help() -> str:
     """Get help on available Boring tools and categories."""
     warnings.warn(
-        "boring_help is deprecated. Use `boring help` instead.",
-        DeprecationWarning,
-        stacklevel=2
+        "boring_help is deprecated. Use `boring help` instead.", DeprecationWarning, stacklevel=2
     )
     router = get_tool_router()
     summary = router.get_categories_summary()
@@ -100,9 +102,7 @@ def boring_help() -> str:
     else:
         skill_info += "- No skills registered yet.\n"
 
-    profile_info = (
-        f"\n## 🎛️ Current Profile: **{profile.name}** ({len(profile.tools) if profile.tools else 'all'} tools)\n"
-    )
+    profile_info = f"\n## 🎛️ Current Profile: **{profile.name}** ({len(profile.tools) if profile.tools else 'all'} tools)\n"
     return summary + skill_info + profile_info
 
 
@@ -123,7 +123,7 @@ def boring_discover(tool_name: str) -> str:
     warnings.warn(
         "boring_discover is deprecated. Use `boring discover <tool_name>` instead.",
         DeprecationWarning,
-        stacklevel=2
+        stacklevel=2,
     )
     # 1. Start with registered tools
     # Access internal tools from mcp instance if available
@@ -142,25 +142,20 @@ def boring_discover(tool_name: str) -> str:
         for name, tool in tools_source.items():
             all_tools[name] = {
                 "description": getattr(tool, "description", ""),
-                "schema": getattr(tool, "inputSchema", {})
+                "schema": getattr(tool, "inputSchema", {}),
             }
 
     # 2. Merge with internal tools
     for name, tool in internal_registry.tools.items():
         if name not in all_tools:
-            all_tools[name] = {
-                "description": tool.description,
-                "schema": tool.schema
-            }
+            all_tools[name] = {"description": tool.description, "schema": tool.schema}
 
     if tool_name not in all_tools:
         # Try to find similar tools
         similar = [t for t in all_tools.keys() if tool_name.lower() in t.lower()]
         if similar:
             return f"❌ Tool `{tool_name}` not found. Did you mean: {', '.join(similar[:5])}?"
-        return (
-            f"❌ Tool `{tool_name}` not found. Use `boring_help` to see available categories."
-        )
+        return f"❌ Tool `{tool_name}` not found. Use `boring_help` to see available categories."
 
     tool_data = all_tools[tool_name]
     # Extract schema information

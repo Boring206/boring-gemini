@@ -1,7 +1,6 @@
 import shutil
 import time
 from pathlib import Path
-from typing import Optional
 
 from rich.console import Console
 
@@ -16,7 +15,7 @@ class BackupManager:
     """
 
     def __init__(
-        self, loop_id: int, project_root: Optional[Path] = None, backup_dir: Optional[Path] = None
+        self, loop_id: int, project_root: Path | None = None, backup_dir: Path | None = None
     ):
         self.loop_id = loop_id
         self.project_root = project_root or settings.PROJECT_ROOT
@@ -24,7 +23,7 @@ class BackupManager:
         backup_base = backup_dir or settings.BACKUP_DIR
         self.snapshot_dir = backup_base / f"loop_{loop_id}_{self.timestamp}"
 
-    def create_snapshot(self, file_paths: list[Path]) -> Optional[Path]:
+    def create_snapshot(self, file_paths: list[Path]) -> Path | None:
         """
         Copies the specified files to the snapshot directory.
         Returns the path to the snapshot directory if successful, None if no files needed backup.

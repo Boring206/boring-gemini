@@ -17,8 +17,11 @@ V10.21 整合:
 移植自 vibe_tools.py (V10.26.0)
 """
 
+import logging
 from pathlib import Path
-from typing import Annotated, Optional
+
+logger = logging.getLogger(__name__)
+from typing import Annotated
 
 from pydantic import Field
 
@@ -92,13 +95,14 @@ def _get_rag_retriever(project_root: Path):
         retriever = RAGRetriever(project_root)
         if retriever.is_available:
             return retriever
-    except Exception:
-        pass
+    except Exception as e:
+        logger.debug("RAGRetriever unavailable: %s", e)
     return None
 
 
-
-def _get_project_root_or_error_impl(project_path_str: Optional[str]) -> tuple[Optional[str], Optional[dict]]:
+def _get_project_root_or_error_impl(
+    project_path_str: str | None,
+) -> tuple[str | None, dict | None]:
     """Module-level implementation of get_project_root_or_error."""
     if project_path_str:
         path = Path(project_path_str)
@@ -112,6 +116,7 @@ def _get_project_root_or_error_impl(project_path_str: Optional[str]) -> tuple[Op
     # Fallback to settings
     try:
         from ...core.config import settings
+
         return str(settings.PROJECT_ROOT), None
     except ImportError:
         return ".", None
@@ -119,7 +124,7 @@ def _get_project_root_or_error_impl(project_path_str: Optional[str]) -> tuple[Op
 
 def run_vibe_check(
     target_path: str = ".",
-    project_path: Optional[str] = None,
+    project_path: str | None = None,
     max_files: int = 10,
     verbosity: str = "standard",
 ) -> BoringResult:
@@ -219,6 +224,7 @@ def run_vibe_check(
     brain_advice = []
     try:
         from ...intelligence import BrainManager
+
         brain = BrainManager(project_root)
 
         seen_patterns = set()
@@ -233,8 +239,8 @@ def run_vibe_check(
                     )
                     seen_patterns.add(best_match.pattern_id)
                     deductions -= 5
-    except Exception:
-        pass
+    except Exception as e:
+        logger.debug("Brain pattern matching failed: %s", e)
 
     # 4. 計算分數
     final_score = max(0, base_score - deductions)
@@ -308,8 +314,8 @@ def run_vibe_check(
                         score_trend = f"📉 {diff:.0f} (vs 上次 {previous_score:.0f})"
                     else:
                         score_trend = f"➡️ 維持 {previous_score:.0f}"
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug("Failed to track vibe score history: %s", e)
 
     storage_status = "✅ 分數已記錄" if storage else "⚠️ Storage 未啟用"
 
@@ -407,6 +413,115 @@ def run_vibe_check(
     )
 
 
+
+def run_predict_errors(
+    file_path: str,
+    limit: int = 5,
+    project_path: str | None = None,
+) -> BoringResult:
+    """
+    🔮 預測錯誤 - 根據歷史模式預測可能發生的錯誤。
+    Implementation for boring_predict_errors tool and CLI.
+
+    V10.22 Intelligence:
+    - 分析檔案類型與過去錯誤的關聯
+    - 提供信心分數和預防建議
+    - 學習專案特定的錯誤模式
+    """
+    project_root, error = _get_project_root_or_error_impl(project_path)
+    if error:
+        return create_error_result(error.get("message", "Unknown error"))
+
+    project_root = Path(project_root)
+
+    # Try to use PredictiveAnalyzer
+    predictions = []
+    try:
+        from ...intelligence import PredictiveAnalyzer
+
+        analyzer = PredictiveAnalyzer(project_root)
+        predictions = analyzer.predict_errors(file_path, limit)
+    except ImportError as e:
+        logger.debug("PredictiveAnalyzer not available: %s", e)
+
+    # Fallback to storage-based prediction
+    if not predictions:
+        storage = _get_storage(project_root)
+        if storage:
+            predictions_data = storage.get_error_predictions(file_path, limit)
+            for p in predictions_data:
+                predictions.append(type("Prediction", (), p)())
+
+    if not predictions:
+        return create_error_result(
+            f"📊 尚無足夠歷史資料進行預測。繼續使用系統累積資料！\n檔案: {file_path}",
+            error_details="NO_DATA",
+        )
+
+    # Format results
+    result_items = []
+    for p in predictions:
+        result_items.append(
+            {
+                "error_type": p.error_type
+                if hasattr(p, "error_type")
+                else p.get("error_type", "Unknown"),
+                "confidence": getattr(p, "confidence", p.get("confidence", 0.5)),
+                "message": getattr(p, "predicted_message", p.get("message", "")),
+                "prevention_tip": getattr(p, "prevention_tip", p.get("prevention_tip", "")),
+                "frequency": getattr(p, "historical_frequency", p.get("frequency", 0)),
+            }
+        )
+
+    # Static analysis (Predictor)
+    static_items = []
+    try:
+        from ...intelligence.predictor import Predictor
+
+        predictor = Predictor(project_root)
+        static_issues = predictor.analyze_file(Path(file_path))
+
+        for issue in static_issues:
+            static_items.append(
+                {
+                    "severity": issue.severity,
+                    "category": issue.category,
+                    "message": issue.message,
+                    "file_path": issue.file_path,
+                    "line_number": issue.line_number,
+                    "code_snippet": issue.code_snippet,
+                    "confidence": issue.confidence,
+                    "pattern_id": issue.pattern_id,
+                    "suggested_fix": issue.suggested_fix,
+                }
+            )
+    except Exception:
+        static_items = []
+
+    # Build summary
+    top = result_items[0] if result_items else None
+    summary = f"🔮 **Error Predictions for** `{file_path}`\n\n"
+    for i, item in enumerate(result_items[:5], 1):
+        conf_bar = (
+            "🟢" if item["confidence"] >= 0.7 else "🟡" if item["confidence"] >= 0.4 else "⚪"
+        )
+        summary += f"{i}. {conf_bar} **{item['error_type']}** ({item['confidence'] * 100:.0f}% confidence)\n"
+        summary += f"   💡 {item['prevention_tip']}\n"
+    if static_items:
+        summary += f"\n🧠 **Static Findings**: {len(static_items)} issue(s) detected."
+
+    return create_success_result(
+        message=summary,
+        data={
+            "predictions": result_items,
+            "top_prediction": top,
+            "file_path": file_path,
+            "static_issues": static_items,
+            "vibe_summary": summary,
+        },
+    )
+
+
 def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factory=None):
     """
     Register Vibe Coder Pro tools with the MCP server.
@@ -427,9 +542,9 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
     def boring_test_gen(
         file_path: Annotated[str, Field(description="要生成測試的檔案路徑 (相對或絕對)")],
         output_dir: Annotated[
-            Optional[str], Field(description="測試輸出目錄 (預設: tests/unit/ 或 tests/)")
+            str | None, Field(description="測試輸出目錄 (預設: tests/unit/ 或 tests/)")
         ] = None,
-        project_path: Annotated[Optional[str], Field(description="專案根目錄 (自動偵測)")] = None,
+        project_path: Annotated[str | None, Field(description="專案根目錄 (自動偵測)")] = None,
     ) -> BoringResult:
         """
         🧪 自動生成單元測試 - 分析檔案並生成建議測試程式碼。
@@ -543,7 +658,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
     def boring_code_review(
         file_path: Annotated[str, Field(description="要審查的檔案路徑")],
         focus: Annotated[
-            Optional[str],
+            str | None,
             Field(
                 description="審查重點: 'all', 'naming', 'error_handling', 'performance', 'security'"
             ),
@@ -554,7 +669,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
                 description="Output verbosity: 'minimal' (summary only ~100 tokens), 'standard' (categorized issues ~500 tokens), 'verbose' (full details with brain patterns ~1000+ tokens). Default: 'standard'."
             ),
         ] = "standard",
-        project_path: Annotated[Optional[str], Field(description="專案根目錄 (自動偵測)")] = None,
+        project_path: Annotated[str | None, Field(description="專案根目錄 (自動偵測)")] = None,
     ) -> BoringResult:
         """
         🔍 AI 程式碼審查 - 分析程式碼品質並給出改善建議。
@@ -733,7 +848,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
     @audited
     def boring_perf_tips(
         file_path: Annotated[str, Field(description="要分析的檔案路徑")],
-        project_path: Annotated[Optional[str], Field(description="專案根目錄 (自動偵測)")] = None,
+        project_path: Annotated[str | None, Field(description="專案根目錄 (自動偵測)")] = None,
         verbosity: Annotated[
             str,
             Field(description="輸出詳細程度: 'minimal', 'standard' (預設), 'verbose'"),
@@ -1072,7 +1187,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
     @audited
     def boring_vibe_check(
         target_path: Annotated[str, Field(description="要健檢的檔案或目錄")] = ".",
-        project_path: Annotated[Optional[str], Field(description="專案根目錄 (自動偵測)")] = None,
+        project_path: Annotated[str | None, Field(description="專案根目錄 (自動偵測)")] = None,
         max_files: Annotated[int, Field(description="最大掃描檔案數 (預設 10)")] = 10,
         verbosity: Annotated[
             str,
@@ -1102,7 +1217,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
     @audited
     def boring_impact_check(
         target_path: Annotated[str, Field(description="計畫修改的目標檔案")],
-        project_path: Annotated[Optional[str], Field(description="專案根目錄 (自動偵測)")] = None,
+        project_path: Annotated[str | None, Field(description="專案根目錄 (自動偵測)")] = None,
         max_depth: Annotated[
             int, Field(description="追蹤深度 (1=直接依賴, 2=間接依賴, 預設 2)")
         ] = 2,
@@ -1344,7 +1459,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
     # =========================================================================
 
     @mcp.tool(
-        description="🔮 預測可能的錯誤 (Predict likely errors before running). "
+        description="預測可能的錯誤 (Predict likely errors before running). "
         "說: '預測這個檔案會有什麼錯誤', 'predict errors for auth.py'. "
         "我會分析歷史模式，預測最可能發生的錯誤並提供預防建議！",
         annotations={"readOnlyHint": True, "openWorldHint": False, "idempotentHint": True},
@@ -1353,78 +1468,18 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
     def boring_predict_errors(
         file_path: Annotated[str, Field(description="要預測錯誤的檔案路徑")],
         limit: Annotated[int, Field(description="最多返回幾個預測")] = 5,
-        project_path: Annotated[Optional[str], Field(description="專案根目錄")] = None,
+        project_path: Annotated[str | None, Field(description="專案根目錄")] = None,
     ) -> BoringResult:
         """
         🔮 預測錯誤 - 根據歷史模式預測可能發生的錯誤。
+
 
         V10.22 Intelligence:
         - 分析檔案類型與過去錯誤的關聯
         - 提供信心分數和預防建議
         - 學習專案特定的錯誤模式
         """
-        project_root, error = _get_project_root_or_error(project_path)
-        if error:
-            return create_error_result(error.get("message", "Unknown error"))
-
-        # Try to use PredictiveAnalyzer
-        predictions = []
-        try:
-            from ..intelligence import PredictiveAnalyzer
-
-            analyzer = PredictiveAnalyzer(project_root)
-            predictions = analyzer.predict_errors(file_path, limit)
-        except ImportError:
-            pass
-
-        # Fallback to storage-based prediction
-        if not predictions:
-            storage = _get_storage(project_root)
-            if storage:
-                predictions_data = storage.get_error_predictions(file_path, limit)
-                for p in predictions_data:
-                    predictions.append(type("Prediction", (), p)())
-
-        if not predictions:
-            return create_error_result(
-                f"📊 尚無足夠歷史資料進行預測。繼續使用系統累積資料！\n檔案: {file_path}",
-                error_details="NO_DATA",
-            )
-
-        # Format results
-        result_items = []
-        for p in predictions:
-            result_items.append(
-                {
-                    "error_type": p.error_type
-                    if hasattr(p, "error_type")
-                    else p.get("error_type", "Unknown"),
-                    "confidence": getattr(p, "confidence", p.get("confidence", 0.5)),
-                    "message": getattr(p, "predicted_message", p.get("message", "")),
-                    "prevention_tip": getattr(p, "prevention_tip", p.get("prevention_tip", "")),
-                    "frequency": getattr(p, "historical_frequency", p.get("frequency", 0)),
-                }
-            )
-
-        # Build summary
-        top = result_items[0] if result_items else None
-        summary = f"🔮 **Error Predictions for** `{file_path}`\n\n"
-        for i, item in enumerate(result_items[:5], 1):
-            conf_bar = (
-                "🟢" if item["confidence"] >= 0.7 else "🟡" if item["confidence"] >= 0.4 else "⚪"
-            )
-            summary += f"{i}. {conf_bar} **{item['error_type']}** ({item['confidence'] * 100:.0f}% confidence)\n"
-            summary += f"   💡 {item['prevention_tip']}\n"
-
-        return create_success_result(
-            message=summary,
-            data={
-                "predictions": result_items,
-                "top_prediction": top,
-                "file_path": file_path,
-                "vibe_summary": summary,
-            },
-        )
+        return run_predict_errors(file_path, limit, project_path)
 
     @mcp.tool(
         description="📊 專案健康評分 (Project health score). "
@@ -1434,7 +1489,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
     )
     @audited
     def boring_health_score(
-        project_path: Annotated[Optional[str], Field(description="專案根目錄")] = None,
+        project_path: Annotated[str | None, Field(description="專案根目錄")] = None,
     ) -> BoringResult:
         """
         📊 專案健康評分 - 綜合分析專案狀態。
@@ -1516,9 +1571,9 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
         file_paths: Annotated[list[str], Field(description="要優化的檔案路徑列表")],
         max_tokens: Annotated[int, Field(description="最大 token 限制")] = 8000,
         error_message: Annotated[
-            Optional[str], Field(description="相關錯誤訊息 (最高優先級)")
+            str | None, Field(description="相關錯誤訊息 (最高優先級)")
         ] = None,
-        project_path: Annotated[Optional[str], Field(description="專案根目錄")] = None,
+        project_path: Annotated[str | None, Field(description="專案根目錄")] = None,
     ) -> BoringResult:
         """
         🧠 上下文優化 - 智能壓縮程式碼以減少 token 使用。

@@ -75,9 +75,9 @@ class LoopContext:
 
     # === Generation State ===
     output_content: str = ""
-    output_file: Optional[Path] = None
+    output_file: Path | None = None
     function_calls: list[dict[str, Any]] = field(default_factory=list)
-    status_report: Optional[dict[str, Any]] = None
+    status_report: dict[str, Any] | None = None
 
     # === Patching State ===
     files_modified: list[str] = field(default_factory=list)
@@ -103,6 +103,7 @@ class LoopContext:
     current_task_type: str = "general"  # "debugging", "feature", "refactoring", "testing"
     session_keywords: list[str] = field(default_factory=list)
     memory_warnings: int = 0
+    prompt_cache: dict[str, Any] = field(default_factory=dict)
 
     def start_loop(self) -> None:
         """Reset per-loop state at beginning of each iteration."""
@@ -207,7 +208,7 @@ class LoopContext:
         if len(self.file_access_history) > MAX_FILE_HISTORY:
             self.file_access_history = self.file_access_history[-MAX_FILE_HISTORY:]
 
-    def set_task_context(self, task_type: str, keywords: Optional[list[str]] = None) -> None:
+    def set_task_context(self, task_type: str, keywords: list[str] | None = None) -> None:
         """
         V10.23: Set the current task context for RAG integration.
 

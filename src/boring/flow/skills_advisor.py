@@ -9,20 +9,33 @@ class SkillsAdvisor:
     def suggest_skills(self, goal: str) -> str:
         """
         Analyze the goal and return a formatted string of recommended skills.
+        Uses both the Universal Skill Loader (Local) and Catalog (External).
         """
-        # Use the existing catalog search
-        results = search_skills(goal, limit=3)
+        # 1. Check Local Universal Skills first
+        try:
+            from ..skills.universal_loader import UniversalSkillLoader
 
-        if not results:
-            return ""
+            loader = UniversalSkillLoader()
+            best_match = loader.match(goal, threshold=2.0)
+        except Exception:
+            best_match = None
 
-        suggestion = "\n\n💡 **Smart Skills Advice (Sage Mode)**:\n"
-        suggestion += f"I found some skills that might help with '{goal}':\n"
-
-        for skill in results:
-            suggestion += (
-                f"- **{skill.name}**: {skill.description_zh} (Install: `{skill.install_command}`)\n"
+        suggestions = []
+        if best_match:
+            suggestions.append(
+                f"💡 **Local Skill Found**: You have a skill for this!\n- **{best_match.name}**: {best_match.description} (Use `boring_skill_activate('{best_match.name}')`)\n"
             )
 
-        suggestion += "\nConsider adding these to your plan!"
-        return suggestion
+        # 2. Check External Catalog
+        results = search_skills(goal, limit=3)
+        if results:
+            msg = "\n🔌 **Catalog Recommendations**:\n"
+            for skill in results:
+                cmd = skill.install_command or f"boring_skill_download(url='{skill.repo_url}')"
+                msg += f"- **{skill.name}**: {skill.description_zh} (Install: `{cmd}`)\n"
+            suggestions.append(msg)
+
+        if not suggestions:
+            return ""
+
+        return "\n".join(suggestions) + "\nConsider using these to enhance your workflow!"

@@ -8,7 +8,7 @@ This state is responsible for:
 """
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from ...backup import BackupManager
 from ...logger import console, log_status
@@ -96,7 +96,7 @@ class PatchingState(LoopState):
                 context.errors_this_loop.append("No files were modified")
             return StateResult.FAILURE
 
-    def next_state(self, context: LoopContext, result: StateResult) -> Optional[LoopState]:
+    def next_state(self, context: LoopContext, result: StateResult) -> LoopState | None:
         """Determine next state based on patching result."""
         # Record telemetry
         self._record_metrics(context, result)

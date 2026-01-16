@@ -6,7 +6,7 @@ Only the Gemini API is mocked - all other components (filesystem, SQLite, logger
 """
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import pytest
 
@@ -109,8 +109,8 @@ def create_search_replace_call(file_path: str, search: str, replace: str) -> dic
 
 def create_report_status_call(
     status: str = "IN_PROGRESS",
-    tasks_completed: Optional[list[str]] = None,
-    files_modified: Optional[list[str]] = None,
+    tasks_completed: list[str] | None = None,
+    files_modified: list[str] | None = None,
     exit_signal: bool = False,
 ) -> dict[str, Any]:
     """Create a report_status function call."""
@@ -262,7 +262,7 @@ def query_project_state(storage: SQLiteStorage) -> dict:
 
 
 def assert_loop_recorded(
-    storage: SQLiteStorage, expected_status: str, expected_file: Optional[str] = None
+    storage: SQLiteStorage, expected_status: str, expected_file: str | None = None
 ):
     """Assert that a loop was recorded with expected values."""
     loops = query_loops_table(storage, limit=1)

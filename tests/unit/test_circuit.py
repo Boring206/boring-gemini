@@ -35,32 +35,27 @@ class TestLoopInfo:
 class TestInitCircuitBreaker:
     """Tests for init_circuit_breaker function."""
 
-    def test_init_creates_state_file(self, tmp_path, monkeypatch):
+    def test_init_creates_state_file(self, tmp_path):
         """Test that init creates state file."""
         from boring.core import circuit
+        from boring.paths import get_state_file
 
-        state_file = tmp_path / ".circuit_breaker_state"
-        history_file = tmp_path / ".circuit_breaker_history"
+        state_file = get_state_file(tmp_path, "circuit_breaker_state")
+        history_file = get_state_file(tmp_path, "circuit_breaker_history")
 
-        monkeypatch.setattr(circuit, "CB_STATE_FILE", state_file)
-        monkeypatch.setattr(circuit, "CB_HISTORY_FILE", history_file)
-
-        circuit.init_circuit_breaker()
+        circuit.init_circuit_breaker(project_root=tmp_path)
 
         assert state_file.exists()
         assert history_file.exists()
 
-    def test_init_sets_closed_state(self, tmp_path, monkeypatch):
+    def test_init_sets_closed_state(self, tmp_path):
         """Test that init sets CLOSED state."""
         from boring.core import circuit
+        from boring.paths import get_state_file
 
-        state_file = tmp_path / ".circuit_breaker_state"
-        history_file = tmp_path / ".circuit_breaker_history"
+        state_file = get_state_file(tmp_path, "circuit_breaker_state")
 
-        monkeypatch.setattr(circuit, "CB_STATE_FILE", state_file)
-        monkeypatch.setattr(circuit, "CB_HISTORY_FILE", history_file)
-
-        circuit.init_circuit_breaker()
+        circuit.init_circuit_breaker(project_root=tmp_path)
 
         state = json.loads(state_file.read_text())
         assert state["state"] == "CLOSED"
@@ -70,17 +65,11 @@ class TestInitCircuitBreaker:
 class TestGetCircuitState:
     """Tests for get_circuit_state function."""
 
-    def test_get_circuit_state_returns_dict(self, tmp_path, monkeypatch):
+    def test_get_circuit_state_returns_dict(self, tmp_path):
         """Test that get_circuit_state returns a dict."""
         from boring.core import circuit
 
-        state_file = tmp_path / ".circuit_breaker_state"
-        history_file = tmp_path / ".circuit_breaker_history"
-
-        monkeypatch.setattr(circuit, "CB_STATE_FILE", state_file)
-        monkeypatch.setattr(circuit, "CB_HISTORY_FILE", history_file)
-
-        state = circuit.get_circuit_state()
+        state = circuit.get_circuit_state(project_root=tmp_path)
 
         assert isinstance(state, dict)
         assert "state" in state
@@ -90,34 +79,30 @@ class TestGetCircuitState:
 class TestRecordLoopResult:
     """Tests for record_loop_result function."""
 
-    def test_record_success(self, tmp_path, monkeypatch):
+    def test_record_success(self, tmp_path):
         """Test recording a successful loop."""
         from boring.core import circuit
 
-        state_file = tmp_path / ".circuit_breaker_state"
-        history_file = tmp_path / ".circuit_breaker_history"
-
-        monkeypatch.setattr(circuit, "CB_STATE_FILE", state_file)
-        monkeypatch.setattr(circuit, "CB_HISTORY_FILE", history_file)
-
         result = circuit.record_loop_result(
-            loop_num=1, files_changed=5, has_errors=False, output_length=100
+            loop_num=1,
+            files_changed=5,
+            has_errors=False,
+            output_length=100,
+            project_root=tmp_path,
         )
 
         assert result == 0  # OK to continue
 
-    def test_record_failure(self, tmp_path, monkeypatch):
+    def test_record_failure(self, tmp_path):
         """Test recording a failed loop."""
         from boring.core import circuit
 
-        state_file = tmp_path / ".circuit_breaker_state"
-        history_file = tmp_path / ".circuit_breaker_history"
-
-        monkeypatch.setattr(circuit, "CB_STATE_FILE", state_file)
-        monkeypatch.setattr(circuit, "CB_HISTORY_FILE", history_file)
-
         result = circuit.record_loop_result(
-            loop_num=1, files_changed=0, has_errors=True, output_length=0
+            loop_num=1,
+            files_changed=0,
+            has_errors=True,
+            output_length=0,
+            project_root=tmp_path,
         )
 
         # First failure shouldn't halt
@@ -127,17 +112,11 @@ class TestRecordLoopResult:
 class TestShouldHaltExecution:
     """Tests for should_halt_execution function."""
 
-    def test_should_not_halt_initially(self, tmp_path, monkeypatch):
+    def test_should_not_halt_initially(self, tmp_path):
         """Test that execution should not halt initially."""
         from boring.core import circuit
 
-        state_file = tmp_path / ".circuit_breaker_state"
-        history_file = tmp_path / ".circuit_breaker_history"
-
-        monkeypatch.setattr(circuit, "CB_STATE_FILE", state_file)
-        monkeypatch.setattr(circuit, "CB_HISTORY_FILE", history_file)
-
-        result = circuit.should_halt_execution()
+        result = circuit.should_halt_execution(project_root=tmp_path)
 
         assert result is False
 
@@ -145,26 +124,20 @@ class TestShouldHaltExecution:
 class TestResetCircuitBreaker:
     """Tests for reset_circuit_breaker function."""
 
-    def test_reset_sets_closed_state(self, tmp_path, monkeypatch):
+    def test_reset_sets_closed_state(self, tmp_path):
         """Test that reset sets CLOSED state."""
         from boring.core import circuit
 
-        state_file = tmp_path / ".circuit_breaker_state"
-        history_file = tmp_path / ".circuit_breaker_history"
-
-        monkeypatch.setattr(circuit, "CB_STATE_FILE", state_file)
-        monkeypatch.setattr(circuit, "CB_HISTORY_FILE", history_file)
-
         # First init
-        circuit.init_circuit_breaker()
+        circuit.init_circuit_breaker(project_root=tmp_path)
 
         # Record some failures
         for _ in range(5):
-            circuit.record_loop_result(1, 0, True, 0)
+            circuit.record_loop_result(1, 0, True, 0, project_root=tmp_path)
 
         # Reset
-        circuit.reset_circuit_breaker("Test reset")
+        circuit.reset_circuit_breaker("Test reset", project_root=tmp_path)
 
-        state = circuit.get_circuit_state()
+        state = circuit.get_circuit_state(project_root=tmp_path)
         assert state["state"] == "CLOSED"
         assert state["failures"] == 0

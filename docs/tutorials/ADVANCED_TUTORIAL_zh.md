@@ -34,7 +34,7 @@
 
 ---
 
-## 1.5. Universal Router 與 Tool Profiles (V10.24)
+## 1.5. Universal Router 與 Tool Profiles (V14.0)
 
 **Universal Router** 是所有 Boring 工具的統一入口。它使用關鍵字配對和類別選擇，將自然語言意圖路由到正確的工具。
 
@@ -457,4 +457,4 @@ jobs:
 
 ---
 
-*最後更新: V10.26.0*
+*庫後更新: V14.0.0*

@@ -10,6 +10,9 @@ from boring.core.exceptions import (
     AuthenticationError,
     # Base
     BoringError,
+    # File Errors
+    BoringFileNotFoundError,
+    BoringSyntaxError,
     # Brain Errors (V11.2.3)
     BrainError,
     CircuitBreakerOpenError,
@@ -18,7 +21,6 @@ from boring.core.exceptions import (
     DatabaseConnectionError,
     DependencyError,
     ExitSignalError,
-    # File Errors
     FileError,
     FileSizeError,
     KnowledgeSyncError,
@@ -45,12 +47,6 @@ from boring.core.exceptions import (
     ToolNotFoundError,
     # Verification Errors
     VerificationError,
-)
-from boring.core.exceptions import (
-    FileNotFoundError as BoringFileNotFoundError,
-)
-from boring.core.exceptions import (
-    SyntaxError as BoringSyntaxError,
 )
 
 

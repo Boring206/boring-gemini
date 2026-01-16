@@ -1,5 +1,5 @@
 site_name: Boring-Gemini
-site_description: The True One Dragon Autonomous AI Development Agent (V13.0.0)
+site_description: The True One Dragon Autonomous AI Development Agent (V14.0.0)
 site_author: Boring206
 repo_url: https://github.com/Boring206/boring-gemini
 edit_uri: edit/main/docs/
@@ -59,8 +59,16 @@ nav:
       - 🧠 適應性設定檔 (Adaptive): features/adaptive-profile_zh.md
       - 📊 使用量看板 (Usage): features/usage-dashboard_zh.md
       - 🛡️ 異常偵測 (Safety): features/anomaly-safety_zh.md
+      - 🔮 預測性智慧 (Predictive):
+          - Traditional Chinese: features/predictive_zh.md
+          - English: features/predictive.md
+      - 🧹 清理工具 (Clean): features/clean_zh.md
+      - 🔌 離線優先模式 (Offline-First):
+          - Traditional Chinese: guides/offline-quickstart_zh.md
+          - English: guides/offline-quickstart.md
   - 📖 指南 (Guides):
       - 🍳 Vibe 食譜 (Cookbook): guides/cookbook_zh.md
+      - 🔌 離線操作指南: guides/offline-quickstart_zh.md
       - 🧞‍♂️ Vibe Coder (Router): features/vibe-coder_zh.md
       - 🧩 外掛系統: guides/plugins_zh.md
       - 🏗️ 架構師模式: guides/architect_mode_zh.md
@@ -90,8 +98,9 @@ nav:
       - Judge: api/judge_zh.md
       - MCP Server: api/mcp_server_zh.md
       - Tools: api/tools_zh.md
-  - 📋 更新日誌:
-      - V13 (Current): changelog/v13.md
+  - 📋 更新日誌 (Changelog):
+      - V14 (New): changelog/v14.md
+      - V13 (Legacy): changelog/v13.md
       - V13 (繁中): changelog/v13_zh.md
       - V12: changelog/v12.md
       - V12 (繁中): changelog/v12_zh.md

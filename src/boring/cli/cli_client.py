@@ -16,7 +16,6 @@ import shutil
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 from boring.core.logger import log_status
 from boring.llm.provider import LLMProvider, LLMResponse
@@ -28,7 +27,7 @@ class CLIResponse:
 
     text: str
     success: bool
-    error: Optional[str] = None
+    error: str | None = None
 
 
 class GeminiCLIAdapter(LLMProvider):
@@ -47,9 +46,9 @@ class GeminiCLIAdapter(LLMProvider):
     def __init__(
         self,
         model_name: str = "default",
-        log_dir: Optional[Path] = None,
+        log_dir: Path | None = None,
         timeout_seconds: int = 300,
-        cwd: Optional[Path] = None,
+        cwd: Path | None = None,
     ):
         self._model_name = model_name
         self.log_dir = log_dir or Path("logs")
@@ -63,6 +62,7 @@ class GeminiCLIAdapter(LLMProvider):
         if not self.cli_path:
             try:
                 from boring.services.nodejs import NodeManager
+
                 self.cli_path = NodeManager().get_gemini_path()
             except ImportError:
                 pass
@@ -85,7 +85,7 @@ class GeminiCLIAdapter(LLMProvider):
         return "gemini_cli"
 
     @property
-    def base_url(self) -> Optional[str]:
+    def base_url(self) -> str | None:
         return None  # CLI doesn't use a base URL in the same way
 
     @property
@@ -102,7 +102,7 @@ class GeminiCLIAdapter(LLMProvider):
         self,
         prompt: str,
         context: str = "",
-        tools: Optional[list] = None,
+        tools: list | None = None,
         timeout_seconds: int = 900,
         **kwargs,
     ) -> LLMResponse:
@@ -320,8 +320,8 @@ If no tool is needed, just respond with normal text.
 
 
 def create_cli_adapter(
-    model_name: str = "default", log_dir: Optional[Path] = None
-) -> Optional[GeminiCLIAdapter]:
+    model_name: str = "default", log_dir: Path | None = None
+) -> GeminiCLIAdapter | None:
     """
     Factory function to create a CLI adapter.
 

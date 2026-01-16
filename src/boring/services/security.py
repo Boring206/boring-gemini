@@ -11,7 +11,6 @@ Provides security utilities including:
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 from boring.core.logger import log_status
 
@@ -98,8 +97,8 @@ class PathValidationResult:
     """Result of path validation."""
 
     is_valid: bool
-    reason: Optional[str] = None
-    normalized_path: Optional[str] = None
+    reason: str | None = None
+    normalized_path: str | None = None
 
 
 def validate_file_path(

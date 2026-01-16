@@ -34,7 +34,7 @@ class TestCheckApiKey:
 
         result = check_api_key()
 
-        assert result.status == HealthStatus.PASS
+        assert result.status == HealthStatus.OK
 
     def test_api_key_invalid_format(self, monkeypatch):
         """Test when API key has invalid format."""
@@ -53,7 +53,7 @@ class TestCheckPythonVersion:
         result = check_python_version()
 
         # We're running tests so Python version should be OK
-        assert result.status == HealthStatus.PASS
+        assert result.status == HealthStatus.OK
         assert "Python" in result.message
 
 
@@ -65,7 +65,7 @@ class TestCheckDependencies:
         result = check_required_dependencies()
 
         # In test environment, deps should be installed
-        assert result.status == HealthStatus.PASS
+        assert result.status == HealthStatus.OK
 
 
 class TestCheckPromptFile:
@@ -89,7 +89,7 @@ class TestCheckPromptFile:
             mock_settings.PROMPT_FILE = "PROMPT.md"
             result = check_prompt_file(tmp_path)
 
-        assert result.status == HealthStatus.PASS
+        assert result.status == HealthStatus.OK
 
     def test_prompt_file_too_short(self, tmp_path):
         """Test when PROMPT.md is too short."""

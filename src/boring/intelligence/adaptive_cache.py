@@ -17,8 +17,9 @@ This improves hit rates and reduces latency.
 import threading
 import time
 from collections import OrderedDict, defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable, Optional, TypeVar
+from typing import Any, TypeVar
 
 T = TypeVar("T")
 
@@ -149,7 +150,7 @@ class AdaptiveCache:
         self._prefetch_queue: list[str] = []
 
         # Cleanup thread
-        self._cleanup_thread: Optional[threading.Thread] = None
+        self._cleanup_thread: threading.Thread | None = None
         self._stop_cleanup = threading.Event()
 
     def start_cleanup_thread(self, interval: float = 30.0):
@@ -174,7 +175,7 @@ class AdaptiveCache:
         if self._cleanup_thread:
             self._cleanup_thread.join(timeout=5.0)
 
-    def get(self, key: str, default: T = None) -> Optional[T]:
+    def get(self, key: str, default: T = None) -> T | None:
         """
         Get value from cache.
 
@@ -307,7 +308,7 @@ class AdaptiveCache:
         self,
         key: str,
         value: Any,
-        ttl: Optional[float] = None,
+        ttl: float | None = None,
         priority: float = 0.5,
         prefetched: bool = False,
     ):
@@ -365,9 +366,9 @@ class AdaptiveCache:
 
     def cached(
         self,
-        ttl: Optional[float] = None,
+        ttl: float | None = None,
         priority: float = 0.5,
-        key_func: Optional[Callable] = None,
+        key_func: Callable | None = None,
     ):
         """
         Decorator for caching function results.
@@ -499,7 +500,7 @@ class AdaptiveCache:
             if evicted:
                 current_memory -= evicted.size_bytes
 
-    def _evict_one(self) -> Optional[CacheEntry]:
+    def _evict_one(self) -> CacheEntry | None:
         """
         Evict one entry using priority-aware LRU (V10.23 Enhanced).
 
@@ -639,7 +640,7 @@ class AdaptiveCache:
 
 
 # Global cache instance for convenience
-_global_cache: Optional[AdaptiveCache] = None
+_global_cache: AdaptiveCache | None = None
 _global_cache_lock = threading.Lock()
 
 

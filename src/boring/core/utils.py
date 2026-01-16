@@ -54,7 +54,7 @@ def check_and_install_dependencies(code_content: str):
             elif isinstance(node, ast.ImportFrom):
                 if node.module:
                     imports.add(node.module.split(".")[0])
-    except:
+    except Exception:
         # If code is not parseable, we can't detect imports reliably
         return
 
@@ -136,7 +136,7 @@ class TransactionalFileWriter:
             if os.path.exists(temp_path):
                 try:
                     os.unlink(temp_path)
-                except:
+                except Exception:
                     pass
             logger.error(f"Atomic JSON write failed for {file_path}: {e}")
             return False
@@ -172,7 +172,7 @@ class TransactionalFileWriter:
             if os.path.exists(temp_path):
                 try:
                     os.unlink(temp_path)
-                except:
+                except Exception:
                     pass
             logger.error(f"Atomic text write failed for {file_path}: {e}")
             return False

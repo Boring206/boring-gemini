@@ -6,7 +6,6 @@ It compels the agent to use 'sequentialthinking' or 'criticalthinking'
 before executing any code modifcations.
 """
 
-from typing import Optional
 
 from rich.panel import Panel
 
@@ -86,7 +85,7 @@ class ReasoningState(ThinkingState):
 
         return base_prompt + system_2_instruction
 
-    def next_state(self, context: LoopContext, result: StateResult) -> Optional[LoopState]:
+    def next_state(self, context: LoopContext, result: StateResult) -> LoopState | None:
         """
         Determine next state.
         If tools were called (likely reasoning tools), we go to PatchingState (which executes tools).

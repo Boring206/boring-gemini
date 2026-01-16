@@ -11,7 +11,35 @@ Skills Catalog - 推薦 Gemini/Claude Skills 資源的知識庫。
 """
 
 from dataclasses import dataclass
-from typing import Optional
+from urllib.parse import urlparse
+
+# === V12.2 Safety Feature: Allow-List ===
+TRUSTED_DOMAINS = {
+    "github.com",
+    "raw.githubusercontent.com",
+    "skillsmp.com",  # User Requested
+    "gist.github.com",
+    "gitlab.com",
+    "gitee.com",
+    "www.gitee.com",  # Explicit for Gitee redirect
+}
+
+
+def is_trusted_url(url: str) -> bool:
+    """Check if a URL belongs to a trusted domain."""
+    try:
+        # Handle SCP-like git syntax (git@github.com:user/repo.git)
+        if url.startswith("git@"):
+            # Extract domain between '@' and ':'
+            part = url.split("@", 1)[1]
+            domain = part.split(":", 1)[0].lower()
+        else:
+            domain = urlparse(url).netloc.lower()
+
+        # Handle subdomains (e.g., www.skillsmp.com)
+        return any(domain == d or domain.endswith(f".{d}") for d in TRUSTED_DOMAINS)
+    except Exception:
+        return False
 
 
 @dataclass
@@ -24,8 +52,8 @@ class SkillResource:
     description: str
     description_zh: str
     keywords: list[str]  # 用於匹配的關鍵字
-    install_command: Optional[str] = None
-    stars: Optional[int] = None  # GitHub stars (optional)
+    install_command: str | None = None
+    stars: int | None = None  # GitHub stars (optional)
 
 
 # Skills 資料庫 - 社群可以 PR 擴充這個清單
@@ -47,6 +75,15 @@ SKILLS_CATALOG: list[SkillResource] = [
         description_zh="Gemini CLI Extensions 專區，可用 `gemini extension install` 安裝。",
         keywords=["extensions", "theme", "commands", "主題", "指令"],
         install_command="gemini extension install <git-url>",
+    ),
+    # === User Requested Sources ===
+    SkillResource(
+        name="SkillsMP (Prompt Marketplace)",
+        platform="both",
+        repo_url="https://skillsmp.com/",
+        description="Search here for inspiration. NOTE: To download, please copy the 'View on GitHub' URL from the skill page.",
+        description_zh="技能市集：提供靈感搜尋。⚠️ 下載時請由頁面複製 'View on GitHub' 的原始連結。",
+        keywords=["skillsmp", "marketplace", "prompts", "templates", "市集"],
     ),
     # === Claude Skills ===
     SkillResource(
@@ -99,6 +136,23 @@ SKILLS_CATALOG: list[SkillResource] = [
         description="Official skills for creating/editing Word, Excel, PowerPoint, PDF files.",
         description_zh="文件處理 Skills：Word、Excel、PPT、PDF 讀寫。",
         keywords=["document", "word", "excel", "pdf", "文件", "報表"],
+    ),
+    # === 語言/框架專用 ===
+    SkillResource(
+        name="Python Expert Skills",
+        platform="both",
+        repo_url="https://github.com/microsoft/python-type-stubs",
+        description="Essential Python skills: Type hints, Pydantic, FastAPI templates.",
+        description_zh="🐍 Python 開發者必備：Type Hints, Pydantic, FastAPI 範本。",
+        keywords=["python", "fastapi", "django", "pydantic", "pip"],
+    ),
+    SkillResource(
+        name="TypeScript/Node.js Toolset",
+        platform="both",
+        repo_url="https://github.com/microsoft/TypeScript-Node-Starter",
+        description="Complete Node.js & TypeScript setup: ESLint, Jest, Prettier.",
+        description_zh="🚀 NodeJS/TS 全套工具：Lint, Test, Build 設定。",
+        keywords=["node", "typescript", "javascript", "react", "vue", "npm", "yarn"],
     ),
     # === 電商/Dashboard/Chat 需求導向 ===
     SkillResource(

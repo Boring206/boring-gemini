@@ -66,7 +66,7 @@ class TestVibeModernity(unittest.TestCase):
             f"boring_code_review is from {code_review_func.__module__}, expected 'boring.mcp.tools.vibe'",
         )
 
-    @patch("boring.mcp.tools.vibe.vibe_engine")
+    @patch("boring.mcp.tools.vibe.get_vibe_engine")
     @patch("boring.mcp.tools.vibe._get_brain_manager")
     @patch("boring.mcp.tools.vibe._get_storage")
     @patch("boring.mcp.tools.vibe.get_boring_path")
@@ -78,7 +78,9 @@ class TestVibeModernity(unittest.TestCase):
 
         # Mock Setup (Patches apply to the module namespace)
         mock_get_path.return_value = Path("/tmp/.boring/memory")
-        mock_engine.perform_code_review.return_value = MagicMock(issues=[])
+        mock_engine_instance = MagicMock()
+        mock_engine_instance.perform_code_review.return_value = MagicMock(issues=[])
+        mock_engine.return_value = mock_engine_instance
         mock_brain.return_value = None
         mock_storage.return_value = None
 

@@ -24,39 +24,39 @@ Usage:
 from contextlib import contextmanager
 from contextvars import ContextVar, Token
 from pathlib import Path
-from typing import Any, Optional, TypeVar
+from typing import Any, TypeVar
 
 # =============================================================================
 # PROJECT CONTEXT
 # =============================================================================
 
-_current_project: ContextVar[Optional[Path]] = ContextVar("current_project", default=None)
+_current_project: ContextVar[Path | None] = ContextVar("current_project", default=None)
 
-_current_log_dir: ContextVar[Optional[Path]] = ContextVar("current_log_dir", default=None)
+_current_log_dir: ContextVar[Path | None] = ContextVar("current_log_dir", default=None)
 
 
-def get_current_project() -> Optional[Path]:
+def get_current_project() -> Path | None:
     """Get the current project root from context."""
     return _current_project.get()
 
 
-def set_current_project(project_root: Optional[Path]) -> Token[Optional[Path]]:
+def set_current_project(project_root: Path | None) -> Token[Path | None]:
     """Set the current project root in context. Returns token for reset."""
     return _current_project.set(project_root)
 
 
-def get_current_log_dir() -> Optional[Path]:
+def get_current_log_dir() -> Path | None:
     """Get the current log directory from context."""
     return _current_log_dir.get()
 
 
-def set_current_log_dir(log_dir: Optional[Path]) -> Token[Optional[Path]]:
+def set_current_log_dir(log_dir: Path | None) -> Token[Path | None]:
     """Set the current log directory in context. Returns token for reset."""
     return _current_log_dir.set(log_dir)
 
 
 @contextmanager
-def project_context(project_root: Path, log_dir: Optional[Path] = None):
+def project_context(project_root: Path, log_dir: Path | None = None):
     """
     Context manager for setting project context.
 
@@ -78,7 +78,7 @@ def project_context(project_root: Path, log_dir: Optional[Path] = None):
 # SESSION CONTEXT (for RAG, Brain, etc.)
 # =============================================================================
 
-_session_context: ContextVar[Optional[dict[str, Any]]] = ContextVar("session_context", default=None)
+_session_context: ContextVar[dict[str, Any] | None] = ContextVar("session_context", default=None)
 
 
 def get_session_context() -> dict[str, Any]:
@@ -89,8 +89,8 @@ def get_session_context() -> dict[str, Any]:
 
 def set_session_context(
     task_type: str = "general",
-    focus_files: Optional[list[str]] = None,
-    keywords: Optional[list[str]] = None,
+    focus_files: list[str] | None = None,
+    keywords: list[str] | None = None,
     **extra: Any,
 ) -> Token[dict[str, Any]]:
     """
@@ -125,8 +125,8 @@ def clear_session_context() -> None:
 @contextmanager
 def session_context(
     task_type: str = "general",
-    focus_files: Optional[list[str]] = None,
-    keywords: Optional[list[str]] = None,
+    focus_files: list[str] | None = None,
+    keywords: list[str] | None = None,
     **extra: Any,
 ):
     """
@@ -149,7 +149,7 @@ def session_context(
 
 T = TypeVar("T")
 
-_cache_store: ContextVar[Optional[dict[str, Any]]] = ContextVar("cache_store", default=None)
+_cache_store: ContextVar[dict[str, Any] | None] = ContextVar("cache_store", default=None)
 
 
 def get_cache(key: str, default: T = None) -> T:
@@ -177,7 +177,7 @@ def clear_cache() -> None:
 # RATE LIMIT CONTEXT
 # =============================================================================
 
-_rate_limit_counts: ContextVar[Optional[dict[str, list[float]]]] = ContextVar(
+_rate_limit_counts: ContextVar[dict[str, list[float]] | None] = ContextVar(
     "rate_limit_counts", default=None
 )
 

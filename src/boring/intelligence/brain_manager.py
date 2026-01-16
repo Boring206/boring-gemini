@@ -36,7 +36,7 @@ import shutil
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from ..core.logger import log_status
 
@@ -44,7 +44,7 @@ from ..core.logger import log_status
 # Performance: Module-level pattern cache (ContextVars for concurrency safety)
 # =============================================================================
 
-_pattern_cache_var: contextvars.ContextVar[Optional[dict[str, tuple[list[dict], float]]]] = (
+_pattern_cache_var: contextvars.ContextVar[dict[str, tuple[list[dict], float]] | None] = (
     contextvars.ContextVar("pattern_cache", default=None)
 )
 _CACHE_TTL_SECONDS = 30.0  # Cache TTL in seconds
@@ -97,7 +97,7 @@ class BrainManager:
         patterns = brain.get_relevant_patterns("authentication error")
     """
 
-    def __init__(self, project_root: Path, log_dir: Optional[Path] = None):
+    def __init__(self, project_root: Path, log_dir: Path | None = None):
         self.project_root = Path(project_root)
         from boring.paths import get_boring_path
 
@@ -121,11 +121,13 @@ class BrainManager:
 
         # [ONE DRAGON GAP FIX] Phase 4.1: Inverted Index Integration
         from .search import InvertedIndex
+
         self.index = InvertedIndex()
 
         # V12.4: Audit Logger
         try:
             from ..services.audit import AuditLogger
+
             self.audit = AuditLogger(self.project_root)
         except ImportError:
             self.audit = None
@@ -138,7 +140,7 @@ class BrainManager:
         self.faiss_patterns = []
         self._init_vector_store()
 
-        self._rebuild_index() # Populate index from storage
+        self._rebuild_index()  # Populate index from storage
 
         # Subdirectories (Keep for backward compatibility during migration)
         self.adaptations_dir = self.brain_dir / "workflow_adaptations"
@@ -150,7 +152,6 @@ class BrainManager:
 
         # Auto-migrate if legacy patterns exist but DB is empty
         self._migrate_to_sqlite()
-
 
     def _init_vector_store(self):
         """Initialize ChromaDB or FAISS for semantic search if available."""
@@ -209,14 +210,20 @@ class BrainManager:
 
             for p in patterns:
                 # p is dict with 'pattern_id', 'description', 'solution'
-                content = f"{p.get('description', '')} {p.get('solution', '')} {p.get('context', '')}"
-                self.index.add_document(p.get('pattern_id'), content, metadata=p)
+                content = (
+                    f"{p.get('description', '')} {p.get('solution', '')} {p.get('context', '')}"
+                )
+                self.index.add_document(p.get("pattern_id"), content, metadata=p)
 
                 if self.vector_store or self.faiss_index:
-                    ids.append(p.get('pattern_id'))
+                    ids.append(p.get("pattern_id"))
                     documents.append(content)
                     # Helper to filter None values for metadata (Chroma requires it)
-                    clean_meta = {k: v for k, v in p.items() if v is not None and isinstance(v, (str, int, float, bool))}
+                    clean_meta = {
+                        k: v
+                        for k, v in p.items()
+                        if v is not None and isinstance(v, (str, int, float, bool))
+                    }
                     metadatas.append(clean_meta)
 
             # Batch upsert to Chroma/FAISS
@@ -231,9 +238,7 @@ class BrainManager:
                         self.faiss_index.add(np.array(embeddings).astype("float32"))
                         self.faiss_patterns = patterns  # Store patterns for FAISS retrieval
 
-                    log_status(
-                        self.log_dir, "INFO", f"Brain Memory: Indexed {len(ids)} patterns."
-                    )
+                    log_status(self.log_dir, "INFO", f"Brain Memory: Indexed {len(ids)} patterns.")
                 except Exception as e:
                     log_status(self.log_dir, "ERROR", f"Brain Memory: Vector Upsert Failed: {e}")
 
@@ -306,17 +311,24 @@ class BrainManager:
             metadatas = []
 
             for p in patterns:
-                content = f"{p.get('description', '')} {p.get('solution', '')} {p.get('context', '')}"
-                ids.append(p.get('pattern_id'))
+                content = (
+                    f"{p.get('description', '')} {p.get('solution', '')} {p.get('context', '')}"
+                )
+                ids.append(p.get("pattern_id"))
                 documents.append(content)
                 # Helper to filter None values for metadata
-                clean_meta = {k: v for k, v in p.items() if v is not None and isinstance(v, (str, int, float, bool))}
+                clean_meta = {
+                    k: v
+                    for k, v in p.items()
+                    if v is not None and isinstance(v, (str, int, float, bool))
+                }
                 metadatas.append(clean_meta)
 
             if self.vector_store:
                 self.vector_store.upsert(ids=ids, documents=documents, metadatas=metadatas)
             elif self.faiss_index:
                 import numpy as np
+
                 embeddings = self.embedding_model.encode(documents)
                 self.faiss_index.add(np.array(embeddings).astype("float32"))
                 self.faiss_patterns.extend(patterns)
@@ -329,7 +341,6 @@ class BrainManager:
         # Ideally, we should update those methods to call upsert directly.
         for p in patterns:
             self.storage.upsert_pattern(p)
-
 
     def learn_from_memory(self, storage: Any) -> dict[str, Any]:
         """
@@ -344,7 +355,7 @@ class BrainManager:
         try:
             # Get successful loops
             recent_loops = storage.get_recent_loops(limit=50)
-            [l for l in recent_loops if l.get("status") == "SUCCESS"]
+            [loop for loop in recent_loops if loop.get("status") == "SUCCESS"]
 
             # Get error patterns with solutions
             error_patterns = storage.get_top_errors(limit=20)
@@ -425,49 +436,10 @@ class BrainManager:
             "last_used": datetime.now().isoformat(),
         }
 
-        # Check if exists to increment success_count?
-        # The storage.upsert handles this, but logic here was:
-        # Update existing -> inc success_count. New -> success_count=1.
-        # Simple upsert might overwrite count strictly from object.
-
-        # Check existing first
-        # Check existing first
-        # Actually pattern_id is unique.
-        # Let's trust SQLite storage implementation which I modified to:
-        # ON CONFLICT(pattern_id) DO UPDATE SET ... success_count=excluded.success_count...
-        # Wait, my upsert implementation in storage.py OVERWRITES success_count with what I pass.
-        # I need to fetch it first to increment.
-
-        # We need get_pattern_by_id in storage, but for now I can filter in memory or add method.
-        # Actually, let's keep it simple:
-        # If I want to increment, I probably need to know it exists.
-        # But 'upsert_pattern' logic in `storage.py` was: success_count=excluded.success_count.
-        # So I need to read-modify-write.
-
-        pass
-        # To avoid complexity, I'll rely on the logic that callers of learn_pattern usually imply a NEW success
-        # or a REINFORCEMENT of existing.
-        # But wait, look at my storage implementation again:
-        # success_count=excluded.success_count
-        # So if I pass 1, it resets to 1? Yes. That's a bug in my previous step if I wanted increment.
-        # But I can't fix storage.py right now without another tool call.
-        # I will fetch existing patterns to check.
-
-        # Re-reading my storage code (from memory):
-        # ON CONFLICT DO UPDATE SET success_count=excluded.success_count
-        # Yes, it overwrites.
-
-        # So I must fetch existing to increment.
-
-        # TODO: Add get_pattern(id) to storage later.
-        # For now, I'll iterate the list from get_patterns(), it's fast enough for <1000 items.
-
-        patterns = self.storage.get_patterns()
-        existing = next((p for p in patterns if p["pattern_id"] == pattern_id), None)
-
+        existing = self.storage.get_pattern_by_id(pattern_id)
         if existing:
-            pattern["success_count"] = existing["success_count"] + 1
-            pattern["created_at"] = existing["created_at"]
+            pattern["success_count"] = existing.get("success_count", 1) + 1
+            pattern["created_at"] = existing.get("created_at", pattern["created_at"])
             status = "UPDATED"
         else:
             status = "CREATED"
@@ -480,10 +452,14 @@ class BrainManager:
                 event_type="PATTERN_LEARNED",
                 resource=pattern_id,
                 action="UPDATE" if status == "UPDATED" else "CREATE",
-                details={"type": pattern_type, "desc": description[:50]}
+                details={"type": pattern_type, "desc": description[:50]},
             )
 
         return {"status": status, "pattern_id": pattern_id}
+
+    def get_pattern(self, pattern_id: str) -> dict[str, Any] | None:
+        """Get a single learned pattern by ID."""
+        return self.storage.get_pattern_by_id(pattern_id)
 
     def get_relevant_patterns(self, context: str, limit: int = 5) -> list[dict]:
         """
@@ -507,9 +483,7 @@ class BrainManager:
                 ):
                     return vector_results["metadatas"][0]
             except Exception as e:
-                log_status(
-                    self.log_dir, "WARNING", f"Chroma Search Failed: {e}. Falling back."
-                )
+                log_status(self.log_dir, "WARNING", f"Chroma Search Failed: {e}. Falling back.")
 
         # 2. Try FAISS Search
         if self.faiss_index:
@@ -561,7 +535,9 @@ class BrainManager:
                 import numpy as np
 
                 query_vector = self.embedding_model.encode([context])
-                _, indices = self.faiss_index.search(np.array(query_vector).astype("float32"), limit)
+                _, indices = self.faiss_index.search(
+                    np.array(query_vector).astype("float32"), limit
+                )
                 results = []
                 for idx in indices[0]:
                     if 0 <= idx < len(self.faiss_patterns):
@@ -588,7 +564,7 @@ class BrainManager:
 
         return {"status": "SUCCESS", "rubric": name}
 
-    def get_rubric(self, name: str) -> Optional[dict]:
+    def get_rubric(self, name: str) -> dict | None:
         """Load a rubric by name."""
         return self.storage.get_rubric(name)
 
@@ -968,8 +944,8 @@ class BrainManager:
             # Skip if Classic Knowledge (Immortal)
             if self.is_classic_knowledge(p):
                 if p.get("decay_score", 1.0) < 1.0:
-                     p["decay_score"] = 1.0
-                     updated_count += 1
+                    p["decay_score"] = 1.0
+                    updated_count += 1
                 continue
 
             last_used_str = p.get("last_used")
@@ -990,7 +966,6 @@ class BrainManager:
 
         if updated_count > 0:
             self._save_patterns(patterns)
-
 
         return {"status": "SUCCESS", "updated": updated_count}
 
@@ -1017,7 +992,7 @@ class BrainManager:
             "health_status": "OK" if health_score > 70 else "WARNING",
         }
 
-    def snapshot(self) -> Optional[str]:
+    def snapshot(self) -> str | None:
         """Create a backup snapshot of the brain."""
         try:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -1030,7 +1005,7 @@ class BrainManager:
             return None
 
 
-def create_brain_manager(project_root: Path, log_dir: Optional[Path] = None) -> BrainManager:
+def create_brain_manager(project_root: Path, log_dir: Path | None = None) -> BrainManager:
     """Factory function to create BrainManager instance."""
     return BrainManager(project_root, log_dir)
 
@@ -1050,7 +1025,7 @@ class GlobalKnowledgeStore:
         self.global_patterns_file = self.global_dir / "global_patterns.json"
         self.global_dir.mkdir(parents=True, exist_ok=True)
 
-    def sync_with_remote(self, remote_url: Optional[str] = None) -> dict[str, Any]:
+    def sync_with_remote(self, remote_url: str | None = None) -> dict[str, Any]:
         """
         Sync global brain with a remote Git repository.
 
@@ -1169,7 +1144,7 @@ class GlobalKnowledgeStore:
         }
 
     def import_to_project(
-        self, project_root: Path, pattern_types: Optional[list[str]] = None
+        self, project_root: Path, pattern_types: list[str] | None = None
     ) -> dict[str, Any]:
         """
         Import relevant patterns from global store to a project.
@@ -1425,7 +1400,9 @@ class GlobalKnowledgeStore:
                 import numpy as np
 
                 query_vector = self.embedding_model.encode([context])
-                _, indices = self.faiss_index.search(np.array(query_vector).astype("float32"), limit)
+                _, indices = self.faiss_index.search(
+                    np.array(query_vector).astype("float32"), limit
+                )
                 results = []
                 for idx in indices[0]:
                     if 0 <= idx < len(self.faiss_patterns):
@@ -1492,7 +1469,7 @@ class GlobalKnowledgeStore:
 
 
 # Singleton global store
-_global_store: Optional[GlobalKnowledgeStore] = None
+_global_store: GlobalKnowledgeStore | None = None
 
 
 def get_global_store() -> GlobalKnowledgeStore:

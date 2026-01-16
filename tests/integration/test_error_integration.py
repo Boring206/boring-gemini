@@ -1,6 +1,6 @@
 import pytest
 
-from boring.audit import audited
+from boring.services.audit import audited
 
 
 # Mock tool that returns error dict

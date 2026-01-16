@@ -133,8 +133,8 @@ Want to carry over habits to a new project?
 3. Paste to new project's same folder.
 4. **Done**: New project's AI instantly possesses 5 years of senior engineer experience.
 
-### 3. Cross-Project Knowledge (Cross-Project Knowledge v10.18)
-Boring v10.18 supports Global Knowledge Base.
+### 3. Cross-Project Knowledge (Cross-Project Knowledge V10+)
+Boring supports Global Knowledge Base.
 - Your fixes and preferences automatically sync to `~/.boring/brain/global_patterns.json`.
 - When starting any new project, Boring already knows your preferences.
 
@@ -156,4 +156,4 @@ Boring v10.18 supports Global Knowledge Base.
 *“Pro players don't memorize Tools, because Prompts have prepared all tactical combos.”*
 
 ---
-*Last updated: V10.26.0*
+*Last updated: V14.0.0*

@@ -9,7 +9,6 @@ without any subcommand. Uses Rich Prompt for a conversational menu loop.
 """
 
 from pathlib import Path
-from typing import Optional
 
 from rich.console import Console
 from rich.panel import Panel
@@ -42,6 +41,7 @@ class BoringConsole:
         """
         try:
             from boring.metrics.integrity import calculate_integrity_score
+
             report = calculate_integrity_score(self.project_root)
             return report["total_score"]
         except Exception:
@@ -56,12 +56,12 @@ class BoringConsole:
         """
         try:
             from boring.cli.suggestions import SuggestionEngine
+
             engine = SuggestionEngine(self.project_root)
             return engine.get_best_next_action()
         except Exception:
             pass
         return ("check", "Run a Vibe Check")
-
 
     def _display_menu(self) -> str:
         """Display the interactive menu and get user choice."""
@@ -88,8 +88,23 @@ class BoringConsole:
 
         return Prompt.ask(
             "[bold]What shall we do?[/bold]",
-            choices=["1", "2", "3", "4", "5", "p", "q", "fix", "check", "evolve", "save", "status", "profile", "quit"],
-            default="q"
+            choices=[
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "p",
+                "q",
+                "fix",
+                "check",
+                "evolve",
+                "save",
+                "status",
+                "profile",
+                "quit",
+            ],
+            default="q",
         )
 
     def _handle_command(self, choice: str) -> bool:
@@ -126,15 +141,15 @@ class BoringConsole:
         console.print("[dim]Profiles control how many tools are exposed to the LLM context.[/dim]")
 
         profiles = [p.value for p in ToolProfile]
-        choice = Prompt.ask(
-            "Select Profile",
-            choices=profiles,
-            default="lite"
-        )
+        choice = Prompt.ask("Select Profile", choices=profiles, default="lite")
 
         if update_toml_config("mcp_profile", choice):
-            console.print(f"✅ Profile switched to [bold green]{choice}[/bold green] (Saved to .boring.toml)")
-            console.print("[dim]Note: You may need to restart your MCP server for changes to take full effect.[/dim]")
+            console.print(
+                f"✅ Profile switched to [bold green]{choice}[/bold green] (Saved to .boring.toml)"
+            )
+            console.print(
+                "[dim]Note: You may need to restart your MCP server for changes to take full effect.[/dim]"
+            )
         else:
             console.print("[red]Failed to update configuration.[/red]")
 
@@ -143,6 +158,7 @@ class BoringConsole:
         console.print("\n[bold magenta]🔧 Running Auto-Fix...[/bold magenta]")
         try:
             from boring.main import fix
+
             fix()
         except SystemExit:
             pass  # Typer commands may raise SystemExit
@@ -154,6 +170,7 @@ class BoringConsole:
         console.print("\n[bold green]✅ Running Vibe Check...[/bold green]")
         try:
             from boring.main import check
+
             check()
         except SystemExit:
             pass
@@ -167,6 +184,7 @@ class BoringConsole:
 
         try:
             from boring.loop.evolve import EvolveLoop
+
             loop = EvolveLoop(goal, "pytest", max_iterations=5)
             loop.run()
         except Exception as e:
@@ -177,6 +195,7 @@ class BoringConsole:
         console.print("\n[bold yellow]💾 Running Smart Save...[/bold yellow]")
         try:
             from boring.main import save
+
             save()
         except SystemExit:
             pass
@@ -188,6 +207,7 @@ class BoringConsole:
         console.print("\n[bold blue]📊 Project Status[/bold blue]")
         try:
             from boring.main import status
+
             status()
         except SystemExit:
             pass
@@ -197,9 +217,12 @@ class BoringConsole:
     def _get_header_renderable(self) -> Panel:
         """Get the console header as a renderable Panel."""
         from boring.mcp.tool_profiles import get_profile
+
         active_profile = get_profile()
 
-        score_color = "spring_green3" if self._score >= 80 else "gold1" if self._score >= 50 else "deep_pink3"
+        score_color = (
+            "spring_green3" if self._score >= 80 else "gold1" if self._score >= 50 else "deep_pink3"
+        )
 
         header = Table.grid(padding=(0, 2))
         header.add_column(justify="left", style="bold cyan")
@@ -209,7 +232,7 @@ class BoringConsole:
         header.add_row(
             f"🛸 Boring Console [dim](v{active_profile.name})[/dim]",
             f"[{score_color}]Integrity: {self._score}%[/{score_color}]",
-            f"Next: {self._suggestion}"
+            f"Next: {self._suggestion}",
         )
 
         return Panel(header, border_style="bright_blue", padding=(0, 1))
@@ -251,7 +274,7 @@ class BoringConsole:
                 input()
 
 
-def run_console(project_root: Optional[Path] = None) -> None:
+def run_console(project_root: Path | None = None) -> None:
     """
     Entry point for the Boring Console TUI.
 
@@ -259,6 +282,7 @@ def run_console(project_root: Optional[Path] = None) -> None:
     """
     if project_root is None:
         from boring.core.config import settings
+
         project_root = settings.PROJECT_ROOT
 
     # 1. Check if valid project context
@@ -267,16 +291,17 @@ def run_console(project_root: Optional[Path] = None) -> None:
     if not is_project:
         # 2. Not a project? Launch Onboarding (Project OMNI Phase 1)
         from boring.cli.onboard import run_onboarding
+
         project_active = run_onboarding()
 
         if not project_active:
-            return # User quit or setup failed
+            return  # User quit or setup failed
 
         # Re-check root if setup succeeded
         if not (project_root / ".boring").exists():
-             # Maybe they created a new folder?
-             # For now, just exit and ask them to cd in
-             return
+            # Maybe they created a new folder?
+            # For now, just exit and ask them to cd in
+            return
 
     tui = BoringConsole(project_root)
     tui.run()

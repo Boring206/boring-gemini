@@ -3,7 +3,6 @@ OpenAI Compatible Provider (LM Studio, vLLM, etc.)
 """
 
 from pathlib import Path
-from typing import Optional
 
 import requests
 
@@ -21,7 +20,7 @@ class OpenAICompatProvider(LLMProvider):
         model_name: str,
         base_url: str = "http://localhost:1234/v1",
         api_key: str = "lm-studio",
-        log_dir: Optional[Path] = None,
+        log_dir: Path | None = None,
     ):
         self._model_name = model_name
         self._base_url = base_url.rstrip("/")
@@ -51,7 +50,7 @@ class OpenAICompatProvider(LLMProvider):
 
             resp = requests.get(url, timeout=2)
             return resp.status_code == 200
-        except:
+        except Exception:
             return False
 
     def generate(

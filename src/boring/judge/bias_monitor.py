@@ -20,7 +20,6 @@ import threading
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional
 
 from .metrics import spearmans_rho
 
@@ -56,8 +55,8 @@ class LengthBiasResult:
 class BiasReport:
     """Comprehensive bias report."""
 
-    position_bias: Optional[PositionBiasResult] = None
-    length_bias: Optional[LengthBiasResult] = None
+    position_bias: PositionBiasResult | None = None
+    length_bias: LengthBiasResult | None = None
     total_evaluations: int = 0
     evaluation_period_days: int = 30
     warnings: list = field(default_factory=list)
@@ -190,7 +189,7 @@ class BiasMonitor:
         evaluation_id: str,
         score: float,
         response_length: int,
-        dimension_scores: Optional[dict] = None,
+        dimension_scores: dict | None = None,
     ):
         """
         Record a direct scoring evaluation.
@@ -491,7 +490,7 @@ def format_bias_report(report: BiasReport) -> str:
 
 
 # Singleton instance
-_bias_monitor: Optional[BiasMonitor] = None
+_bias_monitor: BiasMonitor | None = None
 
 
 def get_bias_monitor(project_root: Path) -> BiasMonitor:

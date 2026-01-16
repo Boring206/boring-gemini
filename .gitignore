@@ -53,6 +53,11 @@ PROMPT_WEB.md
 # Python
 # ==============================================================================
 
+# Legacy directories (deprecated in V10.31.0+)
+.boring_*
+.agent/
+Self-Healing/
+
 # Byte-compiled
 __pycache__/
 *.py[cod]
@@ -176,6 +181,7 @@ target/
 # Shadow Mode Pending Operations
 .boring_pending_approval.json
 
+
 # Cleanup & Debug Files
 test_results*.txt
 test_output.txt
@@ -185,3 +191,5 @@ debug_*.py
 cli_*.txt
 demo_*.py
 fix_paths.py
+error_log*.txt
+output_log*.txt

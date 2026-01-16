@@ -4,8 +4,8 @@ from typing import Annotated
 
 from pydantic import Field
 
-from ...audit import audited
 from ...judge import LLMJudge, create_judge_provider
+from ...services.audit import audited
 from ..instance import MCP_AVAILABLE, mcp
 from ..utils import check_rate_limit, detect_project_root
 

@@ -3,8 +3,8 @@ from typing import Annotated
 
 from pydantic import Field
 
-from ...audit import audited
 from ...hooks import HooksManager
+from ...services.audit import audited
 from ...types import BoringResult, create_error_result, create_success_result
 from ..instance import MCP_AVAILABLE, mcp
 from ..utils import configure_runtime_for_project, get_project_root_or_error

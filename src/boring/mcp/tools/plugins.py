@@ -12,7 +12,7 @@ Plugin Management Tools - 插件管理工具。
 """
 
 from pathlib import Path
-from typing import Annotated, Any, Optional
+from typing import Annotated, Any
 
 from pydantic import Field
 
@@ -26,7 +26,7 @@ from ...types import BoringResult, create_error_result, create_success_result
 _plugin_loader_cache: dict[str, PluginLoader] = {}
 
 
-def _get_cached_plugin_loader(project_root: Optional[Path]) -> PluginLoader:
+def _get_cached_plugin_loader(project_root: Path | None) -> PluginLoader:
     """Get or create a cached PluginLoader for the given project root."""
     cache_key = str(project_root) if project_root else "__default__"
     if cache_key not in _plugin_loader_cache:
@@ -36,7 +36,7 @@ def _get_cached_plugin_loader(project_root: Optional[Path]) -> PluginLoader:
     return _plugin_loader_cache[cache_key]
 
 
-def _clear_plugin_cache(project_root: Optional[Path] = None):
+def _clear_plugin_cache(project_root: Path | None = None):
     """Clear plugin cache for a specific project or all projects."""
     if project_root:
         cache_key = str(project_root)
@@ -66,7 +66,7 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
     @audited
     def boring_list_plugins(
         project_path: Annotated[
-            Optional[str], Field(description="Path to project root (default: current directory)")
+            str | None, Field(description="Path to project root (default: current directory)")
         ] = None,
         include_builtin: Annotated[
             bool, Field(description="Include built-in MCP tools in the list")
@@ -148,11 +148,11 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
             ),
         ],
         project_path: Annotated[
-            Optional[str],
+            str | None,
             Field(description="Optional explicit path to project root."),
         ] = None,
         args: Annotated[
-            Optional[dict],
+            dict | None,
             Field(description="Optional dictionary of arguments to pass to the plugin."),
         ] = None,
     ) -> BoringResult:
@@ -201,7 +201,7 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
             ),
         ],
         project_path: Annotated[
-            Optional[str],
+            str | None,
             Field(description="Optional explicit path to project root."),
         ] = None,
     ) -> BoringResult:
@@ -279,7 +279,7 @@ def register_plugin_tools(mcp, audited, helpers: dict[str, Any]) -> int:
     @audited
     def boring_reload_plugins(
         project_path: Annotated[
-            Optional[str], Field(description="Path to project root (default: current directory)")
+            str | None, Field(description="Path to project root (default: current directory)")
         ] = None,
     ) -> BoringResult:
         """

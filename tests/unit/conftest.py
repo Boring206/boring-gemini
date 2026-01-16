@@ -27,3 +27,15 @@ def mock_mcp():
     mock.tool = lambda description, **kwargs: lambda func: func
     mock.resource = lambda uri, **kwargs: lambda func: func
     return mock
+
+
+@pytest.fixture(autouse=True)
+def admin_role(monkeypatch):
+    """Ensure all unit tests run with Admin privileges."""
+    monkeypatch.setenv("BORING_USER_ROLE", "admin")
+    try:
+        from boring.services.rbac import RoleManager
+        # Reset singleton to force reload from env
+        RoleManager._instance = None
+    except ImportError:
+        pass

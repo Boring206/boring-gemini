@@ -4,7 +4,8 @@ V10 Tools Registration
 Registers all V10 tools (RAG, Multi-Agent, Shadow Mode) with FastMCP.
 """
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from .tools.agents import register_agent_tools
 from .tools.rag import register_rag_tools

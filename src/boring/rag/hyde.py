@@ -11,7 +11,6 @@ Research: "Precise Zero-Shot Dense Retrieval without Relevance Labels" (Gao et a
 
 import logging
 from dataclasses import dataclass
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -386,7 +385,7 @@ Code:
 
 
 # Singleton instance for easy access
-_hyde_expander: Optional[HyDEExpander] = None
+_hyde_expander: HyDEExpander | None = None
 
 
 def get_hyde_expander(use_llm: bool = False) -> HyDEExpander:

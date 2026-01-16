@@ -8,7 +8,7 @@ import time
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from .config import settings
 from .logger import get_logger
@@ -22,12 +22,12 @@ class QualityEntry:
     date: str
     score: float
     issues_count: int
-    commit_hash: Optional[str] = None
+    commit_hash: str | None = None
     context: str = ""  # e.g., "manual_verify", "ci", "judge"
 
 
 class QualityTracker:
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root: Path | None = None):
         self.project_root = project_root or settings.PROJECT_ROOT
         self.brain_dir = self.project_root / settings.BRAIN_DIR
         self.history_file = self.brain_dir / "quality_history.json"
@@ -99,7 +99,7 @@ class QualityTracker:
             return []
         try:
             return json.loads(self.history_file.read_text(encoding="utf-8"))
-        except:
+        except Exception:
             return []
 
     def _save_history(self, history: list[dict[str, Any]]):

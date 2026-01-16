@@ -8,7 +8,6 @@ Analyzes verification failures, test errors, and lint warnings to suggest fixes.
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 from .config import settings
 from .logger import get_logger
@@ -22,13 +21,13 @@ class DiagnosticResult:
 
     error_type: str
     message: str
-    file_path: Optional[str] = None
-    line_number: Optional[int] = None
-    column: Optional[int] = None
+    file_path: str | None = None
+    line_number: int | None = None
+    column: int | None = None
     severity: str = "error"  # error, warning, info
     suggestions: list[str] = field(default_factory=list)
     auto_fixable: bool = False
-    fix_command: Optional[str] = None
+    fix_command: str | None = None
 
     def to_dict(self) -> dict:
         return {
@@ -196,7 +195,7 @@ class ErrorDiagnostics:
         },
     }
 
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root: Path | None = None):
         self.project_root = project_root or settings.PROJECT_ROOT
 
     def analyze_error(self, error_output: str) -> list[DiagnosticResult]:

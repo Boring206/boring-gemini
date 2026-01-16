@@ -1,10 +1,10 @@
-from typing import Annotated, Optional
+from typing import Annotated
 
 from pydantic import Field
 
-from ...audit import audited
 from ...config import settings
 from ...diff_patcher import apply_search_replace_blocks, extract_search_replace_blocks
+from ...services.audit import audited
 from ..instance import MCP_AVAILABLE, mcp
 from ..utils import configure_runtime_for_project, get_project_root_or_error
 from .shadow import get_shadow_guard
@@ -20,7 +20,7 @@ def boring_apply_patch(
     search_text: Annotated[str, Field(description="Exact text to search for (must match exactly)")],
     replace_text: Annotated[str, Field(description="Text to replace with")],
     project_path: Annotated[
-        Optional[str], Field(description="Optional explicit path to project root")
+        str | None, Field(description="Optional explicit path to project root")
     ] = None,
 ) -> dict:
     """
@@ -122,7 +122,7 @@ def boring_extract_patches(
         bool, Field(description="If True, only parse and report patches without applying")
     ] = False,
     project_path: Annotated[
-        Optional[str], Field(description="Optional explicit path to project root")
+        str | None, Field(description="Optional explicit path to project root")
     ] = None,
 ) -> dict:
     """

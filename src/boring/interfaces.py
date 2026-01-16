@@ -7,7 +7,7 @@ Defines common interfaces for dependency injection and testing.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 # =============================================================================
 # LLM CLIENT INTERFACE
@@ -21,8 +21,8 @@ class LLMResponse:
     text: str
     function_calls: list[dict[str, Any]]
     success: bool
-    error: Optional[str] = None
-    metadata: Optional[dict[str, Any]] = None
+    error: str | None = None
+    metadata: dict[str, Any] | None = None
 
 
 class LLMClient(ABC):
@@ -182,7 +182,7 @@ class PatchResult:
     file_path: str
     action: str  # 'created', 'modified', 'search_replace'
     success: bool
-    error: Optional[str] = None
+    error: str | None = None
 
 
 class FilePatcherBase(ABC):

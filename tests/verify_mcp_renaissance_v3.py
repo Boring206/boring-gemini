@@ -41,25 +41,23 @@ class TestRenaissanceV3(unittest.TestCase):
         mock_tool.schema = {"type": "object"}
         internal_registry.get_tool = MagicMock(return_value=mock_tool)
 
-        # We need a context where instance.mcp is available
-        import boring.mcp.server as server
-        server.instance = MagicMock()
-        server.instance.mcp = self.mcp
-        server.router = mock_router
+        # We need to make sure boring.mcp.instance.mcp points to our mock
+        import boring.mcp.instance as instance_module
+        with patch.object(instance_module, "mcp", self.mcp):
+            # Call the tool that implements the router logic
+            # Explicitly import the boring tool function
+            from boring.mcp.tools.router_tools import boring as boring_func
 
-        # Call the tool that implements the router logic
-        # Actually server.boring is decorated with @mcp.tool
-        # Let's find the function itself
-        boring_func = server.boring
+            # Setup router mock return
+            with patch("boring.mcp.tools.router_tools.get_tool_router", return_value=mock_router):
+                 # Ensure it's not injected yet
+                self.assertNotIn("boring_health_check", self.mcp._exposed_tools)
 
-        # Ensure it's not injected yet
-        self.assertNotIn("boring_health_check", self.mcp._exposed_tools)
+                response = boring_func("check status")
 
-        response = boring_func("check status")
-
-        # Should be injected now
-        self.assertIn("boring_health_check", self.mcp._exposed_tools)
-        self.assertIn("Auto-Injected", response)
+                # Should be injected now
+                self.assertIn("boring_health_check", self.mcp._exposed_tools)
+                self.assertIn("Auto-Injected", response)
 
     def test_reset_skills(self):
         """Test clearing injected tools."""

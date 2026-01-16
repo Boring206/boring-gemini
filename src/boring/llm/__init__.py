@@ -2,7 +2,7 @@
 LLM Module - Modular Client Architecture
 """
 
-from typing import Optional
+
 
 from ..config import settings
 from .claude_adapter import ClaudeCLIAdapter
@@ -12,7 +12,7 @@ from .provider import LLMProvider, LLMResponse
 
 
 def get_provider(
-    provider_name: Optional[str] = None, model_name: Optional[str] = None
+    provider_name: str | None = None, model_name: str | None = None
 ) -> LLMProvider:
     """
     Factory function to get the appropriate LLM provider.

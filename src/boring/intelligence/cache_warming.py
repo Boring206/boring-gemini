@@ -17,9 +17,9 @@ import asyncio
 import logging
 import threading
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -68,9 +68,9 @@ class CacheWarmer:
         """
         self.project_root = Path(project_root)
         self.tasks: dict[str, WarmingTask] = {}
-        self._warm_thread: Optional[threading.Thread] = None
+        self._warm_thread: threading.Thread | None = None
         self._warming_complete = threading.Event()
-        self._stats: Optional[WarmingStats] = None
+        self._stats: WarmingStats | None = None
 
     def register_task(
         self,
@@ -79,7 +79,7 @@ class CacheWarmer:
         priority: int = 5,
         estimated_time_ms: float = 100,
         load_async: bool = False,
-        dependencies: Optional[list[str]] = None,
+        dependencies: list[str] | None = None,
     ):
         """
         Register a warming task.
@@ -342,7 +342,7 @@ class CacheWarmer:
         """
         return self._warming_complete.wait(timeout)
 
-    def get_stats(self) -> Optional[WarmingStats]:
+    def get_stats(self) -> WarmingStats | None:
         """Get warming statistics."""
         return self._stats
 
@@ -367,7 +367,7 @@ class StartupOptimizer:
         """
         self.project_root = Path(project_root)
         self.warmer = CacheWarmer(project_root)
-        self._startup_time: Optional[float] = None
+        self._startup_time: float | None = None
         self._lazy_modules: dict[str, bool] = {}
 
     def optimize_startup(self, background: bool = True) -> float:
@@ -446,8 +446,8 @@ class StartupOptimizer:
 
 
 # Singleton instances
-_cache_warmer: Optional[CacheWarmer] = None
-_startup_optimizer: Optional[StartupOptimizer] = None
+_cache_warmer: CacheWarmer | None = None
+_startup_optimizer: StartupOptimizer | None = None
 
 
 def get_cache_warmer(project_root: Path) -> CacheWarmer:

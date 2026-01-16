@@ -16,6 +16,7 @@ from .base import BaseNode, FlowContext, NodeResult, NodeResultStatus
 
 console = Console()
 
+
 class PolishNode(BaseNode):
     def __init__(self):
         super().__init__("Polish")
@@ -30,7 +31,9 @@ class PolishNode(BaseNode):
         polish_attempts = context.stats.get("polish_attempts", 0)
         if polish_attempts >= 2:
             console.print("[yellow]Max polish attempts reached. Accepting current state.[/yellow]")
-            return NodeResult(status=NodeResultStatus.SUCCESS, next_node="Evolver", message="Max retries reached.")
+            return NodeResult(
+                status=NodeResultStatus.SUCCESS, next_node="Evolver", message="Max retries reached."
+            )
 
         context.stats["polish_attempts"] = polish_attempts + 1
 
@@ -41,10 +44,7 @@ class PolishNode(BaseNode):
             from ...mcp.tools.vibe import boring_vibe_check
 
             console.print("[dim]Inspecting code aesthetics and vibes...[/dim]")
-            vibe_result = boring_vibe_check(
-                target_path=".",
-                project_path=str(context.project_root)
-            )
+            vibe_result = boring_vibe_check(target_path=".", project_path=str(context.project_root))
             console.print(f"[cyan]Vibe Report:[/cyan] {vibe_result}")
             # In a real heavy implementation, we parse vibe_result for a specific score.
 
@@ -53,24 +53,28 @@ class PolishNode(BaseNode):
             if shutil.which("ruff"):
                 console.print("[dim]Running 'ruff' linter as fallback QA...[/dim]")
                 try:
-                    subprocess.check_call(["ruff", "check", ".", "--select", "E,F"], cwd=context.project_root)
+                    subprocess.check_call(
+                        ["ruff", "check", ".", "--select", "E,F"], cwd=context.project_root
+                    )
                     console.print("[green]Linter passed.[/green]")
                 except subprocess.CalledProcessError:
                     console.print("[red]Linter found errors.[/red]")
                     issues_found = True
             else:
-                console.print("[yellow]No QA tools found (install 'ruff' or enable 'vibe').[/yellow]")
+                console.print(
+                    "[yellow]No QA tools found (install 'ruff' or enable 'vibe').[/yellow]"
+                )
 
         # 2. Decision
         if issues_found and polish_attempts < 2:
             return NodeResult(
-                status=NodeResultStatus.FAILURE, # Or SUCCESS but with "loop back" instruction
-                next_node="Builder", # Send back to Builder to fix issues
-                message="QA found issues. Returning to Builder."
+                status=NodeResultStatus.FAILURE,  # Or SUCCESS but with "loop back" instruction
+                next_node="Builder",  # Send back to Builder to fix issues
+                message="QA found issues. Returning to Builder.",
             )
 
         return NodeResult(
             status=NodeResultStatus.SUCCESS,
-            next_node="Evolver", # Proceed to Evolution after Polish
-            message="Polish phase complete."
+            next_node="Evolver",  # Proceed to Evolution after Polish
+            message="Polish phase complete.",
         )

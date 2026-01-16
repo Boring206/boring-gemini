@@ -10,7 +10,6 @@ MCP tool sets should be exposed to the agent.
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 
 @dataclass
@@ -27,7 +26,7 @@ class ProjectCapabilities:
     is_git: bool = False
 
     # Environment
-    is_windows: bool = (os.name == "nt")
+    is_windows: bool = os.name == "nt"
     has_boring_config: bool = False
 
     # Metadata
@@ -51,7 +50,7 @@ class ProjectCapabilities:
         return f"Stack: {', '.join(stacks) if stacks else 'Generic'} | VCS: {vcs} | OS: {'Windows' if self.is_windows else 'POSIX'}"
 
 
-def detect_project_capabilities(root: Optional[Path] = None) -> ProjectCapabilities:
+def detect_project_capabilities(root: Path | None = None) -> ProjectCapabilities:
     """
     Detect project capabilities starting from the given root.
     """
@@ -66,7 +65,11 @@ def detect_project_capabilities(root: Optional[Path] = None) -> ProjectCapabilit
     caps = ProjectCapabilities(root_path=root_path)
 
     # 2. Detect Tech Stacks
-    if (root_path / "pyproject.toml").exists() or (root_path / "setup.py").exists() or (root_path / "requirements.txt").exists():
+    if (
+        (root_path / "pyproject.toml").exists()
+        or (root_path / "setup.py").exists()
+        or (root_path / "requirements.txt").exists()
+    ):
         caps.is_python = True
 
     if (root_path / "package.json").exists():
@@ -85,7 +88,7 @@ def detect_project_capabilities(root: Optional[Path] = None) -> ProjectCapabilit
         # Check parent directories for git root if we are in a subfolder
         try:
             current = root_path
-            for _ in range(5): # Limit upward search
+            for _ in range(5):  # Limit upward search
                 if (current / ".git").exists():
                     caps.is_git = True
                     break
@@ -103,7 +106,8 @@ def detect_project_capabilities(root: Optional[Path] = None) -> ProjectCapabilit
 
 
 # Global cache
-_cached_caps: Optional[ProjectCapabilities] = None
+_cached_caps: ProjectCapabilities | None = None
+
 
 def get_capabilities(refresh: bool = False) -> ProjectCapabilities:
     """Get detected capabilities (cached)."""

@@ -8,7 +8,6 @@ automatically include all callers/callees in context.
 
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Optional
 
 from .code_indexer import CodeChunk
 
@@ -38,7 +37,7 @@ class DependencyGraph:
         impact = graph.get_impact_zone(chunk_id)  # What might break?
     """
 
-    def __init__(self, chunks: Optional[list[CodeChunk]] = None):
+    def __init__(self, chunks: list[CodeChunk] | None = None):
         self._chunks: dict[str, CodeChunk] = {}
         self._name_to_ids: dict[str, set[str]] = defaultdict(set)  # name -> chunk_ids
 
@@ -90,7 +89,7 @@ class DependencyGraph:
                 self.callees[chunk.chunk_id].add(dep_id)
                 self.callers[dep_id].add(chunk.chunk_id)
 
-    def get_chunk(self, chunk_id: str) -> Optional[CodeChunk]:
+    def get_chunk(self, chunk_id: str) -> CodeChunk | None:
         """Get chunk by ID."""
         return self._chunks.get(chunk_id)
 
@@ -221,7 +220,7 @@ class DependencyGraph:
             max_callees=max_callees,
         )
 
-    def find_path(self, from_id: str, to_id: str, max_depth: int = 5) -> Optional[list[str]]:
+    def find_path(self, from_id: str, to_id: str, max_depth: int = 5) -> list[str] | None:
         """
         Find shortest path between two chunks (if exists).
 

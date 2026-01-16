@@ -249,7 +249,7 @@ boring_list_tasks()
 
 ---
 
-### 3.5 Auto-Learning (v10.18)
+### 3.5 Auto-Learning (V14.0 Updated)
 
 Boring observes your fixes and evolves automatically:
 
@@ -303,7 +303,7 @@ Visit [Smithery](https://smithery.ai/server/boring/boring):
 
 ---
 
-### 4.3 Dynamic Discovery
+### 4.3 Dynamic Discovery (V14.0)
 
 AI automatically discovers available tools:
 
@@ -476,10 +476,14 @@ boring_evaluate(target="src/", rubric="my_rules")
 ## Next Steps
 
 - 📖 [Advanced Developer Guide](./ADVANCED_TUTORIAL.md) — Architecture & Internals
-- 📚 [Full Tool Reference](../reference/APPENDIX_A_TOOL_REFERENCE.md) — All 55+ Tools
+- 📚 [Full Tool Reference](../reference/APPENDIX_A_TOOL_REFERENCE.md) — All 60+ Tools
 - ❓ [FAQ](../reference/APPENDIX_B_FAQ.md) — Troubleshooting
 - 🏛️ [Prompt Philosophy](../reference/APPENDIX_C_PROMPT_PHILOSOPHY.md) — Architect Persona Design
 
 ---
 
 *Built with ❤️ by the Boring for Gemini team*
+
+---
+
+*Last updated: V14.0.0*

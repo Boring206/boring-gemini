@@ -22,7 +22,6 @@ import threading
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional
 
 # Thread-local connection for performance
 _local = threading.local()
@@ -35,7 +34,7 @@ class SessionContext:
     session_id: str
     current_task: str  # "debugging", "feature", "refactoring", "testing"
     file_focus: list[str]  # Currently active files
-    error_context: Optional[str] = None
+    error_context: str | None = None
 
 
 @dataclass
@@ -68,7 +67,7 @@ class ChunkStats:
     selection_count: int  # Times selected
     skip_count: int  # Times shown but not selected
     avg_rank_when_selected: float
-    last_selected: Optional[str]
+    last_selected: str | None
     relevance_boost: float  # Computed boost factor
 
 
@@ -117,7 +116,7 @@ class IntelligentRanker:
         self._session_cache: dict[str, SessionContext] = {}
 
         # V10.23: Learning metrics
-        self._learning_metrics: Optional[LearningMetrics] = None
+        self._learning_metrics: LearningMetrics | None = None
         self._cache_lock = threading.RLock()
         self._cache_loaded = False
 
@@ -202,7 +201,7 @@ class IntelligentRanker:
         self,
         selection_count: int,
         skip_count: int,
-        last_selected: Optional[str],
+        last_selected: str | None,
         task_affinity: dict = None,
         current_task: str = None,
     ) -> float:
@@ -295,7 +294,7 @@ class IntelligentRanker:
             self._cache_loaded = True
 
     def rerank(
-        self, query: str, results: list, top_k: int = 10, context: Optional[SessionContext] = None
+        self, query: str, results: list, top_k: int = 10, context: SessionContext | None = None
     ) -> list:
         """
         Re-rank retrieval results using learned preferences (V10.23 Enhanced).
@@ -415,7 +414,7 @@ class IntelligentRanker:
         )
         conn.commit()
 
-    def get_session_context(self, session_id: str) -> Optional[SessionContext]:
+    def get_session_context(self, session_id: str) -> SessionContext | None:
         """V10.23: Get session context for ranking."""
         if session_id in self._session_cache:
             return self._session_cache[session_id]
@@ -532,7 +531,7 @@ class IntelligentRanker:
             with self._cache_lock:
                 self._boost_cache[chunk_id] = boost
 
-    def get_chunk_stats(self, chunk_id: str) -> Optional[ChunkStats]:
+    def get_chunk_stats(self, chunk_id: str) -> ChunkStats | None:
         """Get stats for a specific chunk."""
         conn = self._get_connection()
         row = conn.execute("SELECT * FROM chunk_stats WHERE chunk_id = ?", (chunk_id,)).fetchone()

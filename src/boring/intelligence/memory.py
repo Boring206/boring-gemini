@@ -8,9 +8,10 @@ Uses SQLite for reliable, concurrent-safe storage.
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from ..config import settings
+from ..paths import get_boring_path
 from ..storage import LoopRecord, SQLiteStorage
 
 
@@ -55,10 +56,10 @@ class MemoryManager:
     - project_state: Overall project state (singleton)
     """
 
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root: Path | None = None):
         self.project_root = project_root or settings.PROJECT_ROOT
-        self.memory_dir = self.project_root / ".boring_memory"
-        self.memory_dir.mkdir(parents=True, exist_ok=True)
+        self.memory_dir = get_boring_path(self.project_root, "memory")
+        # Ensure dir exists is handled by get_boring_path if create=True (default)
 
         # Initialize SQLite storage backend
         self._storage = SQLiteStorage(self.memory_dir)
@@ -143,7 +144,7 @@ class MemoryManager:
         """Get known error patterns from SQLite."""
         return self._storage.get_top_errors(50)
 
-    def record_metric(self, name: str, value: float, metadata: Optional[dict] = None):
+    def record_metric(self, name: str, value: float, metadata: dict | None = None):
         """Record a performance or usage metric."""
         self._storage.record_metric(name, value, metadata)
 

@@ -2,7 +2,7 @@
 Core Module for Boring V4.0 (DEPRECATED Compatibility Layer)
 
 ⚠️ DEPRECATION NOTICE:
-This module is deprecated and will be removed in V5.0.
+This module is deprecated and will be removed in a future release.
 Please import directly from the appropriate modules:
 
 - from .circuit import should_halt_execution, reset_circuit_breaker, ...

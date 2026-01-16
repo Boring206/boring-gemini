@@ -9,7 +9,7 @@ import math
 import re
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any
 
 # Simple stopwords list to keep dependencies zero
 STOPWORDS = {
@@ -95,7 +95,7 @@ class InvertedIndex:
         tokens = [t for t in text.split() if len(t) > 2 and t not in STOPWORDS]
         return tokens
 
-    def add_document(self, doc_id: str, content: str, metadata: Optional[dict] = None):
+    def add_document(self, doc_id: str, content: str, metadata: dict | None = None):
         """Add or update a document in the index."""
         tokens = self.tokenize(content)
 

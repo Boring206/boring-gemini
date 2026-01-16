@@ -12,7 +12,7 @@ import logging
 import traceback
 import uuid
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from ..llm.provider import LLMProvider
 from ..quality_tracker import QualityTracker
@@ -36,8 +36,8 @@ class LLMJudge:
     def __init__(
         self,
         provider: LLMProvider,
-        quality_tracker: Optional[QualityTracker] = None,
-        project_root: Optional[Path] = None,
+        quality_tracker: QualityTracker | None = None,
+        project_root: Path | None = None,
         enable_bias_tracking: bool = True,
     ):
         self.cli = (
@@ -184,7 +184,7 @@ class LLMJudge:
         code_a: str,
         name_b: str,
         code_b: str,
-        context: Optional[str] = None,
+        context: str | None = None,
         interactive: bool = False,
     ) -> dict[str, Any]:
         """
@@ -243,7 +243,7 @@ class LLMJudge:
             logger.error(f"Code comparison failed: {e}")
             return {"winner": "TIE", "confidence": 0.0, "error": str(e)}
 
-    def _extract_json(self, response: str) -> Optional[dict[str, Any]]:
+    def _extract_json(self, response: str) -> dict[str, Any] | None:
         """Deprecated: Internal wrapper for backward compatibility within class."""
         return extract_json(response)
 
@@ -316,7 +316,7 @@ class LLMJudge:
         else:
             return score
 
-    def get_bias_report(self, days: int = 30) -> Optional[dict]:
+    def get_bias_report(self, days: int = 30) -> dict | None:
         """
         Get bias monitoring report.
 

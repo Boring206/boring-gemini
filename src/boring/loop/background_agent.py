@@ -8,11 +8,12 @@ Provides async task execution using local thread pool.
 
 import threading
 import uuid
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any
 
 from rich.console import Console
 
@@ -27,10 +28,10 @@ class BackgroundTask:
     name: str
     status: str  # pending, running, completed, failed
     created_at: datetime
-    started_at: Optional[datetime] = None
-    completed_at: Optional[datetime] = None
+    started_at: datetime | None = None
+    completed_at: datetime | None = None
     result: Any = None
-    error: Optional[str] = None
+    error: str | None = None
     progress: int = 0  # 0-100
 
 
@@ -178,7 +179,7 @@ class BackgroundTaskRunner:
 
 
 # --- Global instance ---
-_runner: Optional[BackgroundTaskRunner] = None
+_runner: BackgroundTaskRunner | None = None
 
 
 def get_runner() -> BackgroundTaskRunner:

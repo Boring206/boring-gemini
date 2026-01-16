@@ -1,21 +1,33 @@
 import json
-import os
 import time
 from importlib.metadata import version as get_version
 from pathlib import Path
 
+from boring.paths import get_boring_path, get_state_file
+
 # Streamlit placeholder for test patching and lazy loading
 st = None
 
-from boring.paths import get_boring_path, get_state_file
-
-# Paths
-PROJECT_ROOT = Path.cwd()
-STATUS_FILE = Path("status.json")
-LOG_FILE = Path("logs/boring.log")
-BRAIN_DIR = get_boring_path(PROJECT_ROOT, "brain", create=False)
-CIRCUIT_FILE = get_state_file(PROJECT_ROOT, "circuit_breaker_state")
 GLOBAL_BRAIN_FILE = Path.home() / ".boring" / "brain" / "global_patterns.json"
+
+
+def _get_project_root(project_root: Path | None = None) -> Path:
+    if project_root is not None:
+        return project_root
+    from boring.core.config import settings
+
+    return settings.PROJECT_ROOT
+
+
+def _get_dashboard_paths(project_root: Path | None = None) -> dict[str, Path]:
+    root = _get_project_root(project_root)
+    return {
+        "project_root": root,
+        "status_file": get_state_file(root, "status.json"),
+        "log_file": root / "logs" / "boring.log",
+        "brain_dir": get_boring_path(root, "brain", create=False),
+        "circuit_file": get_state_file(root, "circuit_breaker_state"),
+    }
 
 
 def load_global_brain_patterns() -> list:
@@ -78,6 +90,8 @@ def main():
     st.title("🤖 Boring Monitor")
     st.markdown("### Autonomous Agent Dashboard")
 
+    paths = _get_dashboard_paths()
+
     # --- Sidebar ---
     st.sidebar.header("Controls")
     refresh_rate = st.sidebar.slider("Refresh Rate (s)", 1, 10, 2)
@@ -94,8 +108,8 @@ def main():
     st.sidebar.markdown("**Backend**: Local CLI")
 
     # --- Top Metrics (Status) ---
-    status_data = load_json(STATUS_FILE)
-    circuit_data = load_json(CIRCUIT_FILE)
+    status_data = load_json(paths["status_file"])
+    circuit_data = load_json(paths["circuit_file"])
 
     col1, col2, col3, col4 = st.columns(4)
 
@@ -144,7 +158,7 @@ Below you can explore the Brain Map (learned patterns) and system configuration.
     # --- Data Loading ---
     from boring.services.storage import create_storage
 
-    storage = create_storage(PROJECT_ROOT)
+    storage = create_storage(paths["project_root"])
 
     # --- Main Layout ---
     tab1, tab2, tab3, tab4, tab5 = st.tabs(
@@ -154,8 +168,9 @@ Below you can explore the Brain Map (learned patterns) and system configuration.
     with tab2:
         st.subheader("Personal Usage Analytics")
         try:
-             # Lazy import
+            # Lazy import
             from boring.intelligence.usage_tracker import get_tracker
+
             tracker = get_tracker()
             stats = tracker.stats
 
@@ -164,13 +179,17 @@ Below you can explore the Brain Map (learned patterns) and system configuration.
             c2.metric("Distinct Tools Used", len(stats.tools))
             if stats.last_updated:
                 from datetime import datetime
-                c3.metric("Last Activity", datetime.fromtimestamp(stats.last_updated).strftime("%H:%M:%S"))
+
+                c3.metric(
+                    "Last Activity", datetime.fromtimestamp(stats.last_updated).strftime("%H:%M:%S")
+                )
 
             st.divider()
 
             # Prepare data for charts
             if stats.tools:
                 import pandas as pd
+
                 data = []
                 for tname, usage in stats.tools.items():
                     data.append({"Tool": tname, "Calls": usage.count, "Last Used": usage.last_used})
@@ -190,10 +209,10 @@ Below you can explore the Brain Map (learned patterns) and system configuration.
 
     with tab1:
         st.subheader("Live Logs")
-        if LOG_FILE.exists():
+        if paths["log_file"].exists():
             # Read last 50 lines for performance
             try:
-                with open(LOG_FILE, encoding="utf-8") as f:
+                with open(paths["log_file"], encoding="utf-8") as f:
                     lines = f.readlines()[-100:]
 
                 log_text = "".join(lines)
@@ -388,10 +407,10 @@ Just start using Boring tools - the Brain will populate automatically! 🚀
         st.subheader("System Configuration")
         st.json(
             {
-                "Project Root": os.getcwd(),
+                "Project Root": str(paths["project_root"]),
                 "Streamlit Version": st.__version__,
-                "Log File": str(LOG_FILE.absolute()),
-                "Status File": str(STATUS_FILE.absolute()),
+                "Log File": str(paths["log_file"].absolute()),
+                "Status File": str(paths["status_file"].absolute()),
             }
         )
 

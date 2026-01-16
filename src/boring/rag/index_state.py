@@ -2,7 +2,6 @@ import hashlib
 import json
 import logging
 from pathlib import Path
-from typing import Optional
 
 from ..config import settings
 
@@ -22,7 +21,7 @@ class IndexState:
 
     CACHE_FILENAME = "rag_index_state.json"
 
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root: Path | None = None):
         self.project_root = project_root or settings.PROJECT_ROOT
         self.cache_dir = settings.CACHE_DIR
         self.cache_path = self.cache_dir / self.CACHE_FILENAME
@@ -82,6 +81,19 @@ class IndexState:
         """Remove file from state."""
         if rel_path in self.state:
             del self.state[rel_path]
+
+            if rel_path in self.state:
+                del self.state[rel_path]
+
+    def get_last_commit(self) -> str:
+        """Get the commit hash of the last successful index."""
+        return self.state.get("__meta__", {}).get("commit", "")
+
+    def update_commit(self, commit_hash: str):
+        """Update the last indexed commit hash."""
+        if "__meta__" not in self.state:
+            self.state["__meta__"] = {}
+        self.state["__meta__"]["commit"] = commit_hash
 
     def save(self):
         """Persist state to disk."""

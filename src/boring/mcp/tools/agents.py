@@ -1,16 +1,11 @@
-"""
-MCP Tools for Multi-Agent System (Pure CLI Mode)
-
-Returns CLI command templates for multi-agent orchestration.
-No internal API calls - the IDE or Gemini CLI executes the commands.
-"""
-
 from typing import Annotated
 
 from pydantic import Field
 
-from ...audit import audited
+from ...agents.orchestrator import MultiAgentOrchestrator
+from ...services.audit import audited
 from ..utils import get_project_root_or_error
+from .synth_tool import boring_synth_tool
 
 # ==============================================================================
 # AGENT TOOLS
@@ -18,7 +13,7 @@ from ..utils import get_project_root_or_error
 
 
 @audited
-def boring_multi_agent(
+async def boring_multi_agent(
     task: Annotated[str, Field(description="What to build/fix (detailed description)")],
     execute: Annotated[
         bool,
@@ -39,8 +34,6 @@ def boring_multi_agent(
     Args:
         task: What to build/fix
         execute: [DANGEROUS] Execute the workflow immediately in background
-        auto_approve_plans: Skip human approval for plans
-        project_path: Optional explicit path to project root
     """
     project_root, error = get_project_root_or_error(project_path)
     if error:
@@ -52,9 +45,13 @@ def boring_multi_agent(
 
         guard = get_shadow_guard(project_root)
 
-        cmd_str = f"boring run {task[:50]}..."
+        # We treat this as a complex shell operation
+        f"boring agent-runner {task[:50]}..."
         pending = guard.check_operation(
-            {"name": "shell", "args": {"command": cmd_str, "cmd": cmd_str}}
+            {
+                "name": "multi-agent",
+                "args": {"task": task, "agents": ["Architect", "Coder", "Reviewer"]},
+            }
         )
 
         if pending:
@@ -66,23 +63,20 @@ def boring_multi_agent(
                 }
 
         try:
-            import subprocess
-            import sys
-
-            # Run 'boring run' in background
-            cmd = [sys.executable, "-m", "boring.main", "run", task, "--backend", "cli"]
-            pid = subprocess.Popen(cmd, cwd=str(project_root)).pid
+            # V14: Use MultiAgentOrchestrator for deep coordination
+            orchestrator = MultiAgentOrchestrator(project_root)
+            results = await orchestrator.execute_goal(task)
 
             return {
-                "status": "EXECUTING",
-                "pid": pid,
-                "message": f"🚀 Background process started (PID: {pid})\nCommand: {' '.join(cmd)}",
-                "warning": "This process is running on the host machine. Monitor output via 'boring-monitor'.",
+                "status": "COMPLETED",
+                "message": "Multi-agent workflow executed successfully.",
+                "results": [r.dict() for r in results if hasattr(r, "dict")] if results else [],
             }
+
         except Exception as e:
             return {"status": "ERROR", "message": f"Failed to execute: {e}"}
 
-    # Build multi-step CLI workflow
+    # Build multi-step CLI workflow (Manual Template)
     steps = [
         {
             "step": 1,
@@ -201,6 +195,17 @@ Use markdown with clear sections for each file and step.
             "The architect agent analyzes the task and provides a structured plan."
         ),
     }
+
+
+@audited
+def boring_agent_plan(
+    task: Annotated[str, Field(description="What to build/fix")],
+    project_path: Annotated[
+        str, Field(description="Optional explicit path to project root")
+    ] = None,
+) -> dict:
+    """Deprecated alias for boring_prompt_plan."""
+    return boring_prompt_plan(task=task, project_path=project_path)
 
 
 @audited
@@ -388,6 +393,10 @@ def register_agent_tools(mcp, helpers: dict):
         annotations={"readOnlyHint": True, "openWorldHint": True},
     )(boring_prompt_plan)
     mcp.tool(
+        description="[PROMPT GENERATOR] Legacy alias of boring_prompt_plan.",
+        annotations={"readOnlyHint": True, "openWorldHint": True},
+    )(boring_agent_plan)
+    mcp.tool(
         description="[PROMPT GENERATOR] Generate code review prompt. Returns a prompt to execute with your IDE AI or Gemini CLI.",
         annotations={"readOnlyHint": True, "openWorldHint": True},
     )(boring_agent_review)
@@ -395,3 +404,9 @@ def register_agent_tools(mcp, helpers: dict):
         description="[SEMANTIC ROUTER] Route tasks to specialized tools. Returns instructions for delegating to external MCP servers.",
         annotations={"readOnlyHint": True, "openWorldHint": True},
     )(boring_delegate)
+
+    # V14: Tool Synthesis 2.0
+    mcp.tool(
+        description="[METAMORPHOSIS] Synthesize and register a new MCP tool dynamically.",
+        annotations={"readOnlyHint": False, "openWorldHint": True},
+    )(boring_synth_tool)

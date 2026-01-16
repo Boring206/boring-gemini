@@ -1,7 +1,6 @@
 import re
 from dataclasses import dataclass
 from re import Pattern
-from typing import Optional
 
 
 @dataclass
@@ -9,14 +8,59 @@ class ErrorExplanation:
     original_error: str
     friendly_message: str
     technical_summary: str
-    fix_command: Optional[str] = None
+    fix_command: str | None = None
     complexity: str = "Low"
 
 
 class ErrorTranslator:
     def __init__(self):
         # Patterns: (Regex, Friendly Message Template, Technical Summary, Fix Command Template)
-        self.patterns: list[tuple[Pattern, str, str, Optional[str]]] = [
+        self.patterns: list[tuple[Pattern, str, str, str | None]] = [
+            (
+                re.compile(r"requests\.exceptions\.(ConnectionError|ConnectTimeout|ReadTimeout)"),
+                "網路連線失敗。如果你開啟了離線模式 (Offline Mode)，請確認你沒有嘗試呼叫外部 API。若需連網，請檢查網路狀態或代理設定。",
+                "Network Error",
+                "boring doctor",
+            ),
+            (
+                re.compile(r"google\.api_core\.exceptions\.(Unauthenticated|PermissionDenied)"),
+                "Google Gemini API 認證失敗。請檢查你的 GEMINI_API_KEY 是否正確，或是否過期。",
+                "Auth Error",
+                "boring wizard",
+            ),
+            (
+                re.compile(r"(ResourceExhausted|429 Too Many Requests)"),
+                "API 請求次數過多 (Rate Limit)。請稍候再試，或切換到付費方案。",
+                "Rate Limit Exceeded",
+                None,
+            ),
+            # === V14.0 Features ===
+            (
+                re.compile(r"Model '(.*?)' not found"),
+                "找不到本地 LLM 模型 '{0}'。請先下載模型才能在離線模式使用。",
+                "Local Model Missing",
+                "boring model download {0}",
+            ),
+            (
+                re.compile(r"FastMCP error:"),
+                "MCP 伺服器內部錯誤。可能是工具註冊失敗或參數型別不符。",
+                "MCP Server Error",
+                "boring doctor",
+            ),
+            # === Config & Environment ===
+            (
+                re.compile(r"pydantic_settings\.exceptions\.SettingsError"),
+                "設定檔載入失敗。請檢查 .env 檔案格式是否正確。",
+                "Configuration Error",
+                "boring doctor",
+            ),
+            (
+                re.compile(r"tomllib\.TOMLDecodeError"),
+                "解析 pyproject.toml 失敗。文件格式可能有錯，請檢查語法。",
+                "TOML Parse Error",
+                None,
+            ),
+            # === Python Specific ===
             (
                 re.compile(r"ModuleNotFoundError: No module named '(.*?)'"),
                 "看起來你的程式碼用到了一個還沒安裝的工具箱 ({0})。",
@@ -101,6 +145,32 @@ class ErrorTranslator:
                 "JS/TS 語法錯誤。通常是多了或少了符號 (例如括號、分號)，或是在不該出現的地方寫了程式碼。",
                 "JS Syntax Error",
                 None,
+            ),
+            # === Git Errors (V14.6) ===
+            (
+                re.compile(r"git\.exc\.InvalidGitRepositoryError"),
+                "這不是一個 Git 倉庫。請先執行 `git init` 初始化，或者確認你是否在正確的專案目錄下。",
+                "Not a Git Repository",
+                "git init",
+            ),
+            (
+                re.compile(r"git\.exc\.GitCommandError:.*pathspec.*did not match any file"),
+                "Git 找不到指定的檔案。請確認檔案是否已經被 commit，或者拼字是否正確。",
+                "Git File Not Found",
+                None,
+            ),
+            # === System & Permissions ===
+            (
+                re.compile(r"PermissionError: \[Errno 13\] Permission denied: '(.*?)'"),
+                "權限不足，無法存取 '{0}'。請嘗試以管理員身分執行，或檢查檔案權限設定。",
+                "Permission Denied",
+                None,
+            ),
+            (
+                re.compile(r"OSError: \[Errno 28\] No space left on device"),
+                "磁碟空間不足！請清理一些舊檔案或暫存檔。",
+                "Disk Full",
+                "boring clean --all",
             ),
         ]
 

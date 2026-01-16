@@ -1,7 +1,7 @@
 # 附錄 A：完整 MCP 工具參考指南 (Appendix A: Complete MCP Tool Reference)
 
-> **工具總數**：60+ 個工具，組織為 19 個類別。
-> **版本**：V11.3.0 (Full-Power Update)
+> **工具總數**：100+ 個工具，組織為 20+ 個類別。
+> **版本**：V14.0.0 (Predictive Intelligence & Offline-First)
 >
 > **💡 建議**：優先使用 Universal Router (`boring()`) 或 CLI (`boring-route`)。大多數情況下你不需要直接調用這些工具。
 
@@ -226,6 +226,88 @@
 
 ---
 
+## 19. 預測智能工具 (Predictive Intelligence Tools - V14.0)
+
+> 這些工具利用歷史數據和 Brain 模式來預測潛在問題並優化工作流。
+
+| 工具 | 說明 | 關鍵參數 |
+|------|------|----------|
+| `boring_predict_impact` | **預測變更影響**: 基於歷史分析風險等級和受影響檔案。 | `file_path`, `change_type` |
+| `boring_risk_areas` | **識別熱點**: 顯示高錯誤頻率的檔案。 | `limit` |
+| `boring_cache_insights` | **快取分析**: 顯示命中率和相關性預取統計。 | - |
+| `boring_set_session_context` | **上下文優化**: 針對特定任務類型 (debug/feature) 微調 RAG/Cache。 | `task_type`, `keywords` |
+| `boring_get_session_context` | **檢查上下文**: 查看當前優化參數。 | - |
+
+---
+
+## 20. 補充註冊工具 (Supplemental Registered Tools - V14.0)
+
+| 工具 | 說明 | 關鍵參數 |
+|------|------|----------|
+| `boring_active_skill` | 啟用技能並注入工具 | `skill_name` |
+| `boring_best_next_action` | 根據專案狀態建議下一步 | - |
+| `boring_brain_status` | Brain 狀態概覽 | - |
+| `boring_brain_sync` | 同步全域 Brain | - |
+| `boring_call` | 以名稱執行內部工具 | `tool_name`, `arguments` |
+| `boring_checkpoint` | 建立或還原專案快照 | `action`, `message` |
+| `boring_context` | 管理上下文 (save/load/list) | `action`, `context_id` |
+| `boring_distill_skills` | 將學習結果蒸餾為技能 | `project_path` |
+| `boring_done` | 任務完成通知 | `message`, `title` |
+| `boring_flow` | 執行 Flow 工作流 | `goal`, `mode` |
+| `boring_get_relevant_patterns` | 取得相關 Brain 模式 | `query`, `limit` |
+| `boring_global_list` | 列出全域模式 | `limit` |
+| `boring_incremental_learn` | 增量學習 | `project_path` |
+| `boring_inspect_tool` | 檢查工具 Schema | `tool_name` |
+| `boring_integrity_score` | 專案完整性分數 | `project_path` |
+| `boring_intelligence_stats` | 智能使用統計 | - |
+| `boring_learn_pattern` | 學習單一模式 | `pattern`, `solution` |
+| `boring_optimize_context` | 優化上下文 | `text`, `goal` |
+| `boring_orchestrate` | 編排多步驟流程 | `goal` |
+| `boring_pattern_stats` | Brain 模式統計 | `project_path` |
+| `boring_profile` | 管理個人檔案 (get/learn) | `action`, `error_pattern` |
+| `boring_prompt_fix` | 修復提示產生器 | `task` |
+| `boring_prompt_plan` | 規劃提示產生器 | `task` |
+| `boring_prune_patterns` | 清理低品質模式 | `limit` |
+| `boring_rag_reload` | 重新載入 RAG 相依 | - |
+| `boring_reset_skills` | 重置已注入技能 | - |
+| `boring_session_auto` | 自動化 session 流程 | `task` |
+| `boring_session_confirm` | 確認 session 步驟 | `step_id` |
+| `boring_session_load` | 載入 session | `session_id` |
+| `boring_session_pause` | 暫停 session | - |
+| `boring_session_start` | 啟動 session | `goal` |
+| `boring_session_status` | session 狀態 | - |
+| `boring_shadow_trust` | 信任路徑或命令 | `path` |
+| `boring_shadow_trust_list` | 列出信任規則 | - |
+| `boring_shadow_trust_remove` | 移除信任規則 | `path` |
+| `boring_skill_activate` | 啟用技能 | `skill_name` |
+| `boring_skill_create` | 建立技能 | `name`, `goal` |
+| `boring_skill_discover` | 探索本地技能 | `project_path` |
+| `boring_skill_download` | 下載技能 | `url` |
+| `boring_skills_recommend` | 推薦技能 | `project_path` |
+| `boring_status` | 專案狀態快照 | - |
+| `boring_synth_tool` | 合成新工具 | `description` |
+| `boring_task` | 背景任務 (submit/status/list) | `action`, `task_type` |
+| `boring_transaction` | 事務 (start/commit/rollback) | `action`, `description` |
+| `boring_transaction_rollback` | 舊版還原別名 | `project_path` |
+| `boring_usage_stats` | 使用統計 | - |
+
+---
+
+## 21. CLI 整合 (CLI Integration - V14.0)
+
+> 部分 V14.0 功能最適合直接通過 CLI 使用。
+
+| 指令 | 說明 |
+|------|------|
+| `boring predict` | 對當前變更運行預測分析。 |
+| `boring bisect` | AI 驅動的 Git Bisect 尋找 Bug 源頭。 |
+| `boring diagnostic` | 深度專案健康檢查。 |
+| `boring model` | 管理本地 LLM (下載/列表/刪除)。 |
+| `boring doctor` | 系統健康與 MCP 連接檢查。 |
+| `boring offline` | 切換離線體驗模式。 |
+
+---
+
 ## MCP 資源 (Resources)
 
 | 資源 URI | 說明 |
@@ -256,4 +338,4 @@
 
 ---
 
-*最後更新: V11.3.0*
+*最後更新: V14.0.0*

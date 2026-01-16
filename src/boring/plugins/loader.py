@@ -12,10 +12,11 @@ Features:
 import hashlib
 import importlib.util
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from functools import wraps
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any
 
 
 @dataclass
@@ -28,8 +29,8 @@ class BoringPlugin:
     version: str = "1.0.0"
     author: str = "Unknown"
     tags: list[str] = field(default_factory=list)
-    file_path: Optional[Path] = None
-    file_hash: Optional[str] = None
+    file_path: Path | None = None
+    file_hash: str | None = None
 
 
 def plugin(
@@ -37,7 +38,7 @@ def plugin(
     description: str,
     version: str = "1.0.0",
     author: str = "Unknown",
-    tags: Optional[list[str]] = None,
+    tags: list[str] | None = None,
 ):
     """
     Decorator to register a function as a Boring plugin.
@@ -84,7 +85,7 @@ class PluginLoader:
     2. User-global: ~/.boring/plugins/
     """
 
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root: Path | None = None):
         self.project_root = project_root
         self.plugins: dict[str, BoringPlugin] = {}
         self._file_hashes: dict[Path, str] = {}
@@ -190,7 +191,7 @@ class PluginLoader:
 
         return False
 
-    def get_plugin(self, name: str) -> Optional[BoringPlugin]:
+    def get_plugin(self, name: str) -> BoringPlugin | None:
         """Get a plugin by name."""
         return self.plugins.get(name)
 
@@ -221,10 +222,10 @@ class PluginLoader:
 
 
 # Global loader instance
-_loader: Optional[PluginLoader] = None
+_loader: PluginLoader | None = None
 
 
-def get_plugin_loader(project_root: Optional[Path] = None) -> PluginLoader:
+def get_plugin_loader(project_root: Path | None = None) -> PluginLoader:
     """Get or create the global plugin loader."""
     global _loader
     if _loader is None:

@@ -12,11 +12,12 @@ Per user decision:
 import ast
 import json
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any
 
 from boring.core.utils import TransactionalFileWriter
 
@@ -67,8 +68,8 @@ class PendingOperation:
     description: str
     preview: str  # What the change looks like
     timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
-    approved: Optional[bool] = None
-    approver_note: Optional[str] = None
+    approved: bool | None = None
+    approver_note: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -137,8 +138,8 @@ class ShadowModeGuard:
         self,
         project_root: Path,
         mode: ShadowModeLevel = ShadowModeLevel.ENABLED,
-        approval_callback: Optional[ApprovalCallback] = None,
-        pending_file: Optional[Path] = None,
+        approval_callback: ApprovalCallback | None = None,
+        pending_file: Path | None = None,
     ):
         """
         Initialize Shadow Mode guard.
@@ -165,6 +166,32 @@ class ShadowModeGuard:
         # Load any existing pending operations
         self._load_pending()
 
+        # V12.4: File Integrity Monitor
+        try:
+            from ..security.integrity import FileIntegrityMonitor
+
+            self.integrity_monitor = FileIntegrityMonitor(self.project_root)
+            # Monitor config and protected files
+            monitored = [
+                self.project_root / f
+                for f in self.PROTECTED_FILES
+                if (self.project_root / f).exists()
+            ]
+            # Add sensitive config patterns
+            for pattern in self.CONFIG_PATTERNS:
+                # Basic glob for top-level configs matches
+                if not pattern.startswith("."):
+                    for f in self.project_root.glob(f"{pattern}*"):
+                        if f.is_file():
+                            monitored.append(f)
+
+            if monitored:
+                self.integrity_monitor.snapshot_files(monitored)
+
+        except ImportError:
+            self.integrity_monitor = None
+            logger.warning("FileIntegrityMonitor not available")
+
     @property
     def mode(self) -> ShadowModeLevel:
         """Get current protection mode."""
@@ -176,7 +203,7 @@ class ShadowModeGuard:
         self._mode = value
         self._persist_mode()
 
-    def check_operation(self, operation: dict[str, Any]) -> Optional[PendingOperation]:
+    def check_operation(self, operation: dict[str, Any]) -> PendingOperation | None:
         """
         Check if an operation should be blocked for approval.
 
@@ -216,6 +243,17 @@ class ShadowModeGuard:
             return pending
 
         return None  # Auto-approve LOW/MEDIUM
+
+        return None  # Auto-approve LOW/MEDIUM
+
+    def verify_system_integrity(self) -> list[str]:
+        """
+        Check for silent modifications to protected files.
+        V12.4 Security Feature.
+        """
+        if self.integrity_monitor:
+            return self.integrity_monitor.detect_silent_modifications()
+        return []
 
     def request_approval(self, pending: PendingOperation) -> bool:
         """
@@ -283,7 +321,7 @@ class ShadowModeGuard:
         self._save_pending()
         return count
 
-    def is_operation_approved(self, operation_id: str) -> Optional[bool]:
+    def is_operation_approved(self, operation_id: str) -> bool | None:
         """
         Check if an operation has been approved.
 
@@ -295,7 +333,7 @@ class ShadowModeGuard:
                 return op.approved
         return None
 
-    def _classify_operation(self, op_name: str, args: dict[str, Any]) -> Optional[PendingOperation]:
+    def _classify_operation(self, op_name: str, args: dict[str, Any]) -> PendingOperation | None:
         """Classify an operation by severity."""
         file_path = args.get("file_path", "") or args.get("path", "")
 
