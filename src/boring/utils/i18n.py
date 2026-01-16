@@ -762,7 +762,6 @@ _TRANSLATIONS = {
         "hi": "कार्यक्षेत्र परियोजनाएं ({count}):",
         "ar": "مشاريع مساحة العمل ({count}):",
     },
-
     "workspace_list_item": {
         "en": "{marker} [{style}]{name}[/{style}] ({path})",
         "zh": "{marker} [{style}]{name}[/{style}] ({path})",
@@ -1034,7 +1033,6 @@ _TRANSLATIONS = {
         "hi": "❌ सत्यापन विफल।",
         "ar": "❌ فشل التحقق.",
     },
-
     # Auto Fix (Target Not Found supplement)
     "auto_fix_target_not_found": {
         "en": "Error: Target '{target}' not found",
@@ -1043,7 +1041,6 @@ _TRANSLATIONS = {
         "hi": "त्रुटि: लक्ष्य '{target}' नहीं मिला",
         "ar": "خطأ: الهدف '{target}' غير موجود",
     },
-
     # Evaluate
     "evaluate_backend_cli": {
         "en": "Using Backend: Local CLI",
@@ -1306,7 +1303,6 @@ _TRANSLATIONS = {
         "hi": "स्थापना विफल: {message}",
         "ar": "فشل التثبيت: {message}",
     },
-
     # Tutorial
     "tutorial_note_created": {
         "en": "[green]Learning note created successfully![/green]",
@@ -1352,7 +1348,6 @@ _TRANSLATIONS = {
         "hi": "'{typo}' के लिए कोई सुझाव नहीं मिला",
         "ar": "لم يتم العثور على اقتراح لـ '{typo}'",
     },
-
 }
 
 
