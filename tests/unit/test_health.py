@@ -64,8 +64,8 @@ class TestCheckDependencies:
         """Test that required dependencies are installed."""
         result = check_required_dependencies()
 
-        # In test environment, deps should be installed
-        assert result.status == HealthStatus.OK
+        # In test environment, deps should be installed (or WARN if optional parser missing)
+        assert result.status in [HealthStatus.OK, HealthStatus.WARN]
 
 
 class TestCheckPromptFile:

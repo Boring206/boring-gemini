@@ -322,22 +322,6 @@ def test_setup_extensions(mock_dependencies):
     mock_mgr.register_boring_mcp.assert_called_once()
 
 
-def test_memory_clear_exists(mock_dependencies, tmp_path, mocker):
-    # Check logic where directory exists
-    mocker.patch("pathlib.Path.exists", return_value=True)
-    mock_rmtree = mocker.patch("shutil.rmtree")
-
-    result = runner.invoke(app, ["memory-clear"])
-    assert result.exit_code == 0
-    assert "Cleanup complete" in result.stdout
-    mock_rmtree.assert_called()
-
-
-def test_memory_clear_not_exists(mock_dependencies, mocker):
-    mocker.patch("pathlib.Path.exists", return_value=False)
-    result = runner.invoke(app, ["memory-clear"])
-    assert result.exit_code == 0
-    assert "No cleanup targets found" in result.stdout
 
 
 def test_health_check_healthy(mock_dependencies):

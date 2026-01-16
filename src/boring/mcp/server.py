@@ -304,6 +304,7 @@ def run_server():
     if not instance.MCP_AVAILABLE:
         _log_stderr("mcp_fastmcp_missing")
         sys.exit(1)
+        return
 
     # 1. Install stdout interceptor immediately
     interceptors.install_interceptors()

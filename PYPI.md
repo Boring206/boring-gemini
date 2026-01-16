@@ -38,16 +38,16 @@ npx -y @smithery/cli@latest install boring/boring --client cursor
 
 ---
 
-## 🧐 Async Evolution (V13.0.0)
+## 🔮 The Cognitive Revolution (V14.0.0)
 
-V13.0.0 marks the **Async Evolution** era, focusing on multi-agent collaboration and extreme performance:
+V14.0.0 transitions Boring from a tool to a **Cognitive Autonomous Agent** with a 4-layer architecture:
 
-- **⚡ Async Agent Runner**: Simultaneous execution of Architect, Coder, and Reviewer for 3x development speed.
-- **📂 Semantic Storage Fallback**: Full FAISS integration for local vector search when ChromaDB is unavailable.
-- **🚀 Prompt Caching**: Smart context reuse reduces token costs by ~15-30% for iterative loops.
-- **🐉 One Dragon Flow**: Integrated State-Machine (Architect -> Builder -> Healer -> Polish -> Evolver).
-- **🏆 Skill Compilation**: High-frequency successful patterns distilled into Strategic Skills.
-- **🌐 Global Swarm Sync**: Real-time knowledge synchronization via Git.
+- **🧠 Cognitive Architecture (System 2)**: Uses `sequentialthinking` to plan, reason, and revise before execution.
+- **🐉 One Dragon Flow**: Autonomous traversal of the entire SDLC (Design → Build → Polish → Verify).
+- **🔮 Predictive Intelligence**: `boring predict` and `boring bisect` catch errors before they happen.
+- **🔌 Offline-First Mode**: 100% network-independent operation with local LLMs via `llama-cpp-python`.
+- **🛡️ Sovereign Autonomy**: Managed tool governance (`boring policy`) and knowledge continuity (`boring bio`).
+- **🩺 Self-Healing**: `boring doctor --fix` automatically repairs your environment.
 
 ---
 
@@ -55,8 +55,8 @@ V13.0.0 marks the **Async Evolution** era, focusing on multi-agent collaboration
 
 | Feature | Description |
 |---------|-------------|
-| 🧠 **Autonomous Loop** | Runs continuously: thinking → coding → testing → fixing. |
-| 🕵️ **Context Optimization** | 80% token savings via smart chunking and specificity ranking. |
+| 🧠 **Autonomous Loop** | Thinking → Coding → Testing → Fixing with System 2 reasoning. |
+| 🕵️ **Context Optimization** | 80% token savings via smart chunking and semantic specificity ranking. |
 | 🛡️ **Shadow Mode** | Safe execution sandbox catches destructive operations before they happen. |
 | 🧩 **Natural Language** | Universal Router: "幫我寫測試" or "Fix auth bugs" triggered instantly. |
 | 🧪 **Vibe Score** | Gamified health check: Lint, Security, and Docs tracked over time. |
@@ -75,9 +75,10 @@ V13.0.0 marks the **Async Evolution** era, focusing on multi-agent collaboration
 ```
 
 ### Managed CLI Utilities
+- `boring flow`: Start the One Dragon autonomous flow.
+- `boring wizard`: Bridge Cursor, Claude, VSCode, and more in seconds.
 - `boring-monitor`: Fullscreen TUI dashboard for live agent monitoring.
 - `boring-dashboard`: Modern web UI for project health and history.
-- `boring-setup`: Scaffold new Boring-ready projects in seconds.
 
 **About `boring-route`**: This command only **shows** which MCP tool would be selected for your query. To actually execute the tool, use it in your MCP client (Cursor/Claude Desktop).
 
@@ -86,10 +87,11 @@ V13.0.0 marks the **Async Evolution** era, focusing on multi-agent collaboration
 ## 🔧 Key Features
 
 - **67+ MCP Tools**: RAG, Testing, Review, Security, Git, and more
-- **Multi-Language**: Python, JavaScript, TypeScript support
+- **Predictive Error Detection**: pro-active anti-pattern analysis
+- **Local LLM Support**: Llama 3, Qwen 2.5, Phi-3 integration
+- **Multi-Language**: Python, JavaScript, TypeScript, Go, C++ support
 - **Quality Gates**: CI/CD integration with multi-tier verification
 - **Memory System**: Persistent learning and pattern recognition
-- **LLM-as-a-Judge**: Advanced evaluation with bias monitoring
 
 ---
 
@@ -97,6 +99,7 @@ V13.0.0 marks the **Async Evolution** era, focusing on multi-agent collaboration
 
 - [GitHub Repository](https://github.com/Boring206/boring-gemini)
 - [Vibe Coder Guide](https://github.com/Boring206/boring-gemini/blob/main/docs/guides/vibe-coder.md)
+- [Offline-First Guide](https://github.com/Boring206/boring-gemini/blob/main/docs/guides/offline-quickstart.md)
 - [MCP Tools Reference](https://github.com/Boring206/boring-gemini/blob/main/docs/features/mcp-tools.md)
 
 ---

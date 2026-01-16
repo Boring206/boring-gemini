@@ -7,7 +7,8 @@ from boring.mcp.tools.batch import boring_batch
 
 @pytest.fixture
 def mock_mcp():
-    with patch("boring.mcp.tools.batch.mcp") as mock:
+    with patch("boring.mcp.tools.batch.mcp") as mock, \
+         patch("boring.mcp.tools.batch.MCP_AVAILABLE", True):
         # Create a fake tool registry
         # We need to simulate FastMCP structure: _tools[name] = Tool(fn=...)
         mock._tools = {}

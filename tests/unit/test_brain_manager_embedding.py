@@ -18,14 +18,16 @@ def temp_project(tmp_path):
 class TestBrainManagerEmbedding:
     """Tests for FAISS and Semantic Search in BrainManager."""
 
-    @patch("faiss.IndexFlatL2")
-    @patch("sentence_transformers.SentenceTransformer")
-    def test_init_faiss_fallback(self, mock_model, mock_faiss, temp_project):
+    def test_init_faiss_fallback(self, temp_project):
         """Test FAISS initialization when ChromaDB is unavailable."""
-        with patch("chromadb.PersistentClient", side_effect=ImportError):
-            manager = BrainManager(temp_project)
-            assert manager.faiss_index is not None
-            assert manager.vector_store is None
+        mock_faiss_mod = MagicMock()
+        mock_st_mod = MagicMock()
+        
+        with patch.dict("sys.modules", {"faiss": mock_faiss_mod, "sentence_transformers": mock_st_mod}):
+            with patch("chromadb.PersistentClient", side_effect=ImportError):
+                manager = BrainManager(temp_project)
+                assert manager.faiss_index is not None
+                assert manager.vector_store is None
 
     def test_get_relevant_patterns_faiss(self, temp_project):
         """Test semantic search using FAISS (mocked)."""
