@@ -101,7 +101,7 @@ def test_hooks_uninstall_failure(mock_dependencies):
     result = runner.invoke(app, ["hooks", "uninstall"])
 
     assert result.exit_code == 1
-    assert "Error: Commit hook locked" in result.stdout
+    assert "Failed to remove hooks: Commit hook locked" in result.stdout
 
 
 def test_cli_no_subcommand_non_interactive_shows_help(mocker):
@@ -269,7 +269,7 @@ def test_dashboard_missing_deps(mock_dependencies, mocker):
 
     result = runner.invoke(app, ["dashboard"])
     assert result.exit_code == 1
-    assert "dashboard requires extra dependencies" in result.stdout.lower()
+    assert "dashboard requirements not found" in result.stdout.lower()
 
 
 def test_auto_fix_target_not_found(mock_dependencies, tmp_path):
@@ -337,7 +337,7 @@ def test_memory_clear_not_exists(mock_dependencies, mocker):
     mocker.patch("pathlib.Path.exists", return_value=False)
     result = runner.invoke(app, ["memory-clear"])
     assert result.exit_code == 0
-    assert "Already clean" in result.stdout
+    assert "No cleanup targets found" in result.stdout
 
 
 def test_health_check_healthy(mock_dependencies):
@@ -367,7 +367,7 @@ def test_version_command(mock_dependencies):
         result = runner.invoke(app, ["version"])
 
     assert result.exit_code == 0
-    assert "Boring-Gemini v1.2.3" in result.stdout
+    assert "Boring for Gemini v1.2.3" in result.stdout
 
 
 def test_version_command_fallback(mock_dependencies):
@@ -420,7 +420,7 @@ def test_workflow_export_success(mock_dependencies):
     result = runner.invoke(app, ["workflow", "export", "my-flow"])
 
     assert result.exit_code == 0
-    assert "Exported to" in result.stdout
+    assert "Workflow exported to" in result.stdout
 
 
 def test_workflow_export_failure(mock_dependencies):
@@ -430,14 +430,14 @@ def test_workflow_export_failure(mock_dependencies):
     result = runner.invoke(app, ["workflow", "export", "my-flow"])
 
     assert result.exit_code == 1
-    assert "Error: Failed export" in result.stdout
+    assert "Export failed: Failed export" in result.stdout
 
 
 def test_workflow_publish_no_token(mock_dependencies, mocker):
     mocker.patch.dict("os.environ", {}, clear=True)
     result = runner.invoke(app, ["workflow", "publish", "my-flow"])
     assert result.exit_code == 1
-    assert "GitHub Token required" in result.stdout
+    assert "Error: GitHub Token not found" in result.stdout
 
 
 def test_workflow_publish_success(mock_dependencies, mocker):
@@ -447,7 +447,7 @@ def test_workflow_publish_success(mock_dependencies, mocker):
     mocker.patch.dict("os.environ", {"GITHUB_TOKEN": "fake-token"})
     result = runner.invoke(app, ["workflow", "publish", "my-flow"])
     assert result.exit_code == 0
-    assert "Published Successfully" in result.stdout
+    assert "Workflow published successfully" in result.stdout
 
 
 def test_workflow_publish_failure(mock_dependencies, mocker):
@@ -457,7 +457,7 @@ def test_workflow_publish_failure(mock_dependencies, mocker):
     mocker.patch.dict("os.environ", {"GITHUB_TOKEN": "fake-token"})
     result = runner.invoke(app, ["workflow", "publish", "my-flow"])
     assert result.exit_code == 1
-    assert "Publish Failed" in result.stdout
+    assert "Publish failed" in result.stdout
 
 
 def test_workflow_install_success(mock_dependencies):
@@ -467,7 +467,7 @@ def test_workflow_install_success(mock_dependencies):
     result = runner.invoke(app, ["workflow", "install", "source.json"])
 
     assert result.exit_code == 0
-    assert "Installed!" in result.stdout
+    assert "Workflow installed successfully" in result.stdout
 
 
 def test_workflow_install_failure(mock_dependencies):
@@ -477,7 +477,7 @@ def test_workflow_install_failure(mock_dependencies):
     result = runner.invoke(app, ["workflow", "install", "source.json"])
 
     assert result.exit_code == 1
-    assert "Error: Corrupt file" in result.stdout
+    assert "Installation failed: Corrupt file" in result.stdout
 
 
 # --- Evaluate Command ---
@@ -504,7 +504,7 @@ def test_evaluate_success_cli(mock_dependencies, tmp_path):
 
     print(f"STDOUT:\n{result.stdout}")
     assert result.exit_code == 0
-    assert "Score: 4.5/5.0" in result.stdout
+    assert "Overall Score: 4.5/5" in result.stdout
     assert "Good code" in result.stdout
     assert "Add comments" in result.stdout
     mocks["gemini_cli"].assert_called_once()
