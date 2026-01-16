@@ -161,15 +161,9 @@ class Settings(BaseSettings):
     DISCORD_WEBHOOK: str | None = Field(
         default=None, description="Discord Webhook URL for task notifications."
     )
-    EMAIL_NOTIFY: str | None = Field(
-        default=None, description="Email address for notifications."
-    )
-    GMAIL_USER: str | None = Field(
-        default=None, description="Gmail address used as sender."
-    )
-    GMAIL_PASSWORD: str | None = Field(
-        default=None, description="Gmail App Password."
-    )
+    EMAIL_NOTIFY: str | None = Field(default=None, description="Email address for notifications.")
+    GMAIL_USER: str | None = Field(default=None, description="Gmail address used as sender.")
+    GMAIL_PASSWORD: str | None = Field(default=None, description="Gmail App Password.")
     LINE_NOTIFY_TOKEN: str | None = Field(
         default=None, description="LINE Notify personal access token."
     )

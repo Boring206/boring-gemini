@@ -177,7 +177,7 @@ class TestGeminiClient:
             mock_genai.Client.return_value = mock_client
 
             client = GeminiClient(api_key="test-key", log_dir=temp_project / "logs")
-            
+
             # Mock _get_semantic_cache locally to avoid import issues
             with patch.object(client, "_get_semantic_cache", return_value=None):
                 result, success = client.generate("Test prompt")
@@ -332,6 +332,7 @@ class TestGeminiClient:
         ):
             mock_adapter = MagicMock()
             from types import SimpleNamespace
+
             mock_response = SimpleNamespace()
             mock_response.text = "Response"
             mock_response.function_calls = [{"name": "test", "args": {}}]

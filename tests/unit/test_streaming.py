@@ -50,6 +50,7 @@ class TestProgressReporter:
     def test_get_duration(self, reporter):
         """Test getting duration."""
         import time
+
         time.sleep(0.1)
         duration = reporter.get_duration()
         assert duration >= 0.1

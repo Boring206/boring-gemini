@@ -148,7 +148,9 @@ class CrossEncoderReranker:
 
         # Combine with original scores
         results = []
-        for i, (rerank_score, orig_score) in enumerate(zip(normalized_scores, original_scores, strict=True)):
+        for i, (rerank_score, orig_score) in enumerate(
+            zip(normalized_scores, original_scores, strict=True)
+        ):
             combined = (1 - weight_original) * rerank_score + weight_original * orig_score
             results.append(
                 (

@@ -334,9 +334,6 @@ class TestJudgeSubmodules:
             assert provider.model_name == "mistral"
 
 
-
-
-
 class TestCoreModule:
     """Additional tests for core module to increase coverage."""
 

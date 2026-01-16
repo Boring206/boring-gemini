@@ -6,7 +6,6 @@ This ensures consistent error messages and avoids eager imports of heavy librari
 """
 
 
-
 class DependencyManager:
     """Manages optional dependencies for the Boring framework."""
 

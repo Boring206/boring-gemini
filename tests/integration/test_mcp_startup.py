@@ -54,7 +54,6 @@ class TestMCPServerStartup:
         if os.environ.get("BORING_MCP_MODE") != "1":
             os.environ["BORING_MCP_MODE"] = "1"
 
-
         # Force FULL profile to ensure all tools (including Shadow Mode) are registered
         os.environ["BORING_MCP_PROFILE"] = "full"
 

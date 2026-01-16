@@ -1,23 +1,25 @@
+import boring
 import logging
+import rich
 import shutil
 import subprocess
 import time
 from pathlib import Path
 
 from rich.console import Console
-
-logger = logging.getLogger(__name__)
 from rich.live import Live
 from rich.panel import Panel
-from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    TextColumn,
+    TimeElapsedColumn,
+)
 
 from boring.core.utils import check_and_install_dependencies, check_syntax
 
 from ..backup import BackupManager
-from ..circuit import (
-    record_loop_result,
-    should_halt_execution,
-)
+from ..circuit import record_loop_result, should_halt_execution
 from ..config import init_directories, settings
 from ..extensions import ExtensionsManager
 from ..file_patcher import process_gemini_output
@@ -29,6 +31,7 @@ from ..logger import log_status
 from ..response_analyzer import analyze_response
 from ..verification import CodeVerifier
 
+logger = logging.getLogger(__name__)
 console = Console()
 
 
@@ -86,10 +89,13 @@ class AgentLoop:
                 )
             console.print(f"[green]Using Gemini CLI: {self.gemini_cli_cmd}[/green]")
         else:
-            self.gemini_client = create_gemini_client(log_dir=self.log_dir, model_name=model_name)
-            if not self.gemini_client:
-                raise RuntimeError("Failed to initialize Gemini SDK client.")
-            console.print(f"[green]Using Gemini SDK (Model: {model_name})[/green]")
+            try:
+                self.gemini_client = create_gemini_client(log_dir=self.log_dir, model_name=model_name)
+                console.print(f"[green]Using Gemini SDK (Model: {model_name})[/green]")
+            except Exception as e:
+                console.print(f"[bold red]Failed to initialize Gemini client:[/bold red]")
+                console.print(f"[red]{str(e)}[/red]")
+                raise RuntimeError("Gemini initialization failed.") from e
 
         # Show subsystem status
         if self.verbose:
@@ -184,9 +190,7 @@ class AgentLoop:
                 break
 
             if not success:
-                # Circuit breaker logic handled in _generate response analysis
-                # If simple fail, we might continue or retry, but usually generate handles retry internally
-                # If it returns False here, it means we hit a hard stop (like Safety or API deny)
+                log_status(self.log_dir, "ERROR", f"Generation failed (Loop #{loop_count}): {output_content}")
                 record_loop_result(loop_count, 0, True, len(output_content))
                 continue
 
@@ -424,7 +428,14 @@ class AgentLoop:
 
         # === CONTEXT INJECTION END ===
 
-        console.print(f"[blue]Generating with SDK... (Timeout: {settings.TIMEOUT_MINUTES}m)[/blue]")
+        if self.gemini_client and getattr(self.gemini_client, "backend", "sdk") == "cli":
+            backend_msg = "CLI (Internal Fallback)"
+            title_msg = "Gemini CLI Progress"
+        else:
+            backend_msg = "SDK"
+            title_msg = "Gemini SDK Progress"
+
+        console.print(f"[blue]Generating with {backend_msg}... (Timeout: {settings.TIMEOUT_MINUTES}m)[/blue]")
         if self.verbose:
             console.print(f"[dim]Context size: {len(context)} chars[/dim]")
 
@@ -435,8 +446,9 @@ class AgentLoop:
                 TimeElapsedColumn(),
                 console=console,
             )
-            progress.add_task("[cyan]Gemini Thinking...", total=None)
-            live.update(Panel(progress, title="[bold blue]Gemini SDK Progress[/bold blue]"))
+            spinner_text = "Gemini Thinking..." if backend_msg == "SDK" else "Gemini CLI Running..."
+            progress.add_task(f"[cyan]{spinner_text}", total=None)
+            live.update(Panel(progress, title=f"[bold blue]{title_msg}[/bold blue]"))
 
             response_text, success = self.gemini_client.generate_with_retry(
                 prompt=prompt,
@@ -470,9 +482,7 @@ class AgentLoop:
             console.print("[bold green]Using Offline Local LLM[/bold green]")
             # LocalLLM needs to be compatible with adapter interface
             adapter = LocalLLM(
-                model_path=self.model_name
-                if self.model_name.startswith("local/")
-                else None,
+                model_path=self.model_name if self.model_name.startswith("local/") else None,
             )
         else:
             from ..cli_client import GeminiCLIAdapter
@@ -544,8 +554,12 @@ class AgentLoop:
                 # Execute tool calls and append results
                 tool_results = []
                 for fc in function_calls:
-                    tool_name = fc.get("name") if isinstance(fc, dict) else getattr(fc, "name", None)
-                    tool_args = fc.get("args", {}) if isinstance(fc, dict) else getattr(fc, "args", {})
+                    tool_name = (
+                        fc.get("name") if isinstance(fc, dict) else getattr(fc, "name", None)
+                    )
+                    tool_args = (
+                        fc.get("args", {}) if isinstance(fc, dict) else getattr(fc, "args", {})
+                    )
 
                     if tool_name == "boring_web_search":
                         try:
@@ -570,9 +584,7 @@ class AgentLoop:
 
         return success, response_text, output_file
 
-    def _verify_project_syntax(
-        self, files_to_check: list[str] | None = None
-    ) -> tuple[bool, str]:
+    def _verify_project_syntax(self, files_to_check: list[str] | None = None) -> tuple[bool, str]:
         """
         Checks syntax of Python files.
 

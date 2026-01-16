@@ -12,6 +12,7 @@ from boring.cli.suggestions import SuggestionEngine
 def mock_path(tmp_path):
     return tmp_path
 
+
 def test_detect_project_type(mock_path):
     engine = SuggestionEngine(mock_path)
 
@@ -27,6 +28,7 @@ def test_detect_project_type(mock_path):
     (mock_path / "package.json").touch()
     assert engine._detect_project_type() == "node"
 
+
 @patch("boring.cli.suggestions.subprocess.run")
 def test_has_uncommitted_changes(mock_run, mock_path):
     engine = SuggestionEngine(mock_path)
@@ -38,6 +40,7 @@ def test_has_uncommitted_changes(mock_run, mock_path):
     # Case: Clean
     mock_run.return_value.stdout = ""
     assert engine._has_uncommitted_changes() is False
+
 
 @patch("boring.cli.suggestions.SuggestionEngine._detect_project_type")
 @patch("boring.cli.suggestions.SuggestionEngine._has_uncommitted_changes")
@@ -55,5 +58,5 @@ def test_analyze_suggestions(mock_changes, mock_type, mock_path):
     # Check expectation
     assert "boring check" in cmds
     assert "pytest" in cmds  # Polyglot suggestion
-    assert "boring save" in cmds # Git suggestion
-    assert "boring evolve" not in cmds # Not in flow/evolve mode
+    assert "boring save" in cmds  # Git suggestion
+    assert "boring evolve" not in cmds  # Not in flow/evolve mode

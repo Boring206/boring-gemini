@@ -6,7 +6,6 @@ It compels the agent to use 'sequentialthinking' or 'criticalthinking'
 before executing any code modifcations.
 """
 
-
 from rich.panel import Panel
 
 from ...logger import console, log_status

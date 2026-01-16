@@ -35,6 +35,7 @@ class TestRAGRetrieverUtility:
 
     def test_get_intelligent_ranker_fallback(self, tmp_path):
         import boring.rag.rag_retriever as rag_retriever
+
         rag_retriever._intelligent_ranker = None
 
         with patch("boring.intelligence.IntelligentRanker", side_effect=ImportError):

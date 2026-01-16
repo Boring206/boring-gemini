@@ -12,6 +12,7 @@ runner = CliRunner()
 @pytest.fixture(autouse=True)
 def force_english():
     from boring.utils.i18n import set_language
+
     set_language("en")
     yield
     set_language("zh")

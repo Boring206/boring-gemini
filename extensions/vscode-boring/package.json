@@ -1,0 +1,81 @@
+{
+    "name": "boring-gemini",
+    "displayName": "Boring for Gemini",
+    "description": "Enterprise AI Coding Agent Integration for VS Code",
+    "version": "0.1.0",
+    "publisher": "Boring206",
+    "engines": {
+        "vscode": "^1.85.0"
+    },
+    "categories": [
+        "AI",
+        "Programming Languages",
+        "Visualization"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "boring.start",
+                "title": "Boring: Start Agent Loop"
+            },
+            {
+                "command": "boring.dashboard",
+                "title": "Boring: Open Dashboard"
+            },
+            {
+                "command": "boring.stop",
+                "title": "Boring: Stop Agent"
+            }
+        ],
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "boring-view",
+                    "title": "Boring AI",
+                    "icon": "resources/icon.png"
+                }
+            ]
+        },
+        "views": {
+            "boring-view": [
+                {
+                    "id": "boring-status",
+                    "name": "Status"
+                },
+                {
+                    "id": "boring-actions",
+                    "name": "Actions"
+                }
+            ]
+        },
+        "configuration": {
+            "title": "Boring for Gemini",
+            "properties": {
+                "boring.pythonPath": {
+                    "type": "string",
+                    "default": "python",
+                    "description": "Path to Python executable for running Boring"
+                },
+                "boring.autoStart": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Automatically start Boring agent on workspace open"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./"
+    },
+    "devDependencies": {
+        "@types/node": "^18.x",
+        "@types/vscode": "^1.85.0",
+        "typescript": "^5.3.3"
+    }
+}

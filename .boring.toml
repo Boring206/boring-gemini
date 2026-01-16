@@ -216,3 +216,6 @@ enable_terminal_bell = true
 
 # Custom sound file (optional, leave empty for system default)
 # sound_file = "~/.boring/sounds/complete.wav"
+
+[mcp]
+profile = "lite"

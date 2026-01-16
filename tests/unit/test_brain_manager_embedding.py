@@ -1,4 +1,3 @@
-
 from unittest.mock import MagicMock, patch
 
 import numpy as np
@@ -14,6 +13,7 @@ def temp_project(tmp_path):
     project.mkdir()
     yield project
     _clear_thread_local_connection()
+
 
 class TestBrainManagerEmbedding:
     """Tests for FAISS and Semantic Search in BrainManager."""

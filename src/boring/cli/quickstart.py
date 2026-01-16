@@ -6,7 +6,6 @@ Quick Start Orchestrator for Vibe Coders.
 Provides a one-command experience to go from idea to working code.
 """
 
-
 from rich.console import Console
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn

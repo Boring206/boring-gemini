@@ -245,9 +245,7 @@ def boring_task(
 
 
 def boring_background_task(
-    task_type: Annotated[
-        str, Field(description="Task type: verify, test, lint, security_scan")
-    ],
+    task_type: Annotated[str, Field(description="Task type: verify, test, lint, security_scan")],
     task_args: Annotated[
         dict | None, Field(default=None, description="Arguments for submit action")
     ] = None,
@@ -272,9 +270,7 @@ def boring_task_status(
 
 
 def boring_list_tasks(
-    status: Annotated[
-        str | None, Field(default=None, description="Optional status filter")
-    ] = None,
+    status: Annotated[str | None, Field(default=None, description="Optional status filter")] = None,
 ) -> dict:
     """Legacy alias: list background tasks."""
     from boring.loop.background_agent import list_background_tasks
@@ -331,16 +327,16 @@ def boring_context(
 
 def boring_save_context(
     context_name: Annotated[str, Field(description="Context name to save")],
-    data: Annotated[
-        str | dict, Field(description="Summary or payload to store for the context")
-    ],
+    data: Annotated[str | dict, Field(description="Summary or payload to store for the context")],
     project_path: Annotated[
         str | None, Field(default=None, description="Path to project root")
     ] = None,
 ) -> dict:
     """Legacy alias: save context summary."""
     summary = data if isinstance(data, str) else str(data)
-    return boring_context("save", context_id=context_name, summary=summary, project_path=project_path)
+    return boring_context(
+        "save", context_id=context_name, summary=summary, project_path=project_path
+    )
 
 
 def boring_load_context(
@@ -427,9 +423,9 @@ def boring_learn_fix(
 
 
 def boring_transaction_start(
-    message: Annotated[str, Field(default="Boring transaction", description="Checkpoint message")] = (
-        "Boring transaction"
-    ),
+    message: Annotated[
+        str, Field(default="Boring transaction", description="Checkpoint message")
+    ] = ("Boring transaction"),
     project_path: Annotated[
         str | None, Field(default=None, description="Path to project root")
     ] = None,

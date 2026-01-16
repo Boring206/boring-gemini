@@ -66,21 +66,9 @@ class WizardManager:
             self.appdata = self.home / "Library" / "Application Support"
         self.project_root = Path.cwd()
 
-    def _get_editor_config_path(self, *subdirs: str, check_parent_exists: bool = True) -> Path | None:
-        """Helper to get a common editor config path based on OS."""
-        if self.system == "Windows":
-            path = self.appdata.joinpath(*subdirs)
-        elif self.system == "Darwin":
-            path = self.home / "Library" / "Application Support" / Path(*subdirs)
-        elif self.system == "Linux":
-            path = self.appdata.joinpath(*subdirs)
-        else:
-            return None
-        return path if not check_parent_exists or path.parent.exists() else None
-
         # Define common config paths
         self.editors = {
-            "Claude Desktop": self._get_claude_path(),
+            "Claude": self._get_claude_path(),
             "Cursor": self._get_cursor_path(),
             "VS Code": self._get_vscode_path(),
             "Windsurf": self._get_windsurf_path(),
@@ -107,7 +95,9 @@ class WizardManager:
 
     def _get_vscode_settings_path(self) -> Path | None:
         """Get VS Code User settings.json path."""
-        path = self._get_editor_config_path("Code", "User", "settings.json", check_parent_exists=False)
+        path = self._get_editor_config_path(
+            "Code", "User", "settings.json", check_parent_exists=False
+        )
         return path if path and path.exists() else None
 
     def scan_editors(self) -> dict[str, Path]:
@@ -115,12 +105,6 @@ class WizardManager:
         found = {}
         for name, path in self.editors.items():
             if path:
-                # For Claude, the file might not exist but folder does
-                if name == "Claude":
-                    if path.parent.exists():
-                        found[name] = path
-                    continue
-
                 found[name] = path
         ext_manager = ExtensionsManager()
         if ext_manager.is_gemini_available():
@@ -171,25 +155,21 @@ class WizardManager:
 
     def _get_zed_path(self) -> Path | None:
         """Get Zed settings.json path."""
-        if self.system == "Darwin":
-            path = self.home / ".config" / "zed" / "settings.json"
-        elif self.system == "Linux":
-            path = self.home / ".config" / "zed" / "settings.json"
-        elif self.system == "Windows":
-            path = self.appdata / "Zed" / "settings.json"
-        else:
-            return None
-        return path if path.parent.exists() else None
+        # Zed's settings.json is typically in ~/.config/zed/settings.json on Linux/macOS
+        # and %APPDATA%/Zed/settings.json on Windows.
+        # The check_parent_exists=False is important here as the file itself might not exist yet,
+        # but we still want the path to create it.
+        return self._get_editor_config_path("zed", "settings.json", check_parent_exists=False)
 
     def _get_goose_path(self) -> Path | None:
         """Get Goose config.yaml path."""
         if self.system == "Windows":
             path = self._get_editor_config_path("goose", "config.yaml")
-        else:
+        elif self.system == "Linux" or self.system == "Darwin": # Goose uses ~/.config on both Linux and Darwin
             path = self.home / ".config" / "goose" / "config.yaml"
-            if not path.parent.exists():
-                path = None
-        return path
+        else:
+            return None
+        return path if path and path.parent.exists() else None
 
     def _get_continue_path(self) -> Path | None:
         """Get Continue config.json path."""
@@ -333,27 +313,7 @@ class WizardManager:
         # Special handling for Codex CLI
         if editor_name == "Codex CLI":
             console.print(f"\n[bold blue]🔮 Configuring {editor_name}...[/bold blue]")
-
-            # Use the existing wrapper strategy
-            wrapper_dir = self.project_root / ".boring"
-            wrapper_dir.mkdir(parents=True, exist_ok=True)
-            wrapper_name = (
-                "gemini_mcp_wrapper.bat" if self.system == "Windows" else "gemini_mcp_wrapper.sh"
-            )
-            wrapper_path = wrapper_dir / wrapper_name
-
-            # Ensure wrapper exists (ExtensionsManager creation logic duplicated for safety)
-            if not wrapper_path.exists():
-                # Create it if missing (using same logic as ExtensionsManager)
-                # Minimal version for CLI usage
-                python_exe = sys.executable
-                if self.system == "Windows":
-                    content = f'@echo off\nset PYTHONWARNINGS=ignore\nset BORING_MCP_MODE=1\nset PYTHONUTF8=1\n"{python_exe}" -m boring.mcp.server %*\n'
-                else:
-                    content = f'#!/bin/bash\nexport PYTHONWARNINGS=ignore\nexport BORING_MCP_MODE=1\nexport PYTHONUTF8=1\n"{python_exe}" -m boring.mcp.server "$@"\n'
-                wrapper_path.write_text(content, encoding="utf-8")
-                if self.system != "Windows":
-                    wrapper_path.chmod(0o755)
+            wrapper_path = self._ensure_wrapper()
 
             # Register with Codex
             # Command: codex mcp add boring <wrapper_path>

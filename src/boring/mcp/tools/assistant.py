@@ -325,9 +325,7 @@ Requirements:
                 description="The specific error message or context to find a solution for. Pass this to trigger Active Recall."
             ),
         ] = None,
-        project_path: Annotated[
-            str | None, Field(description="Optional project root path")
-        ] = None,
+        project_path: Annotated[str | None, Field(description="Optional project root path")] = None,
     ) -> dict:
         """
         Suggest next actions based on project state and learned patterns.

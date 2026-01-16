@@ -7,7 +7,6 @@ This state is responsible for:
 3. Testing (pytest) if FULL mode
 """
 
-
 from ...circuit import record_loop_result
 from ...config import settings
 from ...intelligence.memory import LoopMemory

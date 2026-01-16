@@ -211,8 +211,8 @@ If no tool is needed, just respond with normal text.
             if success:
                 return text, True
 
-            # Check for auth errors (no retry)
-            if "login" in text.lower() or "unauthenticated" in text.lower():
+            # Check for auth errors or timeouts (no retry)
+            if "login" in text.lower() or "unauthenticated" in text.lower() or "timeout" in text.lower():
                 return text, False
 
             # Retry on transient errors

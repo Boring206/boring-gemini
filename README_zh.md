@@ -190,6 +190,9 @@ uv pip install "boring-aicoding[all]"
 
 # 標準安裝
 pip install "boring-aicoding[all]"
+
+# 選配：安裝 RAG 智慧組件以獲得完整的語義搜尋能力
+pip install sentence-transformers chromadb
 ```
 
 > [!NOTE]

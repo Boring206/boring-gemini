@@ -11,11 +11,14 @@ from boring.mcp.server import run_server  # Moved inside tests to avoid relative
 
 class TestServer:
     @patch("boring.mcp.server.instance")
-    @patch.dict("sys.modules", {
-        "boring.mcp.tools.metrics": MagicMock(),
-        "boring.mcp.tools.skills": MagicMock(),
-        "boring.mcp.tool_router": MagicMock(),  # Also mock router to avoid complex side effects during test
-    })
+    @patch.dict(
+        "sys.modules",
+        {
+            "boring.mcp.tools.metrics": MagicMock(),
+            "boring.mcp.tools.skills": MagicMock(),
+            "boring.mcp.tool_router": MagicMock(),  # Also mock router to avoid complex side effects during test
+        },
+    )
     def test_run_server(self, mock_instance):
         """Test server startup sequence."""
 

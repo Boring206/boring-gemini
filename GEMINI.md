@@ -36,6 +36,8 @@ The system is built entirely in **Python**, using modern CLI frameworks and rich
   - `gitpython` (for Git operations)
   - `tenacity` (for retries)
   - `fastmcp` (for MCP server)
+  - `sentence-transformers` (for RAG vector embeddings)
+  - `chromadb` (for vector storage)
 
 ## Building and Running
 

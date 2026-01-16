@@ -1,0 +1,432 @@
+"""
+Skill CLI - Comprehensive skill management for Boring V14.0
+
+Commands:
+- search: Search for skills in the catalog
+- list: List installed and available skills
+- install: Install a skill from URL or catalog
+- uninstall: Remove an installed skill
+- info: Show detailed skill information
+- publish: Publish a skill to the registry (future)
+- sync: Synchronize skills with remote sources
+"""
+
+import json
+import shutil
+from pathlib import Path
+from typing import Optional
+
+import typer
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+
+from boring.skills_catalog import (
+    SKILLS_CATALOG,
+    TRUSTED_DOMAINS,
+    SkillResource,
+    is_trusted_url,
+    search_skills,
+)
+
+app = typer.Typer(help="Manage Boring skills and extensions")
+console = Console()
+
+
+def _get_skills_dir() -> Path:
+    """Get the directory for storing skills."""
+    from boring.paths import get_boring_path
+    from boring.core.config import settings
+
+    return get_boring_path(settings.PROJECT_ROOT, "skills")
+
+
+def _get_global_skills_dir() -> Path:
+    """Get the global skills directory."""
+    return Path.home() / ".boring" / "skills"
+
+
+def _load_installed_skills() -> list[dict]:
+    """Load list of installed skills."""
+    skills = []
+
+    # Check project-local skills
+    local_dir = _get_skills_dir()
+    if local_dir.exists():
+        for skill_dir in local_dir.iterdir():
+            if skill_dir.is_dir() and (skill_dir / "skill.json").exists():
+                with open(skill_dir / "skill.json") as f:
+                    info = json.load(f)
+                    info["location"] = "local"
+                    info["path"] = str(skill_dir)
+                    skills.append(info)
+
+    # Check global skills
+    global_dir = _get_global_skills_dir()
+    if global_dir.exists():
+        for skill_dir in global_dir.iterdir():
+            if skill_dir.is_dir() and (skill_dir / "skill.json").exists():
+                with open(skill_dir / "skill.json") as f:
+                    info = json.load(f)
+                    info["location"] = "global"
+                    info["path"] = str(skill_dir)
+                    skills.append(info)
+
+    return skills
+
+
+@app.command("search")
+def search(
+    query: str = typer.Argument(..., help="Search query (keywords, name, or description)"),
+    platform: Optional[str] = typer.Option(
+        None, "--platform", "-p", help="Filter by platform (gemini/claude/both)"
+    ),
+    limit: int = typer.Option(10, "--limit", "-l", help="Maximum results to show"),
+):
+    """Search for skills in the catalog."""
+    results = search_skills(query, platform=platform, limit=limit)
+
+    if not results:
+        console.print(f"[yellow]No skills found for '{query}'[/yellow]")
+        console.print("\n[dim]Try different keywords or check the full catalog with `boring skill list --catalog`[/dim]")
+        return
+
+    table = Table(title=f"Search Results for '{query}'")
+    table.add_column("Name", style="cyan")
+    table.add_column("Platform", style="green")
+    table.add_column("Description")
+    table.add_column("Install")
+
+    for skill in results:
+        install_cmd = skill.install_command or f"boring skill install {skill.repo_url}"
+        table.add_row(
+            skill.name,
+            skill.platform,
+            skill.description_zh[:50] + "..." if len(skill.description_zh) > 50 else skill.description_zh,
+            f"[dim]{install_cmd[:40]}...[/dim]" if len(install_cmd) > 40 else f"[dim]{install_cmd}[/dim]",
+        )
+
+    console.print(table)
+    console.print(f"\n[dim]Found {len(results)} skill(s). Use `boring skill info <name>` for details.[/dim]")
+
+
+@app.command("list")
+def list_skills(
+    catalog: bool = typer.Option(False, "--catalog", "-c", help="Show all skills in catalog"),
+    installed: bool = typer.Option(False, "--installed", "-i", help="Show only installed skills"),
+):
+    """List available and installed skills."""
+    if installed or not catalog:
+        # Show installed skills
+        skills = _load_installed_skills()
+
+        if skills:
+            table = Table(title="Installed Skills")
+            table.add_column("Name", style="cyan")
+            table.add_column("Version")
+            table.add_column("Location")
+            table.add_column("Path", style="dim")
+
+            for skill in skills:
+                table.add_row(
+                    skill.get("name", "Unknown"),
+                    skill.get("version", "N/A"),
+                    skill.get("location", "unknown"),
+                    skill.get("path", "")[:40],
+                )
+
+            console.print(table)
+        else:
+            console.print("[yellow]No skills installed.[/yellow]")
+
+        if not catalog:
+            console.print("\n[dim]Use --catalog to see all available skills.[/dim]")
+            return
+
+    if catalog:
+        # Show catalog
+        table = Table(title="Skills Catalog")
+        table.add_column("Name", style="cyan")
+        table.add_column("Platform", style="green")
+        table.add_column("Description")
+        table.add_column("Keywords", style="dim")
+
+        for skill in SKILLS_CATALOG:
+            table.add_row(
+                skill.name,
+                skill.platform,
+                skill.description_zh[:40] + "..." if len(skill.description_zh) > 40 else skill.description_zh,
+                ", ".join(skill.keywords[:3]),
+            )
+
+        console.print(table)
+        console.print(f"\n[dim]Total: {len(SKILLS_CATALOG)} skills in catalog[/dim]")
+
+
+@app.command("install")
+def install(
+    source: str = typer.Argument(..., help="Skill name from catalog or Git URL"),
+    global_install: bool = typer.Option(
+        False, "--global", "-g", help="Install globally instead of project-local"
+    ),
+    force: bool = typer.Option(False, "--force", "-f", help="Force reinstall"),
+):
+    """Install a skill from the catalog or a Git URL."""
+    # Check if source is a catalog name
+    catalog_skill = next((s for s in SKILLS_CATALOG if s.name == source), None)
+
+    if catalog_skill:
+        url = catalog_skill.repo_url
+        skill_name = catalog_skill.name
+        console.print(f"[green]Installing '{skill_name}' from catalog...[/green]")
+    elif source.startswith(("http://", "https://", "git@")):
+        url = source
+        skill_name = url.rstrip("/").split("/")[-1].replace(".git", "")
+        console.print(f"[green]Installing from URL: {url}[/green]")
+    else:
+        # Try fuzzy search
+        results = search_skills(source, limit=1)
+        if results:
+            catalog_skill = results[0]
+            url = catalog_skill.repo_url
+            skill_name = catalog_skill.name
+            console.print(f"[yellow]Did you mean '{skill_name}'?[/yellow]")
+            if not typer.confirm("Install this skill?"):
+                raise typer.Exit(0)
+        else:
+            console.print(f"[red]Skill '{source}' not found in catalog.[/red]")
+            console.print("Provide a full Git URL or search the catalog first.")
+            raise typer.Exit(1)
+
+    # Security check
+    if not is_trusted_url(url):
+        console.print(f"[red]⚠️ Security Warning: URL is not from a trusted domain.[/red]")
+        console.print(f"Trusted domains: {', '.join(TRUSTED_DOMAINS)}")
+        if not typer.confirm("Continue anyway?", default=False):
+            raise typer.Exit(1)
+
+    # Determine installation directory
+    target_dir = _get_global_skills_dir() if global_install else _get_skills_dir()
+    target_dir.mkdir(parents=True, exist_ok=True)
+    skill_dir = target_dir / skill_name
+
+    if skill_dir.exists():
+        if force:
+            console.print(f"[yellow]Removing existing installation...[/yellow]")
+            shutil.rmtree(skill_dir)
+        else:
+            console.print(f"[yellow]Skill '{skill_name}' already installed at {skill_dir}[/yellow]")
+            console.print("Use --force to reinstall.")
+            return
+
+    # Clone the repository
+    console.print(f"[cyan]Cloning {url}...[/cyan]")
+    try:
+        import subprocess
+
+        result = subprocess.run(
+            ["git", "clone", "--depth", "1", url, str(skill_dir)],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+
+        if result.returncode != 0:
+            console.print(f"[red]Clone failed: {result.stderr}[/red]")
+            raise typer.Exit(1)
+
+        # Create skill.json if not exists
+        skill_json = skill_dir / "skill.json"
+        if not skill_json.exists():
+            skill_info = {
+                "name": skill_name,
+                "version": "1.0.0",
+                "source": url,
+                "description": catalog_skill.description_zh if catalog_skill else "",
+            }
+            with open(skill_json, "w") as f:
+                json.dump(skill_info, f, indent=2)
+
+        console.print(f"[bold green]✅ Skill '{skill_name}' installed successfully![/bold green]")
+        console.print(f"Location: {skill_dir}")
+
+        # Show activation hint
+        console.print(f"\n[dim]Activate with: boring_active_skill('{skill_name}')[/dim]")
+
+    except subprocess.TimeoutExpired:
+        console.print("[red]Clone timed out. Check your network connection.[/red]")
+        raise typer.Exit(1)
+    except Exception as e:
+        console.print(f"[red]Installation failed: {e}[/red]")
+        if skill_dir.exists():
+            shutil.rmtree(skill_dir)
+        raise typer.Exit(1)
+
+
+@app.command("uninstall")
+def uninstall(
+    name: str = typer.Argument(..., help="Skill name to uninstall"),
+    force: bool = typer.Option(False, "--force", "-f", help="Skip confirmation"),
+):
+    """Uninstall a skill."""
+    installed = _load_installed_skills()
+    skill = next((s for s in installed if s.get("name") == name), None)
+
+    if not skill:
+        console.print(f"[red]Skill '{name}' not found.[/red]")
+        console.print("Use `boring skill list --installed` to see installed skills.")
+        raise typer.Exit(1)
+
+    skill_path = Path(skill["path"])
+
+    if not force:
+        if not typer.confirm(f"Uninstall '{name}' from {skill_path}?"):
+            console.print("Aborted.")
+            return
+
+    try:
+        shutil.rmtree(skill_path)
+        console.print(f"[green]Skill '{name}' uninstalled successfully.[/green]")
+    except Exception as e:
+        console.print(f"[red]Failed to uninstall: {e}[/red]")
+        raise typer.Exit(1)
+
+
+@app.command("info")
+def info(
+    name: str = typer.Argument(..., help="Skill name to show info for"),
+):
+    """Show detailed information about a skill."""
+    # Check installed skills first
+    installed = _load_installed_skills()
+    skill = next((s for s in installed if s.get("name") == name), None)
+
+    if skill:
+        console.print(Panel(f"""
+[bold cyan]{skill.get('name', 'Unknown')}[/bold cyan]
+
+[bold]Version:[/bold] {skill.get('version', 'N/A')}
+[bold]Location:[/bold] {skill.get('location', 'unknown')}
+[bold]Path:[/bold] {skill.get('path', 'N/A')}
+[bold]Source:[/bold] {skill.get('source', 'N/A')}
+[bold]Description:[/bold] {skill.get('description', 'No description')}
+
+[dim]Status: Installed[/dim]
+""", title=f"Skill Info: {name}"))
+        return
+
+    # Check catalog
+    catalog_skill = next((s for s in SKILLS_CATALOG if s.name == name), None)
+
+    if catalog_skill:
+        console.print(Panel(f"""
+[bold cyan]{catalog_skill.name}[/bold cyan]
+
+[bold]Platform:[/bold] {catalog_skill.platform}
+[bold]Repository:[/bold] {catalog_skill.repo_url}
+[bold]Description:[/bold] {catalog_skill.description}
+[bold]中文說明:[/bold] {catalog_skill.description_zh}
+[bold]Keywords:[/bold] {', '.join(catalog_skill.keywords)}
+[bold]Install Command:[/bold] {catalog_skill.install_command or f'boring skill install {catalog_skill.name}'}
+
+[dim]Status: Not installed[/dim]
+""", title=f"Skill Info: {name}"))
+        return
+
+    console.print(f"[red]Skill '{name}' not found.[/red]")
+
+
+@app.command("sync")
+def sync():
+    """Synchronize installed skills with their remote sources."""
+    installed = _load_installed_skills()
+
+    if not installed:
+        console.print("[yellow]No skills installed to sync.[/yellow]")
+        return
+
+    console.print(f"[cyan]Syncing {len(installed)} skill(s)...[/cyan]")
+
+    for skill in installed:
+        skill_path = Path(skill["path"])
+        skill_name = skill.get("name", "Unknown")
+
+        if not (skill_path / ".git").exists():
+            console.print(f"[yellow]Skipping {skill_name} (not a git repo)[/yellow]")
+            continue
+
+        console.print(f"[dim]Syncing {skill_name}...[/dim]")
+
+        try:
+            import subprocess
+
+            result = subprocess.run(
+                ["git", "pull", "--ff-only"],
+                cwd=skill_path,
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
+
+            if result.returncode == 0:
+                if "Already up to date" in result.stdout:
+                    console.print(f"  [dim]{skill_name}: Up to date[/dim]")
+                else:
+                    console.print(f"  [green]{skill_name}: Updated[/green]")
+            else:
+                console.print(f"  [red]{skill_name}: Sync failed[/red]")
+
+        except Exception as e:
+            console.print(f"  [red]{skill_name}: Error - {e}[/red]")
+
+    console.print("[green]Sync complete.[/green]")
+
+
+@app.command("publish")
+def publish(
+    path: str = typer.Argument(".", help="Path to skill directory"),
+):
+    """Publish a skill to the Boring Skills Registry (coming soon)."""
+    skill_path = Path(path).resolve()
+
+    if not skill_path.exists():
+        console.print(f"[red]Path not found: {skill_path}[/red]")
+        raise typer.Exit(1)
+
+    skill_json = skill_path / "skill.json"
+    if not skill_json.exists():
+        console.print("[red]No skill.json found. Create one first.[/red]")
+        console.print("""
+[dim]Example skill.json:
+{
+    "name": "my-skill",
+    "version": "1.0.0",
+    "description": "Description of your skill",
+    "keywords": ["keyword1", "keyword2"],
+    "author": "Your Name"
+}[/dim]
+""")
+        raise typer.Exit(1)
+
+    with open(skill_json) as f:
+        skill_info = json.load(f)
+
+    console.print(Panel(f"""
+[bold cyan]Skill Publishing Preview[/bold cyan]
+
+[bold]Name:[/bold] {skill_info.get('name', 'Unknown')}
+[bold]Version:[/bold] {skill_info.get('version', '1.0.0')}
+[bold]Description:[/bold] {skill_info.get('description', 'No description')}
+[bold]Keywords:[/bold] {', '.join(skill_info.get('keywords', []))}
+
+[yellow]⚠️ Registry publishing is coming soon![/yellow]
+
+For now, you can:
+1. Push your skill to GitHub/GitLab
+2. Submit a PR to add it to SKILLS_CATALOG in skills_catalog.py
+3. Share the Git URL with others: boring skill install <your-git-url>
+""", title="Publish Skill"))
+
+
+if __name__ == "__main__":
+    app()

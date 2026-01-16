@@ -467,7 +467,11 @@ def register_brain_tools(mcp, audited, helpers):
 
             if normalized_context:
                 lines = [line.strip() for line in normalized_context.splitlines() if line.strip()]
-                filtered = [line for line in lines if not line.startswith("File ") and "Traceback" not in line]
+                filtered = [
+                    line
+                    for line in lines
+                    if not line.startswith("File ") and "Traceback" not in line
+                ]
                 normalized_context = (filtered[0] if filtered else lines[0]) if lines else ""
 
             normalized_context = normalized_context[:500]

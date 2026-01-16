@@ -1,4 +1,3 @@
-
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -14,6 +13,7 @@ def mock_tracker():
         mock_get.return_value = tracker
         yield tracker
 
+
 @pytest.mark.unit
 def test_usage_stats_empty(mock_tracker):
     """Test dashboard with no data."""
@@ -23,6 +23,7 @@ def test_usage_stats_empty(mock_tracker):
     assert "No usage data yet" in result
     assert "BORING_MCP_PROFILE=adaptive" in result
 
+
 @pytest.mark.unit
 def test_usage_stats_populated(mock_tracker):
     """Test dashboard with data."""
@@ -30,7 +31,7 @@ def test_usage_stats_populated(mock_tracker):
     mock_tracker.stats.last_updated = 1700000000.0
     mock_tracker.stats.tools = {
         "test_tool": ToolUsage(tool_name="test_tool", count=10),
-        "tool_b": ToolUsage(tool_name="tool_b", count=5)
+        "tool_b": ToolUsage(tool_name="tool_b", count=5),
     }
     mock_tracker.get_top_tools.return_value = ["test_tool", "tool_b"]
 

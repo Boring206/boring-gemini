@@ -58,7 +58,7 @@ class TestGeminiClientGenerate:
             mock_response.text = "Hello, World!"
             mock_client.models.generate_content.return_value = mock_response
             mock_genai.Client.return_value = mock_client
-            
+
             client = GeminiClient(api_key="test-key", log_dir=tmp_path)
 
             # Mock _get_semantic_cache locally

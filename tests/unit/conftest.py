@@ -35,6 +35,7 @@ def admin_role(monkeypatch):
     monkeypatch.setenv("BORING_USER_ROLE", "admin")
     try:
         from boring.services.rbac import RoleManager
+
         # Reset singleton to force reload from env
         RoleManager._instance = None
     except ImportError:

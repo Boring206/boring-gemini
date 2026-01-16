@@ -8,7 +8,9 @@ from boring.rag.rag_retriever import RAGRetriever
 class TestHybridRAGIntegration:
     @mock.patch("boring.rag.rag_retriever.get_hyde_expander")
     @mock.patch("boring.rag.rag_retriever.get_ensemble_reranker")
-    @mock.patch("boring.rag.rag_retriever.RAGRetriever.is_available", new_callable=mock.PropertyMock)
+    @mock.patch(
+        "boring.rag.rag_retriever.RAGRetriever.is_available", new_callable=mock.PropertyMock
+    )
     def test_hybrid_rag_pipeline(self, mock_is_avail, mock_get_reranker, mock_get_hyde, tmp_path):
         # CORRECT ORDER: Bottom-most decorator first
         # mock_is_avail <- is_available (bottom)
@@ -24,7 +26,7 @@ class TestHybridRAGIntegration:
             hypothetical_document="How to authenticate in Python",
             hypothetical_code="def authenticate(user, pwd):",
             expanded_keywords=["auth", "login"],
-            confidence=0.9
+            confidence=0.9,
         )
         mock_get_hyde.return_value = mock_expander
 
@@ -37,10 +39,15 @@ class TestHybridRAGIntegration:
         mock_collection.query.return_value = {
             "ids": [["id1", "id2"]],
             "distances": [[0.1, 0.2]],
-            "metadatas": [[{"file_path": "file1.py", "chunk_type": "function"}, {"file_path": "file2.py", "chunk_type": "function"}]],
+            "metadatas": [
+                [
+                    {"file_path": "file1.py", "chunk_type": "function"},
+                    {"file_path": "file2.py", "chunk_type": "function"},
+                ]
+            ],
             "documents": [["content1", "content2"]],
             "uris": [[None, None]],
-            "data": [[None, None]]
+            "data": [[None, None]],
         }
         mock_collection.count.return_value = 2
 
@@ -51,10 +58,7 @@ class TestHybridRAGIntegration:
 
             # Execute retrieval with Hybrid RAG enabled
             results = retriever.retrieve(
-                query="how to auth",
-                use_hyde=True,
-                use_rerank=True,
-                n_results=2
+                query="how to auth", use_hyde=True, use_rerank=True, n_results=2
             )
 
             # Assertions
@@ -64,7 +68,9 @@ class TestHybridRAGIntegration:
             assert results[0].score == 0.95
 
     @mock.patch("boring.rag.rag_retriever.get_hyde_expander")
-    @mock.patch("boring.rag.rag_retriever.RAGRetriever.is_available", new_callable=mock.PropertyMock)
+    @mock.patch(
+        "boring.rag.rag_retriever.RAGRetriever.is_available", new_callable=mock.PropertyMock
+    )
     def test_retrieval_without_hyde(self, mock_is_avail, mock_get_hyde, tmp_path):
         # mock_is_avail <- is_available (bottom)
         # mock_get_hyde <- get_hyde_expander (top)
@@ -78,7 +84,7 @@ class TestHybridRAGIntegration:
             "metadatas": [[{"file_path": "file1.py", "chunk_type": "function"}]],
             "documents": [["content1"]],
             "uris": [[None]],
-            "data": [[None]]
+            "data": [[None]],
         }
         mock_collection.count.return_value = 1
 

@@ -471,9 +471,9 @@ def verify_imports_python(file_path: Path, project_root: Path) -> VerificationRe
 
         for from_module, import_names in imports:
             # Handle cases like `import a, b, c`
-            all_modules = [name.strip() for name in import_names.split(',')]
+            all_modules = [name.strip() for name in import_names.split(",")]
             if from_module:
-                 # `from a.b import c, d` -> check `a.b`
+                # `from a.b import c, d` -> check `a.b`
                 all_modules = [from_module]
 
             for module_name in all_modules:

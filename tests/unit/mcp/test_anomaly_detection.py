@@ -1,4 +1,3 @@
-
 import pytest
 
 from boring.intelligence.usage_tracker import AnomalyDetectedError, UsageTracker
@@ -18,6 +17,7 @@ def test_anomaly_detection_logic(tmp_path):
     assert tracker.repeat_count == 1
     assert tracker.stats.tools["tool_a"].count == 10
 
+
 @pytest.mark.unit
 def test_anomaly_detection_loop(tmp_path):
     """Test identical call loop triggers error."""
@@ -35,6 +35,7 @@ def test_anomaly_detection_loop(tmp_path):
         tracker.track("tool_stuck", tool_args={"file": "A"})
 
     assert "detected: tool_stuck called 6 times" in str(exc.value)
+
 
 @pytest.mark.unit
 def test_anomaly_detection_batch_processing(tmp_path):

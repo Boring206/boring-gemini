@@ -188,6 +188,9 @@ curl -fsSL https://raw.githubusercontent.com/Boring206/boring-gemini/main/script
 ```bash
 pip install boring-aicoding
 boring wizard
+
+# Optional: Install RAG intelligence for full semantic search
+pip install sentence-transformers chromadb
 ```
 
 > [!NOTE]

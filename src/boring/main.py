@@ -17,10 +17,8 @@ import logging
 import sys
 from pathlib import Path
 
-import boring
 import typer
 from rich.panel import Panel
-import rich
 
 from boring.cli import audit, doctor, model, offline
 from boring.cli.theme import BORING_THEME
@@ -34,6 +32,8 @@ logger = logging.getLogger(__name__)
 HELP_TEXT = T("cli_help_text")
 
 EPILOG_TEXT = T("cli_epilog_text")
+
+console = LocalizedConsole(theme=BORING_THEME)
 
 app = typer.Typer(
     name="boring",
@@ -63,9 +63,7 @@ def setup_notifications():
 @app.callback(invoke_without_command=True)
 def main(
     ctx: typer.Context,
-    provider: str = typer.Option(
-        None, "--provider", "-P", help=T("cli_option_provider_help")
-    ),
+    provider: str = typer.Option(None, "--provider", "-P", help=T("cli_option_provider_help")),
     base_url: str = typer.Option(None, "--base-url", help=T("cli_option_base_url_help")),
     llm_model: str = typer.Option(None, "--llm-model", help=T("cli_option_llm_model_help")),
 ):
@@ -153,12 +151,14 @@ def do(
         console.print(T("intent_hint"))
         raise typer.Exit(1)
 
-    console.print(Panel(
-        f"[bold green]{T('intent_recognized')}: {intent.command}[/bold green]\n"
-        f"[dim]{T('intent_confidence')}: {intent.confidence*100:.0f}%[/dim]",
-        title="✨ Intent Engine",
-        border_style="green"
-    ))
+    console.print(
+        Panel(
+            f"[bold green]{T('intent_recognized')}: {intent.command}[/bold green]\n"
+            f"[dim]{T('intent_confidence')}: {intent.confidence * 100:.0f}%[/dim]",
+            title="✨ Intent Engine",
+            border_style="green",
+        )
+    )
 
     # Dispatcher
     if intent.command == "fix":
@@ -175,7 +175,7 @@ def do(
     elif intent.command == "learn":
         learn()
     else:
-                console.print(
+        console.print(
             f"[yellow]Command '{intent.command}' recognized but not yet auto-dispatched.[/yellow]"
         )
 
@@ -197,6 +197,7 @@ def fix(
     if think:
         # System 2: Cognitive Reasoning Loop
         from boring.intelligence.reasoning_engine import ReasoningEngine
+
         engine = ReasoningEngine()
 
         console.print("[bold cyan]🧠 System 2 Activated: Thinking...[/bold cyan]")
@@ -213,7 +214,7 @@ def fix(
     # System 1: Fast One-Shot (Default)
     _run_one_shot(
         instruction,
-        thinking_mode=False, # Handled by ReasoningEngine above if enabled
+        thinking_mode=False,  # Handled by ReasoningEngine above if enabled
         self_heal=True,
         command_name="fix",
     )
@@ -526,8 +527,6 @@ def _run_one_shot(
     if context_summary:
         full_instruction = f"Context:\n{context_summary}\n\nTask:\n{instruction}"
 
-
-
     if thinking_mode:
         instruction = f"Use deep thinking (sequentialthinking) to analyze: {instruction}"
         console.print(T("cli_thinking_mode_enabled"))
@@ -796,9 +795,7 @@ def clean(
                         )
                         migrated_count += 1
                     except Exception as e:
-                        console.print(
-                            T("clean_migration_failed", old_name=old_name, error=str(e))
-                        )
+                        console.print(T("clean_migration_failed", old_name=old_name, error=str(e)))
 
         if migrated_count > 0:
             console.print(T("clean_migration_summary", count=migrated_count))
@@ -1162,9 +1159,7 @@ def evaluate(
                 console.print(T("evaluate_files_not_found"))
                 raise typer.Exit(1)
 
-            console.print(
-                T("evaluate_pairwise_comparing", file_a=path_a.name, file_b=path_b.name)
-            )
+            console.print(T("evaluate_pairwise_comparing", file_a=path_a.name, file_b=path_b.name))
             content_a = path_a.read_text(encoding="utf-8", errors="replace")
             content_b = path_b.read_text(encoding="utf-8", errors="replace")
 
@@ -1288,9 +1283,7 @@ def tutorial():
 
 @app.command()
 def dashboard(
-    tui: bool = typer.Option(
-        False, "--tui", "-T", help=T("cli_dashboard_tui_help")
-    ),
+    tui: bool = typer.Option(False, "--tui", "-T", help=T("cli_dashboard_tui_help")),
 ):
     """
     Launch the Boring Visual Dashboard (localhost Web UI or TUI).
@@ -1465,9 +1458,7 @@ def auto_fix(
         result = pipeline.run(run_boring_wrapper, verify_wrapper)
 
         if result["status"] == "SUCCESS":
-            console.print(
-                T("auto_fix_success", iterations=result["iterations"])
-            )
+            console.print(T("auto_fix_success", iterations=result["iterations"]))
         else:
             console.print(T("auto_fix_failed", message=result["message"]))
 
@@ -1495,6 +1486,7 @@ app.add_typer(skill_app, name="skill")
 def skill_list():
     """List installed skills."""
     from boring.skills.manager import SkillManager
+
     manager = SkillManager()
     skills = manager.list_installed_skills()
     if not skills:
@@ -1503,6 +1495,7 @@ def skill_list():
         for s in skills:
             console.print(f"- {s}")
 
+
 @skill_app.command("install")
 def skill_install(
     url: str = typer.Argument(..., help="Git URL of the skill"),
@@ -1510,6 +1503,7 @@ def skill_install(
 ):
     """Install a skill from a Git URL."""
     from boring.skills.manager import SkillManager
+
     manager = SkillManager()
     skill_name = name or url.split("/")[-1].replace(".git", "")
     if manager.install_skill(url, skill_name):
@@ -1517,10 +1511,12 @@ def skill_install(
     else:
         console.print(f"[red]Failed to install skill '{skill_name}'.[/red]")
 
+
 @skill_app.command("search")
 def skill_search(query: str):
     """Search for skills in the registry."""
     from boring.skills.manager import SkillManager
+
     manager = SkillManager()
     results = manager.search_registry(query)
     if not results:
@@ -1528,6 +1524,7 @@ def skill_search(query: str):
         return
 
     from rich.table import Table
+
     table = Table(title=f"Skill Search Results for '{query}'")
     table.add_column("Name", style="cyan")
     table.add_column("Description")
@@ -1588,17 +1585,11 @@ def hooks_status():
     for hook_name, info in status["hooks"].items():
         if info["installed"]:
             if info["is_boring_hook"]:
-                console.print(
-                    T("hooks_status_active", hook_name=hook_name)
-                )
+                console.print(T("hooks_status_active", hook_name=hook_name))
             else:
-                console.print(
-                    T("hooks_status_custom", hook_name=hook_name)
-                )
+                console.print(T("hooks_status_custom", hook_name=hook_name))
         else:
-            console.print(
-                T("hooks_status_missing", hook_name=hook_name)
-            )
+            console.print(T("hooks_status_missing", hook_name=hook_name))
 
 
 @app.command()
@@ -1679,9 +1670,7 @@ def rag_index(
         console.print(T("rag_index_chunks", count=idx.total_chunks))
         console.print(T("rag_index_functions", count=idx.functions))
         console.print(T("rag_index_classes", count=idx.classes))
-        console.print(
-            T("rag_index_script_chunks", count=getattr(idx, "script_chunks", 0))
-        )
+        console.print(T("rag_index_script_chunks", count=getattr(idx, "script_chunks", 0)))
     else:
         console.print(T("rag_index_built", count=count))
 
@@ -1763,9 +1752,7 @@ def workspace_list(tag: str | None = typer.Option(None, "--tag", "-t", help="Fil
         marker = "🟢" if is_active else "⚪"
         style = "bold green" if is_active else "white"
 
-        console.print(
-            T("workspace_list_item", marker=marker, style=style, name=name, path=path)
-        )
+        console.print(T("workspace_list_item", marker=marker, style=style, name=name, path=path))
         if p.get("description"):
             console.print(T("workspace_list_description", description=p["description"]))
 
@@ -1931,16 +1918,12 @@ def bisect(
                 score = suspect.get("score", 0)
                 sha = suspect.get("sha", "unknown")[:7]
                 msg = suspect.get("message", "No message")[:50]
-                console.print(
-                    T("bisect_suspect_item", score=score, sha=sha, message=msg)
-                )
+                console.print(T("bisect_suspect_item", score=score, sha=sha, message=msg))
         else:
             console.print(T("bisect_no_suspects"))
 
         if result.get("recommendation"):
-            console.print(
-                T("bisect_recommendation", recommendation=result["recommendation"])
-            )
+            console.print(T("bisect_recommendation", recommendation=result["recommendation"]))
 
     except Exception as e:
         console.print(T("bisect_failed", error=str(e)))

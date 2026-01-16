@@ -167,9 +167,7 @@ Be concise and specific."""
                 guidance_file.write_text(
                     f"# Local LLM Build Guidance\n\n{response}", encoding="utf-8"
                 )
-                console.print(
-                    f"[green]✅ Local guidance generated: {guidance_file}[/green]"
-                )
+                console.print(f"[green]✅ Local guidance generated: {guidance_file}[/green]")
 
                 return NodeResult(
                     status=NodeResultStatus.SUCCESS,

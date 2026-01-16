@@ -5,7 +5,6 @@ Defines custom exception hierarchy for consistent error handling.
 """
 
 
-
 class BoringError(Exception):
     """Base exception for all Boring errors."""
 

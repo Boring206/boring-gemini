@@ -2,8 +2,6 @@
 LLM Module - Modular Client Architecture
 """
 
-
-
 from ..config import settings
 from .claude_adapter import ClaudeCLIAdapter
 from .gemini import GeminiProvider
@@ -11,9 +9,7 @@ from .ollama import OllamaProvider
 from .provider import LLMProvider, LLMResponse
 
 
-def get_provider(
-    provider_name: str | None = None, model_name: str | None = None
-) -> LLMProvider:
+def get_provider(provider_name: str | None = None, model_name: str | None = None) -> LLMProvider:
     """
     Factory function to get the appropriate LLM provider.
 

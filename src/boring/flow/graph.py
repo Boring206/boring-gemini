@@ -5,7 +5,6 @@ The "True One Dragon" State Machine.
 Manages the lifecycle of a Boring Flow execution through a graph of Nodes.
 """
 
-
 from rich.console import Console
 from rich.panel import Panel
 

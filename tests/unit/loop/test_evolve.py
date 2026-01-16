@@ -22,6 +22,7 @@ def test_evolve_success_first_try(mock_run):
     assert isinstance(args[0], list)
     assert args[0] == ["pytest"]
 
+
 @patch("boring.loop.evolve.subprocess.run")
 @patch("boring.loop.evolve.EvolveLoop._run_agent_fix")
 def test_evolve_retry_logic(mock_fix, mock_run):
@@ -36,6 +37,7 @@ def test_evolve_retry_logic(mock_fix, mock_run):
     assert result is True
     assert mock_run.call_count == 2
     assert mock_fix.call_count == 1  # Should triggers fix once
+
 
 @patch("boring.loop.evolve.subprocess.run")
 @patch("boring.loop.evolve.EvolveLoop._run_agent_fix")

@@ -130,5 +130,3 @@ class TestThinkingState:
         assert "Ext Context" in ctx_str
         assert "CURRENT PLAN STATUS" in ctx_str
         assert "test.py" in ctx_str
-
-

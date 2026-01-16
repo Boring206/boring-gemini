@@ -29,9 +29,6 @@ def mock_helpers():
     return {}
 
 
-
-
-
 @patch("boring.mcp.speckit_tools._execute_workflow")
 def test_register_speckit_tools(mock_execute, mock_mcp, mock_audited, mock_helpers):
     """Test registering SpecKit tools."""
@@ -106,9 +103,7 @@ def test_speckit_tasks_with_context(mock_execute, mock_mcp, mock_audited, mock_h
 
 
 @patch("boring.mcp.speckit_tools._execute_workflow")
-def test_speckit_analyze_with_project_path(
-    mock_execute, mock_mcp, mock_audited, mock_helpers
-):
+def test_speckit_analyze_with_project_path(mock_execute, mock_mcp, mock_audited, mock_helpers):
     """Test speckit_analyze with project path."""
     mcp = MagicMock()
     registered_tools = {}

@@ -7,7 +7,6 @@ This state is responsible for:
 3. Triggering human intervention if needed
 """
 
-
 from ...logger import console, log_status
 from ..base import LoopState, StateResult
 from ..context import LoopContext

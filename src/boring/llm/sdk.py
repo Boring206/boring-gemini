@@ -85,6 +85,16 @@ class GeminiClient:
             from ..cli_client import GeminiCLIAdapter, check_cli_available
 
             if check_cli_available():
+                from ..cli_client import check_cli_authenticated
+
+                is_auth, auth_msg = check_cli_authenticated()
+                if not is_auth:
+                    raise ValueError(
+                        f"GOOGLE_API_KEY not set and Gemini CLI is not authenticated.\n"
+                        f"Reason: {auth_msg}\n"
+                        f"Please set GOOGLE_API_KEY or run 'gemini login'."
+                    )
+
                 _logger.info("No API key found. Falling back to Gemini CLI backend.")
                 self.backend = "cli"
                 self.cli_adapter = GeminiCLIAdapter(
@@ -376,14 +386,12 @@ class GeminiClient:
 
 def create_gemini_client(
     log_dir: Path = Path("logs"), model_name: str = DEFAULT_MODEL
-) -> GeminiClient | None:
+) -> GeminiClient:
     """
     Factory function to create a GeminiClient.
 
-    Returns None if initialization fails (missing API key, etc.)
+    Raises:
+        ImportError: If required packages are missing.
+        ValueError: If authentication is missing or invalid.
     """
-    try:
-        return GeminiClient(log_dir=log_dir, model_name=model_name)
-    except (ImportError, ValueError) as e:
-        log_status(log_dir, "ERROR", f"Failed to initialize Gemini client: {e}")
-        return None
+    return GeminiClient(log_dir=log_dir, model_name=model_name)

@@ -31,6 +31,7 @@ console = Console()
 CIRCUIT_BREAKER_MAX_FAILURES = 3
 CIRCUIT_BREAKER_RESET_TIMEOUT = 600  # 10 minutes
 
+
 def _get_circuit_files(project_root: Path | None = None) -> tuple[Path, Path]:
     root = project_root or settings.PROJECT_ROOT
     return (

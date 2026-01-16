@@ -99,7 +99,9 @@ def precision(predictions: list[int], ground_truth: list[int]) -> float:
     if len(predictions) != len(ground_truth):
         raise ValueError("Predictions and ground truth must have same length")
 
-    true_positives = sum(1 for p, g in zip(predictions, ground_truth, strict=True) if p == 1 and g == 1)
+    true_positives = sum(
+        1 for p, g in zip(predictions, ground_truth, strict=True) if p == 1 and g == 1
+    )
     predicted_positives = sum(predictions)
 
     return true_positives / predicted_positives if predicted_positives > 0 else 0.0
@@ -119,7 +121,9 @@ def recall(predictions: list[int], ground_truth: list[int]) -> float:
     if len(predictions) != len(ground_truth):
         raise ValueError("Predictions and ground truth must have same length")
 
-    true_positives = sum(1 for p, g in zip(predictions, ground_truth, strict=True) if p == 1 and g == 1)
+    true_positives = sum(
+        1 for p, g in zip(predictions, ground_truth, strict=True) if p == 1 and g == 1
+    )
     actual_positives = sum(ground_truth)
 
     return true_positives / actual_positives if actual_positives > 0 else 0.0

@@ -7,10 +7,6 @@ from boring.mcp.tools.workflow import (
 
 
 class TestWorkflowTools:
-
-
-
-
     @patch("boring.mcp.tools.workflow.detect_project_root")
     @patch("boring.workflow_manager.WorkflowManager")
     def test_boring_install_workflow(self, mock_manager_cls, mock_detect_root):

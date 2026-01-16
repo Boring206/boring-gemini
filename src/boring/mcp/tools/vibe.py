@@ -413,7 +413,6 @@ def run_vibe_check(
     )
 
 
-
 def run_predict_errors(
     file_path: str,
     limit: int = 5,
@@ -428,11 +427,24 @@ def run_predict_errors(
     - 提供信心分數和預防建議
     - 學習專案特定的錯誤模式
     """
-    project_root, error = _get_project_root_or_error_impl(project_path)
+    project_root_str, error = _get_project_root_or_error_impl(project_path)
     if error:
         return create_error_result(error.get("message", "Unknown error"))
 
-    project_root = Path(project_root)
+    project_root = Path(project_root_str)
+    # Ensure file_path is a string (fix for OptionInfo crash)
+    file_path = str(file_path or ".")
+
+    # Fast-Fail Auth Check (V14.0.1)
+    try:
+        from ...llm.sdk import create_gemini_client
+        # This will raise ValueError if no auth is found
+        _ = create_gemini_client(log_dir=project_root / "logs")
+    except (ValueError, RuntimeError) as e:
+        return create_error_result(
+            f"🚫 Authentication required for Predictive Intelligence.\n{str(e)}",
+            error_details="AUTH_REQUIRED"
+        )
 
     # Try to use PredictiveAnalyzer
     predictions = []
@@ -1570,9 +1582,7 @@ def register_vibe_tools(mcp, audited, helpers, engine=None, brain_manager_factor
     def boring_optimize_context(
         file_paths: Annotated[list[str], Field(description="要優化的檔案路徑列表")],
         max_tokens: Annotated[int, Field(description="最大 token 限制")] = 8000,
-        error_message: Annotated[
-            str | None, Field(description="相關錯誤訊息 (最高優先級)")
-        ] = None,
+        error_message: Annotated[str | None, Field(description="相關錯誤訊息 (最高優先級)")] = None,
         project_path: Annotated[str | None, Field(description="專案根目錄")] = None,
     ) -> BoringResult:
         """

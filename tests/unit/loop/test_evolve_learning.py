@@ -13,7 +13,7 @@ def test_evolve_learns_on_success(mock_brain_cls, mock_run, tmp_path):
     mock_brain = mock_brain_cls.return_value
     mock_brain.learn_pattern.return_value = {"pattern_id": "TEST_ID"}
 
-    mock_run.return_value.returncode = 0 # Immediate success
+    mock_run.return_value.returncode = 0  # Immediate success
 
     # Run
     with patch("boring.loop.evolve.settings.PROJECT_ROOT", tmp_path):
@@ -30,14 +30,17 @@ def test_evolve_learns_on_success(mock_brain_cls, mock_run, tmp_path):
     assert args["pattern_type"] == "evolution_success"
     assert "automated solution" in args["description"].lower()
 
+
 @patch("boring.loop.evolve.subprocess.run")
 @patch("boring.intelligence.brain_manager.BrainManager")
 def test_evolve_does_not_learn_on_failure(mock_brain_cls, mock_run, tmp_path):
     # Always fail
     mock_run.return_value.returncode = 1
 
-    with patch("boring.loop.evolve.EvolveLoop._run_agent_fix"), \
-         patch("boring.loop.evolve.settings.PROJECT_ROOT", tmp_path):
+    with (
+        patch("boring.loop.evolve.EvolveLoop._run_agent_fix"),
+        patch("boring.loop.evolve.settings.PROJECT_ROOT", tmp_path),
+    ):
         loop = EvolveLoop("Fix bug", "pytest", max_iterations=1)
         result = loop.run()
 

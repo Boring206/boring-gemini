@@ -39,3 +39,4 @@ mkdocs-git-revision-date-localized-plugin>=1.2.0
 pre-commit>=3.0.0
 ipython>=8.0.0
 ipdb>=0.13.0
+watchdog>=3.0.0

@@ -69,7 +69,13 @@ class TestDashboard:
         mock_st.session_state.last_refresh = time.time()
 
         # Mock tabs - dashboard now has 5 tabs
-        mock_st.tabs.return_value = [MagicMock(), MagicMock(), MagicMock(), MagicMock(), MagicMock()]
+        mock_st.tabs.return_value = [
+            MagicMock(),
+            MagicMock(),
+            MagicMock(),
+            MagicMock(),
+            MagicMock(),
+        ]
 
         # Run main
         main()
@@ -98,7 +104,13 @@ class TestDashboard:
         mock_st.columns.side_effect = (
             lambda x: [MagicMock()] * 4 if x == 4 else [MagicMock(), MagicMock()]
         )
-        mock_st.tabs.return_value = [MagicMock(), MagicMock(), MagicMock(), MagicMock(), MagicMock()]
+        mock_st.tabs.return_value = [
+            MagicMock(),
+            MagicMock(),
+            MagicMock(),
+            MagicMock(),
+            MagicMock(),
+        ]
         mock_st.session_state.last_refresh = time.time()
 
         main()
@@ -124,7 +136,13 @@ class TestDashboard:
         ):
             # Trigger tab2 context - now 5 tabs
             mock_tab2 = MagicMock()
-            mock_st.tabs.return_value = [MagicMock(), mock_tab2, MagicMock(), MagicMock(), MagicMock()]
+            mock_st.tabs.return_value = [
+                MagicMock(),
+                mock_tab2,
+                MagicMock(),
+                MagicMock(),
+                MagicMock(),
+            ]
 
             main()
 

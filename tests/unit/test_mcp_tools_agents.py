@@ -73,10 +73,7 @@ class TestAgentTools:
             mock_runner = mock_runner_cls.return_value
             # Mock execute_task to return a dummy response
             mock_resp = AgentResponse(
-                messages=[
-                    ChatMessage(role="assistant", content="Mock Response")
-                ],
-                latency_ms=100
+                messages=[ChatMessage(role="assistant", content="Mock Response")], latency_ms=100
             )
             mock_runner.execute_task = AsyncMock(return_value=mock_resp)
 

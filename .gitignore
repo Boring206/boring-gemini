@@ -11,6 +11,9 @@ status.json
 .circuit_breaker_history
 .response_analysis
 .boring_cache/
+.last_loop_summary
+.boring_tutorial.json
+.boring_run_prompt.md
 
 # V10.29+ Unified Boring Directory
 .boring/
@@ -193,3 +196,8 @@ demo_*.py
 fix_paths.py
 error_log*.txt
 output_log*.txt
+
+test_unit_failures_*.txt
+test_integration_failures*.txt
+verify_*.py
+smoke_*.py
