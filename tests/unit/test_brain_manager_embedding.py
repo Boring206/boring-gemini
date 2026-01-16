@@ -33,7 +33,7 @@ class TestBrainManagerEmbedding:
                 "sentence_transformers": mock_st_mod,
             },
         ):
-            # No need to patch chromadb.PersistentClient since chromadb: None 
+            # No need to patch chromadb.PersistentClient since chromadb: None
             # will cause the 'import chromadb' inside BrainManager to raise ImportError
             manager = BrainManager(temp_project)
             assert manager.faiss_index is not None
