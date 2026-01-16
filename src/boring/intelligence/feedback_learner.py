@@ -53,7 +53,9 @@ class FeedbackLearner:
 
     def __init__(self, project_root: Path | None = None):
         self.project_root = project_root or settings.PROJECT_ROOT
-        self.brain_dir = self.project_root / settings.BRAIN_DIR
+        from boring.paths import get_boring_path
+
+        self.brain_dir = get_boring_path(self.project_root, "brain")
         self.feedback_file = self.brain_dir / "review_feedback.json"
         self._ensure_dir()
 

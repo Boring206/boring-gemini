@@ -42,12 +42,33 @@ class AuditLogger:
 
     def __init__(self, db_path: Path | None = None):
         if db_path is None:
-            # Default to global storage for Enterprise Compliance
-            boring_home = Path.home() / ".boring"
-            boring_home.mkdir(parents=True, exist_ok=True)
-            self.db_path = boring_home / "audit.db"
+            # V14.0: Unified Path Management
+            try:
+                from boring.core.config import settings
+                from boring.paths import BoringPaths
+
+                # Ensure we have a valid project root
+                root = settings.PROJECT_ROOT
+                self.db_path = BoringPaths(root).audit / "audit.db"
+            except Exception:
+                # Default fallback to global storage
+                boring_home = Path.home() / ".boring"
+                boring_home.mkdir(parents=True, exist_ok=True)
+                self.db_path = boring_home / "audit.db"
         else:
             self.db_path = Path(db_path)
+            # If a directory is passed (common in V13), resolve to the unified audit.db
+            if self.db_path.is_dir() or not self.db_path.suffix:
+                try:
+                    from boring.paths import BoringPaths
+
+                    self.db_path = BoringPaths(self.db_path).audit / "audit.db"
+                except Exception:
+                    # Fallback to manual path construction if BoringPaths isn't available
+                    self.db_path = self.db_path / ".boring" / "audit" / "audit.db"
+
+        # Final safety check: ensure parent exists
+        if self.db_path:
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
         self.enabled = True

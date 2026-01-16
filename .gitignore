@@ -201,3 +201,14 @@ test_unit_failures_*.txt
 test_integration_failures*.txt
 verify_*.py
 smoke_*.py
+# Sandbox & Local Test Environments
+*_sandbox/
+test_user_odyssey/
+my_new_app/
+my_odyssey_app/
+
+# Local Performance & Coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover

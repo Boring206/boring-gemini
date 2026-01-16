@@ -13,6 +13,7 @@ from rich.table import Table
 
 from boring.extensions import ExtensionsManager
 from boring.services.nodejs import NodeManager
+from boring.utils.i18n import SUPPORTED_LANGUAGES, i18n
 
 console = Console()
 
@@ -68,13 +69,77 @@ class WizardManager:
 
         # Define common config paths
         self.editors = {
-            "Claude": self._get_claude_path(),
+            "Claude Desktop": self._get_claude_path(),
             "Cursor": self._get_cursor_path(),
             "VS Code": self._get_vscode_path(),
             "Windsurf": self._get_windsurf_path(),
             "Trae": self._get_trae_path(),
             "Void": self._get_void_path(),
         }
+
+    def _get_config_root(self, editor_name: str) -> Path | None:
+        """Determines the root configuration directory for a given editor based on OS."""
+        # Special handling for certain editors that don't follow standard patterns
+        if editor_name == "Zed":
+            return self.appdata / "zed"
+        if editor_name == "Goose":  # Goose uses ~/.config on Linux/Darwin
+            if self.system == "Windows":
+                return self.appdata / "goose"
+            else:
+                return self.home / ".config" / "goose"
+        if editor_name == "Continue":
+            return self.home / ".continue"
+        if editor_name == "Aider":
+            return self.home
+        if editor_name == "OpenHands":
+            return self.home  # .openhands usually in home
+        if editor_name == "Claude Code":  # .claude.json usually in home
+            return self.home
+        if editor_name == "OpenCode":  # CLI tool, no config dir
+            return None
+        if editor_name == "Qwen Code":  # CLI tool, no config dir
+            return None
+
+        # Standard application support directories
+        if self.system == "Windows":
+            # For "Code" (VS Code), "Cursor", "Claude" (Desktop)
+            return self.appdata / editor_name
+        elif self.system == "Darwin":  # macOS
+            return self.home / "Library" / "Application Support" / editor_name
+        elif self.system == "Linux":
+            # Many applications use ~/.config on Linux
+            return self.appdata / editor_name
+        return None
+
+    def _get_editor_config_path(
+        self, editor_name: str, *sub_paths: str, check_parent_exists: bool = True
+    ) -> Path | None:
+        """
+        Constructs the full configuration path for an editor.
+        :param editor_name: The name of the editor (e.g., "Code", "Cursor", "Claude")
+        :param sub_paths: Subdirectories or file names within the editor's config root
+        :param check_parent_exists: If True, returns None if the parent directory does not exist
+        :return: Full path to the config file or directory, or None if not found/invalid
+        """
+        root = self._get_config_root(editor_name)
+        if not root:
+            return None
+
+        path = root
+        for sp in sub_paths:
+            path = path / sp
+
+        if check_parent_exists and not path.parent.exists():
+            return None
+
+        # Special check for known editors that store configs slightly differently
+        if editor_name == "Claude" and self.system == "Linux":
+            # Claude Desktop on Linux might use ~/.config/Claude/claude-desktop/
+            linux_path_alt = self.appdata / "Claude" / "claude-desktop"
+            if linux_path_alt.exists():
+                return linux_path_alt / Path(*sub_paths)
+
+        return path
 
     def _get_claude_path(self) -> Path | None:
         return self._get_editor_config_path("Claude", "claude_desktop_config.json")
@@ -165,7 +230,9 @@ class WizardManager:
         """Get Goose config.yaml path."""
         if self.system == "Windows":
             path = self._get_editor_config_path("goose", "config.yaml")
-        elif self.system == "Linux" or self.system == "Darwin": # Goose uses ~/.config on both Linux and Darwin
+        elif (
+            self.system == "Linux" or self.system == "Darwin"
+        ):  # Goose uses ~/.config on both Linux and Darwin
             path = self.home / ".config" / "goose" / "config.yaml"
         else:
             return None
@@ -977,59 +1044,65 @@ def run_wizard(auto_approve: bool = False):
                     console.print(
                         "[red]❌ Node.js is ready but Gemini CLI failed to install.[/red]"
                     )
-        else:
-            console.print(
-                "[dim]Skipping Node.js setup. You can still use the default API backend.[/dim]"
-            )
+    console.print(
+        Panel.fit(
+            f"[bold cyan]🧙 {i18n.t('welcome_wizard')}[/bold cyan]\n[dim]Boring for Gemini[/dim]",
+            border_style="cyan",
+        )
+    )
 
-    if node_manager.is_node_available() and not node_manager.get_gemini_path():
-        console.print("\n[yellow]⚠️ Gemini CLI (@google/gemini-cli) not found.[/yellow]")
-        if Confirm.ask("Would you like to install gemini-cli now?"):
-            node_manager.install_gemini_cli()
+    manager = WizardManager()
 
-    found = manager.scan_editors()
+    # 2. Config Menu (Interactive Only)
+    # If returned "install", we proceed. If None (break/quit), we might exit or proceed?
+    # Let's assume user wants to install after config.
+    if not auto_approve:
+        action = run_config_flow(manager)
+        if action != "install":
+            console.print(f"[yellow]{i18n.t('cancelled')}[/yellow]")
+            return
 
-    if not found:
-        console.print("[yellow]No supported editor configurations found automatically.[/yellow]")
-        console.print("Supported: Claude Desktop, Cursor, VS Code, Gemini CLI")
+    # Proceed with Editor Installation (original wizard logic)
+    editors = manager.scan_editors()
+
+    if not editors:
+        console.print("[yellow]⚠️ No supported editors found.[/yellow]")
         return
 
-    console.print(f"Found {len(found)} editors: {', '.join(found.keys())}")
+    table = Table(title="Found Editors")
+    table.add_column("Editor", style="cyan bold")
+    table.add_column("Config Path", style="dim")
 
-    # Profile Selection
-    console.print("\n[bold]Configuration Profile:[/bold]")
-    show_profiles()
+    editor_list = list(editors.keys())
+    for name in editor_list:
+        table.add_row(name, str(editors[name]))
+
+    console.print(table)
 
     if auto_approve:
-        profile = "standard"
-        console.print(f"[dim]Auto-approving profile: {profile}[/dim]")
+        for name, path in editors.items():
+            manager.install(name, path, profile="standard", auto_approve=True)
+        return
+
+    # Interactive Selection
+    console.print(f"\n[bold]{i18n.t('menu_install_mcp')}[/bold]")
+    choices = editor_list + ["all"]
+    choice = Prompt.ask("Select editor to configure", choices=choices, default="all")
+
+    # Sync with settings in case they changed in refactored flow
+    from boring.core.config import settings
+
+    profile = settings.MCP_PROFILE
+
+    extra_env = {}
+    # Ask for API Key if not set? (Ideally done in Config Menu now)
+
+    if choice == "all":
+        for name, path in editors.items():
+            manager.install(name, path, profile=profile, extra_env=extra_env)
     else:
-        profile = Prompt.ask(
-            "Choose a profile",
-            choices=["ultra_lite", "minimal", "lite", "standard", "full", "adaptive", "custom"],
-            default="adaptive",
-        )
-
-    extra_env = None
-    if profile == "custom":
-        profile, extra_env = configure_custom_profile()
-
-    # Configure Offline Mode for ALL profiles
-    if extra_env is None:
-        extra_env = {}
-
-    _configure_offline_check(extra_env)
-
-    for name, path in found.items():
-        should_install = auto_approve
-        if not should_install:
-            should_install = Confirm.ask(f"Install for [bold]{name}[/bold]?", default=True)
-
-        if should_install:
-            manager.install(
-                name, path, profile=profile, extra_env=extra_env, auto_approve=auto_approve
-            )
-
+        path = editors[choice]
+        manager.install(choice, path, profile=profile, extra_env=extra_env)
     # Handle deferred model download (restored fix)
     if extra_env and extra_env.get("_DOWNLOAD_MODEL"):
         model_name = extra_env.pop("_DOWNLOAD_MODEL")
@@ -1045,4 +1118,178 @@ def run_wizard(auto_approve: bool = False):
         except Exception as e:
             console.print(f"[red]❌ Download failed: {e}[/red]")
 
-    console.print("\n[green]Wizard completed successfully![/green]")
+    console.print(f"\n[green]{i18n.t('success_saved')}[/green]")
+
+
+def run_config_flow(manager):
+    """Run the advanced configuration flow."""
+    # Import necessary modules inside function to avoid circular imports?
+    # Or just use existing.
+
+    while True:
+        console.clear()
+        console.print(Panel.fit(i18n.t("menu_main_title"), border_style="blue"))
+
+        # Show current settings summary
+        table = Table(title=i18n.t("current_settings"))
+        table.add_column("Setting", style="cyan")
+        table.add_column("Value", style="green")
+
+        from boring.core.config import settings
+
+        # Safe language display
+        lang_name = SUPPORTED_LANGUAGES.get(settings.LANGUAGE, settings.LANGUAGE)
+        table.add_row("Language", lang_name)
+        table.add_row("Profile", settings.MCP_PROFILE)
+        table.add_row("Model", settings.DEFAULT_MODEL)
+        table.add_row("Offline Mode", str(settings.OFFLINE_MODE))
+        table.add_row("Notifications", str(settings.NOTIFICATIONS_ENABLED))
+
+        console.print(table)
+        console.print()
+
+        # Menu
+        menu = Table(show_header=False, box=None)
+        menu.add_column("Key", style="cyan bold", width=4)
+        menu.add_column("Action", style="white")
+
+        menu.add_row("1", i18n.t("menu_configure_llm"))
+        menu.add_row("2", i18n.t("menu_configure_tools"))
+        menu.add_row("3", i18n.t("menu_configure_notifications"))
+        menu.add_row("4", i18n.t("menu_configure_offline"))
+        menu.add_row("5", i18n.t("menu_configure_advanced"))
+        menu.add_row("6", i18n.t("menu_install_mcp"))
+        menu.add_row("q", i18n.t("menu_exit"))
+
+        console.print(menu)
+        choice = Prompt.ask(
+            "Select an option", choices=["1", "2", "3", "4", "5", "6", "q"], default="6"
+        )
+
+        if choice == "q":
+            break
+        elif choice == "1":
+            _config_llm()
+        elif choice == "2":
+            _config_profile()
+        elif choice == "3":
+            _config_notifications()
+        elif choice == "4":
+            _config_offline()
+        elif choice == "5":
+            _config_advanced()
+        elif choice == "6":
+            # Proceed to standard installation flow
+            return "install"
+
+
+def _config_llm():
+    """Configure LLM settings."""
+    console.print(f"\n[bold]{i18n.t('menu_configure_llm')}[/bold]")
+    from boring.core.config import SUPPORTED_MODELS, update_toml_config
+
+    # API Key
+    key = Prompt.ask(i18n.t("prompt_google_api_key"), password=True)
+    if key:
+        update_toml_config("google_api_key", key)
+        console.print(f"[green]{i18n.t('success_saved')}[/green]")
+
+    # Model
+    model = Prompt.ask(
+        i18n.t("menu_configure_llm"),
+        choices=[m.split("/")[-1] for m in SUPPORTED_MODELS] + ["gemini-2.0-flash-exp"],
+        default="gemini-2.0-flash-exp",
+    )
+    update_toml_config("default_model", model)
+    console.print(f"[green]{i18n.t('success_saved')}[/green]")
+    Prompt.ask(i18n.t("menu_return"))
+
+
+def _config_profile():
+    """Configure Profile."""
+    console.print(f"\n[bold]{i18n.t('prompt_select_profile')}[/bold]")
+
+    table = Table(show_header=True)
+    table.add_column("Profile", style="cyan")
+    table.add_column("Description", style="white")
+
+    profile_list = list(PROFILES.keys())
+    for p in profile_list:
+        table.add_row(p, PROFILES[p]["desc"])
+
+    console.print(table)
+
+    from boring.core.config import settings
+
+    choice = Prompt.ask(
+        i18n.t("prompt_select_profile"), choices=profile_list, default=settings.MCP_PROFILE
+    )
+
+    from boring.core.config import update_toml_config
+
+    if update_toml_config("mcp_profile", choice):
+        console.print(f"[green]{i18n.t('success_saved')}[/green]")
+    Prompt.ask(i18n.t("menu_return"))
+
+
+def _config_notifications():
+    """Configure Notifications."""
+    console.print(f"\n[bold]{i18n.t('menu_configure_notifications')}[/bold]")
+    from boring.core.config import settings, update_toml_config
+
+    enabled = Confirm.ask("Enable Notifications?", default=settings.NOTIFICATIONS_ENABLED)
+    update_toml_config("notifications_enabled", enabled)
+
+    if enabled:
+        slack = Prompt.ask(
+            "Slack Webhook URL (Enter to skip)", default=settings.SLACK_WEBHOOK or ""
+        )
+        if slack:
+            update_toml_config("slack_webhook", slack)
+
+        discord = Prompt.ask(i18n.t("prompt_discord"), default=settings.DISCORD_WEBHOOK or "")
+        if discord:
+            update_toml_config("discord_webhook", discord)
+
+    console.print(f"[green]{i18n.t('success_saved')}[/green]")
+    Prompt.ask(i18n.t("menu_return"))
+
+
+def _config_offline():
+    """Configure Offline Mode."""
+    console.print(f"\n[bold]{i18n.t('menu_configure_offline')}[/bold]")
+    from boring.core.config import settings, update_toml_config
+
+    offline = Confirm.ask(i18n.t("prompt_offline_enable"), default=settings.OFFLINE_MODE)
+    update_toml_config("offline_mode", offline)
+
+    if offline:
+        current_model = settings.LOCAL_LLM_MODEL or "qwen2.5-coder-7b-instruct"
+        model_name = Prompt.ask(i18n.t("prompt_local_model"), default=current_model)
+        update_toml_config("local_llm_model", model_name)
+
+        # Verify check (simple)
+        try:
+            # Basic path check if it looks like a path
+            p = Path(model_name)
+            if p.is_absolute() and not p.exists():
+                console.print(f"[yellow]⚠️  Warning: Model file not found at {p}[/yellow]")
+        except Exception:
+            pass
+
+    console.print(f"[green]{i18n.t('success_saved')}[/green]")
+    Prompt.ask(i18n.t("menu_return"))
+
+
+def _config_advanced():
+    """Configure Advanced Settings."""
+    console.print(f"\n[bold]{i18n.t('menu_configure_advanced')}[/bold]")
+    from boring.core.config import settings, update_toml_config
+
+    # Timeout
+    timeout = Prompt.ask(i18n.t("prompt_timeout"), default=str(settings.TIMEOUT_MINUTES))
+    if timeout.isdigit():
+        update_toml_config("timeout_minutes", int(timeout))
+
+    console.print(f"[green]{i18n.t('success_saved')}[/green]")
+    Prompt.ask(i18n.t("menu_return"))

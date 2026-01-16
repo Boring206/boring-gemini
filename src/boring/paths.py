@@ -45,6 +45,8 @@ SUBDIRS = {
     "cache": "cache",  # Temporary cache
     "backups": "backups",  # Rollback backups
     "state": "state",  # Runtime state
+    "workflows": "workflows",  # Custom agent workflows
+    "audit": "audit",  # Tool execution logs
 }
 
 # Legacy path mapping (for backward compatibility)
@@ -53,6 +55,8 @@ LEGACY_PATHS = {
     "brain": ".boring_brain",
     "cache": ".boring_cache",
     "backups": ".boring_backups",
+    "workflows": ".agent/workflows",
+    "audit": ".boring_audit",
 }
 
 # State files that should move to .boring/state/
@@ -65,6 +69,8 @@ STATE_FILES = [
     ".boring_tutorial.json",
     ".response_analysis",
     ".exit_signals",
+    ".last_loop_summary",
+    "boring.log",
 ]
 
 
@@ -247,6 +253,16 @@ class BoringPaths:
     def state(self) -> Path:
         """Get state directory."""
         return get_boring_path(self._project_root, "state", create=self._create)
+
+    @property
+    def workflows(self) -> Path:
+        """Get workflows directory."""
+        return get_boring_path(self._project_root, "workflows", create=self._create)
+
+    @property
+    def audit(self) -> Path:
+        """Get audit directory."""
+        return get_boring_path(self._project_root, "audit", create=self._create)
 
     # Convenience methods for common files
     def get_rag_db(self) -> Path:

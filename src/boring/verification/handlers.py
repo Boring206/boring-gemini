@@ -492,7 +492,11 @@ def verify_imports_python(file_path: Path, project_root: Path) -> VerificationRe
                 try:
                     # Use a subprocess to check the import in the correct environment
                     subprocess.run(
-                        [str(python_executable), "-c", f"import {root_module}"],
+                        [
+                            str(python_executable),
+                            "-c",
+                            f"import sys; sys.path.insert(0, '{project_root.as_posix()}'); import {root_module}",
+                        ],
                         check=True,
                         capture_output=True,
                         timeout=5,

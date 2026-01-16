@@ -169,10 +169,14 @@ class StatefulAgentLoop:
                     )
 
         # Initialize tracking files
+        from boring.paths import BoringPaths
+
+        bp = BoringPaths(ctx.project_root)
+
         init_call_tracking(
-            settings.PROJECT_ROOT / ".call_count",
-            settings.PROJECT_ROOT / ".last_reset",
-            settings.PROJECT_ROOT / ".exit_signals",
+            bp.state / ".call_count",
+            bp.state / ".last_reset",
+            bp.state / ".exit_signals",
         )
 
         # Start RAG Watcher (auto-index on file changes)

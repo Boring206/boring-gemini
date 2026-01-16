@@ -10,6 +10,18 @@ import sys
 
 from pydantic import Field
 
+from boring.core.config import settings
+from boring.utils.i18n import SUPPORTED_LANGUAGES
+
+
+def _get_lang_instruction() -> str:
+    """Get language instruction suffix if configured."""
+    lang = settings.LANGUAGE
+    if lang and lang != "en" and lang in SUPPORTED_LANGUAGES:
+        lang_name = SUPPORTED_LANGUAGES[lang]
+        return f"\n\nIMPORTANT: You MUST communicate in {lang_name} for all explanations. Code must remain in English."
+    return ""
+
 
 def register_prompts(mcp, helpers=None):
     """Register prompts with the MCP server."""
@@ -33,7 +45,7 @@ Include:
 1. Files to create/modify
 2. Step-by-step implementation steps
 3. Testing strategy
-4. Potential edge cases"""
+4. Potential edge cases""" + _get_lang_instruction()
 
     @mcp.prompt(
         name="review_code",
@@ -59,7 +71,7 @@ Include:
 5. **Proactive Guidance**: If you see a naive pattern (e.g., synchronous API call in a loop), say:
    "⚠️ **Architecture Risk**: This will timeout under load. Use async/batch processing."
 
-Be constructive but firm. Save the developer from future production incidents."""
+Be constructive but firm. Save the developer from future production incidents.""" + _get_lang_instruction()
 
     @mcp.prompt(
         name="debug_error",
@@ -88,7 +100,7 @@ Be constructive but firm. Save the developer from future production incidents.""
    - How to prevent this class of errors permanently?
    - Example: "This error happens because you're not using Dependency Injection. Refactor to inject the DB connection."
 
-Don't just fix the symptom—fix the root design issue."""
+Don't just fix the symptom—fix the root design issue.""" + _get_lang_instruction()
 
     @mcp.prompt(
         name="refactor_code",
@@ -104,7 +116,7 @@ Focus on:
 1. Code clarity
 2. Maintainability
 3. Performance
-4. Testability"""
+4. Testability""" + _get_lang_instruction()
 
     @mcp.prompt(name="explain_code", description="Request code explanation")
     def explain_code(
@@ -118,7 +130,7 @@ Focus on:
 1. Purpose and responsibility
 2. Key algorithms/patterns used
 3. How it fits into the larger system
-4. Important edge cases handled"""
+4. Important edge cases handled""" + _get_lang_instruction()
 
     # --- Workflow Prompts (Grouping Tools) ---
 
@@ -132,7 +144,7 @@ Steps to execute:
 2. Run `boring_hooks_install` to set up Git hooks.
 3. Run `boring_setup_extensions` to install recommended extensions.
 4. Run `boring_health_check` to verify everything is ready.
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(name="verify_work", description="Run comprehensive project verification")
     def verify_work(
@@ -147,7 +159,7 @@ Steps:
 1. Run `boring_status` to check current loop status.
 2. Run `boring_verify(level='{level}')` to check code quality.
 3. If errors are found, use `boring_search_tool` to find relevant docs/code to fix them.
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(name="manage_memory", description="Manage project knowledge and rubrics")
     def manage_memory() -> str:
@@ -158,7 +170,7 @@ Steps:
 1. Run `boring_learn` to digest recent changes.
 2. Run `boring_create_rubrics` to ensure evaluation standards exist.
 3. Run `boring_brain_summary` to show what is currently known.
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(
         name="evaluate_architecture",
@@ -184,7 +196,7 @@ If you see a naive implementation (e.g., using a list for lookups), DON'T just s
 Say: "⚠️ **Architecture Risk**: This is O(N). In production, this will kill the CPU. **Mandatory Refactor**: Use a Set or HashMap (O(1))."
 
 Be direct. Be strict. Save the user from future pain.
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(name="run_agent", description="Execute a multi-agent development task")
     def run_agent(
@@ -199,7 +211,7 @@ Steps:
 1. Use `boring_prompt_plan` to create an implementation plan (Architect).
 2. Review the plan with me.
 3. Once approved, use `boring_multi_agent` with the task to execute it.
-"""
+""" + _get_lang_instruction()
 
     # --- Vibe Coder Prompts (Optimized for AI Clients) ---
 
@@ -248,7 +260,7 @@ Steps:
 - 已實作功能清單
 - 🏛️ 架構決策記錄 (ADR)
 - 潛在改進建議
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(
         name="quick_fix",
@@ -278,7 +290,7 @@ Steps:
 4. **報告**
    - 列出所有已修復的問題
    - 如有無法自動修復的問題，提供手動修復建議
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(name="full_stack_dev", description="全棧應用開發：前端 + 後端 + 資料庫 + 測試")
     def full_stack_dev(
@@ -316,7 +328,7 @@ Steps:
 
 每個階段完成後，使用 `boring_agent_review` 進行程式碼審查。
 完成後提供完整的專案摘要和啟動指南。
-"""
+""" + _get_lang_instruction()
 
     # --- Security Prompts ---
 
@@ -346,8 +358,9 @@ Execute security analysis:
 
 4. **Report**
    - Categorize findings by severity (CRITICAL, HIGH, MEDIUM, LOW)
-   - Provide remediation steps for each issue
-"""
+   - Follow up
+- Provide remediation steps for each issue
+""" + _get_lang_instruction()
 
     @mcp.prompt(
         name="shadow_review", description="Review and approve pending Shadow Mode operations"
@@ -366,7 +379,7 @@ Review all pending operations that require human approval:
    - Proposed changes
 3. Ask me to approve or reject each operation
 4. Use `boring_shadow_approve(operation_id)` or `boring_shadow_reject(operation_id)`
-"""
+""" + _get_lang_instruction()
 
     # --- RAG & Memory Prompts ---
 
@@ -422,7 +435,7 @@ Review all pending operations that require human approval:
             return (
                 f"❌ Semantic Search Error: {str(e)}\n\n"
                 f"Fallback: Use `boring_rag_search(query='{query}')` tool directly."
-            )
+            ) + _get_lang_instruction()
 
     @mcp.prompt(
         name="save_session", description="Save current session context for later resumption"
@@ -443,7 +456,7 @@ Save current work state:
    - Conversation context
    - Pending tasks
 3. You can resume later with `boring_load_context(context_name='{name}')`
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(name="load_session", description="Resume a previously saved session")
     def load_session(
@@ -455,7 +468,7 @@ Save current work state:
 1. If no name specified, run `boring_list_contexts` to see available sessions
 2. Run `boring_load_context(context_name='{name if name else "<select from list>"}')
 3. Resume work from where you left off
-"""
+""" + _get_lang_instruction()
 
     # --- Transaction Prompts ---
 
@@ -487,7 +500,7 @@ Execute with transaction safety:
 4. **Decision**
    - If tests pass: `boring_transaction_commit()`
    - If tests fail: `boring_rollback()` (reverts all changes)
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(name="rollback", description="Rollback recent changes to last safe state")
     def rollback() -> str:
@@ -499,7 +512,7 @@ Revert to last safe state:
 1. Check current transaction status
 2. Run `boring_rollback()` to restore to last savepoint
 3. Verify the rollback was successful with `boring_verify(level='STANDARD')`
-"""
+""" + _get_lang_instruction()
 
     # --- Background Task Prompts ---
 
@@ -520,7 +533,7 @@ For large projects, run verification without blocking:
 2. Get task_id from response
 3. Check progress: `boring_task_status(task_id='<task_id>')`
 4. List all tasks: `boring_list_tasks()`
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(name="background_test", description="Run tests in background")
     def background_test() -> str:
@@ -532,7 +545,7 @@ Run test suite without blocking:
 1. Submit: `boring_background_task(task_type='test')`
 2. Continue working while tests run
 3. Check status periodically: `boring_task_status(task_id='<task_id>')`
-"""
+""" + _get_lang_instruction()
 
     # --- Git & Workspace Prompts ---
 
@@ -574,7 +587,7 @@ Push: {push}
    - Report success or failure
 
 💡 **Tip**: `boring_commit` reads from `task.md`, so keep your tasks updated!
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(name="switch_project", description="Switch to a different project in the workspace")
     def switch_project(
@@ -586,7 +599,7 @@ Push: {push}
 1. If no project specified, run `boring_workspace_list` to see available projects
 2. Run `boring_workspace_switch(name='{project if project else "<select from list>"}')`
 3. Confirm the switch was successful
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(name="add_project", description="Register a new project in the workspace")
     def add_project(
@@ -602,7 +615,7 @@ Path: {path}
 1. Run `boring_workspace_add(name='{name}', path='{path}')`
 2. Optionally add tags for easier filtering
 3. Run `boring_workspace_list` to confirm registration
-"""
+""" + _get_lang_instruction()
 
     # --- Plugin Prompts ---
 
@@ -616,7 +629,7 @@ Path: {path}
 1. If no plugin specified, run `boring_list_plugins` to see available plugins
 2. Run `boring_run_plugin(name='{plugin_name if plugin_name else "<select from list>"}')`
 3. Display plugin output
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(name="create_plugin", description="Guide to create a new Boring plugin")
     def create_plugin(
@@ -654,7 +667,7 @@ def pre_verify(context):
 
 4. Run `boring_reload_plugins` to register
 5. Test with `boring_run_plugin(name='{name}')`
-"""
+""" + _get_lang_instruction()
 
     # --- Evaluation Prompts ---
 
@@ -676,7 +689,7 @@ Rubric: {rubric}
    - Performance
    - Security
 3. Provide improvement suggestions for low-scoring areas
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(
         name="compare_implementations", description="A/B comparison of two code implementations"
@@ -699,7 +712,7 @@ B: {path_b}
    - Code clarity
 3. Declare winner with justification
 4. Provide recommendations for the losing implementation
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(name="visualize", description="Generate Mermaid diagrams for project architecture")
     def visualize(
@@ -716,7 +729,7 @@ Type: {type}
 2. Generate a **Mermaid.js** diagram of type `{type}`
 3. enclose it in a `mermaid` code block
 4. Explain the key relationships and potential bottlenecks shown in the diagram
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(name="roadmap", description="Update and visualize project roadmap")
     def roadmap() -> str:
@@ -728,7 +741,7 @@ Type: {type}
 3. Generate a progress summary
 4. Output a **Mermaid Gantt Chart** or **Flowchart** showing the next steps
 5. Propose updates to `task.md` if the plan has evolved
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(name="vibe_check", description="Project health and style diagnostic")
     def vibe_check() -> str:
@@ -740,7 +753,7 @@ Type: {type}
 3. **Bloat Check**: Are there unused files or massive functions?
 4. **Style Check**: Does the code 'feel' modern and consistent?
 5. **Score**: Give a 'Vibe Score' (0-100) and 3 top recommendations to improve the vibe.
-"""
+""" + _get_lang_instruction()
 
     # --- System & Meta Prompts ---
 
@@ -762,7 +775,7 @@ Executing comprehensive checks:
 4. **Report**
    - Summarize overall project health score
    - List critical vulnerabilities or linting blockers
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(
         name="visualize_architecture",
@@ -781,7 +794,7 @@ Scope: {scope}
 1. Run `boring_visualize(scope='{scope}', output_format='mermaid')`
 2. Display the generated Mermaid diagram
 3. Briefly explain the core dependencies and module relationships
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(
         name="suggest_roadmap", description="Get AI-powered roadmap for next development steps"
@@ -798,7 +811,7 @@ Scope: {scope}
    - Estimate the impact on the codebase
    - Provide a confidence score
 3. Ask me which task to prioritize
-"""
+""" + _get_lang_instruction()
 
     @mcp.prompt(name="system_status", description="Check current project loop and task progress")
     def system_status() -> str:

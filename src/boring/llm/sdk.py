@@ -27,6 +27,7 @@ except ImportError:
 
 from ..config import settings
 from ..logger import get_logger, log_status
+from ..utils.i18n import SUPPORTED_LANGUAGES
 from .tools import SYSTEM_INSTRUCTION_OPTIMIZED, get_boring_tools
 
 # Structured logger for this module
@@ -142,6 +143,16 @@ class GeminiClient:
         """
         Generate content using Gemini.
         """
+        # V14: Language Injection
+        lang = settings.LANGUAGE
+        if lang and lang != "en" and lang in SUPPORTED_LANGUAGES:
+            lang_name = SUPPORTED_LANGUAGES[lang]
+            instruction_add = f"\n\nIMPORTANT: You MUST communicate in {lang_name} for all explanations. Code must remain in English."
+            if not system_instruction:
+                system_instruction = SYSTEM_INSTRUCTION_OPTIMIZED + instruction_add
+            else:
+                system_instruction += instruction_add
+
         # V14: Check Semantic Cache
         cache = self._get_semantic_cache()
         if cache:
@@ -268,6 +279,14 @@ class GeminiClient:
         Generate content using Gemini with Function Calling.
 
         """
+        # V14: Language Injection
+        lang = settings.LANGUAGE
+        system_instruction_to_use = SYSTEM_INSTRUCTION_OPTIMIZED
+        if lang and lang != "en" and lang in SUPPORTED_LANGUAGES:
+            lang_name = SUPPORTED_LANGUAGES[lang]
+            instruction_add = f"\n\nIMPORTANT: You MUST communicate in {lang_name} for all explanations. Code must remain in English."
+            system_instruction_to_use += instruction_add
+
         # V14: Check Semantic Cache
         cache = self._get_semantic_cache()
         cache_key = f"tools\n{context}\n{prompt}" if cache else None
@@ -301,7 +320,7 @@ class GeminiClient:
                     model=self.model_name,
                     contents=contents,
                     config=types.GenerateContentConfig(
-                        system_instruction=SYSTEM_INSTRUCTION_OPTIMIZED,
+                        system_instruction=system_instruction_to_use,
                         temperature=0.7,
                         max_output_tokens=8192,
                         tools=self.tools if self.use_function_calling else None,
@@ -319,7 +338,7 @@ class GeminiClient:
                             model=fallback_model,
                             contents=contents,
                             config=types.GenerateContentConfig(
-                                system_instruction=SYSTEM_INSTRUCTION_OPTIMIZED,
+                                system_instruction=system_instruction_to_use,
                                 temperature=0.7,
                                 max_output_tokens=8192,
                                 tools=self.tools if self.use_function_calling else None,

@@ -71,12 +71,20 @@ Boring 達成了 **全能 (Full-Power)** 狀態，激活了所有高價值認知
 - **語義存儲備援**：整合 FAISS，當 ChromaDB 不可用時提供強大的向量搜尋。
 - **一條龍 2.0**：針對複雜「一條龍」工作流的強化狀態管理。
 
-### 🔮 支柱九：[智慧與離線 (V13.1 - V14.0)](docs/features/predictive_zh.md)
+### 🔮 支柱九：[智慧與離線 (V13.1 - V13.5)](docs/features/predictive_zh.md)
 目前的尖端技術。從被動反應轉向 **「預測性」** 與 **「本地優先」**。
 - **[離線優先模式](docs/guides/offline-mode_zh.md)**：支援本地 LLM (llama-cpp-python)，實現 100% 隱私與零網路操作。
 - **預測性錯誤偵測**：AI 驅動的反模式偵測，在錯誤發生前發出主動警告。
 - **AI Git Bisect**：Commit 歷史的語義分析，即時定位故障根源。
 - **延遲載入系統**：優化 MCP 啟動速度 (<500ms)，適用於高效能開發環境。
+
+### 🏆 支柱十：[主權自主與完美化 (V14.0.0)](docs/changelog/v14_zh.md)
+**主權特輯 (Sovereign Edition)**。透過企業級治理與知識傳承達成「100 分完美計畫」。
+- **專案傳記 (`boring bio`)**：持久化的全團隊知識傳承與上下文銜接。
+- **策略即代碼 (`boring policy`)**：安全、可審核的工具權限護欄。
+- **主權審核 (`boring perfection`)**：全自動 7 階段驗證，確保生產環境就緒。
+- **自癒醫生 (`boring doctor --fix`)**：自主環境修復與依賴衝突解決。
+- **遷移引擎 (`boring migrate`)**：確保專案狀態具備向前相容的演進能力。
 
 
 ---
@@ -93,8 +101,13 @@ Boring 達成了 **全能 (Full-Power)** 狀態，激活了所有高價值認知
 | 🧬 | **[技能萃取](docs/features/cognitive_zh.md)** | 將重複成功的模式萃取為高階的 **「戰略技能 (Strategic Skills)」**。 |
 | 🪢 | **[Node.js 自助安裝](docs/features/nodejs_zh.md)** | 免配置 Node.js 與 gemini-cli 設定，無需手動安裝環境。 |
 | 🔌 | **[離線優先](docs/guides/offline-mode_zh.md)** | 支援本地 LLM (Phi-3, Qwen)，實現零網路操作與極致隱私保護。 |
+| 🌍 | **[語言設定指南](docs/guides/language_zh.md)** | 透過環境變數配置英文或繁體中文輸出。 |
 | 🔮 | **[預測性 AI](docs/features/predictive_zh.md)** | 透過模式偵測在問題發生前進行攔截預警。 |
 | 🕵️ | **[AI Git Bisect](docs/features/predictive_zh.md)** | Commit 歷史的語義診斷，精確定位 Bug 引入源。 |
+| 🏆 | **[主權審核](docs/changelog/v14_zh.md)** | `boring perfection` 認證專案為 100/100 生產環境就緒。 |
+| 📜 | **[專案傳記](docs/features/agents_zh.md)** | `boring bio` 維護團隊共識與專案長期的開發脈絡。 |
+| 🛡️ | **[策略即代碼](docs/features/shadow-mode_zh.md)** | `boring policy` 強化細粒度的安全控管與工具授權。 |
+| 🔄 | **[遷移指令](docs/changelog/v14_zh.md)** | `boring migrate` 確保專案狀態始終具備向前相容性。 |
 
 ---
 

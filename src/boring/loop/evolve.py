@@ -23,7 +23,9 @@ class EvolveLoop:
         self.goal = goal
         self.verify_cmd = verify_cmd
         self.max_iters = max_iterations
-        self.status_file = settings.PROJECT_ROOT / ".boring_memory" / "loop_status.json"
+        from boring.paths import BoringPaths
+
+        self.status_file = BoringPaths(settings.PROJECT_ROOT).memory / "loop_status.json"
 
     def _report_status(self, cycle: int, status: str, last_action: str):
         """Report current status to the dashboard."""

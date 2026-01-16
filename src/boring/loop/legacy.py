@@ -1,6 +1,4 @@
-import boring
 import logging
-import rich
 import shutil
 import subprocess
 import time
@@ -90,10 +88,12 @@ class AgentLoop:
             console.print(f"[green]Using Gemini CLI: {self.gemini_cli_cmd}[/green]")
         else:
             try:
-                self.gemini_client = create_gemini_client(log_dir=self.log_dir, model_name=model_name)
+                self.gemini_client = create_gemini_client(
+                    log_dir=self.log_dir, model_name=model_name
+                )
                 console.print(f"[green]Using Gemini SDK (Model: {model_name})[/green]")
             except Exception as e:
-                console.print(f"[bold red]Failed to initialize Gemini client:[/bold red]")
+                console.print("[bold red]Failed to initialize Gemini client:[/bold red]")
                 console.print(f"[red]{str(e)}[/red]")
                 raise RuntimeError("Gemini initialization failed.") from e
 
@@ -190,7 +190,11 @@ class AgentLoop:
                 break
 
             if not success:
-                log_status(self.log_dir, "ERROR", f"Generation failed (Loop #{loop_count}): {output_content}")
+                log_status(
+                    self.log_dir,
+                    "ERROR",
+                    f"Generation failed (Loop #{loop_count}): {output_content}",
+                )
                 record_loop_result(loop_count, 0, True, len(output_content))
                 continue
 
@@ -348,6 +352,37 @@ class AgentLoop:
         else:
             return self._execute_sdk(loop_count, output_file)
 
+    def _get_file_tree_str(self) -> str:
+        """Generates a string representation of the project's file tree."""
+        tree_output = ""
+        try:
+            tree_result = subprocess.run(
+                ["cmd", "/c", "tree", "/F", "/A", "src"],
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                timeout=10,
+                cwd=settings.PROJECT_ROOT,
+            )
+            if tree_result.returncode == 0 and tree_result.stdout:
+                tree_output = tree_result.stdout[:2000]
+        except Exception as e:
+            logger.debug("Failed to get file tree using 'tree' command: %s", e)
+            # Fallback for systems without 'tree' or if it fails
+            try:
+                src_dir = settings.PROJECT_ROOT / "src"
+                if src_dir.exists():
+                    files = [
+                        str(f.relative_to(settings.PROJECT_ROOT)) for f in src_dir.rglob("*.py")
+                    ][:20]  # Limit to 20 for brevity
+                    tree_output = "Fallback: Listing up to 20 Python files in src/\n" + "\n".join(
+                        files
+                    )
+            except Exception as e:
+                logger.debug("Failed to list project files as fallback: %s", e)
+                tree_output = "Could not generate project file tree."
+        return f"\n\n# PROJECT STRUCTURE (src/)\n```\n{tree_output}\n```\n"
+
     def _execute_sdk(self, loop_count: int, output_file: Path) -> tuple[bool, str, Path]:
         """Execute using Python SDK with comprehensive context injection."""
         # Reset loop state
@@ -380,28 +415,7 @@ class AgentLoop:
             context += f"\n\n# CURRENT PLAN STATUS (@fix_plan.md)\n{task_content}\n"
 
         # 3. Inject Project Structure (tree)
-        try:
-            tree_result = subprocess.run(
-                ["cmd", "/c", "tree", "/F", "/A", "src"],
-                stdin=subprocess.DEVNULL,
-                capture_output=True,
-                text=True,
-                timeout=10,
-                cwd=settings.PROJECT_ROOT,
-            )
-            if tree_result.returncode == 0 and tree_result.stdout:
-                tree_output = tree_result.stdout[:2000]
-                context += f"\n\n# PROJECT STRUCTURE (src/)\n```\n{tree_output}\n```\n"
-        except Exception:
-            try:
-                src_dir = settings.PROJECT_ROOT / "src"
-                if src_dir.exists():
-                    files = [
-                        str(f.relative_to(settings.PROJECT_ROOT)) for f in src_dir.rglob("*.py")
-                    ][:20]
-                    context += "\n\n# PROJECT FILES\n```\n" + "\n".join(files) + "\n```\n"
-            except Exception as e:
-                logger.debug("Failed to list project files: %s", e)
+        context += self._get_file_tree_str()
 
         # 4. Inject Recent Git Changes
         try:
@@ -435,7 +449,9 @@ class AgentLoop:
             backend_msg = "SDK"
             title_msg = "Gemini SDK Progress"
 
-        console.print(f"[blue]Generating with {backend_msg}... (Timeout: {settings.TIMEOUT_MINUTES}m)[/blue]")
+        console.print(
+            f"[blue]Generating with {backend_msg}... (Timeout: {settings.TIMEOUT_MINUTES}m)[/blue]"
+        )
         if self.verbose:
             console.print(f"[dim]Context size: {len(context)} chars[/dim]")
 
@@ -506,14 +522,18 @@ class AgentLoop:
             selector = create_context_selector(settings.PROJECT_ROOT)
             context_str = selector.generate_context_injection(prompt)
         except ImportError:
-            # Fallback
-            pass
+            logger.debug("Smart Context (RAG Lite) not available. Falling back to file tree.")
+            pass  # Continue to inject file tree
 
-        # Add Task Plan
+        # If smart context is empty, inject file tree as a fallback
+        if not context_str:
+            context_str += self._get_file_tree_str()
+
+        # Add Task Plan to context_str
         task_file = settings.PROJECT_ROOT / settings.TASK_FILE
         if task_file.exists():
             task_content = task_file.read_text(encoding="utf-8")
-            prompt += f"\n\n# CURRENT PLAN STATUS (@fix_plan.md)\n{task_content}\n"
+            context_str += f"\n\n# CURRENT PLAN STATUS (@fix_plan.md)\n{task_content}\n"
 
         console.print(
             f"[blue]Generating with CLI (Privacy Mode)... (Timeout: {settings.TIMEOUT_MINUTES}m)[/blue]"

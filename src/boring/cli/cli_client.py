@@ -17,8 +17,10 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
+from boring.core.config import settings
 from boring.core.logger import log_status
 from boring.llm.provider import LLMProvider, LLMResponse
+from boring.utils.i18n import SUPPORTED_LANGUAGES
 
 
 @dataclass
@@ -138,6 +140,12 @@ To use a tool, you MUST output a JSON block strictly in this format:
 ```
 If no tool is needed, just respond with normal text.
 """
+        # V14: Language Injection
+        lang = settings.LANGUAGE
+        if lang and lang != "en" and lang in SUPPORTED_LANGUAGES:
+            lang_name = SUPPORTED_LANGUAGES[lang]
+            system_instruction += f"\n\nIMPORTANT: You MUST communicate in {lang_name} for all explanations. Code must remain in English."
+
         full_context = f"{context}\n\n{system_instruction}"
 
         # 2. Call CLI
@@ -188,7 +196,16 @@ If no tool is needed, just respond with normal text.
         Returns:
             Tuple of (response_text, success)
         """
-        full_prompt = f"{context}\n\n{prompt}" if context else prompt
+        # V14: Language Injection
+        lang = settings.LANGUAGE
+        prompt_suffix = ""
+        if lang and lang != "en" and lang in SUPPORTED_LANGUAGES:
+            lang_name = SUPPORTED_LANGUAGES[lang]
+            prompt_suffix = f"\n\nIMPORTANT: You MUST communicate in {lang_name} for all explanations. Code must remain in English."
+
+        full_prompt = (
+            f"{context}\n\n{prompt}{prompt_suffix}" if context else f"{prompt}{prompt_suffix}"
+        )
 
         try:
             response = self._execute_cli(full_prompt)
@@ -212,7 +229,11 @@ If no tool is needed, just respond with normal text.
                 return text, True
 
             # Check for auth errors or timeouts (no retry)
-            if "login" in text.lower() or "unauthenticated" in text.lower() or "timeout" in text.lower():
+            if (
+                "login" in text.lower()
+                or "unauthenticated" in text.lower()
+                or "timeout" in text.lower()
+            ):
                 return text, False
 
             # Retry on transient errors

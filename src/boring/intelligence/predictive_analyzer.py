@@ -127,7 +127,10 @@ class PredictiveAnalyzer:
 
     def __init__(self, project_root: Path, storage=None):
         self.project_root = Path(project_root)
-        self.db_path = self.project_root / ".boring_memory" / "analytics.db"
+        from boring.paths import get_boring_path
+
+        memory_dir = get_boring_path(self.project_root, "memory")
+        self.db_path = memory_dir / "analytics.db"
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self.storage = storage  # SQLiteStorage for historical data
         self._init_db()

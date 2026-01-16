@@ -162,12 +162,12 @@ def check(
         console.print("  - Mode: [blue]OFFLINE[/blue]")
     else:
         console.print("  - Mode: [cyan]ONLINE[/cyan]")
-        if not os.environ.get("GEMINI_API_KEY"):
-            console.print("  - GEMINI_API_KEY: [red]MISSING[/red] (Required for Online Mode)")
-            issues.append("Missing GEMINI_API_KEY")
+        if not os.environ.get("GOOGLE_API_KEY"):
+            console.print("  - GOOGLE_API_KEY: [red]MISSING[/red] (Required for Online Mode)")
+            issues.append("Missing GOOGLE_API_KEY")
             health_score -= 20
         else:
-            console.print("  - GEMINI_API_KEY: [green]PRESENT[/green]")
+            console.print("  - GOOGLE_API_KEY: [green]PRESENT[/green]")
 
     # 5. MCP Server Health (Self-Test)
     console.print("\n[bold]5. MCP Server Health (Self-Test)[/bold]")

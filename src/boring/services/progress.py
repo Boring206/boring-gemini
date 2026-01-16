@@ -23,7 +23,9 @@ class ProgressManager:
 
     def __init__(self, project_root: Path | None = None):
         self.project_root = project_root or settings.PROJECT_ROOT
-        self.progress_file = self.project_root / ".boring_progress.json"
+        from boring.paths import BoringPaths
+
+        self.progress_file = BoringPaths(self.project_root).state / ".boring_progress.json"
 
     def has_progress(self) -> bool:
         """Check if a progress file exists."""

@@ -49,8 +49,6 @@ def check_rate_limit(tool_name: str) -> tuple[bool, str]:
 _ANCHOR_FILES = [
     ".git",
     ".boring",
-    ".boring_brain",
-    ".boring_memory",
     ".agent",
     "PROMPT.md",
     "@fix_plan.md",
@@ -106,14 +104,16 @@ def detect_project_root(explicit_path: str | None = None) -> Path | None:
 def ensure_project_initialized(project_root: Path) -> None:
     """
     Ensure boring directory structure exists in the project.
-    Auto-creates: .agent/workflows, .boring_memory, PROMPT.md (if missing)
+    Auto-creates: .boring/workflows, .boring/memory, PROMPT.md (if missing)
     """
     try:
         import shutil
 
         # 1. Workflows
-        workflows_dir = project_root / ".agent" / "workflows"
-        if not workflows_dir.exists():
+        from boring.paths import get_boring_path
+
+        workflows_dir = get_boring_path(project_root, "workflows", create=False)
+        if not workflows_dir.exists() and not (project_root / ".agent" / "workflows").exists():
             workflows_dir.mkdir(parents=True, exist_ok=True)
 
             # Copy from templates
@@ -128,13 +128,11 @@ def ensure_project_initialized(project_root: Path) -> None:
 
         # 2. Critical Dirs - Use new paths module with fallback
         try:
-            from boring.paths import get_boring_path
-
             get_boring_path(project_root, "memory", create=True, warn_legacy=False)
-        except ImportError:
+        except Exception:
             # Fallback if paths module not available
             (project_root / ".boring_memory").mkdir(parents=True, exist_ok=True)
-        (project_root / ".gemini").mkdir(parents=True, exist_ok=True)
+        (project_root / ".boring" / "state").mkdir(parents=True, exist_ok=True)
 
         # 3. PROMPT.md (optional, empty if missing)
         prompt_file = project_root / "PROMPT.md"
@@ -166,7 +164,7 @@ def detect_context_capabilities(project_root: Path) -> dict[str, bool]:
         "has_python": (project_root / "pyproject.toml").exists()
         or (project_root / "setup.py").exists(),
         "has_docker": (project_root / "Dockerfile").exists(),
-        "has_boring_brain": (project_root / ".boring_brain").exists(),
+        "has_boring": (project_root / ".boring").exists(),
         "has_node_modules": (project_root / "node_modules").exists(),
         "has_venv": (project_root / "venv").exists() or (project_root / ".venv").exists(),
     }

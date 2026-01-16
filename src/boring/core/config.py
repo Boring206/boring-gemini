@@ -71,7 +71,7 @@ class Settings(BaseSettings):
     MCP_PROFILE: str = Field(
         default="lite", description="Tool profile: ultra_lite, minimal, lite, standard, full"
     )
-    LANGUAGE: str = Field(default="zh", description="UI language preference (e.g., zh, en)")
+    LANGUAGE: str = Field(default="en", description="UI language preference (e.g., zh, en)")
 
     # LLM Settings (V10.13 Modular)
     LLM_PROVIDER: str = Field(
@@ -114,6 +114,8 @@ class Settings(BaseSettings):
             "build",
             "dist",
             "__pycache__",
+            "boring_sandbox",
+            "real_user_sandbox",
         ]
     )
     LINTER_CONFIGS: dict = Field(default_factory=dict)  # Map tool name -> list of args

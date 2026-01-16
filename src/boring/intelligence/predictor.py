@@ -439,19 +439,43 @@ class Predictor:
             error_keywords = set(re.findall(r"\w+", error_message.lower()))
 
             for commit in commits:
+                sha = commit["sha"]
                 msg_words = set(re.findall(r"\w+", commit["message"].lower()))
                 overlap = len(error_keywords & msg_words)
-                # Higher score for more keyword overlap
-                score = min(1.0, overlap / max(len(error_keywords), 1) + 0.1)
 
-                # Boost score for recent commits
+                # Base score from message keywords
+                score = min(0.5, (overlap / max(len(error_keywords), 1)) * 0.5 + 0.1)
+
+                # DEEP DIFF ANALYSIS (V14.0 Semantic Feature)
+                try:
+                    diff_cmd = ["git", "show", sha, "--pretty=format:"]
+                    if target_file:
+                        diff_cmd.extend(["--", target_file])
+
+                    diff_res = subprocess.run(
+                        diff_cmd, capture_output=True, text=True, cwd=str(self.project_root)
+                    )
+                    if diff_res.returncode == 0:
+                        diff_content = diff_res.stdout.lower()
+                        # Check for error keywords in the actual code changes
+                        diff_overlap = sum(1 for kw in error_keywords if kw in diff_content)
+                        if diff_overlap > 0:
+                            # Significant boost for finding specific error terms in the diff
+                            diff_boost = min(
+                                0.6, (diff_overlap / max(len(error_keywords), 1)) * 0.8
+                            )
+                            score += diff_boost
+                except Exception as e:
+                    logger.debug(f"Diff analysis failed for {sha}: {e}")
+
+                # Boost score for recent commits (Recency Bias)
                 idx = commits.index(commit)
-                recency_boost = 0.3 * (1 - idx / len(commits))
+                recency_boost = 0.2 * (1 - idx / len(commits))
                 score = min(1.0, score + recency_boost)
 
                 suspects.append(
                     {
-                        "sha": commit["sha"],
+                        "sha": sha,
                         "message": commit["message"],
                         "score": round(score, 2),
                     }

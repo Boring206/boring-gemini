@@ -438,12 +438,13 @@ def run_predict_errors(
     # Fast-Fail Auth Check (V14.0.1)
     try:
         from ...llm.sdk import create_gemini_client
+
         # This will raise ValueError if no auth is found
         _ = create_gemini_client(log_dir=project_root / "logs")
     except (ValueError, RuntimeError) as e:
         return create_error_result(
             f"🚫 Authentication required for Predictive Intelligence.\n{str(e)}",
-            error_details="AUTH_REQUIRED"
+            error_details="AUTH_REQUIRED",
         )
 
     # Try to use PredictiveAnalyzer

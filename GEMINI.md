@@ -162,15 +162,19 @@ pytest tests/test_core.py
 | Command | Description |
 |---------|-------------|
 | `boring start` | Start the autonomous development loop |
-| `boring predict` | **(New)** Scan codebase for potential risks |
-| `boring bisect` | **(New)** Trace bug sources using AI |
-| `boring diagnostic` | **(New)** Run deep project health analysis |
-| `boring doctor` | **(New)** Check system and dependencies health |
+| `boring flow` | **(Hybrid)** Setup-Design-Build-Polish workflow (`--auto` for power users) |
+| `boring bio` | **(New)** Project Biography & Knowledge Continuity |
+| `boring policy` | **(New)** Governance & Tool Permission Guardrails |
+| `boring analytics`| **(New)** Team Adoption & Behavioral Metrics |
+| `boring predict` | Scan codebase for potential risks |
+| `boring bisect` | Trace bug sources using AI |
+| `boring diagnostic`| Deep project health analysis (Safe Exit logic) |
+| `boring doctor` | Check system health (`--fix` for auto-healing) |
 | `boring status` | Show current loop status |
-| `boring circuit-status` | Show circuit breaker state |
-| `boring reset-circuit` | Reset circuit breaker to CLOSED |
+| `boring circuit-status`| Show circuit breaker state |
+| `boring reset-circuit`| Reset circuit breaker to CLOSED |
 | `boring-setup <name>` | Create a new Boring project |
-| `boring-import <prd> <name>` | Import a PRD into a new project |
+| `boring-import <prd> <name>`| Import a PRD into a new project |
 | `boring-monitor` | Start the live monitoring dashboard |
 
 ## External Tools & MCP Integration

@@ -72,12 +72,20 @@ The current high-performance standard. Focused on **Parallel Orchestration** and
 - **Semantic Storage Fallback**: FAISS integration for robust vector search when ChromaDB is unavailable.
 - **One Dragon 2.0**: Enhanced state management for complex "One Dragon" workflows.
 
-### 🔮 Pillar IX: [Intelligence & Offline (V13.1 - V14.0)](docs/features/predictive_zh.md)
+### 🔮 Pillar IX: [Intelligence & Offline (V13.1 - V13.5)](docs/features/predictive_zh.md)
 The cutting edge. Shifting from reactive to **Predictive** and **Local-First**.
 - **[Offline-First Mode](docs/guides/offline-mode_zh.md)**: Local LLM support (llama-cpp-python) for 100% privacy and zero-network operation.
 - **Predictive Error Detection**: AI-powered anti-pattern detection and proactive warnings *before* errors occur.
 - **AI Git Bisect**: Semantic analysis of commit history to instantly identify bug sources.
 - **Lazy Loading System**: Optimized MCP startup (<500ms) for high-performance developer environments.
+
+### 🏆 Pillar X: [Sovereign Autonomy & Perfection (V14.0.0)](docs/changelog/v14.md)
+The **Sovereign Edition**. Achieving "100-Point Perfection" through enterprise-grade governance and knowledge continuity.
+- **Project Biography (`boring bio`)**: Persistent team-wide knowledge continuity.
+- **Policy-as-Code (`boring policy`)**: Secure, auditable tool permission guardrails.
+- **Sovereign Audit (`boring perfection`)**: Automated 7-stage validation for production readiness.
+- **Self-Healing Doctor (`boring doctor --fix`)**: Autonomous environment repair and dependency resolution.
+- **Migration Engine (`boring migrate`)**: Forward-compatible project state transition.
 
 
 ---
@@ -94,8 +102,13 @@ The cutting edge. Shifting from reactive to **Predictive** and **Local-First**.
 | 🧬 | **[Skill Compilation](docs/features/cognitive.md)** | Distills repeated successful patterns into high-level **Strategic Skills**. |
 | 🪢 | **[Node.js Autonomy](docs/features/nodejs.md)** | Zeroconf Node.js & gemini-cli setup. No manual installation required. |
 | 🔌 | **[Offline-First](docs/guides/offline-mode_zh.md)** | Zero-network operation with local LLMs (Phi-3, Qwen) for maximum privacy. |
+| 🌍 | **[Language Setup](docs/guides/language.md)** | Configure English or Traditional Chinese output via environment variables. |
 | 🔮 | **[Predictive AI](docs/features/predictive_zh.md)** | Prevents issues before they happen with pattern-based error prediction. |
 | 🕵️ | **[AI Git Bisect](docs/features/predictive_zh.md)** | Semantic diagnostics for commit history. Finds the root cause of bugs instantly. |
+| 🏆 | **[Sovereign Audit](docs/changelog/v14.md)** | `boring perfection` certifies a project as 100/100 Production Ready. |
+| 📜 | **[Project Bio](docs/features/agents.md)** | `boring bio` maintains tribal knowledge and project context over time. |
+| 🛡️ | **[Policy-as-Code](docs/features/shadow-mode.md)** | `boring policy` enforces granular security and tool permissions. |
+| 🔄 | **[Migrate](docs/changelog/v14.md)** | `boring migrate` ensures project state is always forward-compatible. |
 
 ---
 

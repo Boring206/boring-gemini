@@ -20,8 +20,7 @@ PRE_COMMIT_HOOK = """#!/bin/sh
 # Boring Pre-Commit Hook
 # Runs STANDARD verification before each commit
 
-echo "🔍 Boring: Running pre-commit verification..."
-
+# Run boring verify
 # Run boring verify
 boring verify --level STANDARD
 
@@ -154,6 +153,24 @@ class HooksManager:
         self.git_dir = self.project_root / ".git"
         self.hooks_dir = self.git_dir / "hooks"
 
+    def _get_venv_python_path(self) -> Path | None:
+        """Determines the path to the Python executable in the project's virtual environment."""
+        venv_path = self.project_root / ".venv"
+        if not venv_path.is_dir():
+            return None
+
+        # Prioritize Windows path
+        win_python = venv_path / "Scripts" / "python.exe"
+        if win_python.exists():
+            return win_python
+
+        # Fallback to Unix-like path
+        unix_python = venv_path / "bin" / "python"
+        if unix_python.exists():
+            return unix_python
+
+        return None
+
     def is_git_repo(self) -> bool:
         """Check if current directory is a Git repository."""
         return self.git_dir.exists() and self.git_dir.is_dir()
@@ -175,19 +192,34 @@ class HooksManager:
             hook_path.rename(backup_path)
             console.print(f"[yellow]Backed up existing {hook_name} to {hook_name}.backup[/yellow]")
 
-        # Get absolute path to current python executable
+        # Get absolute path to the virtual environment's python executable
+        # This will be embedded directly into the hook script
+        venv_python_path_windows = self.project_root / ".venv" / "Scripts" / "python.exe"
+        venv_python_path_unix = self.project_root / ".venv" / "bin" / "python"
+
+        if venv_python_path_windows.exists():
+            python_exe = venv_python_path_windows.as_posix()
+        elif venv_python_path_unix.exists():
+            python_exe = venv_python_path_unix.as_posix()
+        else:
+            # Fallback to system python if venv not found (this should ideally not be used)
+            console.print(
+                "[yellow]Warning: Virtual environment python not found. Falling back to system python.[/yellow]"
+            )
+            python_exe = sys.executable.replace("\\", "/")
+
         # Ensure forward slashes for shell script compatibility (even on Windows)
-        python_exe = sys.executable.replace("\\", "/")
+        python_exe = python_exe.replace("\\", "/")
 
         # Replace 'boring' command with explicit python module invocation
         # This ensures the hook runs in the same environment where it was installed
-        final_content = content.replace("boring verify", f'"{python_exe}" -m boring verify')
+        final_content = content.replace("boring verify", f'"{python_exe}" -m boring.main verify')
         final_content = final_content.replace(
-            "boring speckit-analyze", f'"{python_exe}" -m boring speckit-analyze'
+            "boring speckit-analyze", f'"{python_exe}" -m boring.main speckit-analyze'
         )
 
         # Replace existence check
-        check_cmd = f'"{python_exe}" -m boring --help'
+        check_cmd = f'"{python_exe}" -m boring.main --help'
         final_content = final_content.replace("command -v boring", check_cmd)
 
         # Write new hook

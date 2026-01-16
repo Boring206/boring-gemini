@@ -3,7 +3,30 @@
 > **發布日期**: 2026-01-15
 > **代號**: "Silent Sentinel" & "System 2"
 
-Boring V14.0.0 標誌著從單純的「AI 輔助工具」轉型為**認知型自主代理 (Cognitive Autonomous Agent)**。我們引入了 **4層認知架構 (4-Layer Cognitive Architecture)**，讓代理在行動前具備 System 2 的深度推理能力。此外，我們也推出了 **一條龍工作流 (One Dragon Flow)**、全新的 **通知系統 v2** 以及專屬的 **VSCode 擴充套件**。
+Boring V14.0.0 標誌著從單純的「AI 輔助工具」轉型為**認知型自主代理 (Cognitive Autonomous Agent)**。我們引入了 **4層認知架構 (4-Layer Cognitive Architecture)**，讓代理在行動前具備 System 2 的深度推理能力。
+
+### 👑 主權版 (Sovereign Edition - Phase VII)
+V14.0 的最終迭代達到了 **100 分完美境界**，引入了：
+- **專案傳記 (`boring bio`)**: 解決團隊間的知識斷層與長期開發脈絡。
+- **策略即程式碼 (`boring policy`)**: 企業級工具權限管控與安全護欄。
+- **自癒診斷 (`boring doctor --fix`)**: 全自動環境修復與依賴解決。
+- **主權專案審計 (`boring perfection`)**: 最終 7 階段準備就緒認證。
+- **遷移引擎 (`boring migrate`)**: 確保專案具備向前相容的平滑演進能力。
+
+---
+
+## 🎯 完美化驗證路線圖 (Roadmap)
+| 階段 | 里程碑 | 商業目標 | 檢驗門檻 (Gate) |
+| :--- | :--- | :--- | :--- |
+| **Stage 1** | 初學者 UX | 驗證零配置安裝流程。 | 新手能單靠 README 完成工作流。 |
+| **Stage 2** | 進階壓力測試 | 驗證高壓下的容錯與指引。 | 錯誤情境下能給出清晰修復建議。 |
+| **Stage 3** | 團隊實測 | 追蹤 Shadow Adoption 指標。 | 團隊展現使用黏性與行為軌跡。 |
+| **Stage 4** | 營運準備 | 驗證日誌分級與長期安全性。 | 非開發者可依日誌判斷問題。 |
+| **Stage 5** | 組織治理 | 實作策略管控與稽核軌跡。 | 行為可限制、可審計、可解釋。 |
+| **Stage 6** | 零鎖定驗證 | 驗證專案的可維護性。 | 停用 Boring 後專案依然可維護。 |
+| **Stage 7** | 決策者驗證 | 驗證商業 KPI 與 ROI。 | 非技術決策者能理解並認可價值。 |
+
+---
 
 ---
 
@@ -47,8 +70,11 @@ Boring V14.0.0 標誌著從單純的「AI 輔助工具」轉型為**認知型自
     - `boring flow`: 啟動一條龍自主工作流。
     - `boring tutorial`: 啟動互動式遊戲化教學。
     - `boring wizard`: 支援 15+ 種客戶端配置 (Cursor, Claude, VSCode, Trae 等)。
-    - `boring doctor`: 執行全面的系統健康檢查。
+    - `boring doctor`: 執行全面的系統健康檢查 (支援 `--fix` 自動修復)。
     - `boring bisect`: AI 驅動的自主除錯 (Bisect)。
+    - `boring bio`: 產生專案傳記，確保知識傳承。
+    - `boring policy`: 執行工具治理策略。
+    - `boring perfection`: 執行 100 分完美審計。
 - **增強 `boring start`**: 支援 `profile` 與 `flow` 參數。
 
 ---

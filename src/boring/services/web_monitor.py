@@ -161,8 +161,11 @@ def create_monitor_app(project_root: Path) -> Any | None:
         version="11.0.0",
     )
 
-    memory_dir = project_root / ".boring_memory"
-    brain_dir = project_root / ".boring_brain"
+    from boring.paths import BoringPaths
+
+    bp = BoringPaths(project_root)
+    memory_dir = bp.memory
+    brain_dir = bp.brain
 
     @app.get("/", response_class=HTMLResponse)
     async def dashboard():
@@ -183,12 +186,12 @@ def create_monitor_app(project_root: Path) -> Any | None:
             return status_data
 
         # Read from circuit breaker state
-        circuit_file = project_root / ".circuit_breaker_state"
+        circuit_file = bp.state / ".circuit_breaker_state"
         circuit_data = ThreadSafeJsonReader.read_json(circuit_file, default={})
         circuit_state = circuit_data.get("state", "UNKNOWN") if circuit_data else "UNKNOWN"
 
         # Read call count with thread-safe reader
-        call_count_file = project_root / ".call_count"
+        call_count_file = bp.state / ".call_count"
         call_count = 0
         call_count_text = ThreadSafeJsonReader.read_text(call_count_file)
         if call_count_text.strip():
@@ -207,7 +210,7 @@ def create_monitor_app(project_root: Path) -> Any | None:
     @app.get("/api/logs")
     async def get_recent_logs(limit: int = 50):
         """Get recent log entries with thread-safe reading."""
-        logs_dir = project_root / "logs"
+        logs_dir = bp.state / "logs"
         if not logs_dir.exists():
             return {"logs": []}
 
@@ -305,7 +308,7 @@ def create_monitor_app(project_root: Path) -> Any | None:
                 call_count = ThreadSafeJsonReader.read_text(call_count_file).strip() or "0"
 
                 # Fetch recent logs
-                logs_dir = project_root / "logs"
+                logs_dir = bp.state / "logs"
                 recent_logs = []
                 if logs_dir.exists():
                     for log_file in sorted(logs_dir.glob("*.log"), reverse=True)[:1]:

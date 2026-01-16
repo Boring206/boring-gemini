@@ -5,7 +5,6 @@ The "System 2" Planner of the One Dragon architecture.
 Responsible for breaking down goals into actionable plans (task.md).
 """
 
-import rich
 from rich.console import Console
 from rich.panel import Panel
 

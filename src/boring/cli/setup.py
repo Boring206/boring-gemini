@@ -137,7 +137,7 @@ def setup_new_project(
     console.print(f"Location: {project_path}")
 
     # Tutorial Hook
-    from .tutorial import TutorialManager
+    from boring.tutorial import TutorialManager
 
     tutorial = TutorialManager(project_path)
     tutorial.show_tutorial("first_project")

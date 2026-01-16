@@ -24,7 +24,9 @@ class TutorialManager:
         else:
             self.project_root = project_root
 
-        self.state_file = self.project_root / ".boring_tutorial.json"
+        from .paths import BoringPaths
+
+        self.state_file = BoringPaths(self.project_root).state / "boring_tutorial.json"
         self._state = self._load_state()
 
     def _load_state(self) -> dict:

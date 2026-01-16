@@ -89,16 +89,21 @@ class PatternMiner:
             Dict with project state
         """
         project_root = Path(project_root)
+        from boring.paths import get_boring_path
+
+        brain_dir = get_boring_path(project_root, "brain", create=False)
+        memory_dir = get_boring_path(project_root, "memory", create=False)
+        workflows_dir = get_boring_path(project_root, "workflows", create=False)
 
         state = {
             "has_git": (project_root / ".git").exists(),
-            "has_boring_memory": (project_root / ".boring_memory").exists(),
-            "has_workflows": (project_root / ".agent" / "workflows").exists(),
-            "has_brain": (project_root / ".boring" / "brain").exists(),
+            "has_boring_memory": memory_dir.exists() or (project_root / ".boring_memory").exists(),
+            "has_workflows": workflows_dir.exists()
+            or (project_root / ".agent" / "workflows").exists(),
+            "has_brain": brain_dir.exists() or (project_root / ".boring_brain").exists(),
         }
 
         # Count patterns if brain exists
-        brain_dir = project_root / ".boring" / "brain"
         if brain_dir.exists():
             patterns_file = brain_dir / "patterns.json"
             if patterns_file.exists():

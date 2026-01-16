@@ -171,28 +171,40 @@ def check_required_dependencies() -> HealthCheckResult:
 
     for package in required:
         try:
-            # 1. Try importing exactly as specified (handles 'google.generativeai')
             __import__(package)
         except ImportError:
             try:
-                # 2. Try importing with dots replaced by underscores
                 if "." in package:
                     __import__(package.replace(".", "_"))
             except ImportError:
                 try:
-                    # 3. Try importing top level package
                     parts = package.split(".")
                     __import__(parts[0])
                 except ImportError:
-                    # 4. If all fail, append to missing
                     missing.append(package)
+
+    # Special check for tree-sitter-languages (optional but highly recommended)
+    try:
+        import tree_sitter_languages  # noqa: F401
+
+        has_parser = True
+    except ImportError:
+        has_parser = False
 
     if missing:
         return HealthCheckResult(
-            name="Dependencies",
+            name="Core Dependencies",
             status=HealthStatus.FAIL,
             message=f"Missing: {', '.join(missing)}",
             suggestion="Run: pip install -e .",
+        )
+
+    if not has_parser:
+        return HealthCheckResult(
+            name="Advanced Parser",
+            status=HealthStatus.WARN,
+            message="tree-sitter-languages missing (impacts precision)",
+            suggestion="Optional: pip install tree-sitter-languages",
         )
 
     return HealthCheckResult(

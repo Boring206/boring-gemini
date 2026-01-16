@@ -37,12 +37,12 @@ class ArchitectAgent(BaseAgent):
     async def decompose_goal(self, goal: str) -> list[str]:
         prompt = f"Decompose the following coding goal into a list of specific, actionable sub-tasks for a Coder agent:\nGoal: {goal}\nRespond ONLY with a bullet-point list of tasks."
         res = await self.run(prompt)
-        
+
         # Safety guard: Check if messages list is not empty
         if not res.messages:
             logger.error("Architect returned an empty response.")
             return []
-            
+
         tasks = [
             line.strip("- ").strip()
             for line in res.messages[-1].content.split("\n")
@@ -118,15 +118,15 @@ class MultiAgentOrchestrator:
 
         # 3. Review Phase
         console.print("[bold magenta]🧐 Reviewer is checking work...[/bold magenta]")
-        
+
         # Safety guard: Check if messages exist for each result
         valid_summaries = []
         for r in results:
             if not r.error and r.messages:
                 valid_summaries.append(r.messages[-1].content[:500])
-                
+
         summary = "\n".join(valid_summaries)
-        
+
         if not summary:
             console.print("[yellow]⚠ No valid work found to review.[/yellow]")
             return results
