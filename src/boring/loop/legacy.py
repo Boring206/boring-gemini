@@ -91,11 +91,14 @@ class AgentLoop:
                 self.gemini_client = create_gemini_client(
                     log_dir=self.log_dir, model_name=model_name
                 )
+                if not self.gemini_client:
+                    raise RuntimeError("Failed to initialize Gemini client.")
+
                 console.print(f"[green]Using Gemini SDK (Model: {model_name})[/green]")
             except Exception as e:
                 console.print("[bold red]Failed to initialize Gemini client:[/bold red]")
                 console.print(f"[red]{str(e)}[/red]")
-                raise RuntimeError("Gemini initialization failed.") from e
+                raise RuntimeError("Failed to initialize Gemini client.") from e
 
         # Show subsystem status
         if self.verbose:

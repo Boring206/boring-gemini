@@ -13,7 +13,7 @@ def temp_project(tmp_path):
 def test_tutorial_initialization(temp_project):
     manager = TutorialManager(temp_project)
     assert manager.project_root == temp_project
-    assert manager.state_file == temp_project / ".boring_tutorial.json"
+    assert manager.state_file == temp_project / ".boring" / "state" / "boring_tutorial.json"
     assert manager._state == {}
 
 

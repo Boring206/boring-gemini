@@ -2,6 +2,7 @@
 Tests for gemini_client module.
 """
 
+import pytest
 from unittest.mock import MagicMock, patch
 
 
@@ -95,7 +96,6 @@ class TestCreateGeminiClient:
             patch.dict("os.environ", {"GOOGLE_API_KEY": ""}, clear=False),
             patch("boring.cli_client.check_cli_available", return_value=False),
         ):
-            client = create_gemini_client(log_dir=tmp_path)
-
-            # Should return None when no API key AND no CLI
-            assert client is None
+            # Should raise ValueError when no API key AND no CLI
+            with pytest.raises(ValueError, match="GOOGLE_API_KEY not set"):
+                create_gemini_client(log_dir=tmp_path)

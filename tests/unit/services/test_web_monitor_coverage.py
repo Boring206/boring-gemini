@@ -24,13 +24,11 @@ def monitor_app(tmp_path):
     if not FASTAPI_AVAILABLE:
         pytest.skip("FastAPI not installed")
 
-    # Setup mock files
-    brain_dir = tmp_path / ".boring_brain"
-    brain_dir.mkdir()
-    (brain_dir / "learned_patterns").mkdir()
-
-    memory_dir = tmp_path / ".boring_memory"
-    memory_dir.mkdir()
+    # Setup unified paths
+    boring_dir = tmp_path / ".boring"
+    (boring_dir / "brain" / "learned_patterns").mkdir(parents=True)
+    (boring_dir / "memory").mkdir(parents=True)
+    (boring_dir / "state").mkdir(parents=True)
 
     app = create_monitor_app(tmp_path)
     if app is None:
@@ -53,7 +51,9 @@ class TestWebMonitor:
 
     def test_api_status_from_file(self, client, tmp_path):
         # Path 1: loop_status.json exists
-        (tmp_path / ".boring_memory" / "loop_status.json").write_text(
+        memory_dir = tmp_path / ".boring" / "memory"
+        memory_dir.mkdir(parents=True, exist_ok=True)
+        (memory_dir / "loop_status.json").write_text(
             '{"state": "running", "extra": "data"}', encoding="utf-8"
         )
 
@@ -65,8 +65,10 @@ class TestWebMonitor:
 
     def test_api_status_fallback(self, client, tmp_path):
         # Path 2: loop_status.json does NOT exist
-        (tmp_path / ".circuit_breaker_state").write_text('{"state": "OPEN"}', encoding="utf-8")
-        (tmp_path / ".call_count").write_text("99", encoding="utf-8")
+        state_dir = tmp_path / ".boring" / "state"
+        state_dir.mkdir(parents=True, exist_ok=True)
+        (state_dir / "circuit_breaker_state").write_text('{"state": "OPEN"}', encoding="utf-8")
+        (state_dir / "call_count").write_text("99", encoding="utf-8")
 
         response = client.get("/api/status")
         assert response.status_code == 200
@@ -77,17 +79,22 @@ class TestWebMonitor:
 
     def test_api_stats(self, client, tmp_path):
         # Setup patterns
-        p_file = tmp_path / ".boring_brain" / "learned_patterns" / "patterns.json"
+        brain_dir = tmp_path / ".boring" / "brain"
+        brain_dir.mkdir(parents=True, exist_ok=True)
+        p_file = brain_dir / "learned_patterns" / "patterns.json"
+        p_file.parent.mkdir(parents=True, exist_ok=True)
         p_file.write_text('[{"id": "p1"}, {"id": "p2"}]', encoding="utf-8")
 
         # Setup pending
-        (tmp_path / ".boring_memory" / "pending_ops.json").write_text(
+        memory_dir = tmp_path / ".boring" / "memory"
+        memory_dir.mkdir(parents=True, exist_ok=True)
+        (memory_dir / "pending_ops.json").write_text(
             "[{}, {}, {}]", encoding="utf-8"
         )
 
         # Setup RAG
-        (tmp_path / ".boring_memory" / "rag_db").mkdir()
-        (tmp_path / ".boring_memory" / "rag_db" / "index.bin").touch()
+        (memory_dir / "rag_db").mkdir()
+        (memory_dir / "rag_db" / "index.bin").touch()
 
         response = client.get("/api/stats")
         assert response.status_code == 200
@@ -97,8 +104,8 @@ class TestWebMonitor:
         assert data["rag_indexed"] is True
 
     def test_api_logs(self, client, tmp_path):
-        logs_dir = tmp_path / "logs"
-        logs_dir.mkdir()
+        logs_dir = tmp_path / ".boring" / "state" / "logs"
+        logs_dir.mkdir(parents=True, exist_ok=True)
         (logs_dir / "test.log").write_text("line1\nline2\nline3", encoding="utf-8")
 
         response = client.get("/api/logs?limit=2")

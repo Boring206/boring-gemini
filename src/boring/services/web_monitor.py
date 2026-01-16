@@ -179,19 +179,21 @@ def create_monitor_app(project_root: Path) -> Any | None:
 
         V11.0: Uses ThreadSafeJsonReader to prevent race conditions.
         """
+        from boring.paths import get_state_file
+
         # Try to read loop status with thread-safe reader
         status_file = memory_dir / "loop_status.json"
         status_data = ThreadSafeJsonReader.read_json(status_file)
         if status_data:
             return status_data
 
-        # Read from circuit breaker state
-        circuit_file = bp.state / ".circuit_breaker_state"
+        # Read from circuit breaker state using unified helper
+        circuit_file = get_state_file(project_root, "circuit_breaker_state")
         circuit_data = ThreadSafeJsonReader.read_json(circuit_file, default={})
         circuit_state = circuit_data.get("state", "UNKNOWN") if circuit_data else "UNKNOWN"
 
         # Read call count with thread-safe reader
-        call_count_file = bp.state / ".call_count"
+        call_count_file = get_state_file(project_root, "call_count")
         call_count = 0
         call_count_text = ThreadSafeJsonReader.read_text(call_count_file)
         if call_count_text.strip():
@@ -301,10 +303,12 @@ def create_monitor_app(project_root: Path) -> Any | None:
                 status_file = memory_dir / "loop_status.json"
                 status_data = ThreadSafeJsonReader.read_json(status_file, default={})
 
-                circuit_file = project_root / ".circuit_breaker_state"
+                from boring.paths import get_state_file
+
+                circuit_file = get_state_file(project_root, "circuit_breaker_state")
                 circuit_data = ThreadSafeJsonReader.read_json(circuit_file, default={})
 
-                call_count_file = project_root / ".call_count"
+                call_count_file = get_state_file(project_root, "call_count")
                 call_count = ThreadSafeJsonReader.read_text(call_count_file).strip() or "0"
 
                 # Fetch recent logs

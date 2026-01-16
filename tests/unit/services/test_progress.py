@@ -30,7 +30,7 @@ def test_save_and_load_progress(progress_manager, mock_project_root):
     # Save
     success = progress_manager.save_progress(ctx)
     assert success
-    assert (mock_project_root / ".boring_progress.json").exists()
+    assert (mock_project_root / ".boring" / "state" / "boring_progress.json").exists()
 
     # Load
     data = progress_manager.load_progress()
@@ -43,7 +43,9 @@ def test_save_and_load_progress(progress_manager, mock_project_root):
 def test_restore_context(progress_manager, mock_project_root):
     # Save fake progress
     data = {"loop_count": 10, "current_task_type": "debugging", "session_keywords": ["bug", "fix"]}
-    (mock_project_root / ".boring_progress.json").write_text(json.dumps(data))
+    path = mock_project_root / ".boring" / "state" / "boring_progress.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data))
 
     # Restore
     ctx = LoopContext(project_root=mock_project_root)
@@ -56,7 +58,9 @@ def test_restore_context(progress_manager, mock_project_root):
 
 
 def test_clear_progress(progress_manager, mock_project_root):
-    (mock_project_root / ".boring_progress.json").write_text("{}")
+    path = mock_project_root / ".boring" / "state" / "boring_progress.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("{}")
     assert progress_manager.has_progress()
 
     progress_manager.clear_progress()

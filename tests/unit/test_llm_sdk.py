@@ -43,6 +43,7 @@ class TestGeminiClient:
             patch("boring.llm.sdk.settings") as mock_settings,
             patch("boring.llm.sdk.GENAI_AVAILABLE", True),
             patch("boring.cli_client.check_cli_available", return_value=True),
+            patch("boring.cli_client.check_cli_authenticated", return_value=(True, "OK")),
             patch("boring.cli_client.GeminiCLIAdapter") as mock_adapter,
             patch("boring.llm.sdk.get_boring_tools", return_value=[]),
             patch("boring.llm.sdk.log_status"),

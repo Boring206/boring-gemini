@@ -25,6 +25,8 @@ try:
 
     HAS_TREE_SITTER = True
 except ImportError:
+    get_language = None
+    get_parser = None
     HAS_TREE_SITTER = False
     logger.warning(
         f"tree-sitter-languages not installed in {sys.executable}. Advanced parsing disabled."

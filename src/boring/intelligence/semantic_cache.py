@@ -26,6 +26,8 @@ try:
 
     CHROMA_AVAILABLE = True
 except ImportError:
+    chromadb = None
+    ChromaSettings = None
     CHROMA_AVAILABLE = False
     logger.debug("chromadb not installed. Semantic Cache will be disabled.")
 

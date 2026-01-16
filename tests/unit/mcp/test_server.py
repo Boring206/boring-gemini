@@ -27,7 +27,8 @@ class TestServer:
 
         mock_instance.MCP_AVAILABLE = True
         mock_instance.mcp = MagicMock()
-        mock_instance.mcp._tools = []  # Initialize _tools as a list for append operations or other test-specific needs
+        mock_instance.mcp.run.side_effect = Exception("test error")
+        mock_instance.mcp._tools = {}  # _tools should be a dict
 
         run_server()
 
