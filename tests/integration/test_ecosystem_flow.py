@@ -4,9 +4,9 @@ Targeting Phase 1-4 features: Pack, Install, Brain, Sync.
 Refactored to use subprocess for true integration testing.
 """
 
+import os
 import subprocess
 import sys
-import os
 from pathlib import Path
 
 import pytest
