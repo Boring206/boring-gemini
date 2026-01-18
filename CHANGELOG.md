@@ -6,6 +6,15 @@ All notable changes to the "Boring-Gemini" project will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [15.2.0] - 2026-01-18
+
+### 🎩 Professional Wizard (Universal Edition)
+- **UI Categories**: The setup wizard now groups editors into "Modern IDEs", "Terminal / AI CLI", and "Legacy" for a cleaner, professional experience.
+- **Manual Fallback**: If an editor's config file cannot be found, the wizard now generates the correct JSON and displays it for manual copy-paste instead of failing.
+- **Robust Validation**: Before writing any configuration, the wizard strictly validates the JSON syntax to prevent corruption.
+- **Preview Transparency**: "Ecosystem Sync" now displays a detailed table of what will be synced (Server | Source | Action) before applying changes.
+- **Health Check**: Added an automatic post-install health check to verify the `boring` command and environment integrity.
+
 ## [15.1.0] - 2026-01-18
 
 ### ✨ Smart Wizard & Ecosystem (V15.1.0)

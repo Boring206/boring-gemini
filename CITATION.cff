@@ -4,7 +4,7 @@ authors:
 - family-names: "Boring"
   given-names: "Team"
 title: "Boring-Gemini: An Autonomous AI Coding Assistant"
-version: 15.1.0
+version: 15.2.0
 date-released: 2026-01-18
 url: "https://github.com/Boring206/boring-gemini"
 license: Apache-2.0

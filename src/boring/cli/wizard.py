@@ -4,6 +4,7 @@ import platform
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 from rich.console import Console
@@ -56,8 +57,35 @@ class WizardManager:
 
     # ... (init and paths unchanged) ...
     def __init__(self):
+        self.console = console
         self.system = platform.system()
         self.home = Path.home()
+
+        # Define Categories for Professional UI
+        self.EDITOR_CATEGORIES = {
+            "Modern IDEs": [
+                "Cursor",
+                "Windsurf",
+                "Trae",
+                "Void",
+                "Zed",
+                "VS Code",
+                "OpenCode",
+                "Cline",
+                "Claude Desktop",
+            ],
+            "Terminal / AI CLI": [
+                "Gemini CLI",
+                "Aider",
+                "Goose",
+                "Claude Code",
+                "OpenHands",
+                "Codex CLI",
+                "Qwen Code",
+            ],
+            "Legacy / Manual": ["VS Code (Settings)", "Neovim"],
+        }
+
         # On Linux, use XDG_CONFIG_HOME or default to ~/.config
         if self.system == "Linux":
             self.appdata = Path(os.getenv("XDG_CONFIG_HOME", self.home / ".config"))
@@ -167,34 +195,30 @@ class WizardManager:
         return path if path.exists() else None
 
     def scan_editors(self) -> dict[str, Path]:
-        """Scan for installed editors with valid config paths."""
+        """Scan for supported editors and return name->path mapping."""
         found = {}
+        console.print("[dim]Scanning editors...[/dim]")
 
-        # 1. Mainstream IDEs
-        mapping = {
-            "Claude Desktop": self._get_claude_path,
-            "Cursor": self._get_cursor_path,
-            "VS Code": self._get_vscode_path,
-            "VS Code (Settings)": self._get_vscode_settings_path,
-            "Windsurf": self._get_windsurf_path,
-            "Trae": self._get_trae_path,
-            "Void": self._get_void_path,
-            "Zed": self._get_zed_path,
-            "Continue": self._get_continue_path,
-            "Goose": self._get_goose_path,
-            "Aider": self._get_aider_path,
-            "OpenHands": self._get_openhands_path,
-            "Claude Code": self._get_claude_code_path,
-            "OpenCode": self._get_opencode_path,
-        }
+        # Iterating categories for "Professional" scan feeling
+        for _category, editors in self.EDITOR_CATEGORIES.items():
+            for name in editors:
+                # Map name to detection method
+                # e.g. "VS Code" -> _get_vscode_path
+                method_name = f"_get_{name.lower().replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_')}_path"
 
-        for name, func in mapping.items():
-            try:
-                path = func()
-                if path and (path.exists() or path.parent.exists()):
-                    found[name] = path
-            except Exception:
-                pass
+                # Special cases
+                if name == "VS Code (Settings)":
+                    method_name = "_get_vscode_settings_path"
+                if name == "Gemini CLI":
+                    method_name = None  # Skip CLI detection for now or implement
+
+                if method_name and hasattr(self, method_name):
+                    try:
+                        path = getattr(self, method_name)()
+                        if path:
+                            found[name] = path
+                    except Exception:
+                        pass
 
         # 2. CLI Tools / Special
         ext_manager = ExtensionsManager()
@@ -356,6 +380,31 @@ class WizardManager:
             if self.system != "Windows":
                 wrapper_path.chmod(0o755)
         return wrapper_path
+
+    def verify_installation(self):
+        """Run a post-install health check."""
+        console.print("\n[bold blue]🏥 Running Post-Install Health Check...[/bold blue]")
+        wrapper_path = self._ensure_wrapper()
+
+        # 1. Wrapper Check
+        if not wrapper_path.exists():
+            console.print("[red]❌ Wrapper script not found![/red]")
+            return
+        console.print(f"[green]✅ Wrapper script detected: {wrapper_path.name}[/green]")
+
+        # 2. Python Environment Check (via wrapper if possible, else direct)
+        try:
+            # Just run python -m boring --version
+            cmd = [sys.executable, "-m", "boring", "--version"]
+            res = subprocess.run(cmd, capture_output=True, text=True)
+            if res.returncode == 0:
+                console.print(
+                    f"[green]✅ Environment verified (Boring {res.stdout.strip()})[/green]"
+                )
+            else:
+                console.print(f"[yellow]⚠️ Environment check warning: {res.stderr}[/yellow]")
+        except Exception as e:
+            console.print(f"[red]❌ Environment check failed: {e}[/red]")
 
     def install(
         self,
@@ -818,47 +867,100 @@ class WizardManager:
         except Exception as e:
             console.print(f"[bold red]❌ Write failed: {e}[/bold red]")
 
-    def _install_generic_json(
-        self,
-        editor_name: str,
-        config_path: Path,
-        profile: str,
-        extra_env: dict[str, str] | None,
-        auto_approve: bool,
-    ):
-        """Generic JSON config installer (similar to Claude Desktop/Windsurf/Void)."""
-        config_path.parent.mkdir(parents=True, exist_ok=True)
-
-        # 1. Load
-        config = {}
-        if config_path.exists():
-            try:
-                config = json.loads(config_path.read_text("utf-8"))
-            except Exception:
-                pass
-
-        # 2. Entry
+    def _generate_mcp_entry(self, profile: str, extra_env: dict | None) -> dict:
+        """Generate the standard MCP config entry for Boring."""
         wrapper_path = self._ensure_wrapper()
-        mcp_entry = {
+        return {
             "command": str(wrapper_path.resolve()),
             "args": [],
             "env": {"BORING_MCP_PROFILE": profile.lower(), **(extra_env or {})},
         }
 
-        # 3. Handle structure (mcpServers or context_servers)
+    def _show_manual_instructions(self, editor_name: str, config_content: dict):
+        """Display manual configuration instructions when auto-install fails or path is missing."""
+        console.print(
+            f"\n[bold yellow]⚠️  Could not locate config file for {editor_name}[/bold yellow]"
+        )
+        console.print("Please manually add the following to your MCP configuration:")
+
+        json_str = json.dumps(config_content, indent=2)
+        console.print(Panel(json_str, title="Manual Config", border_style="yellow"))
+
+        console.print(
+            f"[dim]Tip: Copy this into your {editor_name} 'mcpServers' or 'context_servers' config.[/dim]"
+        )
+        Prompt.ask("Press Enter to continue")
+
+    def _safely_read_json(self, path: Path) -> dict:
+        """Safely read JSON with error handling."""
+        if not path.exists():
+            return {}
+        try:
+            return json.loads(path.read_text("utf-8"))
+        except json.JSONDecodeError:
+            console.print(f"[red]❌ Config file is corrupted (JSON Error): {path}[/red]")
+            if Confirm.ask("Backup and overwrite with clean config?", default=False):
+                backup = path.with_suffix(f".bak.{int(time.time())}")
+                shutil.copy(path, backup)
+                console.print(f"[dim]Backed up to {backup.name}[/dim]")
+                return {}
+            raise
+
+    def _install_generic_json(
+        self,
+        editor_name: str,
+        config_path: Path | None,
+        profile: str,
+        extra_env: dict[str, str] | None,
+        auto_approve: bool,
+    ):
+        """Generic JSON config installer (similar to Claude Desktop/Windsurf/Void)."""
+
+        # Generate the entry first
+        mcp_entry = self._generate_mcp_entry(profile, extra_env)
+
+        # Decide key name
         key = "mcpServers"
         if editor_name in ["Zed", "OpenCode"]:
-            # Zed uses context_servers, OpenCode might too
-            if "context_servers" in config or editor_name == "Zed":
+            key = "context_servers"
+
+        # Handle Missing Path -> Manual Fallback
+        if not config_path:
+            # Construct a theoretical full config for manual copy
+            full_manual = {key: {"boring": mcp_entry}}
+            self._show_manual_instructions(editor_name, full_manual)
+            return
+
+        # Path exists or we intend to create it
+        try:
+            config_path.parent.mkdir(parents=True, exist_ok=True)
+
+            # 1. Load (Safe)
+            config = self._safely_read_json(config_path)
+
+            # 2. Check overlap (Zed uses context_servers, OpenCode might too)
+            if editor_name == "Zed" or "context_servers" in config:
                 key = "context_servers"
 
-        if key not in config:
-            config[key] = {}
-        config[key]["boring"] = mcp_entry
+            if key not in config:
+                config[key] = {}
 
-        # 4. Write
-        config_path.write_text(json.dumps(config, indent=2), "utf-8")
-        console.print(f"[green]✅ Configured {editor_name} at {config_path}[/green]")
+            # 3. Update without destroying others
+            config[key]["boring"] = mcp_entry
+
+            # 4. Write (with backup if existing)
+            if config_path.exists():
+                backup = config_path.with_suffix(".bak")
+                shutil.copy(config_path, backup)
+
+            config_path.write_text(json.dumps(config, indent=2), "utf-8")
+            console.print(f"[green]✅ Configured {editor_name} at {config_path}[/green]")
+
+        except Exception as e:
+            console.print(f"[bold red]❌ Installation failed: {e}[/bold red]")
+            # Fallback to manual
+            full_manual = {key: {"boring": mcp_entry}}
+            self._show_manual_instructions(editor_name, full_manual)
 
     def _install_vscode_settings(
         self, config_path: Path, profile: str, extra_env: dict[str, str] | None
@@ -1178,58 +1280,87 @@ def run_wizard(auto_approve: bool = False):
     editors = manager.scan_editors()
 
     if not editors:
-        console.print("[yellow]⚠️ No supported editors found.[/yellow]")
-        return
+        console.print("[yellow]⚠️ No supported editors found automatically.[/yellow]")
+        # Don't return, offer manual selection from categories!
 
-    table = Table(title="Found Editors")
-    table.add_column("Editor", style="cyan bold")
-    table.add_column("Config Path", style="dim")
+    table = Table(title="Select Editor to Configure", show_header=False, box=None)
+    table.add_column("Category", style="cyan bold")
+    table.add_column("Editors", style="white")
 
-    editor_list = list(editors.keys())
-    for name in editor_list:
-        table.add_row(name, str(editors[name]))
+    # Group valid editors by category
+    flat_choices = []
+
+    for category, cat_editors in manager.EDITOR_CATEGORIES.items():
+        # Filter found ones in this category
+        found_in_cat = [e for e in cat_editors if e in editors]
+        if found_in_cat:
+            # Display found ones with specialized mark
+            display_str = ", ".join([f"[green]{e} (Found)[/green]" for e in found_in_cat])
+            table.add_row(category, display_str)
+            flat_choices.extend(found_in_cat)
+
+        # Also show not-found but supported ones as "Manual" option?
+        # For simplicity, maybe just show Found ones first.
+        # But Professional Wizard should let you select even if not found (Manual Fallback).
+
+    # Let's show ALL supported editors in a structured way for the SELECTION menu
+    # But for the TABLE summary, only show found.
 
     console.print(table)
+    console.print("\n[dim]Choose an editor (detected or manual) to install configuration.[/dim]")
 
     if auto_approve:
         for name, path in editors.items():
             manager.install(name, path, profile="standard", auto_approve=True)
+        manager.verify_installation()
         return
 
     # Interactive Selection
     console.print(f"\n[bold]{i18n.t('menu_install_mcp')}[/bold]")
 
-    # Check for ecosystem servers to suggest
-    discovered = manager.scan_ecosystem()
-    if discovered:
-        console.print(
-            f"[dim]Note: Found other MCP servers already configured: {', '.join(discovered)}[/dim]"
-        )
-        if Confirm.ask(
-            "Would you like to sync these external servers into Boring's environment?",
-            default=False,
-        ):
-            # We would add them to .env or settings. This is a bit complex for now,
-            # but we can at least log the intent.
-            console.print("[green]Sync intent noted! (Feature coming soon to V15.1)[/green]")
-
-    choices = editor_list + ["all"]
-    choice = Prompt.ask("Select editor to configure", choices=choices, default="all")
+    choices = flat_choices + ["Manual Selection", "all"]
+    choice = Prompt.ask(
+        "Select editor", choices=choices, default="all" if flat_choices else "Manual Selection"
+    )
 
     # Sync with settings in case they changed in refactored flow
     from boring.core.config import settings
 
     profile = settings.MCP_PROFILE
-
     extra_env = {}
 
     if choice == "all":
-        for name in editor_list:  # Only iterate found ones
+        for name in flat_choices:
             path = editors[name]
             manager.install(name, path, profile=profile, extra_env=extra_env)
+        manager.verify_installation()
+
+    elif choice == "Manual Selection":
+        # Show full category tree
+        sel_table = Table(title="Supported Editors", show_header=True)
+        sel_table.add_column("Category", style="cyan")
+        sel_table.add_column("Editor", style="white")
+
+        all_editors_flat = []
+        for cat, cat_list in manager.EDITOR_CATEGORIES.items():
+            for e in cat_list:
+                sel_table.add_row(cat, e)
+                all_editors_flat.append(e)
+
+        console.print(sel_table)
+        manual_choice = Prompt.ask("Enter editor name", choices=all_editors_flat)
+
+        # If detected, use path. If not, pass None to trigger manual fallback.
+        path = editors.get(manual_choice)
+        manager.install(manual_choice, path, profile=profile, extra_env=extra_env)
+        # Verify check might fail if manual, but run anyway
+        manager.verify_installation()
+
     else:
         path = editors[choice]
         manager.install(choice, path, profile=profile, extra_env=extra_env)
+        manager.verify_installation()
+
     # Handle deferred model download (restored fix)
     if extra_env and extra_env.get("_DOWNLOAD_MODEL"):
         model_name = extra_env.pop("_DOWNLOAD_MODEL")
@@ -1311,10 +1442,94 @@ def run_config_flow(manager):
         elif choice == "6":
             # Proceed to standard installation flow
             return "install"
-        elif choice == "7":
-            _config_language()
-        elif choice == "8":
-            _run_ecosystem_sync(manager)
+
+
+def _config_language():
+    """Configure Language Settings."""
+    console.print(
+        f"\n[bold]{i18n.t('menu_configure_language', default='Configure Language')}[/bold]"
+    )
+    from boring.core.config import settings, update_toml_config
+
+    table = Table(show_header=True)
+    table.add_column("Code", style="cyan")
+    table.add_column("Name", style="green")
+
+    codes = list(SUPPORTED_LANGUAGES.keys())
+    for code in codes:
+        table.add_row(code, SUPPORTED_LANGUAGES[code])
+
+    console.print(table)
+
+    lang = Prompt.ask("Select Language Code", choices=codes, default=settings.LANGUAGE)
+
+    if update_toml_config("language", lang):
+        settings.LANGUAGE = lang
+        # Force reload i18n
+        i18n.load_translations(lang)
+        console.print(f"[green]{i18n.t('success_saved')}[/green]")
+    Prompt.ask(i18n.t("menu_return"))
+
+
+def _run_ecosystem_sync(manager):
+    """Scan and sync ecosystem extensions with transparency."""
+    console.print(
+        f"\n[bold magenta]🔮 {i18n.t('menu_ecosystem_sync', default='Ecosystem Sync')}[/bold magenta]"
+    )
+
+    # 1. Scan
+    discovered = manager.scan_ecosystem()
+
+    if not discovered:
+        console.print(
+            "[yellow]No supported ecosystem extensions found in your editor configurations.[/yellow]"
+        )
+        Prompt.ask("Press Enter to return")
+        return
+
+    # 2. Prepare Proposal Table
+    from boring.core.config import update_toml_config
+
+    table = Table(title="Proposed Ecosystem Sync", show_header=True, border_style="magenta")
+    table.add_column("Server / Extension", style="cyan")
+    table.add_column("Current Status", style="yellow")
+    table.add_column("Action", style="green")
+
+    to_enable = []
+
+    for server in discovered:
+        # Check current config
+        _config_key = f"enable_mcp_{server.replace('-', '_')}"
+        # This relies on settings having these keys dynamically or via __getattr__
+        # For now assume we map common ones
+
+        _is_enabled = False  # Mock check, in real implementation we check loading status
+
+        status_str = "Detected"
+        action_str = "Enable in boring.toml"
+
+        table.add_row(server, status_str, action_str)
+        to_enable.append(server)
+
+    console.print(table)
+    console.print("[dim]This will enable the corresponding flags in your configuration.[/dim]")
+
+    if not Confirm.ask("Apply these changes?", default=True):
+        console.print("[dim]Cancelled.[/dim]")
+        return
+
+    # 3. Apply
+    applied_count = 0
+    for server in to_enable:
+        # Mapping rules
+        # context7 -> enable_mcp_context7
+        key = f"enable_mcp_{server.replace('-', '_')}"
+        update_toml_config(key, True)
+        applied_count += 1
+
+    console.print(f"[green]✅ Synced {applied_count} extensions.[/green]")
+    console.print("[bold]Please restart Boring or your MCP server to load these extensions.[/bold]")
+    Prompt.ask("Press Enter to return")
 
 
 def _config_llm():

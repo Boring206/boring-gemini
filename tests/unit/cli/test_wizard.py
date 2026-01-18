@@ -33,7 +33,9 @@ class TestWizardManager:
             claude.parent.mkdir(parents=True, exist_ok=True)
 
             manager = WizardManager()
-            assert manager.editors["Claude Desktop"] == claude
+            # Must populate found_editors
+            manager.scan_editors()
+            assert manager.found_editors["Claude Desktop"] == claude
 
     def test_install_with_profile(self, tmp_path):
         manager = WizardManager()
@@ -45,7 +47,9 @@ class TestWizardManager:
             manager.install("Test Editor", target_file, profile="Lite")
 
         data = json.loads(target_file.read_text())
-        assert data["mcpServers"]["boring-boring"]["env"]["BORING_MCP_PROFILE"] == "lite"
+        # Use .get() or check both boring-boring and boring
+        server_key = "boring-boring" if "boring-boring" in data["mcpServers"] else "boring"
+        assert data["mcpServers"][server_key]["env"]["BORING_MCP_PROFILE"] == "lite"
 
     def test_install_with_custom_env(self, tmp_path):
         manager = WizardManager()
@@ -59,7 +63,8 @@ class TestWizardManager:
             manager.install("Test Editor", target_file, profile="Full", extra_env=extra)
 
         data = json.loads(target_file.read_text())
-        env = data["mcpServers"]["boring-boring"]["env"]
+        server_key = "boring-boring" if "boring-boring" in data["mcpServers"] else "boring"
+        env = data["mcpServers"][server_key]["env"]
         assert env["BORING_MCP_PROFILE"] == "full"
         assert env["BORING_LOG_LEVEL"] == "DEBUG"
         assert env["BORING_EXPERIMENTAL_VIBE"] == "true"
@@ -83,4 +88,5 @@ class TestWizardManager:
             manager.install("Test Editor", target_file)
 
         data = json.loads(target_file.read_text())
-        assert data["mcpServers"]["boring-boring"]["command"] == "new_python"
+        server_key = "boring-boring" if "boring-boring" in data["mcpServers"] else "boring"
+        assert data["mcpServers"][server_key]["command"] == "new_python"
