@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V14.0.0)">
+        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V15.0.0)">
       
       
         <meta name="author" content="Boring206">
@@ -23,7 +23,7 @@
     
     
       
-        <title>Boring for Gemini - 完整架構說明 (中文版) - Boring-Gemini</title>
+        <title>Boring for Gemini - 系統架構 (V14) - Boring-Gemini</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#boring-for-gemini-" class="md-skip">
+        <a href="#boring-for-gemini-v14" class="md-skip">
           跳轉至
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Boring for Gemini - 完整架構說明 (中文版)
+              Boring for Gemini - 系統架構 (V14)
             
           </span>
         </div>
@@ -364,7 +364,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../changelog/v14/" class="md-tabs__link">
+        <a href="../changelog/v15.0.md" class="md-tabs__link">
           
   
   
@@ -2269,6 +2269,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../changelog/v15.0.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V15.0 (Latest)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/v14.8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V14.8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../changelog/v14/" class="md-nav__link">
         
   
@@ -2276,7 +2332,7 @@
   <span class="md-ellipsis">
     
   
-    V14 (New)
+    V14 (Legacy)
   
 
     
@@ -2548,10 +2604,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
+  <a href="#the-4-layer-cognitive-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🎯 核心使命
+        🏗️ 四層認知架構 (The 4-Layer Cognitive Architecture)
       
     </span>
   </a>
@@ -2559,22 +2615,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#layer-3-cognitive-engine-the-brain" class="md-nav__link">
     <span class="md-ellipsis">
       
-        📊 四大支柱詳解
+        🧠 Layer 3: 認知引擎 (Cognitive Engine - The Brain)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="📊 四大支柱詳解">
+    <nav class="md-nav" aria-label="🧠 Layer 3: 認知引擎 (Cognitive Engine - The Brain)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#code-intelligence" class="md-nav__link">
+  <a href="#1-sequential-thinking-system-2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🧠 代碼智能 (Code Intelligence)
+        1. 序列思考 (Sequential Thinking - System 2)
       
     </span>
   </a>
@@ -2582,32 +2638,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#quality-assurance" class="md-nav__link">
+  <a href="#2-semantic-tool-router" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ✅ 品質保證 (Quality Assurance)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#workflow-automation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🔄 工作流自動化 (Workflow Automation)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#infrastructure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🏗️ 基礎設施 (Infrastructure)
+        2. 語義工具路由 (Semantic Tool Router)
       
     </span>
   </a>
@@ -2620,10 +2654,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#v10260" class="md-nav__link">
+  <a href="#layer-4-one-dragon-flow-autonomous" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🗂️ 程式碼結構 (V10.26.0)
+        🐉 Layer 4: 一條龍流程 (One Dragon Flow - Autonomous)
       
     </span>
   </a>
@@ -2631,22 +2665,33 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#60" class="md-nav__link">
+  <a href="#v14-source-map" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🔧 工具總覽 (60+ 工具)
+        🗂️ 模組結構 (V14 Source Map)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="🔧 工具總覽 (60+ 工具)">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-integrity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🛡️ 安全與完整性 (Security &amp; Integrity)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🛡️ 安全與完整性 (Security &amp; Integrity)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#shadow-mode" class="md-nav__link">
     <span class="md-ellipsis">
       
-        按類別統計
+        影子模式 (Shadow Mode)
       
     </span>
   </a>
@@ -2654,10 +2699,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#offline-first-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        快速入門
+        離線優先架構 (Offline-First Architecture)
       
     </span>
   </a>
@@ -2670,102 +2715,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#vibe-session" class="md-nav__link">
+  <a href="#performance-metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🚀 Vibe Session 工作流
+        📊 效能指標 (Performance Metrics)
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="🚀 Vibe Session 工作流">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#session" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Session 工具
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        📈 版本演進
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🔗 相關文檔
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#security-architecture" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🛡️ 安全架構 (Security Architecture)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="🛡️ 安全架構 (Security Architecture)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-shadow-mode-" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. 影子模式 (Shadow Mode - 執行期守衛)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-synthesized-tool-sandbox-" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. 即時工具沙箱 (Synthesized Tool Sandbox - 驗證器)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-checkpoints-" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. 安全檢查點 (Checkpoints - 狀態安全)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2789,482 +2745,145 @@
   
 
 
-<h1 id="boring-for-gemini-">Boring for Gemini - 完整架構說明 (中文版)</h1>
+<h1 id="boring-for-gemini-v14">Boring for Gemini - 系統架構 (V14)</h1>
 <blockquote>
-<p><strong>版本</strong>: V11.2.2<br />
-<strong>更新日期</strong>: 2026-01-12</p>
+<p><strong>版本</strong>: V14.0.0
+<strong>最後更新</strong>: 2026-01-15
+<strong>狀態</strong>: 生產就緒 (Production)</p>
 </blockquote>
 <hr />
-<h2 id="_1">🎯 核心使命</h2>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                         ╔═══════════════════════════════════════╗
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                         ║           🤖 AI Coding                 ║
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                         ║    讓 AI 真正成為你的程式設計夥伴        ║
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                         ╚═══════════════════════════════════════╝
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                                          │
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>            ┌──────────────┬──────────────┼──────────────┬──────────────┐
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>            ▼              ▼              ▼              ▼              ▼
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ ┌───────────────┐
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    │  🧠 代碼智能   │ │  ✅ 品質保證   │ │  🔄 工作流    │ │  🏗️ 基礎設施  │
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    │  Intelligence  │ │  Quality      │ │  Workflow     │ │  Infra        │
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    └───────┬───────┘ └───────┬───────┘ └───────┬───────┘ └───────┬───────┘
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>            │                 │                 │                 │
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>     ┌──────┴──────┐   ┌──────┴──────┐   ┌──────┴──────┐   ┌──────┴──────┐
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>     │ • SQLite Brain  │   │ • Judge     │   │ • Agent     │   │ • MCP Server│
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>     │ • Brain Map   │   │ • Verify    │   │ • Shadow    │   │ • Router    │
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>     │ • Predict     │   │ • Security  │   │ • Session   │   │ • Plugin    │
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>     │ • Context     │   │ • Vibe      │   │ • Git       │   │ • Workspace │
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>     └─────────────┘   └─────────────┘   └─────────────┘   └─────────────┘
+<h2 id="the-4-layer-cognitive-architecture">🏗️ 四層認知架構 (The 4-Layer Cognitive Architecture)</h2>
+<p>Boring V14 引入了<strong>認知架構 (Cognitive Architecture)</strong>，從單純的工具調用進化到自主推理與執行。系統組織為四個不同的層次：</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>graph TD
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    classDef flow fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    classDef cognitive fill:#fff3e0,stroke:#ff6f00,stroke-width:2px;
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    classDef tools fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    classDef infra fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    subgraph L4_Flow [&quot;Layer 4: 流程引擎 (Flow Engine) - 編排&quot;]
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        OneDragon[&quot;一條龍流程 (One Dragon Flow)&quot;]:::flow
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        AutoOpt[&quot;自動優化 (Auto Optimization)&quot;]:::flow
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        VibeSession[&quot;Vibe 會話 (Vibe Session)&quot;]:::flow
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    end
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    subgraph L3_Cognition [&quot;Layer 3: 認知引擎 (Cognitive Engine) - System 2&quot;]
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>        SeqThink[&quot;序列思考 (Sequential Thinking)&quot;]:::cognitive
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>        CritThink[&quot;批判性思考 (Critical Thinking)&quot;]:::cognitive
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>        BrainMgr[&quot;大腦管理 (Brain Manager - Memory)&quot;]:::cognitive
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>        Router[&quot;語義工具路由 (Semantic Tool Router)&quot;]:::cognitive
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    end
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    subgraph L2_Tools [&quot;Layer 2: 工具層 (Tool Layer) - 能力&quot;]
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>        RAG[&quot;RAG 與搜尋 (RAG &amp; Search)&quot;]:::tools
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>        Git[&quot;Git 與版本控制 (Git &amp; Versioning)&quot;]:::tools
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>        Review[&quot;代碼審查 (Code Review)&quot;]:::tools
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>        Security[&quot;安全掃描 (Security Scan)&quot;]:::tools
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    end
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    subgraph L1_Infra [&quot;Layer 1: 基礎設施 (Infrastructure) - 基石&quot;]
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>        MCP[&quot;MCP 伺服器協議 (MCP Server Protocol)&quot;]:::infra
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>        Core[&quot;核心配置與環境 (Core Config &amp; Env)&quot;]:::infra
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>        Services[&quot;服務 (Services - Monitor/Notify)&quot;]:::infra
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>        Storage[&quot;SQLite 存儲 (SQLite Storage)&quot;]:::infra
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    end
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>    L4_Flow --&gt; L3_Cognition
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    L3_Cognition --&gt; L2_Tools
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>    L2_Tools --&gt; L1_Infra
 </span></code></pre></div>
 <hr />
-<h2 id="_2">📊 四大支柱詳解</h2>
-<h3 id="code-intelligence">🧠 代碼智能 (Code Intelligence)</h3>
-<blockquote>
-<p>讓 AI 真正「理解」你的專案，而不只是盲目生成程式碼。</p>
-</blockquote>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>│                           🧠 代碼智能                                        │
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>│                                                                              │
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐   ┌─────────────┐     │
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>│  │     RAG     │   │    Brain    │   │   Predict   │   │   Context   │     │
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>│  │  語義搜尋    │   │  記憶學習   │   │   錯誤預測   │   │  上下文管理  │     │
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>│  └──────┬──────┘   └──────┬──────┘   └──────┬──────┘   └──────┬──────┘     │
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>│         │                 │                 │                 │            │
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>│  • rag_search      • SQLite Storage • predict_errors  • context           │
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>│  • rag_index       • Active Recall  • predict_impact  • optimize_context  │
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>│  • rag_status      • Brain Map      • risk_areas      • cache_insights    │
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>│                    • brain_stats    • health_score                        │
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>│                                                                              │
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>└─────────────────────────────────────────────────────────────────────────────┘
-</span></code></pre></div>
+<h2 id="layer-3-cognitive-engine-the-brain">🧠 Layer 3: 認知引擎 (Cognitive Engine - The Brain)</h2>
+<p>這是 V14 的關鍵差異化因素。代理不再只是被動地調用工具，而是在行動前先<strong>思考</strong>。</p>
+<h3 id="1-sequential-thinking-system-2">1. 序列思考 (Sequential Thinking - System 2)</h3>
+<p><code>sequentialthinking</code> 模組允許代理：
+- 將複雜問題分解為原子步驟。
+- 修正自己的假設（「等等，那個方法行不通...」）。
+- 分支出替代假設。
+- 在長時間執行中保持上下文。</p>
+<h3 id="2-semantic-tool-router">2. 語義工具路由 (Semantic Tool Router)</h3>
+<p><code>tool_router.py</code> 作為一個具備上下文感知的網關：
+- <strong>輸入</strong>: 自然語言意圖（例如「修復登入錯誤」）。
+- <strong>處理</strong>: 語義分析 + 流程階段過濾。
+- <strong>輸出</strong>: 一份精選的 3-5 個相關工具列表（從 60+ 個工具中篩選）。
+- <strong>效益</strong>: 減少 80% 的上下文使用量並提高準確性。</p>
+<hr />
+<h2 id="layer-4-one-dragon-flow-autonomous">🐉 Layer 4: 一條龍流程 (One Dragon Flow - Autonomous)</h2>
+<p><strong>一條龍流程</strong> (<code>boring_flow</code>) 允許代理自主穿越整個軟體開發生命週期：</p>
 <table>
 <thead>
 <tr>
-<th>模組</th>
-<th>功能描述</th>
-<th>核心工具</th>
+<th>階段</th>
+<th>目標</th>
+<th>活躍機制</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>RAG</strong></td>
-<td>語義搜尋代碼庫</td>
-<td><code>boring_rag_search</code>, <code>boring_rag_index</code></td>
+<td><strong>1. 設計 (Design)</strong></td>
+<td>架構解決方案</td>
+<td><code>boring_arch_check</code>, <code>sequantialthinking</code>, <code>boring_predict_impact</code></td>
 </tr>
 <tr>
-<td><strong>Brain</strong></td>
-<td>學習專案模式 (SQLite)</td>
-<td><code>boring_learn</code>, <code>boring_recall</code>, <code>boring_forget</code></td>
+<td><strong>2. 實作 (Implement)</strong></td>
+<td>撰寫程式碼</td>
+<td><code>boring_code_review</code>, <code>boring_test_gen</code>, <code>context7_query</code></td>
 </tr>
 <tr>
-<td><strong>Predict</strong></td>
-<td>預測錯誤和影響</td>
-<td><code>boring_predict_errors</code>, <code>boring_predict_impact</code></td>
+<td><strong>3. 打磨 (Polish)</strong></td>
+<td>優化與精煉</td>
+<td><code>boring_perf_tips</code>, <code>boring_security_scan</code></td>
 </tr>
 <tr>
-<td><strong>Context</strong></td>
-<td>智能上下文管理</td>
-<td><code>boring_context</code>, <code>boring_optimize_context</code></td>
+<td><strong>4. 驗證 (Verify)</strong></td>
+<td>確保品質</td>
+<td><code>boring_verify</code>, <code>boring_integrity_score</code></td>
 </tr>
 </tbody>
 </table>
 <hr />
-<h3 id="quality-assurance">✅ 品質保證 (Quality Assurance)</h3>
-<blockquote>
-<p>確保 AI 生成的程式碼達到工程師水準。</p>
-</blockquote>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>│                           ✅ 品質保證                                        │
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>│                                                                              │
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>│  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐   ┌─────────────┐     │
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>│  │    Judge    │   │   Verify    │   │  Security   │   │    Vibe     │     │
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>│  │   品質評估   │   │   驗證修復   │   │   安全掃描   │   │  遊戲化健檢  │     │
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>│  └──────┬──────┘   └──────┬──────┘   └──────┬──────┘   └──────┬──────┘     │
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>│         │                 │                 │                 │            │
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>│  • evaluate        • verify          • security_scan   • vibe_check       │
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>│  • rubric          • prompt_fix      • secret_detect   • code_review      │
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>│  • suggest_next                                        • test_gen         │
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>│                                                        • perf_tips        │
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>│                                                        • arch_check       │
-</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>│                                                        • impact_check     │
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>│                                                                              │
-</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>└─────────────────────────────────────────────────────────────────────────────┘
-</span></code></pre></div>
-<table>
-<thead>
-<tr>
-<th>模組</th>
-<th>功能描述</th>
-<th>核心工具</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Judge</strong></td>
-<td>LLM 評分與建議</td>
-<td><code>boring_evaluate</code>, <code>boring_rubric</code></td>
-</tr>
-<tr>
-<td><strong>Verify</strong></td>
-<td>自動驗證並生成修復提示</td>
-<td><code>boring_verify</code>, <code>boring_prompt_fix</code></td>
-</tr>
-<tr>
-<td><strong>Security</strong></td>
-<td>掃描安全漏洞與密鑰洩露</td>
-<td><code>boring_security_scan</code></td>
-</tr>
-<tr>
-<td><strong>Vibe</strong></td>
-<td>Vibe Coder Pro 遊戲化健檢</td>
-<td><code>boring_vibe_check</code>, <code>boring_code_review</code>, <code>boring_test_gen</code></td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h3 id="workflow-automation">🔄 工作流自動化 (Workflow Automation)</h3>
-<blockquote>
-<p>從單次對話到完整開發流程。</p>
-</blockquote>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>│                          🔄 工作流自動化                                     │
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>│                                                                              │
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>│  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐   ┌─────────────┐     │
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>│  │    Agent    │   │   Shadow    │   │   Session   │   │     Git     │     │
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>│  │  多代理協作  │   │   影子模式   │   │  會話管理   │   │   版本控制   │     │
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>│  └──────┬──────┘   └──────┬──────┘   └──────┬──────┘   └──────┬──────┘     │
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>│         │                 │                 │                 │            │
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>│  • multi_agent     • shadow_mode    • session_start   • commit            │
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>│  • background_task • shadow_status  • session_confirm • visualize         │
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>│  • agent_status    • shadow_apply   • session_status  • diff_preview      │
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>│                    • shadow_diff    • session_pause                       │
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>│                                     • session_auto                        │
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>│                                                                              │
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>└─────────────────────────────────────────────────────────────────────────────┘
-</span></code></pre></div>
-<table>
-<thead>
-<tr>
-<th>模組</th>
-<th>功能描述</th>
-<th>核心工具</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Agent</strong></td>
-<td>多代理並行協作</td>
-<td><code>boring_multi_agent</code>, <code>boring_background_task</code></td>
-</tr>
-<tr>
-<td><strong>Shadow</strong></td>
-<td>安全預覽模式，不直接修改檔案</td>
-<td><code>boring_shadow_mode</code>, <code>boring_shadow_apply</code></td>
-</tr>
-<tr>
-<td><strong>Session</strong></td>
-<td>人機對齊的 4 階段工作流</td>
-<td><code>boring_session_start</code>, <code>boring_session_confirm</code></td>
-</tr>
-<tr>
-<td><strong>Git</strong></td>
-<td>智能提交與視覺化</td>
-<td><code>boring_commit</code>, <code>boring_visualize</code></td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h3 id="infrastructure">🏗️ 基礎設施 (Infrastructure)</h3>
-<blockquote>
-<p>穩固的底層架構支撐一切。</p>
-</blockquote>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>┌─────────────────────────────────────────────────────────────────────────────┐
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>│                          🏗️ 基礎設施                                         │
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>├─────────────────────────────────────────────────────────────────────────────┤
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>│                                                                              │
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>│  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐   ┌─────────────┐     │
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>│  │ MCP Server  │   │ Tool Router │   │   Plugin    │   │  Workspace  │     │
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>│  │   服務核心   │   │  自然語言路由 │   │   擴充系統   │   │   專案管理   │     │
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>│  └──────┬──────┘   └──────┬──────┘   └──────┬──────┘   └──────┬──────┘     │
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>│         │                 │                 │                 │            │
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>│  • boring_help     • boring()       • list_plugins    • Lazy Init         │
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>│  • mcp_server      • profile_set    • run_plugin      • workspace_add     │
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>│  • prompts         • profile_get    • reload_plugins  • Dashboard (Vis.js)│
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>│  • resources                                          • Lightweight Mode  │
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>│                                                                              │
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>│  ┌─────────────┐   ┌─────────────┐                                          │
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>│  │   SpecKit   │   │  Discovery  │                                          │
-</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>│  │   規格驅動   │   │   能力發現   │                                          │
-</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>│  └──────┬──────┘   └──────┬──────┘                                          │
-</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>│         │                 │                                                  │
-</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>│  • speckit_plan    • capabilities                                           │
-</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>│  • speckit_task    • tool_list                                              │
-</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>│  • speckit_check   • schema                                                 │
-</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>│                                                                              │
-</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>└─────────────────────────────────────────────────────────────────────────────┘
-</span></code></pre></div>
-<table>
-<thead>
-<tr>
-<th>模組</th>
-<th>功能描述</th>
-<th>核心工具</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>MCP Server</strong></td>
-<td>服務核心</td>
-<td><code>boring_help</code>, Prompts, Resources</td>
-</tr>
-<tr>
-<td><strong>Tool Router</strong></td>
-<td>自然語言路由</td>
-<td><code>boring()</code> (萬用入口)</td>
-</tr>
-<tr>
-<td><strong>Plugin</strong></td>
-<td>擴充系統</td>
-<td><code>boring_list_plugins</code>, <code>boring_run_plugin</code></td>
-</tr>
-<tr>
-<td><strong>Workspace</strong></td>
-<td>專案管理</td>
-<td><code>Lazy Init</code> (Lightweight Mode), Dashboard (Vis.js)</td>
-</tr>
-<tr>
-<td><strong>SpecKit</strong></td>
-<td>規格驅動開發</td>
-<td><code>boring_speckit_plan</code>, <code>boring_speckit_checklist</code></td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="v10260">🗂️ 程式碼結構 (V10.26.0)</h2>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>src/boring/
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>├── mcp/                          # MCP 層
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>│   ├── server.py                 # 🎯 MCP Server 主入口
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>│   ├── instance.py               # FastMCP 實例
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>│   ├── tool_router.py            # 自然語言路由
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>│   ├── tool_profiles.py          # Profile 管理
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>│   ├── prompts.py                # Prompt 定義
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>│   │
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>│   ├── tools/                    # ✨ V10.26 模組化工具
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>│   │   ├── plugins.py            # Plugin 管理 (3 工具)
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>│   │   ├── workspace.py          # Workspace 管理 (4 工具)
-</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>│   │   ├── assistant.py          # AI 助手 (3 工具)
-</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>│   │   ├── vibe.py               # Vibe Coder Pro (10 工具)
-</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>│   │   ├── session.py            # Vibe Session (6 工具)
-</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>│   │   ├── rag.py                # RAG 搜索
-</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>│   │   ├── shadow.py             # Shadow Mode
-</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>│   │   ├── agents.py             # Multi-Agent
-</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>│   │   ├── git.py                # Git 操作
-</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>│   │   ├── quality.py            # 品質檢查
-</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>│   │   ├── verification.py       # 驗證工具
-</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>│   │   └── ...                   # 更多工具模組
-</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>│   │
-</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>│   ├── tools/assistant.py               # ⚠️ 已棄用 (re-export 包裝)
-</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>│   ├── v10_tools.py              # Registry hub
-</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>│   └── vibe_tools.py             # ⚠️ 已棄用 (re-export 包裝)
-</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>│
-</span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>├── agents/                       # Multi-Agent 系統
-</span><span id="__span-5-28"><a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>├── brain_manager.py              # 記憶學習
-</span><span id="__span-5-29"><a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>├── intelligence/                 # 預測分析
-</span><span id="__span-5-30"><a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>├── judge/                        # 品質評估
-</span><span id="__span-5-31"><a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>├── rag/                          # RAG 搜索
-</span><span id="__span-5-32"><a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>├── security.py                   # 安全掃描
-</span><span id="__span-5-33"><a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a>├── shadow_mode.py                # Shadow Mode
-</span><span id="__span-5-34"><a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a>├── verification/                 # 驗證系統
-</span><span id="__span-5-35"><a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a>├── vibe/                         # Vibe Engine
-</span><span id="__span-5-36"><a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a>└── workspace.py                  # Workspace 管理
+<h2 id="v14-source-map">🗂️ 模組結構 (V14 Source Map)</h2>
+<p>代碼庫反映了這種分層架構：</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>src/boring/
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├──<span class="w"> </span>flow/<span class="w">                 </span><span class="c1"># [L4] 流程引擎與節點</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>│<span class="w">   </span>├──<span class="w"> </span>engine.py<span class="w">         </span><span class="c1"># 編排器 (Orchestrator)</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>│<span class="w">   </span>└──<span class="w"> </span>nodes/<span class="w">            </span><span class="c1"># 架構師 (Architect), 建構者 (Builder), 評論家 (Critic) 節點</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>├──<span class="w"> </span>mcp/<span class="w">                  </span><span class="c1"># [L1/L2] MCP 伺服器與工具</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>│<span class="w">   </span>├──<span class="w"> </span>tool_router.py<span class="w">    </span><span class="c1"># 語義網關</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>│<span class="w">   </span>├──<span class="w"> </span>tool_profiles.py<span class="w">  </span><span class="c1"># 設定檔管理</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>│<span class="w">   </span>└──<span class="w"> </span>tools/<span class="w">            </span><span class="c1"># 個別工具實作</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>│
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>├──<span class="w"> </span>intelligence/<span class="w">         </span><span class="c1"># [L3] 認知模組</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>│<span class="w">   </span>├──<span class="w"> </span>brain_manager.py<span class="w">  </span><span class="c1"># 長期記憶</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>│<span class="w">   </span>└──<span class="w"> </span>thinking/<span class="w">         </span><span class="c1"># 思考策略</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>│
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>├──<span class="w"> </span>services/<span class="w">             </span><span class="c1"># [L1] 核心服務</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>│<span class="w">   </span>├──<span class="w"> </span>monitor.py<span class="w">        </span><span class="c1"># 網頁儀表板</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>│<span class="w">   </span>└──<span class="w"> </span>notifier.py<span class="w">       </span><span class="c1"># 通知系統</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>│
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>├──<span class="w"> </span>core/<span class="w">                 </span><span class="c1"># [L1] 基礎元數據</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>│<span class="w">   </span>├──<span class="w"> </span>config.py<span class="w">         </span><span class="c1"># 配置</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>│<span class="w">   </span>└──<span class="w"> </span>context.py<span class="w">        </span><span class="c1"># 上下文管理</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>│
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>└──<span class="w"> </span>main.py<span class="w">               </span><span class="c1"># CLI 入口點</span>
 </span></code></pre></div>
 <hr />
-<h2 id="60">🔧 工具總覽 (60+ 工具)</h2>
-<h3 id="_3">按類別統計</h3>
-<table>
-<thead>
-<tr>
-<th>類別</th>
-<th>工具數</th>
-<th>代表工具</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>代碼智能</strong></td>
-<td>~25</td>
-<td><code>boring_rag_search</code>, <code>boring_learn</code>, <code>boring_predict_errors</code></td>
-</tr>
-<tr>
-<td><strong>品質保證</strong></td>
-<td>~20</td>
-<td><code>boring_verify</code>, <code>boring_vibe_check</code>, <code>boring_security_scan</code></td>
-</tr>
-<tr>
-<td><strong>工作流自動化</strong></td>
-<td>~25</td>
-<td><code>boring_session_start</code>, <code>boring_commit</code>, <code>boring_shadow_mode</code></td>
-</tr>
-<tr>
-<td><strong>基礎設施</strong></td>
-<td>~28</td>
-<td><code>boring</code>, <code>boring_workspace_switch</code>, <code>boring_speckit_plan</code></td>
-</tr>
-</tbody>
-</table>
-<h3 id="_4">快速入門</h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># 🎯 萬用入口 (推薦使用)</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>boring<span class="o">(</span><span class="s2">&quot;幫我審查這段程式碼&quot;</span><span class="o">)</span><span class="w">  </span>→<span class="w"> </span>自動路由到合適工具
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># 📋 常用工具</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>boring_rag_search<span class="w">     </span><span class="c1"># 語義搜尋程式碼</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>boring_vibe_check<span class="w">     </span><span class="c1"># 健康度評分 (0-100)</span>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>boring_session_start<span class="w">  </span><span class="c1"># 啟動 Vibe Session</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>boring_commit<span class="w">         </span><span class="c1"># 智能提交</span>
-</span></code></pre></div>
+<h2 id="security-integrity">🛡️ 安全與完整性 (Security &amp; Integrity)</h2>
+<h3 id="shadow-mode">影子模式 (Shadow Mode)</h3>
+<p>一個攔截所有工具調用的「沙箱執行 (Sandboxed Execution)」環境。
+- <strong>嚴格模式 (Strict Mode)</strong>: 對於 <em>任何</em> 檔案修改都需要手動批准。
+- <strong>標準模式 (Standard Mode)</strong>: 自動批准安全編輯，阻擋啟發式風險。</p>
+<h3 id="offline-first-architecture">離線優先架構 (Offline-First Architecture)</h3>
+<p>V14 支援完全隔離 (air-gapped) 運作：
+- <strong>文檔</strong>: 透過 <code>chromadb</code> 進行本地嵌入。
+- <strong>LLM</strong>: 透過 <code>boring-adapter</code> 連接本地 <code>Ollama</code> 或 <code>LM Studio</code>。
+- <strong>隱私</strong>: 保證零數據外洩。</p>
 <hr />
-<h2 id="vibe-session">🚀 Vibe Session 工作流</h2>
-<blockquote>
-<p>V10.25 的核心功能：完整的人機對齊工作流。</p>
-</blockquote>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>┌────────────────────────────────────────────────────────────────────────────┐
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>│                          🎯 Vibe Session 流程                               │
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>├────────────────────────────────────────────────────────────────────────────┤
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>│                                                                             │
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>│   Phase 1          Phase 2          Phase 3          Phase 4               │
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>│  ┌─────────┐      ┌─────────┐      ┌─────────┐      ┌─────────┐           │
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>│  │ 📋       │      │ 📐       │      │ 🔨       │      │ ✅       │           │
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>│  │ 需求對齊  │ ──▶ │ 計劃制定  │ ──▶ │ 增量實作  │ ──▶ │ 驗證交付  │ ──▶ 🎉    │
-</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>│  │ Alignment│      │ Planning │      │  Impl    │      │ Verify  │           │
-</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>│  └─────────┘      └─────────┘      └─────────┘      └─────────┘           │
-</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>│       │                │                │                │                 │
-</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>│       ▼                ▼                ▼                ▼                 │
-</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>│  • 確認目標        • 分析架構        • 逐步實作        • 完整驗證          │
-</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>│  • 釐清需求        • 生成計劃        • 自動評分        • 安全掃描          │
-</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>│  • 技術選型        • 產生清單        • 品質閘門        • 學習記錄          │
-</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>│                                                                             │
-</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>└────────────────────────────────────────────────────────────────────────────┘
-</span></code></pre></div>
-<h3 id="session">Session 工具</h3>
-<table>
-<thead>
-<tr>
-<th>工具</th>
-<th>說明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>boring_session_start</code></td>
-<td>🎯 啟動新 Session</td>
-</tr>
-<tr>
-<td><code>boring_session_confirm</code></td>
-<td>✅ 確認當前階段</td>
-</tr>
-<tr>
-<td><code>boring_session_status</code></td>
-<td>📊 查看進度</td>
-</tr>
-<tr>
-<td><code>boring_session_pause</code></td>
-<td>⏸️ 暫停 Session</td>
-</tr>
-<tr>
-<td><code>boring_session_load</code></td>
-<td>📂 載入舊 Session</td>
-</tr>
-<tr>
-<td><code>boring_session_auto</code></td>
-<td>🤖 切換自動模式</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="_5">📈 版本演進</h2>
-<table>
-<thead>
-<tr>
-<th>版本</th>
-<th>主要功能</th>
-<th>日期</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>V10.26</strong></td>
-<td>模組化重構 (~1900 行精簡)</td>
-<td>2026-01-09</td>
-</tr>
-<tr>
-<td>V10.25</td>
-<td>Vibe Session (人機對齊工作流)</td>
-<td>2026-01-08</td>
-</tr>
-<tr>
-<td>V10.24</td>
-<td>Tool Router (自然語言路由)</td>
-<td>2026-01-07</td>
-</tr>
-<tr>
-<td>V10.23</td>
-<td>Intelligence (預測分析)</td>
-<td>2026-01-06</td>
-</tr>
-<tr>
-<td>V10.22</td>
-<td>SpecKit (規格驅動開發)</td>
-<td>2026-01-05</td>
-</tr>
-<tr>
-<td>V10.21</td>
-<td>Vibe Coder Pro (遊戲化)</td>
-<td>2026-01-04</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="_6">🔗 相關文檔</h2>
+<h2 id="performance-metrics">📊 效能指標 (Performance Metrics)</h2>
 <ul>
-<li><a href="../getting-started/quickstart/">快速入門</a></li>
-<li><a href="../guides/mcp-configuration/">MCP 配置指南</a></li>
-<li><a href="../guides/vibe-coder/">Vibe Coder 指南</a></li>
-<li><a href="../guides/tool-manual/">工具手冊</a></li>
-<li><a href="design/refactoring-plan.md">重構計劃</a></li>
-</ul>
-<hr />
-<div align="center">
-
-**Boring for Gemini** - 讓 AI 成為你真正的程式設計夥伴
-
-`pip install boring-aicoding` | [GitHub](https://github.com/Boring206/boring-gemini) | [PyPI](https://pypi.org/project/boring-aicoding/)
-
-</div>
-
-<h2 id="security-architecture">🛡️ 安全架構 (Security Architecture)</h2>
-<p>Boring V11.2 實作了全面的「深度防禦」策略：</p>
-<h3 id="1-shadow-mode-">1. 影子模式 (Shadow Mode - 執行期守衛)</h3>
-<ul>
-<li><strong>角色</strong>：封鎖主動破壞性操作（檔案/程序/網絡）。</li>
-<li><strong>控制</strong>：使用者可配置等級 (<code>DISABLED</code>, <code>ENABLED</code> (預設), <code>STRICT</code>)。</li>
-<li><strong>機制</strong>：攔截 <code>boring_</code> 工具呼叫，並檢查是否包含敏感模式（金鑰、系統配置）。</li>
-</ul>
-<h3 id="2-synthesized-tool-sandbox-">2. 即時工具沙箱 (Synthesized Tool Sandbox - 驗證器)</h3>
-<ul>
-<li><strong>角色</strong>：防止在合成工具 (<code>boring_synth_tool</code>) 中注入惡意代碼。</li>
-<li><strong>機制</strong>：基於 AST 的靜態分析 (<code>SynthesizedToolValidator</code>)。</li>
-<li><strong>策略</strong>：<ul>
-<li><strong>禁止導入</strong>：<code>os</code>, <code>sys</code>, <code>subprocess</code>, <code>shutil</code>, <code>socket</code></li>
-<li><strong>禁止函數</strong>：<code>exec()</code>, <code>eval()</code>, <code>open()</code>, <code>compile()</code></li>
-</ul>
-</li>
-</ul>
-<h3 id="3-checkpoints-">3. 安全檢查點 (Checkpoints - 狀態安全)</h3>
-<ul>
-<li><strong>角色</strong>：在執行高風險操作前自動進行 Git 提交 (<code>boring_checkpoint</code>)。</li>
-<li><strong>恢復</strong>：透過 <code>git reset</code> 實現一鍵回滾。</li>
+<li><strong>上下文優化</strong>: 120k tokens -&gt; 4k tokens (透過語義路由)。</li>
+<li><strong>延遲</strong>: 每個工具調用的額外開銷 &lt;200ms。</li>
+<li><strong>成功率</strong>: 自主 E2E 任務成功率達 92% (基於 <code>boring verify</code> 測量)。</li>
 </ul>
 
 

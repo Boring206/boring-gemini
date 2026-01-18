@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V14.0.0)">
+        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V15.0.0)">
       
       
         <meta name="author" content="Boring206">
@@ -370,7 +370,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../changelog/v14/" class="md-tabs__link">
+        <a href="../../changelog/v15.0.md" class="md-tabs__link">
           
   
   
@@ -2002,6 +2002,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. "系統驗證速度太慢"
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2477,6 +2488,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../changelog/v15.0.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V15.0 (Latest)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/v14.8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V14.8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../changelog/v14/" class="md-nav__link">
         
   
@@ -2484,7 +2551,7 @@
   <span class="md-ellipsis">
     
   
-    V14 (New)
+    V14 (Legacy)
   
 
     
@@ -2900,6 +2967,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. "系統驗證速度太慢"
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2932,14 +3010,15 @@
 <hr />
 <h2 id="_2">🔍 診斷工具</h2>
 <p>在嘗試手動修復之前，請使用內建診斷工具：</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># 檢查環境和系統健康狀況</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>boring<span class="w"> </span>doctor
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># 顯示當前配置（對除錯很有用）</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>boring<span class="w"> </span>config<span class="w"> </span>show
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># 查看日誌</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>tail<span class="w"> </span>-f<span class="w"> </span>~/.boring_logs/boring.log
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># 檢查環境、系統健康狀況，並執行深度優化</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>boring<span class="w"> </span>doctor<span class="w"> </span>--fix
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>boring<span class="w"> </span>doctor<span class="w"> </span>--optimize
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># 顯示當前配置（對除錯很有用）</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>boring<span class="w"> </span>config<span class="w"> </span>show
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># 查看日誌</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>tail<span class="w"> </span>-f<span class="w"> </span>~/.boring_logs/boring.log
 </span></code></pre></div>
 <hr />
 <h2 id="_3">🛑 常見問題</h2>
@@ -3038,6 +3117,20 @@
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="c1"># 重啟 IDE/Server</span>
 </span></code></pre></div>
    詳情請見 <a href="../../guides/mcp-profiles-comparison_zh/">MCP Profiles 指南</a>。</p>
+<h3 id="7">7. "系統驗證速度太慢"</h3>
+<p><strong>症狀</strong>：<code>boring doctor</code> 或 <code>boring verify</code> 在掃描專案歷史記錄時耗時過長。</p>
+<p><strong>原因</strong>：
+- 巨大的 <code>events.jsonl</code> 檔案。
+- 重複的大腦索引掃描。</p>
+<p><strong>解決方案</strong>：
+1. <strong>啟用系統優化</strong>：
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>boring<span class="w"> </span>doctor<span class="w"> </span>--optimize
+</span></code></pre></div>
+   這將執行：
+   * <strong>帳本滾動</strong>：將 <code>events.jsonl</code> 分割為封存片段。
+   * <strong>建立檢查點</strong>：啟用增量掃描，實現近乎即時的驗證。
+   * <strong>狀態壓縮</strong>：使用 Gzip 縮小專案快照。
+2. <strong>執行維護</strong>：確保您的程式碼經常提交，以保持增量對帳器的效率。</p>
 
 
 

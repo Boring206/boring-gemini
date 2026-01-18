@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V14.0.0)">
+        <meta name="description" content="The True One Dragon Autonomous AI Development Agent (V15.0.0)">
       
       
         <meta name="author" content="Boring206">
@@ -364,7 +364,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../changelog/v14/" class="md-tabs__link">
+        <a href="../../changelog/v15.0.md" class="md-tabs__link">
           
   
   
@@ -2269,6 +2269,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../changelog/v15.0.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V15.0 (Latest)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/v14.8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    V14.8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../changelog/v14/" class="md-nav__link">
         
   
@@ -2276,7 +2332,7 @@
   <span class="md-ellipsis">
     
   
-    V14 (New)
+    V14 (Legacy)
   
 
     
@@ -10935,14 +10991,14 @@ retriever.build_index()</p>
 </span><span id="__span-0-749"><a id="__codelineno-0-749" name="__codelineno-0-749"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-750"><a id="__codelineno-0-750" name="__codelineno-0-750"></a><span class="sd">        Async version of retrieve for non-blocking operations.</span>
 </span><span id="__span-0-751"><a id="__codelineno-0-751" name="__codelineno-0-751"></a>
-</span><span id="__span-0-752"><a id="__codelineno-0-752" name="__codelineno-0-752"></a><span class="sd">        Wraps ChromaDB calls in asyncio.to_thread for async compatibility.</span>
+</span><span id="__span-0-752"><a id="__codelineno-0-752" name="__codelineno-0-752"></a><span class="sd">        Wraps ChromaDB calls in a budgeted thread pool for async compatibility.</span>
 </span><span id="__span-0-753"><a id="__codelineno-0-753" name="__codelineno-0-753"></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="__span-0-754"><a id="__codelineno-0-754" name="__codelineno-0-754"></a>        <span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+</span><span id="__span-0-754"><a id="__codelineno-0-754" name="__codelineno-0-754"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">..core.resources</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_resources</span>
 </span><span id="__span-0-755"><a id="__codelineno-0-755" name="__codelineno-0-755"></a>
 </span><span id="__span-0-756"><a id="__codelineno-0-756" name="__codelineno-0-756"></a>        <span class="k">def</span><span class="w"> </span><span class="nf">_sync_retrieve</span><span class="p">():</span>
 </span><span id="__span-0-757"><a id="__codelineno-0-757" name="__codelineno-0-757"></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">retrieve</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">n_results</span><span class="p">,</span> <span class="n">expand_graph</span><span class="p">,</span> <span class="n">file_filter</span><span class="p">,</span> <span class="n">chunk_types</span><span class="p">)</span>
 </span><span id="__span-0-758"><a id="__codelineno-0-758" name="__codelineno-0-758"></a>
-</span><span id="__span-0-759"><a id="__codelineno-0-759" name="__codelineno-0-759"></a>        <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">to_thread</span><span class="p">(</span><span class="n">_sync_retrieve</span><span class="p">)</span>
+</span><span id="__span-0-759"><a id="__codelineno-0-759" name="__codelineno-0-759"></a>        <span class="k">return</span> <span class="k">await</span> <span class="n">get_resources</span><span class="p">()</span><span class="o">.</span><span class="n">run_in_thread</span><span class="p">(</span><span class="n">_sync_retrieve</span><span class="p">)</span>
 </span><span id="__span-0-760"><a id="__codelineno-0-760" name="__codelineno-0-760"></a>
 </span><span id="__span-0-761"><a id="__codelineno-0-761" name="__codelineno-0-761"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_modification_context</span><span class="p">(</span>
 </span><span id="__span-0-762"><a id="__codelineno-0-762" name="__codelineno-0-762"></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">function_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">class_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -12238,7 +12294,7 @@ retriever.build_index()</p>
     <div class="doc doc-contents ">
 
         <p>Async version of retrieve for non-blocking operations.</p>
-<p>Wraps ChromaDB calls in asyncio.to_thread for async compatibility.</p>
+<p>Wraps ChromaDB calls in a budgeted thread pool for async compatibility.</p>
 
 
             <details class="mkdocstrings-source">
@@ -12272,14 +12328,14 @@ retriever.build_index()</p>
 </span><span id="__span-0-749"><a id="__codelineno-0-749" name="__codelineno-0-749"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-750"><a id="__codelineno-0-750" name="__codelineno-0-750"></a><span class="sd">    Async version of retrieve for non-blocking operations.</span>
 </span><span id="__span-0-751"><a id="__codelineno-0-751" name="__codelineno-0-751"></a>
-</span><span id="__span-0-752"><a id="__codelineno-0-752" name="__codelineno-0-752"></a><span class="sd">    Wraps ChromaDB calls in asyncio.to_thread for async compatibility.</span>
+</span><span id="__span-0-752"><a id="__codelineno-0-752" name="__codelineno-0-752"></a><span class="sd">    Wraps ChromaDB calls in a budgeted thread pool for async compatibility.</span>
 </span><span id="__span-0-753"><a id="__codelineno-0-753" name="__codelineno-0-753"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-754"><a id="__codelineno-0-754" name="__codelineno-0-754"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+</span><span id="__span-0-754"><a id="__codelineno-0-754" name="__codelineno-0-754"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">..core.resources</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_resources</span>
 </span><span id="__span-0-755"><a id="__codelineno-0-755" name="__codelineno-0-755"></a>
 </span><span id="__span-0-756"><a id="__codelineno-0-756" name="__codelineno-0-756"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_sync_retrieve</span><span class="p">():</span>
 </span><span id="__span-0-757"><a id="__codelineno-0-757" name="__codelineno-0-757"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">retrieve</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">n_results</span><span class="p">,</span> <span class="n">expand_graph</span><span class="p">,</span> <span class="n">file_filter</span><span class="p">,</span> <span class="n">chunk_types</span><span class="p">)</span>
 </span><span id="__span-0-758"><a id="__codelineno-0-758" name="__codelineno-0-758"></a>
-</span><span id="__span-0-759"><a id="__codelineno-0-759" name="__codelineno-0-759"></a>    <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">to_thread</span><span class="p">(</span><span class="n">_sync_retrieve</span><span class="p">)</span>
+</span><span id="__span-0-759"><a id="__codelineno-0-759" name="__codelineno-0-759"></a>    <span class="k">return</span> <span class="k">await</span> <span class="n">get_resources</span><span class="p">()</span><span class="o">.</span><span class="n">run_in_thread</span><span class="p">(</span><span class="n">_sync_retrieve</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
     </div>
