@@ -61,7 +61,7 @@ class WizardManager:
         # On Linux, use XDG_CONFIG_HOME or default to ~/.config
         if self.system == "Linux":
             self.appdata = Path(os.getenv("XDG_CONFIG_HOME", self.home / ".config"))
-            self.localappdata = self.appdata # Usually same or ~/.local/share
+            self.localappdata = self.appdata  # Usually same or ~/.local/share
         elif self.system == "Windows":
             self.appdata = Path(os.getenv("APPDATA", ""))
             self.localappdata = Path(os.getenv("LOCALAPPDATA", ""))
@@ -100,7 +100,7 @@ class WizardManager:
         if self.system == "Windows":
             # Some apps might be in Local instead of Roaming
             if editor_name in ["Windsurf", "Trae", "Void"]:
-                 return self.appdata / editor_name # Try Roaming first
+                return self.appdata / editor_name  # Try Roaming first
             return self.appdata / editor_name
         elif self.system == "Darwin":  # macOS
             return self.home / "Library" / "Application Support" / editor_name
@@ -656,14 +656,18 @@ class WizardManager:
                 cmd = ["opencode", "mcp", "add", "boring", str(wrapper_path.resolve())]
                 res = subprocess.run(cmd, capture_output=True, text=True)
                 if res.returncode == 0:
-                    console.print("[bold green]✅ Success! Registered with OpenCode CLI.[/bold green]")
+                    console.print(
+                        "[bold green]✅ Success! Registered with OpenCode CLI.[/bold green]"
+                    )
                     return
             except Exception:
                 pass
 
             # 2. Manual Config Patch (Fallback or standard)
             if config_path and config_path.suffix == ".json":
-                self._install_generic_json(editor_name, config_path, profile, extra_env, auto_approve)
+                self._install_generic_json(
+                    editor_name, config_path, profile, extra_env, auto_approve
+                )
                 return
 
             console.print("[yellow]⚠️ OpenCode CLI not found and no config path matched.[/yellow]")
@@ -814,7 +818,14 @@ class WizardManager:
         except Exception as e:
             console.print(f"[bold red]❌ Write failed: {e}[/bold red]")
 
-    def _install_generic_json(self, editor_name: str, config_path: Path, profile: str, extra_env: dict[str, str] | None, auto_approve: bool):
+    def _install_generic_json(
+        self,
+        editor_name: str,
+        config_path: Path,
+        profile: str,
+        extra_env: dict[str, str] | None,
+        auto_approve: bool,
+    ):
         """Generic JSON config installer (similar to Claude Desktop/Windsurf/Void)."""
         config_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -837,9 +848,9 @@ class WizardManager:
         # 3. Handle structure (mcpServers or context_servers)
         key = "mcpServers"
         if editor_name in ["Zed", "OpenCode"]:
-             # Zed uses context_servers, OpenCode might too
-             if "context_servers" in config or editor_name == "Zed":
-                 key = "context_servers"
+            # Zed uses context_servers, OpenCode might too
+            if "context_servers" in config or editor_name == "Zed":
+                key = "context_servers"
 
         if key not in config:
             config[key] = {}
@@ -1191,8 +1202,13 @@ def run_wizard(auto_approve: bool = False):
     # Check for ecosystem servers to suggest
     discovered = manager.scan_ecosystem()
     if discovered:
-        console.print(f"[dim]Note: Found other MCP servers already configured: {', '.join(discovered)}[/dim]")
-        if Confirm.ask("Would you like to sync these external servers into Boring's environment?", default=False):
+        console.print(
+            f"[dim]Note: Found other MCP servers already configured: {', '.join(discovered)}[/dim]"
+        )
+        if Confirm.ask(
+            "Would you like to sync these external servers into Boring's environment?",
+            default=False,
+        ):
             # We would add them to .env or settings. This is a bit complex for now,
             # but we can at least log the intent.
             console.print("[green]Sync intent noted! (Feature coming soon to V15.1)[/green]")
@@ -1208,7 +1224,7 @@ def run_wizard(auto_approve: bool = False):
     extra_env = {}
 
     if choice == "all":
-        for name in editor_list: # Only iterate found ones
+        for name in editor_list:  # Only iterate found ones
             path = editors[name]
             manager.install(name, path, profile=profile, extra_env=extra_env)
     else:
@@ -1484,11 +1500,14 @@ def _run_ecosystem_sync(manager: WizardManager):
 
     if Confirm.ask("Sync these servers into Boring?", default=True):
         from boring.core.config import update_toml_config
+
         for s in discovered:
             key = f"ENABLE_MCP_{s.upper().replace('-', '_')}"
             update_toml_config(key, True)
 
         console.print("[bold green]✅ Success! Extensions marked for synchronization.[/bold green]")
-        console.print("[dim]Note: You may need to restart your editor for Boring to pick these up.[/dim]")
+        console.print(
+            "[dim]Note: You may need to restart your editor for Boring to pick these up.[/dim]"
+        )
 
     Prompt.ask(i18n.t("menu_return"))
