@@ -1,11 +1,5 @@
-"""
-State Serializer
-
-Handles serialization and deserialization of FlowContext to enable Pause/Resume.
-"""
-
+import json
 import logging
-import pickle
 from pathlib import Path
 
 from .nodes.base import FlowContext
@@ -29,15 +23,16 @@ class StateSerializer:
             data = {
                 "project_root": str(context.project_root),
                 "user_goal": context.user_goal,
-                "memory": context.memory,
+                # Convert memory objects to dict/list if needed, assuming they constitute simple types here for now
+                "memory": context.memory if isinstance(context.memory, (dict, list, str, int, float, bool, type(None))) else str(context.memory),
                 "errors": context.errors,
                 "auto_mode": getattr(context, "auto_mode", False),
                 "metadata": {"step_count": step_count, "current_node": current_node},
             }
 
-            checkpoint_file = self.checkpoint_dir / "latest.pkl"
-            with open(checkpoint_file, "wb") as f:
-                pickle.dump(data, f)
+            checkpoint_file = self.checkpoint_dir / "latest.json"
+            with open(checkpoint_file, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2)
 
             return checkpoint_file
         except Exception as e:
@@ -46,13 +41,13 @@ class StateSerializer:
 
     def load_checkpoint(self) -> dict | None:
         """Load the latest checkpoint."""
-        checkpoint_file = self.checkpoint_dir / "latest.pkl"
+        checkpoint_file = self.checkpoint_dir / "latest.json"
         if not checkpoint_file.exists():
             return None
 
         try:
-            with open(checkpoint_file, "rb") as f:
-                data = pickle.load(f)
+            with open(checkpoint_file, encoding="utf-8") as f:
+                data = json.load(f)
             return data
         except Exception as e:
             logger.error(f"Failed to load checkpoint: {e}")

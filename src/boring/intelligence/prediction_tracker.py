@@ -281,7 +281,7 @@ class PredictionTracker:
         # Get totals
         query_total = (
             "SELECT COUNT(*) as total, SUM(CASE WHEN was_correct IS NOT NULL THEN 1 ELSE 0 END) as resolved, "
-            f"SUM(CASE WHEN was_correct = 1 THEN 1 ELSE 0 END) as correct, AVG(confidence) as avg_conf FROM predictions WHERE {where_clause}"  # nosec B608
+            f"SUM(CASE WHEN was_correct = 1 THEN 1 ELSE 0 END) as correct, AVG(confidence) as avg_conf FROM predictions WHERE {where_clause}"
         )
         row = conn.execute(query_total, params).fetchone()
 
@@ -296,7 +296,7 @@ class PredictionTracker:
         by_type = {}
         query = (
             "SELECT prediction_type, COUNT(*) as total, SUM(CASE WHEN was_correct = 1 THEN 1 ELSE 0 END) as correct "
-            f"FROM predictions WHERE {where_clause} AND was_correct IS NOT NULL GROUP BY prediction_type"  # nosec B608
+            f"FROM predictions WHERE {where_clause} AND was_correct IS NOT NULL GROUP BY prediction_type"
         )
         for type_row in conn.execute(query, params):
             t_total = type_row["total"]
@@ -496,7 +496,7 @@ class PredictionTracker:
             where = "prediction_type = ?"
             params = [prediction_type]
 
-        query = f"SELECT bucket, total_count, correct_count, avg_confidence FROM calibration_data WHERE {where} ORDER BY bucket"  # nosec B608
+        query = f"SELECT bucket, total_count, correct_count, avg_confidence FROM calibration_data WHERE {where} ORDER BY bucket"
         rows = conn.execute(query, params).fetchall()
 
         buckets = []

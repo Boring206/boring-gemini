@@ -1374,29 +1374,22 @@ class I18nManager:
 
     def _detect_language(self):
         """Try to detect system language."""
-        try:
-            # V11.5: Fix DeprecationWarning for locale.getdefaultlocale()
-            import locale
-
-            sys_lang, _ = locale.getlocale()
-            if not sys_lang:
-                # Fallback to env vars for headless/container environments
-                sys_lang = os.environ.get("LANG") or os.environ.get("LC_ALL")
-
-            if sys_lang:
-                sys_lang = sys_lang.lower()
-                if sys_lang.startswith("zh"):
-                    self.language = "zh"
-                elif sys_lang.startswith("es"):
-                    self.language = "es"
-                elif sys_lang.startswith("hi"):
-                    self.language = "hi"
-                elif sys_lang.startswith("ar"):
-                    self.language = "ar"
-                else:
-                    self.language = "en"
-        except Exception:
-            self.language = "en"
+        # V15.0: Default to English for International Version.
+        # Use BORING_LANGUAGE env var to strictly opt-in for other languages.
+        self.language = "en"
+        
+        env_lang = os.environ.get("BORING_LANGUAGE") or os.environ.get("BORING_LANG")
+        
+        if env_lang:
+            env_lang = env_lang.lower()
+            if env_lang.startswith("zh"):
+                self.language = "zh"
+            elif env_lang.startswith("es"):
+                self.language = "es"
+            elif env_lang.startswith("hi"):
+                self.language = "hi"
+            elif env_lang.startswith("ar"):
+                self.language = "ar"
 
     def set_language(self, lang_code: str):
         """Set the active language."""
