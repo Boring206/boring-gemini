@@ -2,6 +2,8 @@
   <img src="docs/assets/logo.png" width="180" alt="Boring for Gemini Logo">
 </p>
 
+# Boring for Gemini (V15.0.0) 💎
+
 <h1 align="center">Boring</h1>
 
 <p align="center">
@@ -85,7 +87,22 @@ The **Sovereign Edition**. Achieving "100-Point Perfection" through enterprise-g
 - **Policy-as-Code (`boring policy`)**: Secure, auditable tool permission guardrails.
 - **Sovereign Audit (`boring perfection`)**: Automated 7-stage validation for production readiness.
 - **Self-Healing Doctor (`boring doctor --fix`)**: Autonomous environment repair and dependency resolution.
+- **System Optimizer (`boring doctor --optimize`)**: Deep storage cleanup (VACUUM), brain pattern maintenance (Decay/Pruning), and reconciler checkpointing.
 - **Migration Engine (`boring migrate`)**: Forward-compatible project state transition.
+
+### 💖 Pillar XI: [Anti-Rage UX (V15.0.0)](docs/changelog/v15.md)
+The **Delight Update**. Transforming the user experience from "Frustrating" to "Fluid".
+- **Visual Feedback**: Rich Spinners, Step Tracking (`Step 5/50`), and Task Progress bars.
+- **Cost Awareness**: Proactive API cost warnings to prevent bill shock.
+- **Resilience**: Robust file locking handling (WinError 32) and friendly error translations.
+- **State Serialization**: Ability to `pause` and `resume` long-running flows.
+
+### 🌍 Pillar XII: [The Zero-Cost Ecosystem (V15.0)](docs/guides/registry-format.md)
+The **Democratization Update**. A fully decentralized, zero-cost plugin economy.
+- **Pack & Install**: `boring pack` and `boring install` turn any repo into a plugin.
+- **Knowledge Share**: `boring brain export` lets you share your AI's learned wisdom.
+- **GitOps Sync**: `boring sync` enables serverless team collaboration via Git.
+- **Registry Spec**: Open standard (`registry.json`) for a decentralized internet of agents.
 
 
 ---
@@ -109,6 +126,7 @@ The **Sovereign Edition**. Achieving "100-Point Perfection" through enterprise-g
 | 📜 | **[Project Bio](docs/features/agents.md)** | `boring bio` maintains tribal knowledge and project context over time. |
 | 🛡️ | **[Policy-as-Code](docs/features/shadow-mode.md)** | `boring policy` enforces granular security and tool permissions. |
 | 🔄 | **[Migrate](docs/changelog/v14.md)** | `boring migrate` ensures project state is always forward-compatible. |
+| 📦 | **[Ecosystem](docs/guides/pack-format.md)** | `boring pack/install` decentralized plugin system. Build, Share, Run. |
 
 ---
 
@@ -242,6 +260,7 @@ Just say these phrases to the AI in your IDE (Cursor/Claude):
 - **`review_code`**: Request a technical audit of your current file.
 - **`smart_commit`**: Generate a semantic commit message from your progress.
 - **`boring_vibe_check`**: Run a comprehensive health scan of the project.
+- **`boring doctor --optimize`**: Perform deep system optimization (Storage, Brain, and Checkpoints).
 
 ---
 

@@ -9,8 +9,9 @@
 Before trying manual fixes, use built-in diagnosis tools:
 
 ```bash
-# Check environment and system health
-boring doctor
+# Check environment, system health, and perform deep optimization
+boring doctor --fix
+boring doctor --optimize
 
 # Show current configuration (useful for debugging)
 boring config show
@@ -161,3 +162,21 @@ If these steps don't fix it:
    # Restart your IDE/Server
    ```
    See [MCP Profiles Guide](../guides/mcp-profiles-comparison.md) for details.
+### 7. "System verification is too slow"
+
+**Symptoms**: `boring doctor` or `boring verify` takes a long time scanning project history.
+
+**Causes**:
+- Massive `events.jsonl` file.
+- Redundant brain index scanning.
+
+**Solution**:
+1. **Enable System Optimization**:
+   ```bash
+   boring doctor --optimize
+   ```
+   This will:
+   * **Rotate the Ledger**: Split `events.jsonl` into archived segments.
+   * **Create Checkpoints**: Enable incremental scanning for nearly-instant verification.
+   * **Compress State**: Use Gzip to shrink project snapshots.
+2. **Perform Maintenance**: Ensure your code is frequently committed to keep the incremental reconciler efficient.

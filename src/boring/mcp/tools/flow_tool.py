@@ -38,36 +38,19 @@ def boring_flow(
     if not allowed:
         return create_error_result(f"⏱️ Rate limited: {msg}")
 
-    # Detect Root
-    root = detect_project_root(project_path)
-    if not root:
-        # Fallback to default if detection fails
-        root = settings.PROJECT_ROOT
-
-    # [ONE DRAGON WIRING]
-    # Instantiate the Graph Engine
-    from ...flow.graph import FlowGraph
-    from ...flow.nodes.architect import ArchitectNode
-    from ...flow.nodes.base import FlowContext
-    from ...flow.nodes.builder import BuilderNode
-    from ...flow.nodes.evolver import EvolverNode
-    from ...flow.nodes.healer import HealerNode
-    from ...flow.nodes.polish import PolishNode
-
-    context = FlowContext(project_root=root, user_goal=instruction or "Improve the project")
-
-    graph = FlowGraph(context)
-
-    # Add Nodes
-    graph.add_node(ArchitectNode(), is_start=True)
-    graph.add_node(BuilderNode())
-    graph.add_node(HealerNode())
-    graph.add_node(PolishNode())
-    graph.add_node(EvolverNode())
-
-    # Execute
     try:
-        final_msg = graph.run()
+        # Detect Root
+        root = detect_project_root(project_path)
+        if not root:
+            # Fallback to default if detection fails
+            root = settings.PROJECT_ROOT
+
+        # [ONE DRAGON WIRING]
+        # Initialize Kernel (Phase 5.2 Audit Fix)
+        from ...core.kernel import BoringKernel
+
+        kernel = BoringKernel(root)
+        final_msg = kernel.run_flow(instruction or "")
 
         return create_success_result(
             message=final_msg, data={"status": "success", "graph_output": final_msg}

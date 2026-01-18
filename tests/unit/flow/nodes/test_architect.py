@@ -35,11 +35,12 @@ class TestArchitectNode:
         assert result.status == NodeResultStatus.SUCCESS
         assert result.next_node == "Builder"
 
-    def test_process_with_missing_tools(self, architect, context):
+    @pytest.mark.asyncio
+    async def test_process_with_missing_tools(self, architect, context):
         """Test process when speckit tools are not available."""
         # Mock the import to fail
         with patch.dict("sys.modules", {"boring.mcp.speckit_tools": None}):
-            architect.process(context)
+            await architect.process(context)
 
         # Should use fallback
         task_file = context.project_root / "task.md"

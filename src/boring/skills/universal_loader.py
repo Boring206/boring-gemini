@@ -20,6 +20,7 @@ SKILL_DIRECTORIES = [
     ".antigravity/skills",  # Antigravity (Native)
     ".gemini/skills",  # Gemini CLI
     ".claude/skills",  # Claude Code
+    ".cursor/skills",  # Cursor IDE
     ".codex/skills",  # OpenAI Codex CLI
 ]
 

@@ -123,8 +123,8 @@ class VerifyingState(LoopState):
             log_status(context.log_dir, "WARN", f"Failed to record to memory: {e}")
 
     def _check_plan_complete(self, context: LoopContext) -> bool:
-        """Check if @fix_plan.md has all items completed."""
-        task_file = context.project_root / settings.TASK_FILE
+        """Check if task list has all items completed."""
+        task_file = context.project_root / settings.TASK_FILE.name
         if not task_file.exists():
             return False
 

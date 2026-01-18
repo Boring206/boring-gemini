@@ -13,7 +13,7 @@ from boring.flow.nodes.base import (
 class ConcreteNode(BaseNode):
     """Concrete implementation for testing."""
 
-    def process(self, context: FlowContext) -> NodeResult:
+    async def process(self, context: FlowContext) -> NodeResult:
         return NodeResult(
             status=NodeResultStatus.SUCCESS,
             message="Processed",
@@ -104,11 +104,12 @@ class TestBaseNode:
         node = ConcreteNode("TestNode")
         assert node.name == "TestNode"
 
-    def test_node_process(self, tmp_path):
+    @pytest.mark.asyncio
+    async def test_node_process(self, tmp_path):
         node = ConcreteNode("TestNode")
         ctx = FlowContext(project_root=tmp_path, user_goal="Test")
 
-        result = node.process(ctx)
+        result = await node.process(ctx)
 
         assert result.status == NodeResultStatus.SUCCESS
         assert result.message == "Processed"

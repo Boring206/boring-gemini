@@ -51,6 +51,8 @@ gemini_help.txt
 test_v10_gen.txt
 test_log.txt
 PROMPT_WEB.md
+failed_tests.txt
+unit_collection_error.txt
 
 # ==============================================================================
 # Python
@@ -83,6 +85,7 @@ dist/
 .eggs/
 src/boring_gemini.egg-info/
 src/boring.egg-info/
+*.boring-pack
 
 # Testing & Quality
 .pytest_cache/
@@ -175,7 +178,8 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json
+# Keep package-lock.json for Smithery consistency
+!package-lock.json
 
 # Rust
 target/
@@ -200,6 +204,7 @@ output_log*.txt
 test_unit_failures_*.txt
 test_integration_failures*.txt
 verify_*.py
+!scripts/verify_version.py
 smoke_*.py
 # Sandbox & Local Test Environments
 *_sandbox/

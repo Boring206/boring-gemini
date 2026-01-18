@@ -63,7 +63,7 @@ XML_FILE_PATTERN = re.compile(
 def process_structured_calls(
     function_calls: list[dict[str, Any]],
     project_root: Path,
-    log_dir: Path = Path("logs"),
+    log_dir: Path | None = None,
     loop_id: int | None = None,
 ) -> tuple[int, list[str], list[str]]:
     """
@@ -321,7 +321,7 @@ def extract_file_blocks(output: str) -> dict[str, str]:
 def apply_patches(
     file_blocks: dict[str, str],
     project_root: Path,
-    log_dir: Path = Path("logs"),
+    log_dir: Path | None = None,
     dry_run: bool = False,
     loop_id: int | None = None,
 ) -> list[tuple[str, str]]:
@@ -397,7 +397,7 @@ def apply_patches(
 def process_gemini_output(
     output_file: Path,
     project_root: Path,
-    log_dir: Path = Path("logs"),
+    log_dir: Path | None = None,
     dry_run: bool = False,
     loop_id: int | None = None,
 ) -> int:

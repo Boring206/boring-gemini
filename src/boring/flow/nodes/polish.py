@@ -12,6 +12,7 @@ import subprocess
 from rich.console import Console
 from rich.panel import Panel
 
+from ...core.resources import get_resources
 from .base import BaseNode, FlowContext, NodeResult, NodeResultStatus
 
 console = Console()
@@ -21,10 +22,11 @@ class PolishNode(BaseNode):
     def __init__(self):
         super().__init__("Polish")
 
-    def process(self, context: FlowContext) -> NodeResult:
+    async def process(self, context: FlowContext) -> NodeResult:
         """
-        Run Vibe Check and Quality Assurance.
+        Run Vibe Check and Quality Assurance (Async).
         """
+
         console.print(Panel("Running Vibe Check & QA...", title="Polish", border_style="cyan"))
 
         # Check Loop Constraints
@@ -44,7 +46,9 @@ class PolishNode(BaseNode):
             from ...mcp.tools.vibe import boring_vibe_check
 
             console.print("[dim]Inspecting code aesthetics and vibes...[/dim]")
-            vibe_result = boring_vibe_check(target_path=".", project_path=str(context.project_root))
+            vibe_result = await get_resources().run_in_thread(
+                boring_vibe_check, target_path=".", project_path=str(context.project_root)
+            )
             console.print(f"[cyan]Vibe Report:[/cyan] {vibe_result}")
             # In a real heavy implementation, we parse vibe_result for a specific score.
 
@@ -53,8 +57,10 @@ class PolishNode(BaseNode):
             if shutil.which("ruff"):
                 console.print("[dim]Running 'ruff' linter as fallback QA...[/dim]")
                 try:
-                    subprocess.check_call(
-                        ["ruff", "check", ".", "--select", "E,F"], cwd=context.project_root
+                    await get_resources().run_in_thread(
+                        subprocess.check_call,
+                        ["ruff", "check", ".", "--select", "E,F"],
+                        cwd=context.project_root,
                     )
                     console.print("[green]Linter passed.[/green]")
                 except subprocess.CalledProcessError:

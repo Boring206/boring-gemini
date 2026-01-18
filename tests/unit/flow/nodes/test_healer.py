@@ -28,13 +28,15 @@ class TestHealerNode:
         """Test healer node initialization."""
         assert healer.name == "Healer"
 
-    def test_execute_no_error(self, healer, mock_context):
+    @pytest.mark.asyncio
+    async def test_execute_no_error(self, healer, mock_context):
         """Test process when there's no error."""
         mock_context.errors = []
-        result = healer.process(mock_context)
+        result = await healer.process(mock_context)
         assert isinstance(result, NodeResult)
 
-    def test_execute_with_module_error(self, healer, mock_context):
+    @pytest.mark.asyncio
+    async def test_execute_with_module_error(self, healer, mock_context):
         """Test process with module import error."""
         mock_context.errors = ["ModuleNotFoundError: No module named 'test_module'"]
 
@@ -49,7 +51,7 @@ class TestHealerNode:
 
             mock_subprocess.return_value = None  # check_call returns None on success
 
-            result = healer.process(mock_context)
+            result = await healer.process(mock_context)
             # Should attempt to install module or return success/failure
             assert isinstance(result, NodeResult)
 

@@ -7,10 +7,6 @@ Tests for:
 - ENABLED mode blocking HIGH/CRITICAL only
 """
 
-import shutil
-import tempfile
-from pathlib import Path
-
 import pytest
 
 from boring.shadow_mode import (
@@ -22,11 +18,12 @@ from boring.shadow_mode import (
 
 
 @pytest.fixture
-def temp_project():
-    """Create a temporary project directory."""
-    temp_dir = Path(tempfile.mkdtemp())
-    yield temp_dir
-    shutil.rmtree(temp_dir, ignore_errors=True)
+def temp_project(tmp_path, monkeypatch):
+    """Create a temporary project directory and patch settings.PROJECT_ROOT."""
+    from boring.core.config import settings
+
+    monkeypatch.setattr(settings, "PROJECT_ROOT", tmp_path)
+    return tmp_path
 
 
 class TestStrictModeEnforcement:

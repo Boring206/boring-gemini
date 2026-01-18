@@ -1,9 +1,0 @@
-# Smithery Configuration for version: 14.0.0 MCP Server
-# https://smithery.ai/docs/build/project-config
-
-runtime: "python"
-# Explicitly use pip to avoid mis-detection if other config files exist
-packageManager: "pip"
-installCommand: "pip install -e .[mcp-lite]"
-entrypoint: "python -m boring.mcp.server"
-

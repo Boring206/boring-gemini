@@ -11,6 +11,7 @@
 | **Health Check** | `boring check` | ✅ **Vibe Check**<br>Scans project health, security, and quality. |
 | **Smart Save** | `boring save` | 💾 **The Scribe**<br>Generates semantic commit message & saves changes. |
 | **Guide** | `boring guide` | ❓ **The Oracle**<br>Interactive tool discovery & help. |
+| **System Optimize** | `boring doctor -o`| 💎 **The Perfectionist**<br>Deep cleanup (VACUUM), brain maintenance & checkpoints. |
 
 ## 🧠 Cognitive Tools (Deep Thinking)
 

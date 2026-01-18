@@ -172,6 +172,37 @@ class ErrorTranslator:
                 "Disk Full",
                 "boring clean --all",
             ),
+            # === V15.0 Resilience ===
+            (
+                re.compile(r"UnicodeDecodeError:"),
+                "檔案編碼錯誤。試圖讀取非 UTF-8 格式的檔案。這通常發生在讀取中文舊專案 (Big5/CP950) 時。",
+                "Encoding Error",
+                None,
+            ),
+            (
+                re.compile(r"json\.decoder\.JSONDecodeError"),
+                "JSON 解析失敗。設定檔或回應格式有誤，可能是多了逗號或引號未閉合。",
+                "JSON Error",
+                "boring doctor",
+            ),
+            (
+                re.compile(r"RecursionError: maximum recursion depth exceeded"),
+                "遞迴過深 (Stack Overflow)。可能是程式寫了無窮迴圈的函式呼叫。",
+                "Recursion Error",
+                None,
+            ),
+            (
+                re.compile(r"(WinError 32|Check your file permissions)"),
+                "檔案被鎖定 (WinError 32)。另一個程式正在使用這個檔案。請暫時關閉 VS Code 或防毒軟體後重試。",
+                "File Locked",
+                None,
+            ),
+            (
+                re.compile(r"KeyboardInterrupt"),
+                "使用者手動中斷。任務已取消。",
+                "User Interrupted",
+                None,
+            ),
         ]
 
     def translate(self, error_message: str) -> ErrorExplanation:

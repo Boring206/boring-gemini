@@ -179,6 +179,9 @@ class StatefulAgentLoop:
             bp.state / ".exit_signals",
         )
 
+        # Deadlock Detector State
+        _error_history = []
+
         # Start RAG Watcher (auto-index on file changes)
         if self._rag_watcher:
             try:
@@ -226,6 +229,22 @@ class StatefulAgentLoop:
 
                     # V10.23: Memory compaction check before each loop
                     self._v10_23_pre_loop_maintenance()
+
+                    # Deadlock Detection (The "Stop Being Stupid" Fix)
+                    current_errors = str(sorted(ctx.errors_this_loop))
+                    if current_errors:
+                        _error_history.append(current_errors)
+                        if len(_error_history) >= 3:
+                            # Check if last 3 loops had SAME error set
+                            if _error_history[-1] == _error_history[-2] == _error_history[-3]:
+                                console.print(
+                                    "[bold red]🛑 Deadlock Detected: Same error persisted for 3 loops.[/bold red]"
+                                )
+                                ctx.mark_exit("Deadlock Detected (Infinite Error Loop)")
+                                break
+                        # Keep history manageable
+                        if len(_error_history) > 10:
+                            _error_history.pop(0)
 
                     # Start new iteration
                     ctx.increment_loop()

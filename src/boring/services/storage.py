@@ -105,7 +105,10 @@ class SQLiteStorage:
         self.memory_dir = Path(memory_dir)
         self.memory_dir.mkdir(parents=True, exist_ok=True)
         self.db_path = self.memory_dir / "memory.db"
-        self.log_dir = log_dir or Path("logs")
+        # Load settings lazily to avoid circular imports
+        from boring.core.config import settings
+
+        self.log_dir = log_dir or settings.LOG_DIR
 
         self._init_database()
 
@@ -482,6 +485,11 @@ class SQLiteStorage:
                     (datetime.now().isoformat(),),
                 )
 
+    def get_pattern_count(self) -> int:
+        """Get total number of learned patterns."""
+        with self._get_connection() as conn:
+            return conn.execute("SELECT COUNT(*) FROM brain_patterns").fetchone()[0]
+
     # =========================================================================
     # Brain Operations (V11.2)
     # =========================================================================
@@ -530,10 +538,17 @@ class SQLiteStorage:
         pattern_type: str | None = None,
         context_like: str | None = None,
         limit: int = 100,
+        order: str = "success_count DESC",
+        after_id: int | None = None,
+        offset: int = 0,
     ) -> list[dict[str, Any]]:
-        """Retrieve patterns with optional filtering."""
+        """Retrieve patterns with optional filtering and ordering."""
         query = "SELECT * FROM brain_patterns WHERE 1=1"
         params = []
+
+        if after_id is not None:
+            query += " AND id > ?"
+            params.append(after_id)
 
         if pattern_type:
             query += " AND pattern_type = ?"
@@ -544,8 +559,22 @@ class SQLiteStorage:
             match = f"%{context_like}%"
             params.extend([match, match])
 
-        query += " ORDER BY success_count DESC LIMIT ?"
-        params.append(limit)
+        # V14.5: Dynamic ordering (Sanitize to prevent injection)
+        allowed_orders = {
+            "success_count DESC",
+            "success_count ASC",
+            "created_at DESC",
+            "created_at ASC",
+            "last_used DESC",
+            "last_used ASC",
+            "id ASC",  # For incremental sync
+            "id DESC",
+        }
+        if order not in allowed_orders:
+            order = "success_count DESC"
+
+        query += f" ORDER BY {order} LIMIT ? OFFSET ?"
+        params.extend([limit, offset])
 
         with self._get_connection() as conn:
             rows = conn.execute(query, params).fetchall()
@@ -729,7 +758,6 @@ class SQLiteStorage:
 
         total_loops = stats.get("total_loops", 0)
         successful = stats.get("successful", 0)
-        stats.get("failed", 0)
 
         if total_loops == 0:
             return {
@@ -768,10 +796,8 @@ class SQLiteStorage:
             grade = "B"
         elif overall >= 60:
             grade = "C"
-        elif overall >= 50:
-            grade = "D"
         else:
-            grade = "F"
+            grade = "D"
 
         return {
             "score": round(overall, 1),
@@ -781,6 +807,7 @@ class SQLiteStorage:
                 "success_rate": round(success_rate * 100, 1),
                 "resolution_rate": round(resolution_rate * 100, 1),
                 "avg_loop_duration": round(avg_duration, 1),
+                "activity_score": round(activity_score / 30 * 100, 1),
             },
         }
 
@@ -816,6 +843,18 @@ class SQLiteStorage:
         """Optimize database file size."""
         with self._get_connection() as conn:
             conn.execute("VACUUM")
+
+    def optimize(self):
+        """
+        Perform maintenance operations on the database.
+        Runs PRAGMA wal_checkpoint(TRUNCATE) and VACUUM.
+        """
+        with self._get_connection() as conn:
+            conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+            conn.execute("VACUUM")
+            log_status(
+                self.log_dir, "INFO", "Database optimization complete (WAL checkpoint + VACUUM)"
+            )
 
     def export_to_json(self, output_path: Path) -> bool:
         """Export all data to JSON for backup."""

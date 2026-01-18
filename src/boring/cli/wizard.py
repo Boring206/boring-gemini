@@ -149,8 +149,16 @@ class WizardManager:
         base = self._get_editor_config_path(
             "Cursor", "User", "globalStorage", check_parent_exists=False
         )
+        # Check C:\Users\User\.cursor\mcp.json (Legacy/Alternative/User Preference)
+        # Prioritize this if the .cursor folder exists
+        alt = self.home / ".cursor" / "mcp.json"
+        if alt.parent.exists():
+            return alt
+
+        # Fallback to standard globalStorage
         if base:
             return base / "cursor.mcp" / "config.json"
+
         return None
 
     def _get_vscode_path(self) -> Path | None:
@@ -252,10 +260,20 @@ class WizardManager:
 
     def _get_windsurf_path(self) -> Path | None:
         """Get Windsurf MCP config path."""
+        # Prioritize standalone Windsurf path
+        paths = [
+            self.home / ".codeium" / "windsurf" / "mcp_config.json",
+            Path(os.environ.get("LOCALAPPDATA", "")) / "Codeium" / "Windsurf" / "User" / "mcp.json",
+        ]
+        for p in paths:
+            if p.parent.exists():
+                return p
+
+        # Fallback to AppData (Extension/Legacy)
         base = self._get_editor_config_path(
             "Windsurf", "User", "globalStorage", check_parent_exists=False
         )
-        if base and base.exists():
+        if base:
             return base / "windsurf.mcp" / "config.json"
         return None
 
@@ -266,19 +284,37 @@ class WizardManager:
 
     def _get_trae_path(self) -> Path | None:
         """Get Trae MCP config path."""
+        # Prioritize standalone Trae path
+        paths = [
+            self.home / ".trae" / "mcp_config.json",
+            Path(os.environ.get("APPDATA", "")) / "Trae" / "User" / "mcp.json",
+        ]
+        for p in paths:
+            if p.parent.exists():
+                return p
+
         base = self._get_editor_config_path(
             "Trae", "User", "globalStorage", check_parent_exists=False
         )
-        if base and base.exists():
+        if base:
             return base / "trae.mcp" / "config.json"
         return None
 
     def _get_void_path(self) -> Path | None:
         """Get Void MCP config path."""
+        # Prioritize standalone Void path
+        paths = [
+            self.home / ".void" / "mcp_config.json",
+            Path(os.environ.get("APPDATA", "")) / "Void" / "User" / "mcp.json",
+        ]
+        for p in paths:
+            if p.parent.exists():
+                return p
+
         base = self._get_editor_config_path(
             "Void", "User", "globalStorage", check_parent_exists=False
         )
-        if base and base.exists():
+        if base:
             return base / "void.mcp" / "config.json"
         return None
 
@@ -1008,6 +1044,12 @@ def _configure_offline_check(env: dict[str, str]):
 
 
 def run_wizard(auto_approve: bool = False):
+    # Enforce language setting just in case
+    from boring.core.config import settings
+    from boring.utils.i18n import i18n
+
+    i18n.set_language(settings.LANGUAGE)
+
     manager = WizardManager()
     node_manager = NodeManager()
 
@@ -1061,6 +1103,11 @@ def run_wizard(auto_approve: bool = False):
         if action != "install":
             console.print(f"[yellow]{i18n.t('cancelled')}[/yellow]")
             return
+
+    # Refresh settings in case they were changed in the config flow
+    from boring.core.config import settings
+
+    profile = settings.MCP_PROFILE
 
     # Proceed with Editor Installation (original wizard logic)
     editors = manager.scan_editors()
@@ -1127,6 +1174,10 @@ def run_config_flow(manager):
     # Or just use existing.
 
     while True:
+        from boring.core.config import load_toml_config, settings
+
+        load_toml_config()  # Refresh from disk
+
         console.clear()
         console.print(Panel.fit(i18n.t("menu_main_title"), border_style="blue"))
 
@@ -1135,9 +1186,6 @@ def run_config_flow(manager):
         table.add_column("Setting", style="cyan")
         table.add_column("Value", style="green")
 
-        from boring.core.config import settings
-
-        # Safe language display
         lang_name = SUPPORTED_LANGUAGES.get(settings.LANGUAGE, settings.LANGUAGE)
         table.add_row("Language", lang_name)
         table.add_row("Profile", settings.MCP_PROFILE)
@@ -1159,11 +1207,12 @@ def run_config_flow(manager):
         menu.add_row("4", i18n.t("menu_configure_offline"))
         menu.add_row("5", i18n.t("menu_configure_advanced"))
         menu.add_row("6", i18n.t("menu_install_mcp"))
+        menu.add_row("7", i18n.t("menu_configure_language", default="Configure Language"))
         menu.add_row("q", i18n.t("menu_exit"))
 
         console.print(menu)
         choice = Prompt.ask(
-            "Select an option", choices=["1", "2", "3", "4", "5", "6", "q"], default="6"
+            "Select an option", choices=["1", "2", "3", "4", "5", "6", "7", "q"], default="6"
         )
 
         if choice == "q":
@@ -1181,12 +1230,14 @@ def run_config_flow(manager):
         elif choice == "6":
             # Proceed to standard installation flow
             return "install"
+        elif choice == "7":
+            _config_language()
 
 
 def _config_llm():
     """Configure LLM settings."""
     console.print(f"\n[bold]{i18n.t('menu_configure_llm')}[/bold]")
-    from boring.core.config import SUPPORTED_MODELS, update_toml_config
+    from boring.core.config import SUPPORTED_MODELS, settings, update_toml_config
 
     # API Key
     key = Prompt.ask(i18n.t("prompt_google_api_key"), password=True)
@@ -1195,13 +1246,27 @@ def _config_llm():
         console.print(f"[green]{i18n.t('success_saved')}[/green]")
 
     # Model
+    model_choices = [m.split("/")[-1] for m in SUPPORTED_MODELS] + ["gemini-2.0-flash-exp"]
+    model_display = "/".join(model_choices)
+
     model = Prompt.ask(
-        i18n.t("menu_configure_llm"),
-        choices=[m.split("/")[-1] for m in SUPPORTED_MODELS] + ["gemini-2.0-flash-exp"],
-        default="gemini-2.0-flash-exp",
+        f"Select Model ({model_display})",
+        default=settings.DEFAULT_MODEL.split("/")[-1],
     )
-    update_toml_config("default_model", model)
-    console.print(f"[green]{i18n.t('success_saved')}[/green]")
+
+    # Clean input (strip trailing slashes)
+    model = model.strip().rstrip("/")
+
+    # Map back to full name if it's a short name from SUPPORTED_MODELS
+    full_model = model
+    for m in SUPPORTED_MODELS:
+        if m.endswith(f"/{model}"):
+            full_model = m
+            break
+
+    if update_toml_config("default_model", full_model):
+        settings.DEFAULT_MODEL = full_model
+        console.print(f"[green]{i18n.t('success_saved')}[/green]")
     Prompt.ask(i18n.t("menu_return"))
 
 
@@ -1228,6 +1293,8 @@ def _config_profile():
     from boring.core.config import update_toml_config
 
     if update_toml_config("mcp_profile", choice):
+        # Update runtime setting immediately
+        settings.MCP_PROFILE = choice
         console.print(f"[green]{i18n.t('success_saved')}[/green]")
     Prompt.ask(i18n.t("menu_return"))
 
@@ -1292,4 +1359,38 @@ def _config_advanced():
         update_toml_config("timeout_minutes", int(timeout))
 
     console.print(f"[green]{i18n.t('success_saved')}[/green]")
+    Prompt.ask(i18n.t("menu_return"))
+
+
+def _config_language():
+    """Configure Language settings."""
+    from boring.core.config import settings, update_toml_config
+    from boring.utils.i18n import SUPPORTED_LANGUAGES, i18n
+
+    console.print(f"\n[bold]{i18n.t('menu_configure_language')}[/bold]")
+
+    # Convert dictionary to choices list
+    # e.g. ["en", "zh", "es", ...]
+    langs = list(SUPPORTED_LANGUAGES.keys())
+
+    # Display options more nicely?
+    table = Table(show_header=True)
+    table.add_column("Code", style="cyan")
+    table.add_column("Name", style="white")
+
+    for code in langs:
+        table.add_row(code, SUPPORTED_LANGUAGES[code])
+
+    console.print(table)
+
+    current_lang = i18n.language
+
+    choice = Prompt.ask(i18n.t("menu_configure_language"), choices=langs, default=current_lang)
+
+    if update_toml_config("language", choice):
+        # Update runtime setting immediately
+        settings.LANGUAGE = choice
+        i18n.set_language(choice)
+        console.print(f"[green]{i18n.t('success_saved')}[/green]")
+
     Prompt.ask(i18n.t("menu_return"))

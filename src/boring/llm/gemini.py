@@ -46,19 +46,48 @@ class GeminiProvider(LLMProvider):
         if not self.api_key:
             from ..cli_client import GeminiCLIAdapter, check_cli_available
 
+            # Check offline mode first
+            is_offline = False
+            try:
+                is_offline = settings.OFFLINE_MODE
+            except AttributeError:
+                pass
+
             if check_cli_available():
                 _logger.info("No API key. Using Gemini CLI backend.")
                 self.backend = "cli"
                 self.cli_adapter = GeminiCLIAdapter(
                     model_name=self._model_name, log_dir=self.log_dir
                 )
+            elif is_offline:
+                _logger.info("Offline Mode: Skipping Gemini Client initialization.")
+                self.backend = "offline"
+                self.client = None
+                return
             else:
-                _logger.warning(
-                    "No API key and Gemini CLI not found. SDK will fail if no key provided later."
+                # STRICT CHECK (The "Grumpy User" Fix)
+                raise ValueError(
+                    "CRITICAL: No Google API Key found and Gemini CLI is not available. "
+                    "Please set GOOGLE_API_KEY environment variable or run 'gemini login'. "
+                    "To force offline mode, set BORING_OFFLINE_MODE=true."
                 )
 
+        # V14.5: Offline Mode Guard
+        try:
+            if settings.OFFLINE_MODE:
+                _logger.info("Offline Mode: Skipping Gemini Client initialization.")
+                self.backend = "offline"
+                self.client = None
+                return
+        except AttributeError:
+            pass
+
         if self.backend == "sdk" and SDK_AVAILABLE and self.api_key:
-            self.client = genai.Client(api_key=self.api_key)
+            try:
+                self.client = genai.Client(api_key=self.api_key)
+            except Exception as e:
+                _logger.warning(f"Failed to initialize Gemini Client: {e}")
+                self.client = None
 
         self.tools = get_boring_tools()
         self.use_function_calling = settings.USE_FUNCTION_CALLING and len(self.tools) > 0
@@ -103,6 +132,41 @@ class GeminiProvider(LLMProvider):
         except Exception as e:
             _logger.error(f"Gemini SDK error: {e}")
             return str(e), False
+
+    def generate_stream(
+        self,
+        prompt: str,
+        context: str = "",
+        system_instruction: str = "",
+    ):
+        """
+        Generate content stream.
+        Yields text chunks.
+        """
+        if self.backend != "sdk" or not self.client:
+            yield "❌ Streaming only supported with Gemini SDK."
+            return
+
+        try:
+            full_prompt = f"# Context\n{context}\n\n# Task\n{prompt}" if context else prompt
+            contents = [types.Content(role="user", parts=[types.Part(text=full_prompt)])]
+
+            response_stream = self.client.models.generate_content_stream(
+                model=self._model_name,
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    system_instruction=system_instruction or SYSTEM_INSTRUCTION_OPTIMIZED,
+                    temperature=0.7,
+                    max_output_tokens=8192,
+                ),
+            )
+
+            for chunk in response_stream:
+                if chunk.text:
+                    yield chunk.text
+        except Exception as e:
+            _logger.error(f"Gemini Streaming error: {e}")
+            yield f"\n[Error: {e}]"
 
     def generate_with_tools(
         self,

@@ -11,6 +11,7 @@ from pathlib import Path
 from rich.console import Console
 from rich.panel import Panel
 
+from ...core.resources import get_resources
 from .base import BaseNode, FlowContext, NodeResult, NodeResultStatus
 
 console = Console()
@@ -20,10 +21,11 @@ class EvolverNode(BaseNode):
     def __init__(self):
         super().__init__("Evolver")
 
-    def process(self, context: FlowContext) -> NodeResult:
+    async def process(self, context: FlowContext) -> NodeResult:
         """
-        Analyze session and evolve.
+        Analyze session and evolve (Async).
         """
+
         console.print(
             Panel("Entering Sage Mode (Evolution)...", title="Evolver", border_style="purple")
         )
@@ -38,7 +40,8 @@ class EvolverNode(BaseNode):
 
             # Simple Evolution Rule: If we had a module error, ensure we verify deps next time
             if any("ModuleNotFoundError" in e for e in context.errors):
-                self._add_guideline(
+                await get_resources().run_in_thread(
+                    self._add_guideline,
                     context.project_root,
                     "Always check `pip install` before running code that imports new libraries.",
                 )
@@ -50,11 +53,11 @@ class EvolverNode(BaseNode):
             console.print(f"[dim]Evolution skipped: {e}[/dim]")
 
         # 3. Knowledge Swarm Sync (Real Git Implementation)
-        self._sync_swarm(context.project_root)
+        await get_resources().run_in_thread(self._sync_swarm, context.project_root)
 
         # 4. Skill Synthesis (Real Implementation)
         if error_count == 0:
-            self._synthesize_skills(context.project_root)
+            await get_resources().run_in_thread(self._synthesize_skills, context.project_root)
 
         return NodeResult(
             status=NodeResultStatus.SUCCESS,

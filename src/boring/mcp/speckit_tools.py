@@ -12,14 +12,17 @@ This module contains tools for structured development:
 - boring_speckit_constitution: Project principles
 """
 
+import asyncio
 from typing import Annotated, Any
 
 from pydantic import Field
 
+from ..core.resources import get_resources
 
-def _execute_workflow(workflow_name: str, context: str, project_path: str) -> dict:
+
+async def _execute_workflow(workflow_name: str, context: str, project_path: str) -> dict:
     """
-    Execute a SpecKit workflow by reading and returning its content.
+    Execute a SpecKit workflow by reading and returning its content (Async).
 
     Args:
         workflow_name: Name of the workflow (e.g., 'speckit-plan')
@@ -31,28 +34,40 @@ def _execute_workflow(workflow_name: str, context: str, project_path: str) -> di
     """
     from .utils import detect_project_root
 
-    project_root = detect_project_root(project_path)
-    if not project_root:
-        return {"status": "ERROR", "error": "No valid Boring project found. Run in project root."}
-
-    # Look for workflow file in .agent/workflows/
-    workflow_file = project_root / ".agent" / "workflows" / f"{workflow_name}.md"
-
-    if not workflow_file.exists():
-        # Try without speckit- prefix
-        alt_name = workflow_name.replace("speckit-", "")
-        alt_file = project_root / ".agent" / "workflows" / f"{alt_name}.md"
-        if alt_file.exists():
-            workflow_file = alt_file
-        else:
-            return {
+    # Run blocking file/path operations in thread pool
+    def _detect_and_verify():
+        project_root = detect_project_root(project_path)
+        if not project_root:
+            return None, {
                 "status": "ERROR",
-                "error": f"Workflow not found: {workflow_file}",
-                "suggestion": f"Create {workflow_file} or run 'boring-setup' to initialize workflows.",
+                "error": "No valid Boring project found. Run in project root.",
             }
 
+        # Look for workflow file in .agent/workflows/
+        workflow_file = project_root / ".agent" / "workflows" / f"{workflow_name}.md"
+
+        if not workflow_file.exists():
+            # Try without speckit- prefix
+            alt_name = workflow_name.replace("speckit-", "")
+            alt_file = project_root / ".agent" / "workflows" / f"{alt_name}.md"
+            if alt_file.exists():
+                workflow_file = alt_file
+            else:
+                return None, {
+                    "status": "ERROR",
+                    "error": f"Workflow not found: {workflow_file}",
+                    "suggestion": f"Create {workflow_file} or run 'boring-setup' to initialize workflows.",
+                }
+        return workflow_file, None
+
+    # Offload path resolution
+    workflow_file, error_response = await get_resources().run_in_thread(_detect_and_verify)
+    if error_response:
+        return error_response
+
     try:
-        content = workflow_file.read_text(encoding="utf-8")
+        # Offload file reading
+        content = await get_resources().run_in_thread(workflow_file.read_text, encoding="utf-8")
     except Exception as e:
         return {"status": "ERROR", "error": f"Failed to read workflow: {e}"}
 
@@ -62,7 +77,7 @@ def _execute_workflow(workflow_name: str, context: str, project_path: str) -> di
         "instructions": content,
         "context": context or "No additional context provided",
         "tip": "Follow the steps in this workflow to complete your task.",
-        "project_root": str(project_root),
+        "project_root": str(workflow_file.parent.parent.parent),  # project_root
     }
 
 
@@ -71,7 +86,7 @@ def _execute_workflow(workflow_name: str, context: str, project_path: str) -> di
 # =============================================================================
 
 
-def boring_speckit_plan(
+async def boring_speckit_plan(
     context: Annotated[
         str,
         Field(
@@ -91,23 +106,62 @@ def boring_speckit_plan(
     Analyzes project requirements and generates a structured implementation plan
     including file changes, dependencies, and step-by-step instructions.
     """
-    # [ONE DRAGON GAP FIX] Inject Mastered Skills (Cognitive Evolution)
+    # [ONE DRAGON GAP FIX] Inject Mastered Skills & Learned Brain Patterns (Cognitive Evolution)
+    # [ONE DRAGON GAP FIX] Inject Mastered Skills & Learned Brain Patterns (Cognitive Evolution)
     try:
-        from .utils import detect_project_root
 
-        root = detect_project_root(project_path)
-        if root:
-            skills_file = root / "skills" / "mastered_skills.md"
-            if skills_file.exists():
-                skills = skills_file.read_text(encoding="utf-8")
-                context = f"{context or ''}\n\n## 🧠 Mastered Skills (MUST FOLLOW)\n{skills}"
+        async def _fetch_brain_context(ctx, path):
+            try:
+                from boring.intelligence.brain_manager import BrainManager
+
+                from .utils import detect_project_root
+
+                root = detect_project_root(path)
+                if not root:
+                    return ctx
+
+                # Init BrainManager (Blocking IO: Migration/Index Check) -> Run in thread
+                # Note: BrainManager uses _GLOBAL_INFLIGHT so Singleflight works across instances.
+                brain = await asyncio.to_thread(BrainManager, root)
+
+                # 1. Inject Mastered Skills
+                skills_file = root / "skills" / "mastered_skills.md"
+                skills_content = ""
+                if skills_file.exists():
+                    # Blocking Read -> Thread
+                    content = await asyncio.to_thread(skills_file.read_text, encoding="utf-8")
+                    skills_content = f"\n\n## 🧠 Mastered Skills (MUST FOLLOW)\n{content}"
+
+                # 2. Inject Relevant Brain Patterns ([RISK-005] Async Singleflight)
+                patterns = await brain.get_relevant_patterns_async(
+                    ctx or "general implementation", limit=3
+                )
+
+                brain_content = ""
+                if patterns:
+                    brain_content = "\n\n## 💡 Past Learnings (Success Patterns & Solutions)\n"
+                    for i, p in enumerate(patterns, 1):
+                        brain_content += (
+                            f"{i}. **{p.get('description', 'Pattern')}**: {p.get('solution', '')}\n"
+                        )
+
+                return f"{ctx or ''}{skills_content}{brain_content}"
+            except Exception:
+                # Log error but don't crash
+                # logger.warning(f"Brain context fetch failed: {e}")
+                return ctx
+
+        # Execute Brain lookup (now async)
+        context = await _fetch_brain_context(context, project_path)
+
     except Exception:
+        # Prevent planning failure if brain is unavailable
         pass
 
-    return _execute_workflow("speckit-plan", context, project_path)
+    return await _execute_workflow("speckit-plan", context, project_path)
 
 
-def boring_speckit_tasks(
+async def boring_speckit_tasks(
     context: Annotated[
         str,
         Field(
@@ -127,10 +181,10 @@ def boring_speckit_tasks(
     Converts the implementation plan into a prioritized task checklist
     with clear acceptance criteria.
     """
-    return _execute_workflow("speckit-tasks", context, project_path)
+    return await _execute_workflow("speckit-tasks", context, project_path)
 
 
-def boring_speckit_analyze(
+async def boring_speckit_analyze(
     context: Annotated[
         str,
         Field(
@@ -150,10 +204,10 @@ def boring_speckit_analyze(
     Compares specifications against implementation to identify gaps,
     inconsistencies, and missing coverage areas.
     """
-    return _execute_workflow("speckit-analyze", context, project_path)
+    return await _execute_workflow("speckit-analyze", context, project_path)
 
 
-def boring_speckit_clarify(
+async def boring_speckit_clarify(
     context: Annotated[
         str,
         Field(
@@ -173,10 +227,10 @@ def boring_speckit_clarify(
     Generates targeted questions to resolve ambiguities in requirements
     before implementation begins.
     """
-    return _execute_workflow("speckit-clarify", context, project_path)
+    return await _execute_workflow("speckit-clarify", context, project_path)
 
 
-def boring_speckit_constitution(
+async def boring_speckit_constitution(
     context: Annotated[
         str,
         Field(
@@ -196,10 +250,10 @@ def boring_speckit_constitution(
     Establishes core principles, architectural decisions, and constraints
     that guide all implementation decisions.
     """
-    return _execute_workflow("speckit-constitution", context, project_path)
+    return await _execute_workflow("speckit-constitution", context, project_path)
 
 
-def boring_speckit_checklist(
+async def boring_speckit_checklist(
     context: Annotated[
         str,
         Field(
@@ -219,7 +273,7 @@ def boring_speckit_checklist(
     Creates a comprehensive checklist for validating implementation quality
     and requirement coverage.
     """
-    return _execute_workflow("speckit-checklist", context, project_path)
+    return await _execute_workflow("speckit-checklist", context, project_path)
 
 
 def register_speckit_tools(mcp: Any, audited: Any, helpers: dict):

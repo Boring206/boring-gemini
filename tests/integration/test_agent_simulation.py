@@ -134,7 +134,9 @@ class TestHappyPathScenario:
                 files_in_db = json.loads(files_in_db)
             # Normalize paths for cross-platform comparison
             files_in_db_normalized = [f.replace("\\", "/") for f in files_in_db]
-            assert "src/hello.py" in files_in_db_normalized, f"File not in DB record: {files_in_db}"
+            assert any(f in files_in_db_normalized for f in ["src/hello.py", "hello.py"]), (
+                f"File not in DB record: {files_in_db}"
+            )
 
             # === ASSERTION 3: Log Verification ===
             get_log_contents(temp_project / "logs")

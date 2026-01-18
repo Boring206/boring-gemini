@@ -49,6 +49,7 @@ class TestBrainManagerEmbedding:
 
         manager.faiss_index = mock_faiss
         manager.embedding_model = mock_model
+        manager.vector_store = None
 
         # Setup mock behavior
         mock_model.encode.return_value = np.zeros((1, 384))

@@ -209,6 +209,9 @@ class TestAgentLoop:
             patch("boring.loop.legacy.init_directories"),
             patch("boring.loop.legacy.create_gemini_client", return_value=mock_gemini_client),
             patch("boring.loop.legacy.should_halt_execution", return_value=True),
+            patch("boring.circuit.should_halt_execution", return_value=True),
+            patch("boring.core.circuit.should_halt_execution", return_value=True),
+            patch("boring.loop.legacy.record_loop_result"),
             patch("boring.loop.legacy.log_status"),
             patch("boring.loop.legacy.console") as mock_console,
             patch("boring.loop.legacy.MemoryManager"),
@@ -228,10 +231,13 @@ class TestAgentLoop:
                 patch("boring.interactive.enter_interactive_mode", return_value=True),
                 patch("boring.loop.legacy.init_call_tracking"),
                 patch("boring.loop.legacy.can_make_call", return_value=True),
-                patch.object(loop, "_generate_step", return_value=(False, "", Path())),
                 patch("boring.loop.legacy.increment_call_counter"),
             ):
-                loop.run()
+                # Manually set the return value to avoid self-referential mock issues
+                with patch.object(
+                    loop, "_generate_step", return_value=(False, "Test content", Path("test.py"))
+                ):
+                    loop.run()
 
             # Should print resume message
             assert any("Resuming" in str(call) for call in mock_console.print.call_args_list)

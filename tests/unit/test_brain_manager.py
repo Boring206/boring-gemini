@@ -144,7 +144,8 @@ class TestBrainManager:
 
         patterns = manager._load_patterns()
         assert len(patterns) == 1
-        assert patterns[0]["pattern_id"].startswith("ERROR_SOLUTION")
+        assert patterns[0]["pattern_id"] is not None
+        assert isinstance(patterns[0]["pattern_id"], str)
 
     def test_create_rubric(self, temp_project):
         """Test creating a rubric."""

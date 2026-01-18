@@ -6,12 +6,21 @@ Implements the "Super Automation" logic by reacting to flow events.
 
 import logging
 
-from rich.console import Console
-
 from .events import FlowEvent, FlowEventBus
 
 logger = logging.getLogger(__name__)
-console = Console()
+# Lazily defined console
+_console = None
+
+
+def get_console():
+    global _console
+    if _console is None:
+        from rich.console import Console
+
+        _console = Console()
+    return _console
+
 
 # Lazy imports/Tool references
 _TOOLS = {}
@@ -40,7 +49,7 @@ def handle_lint_fail(project_path: str, error: str, **kwargs):
     fix_tool = _TOOLS.get("fix")
 
     if fix_tool:
-        console.print("[bold yellow]🤖 Auto-Fixing Lint Errors...[/bold yellow]")
+        get_console().print("[bold yellow]🤖 Auto-Fixing Lint Errors...[/bold yellow]")
         try:
             # We don't pass 'error' directly as the tool likely analyzes the project/files
             # But prompt_fix might be generic.
@@ -49,9 +58,11 @@ def handle_lint_fail(project_path: str, error: str, **kwargs):
             result = fix_tool(
                 project_path=project_path, max_iterations=2, verification_level="BASIC"
             )
-            console.print(f"[dim]Auto-fix result: {result}[/dim]")
+            get_console().print(f"[dim]Auto-fix result: {result}[/dim]")
         except Exception as e:
-            console.print(f"[red]Auto-fix failed: {e}[/red]")
+            get_console().print(f"[red]Auto-fix failed: {e}[/red]")
+            # CRITICAL: Propagation for flow engine to catch
+            raise RuntimeError(f"Mission-critical auto-fix failed: {e}") from e
 
 
 def handle_post_build(project_path: str, modified_files: list[str], **kwargs):
@@ -68,7 +79,7 @@ def handle_post_build(project_path: str, modified_files: list[str], **kwargs):
     ]
 
     if candidates:
-        console.print(
+        get_console().print(
             f"[bold cyan]🧪 Auto-Generating Tests for {len(candidates)} files (Concurrent)...[/bold cyan]"
         )
 
@@ -91,16 +102,18 @@ def handle_post_build(project_path: str, modified_files: list[str], **kwargs):
 
             for file_path, res in results.items():
                 if isinstance(res, Exception):
-                    console.print(f"[red]Test gen failed for {file_path}: {res}[/red]")
+                    get_console().print(f"[red]Test gen failed for {file_path}: {res}[/red]")
                 else:
-                    console.print(f"[dim]Test gen for {file_path}: Success[/dim]")
+                    get_console().print(f"[dim]Test gen for {file_path}: Success[/dim]")
 
         except ImportError:
             # Fallback to serial
             for file_path in candidates:
                 try:
                     test_tool(file_path=file_path, project_path=project_path)
-                    console.print(f"[dim]Test gen for {file_path}: Done (Serial Fallback)[/dim]")
+                    get_console().print(
+                        f"[dim]Test gen for {file_path}: Done (Serial Fallback)[/dim]"
+                    )
                 except Exception as e:
                     logger.error(f"Test gen failed for {file_path}: {e}")
 
@@ -119,7 +132,7 @@ def handle_post_polish(project_path: str, **kwargs):
             return
 
     if learn_tool:
-        console.print("[dim]🧠 Auto-Learning from session...[/dim]")
+        get_console().print("[dim]🧠 Auto-Learning from session...[/dim]")
         try:
             learn_tool(project_path=project_path)
         except Exception as e:
@@ -132,12 +145,14 @@ def handle_security_issue(project_path: str, issue: str, **kwargs):
     scan_tool = _TOOLS.get("scan")
 
     if scan_tool:
-        console.print("[bold red]🔒 Auto-Scanning Security Issues...[/bold red]")
+        get_console().print("[bold red]🔒 Auto-Scanning Security Issues...[/bold red]")
         try:
             result = scan_tool(project_path=project_path)
-            console.print(f"[dim]Security scan result: {result}[/dim]")
+            get_console().print(f"[dim]Security scan result: {result}[/dim]")
         except Exception as e:
-            console.print(f"[red]Security scan failed: {e}[/red]")
+            get_console().print(f"[red]Security scan failed: {e}[/red]")
+            # CRITICAL: Mandatory security check failure should stop the flow
+            raise RuntimeError(f"Security automation failed: {e}") from e
 
 
 def register_auto_handlers():

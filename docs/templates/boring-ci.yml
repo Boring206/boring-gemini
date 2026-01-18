@@ -1,0 +1,33 @@
+name: Boring Pack CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install Boring
+      run: |
+        pip install boring-aicoding
+        boring --version
+
+    - name: Build Pack (Validation)
+      run: |
+        # Verifies manifest.json structure and assets
+        boring pack build
+
+    - name: Install Test
+      run: |
+        # Verifies the installer hooks and dependency resolution
+        boring install ./

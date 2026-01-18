@@ -1,0 +1,22 @@
+{
+    "spec_version": "1.0",
+    "id": "boring/hello-world",
+    "version": "1.0.0",
+    "name": "Hello World Pack",
+    "description": "A starter pack demonstrating Tools, Workflows, and Prompts.",
+    "author": "Boring Team",
+    "license": "Apache-2.0",
+    "min_boring_version": "15.0.0",
+    "components": {
+        "tools": [
+            "tools/"
+        ],
+        "workflows": [
+            "workflows/"
+        ],
+        "prompts": [
+            "prompts/"
+        ]
+    },
+    "permissions": []
+}

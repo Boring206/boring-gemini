@@ -105,7 +105,10 @@ class ThinkingState(LoopState):
             return StateResult.FAILURE
 
     def _execute_delegated(
-        self, context: LoopContext, prompt: str, context_str: str
+        self,
+        context: LoopContext,
+        prompt: str,
+        context_str: str,
     ) -> StateResult:
         """Delegate execution to the host environment (IDE/User)."""
         log_status(context.log_dir, "INFO", "Delegating execution to host environment")
@@ -193,7 +196,12 @@ class ThinkingState(LoopState):
                 parts.append(memory_ctx)
 
         # 2. Task plan (Cached)
-        task_file = context.project_root / settings.TASK_FILE
+        try:
+            task_file = context.project_root / settings.TASK_FILE.name
+        except AttributeError:
+            # Fallback if TASK_FILE is string (unlikely given Config)
+            task_file = context.project_root / "task.md"
+
         task_content = cache.get_file_content(task_file)
         if task_content:
             parts.append(f"\n# CURRENT PLAN STATUS (@fix_plan.md)\n{task_content}\n")
@@ -245,13 +253,24 @@ class ThinkingState(LoopState):
                     TimeElapsedColumn(),
                     console=console,
                 )
-                progress.add_task("[cyan]Gemini Thinking...", total=None)
+                task_id = progress.add_task("[cyan]Reading Context & Thinking...", total=None)
                 live.update(Panel(progress, title="[bold blue]SDK Generation[/bold blue]"))
+
+                # Dynamic feedback simulation (since we can't hook into SDK internals yet)
+                # In a real async stream, we would update this.
+                # For now, we set a more descriptive initial status.
 
                 # Call API with function calling
                 text_response, function_calls, success = context.gemini_client.generate_with_tools(
                     prompt=prompt, context=context_str
                 )
+
+                if success:
+                    progress.update(
+                        task_id, description="[green]Response Received. Parsing tools...[/green]"
+                    )
+                else:
+                    progress.update(task_id, description="[red]Generation Failed.[/red]")
 
         # Store results
         context.output_content = text_response or ""

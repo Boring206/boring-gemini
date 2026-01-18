@@ -36,6 +36,7 @@ class TestGeminiProvider:
             mock_settings.LOG_DIR = temp_project / "logs"
             mock_settings.GOOGLE_API_KEY = "test-key"
             mock_settings.USE_FUNCTION_CALLING = False
+            mock_settings.OFFLINE_MODE = False
 
             mock_client = MagicMock()
             mock_genai.Client.return_value = mock_client
@@ -59,6 +60,7 @@ class TestGeminiProvider:
             mock_settings.LOG_DIR = temp_project / "logs"
             mock_settings.GOOGLE_API_KEY = None
             mock_settings.USE_FUNCTION_CALLING = False
+            mock_settings.OFFLINE_MODE = False
 
             provider = GeminiProvider()
 
@@ -67,7 +69,7 @@ class TestGeminiProvider:
             assert provider.cli_adapter is not None
 
     def test_当未提供API密钥且CLI不可用时_应使用SDK后端但client为None(self, temp_project):
-        """规格：api_key=None, CLI 不可用 → 应使用 SDK 后端但 client=None"""
+        """规格：api_key=None, CLI 不可用 → 应抛出 ValueError (Strict Mode)"""
         with (
             patch("boring.llm.gemini.settings") as mock_settings,
             patch("boring.cli_client.check_cli_available", return_value=False),
@@ -77,12 +79,11 @@ class TestGeminiProvider:
             mock_settings.LOG_DIR = temp_project / "logs"
             mock_settings.GOOGLE_API_KEY = None
             mock_settings.USE_FUNCTION_CALLING = False
+            mock_settings.OFFLINE_MODE = False
 
-            provider = GeminiProvider()
-
-            # 测试结果：应该使用 SDK 后端但未初始化
-            assert provider.backend == "sdk"
-            assert provider.client is None
+            # Strict check should raise error now
+            with pytest.raises(ValueError, match="CRITICAL: No Google API Key found"):
+                GeminiProvider()
 
     def test_model_name_property(self, temp_project):
         """Test model_name property."""
@@ -94,6 +95,7 @@ class TestGeminiProvider:
             mock_settings.LOG_DIR = temp_project / "logs"
             mock_settings.GOOGLE_API_KEY = "test-key"
             mock_settings.USE_FUNCTION_CALLING = False
+            mock_settings.OFFLINE_MODE = False
 
             provider = GeminiProvider(model_name="custom-model")
 
@@ -110,6 +112,7 @@ class TestGeminiProvider:
             mock_settings.LOG_DIR = temp_project / "logs"
             mock_settings.GOOGLE_API_KEY = "test-key"
             mock_settings.USE_FUNCTION_CALLING = False
+            mock_settings.OFFLINE_MODE = False
 
             mock_client = MagicMock()
             mock_genai.Client.return_value = mock_client
@@ -131,6 +134,7 @@ class TestGeminiProvider:
             mock_settings.LOG_DIR = temp_project / "logs"
             mock_settings.GOOGLE_API_KEY = None
             mock_settings.USE_FUNCTION_CALLING = False
+            mock_settings.OFFLINE_MODE = False
 
             provider = GeminiProvider()
 
@@ -148,6 +152,7 @@ class TestGeminiProvider:
             mock_settings.LOG_DIR = temp_project / "logs"
             mock_settings.GOOGLE_API_KEY = None
             mock_settings.USE_FUNCTION_CALLING = False
+            mock_settings.OFFLINE_MODE = False
 
             # Mock 外部 CLI（边界）
             mock_adapter = MagicMock()
@@ -175,6 +180,7 @@ class TestGeminiProvider:
             mock_settings.LOG_DIR = temp_project / "logs"
             mock_settings.GOOGLE_API_KEY = "test-key"
             mock_settings.USE_FUNCTION_CALLING = False
+            mock_settings.OFFLINE_MODE = False
 
             # Mock 外部 API（边界）
             mock_client = MagicMock()
@@ -201,6 +207,7 @@ class TestGeminiProvider:
             mock_settings.LOG_DIR = temp_project / "logs"
             mock_settings.GOOGLE_API_KEY = None
             mock_settings.USE_FUNCTION_CALLING = False
+            mock_settings.OFFLINE_MODE = False
 
             provider = GeminiProvider()
             provider.backend = "sdk"
@@ -225,6 +232,7 @@ class TestGeminiProvider:
             mock_settings.LOG_DIR = temp_project / "logs"
             mock_settings.GOOGLE_API_KEY = "test-key"
             mock_settings.USE_FUNCTION_CALLING = False
+            mock_settings.OFFLINE_MODE = False
 
             # Mock API 异常（边界错误）
             mock_client = MagicMock()
@@ -251,6 +259,7 @@ class TestGeminiProvider:
             mock_settings.LOG_DIR = temp_project / "logs"
             mock_settings.GOOGLE_API_KEY = None
             mock_settings.USE_FUNCTION_CALLING = False
+            mock_settings.OFFLINE_MODE = False
 
             # Mock 外部 CLI（边界）
             mock_adapter = MagicMock()

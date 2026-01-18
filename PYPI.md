@@ -38,9 +38,9 @@ npx -y @smithery/cli@latest install boring/boring --client cursor
 
 ---
 
-## 🔮 The Cognitive Revolution (V14.0.0)
+## 🔮 The Anti-Rage Revolution (V15.0.0)
 
-V14.0.0 transitions Boring from a tool to a **Cognitive Autonomous Agent** with a 4-layer architecture:
+V15.0.0 focuses on **UX Hardening and Resilience**, transforming Boring into a robust partner that doesn't just work, but *communicates* its progress:
 
 - **🧠 Cognitive Architecture (System 2)**: Uses `sequentialthinking` to plan, reason, and revise before execution.
 - **🐉 One Dragon Flow**: Autonomous traversal of the entire SDLC (Design → Build → Polish → Verify).
@@ -107,3 +107,4 @@ V14.0.0 transitions Boring from a tool to a **Cognitive Autonomous Agent** with 
 ## 📄 License
 
 Apache 2.0 - See [LICENSE](https://github.com/Boring206/boring-gemini/blob/main/LICENSE)
+

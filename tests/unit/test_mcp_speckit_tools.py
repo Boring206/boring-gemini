@@ -29,8 +29,9 @@ def mock_helpers():
     return {}
 
 
+@pytest.mark.asyncio
 @patch("boring.mcp.speckit_tools._execute_workflow")
-def test_register_speckit_tools(mock_execute, mock_mcp, mock_audited, mock_helpers):
+async def test_register_speckit_tools(mock_execute, mock_mcp, mock_audited, mock_helpers):
     """Test registering SpecKit tools."""
     # The function doesn't return anything, it just registers tools
     # So we check that it doesn't raise an exception
@@ -42,8 +43,9 @@ def test_register_speckit_tools(mock_execute, mock_mcp, mock_audited, mock_helpe
         pytest.fail(f"register_speckit_tools raised an exception: {e}")
 
 
+@pytest.mark.asyncio
 @patch("boring.mcp.speckit_tools._execute_workflow")
-def test_speckit_plan_default_params(mock_execute, mock_mcp, mock_audited, mock_helpers):
+async def test_speckit_plan_default_params(mock_execute, mock_mcp, mock_audited, mock_helpers):
     """Test speckit_plan with default parameters."""
     mock_execute.return_value = {"status": "success"}
     register_speckit_tools(mock_mcp, mock_audited, mock_helpers)
@@ -68,7 +70,7 @@ def test_speckit_plan_default_params(mock_execute, mock_mcp, mock_audited, mock_
     reg(mcp, mock_audited, mock_helpers)
 
     # Test speckit_plan
-    registered_tools["boring_speckit_plan"]()
+    await registered_tools["boring_speckit_plan"]()
 
     # In V12, speckit_plan injects mastered skills into the context
     # Since we didn't mock the file existence, it likely failed the check but we should
@@ -79,8 +81,9 @@ def test_speckit_plan_default_params(mock_execute, mock_mcp, mock_audited, mock_
     # But let's just verify it's the right workflow.
 
 
+@pytest.mark.asyncio
 @patch("boring.mcp.speckit_tools._execute_workflow")
-def test_speckit_tasks_with_context(mock_execute, mock_mcp, mock_audited, mock_helpers):
+async def test_speckit_tasks_with_context(mock_execute, mock_mcp, mock_audited, mock_helpers):
     """Test speckit_tasks with context."""
     mcp = MagicMock()
     registered_tools = {}
@@ -98,12 +101,15 @@ def test_speckit_tasks_with_context(mock_execute, mock_mcp, mock_audited, mock_h
 
     register_speckit_tools(mcp, mock_audited, mock_helpers)
 
-    registered_tools["boring_speckit_tasks"](context="Test context")
+    await registered_tools["boring_speckit_tasks"](context="Test context")
     mock_execute.assert_called_with("speckit-tasks", "Test context", None)
 
 
+@pytest.mark.asyncio
 @patch("boring.mcp.speckit_tools._execute_workflow")
-def test_speckit_analyze_with_project_path(mock_execute, mock_mcp, mock_audited, mock_helpers):
+async def test_speckit_analyze_with_project_path(
+    mock_execute, mock_mcp, mock_audited, mock_helpers
+):
     """Test speckit_analyze with project path."""
     mcp = MagicMock()
     registered_tools = {}
@@ -121,7 +127,7 @@ def test_speckit_analyze_with_project_path(mock_execute, mock_mcp, mock_audited,
 
     register_speckit_tools(mcp, mock_audited, mock_helpers)
 
-    registered_tools["boring_speckit_analyze"](project_path="/test/path")
+    await registered_tools["boring_speckit_analyze"](project_path="/test/path")
     mock_execute.assert_called_with("speckit-analyze", None, "/test/path")
 
 

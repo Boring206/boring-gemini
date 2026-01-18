@@ -197,6 +197,40 @@ def boring_get_relevant_patterns(
         return {"status": "ERROR", "error": str(e)}
 
 
+@audited
+def boring_remember_constraint(
+    rule: Annotated[
+        str, Field(description="The constraint or rule to remember (e.g., 'Do not use any type')")
+    ],
+    project_path: Annotated[
+        str | None, Field(description="Optional explicit path to project root")
+    ] = None,
+) -> dict:
+    """
+    Remember a user constraint or project rule permanently.
+    The agent will recall this rule in future sessions to avoid mistakes.
+    """
+    try:
+        from ...intelligence.constraints import get_constraint_store
+
+        project_root, error = get_project_root_or_error(project_path)
+        if error:
+            return error
+
+        configure_runtime_for_project(project_root)
+
+        store = get_constraint_store(project_root)
+        constraint = store.add_constraint(rule)
+
+        return {
+            "status": "SUCCESS",
+            "message": f"Constraint remembered: {rule}",
+            "id": constraint.id,
+        }
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e)}
+
+
 # ==============================================================================
 # P4: USAGE ANALYTICS DASHBOARD
 # ==============================================================================
@@ -304,6 +338,11 @@ def register_knowledge_tools(mcp, audited, helpers):
         description="Get relevant patterns (skills) for the current context.",
         annotations={"readOnlyHint": True},
     )(boring_get_relevant_patterns)
+
+    mcp.tool(
+        description="Remember a user constraint or project rule permanently.",
+        annotations={"readOnlyHint": False},
+    )(boring_remember_constraint)
 
     # P4: Usage Analytics Dashboard
     mcp.tool(

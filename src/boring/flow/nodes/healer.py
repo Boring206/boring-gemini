@@ -1,151 +1,122 @@
 """
-Healer Node
+Healer Node (The Judge).
 
-The "Medic" of the One Dragon architecture.
-Attempts to recover from fatal errors in the Builder phase.
+Runs after the Building phase to semantically validate the output.
+It checks for "False Positive Success" scenarios.
 """
 
-import subprocess
-import sys
+from boring.flow.nodes.base import BaseNode, FlowContext, NodeResult, NodeResultStatus
 
-from rich.console import Console
-from rich.panel import Panel
-
-from .base import BaseNode, FlowContext, NodeResult, NodeResultStatus
-
-console = Console()
+from ...core.logger import console
+from ...core.resources import get_resources
 
 
 class HealerNode(BaseNode):
     def __init__(self):
         super().__init__("Healer")
 
-    def process(self, context: FlowContext) -> NodeResult:
+    async def process(self, context: FlowContext) -> NodeResult:
         """
-        Analyze errors and attempt fixes.
+        Validate the artifacts generated in previous steps (Async).
+        Does NOT rely on LLM for this - uses deterministic checks.
+
+        V14.8 Update: Environmental Self-Healing
+        Detects missing dependencies and attempts secure installation.
         """
-        console.print(Panel("Attempting Recovery Procedure...", title="Healer", border_style="red"))
 
-        last_error = context.errors[-1] if context.errors else ""
+        issues = []
 
-        # Strategy 1: Missing Module (ImportError)
-        if "ModuleNotFoundError" in last_error or "ImportError" in last_error:
-            module_name = self._extract_module(last_error)
-            if module_name:
-                console.print(
-                    f"[yellow]Identified missing module: {module_name}. Installing...[/yellow]"
+        # 0. Environmental Self-Healing (The "Proactivity" Fix)
+        # Check if we have recent import errors
+        for error in context.errors:
+            if "ModuleNotFoundError" in str(error) or "ImportError" in str(error):
+                module_name = self._extract_module(str(error))
+                if module_name:
+                    console.print(
+                        f"[yellow]Healer: Detected missing module '{module_name}'. Attempting fix...[/yellow]"
+                    )
+                    from ...core.utils import check_and_install_dependencies
+
+                    # Create a synthetic code block to trigger the util
+                    synthetic_code = f"import {module_name}"
+
+                    # Run in thread as it involves subprocess/interactive prompt
+                    await get_resources().run_in_thread(
+                        check_and_install_dependencies, synthetic_code
+                    )
+
+                    await get_resources().run_in_thread(
+                        check_and_install_dependencies, synthetic_code
+                    )
+
+                    # [V15.0] Verify Installation
+                    try:
+                        # Attempt simplistic import check
+                        import importlib
+
+                        importlib.import_module(module_name)
+                        console.print(
+                            f"[green]Healer: Successfully verified '{module_name}' is installed.[/green]"
+                        )
+                        # Clear the error from context so loop might retry?
+                        # (Logic complexity: removing from list while iterating is bad.
+                        # ideally mark as resolved or return RETRY status)
+                        return NodeResult(
+                            status=NodeResultStatus.NEEDS_RETRY,
+                            message=f"Healer installed missing dependency: {module_name}. Converting failure to retry.",
+                        )
+                    except ImportError:
+                        console.print(
+                            f"[red]Healer: Installation verification failed for '{module_name}'.[/red]"
+                        )
+                        issues.append(f"Healer failed to install {module_name}")
+
+        issues = []
+
+        # 1. Check for "Empty Success" (Artifacts key exists but file missing/empty)
+        # 2. Check for "Refusal Patterns" in generated files ("I cannot do that")
+
+        # Example check: implementation_plan.md
+        plan_path = context.project_root / ".boring" / "implementation_plan.md"
+        # Since path priority change, check correct location
+        if not plan_path.exists():
+            # maybe in root?
+            plan_path = context.project_root / "implementation_plan.md"
+
+        if plan_path.exists():
+            content = await get_resources().run_in_thread(plan_path.read_text, "utf-8")
+            if "I cannot" in content or "As an AI" in content:
+                issues.append(
+                    f"Semantic Failure: Plan contains refusal pattern in {plan_path.name}"
+                )
+            if len(content) < 50:
+                issues.append(
+                    f"Semantic Failure: Plan is suspiciously short ({len(content)} chars)"
                 )
 
-                # [ONE DRAGON GAP FIX] Phase 4.3: Safety Net (Checkpoint & Shadow Mode)
-
-                # 1. Activate STRICT Shadow Mode
-                try:
-                    from ...loop.shadow_mode import ShadowModeLevel, create_shadow_guard
-
-                    guard = create_shadow_guard(context.project_root)
-                    original_mode = guard.mode
-
-                    console.print(
-                        f"[bold red]🛡️ Safety Net: Activating STRICT Shadow Mode (was {original_mode.value})[/bold red]"
-                    )
-                    guard.mode = ShadowModeLevel.STRICT
-                except ImportError:
-                    guard = None
-                    pass
-
-                # 2. Create Checkpoint
-                try:
-                    from ...mcp.tools.git import boring_checkpoint
-
-                    boring_checkpoint(action="create", name=f"healer-pre-install-{module_name}")
-                except ImportError:
-                    pass
-
-                try:
-                    subprocess.check_call([sys.executable, "-m", "pip", "install", module_name])
-                    console.print("[green]Installation successful. Retrying Build.[/green]")
-
-                    # 3. Restore Shadow Mode
-                    if guard:
-                        console.print(
-                            f"[bold green]🛡️ Safety Net: Restoring Shadow Mode to {original_mode.value}[/bold green]"
-                        )
-                        guard.mode = original_mode
-
-                    return NodeResult(
-                        status=NodeResultStatus.SUCCESS,
-                        next_node="Builder",
-                        message=f"Installed {module_name}",
-                    )
-                except Exception as e:
-                    console.print(f"[red]Installation failed: {e}[/red]")
-                    # Still restore mode if fail
-                    if guard:
-                        guard.mode = original_mode
-
-        # Strategy 2: Syntax Error or Unknown Failure
-        console.print("[yellow]Healer could not identify an automated fix.[/yellow]")
-
-        # Phase 4.2: Rollback Suggestion UI
-        if self._suggest_rollback(context):
+        if issues:
             return NodeResult(
-                status=NodeResultStatus.SUCCESS,
-                next_node="Builder",
-                message="Rolled back to previous checkpoint.",
+                status=NodeResultStatus.FAILURE,
+                message=f"Healer found semantic issues: {'; '.join(issues)}",
             )
 
-        return NodeResult(
-            status=NodeResultStatus.FAILURE,
-            message="Healer could not fix the issue and rollback was declined.",
-        )
+        return NodeResult(status=NodeResultStatus.SUCCESS, message="All Validation Checks Passed.")
 
-    def _suggest_rollback(self, context: FlowContext) -> bool:
-        """
-        Suggest rolling back to a previous checkpoint.
-        Returns True if rollback was performed.
-        """
-        try:
-            from rich.prompt import Confirm, Prompt
+    def can_enter(self, context: FlowContext) -> tuple[bool, str]:
+        # Healer is always allowed to run, it is the doctor.
+        return True, "Healer is essential."
 
-            from ...mcp.tools.git import boring_checkpoint
+    def _extract_module(self, content: str) -> str:
+        """Extract missing module name from error."""
+        import re
 
-            # List checkpoints
-            result = boring_checkpoint(action="list", project_path=str(context.project_root))
-            if result.get("status") != "SUCCESS":
-                return False
+        # Look for ModuleNotFoundError pattern
+        match = re.search(r"No module named '(\w+)'", content)
+        if match:
+            return match.group(1)
 
-            checkpoints = result.get("data", {}).get("checkpoints", [])
-            if not checkpoints:
-                return False
-
-            console.print("\n[bold cyan]🔄 Available Checkpoints:[/bold cyan]")
-            for _i, cp in enumerate(checkpoints[-5:]):  # Show last 5
-                console.print(f"  - {cp}")
-
-            if Confirm.ask("\n[bold yellow]Rollback to a previous state?[/bold yellow]"):
-                target = Prompt.ask("Enter checkpoint name", choices=checkpoints)
-
-                restore_res = boring_checkpoint(
-                    action="restore", name=target, project_path=str(context.project_root)
-                )
-
-                if restore_res.get("status") == "SUCCESS":
-                    console.print(f"[green]Successfully rolled back to '{target}'[/green]")
-                    return True
-                else:
-                    console.print(f"[red]Rollback failed: {restore_res.get('message')}[/red]")
-
-        except Exception as e:
-            console.print(f"[dim]Rollback UI error: {e}[/dim]")
-
-        return False
-
-    def _extract_module(self, error_msg: str) -> str:
-        """Extract module name from ImportError message."""
-        try:
-            # Example: No module named 'requests'
-            if "No module named" in error_msg:
-                return error_msg.split("'")[1]
-        except Exception:
-            pass
+        # Fallback to class name if needed (legacy behavior)
+        match = re.search(r"class\s+(\w+)", content)
+        if match:
+            return match.group(1)
         return ""

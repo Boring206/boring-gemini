@@ -1,0 +1,22 @@
+{
+    "schema_version": "1.0",
+    "last_updated": "2026-01-18",
+    "description": "Boring-Gemini Official Plugin Registry",
+    "plugins": [
+        {
+            "id": "boring/hello-world",
+            "type": "plugin",
+            "name": "Hello World Example",
+            "description": "A minimal example plugin to demonstrate the Boring Plugin System.",
+            "repo": "https://github.com/Boring206/boring-gemini",
+            "path": "examples/hello-world-plugin",
+            "min_core_version": "15.0.0",
+            "tags": [
+                "example",
+                "demo",
+                "starter"
+            ],
+            "verified": true
+        }
+    ]
+}

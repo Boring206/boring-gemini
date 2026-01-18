@@ -123,7 +123,8 @@ class TestThinkingState:
 
         (context.project_root / "src").mkdir()
         (context.project_root / "src" / "test.py").touch()
-        (context.project_root / "@fix_plan.md").write_text("Task Plan")
+        (context.project_root / "src" / "test.py").touch()
+        (context.project_root / "task.md").write_text("Task Plan")
 
         ctx_str = state._build_context(context)
         assert "Memory Context" in ctx_str

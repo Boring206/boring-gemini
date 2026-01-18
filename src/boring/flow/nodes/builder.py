@@ -13,13 +13,14 @@ V14.0 Enhancements:
 import logging
 import os
 
-from rich.console import Console
 from rich.panel import Panel
 
+from ...core.logger import console
+from ...core.resources import get_resources
 from .base import BaseNode, FlowContext, NodeResult, NodeResultStatus
 
-console = Console()
 logger = logging.getLogger(__name__)
+# console = Console() # Removed local instantiation
 
 
 def _get_model_for_context() -> tuple[str, bool]:
@@ -68,19 +69,93 @@ class BuilderNode(BaseNode):
     def __init__(self):
         super().__init__("Builder")
 
-    def process(self, context: FlowContext) -> NodeResult:
+    def can_enter(self, context: FlowContext) -> tuple[bool, str]:
+        """Guardrail: Must have plan/tasks."""
+        if not context.state_manager:
+            return True, "No State Manager"
+
+        # Strict Check (Disk is Source of Truth)
+        plan_exists = (context.project_root / "implementation_plan.md").exists()
+        task_exists = (context.project_root / "task.md").exists()
+
+        if not plan_exists:
+            return False, "Missing Implementation Plan (Run Architect First)"
+        if not task_exists:
+            return False, "Missing Task List (Run Architect First)"
+
+        return True, "Blueprint Verified"
+
+    async def process(self, context: FlowContext) -> NodeResult:
         """
-        Execute the plan using AgentLoop with Local LLM fallback support.
+        Execute the plan using AgentLoop with Local LLM fallback support (Async).
         """
+
         console.print(Panel("Building Solution...", title="Builder", border_style="blue"))
+
+        # [CONTRACT CHECK] Phase 3: Pre-condition Validation
+        task_file = context.project_root / "task.md"
+        if not task_file.exists():
+            return NodeResult(
+                status=NodeResultStatus.FAILURE,
+                message="Contract Violation: Missing task.md. Run Architect first.",
+                next_node="Healer",
+            )
+
+        try:
+            task_content = await get_resources().run_in_thread(
+                task_file.read_text, encoding="utf-8"
+            )
+            task_content = task_content.strip()
+            # Check for empty or dummy header-only files
+            if not task_content:
+                return NodeResult(
+                    status=NodeResultStatus.FAILURE,
+                    message="Contract Violation: task.md is empty.",
+                    next_node="Healer",
+                )
+
+            # If all tasks are completed (no unchecked boxes)
+            if "- [ ]" not in task_content:
+                # If there are checked boxes, it means we are done
+                if "- [x]" in task_content:
+                    return NodeResult(
+                        status=NodeResultStatus.SUCCESS,
+                        next_node="Polish",
+                        message="All tasks completed. Moving to Polish.",
+                    )
+                # Otherwise, it might be a text file without checkboxes?
+                # Strict contract: Must have tasks.
+                return NodeResult(
+                    status=NodeResultStatus.FAILURE,
+                    message="Contract Violation: task.md contains no actionable tasks (checkboxes).",
+                    next_node="Healer",
+                )
+
+            # If we have unchecked tasks, ensure it's not just a tiny garbage file
+            if len(task_content) < 10:
+                return NodeResult(
+                    status=NodeResultStatus.FAILURE,
+                    message="Contract Violation: task.md is too short.",
+                    next_node="Healer",
+                )
+
+        except Exception as e:
+            return NodeResult(
+                status=NodeResultStatus.FAILURE, message=f"Failed to read task contract: {e}"
+            )
+
+        # Calculate and show progress (Phase 1.4)
+        total_tasks = task_content.count("- [ ]") + task_content.count("- [x]")
+        completed_tasks = task_content.count("- [x]")
+        console.print(f"[dim]任務進度: {completed_tasks}/{total_tasks}[/dim]")
 
         model_name, is_local = _get_model_for_context()
 
         if is_local:
             console.print("[yellow]📴 Offline Mode: Using Local LLM[/yellow]")
-            return self._process_with_local_llm(context)
+            return await get_resources().run_in_thread(self._process_with_local_llm, context)
         else:
-            return self._process_with_api(context, model_name)
+            return await get_resources().run_in_thread(self._process_with_api, context, model_name)
 
     def _process_with_api(self, context: FlowContext, model_name: str) -> NodeResult:
         """Process using API-based model with fallback to local."""
@@ -167,7 +242,9 @@ Be concise and specific."""
                 guidance_file.write_text(
                     f"# Local LLM Build Guidance\n\n{response}", encoding="utf-8"
                 )
-                console.print(f"[green]✅ Local guidance generated: {guidance_file}[/green]")
+                console.print(
+                    f"[green]✅ Local guidance generated: {guidance_file.absolute()}[/green]"
+                )
 
                 return NodeResult(
                     status=NodeResultStatus.SUCCESS,
@@ -196,11 +273,18 @@ Be concise and specific."""
         if task_file.exists():
             content = task_file.read_text(encoding="utf-8")
             if "- [ ]" in content:
+                console.print("[red]Error: Tasks remain incomplete after loop.[/red]")
                 return NodeResult(
                     status=NodeResultStatus.FAILURE,
-                    message="Loop finished but tasks remain incomplete. Calling Healer.",
                     next_node="Healer",
+                    message="Loop finished but some tasks remain unchecked.",
                 )
+
+        # V14.1 State Update
+        from ..states import FlowStage
+
+        if context.state_manager:
+            context.state_manager.update(stage=FlowStage.POLISH)
 
         return NodeResult(
             status=NodeResultStatus.SUCCESS,

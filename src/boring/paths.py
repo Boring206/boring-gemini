@@ -1,7 +1,7 @@
 # Copyright 2026 Boring for Gemini Authors
 # SPDX-License-Identifier: Apache-2.0
 """
-Unified Path Management for Boring (V10.32.1)
+Unified Path Management for Boring (V15.0.0)
 
 Problem: Multiple scattered hidden directories (.boring_memory, .boring_brain, etc.)
 Solution: Consolidate to single .boring/ directory with backward compatibility.
@@ -134,8 +134,21 @@ def get_boring_path(
     legacy_path_name = LEGACY_PATHS.get(subdir)
     legacy_path = project_root / legacy_path_name if legacy_path_name else None
 
-    # Priority: new path > legacy path > create new
+    # Priority:
+    # 1. If .boring exists in project_root, ALWAYS use the new path structure.
+    # 2. If .boring does not exist, check for legacy path.
+    # 3. If neither exists, create new path.
+    boring_root_exists = (project_root / BORING_ROOT).exists()
+
     if new_path.exists():
+        return new_path
+
+    if boring_root_exists:
+        # Strict mode: .boring exists, so we should be using its subdirs.
+        # Don't even check legacy paths to prevent leakage.
+        if create:
+            new_path.mkdir(parents=True, exist_ok=True)
+            logger.debug(f"Created new path inside existing .boring: {new_path}")
         return new_path
 
     if legacy_path and legacy_path.exists():
@@ -143,7 +156,7 @@ def get_boring_path(
             warnings.warn(
                 f"Using legacy path '{legacy_path}'. "
                 f"Consider migrating to '{new_path}' for cleaner project structure. "
-                "Run 'boring migrate-dirs' to migrate automatically.",
+                "Run 'boring migrate' to migrate automatically.",
                 DeprecationWarning,
                 stacklevel=3,
             )

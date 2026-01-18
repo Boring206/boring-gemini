@@ -1,7 +1,7 @@
 # Boring Documentation
 
 > **Boring for Gemini** - The autonomous AI development loop. Make AI development boring (in a good way).
-> **Current Version**: V14.0.0 (Predictive Intelligence & Offline-First)
+> **Current Version**: V15.0.0 (Anti-Rage & UX Hardening Loop)
 
 ---
 
@@ -100,6 +100,10 @@ Practical how-to content.
 | [Modular Installation](./guides/modular-installation.md) | **NEW**: "Boring Diet" & Extras Guide ([中文](./guides/modular-installation_zh.md)) |
 | [API Integration](./guides/api-integration.md) | Use Boring as a Python library |
 | [Skills Guide](./guides/skills_guide.md) | **Learning**: Master the Boring Skill Tree |
+| [Pack Format](./guides/pack-format.md) | **Ecosystem**: Spec for .boring-pack |
+| [Registry Format](./guides/registry-format.md) | **Ecosystem**: Spec for registry.json |
+| [Collaboration](./guides/collaboration.md) | **Ecosystem**: GitOps Sync & Sharing |
+| [HuggingFace Integration](./guides/huggingface-integration.md) | **Ecosystem**: Free Brain Backup |
 
 ### Tutorials (教學) {: #tutorials }
 In-depth learning resources.
@@ -170,7 +174,11 @@ Deep dive technical documentation.
 | [人類對齊指南](./guides/human-alignment_zh.md) | **進階**：使用 Rubrics 與記憶引導 AI |
 | [API 整合指南](./guides/api-integration_zh.md) | 將 Boring 作為 Python 函式庫使用 |
 | [模組化安裝指南](./guides/modular-installation_zh.md) | **最新**: "Boring Diet" 與延伸安裝說明 |
-| [技能指南](./guides/skills_guide.md) | 掌握 Boring 技能樹 |
+| [技能指南](./guides/skills_guide_zh.md) | 掌握 Boring 技能樹 |
+| [Pack 格式規範](./guides/pack-format_zh.md) | **生態系**：.boring-pack 打包標準 |
+| [Registry 格式規範](./guides/registry-format_zh.md) | **生態系**：插件註冊表標準 |
+| [去中心化協作指南](./guides/collaboration_zh.md) | **生態系**：GitOps 同步與分享 |
+| [HuggingFace 整合指南](./guides/huggingface-integration_zh.md) | **生態系**：大腦免費雲端備份 |
 
 ### 教學 {: #zh-tutorials }
 | 教學 | 說明 |

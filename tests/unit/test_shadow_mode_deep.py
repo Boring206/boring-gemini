@@ -13,10 +13,12 @@ from boring.loop.shadow_mode import (
 
 
 @pytest.fixture
-def temp_project(tmp_path):
-    """Create a temporary project structure."""
-    (tmp_path / "src").mkdir()
-    # No pre-existing mode file to avoid confusion
+def temp_project(tmp_path, monkeypatch):
+    """Create a temporary project structure and patch settings.PROJECT_ROOT."""
+    from boring.core.config import settings
+
+    (tmp_path / ".boring").mkdir(exist_ok=True)
+    monkeypatch.setattr(settings, "PROJECT_ROOT", tmp_path)
     return tmp_path
 
 
@@ -33,19 +35,19 @@ def reset_globals():
 class TestShadowModeDeep:
     """Deep tests for Shadow Mode logic and edge cases."""
 
-    def test_mode_persistence(self, tmp_path):
-        # Use tmp_path directly to eliminate fixture complexity
-        guard = ShadowModeGuard(tmp_path)
+    def test_mode_persistence(self, temp_project):
+        # Use temp_project to ensure settings.PROJECT_ROOT is patched
+        guard = ShadowModeGuard(temp_project)
         assert guard.mode == ShadowModeLevel.ENABLED  # Default
 
         guard.mode = ShadowModeLevel.STRICT
         # Verify file exists and content
-        p = tmp_path / ".boring_shadow_mode"
+        p = temp_project / ".boring_shadow_mode"
         assert p.exists()
         assert p.read_text().strip() == "STRICT"
 
         # Load again in new instance
-        guard2 = ShadowModeGuard(tmp_path)
+        guard2 = ShadowModeGuard(temp_project)
         assert guard2.mode == ShadowModeLevel.STRICT
 
     def test_classify_delete(self, temp_project):

@@ -208,7 +208,7 @@ class TestVerifyingState:
 
     def test_check_plan_complete_no_file(self, verifying_state, mock_context):
         """Test checking plan when task file doesn't exist."""
-        task_file = mock_context.project_root / "@fix_plan.md"
+        task_file = mock_context.project_root / "task.md"
         if task_file.exists():
             task_file.unlink()
 
@@ -218,7 +218,7 @@ class TestVerifyingState:
 
     def test_check_plan_complete_all_checked(self, verifying_state, mock_context):
         """Test checking plan when all items are checked."""
-        task_file = mock_context.project_root / "@fix_plan.md"
+        task_file = mock_context.project_root / "task.md"
         task_file.write_text("- [x] Task 1\n- [x] Task 2")
 
         result = verifying_state._check_plan_complete(mock_context)
@@ -227,7 +227,7 @@ class TestVerifyingState:
 
     def test_check_plan_complete_has_unchecked(self, verifying_state, mock_context):
         """Test checking plan when unchecked items exist."""
-        task_file = mock_context.project_root / "@fix_plan.md"
+        task_file = mock_context.project_root / "task.md"
         task_file.write_text("- [x] Task 1\n- [ ] Task 2")
 
         result = verifying_state._check_plan_complete(mock_context)

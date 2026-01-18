@@ -126,12 +126,11 @@ def ensure_project_initialized(project_root: Path) -> None:
                     f"[boring-mcp] Warning: Workflow templates not found at {template_path}\n"
                 )
 
-        # 2. Critical Dirs - Use new paths module with fallback
         try:
-            get_boring_path(project_root, "memory", create=True, warn_legacy=False)
+            get_boring_path(project_root, "memory", create=True, warn_legacy=True)
         except Exception:
-            # Fallback if paths module not available
-            (project_root / ".boring_memory").mkdir(parents=True, exist_ok=True)
+            # If everything fails, don't just create .boring_memory, log the error.
+            sys.stderr.write("[boring-mcp] Error: Could not initialize secure memory path.\n")
         (project_root / ".boring" / "state").mkdir(parents=True, exist_ok=True)
 
         # 3. PROMPT.md (optional, empty if missing)
@@ -176,15 +175,11 @@ def configure_runtime_for_project(project_root: Path) -> None:
     This ensures all components (Logger, AgentLoop, Verifier) access the correct files.
     """
     try:
-        from ... import config
+        from boring.core.context import BoringContext
 
-        # Force override settings (bypass Pydantic frozen/validation)
-        object.__setattr__(config.settings, "PROJECT_ROOT", project_root)
-
-        # Also redirect LOG_DIR to project logs
-        log_dir = project_root / "logs"
-        object.__setattr__(config.settings, "LOG_DIR", log_dir)
-        log_dir.mkdir(parents=True, exist_ok=True)
+        # V14.5: Use Context Activation to handle environment setup
+        # This properly handles legacy settings patching and contextvars
+        BoringContext.from_root(project_root).activate()
 
     except Exception as e:
         sys.stderr.write(f"[boring-mcp] Failed to configure runtime settings: {e}\n")

@@ -20,6 +20,22 @@ class BoringError(Exception):
 
 
 # =============================================================================
+# CORE ERRORS
+# =============================================================================
+
+
+class CriticalPathError(BoringError):
+    """Raised when a critical system path fails (e.g., EventStore, Kernel)."""
+
+    def __init__(
+        self, message: str, original_error: Exception | None = None, context: dict | None = None
+    ):
+        super().__init__(message)
+        self.original_error = original_error
+        self.context = context or {}
+
+
+# =============================================================================
 # API ERRORS
 # =============================================================================
 

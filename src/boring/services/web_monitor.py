@@ -158,7 +158,7 @@ def create_monitor_app(project_root: Path) -> Any | None:
     app = FastAPI(
         title="Boring Monitor",
         description="Real-time monitoring dashboard for Boring autonomous loop",
-        version="11.0.0",
+        version="14.8.0",
     )
 
     from boring.paths import BoringPaths
@@ -269,7 +269,7 @@ def create_monitor_app(project_root: Path) -> Any | None:
     @app.get("/api/health")
     async def health_check():
         """Health check endpoint."""
-        return {"status": "ok", "version": "14.0.0", "timestamp": datetime.now().isoformat()}
+        return {"status": "ok", "version": "14.8.0", "timestamp": datetime.now().isoformat()}
 
     # --- WebSocket Support ---
 

@@ -227,7 +227,97 @@ __all__ = [
     "set_cache",
     "clear_cache",
     # Rate limiting
-    "get_rate_limit_counts",
-    "record_tool_call",
     "reset_rate_limits",
+    "BoringContext",
 ]
+
+
+# =============================================================================
+# UNIFIED BORING CONTEXT (V14.5 Architecture)
+# =============================================================================
+
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Optional
+
+if TYPE_CHECKING:
+    from boring.core.config import Settings
+    from boring.core.state import StateManager
+
+
+@dataclass
+class BoringContext:
+    """
+    The Container for all Project-Scoped State.
+    Replaces global singletons with a passable context object.
+
+    Lifespan:
+        - CLI: Created at start command, lives for duration of process.
+        - MCP: Created per-request or per-session.
+    """
+
+    root: Path
+    settings: "Settings"
+    state_manager: Optional["StateManager"] = None
+
+    # Runtime components
+    # logger: LoggerAdapter  # TODO: Add context-aware logger
+    # tool_registry: ToolRegistry # TODO: Add localized registry
+
+    def __post_init__(self):
+        """Ensure consistency."""
+        if not self.root.is_absolute():
+            self.root = self.root.resolve()
+
+    @classmethod
+    def from_root(cls, root: Path, **overrides) -> "BoringContext":
+        """Factory: Create context from a project root."""
+        from boring.core.config import create_settings_for_root
+
+        # 1. Initialize Settings with correct root via factory
+        # The proxy will handle TOML loading lazily upon first access.
+        settings = create_settings_for_root(root)
+
+        # 2. Apply runtime overrides
+        for k, v in overrides.items():
+            if hasattr(settings, k.upper()):
+                setattr(settings, k.upper(), v)
+
+        return cls(root=root, settings=settings)
+
+    def activate(self):
+        """Activate this context as the current global context (for legacy compat)."""
+        set_current_project(self.root)
+        if self.settings:
+            # Heuristic: Avoid triggering the full Pydantic model just for the log dir
+            # if we are still in lazy mode.
+            log_dir = None
+            if hasattr(self.settings, "_root"):
+                log_dir = self.settings._root / ".boring" / "logs"
+            else:
+                try:
+                    log_dir = self.settings.LOG_DIR
+                except Exception:
+                    pass
+
+            if log_dir:
+                set_current_log_dir(log_dir)
+
+        # Patches boring.core.config.settings to point to self.settings
+        # This ensures legacy code importing the global singleton sees the new context.
+        # Note: We must mutate the existing instance because other modules hold references to it.
+        try:
+            from boring.core import config
+            # We copy fields from our scoped settings to the global settings instance
+            # excluding the paths which are computed properties
+
+            # 1. Update Project Root (Critical)
+            object.__setattr__(config.settings, "PROJECT_ROOT", self.root)
+
+            # 2. Update other fields
+            # We use model_dump to get values, but be careful with computed ones
+            # For now, just ensuring ROOT is correct is 90% of the battle.
+
+            # 3. Force re-computation of paths if needed (Global settings paths property does this dynamically)
+
+        except ImportError:
+            pass  # Should not happen

@@ -185,6 +185,30 @@ class InvertedIndex:
 
         return results
 
+    def to_dict(self) -> dict[str, Any]:
+        """Serialize index to a dictionary."""
+        return {
+            "documents": {
+                k: {
+                    "doc_id": v.doc_id,
+                    "content": v.content,
+                    "metadata": v.metadata,
+                    "tokens": v.tokens,
+                }
+                for k, v in self.documents.items()
+            },
+            "index": {k: list(v) for k, v in self.index.items()},
+            "doc_lengths": self.doc_lengths,
+            "avg_doc_length": self.avg_doc_length,
+        }
+
+    def from_dict(self, data: dict[str, Any]):
+        """Hydrate index from a dictionary."""
+        self.documents = {k: Document(**v) for k, v in data.get("documents", {}).items()}
+        self.index = defaultdict(set, {k: set(v) for k, v in data.get("index", {}).items()})
+        self.doc_lengths = data.get("doc_lengths", {})
+        self.avg_doc_length = data.get("avg_doc_length", 0.0)
+
     def clear(self):
         """Wipe the index."""
         self.documents.clear()

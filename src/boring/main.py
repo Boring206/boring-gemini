@@ -30,10 +30,13 @@ from pathlib import Path
 import typer
 from rich.panel import Panel
 
-from boring.cli import audit, doctor, model, offline
+from boring.cli import audit, brain, doctor, installer, model, offline, packer, publisher, sync
 from boring.cli.theme import BORING_THEME
 from boring.core.config import settings
-from boring.utils.i18n import LocalizedConsole, T
+from boring.utils.i18n import LocalizedConsole, T, i18n
+
+# Enforce configured language immediately to ensure help text and UI are localized correctly
+i18n.set_language(settings.LANGUAGE)
 
 logger = logging.getLogger(__name__)
 
@@ -82,6 +85,13 @@ def main(
     """
     # Initialize notifications
     setup_notifications()
+
+    # V14.5 Architecture: Activate Context explicitly
+    from boring.core.context import BoringContext
+
+    # We default to CWD for CLI, but this allows future --project-root overrides to work cleanly
+    # and patches the legacy global settings via activate().
+    BoringContext.from_root(Path.cwd()).activate()
 
     # Global settings overrides
     if provider:
@@ -141,7 +151,32 @@ console = LocalizedConsole(theme=BORING_THEME)
 
 
 app.add_typer(audit.app, name="audit")
+
 app.add_typer(doctor.app, name="doctor")
+app.add_typer(installer.installer_app, name="plugin")
+app.add_typer(packer.packer_app, name="pack")
+app.add_typer(brain.brain_app, name="brain")
+app.add_typer(sync.sync_app, name="sync")
+app.add_typer(publisher.publisher_app, name="publish")
+
+
+@app.command(
+    name="install",
+    help="📦 Install a plugin (Alias for 'boring plugin install').",
+    rich_help_panel="Ecosystem",
+)
+def install_alias(
+    url: str = typer.Argument(..., help="Git URL or user/repo shorthand"),
+    is_global: bool = typer.Option(
+        True, "--global/--local", "-g/-l", help="Install globally or locally"
+    ),
+    force: bool = typer.Option(False, "--force", "-f", help="Overwrite existing plugin"),
+):
+    """
+    Install a plugin from a Git repository.
+    Example: boring install boring/security-scanner
+    """
+    installer.install_plugin(url, is_global=is_global, force=force)
 
 
 @app.command()
@@ -767,6 +802,51 @@ def status():
                 )
             )
 
+    # RISK-007: Show Queue Depth
+    try:
+        log_file = settings.LOG_DIR / "telemetry.ndjson"
+        queue_depth = "Unknown"
+        if log_file.exists():
+            import json
+
+            try:
+                # Read last 50 lines to find latest depth
+                with open(log_file, encoding="utf-8") as f:
+                    lines = f.readlines()
+                    for line in reversed(lines[-50:]):
+                        try:
+                            data = json.loads(line)
+                            if data.get("name") == "eventstore.queue_depth":
+                                queue_depth = data.get("value")
+                                break
+                        except:
+                            pass
+            except Exception:
+                pass
+
+        dlq_file = settings.PROJECT_ROOT / ".boring" / "dead_letters.jsonl"
+        dlq_count = 0
+        if dlq_file.exists():
+            try:
+                with open(dlq_file, encoding="utf-8") as f:
+                    dlq_count = sum(1 for _ in f)
+            except:
+                pass
+
+        if queue_depth != "Unknown" or dlq_count > 0:
+            color = "green"
+            if (
+                isinstance(queue_depth, int)
+                and queue_depth > settings.BORING_EVENT_QUEUE_WARN_THRESHOLD
+            ):
+                color = "yellow"
+            if dlq_count > 0:
+                color = "red"
+            console.print(f"[{color}]Queue Depth: {queue_depth} | DLQ: {dlq_count} items[/{color}]")
+
+    except Exception:
+        pass
+
 
 @app.command()
 def timeline(
@@ -827,6 +907,73 @@ def setup_extensions():
         console.print(T("extensions_register_note", message=msg))
 
     console.print(T("extensions_setup_complete"))
+
+    console.print(T("extensions_setup_complete"))
+
+
+@app.command(name="mcp")
+def mcp_status():
+    """
+    🛠️ MCP Status & Diagnostics: user-friendly check for MCP setup.
+    """
+    from rich.table import Table
+
+    from boring.cli.wizard import WizardManager
+    from boring.utils.i18n import i18n
+
+    console.print(
+        Panel(
+            "[bold blue]🔮 Boring MCP Diagnostics[/bold blue]",
+            title="System Check",
+            border_style="blue",
+        )
+    )
+
+    # 1. Environment Info
+    console.print(f"[bold]Python Interpreter:[/bold] {sys.executable}")
+    console.print(f"[bold]Project Root:[/bold]       {settings.PROJECT_ROOT}")
+    console.print(f"[bold]Language:[/bold]           {settings.LANGUAGE} (Active: {i18n.language})")
+    console.print(f"[bold]MCP Profile:[/bold]        {settings.MCP_PROFILE}")
+
+    # 2. Server Module Check
+    try:
+        import boring.mcp.server  # noqa
+
+        console.print("[green]✔ boring.mcp.server module is importable[/green]")
+    except ImportError as e:
+        console.print(f"[bold red]❌ boring.mcp.server module missing:[/bold red] {e}")
+
+    # 3. Editor Config Check
+    manager = WizardManager()
+    console.print("\n[bold]Scanning for editors...[/bold]")
+    editors = manager.scan_editors()
+
+    if editors:
+        table = Table(show_header=True, header_style="bold cyan")
+        table.add_column("Editor")
+        table.add_column("Config Status")
+        table.add_column("Path")
+
+        for name, path in editors.items():
+            # Check if config mentions 'boring'
+            status = "[yellow]Not Configured[/yellow]"
+            if path and path.exists():
+                try:
+                    content = path.read_text("utf-8", errors="ignore")
+                    if "boring" in content:
+                        status = "[green]Configured[/green]"
+                except Exception:
+                    status = "[red]Read Error[/red]"
+            elif path and not path.exists():
+                status = "[dim]File Missing[/dim]"
+
+            table.add_row(name, status, str(path))
+
+        console.print(table)
+    else:
+        console.print("[yellow]No supported editors detected.[/yellow]")
+
+    console.print("\n[dim]Run 'boring wizard' to configure or repair integrations.[/dim]")
 
 
 @app.command("mcp-register")

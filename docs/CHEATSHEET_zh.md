@@ -11,6 +11,7 @@
 | **健康檢查** | `boring check` | ✅ **Vibe Check**<br>全面掃描專案健康度、安全性與品質。 |
 | **智能存檔** | `boring save` | 💾 **紀錄者 (The Scribe)**<br>自動生成語意化 Commit 訊息並提交變更。 |
 | **互動導航** | `boring guide` | ❓ **先知 (The Oracle)**<br>互動式工具探索與使用說明。 |
+| **系統優化** | `boring doctor -o`| 💎 **完美主義者 (The Perfectionist)**<br>深度清理 (VACUUM)、大腦維護與檢查點重構。 |
 
 ## 🧠 認知工具 (Deep Thinking)
 

@@ -7,7 +7,7 @@
 
 ### 核心模組 (Core)
 *   [Core (`boring.core`)](./core_zh.md)
-*   [Agents (`boring.agents`)](./agents_zh.md)
+<!-- *   [Agents (`boring.agents`)](./agents_zh.md) -->
 *   [Loop (`boring.loop`)](./loop_zh.md)
 
 ### MCP 伺服器 (MCP Server)

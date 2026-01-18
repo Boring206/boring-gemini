@@ -134,17 +134,23 @@ class TestDashboard:
             patch("pathlib.Path.exists", return_value=True),
             patch("pathlib.Path.read_text", return_value="# Content"),
         ):
-            # Trigger tab2 context - now 5 tabs
-            mock_tab2 = MagicMock()
             mock_st.tabs.return_value = [
                 MagicMock(),
-                mock_tab2,
+                MagicMock(),
                 MagicMock(),
                 MagicMock(),
                 MagicMock(),
             ]
 
-            main()
+            # Ensure load_json returns valid dicts to prevent TypeErrors in metric display
+            with patch(
+                "boring.cli.dashboard.load_json",
+                side_effect=[
+                    {"loop_count": 5, "status": "running"},
+                    {"state": "OPEN", "failures": 0},
+                ],
+            ):
+                main()
 
             # Since we can't easily force the 'with tab2:' block execution without deeper mocking
             # of the returned objects context manager, we assume main() runs through it.

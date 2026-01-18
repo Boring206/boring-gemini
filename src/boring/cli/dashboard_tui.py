@@ -47,7 +47,7 @@ def make_header() -> Panel:
     grid.add_column(justify="center", ratio=1)
     grid.add_column(justify="right")
 
-    title = Text.from_markup("[bold magenta]🤖 boring-gemini[/bold magenta] [dim]v14.0.0[/dim]")
+    title = Text.from_markup("[bold magenta]🤖 boring-gemini[/bold magenta] [dim]v14.8.0[/dim]")
     grid.add_row(title, Text(datetime.now().strftime("%H:%M:%S"), style="dim"))
 
     return Panel(grid, style="magenta")

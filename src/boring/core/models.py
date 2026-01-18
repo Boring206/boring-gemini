@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_serializer
 
 
 class CircuitBreakerStateEnum(str, Enum):
@@ -72,7 +72,9 @@ class LoopStatus(BaseModel):
     exit_reason: str = Field(default="", description="Reason for exit if applicable")
     next_reset: str | None = Field(default=None, description="Time until rate limit reset")
 
-    model_config = ConfigDict(json_encoders={datetime: lambda v: v.isoformat()})
+    @field_serializer("timestamp")
+    def serialize_dt(self, dt: datetime, _info):
+        return dt.isoformat()
 
 
 class CircuitBreakerHistoryEntry(BaseModel):
@@ -82,7 +84,9 @@ class CircuitBreakerHistoryEntry(BaseModel):
     state: str = Field(description="New state")
     reason: str = Field(description="Reason for state change")
 
-    model_config = ConfigDict(json_encoders={datetime: lambda v: v.isoformat()})
+    @field_serializer("timestamp")
+    def serialize_dt(self, dt: datetime, _info):
+        return dt.isoformat()
 
 
 class WorkflowStep(BaseModel):

@@ -12,25 +12,9 @@ The One Dragon Architecture implementation providing:
 - Events: Event bus for decoupled automation
 """
 
-from boring.flow.detector import FlowDetector
-from boring.flow.engine import FlowEngine
-from boring.flow.events import FlowEvent, FlowEventBus
-from boring.flow.graph import FlowGraph
-from boring.flow.nodes.architect import ArchitectNode
+from typing import Any
 
-# Node classes
-from boring.flow.nodes.base import (
-    BaseNode,
-    FlowContext,
-    NodeResult,
-    NodeResultStatus,
-)
-from boring.flow.nodes.builder import BuilderNode
-from boring.flow.nodes.evolver import EvolverNode
-from boring.flow.nodes.healer import HealerNode
-from boring.flow.nodes.polish import PolishNode
-from boring.flow.parallel import ParallelExecutor
-from boring.flow.skills_advisor import SkillsAdvisor
+# Light submodules can be imported at top level if they don't pull heavy dependencies
 from boring.flow.states import (
     STAGE_PROGRESS,
     STAGE_SKILL_MAPPING,
@@ -38,7 +22,42 @@ from boring.flow.states import (
     FlowState,
     get_progress_bar,
 )
-from boring.flow.vibe_interface import VibeInterface
+
+# We use __getattr__ (PEP 562) to lazily load heavy components
+_LAZY_MAPPING = {
+    "FlowDetector": "boring.flow.detector",
+    "FlowEngine": "boring.flow.engine",
+    "FlowEvent": "boring.flow.events",
+    "FlowEventBus": "boring.flow.events",
+    "FlowGraph": "boring.flow.graph",
+    "ArchitectNode": "boring.flow.nodes.architect",
+    "BaseNode": "boring.flow.nodes.base",
+    "FlowContext": "boring.flow.nodes.base",
+    "NodeResult": "boring.flow.nodes.base",
+    "NodeResultStatus": "boring.flow.nodes.base",
+    "BuilderNode": "boring.flow.nodes.builder",
+    "EvolverNode": "boring.flow.nodes.evolver",
+    "HealerNode": "boring.flow.nodes.healer",
+    "PolishNode": "boring.flow.nodes.polish",
+    "ParallelExecutor": "boring.flow.parallel",
+    "SkillsAdvisor": "boring.flow.skills_advisor",
+    "VibeInterface": "boring.flow.vibe_interface",
+}
+
+
+def __getattr__(name: str) -> Any:
+    if name in _LAZY_MAPPING:
+        import importlib
+
+        module_path = _LAZY_MAPPING[name]
+        module = importlib.import_module(module_path)
+        return getattr(module, name)
+    raise AttributeError(f"module {__name__} has no attribute {name}")
+
+
+def __dir__():
+    return sorted(list(globals().keys()) + list(_LAZY_MAPPING.keys()))
+
 
 __all__ = [
     # Engine

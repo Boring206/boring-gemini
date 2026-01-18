@@ -2,6 +2,8 @@
   <img src="docs/assets/logo.png" width="180" alt="Boring for Gemini Logo">
 </p>
 
+# Boring for Gemini (V15.0.0) 💎
+
 <h1 align="center">Boring</h1>
 
 <p align="center">
@@ -84,7 +86,22 @@ Boring 達成了 **全能 (Full-Power)** 狀態，激活了所有高價值認知
 - **策略即代碼 (`boring policy`)**：安全、可審核的工具權限護欄。
 - **主權審核 (`boring perfection`)**：全自動 7 階段驗證，確保生產環境就緒。
 - **自癒醫生 (`boring doctor --fix`)**：自主環境修復與依賴衝突解決。
-- **遷移引擎 (`boring migrate`)**：確保專案狀態具備向前相容的演進能力。
+- **系統優化器 (`boring doctor --optimize`)**：深度儲存清理 (VACUUM)、大腦模式維護 (衰減/剪枝) 與對帳器檢查點重構。
+- **遷移引擎 (`boring migrate`)**: 確保專案狀態具備向前相容的演進能力。
+
+### 💖 支柱十一：[反憤怒體驗 (Anti-Rage UX) (V15.0.0)](docs/changelog/v15_zh.md)
+**「愉悅更新 (Delight Update)」**。將使用者體驗從「令人沮喪」轉變為「流暢順心」。
+- **視覺回饋**：引入 Rich Spinners、步驟追蹤 (`Step 5/50`) 以及任務進度條。
+- **成本感知**：主動式 API 成本警告，防止帳單震撼。
+- **韌性強化**：強化的檔案鎖定處理 (WinError 32) 與友善的錯誤翻譯。
+- **狀態序列化**：具備 `暫停 (pause)` 與 `恢復 (resume)` 長時間運行流程的能力。
+
+### 🌍 支柱十二：[零成本生態系 (V15.0)](docs/guides/registry-format_zh.md)
+**「民主化更新 (Democratization Update)」**。實現完全去中心化、零成本的插件經濟。
+- **打包與安裝**：`boring pack` 與 `boring install` 能將任何 Repo 轉變為插件。
+- **知識共享**：`boring brain export` 讓你能分享 AI 學習到的智慧結晶。
+- **GitOps 同步**：`boring sync` 透過 Git 實現無伺服器的團隊協作。
+- **註冊表規範**：開放標準 (`registry.json`) 打造去中心化的 Agent 互聯網。
 
 
 ---
@@ -108,6 +125,7 @@ Boring 達成了 **全能 (Full-Power)** 狀態，激活了所有高價值認知
 | 📜 | **[專案傳記](docs/features/agents_zh.md)** | `boring bio` 維護團隊共識與專案長期的開發脈絡。 |
 | 🛡️ | **[策略即代碼](docs/features/shadow-mode_zh.md)** | `boring policy` 強化細粒度的安全控管與工具授權。 |
 | 🔄 | **[遷移指令](docs/changelog/v14_zh.md)** | `boring migrate` 確保專案狀態始終具備向前相容性。 |
+| 📦 | **[生態系](docs/guides/pack-format_zh.md)** | `boring pack/install` 去中心化插件系統。打包、分享、運行。 |
 
 ---
 
@@ -225,6 +243,7 @@ pip install sentence-transformers chromadb
 - **「執行健康檢查 (Vibe Check) 並修復所有問題」** → 觸發 `boring_vibe_check` + 自動修復。
 - **「修改這個函式的全域影響是什麼？」** → 觸發 `boring_impact_check`。
 - **「幫我檢查程式碼的安全性」** → 觸發 `boring_security_scan`。
+- **「執行系統優化」** 或 **「Boring Optimize」** → 觸發 `boring doctor --optimize`。
 
 **🧬 God Mode (自主模式):**
 - **「Boring Watch」** → 啟動 Sentinel 即時監控助手。

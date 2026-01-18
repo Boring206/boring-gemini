@@ -388,12 +388,13 @@ def run_server():
         )
 
     # Vibe Coder Tutorial Hook - Show MCP intro on first launch
-    try:
-        from ..tutorial import TutorialManager
-
-        TutorialManager().show_tutorial("mcp_intro")
-    except Exception as e:
-        logger.debug("MCP tutorial hint unavailable: %s", e)
+    # WRAPPED: Disabled in MCP Server mode to prevent stdout pollution (breaks JSON-RPC)
+    # try:
+    #     from ..tutorial import TutorialManager
+    #
+    #     TutorialManager().show_tutorial("mcp_intro")
+    # except Exception as e:
+    #     logger.debug("MCP tutorial hint unavailable: %s", e)
 
     # 4. Configured logging
     with _configure_logging():

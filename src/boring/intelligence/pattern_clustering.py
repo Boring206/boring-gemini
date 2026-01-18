@@ -21,6 +21,8 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
+from .search import InvertedIndex
+
 
 @dataclass
 class HierarchicalLabel:
@@ -74,6 +76,7 @@ class PatternClusterer:
             similarity_threshold: Minimum similarity to merge patterns (0-1)
         """
         self.similarity_threshold = similarity_threshold
+        self.index = InvertedIndex()
         self._tfidf_vectorizer = None
         self._stopwords = {
             "the",
@@ -123,36 +126,55 @@ class PatternClusterer:
 
     def cluster_patterns(self, patterns: list[dict]) -> ClusteringResult:
         """
-        Cluster a list of patterns.
-
-        Args:
-            patterns: List of pattern dicts with 'description', 'context', 'solution'
-
-        Returns:
-            ClusteringResult with clusters and statistics
+        Cluster a list of patterns (Optimized O(N log N) implementation).
         """
         if not patterns:
-            return ClusteringResult(
-                clusters=[],
-                patterns_before=0,
-                patterns_after=0,
-                duplicates_removed=0,
-                merge_rate=0.0,
-            )
+            return ClusteringResult([], 0, 0, 0, 0.0)
 
         patterns_before = len(patterns)
 
-        # Step 1: Remove exact duplicates
+        # Step 1: Exact Deduplication
         unique_patterns = self._remove_exact_duplicates(patterns)
-        logger.debug(f"After exact dedup: {len(unique_patterns)} patterns")
 
-        # Step 2: Compute similarity matrix
-        similarity_matrix = self._compute_similarity_matrix(unique_patterns)
+        # Step 2: Incremental Leader-Follower Clustering using Index
+        # This reduces complexity from O(N^2) to O(N log N)
+        self.index.clear()
+        clusters: list[list[dict]] = []
 
-        # Step 3: Hierarchical clustering
-        clusters = self._hierarchical_cluster(unique_patterns, similarity_matrix)
+        # Sort by success count to ensure high-quality patterns become cluster leaders
+        sorted_patterns = sorted(
+            unique_patterns, key=lambda p: p.get("success_count", 0), reverse=True
+        )
 
-        # Step 4: Merge patterns within each cluster
+        for pattern in sorted_patterns:
+            text = self._pattern_to_text(pattern)
+            # Search for existing potential clusters (Index search is O(log N))
+            matches = self.index.search(text, limit=3)
+
+            merged = False
+            for match in matches:
+                cluster_idx = match["metadata"]["cluster_idx"]
+                leader = clusters[cluster_idx][0]
+                leader_text = self._pattern_to_text(leader)
+
+                # Heavy confirmation check (SequenceMatcher)
+                sim = SequenceMatcher(None, text, leader_text).ratio()
+
+                if sim >= self.similarity_threshold:
+                    clusters[cluster_idx].append(pattern)
+                    merged = True
+                    break
+
+            if not merged:
+                # Create new cluster
+                new_idx = len(clusters)
+                clusters.append([pattern])
+                # Index the leader pattern
+                self.index.add_document(
+                    doc_id=f"cluster_{new_idx}", content=text, metadata={"cluster_idx": new_idx}
+                )
+
+        # Step 3: Merge patterns within each cluster
         merged_clusters = [self._merge_cluster(c) for c in clusters]
 
         patterns_after = len(merged_clusters)
@@ -398,31 +420,28 @@ class PatternClusterer:
         self, target: dict, patterns: list[dict], top_k: int = 5
     ) -> list[tuple[dict, float]]:
         """
-        Find patterns most similar to a target pattern.
-
-        Args:
-            target: Target pattern to match
-            patterns: Candidate patterns
-            top_k: Number of results
-
-        Returns:
-            List of (pattern, similarity) tuples
+        Find patterns most similar to a target pattern (Optimized O(log N)).
         """
         if not patterns:
             return []
 
+        # Rebuild index if not consistent with patterns
+        if len(self.index.documents) != len(patterns):
+            self.index.clear()
+            for i, p in enumerate(patterns):
+                self.index.add_document(str(i), self._pattern_to_text(p), metadata={"idx": i})
+
         target_text = self._pattern_to_text(target)
+        matches = self.index.search(target_text, limit=top_k)
 
         results = []
-        for pattern in patterns:
-            pattern_text = self._pattern_to_text(pattern)
+        for m in matches:
+            idx = m["metadata"]["idx"]
+            # Approximate score to 0-1 for compatibility
+            sim = min(1.0, m["score"] / 10.0)
+            results.append((patterns[idx], sim))
 
-            # Use SequenceMatcher for single comparison
-            sim = SequenceMatcher(None, target_text, pattern_text).ratio()
-            results.append((pattern, sim))
-
-        results.sort(key=lambda x: x[1], reverse=True)
-        return results[:top_k]
+        return results
 
 
 class EmbeddingVersionManager:

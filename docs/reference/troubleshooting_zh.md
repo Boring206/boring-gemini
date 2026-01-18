@@ -9,8 +9,9 @@
 在嘗試手動修復之前，請使用內建診斷工具：
 
 ```bash
-# 檢查環境和系統健康狀況
-boring doctor
+# 檢查環境、系統健康狀況，並執行深度優化
+boring doctor --fix
+boring doctor --optimize
 
 # 顯示當前配置（對除錯很有用）
 boring config show
@@ -161,3 +162,21 @@ tail -f ~/.boring_logs/api_trace.log
    # 重啟 IDE/Server
    ```
    詳情請見 [MCP Profiles 指南](../guides/mcp-profiles-comparison_zh.md)。
+### 7. "系統驗證速度太慢"
+
+**症狀**：`boring doctor` 或 `boring verify` 在掃描專案歷史記錄時耗時過長。
+
+**原因**：
+- 巨大的 `events.jsonl` 檔案。
+- 重複的大腦索引掃描。
+
+**解決方案**：
+1. **啟用系統優化**：
+   ```bash
+   boring doctor --optimize
+   ```
+   這將執行：
+   * **帳本滾動**：將 `events.jsonl` 分割為封存片段。
+   * **建立檢查點**：啟用增量掃描，實現近乎即時的驗證。
+   * **狀態壓縮**：使用 Gzip 縮小專案快照。
+2. **執行維護**：確保您的程式碼經常提交，以保持增量對帳器的效率。

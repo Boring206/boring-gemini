@@ -1,4 +1,16 @@
 """
+V15.0.0 "Anti-Rage & UX Hardening Loop":
+- **Anti-Rage UX**: Rich Progress Spinners, Step counters, and explicit file path links.
+- **Goal Validator**: Intent-based project capability matching prevents hallucinated plans.
+- **Resilience Plus**: 3x File Lock Retries and ErrorTranslator for multi-process stability.
+- **Smart Stop**: Automatic halt after 3 consecutive node failures with cost estimation.
+
+V14.8.0 "World Class Edition (Resilience & Data Integrity)":
+- **One Dragon Kernel**: Unified bootloader ensuring identical CLI/MCP execution context.
+- **Strict Ledger**: Tamper-evident Event Sourcing with cryptographic checksums.
+- **Authoritative Governance**: Policy Engine ("The Constitution") enforcing strict rules.
+- **Session Locking**: Anti-Split-Brain concurrency control via file locking.
+
 V14.0.0 "The Intelligence Leap Update":
 - **Predictive Error Detection**: AI-powered anti-pattern detection and proactive warnings.
 - **AI Git Bisect**: Semantic analysis of commit history to pinpoint bug sources.
@@ -92,7 +104,7 @@ Backward compatibility is maintained - old import paths still work.
 import importlib
 from typing import TYPE_CHECKING
 
-__version__ = "14.0.0"
+__version__ = "15.0.0"
 
 # =============================================================================
 # Lazy Loading Configuration

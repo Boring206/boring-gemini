@@ -124,7 +124,7 @@ def extract_search_replace_blocks(output: str) -> list[dict[str, str]]:
 
 
 def apply_search_replace(
-    file_path: Path, search: str, replace: str, log_dir: Path = Path("logs")
+    file_path: Path, search: str, replace: str, log_dir: Path | None = None
 ) -> tuple[bool, str | None]:
     """
     Apply a single search-replace operation to a file.
@@ -133,11 +133,12 @@ def apply_search_replace(
         file_path: Path to the file to modify
         search: Text to search for (must match exactly)
         replace: Text to replace with
-        log_dir: Directory for logging
-
-    Returns:
-        Tuple of (success, error_message)
+        log_dir: Directory for logging (resolves to settings.LOG_DIR if None)
     """
+    from ..core.config import settings
+
+    log_dir = log_dir or settings.LOG_DIR
+
     if not file_path.exists():
         return False, f"File not found: {file_path}"
 
@@ -176,7 +177,7 @@ def apply_search_replace_blocks(
     blocks: list[dict[str, str]],
     project_root: Path,
     default_file: Path | None = None,
-    log_dir: Path = Path("logs"),
+    log_dir: Path | None = None,
 ) -> list[SearchReplaceOp]:
     """
     Apply multiple search/replace blocks to files.
@@ -236,14 +237,15 @@ def apply_search_replace_blocks(
 
 
 def process_output_for_patches(
-    output: str, project_root: Path, log_dir: Path = Path("logs")
+    output: str, project_root: Path, log_dir: Path | None = None
 ) -> tuple[list[SearchReplaceOp], int]:
     """
     Process AI output for both full file blocks and search/replace blocks.
-
-    Returns:
-        Tuple of (search_replace_results, num_full_file_patches)
     """
+    from ..core.config import settings
+
+    log_dir = log_dir or settings.LOG_DIR
+
     from .file_patcher import apply_patches, extract_file_blocks
 
     # First, extract and apply full file blocks
@@ -270,14 +272,15 @@ def process_output_for_patches(
 
 # Convenience function for simple single-file operations
 def quick_replace(
-    project_root: Path, file_path: str, search: str, replace: str, log_dir: Path = Path("logs")
+    project_root: Path, file_path: str, search: str, replace: str, log_dir: Path | None = None
 ) -> bool:
     """
     Quick helper for single search/replace operations.
-
-    Returns:
-        True if successful
     """
+    from ..core.config import settings
+
+    log_dir = log_dir or settings.LOG_DIR
+
     full_path = project_root / file_path
     success, error = apply_search_replace(full_path, search, replace, log_dir)
 

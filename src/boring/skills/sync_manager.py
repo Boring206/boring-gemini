@@ -18,6 +18,7 @@ class SyncManager:
     CLIENT_DIRS = [
         ".gemini/skills",
         ".claude/skills",
+        ".cursor/skills",  # Cursor IDE Support
         ".antigravity/skills",
         ".codex/skills",  # OpenAI Codex CLI
     ]

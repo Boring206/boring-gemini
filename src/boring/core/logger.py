@@ -12,14 +12,62 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-import structlog
-from rich.console import Console
+# Lazy dependency management for rich and structlog
+_console = None
+_structlog_configured = False
+
+
+def _get_console():
+    global _console
+    if _console is None:
+        from rich.console import Console
+
+        _is_mcp_mode = os.environ.get("BORING_MCP_MODE") == "1"
+        _console = Console(stderr=True, quiet=_is_mcp_mode, force_terminal=False)
+    return _console
+
+
+# Use a proxy approach for the global console to keep compatibility
+class LazyConsole:
+    def __getattr__(self, name):
+        return getattr(_get_console(), name)
+
+    def __repr__(self):
+        return repr(_get_console())
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+
+
+console = LazyConsole()
+
+
+def _ensure_structlog():
+    global _structlog_configured
+    if not _structlog_configured:
+        import structlog
+
+        structlog.configure(
+            processors=[
+                structlog.stdlib.add_log_level,
+                structlog.stdlib.PositionalArgumentsFormatter(),
+                structlog.processors.TimeStamper(fmt="iso"),
+                structlog.processors.StackInfoRenderer(),
+                structlog.processors.format_exc_info,
+                structlog.processors.UnicodeDecoder(),
+                structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+            ],
+            logger_factory=structlog.stdlib.LoggerFactory(),
+            wrapper_class=structlog.stdlib.BoundLogger,
+            cache_logger_on_first_use=True,
+        )
+        _structlog_configured = True
+
 
 from boring.core.utils import TransactionalFileWriter
-
-# MCP-compatible Rich Console (stderr, quiet in MCP mode)
-_is_mcp_mode = os.environ.get("BORING_MCP_MODE") == "1"
-console = Console(stderr=True, quiet=_is_mcp_mode)
 
 # Configure Python's logging first
 logging.basicConfig(
@@ -27,30 +75,24 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-# Configure structlog
-structlog.configure(
-    processors=[
-        structlog.stdlib.add_log_level,
-        structlog.stdlib.PositionalArgumentsFormatter(),
-        structlog.processors.TimeStamper(fmt="iso"),
-        structlog.processors.StackInfoRenderer(),
-        structlog.processors.format_exc_info,
-        structlog.processors.UnicodeDecoder(),
-        structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
-    ],
-    logger_factory=structlog.stdlib.LoggerFactory(),
-    wrapper_class=structlog.stdlib.BoundLogger,
-    cache_logger_on_first_use=True,
-)
+# Moved structlog.configure to _ensure_structlog
 
 
-def get_logger(name: str = "boring") -> structlog.stdlib.BoundLogger:
+def get_logger(name: str = "boring"):
     """Get a structured logger instance."""
+    _ensure_structlog()
+    import structlog
+
     return structlog.get_logger(name)
 
 
-# Global logger for module-level use
-_logger = get_logger()
+class LazyLogger:
+    def __getattr__(self, name):
+        return getattr(get_logger(), name)
+
+
+# Global logger for module-level use (Now lazy)
+_logger = LazyLogger()
 logger = _logger
 
 

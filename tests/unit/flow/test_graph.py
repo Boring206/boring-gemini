@@ -19,7 +19,7 @@ class MockNode(BaseNode):
         self.result = result
         self.process_called = False
 
-    def process(self, context: FlowContext) -> NodeResult:
+    async def process(self, context: FlowContext) -> NodeResult:
         self.process_called = True
         return self.result
 
@@ -85,12 +85,14 @@ class TestFlowGraph:
         assert "TestNode" in graph.nodes
         assert graph.start_node == "TestNode"
 
-    def test_run_no_start_node(self, context):
+    @pytest.mark.asyncio
+    async def test_run_no_start_node(self, context):
         graph = FlowGraph(context)
         with pytest.raises(ValueError, match="No start node"):
-            graph.run()
+            await graph.run()
 
-    def test_run_single_node(self, context):
+    @pytest.mark.asyncio
+    async def test_run_single_node(self, context):
         graph = FlowGraph(context)
         node = MockNode(
             "OnlyNode",
@@ -98,12 +100,13 @@ class TestFlowGraph:
         )
         graph.add_node(node, is_start=True)
 
-        result = graph.run()
+        result = await graph.run()
 
         assert node.process_called
-        assert "successfully" in result
+        assert "successfully" in result.message
 
-    def test_run_node_chain(self, context):
+    @pytest.mark.asyncio
+    async def test_run_node_chain(self, context):
         graph = FlowGraph(context)
 
         node1 = MockNode(
@@ -118,13 +121,14 @@ class TestFlowGraph:
         graph.add_node(node1, is_start=True)
         graph.add_node(node2)
 
-        result = graph.run()
+        result = await graph.run()
 
         assert node1.process_called
         assert node2.process_called
-        assert "successfully" in result
+        assert "successfully" in result.message
 
-    def test_run_node_failure(self, context):
+    @pytest.mark.asyncio
+    async def test_run_node_failure(self, context):
         graph = FlowGraph(context)
         node = MockNode(
             "FailNode",
@@ -132,12 +136,13 @@ class TestFlowGraph:
         )
         graph.add_node(node, is_start=True)
 
-        result = graph.run()
+        result = await graph.run()
 
-        assert "failed" in result.lower()
-        assert "Something failed" in result
+        assert "failed" in result.message.lower()
+        assert "Something failed" in result.message
 
-    def test_run_missing_next_node(self, context):
+    @pytest.mark.asyncio
+    async def test_run_missing_next_node(self, context):
         graph = FlowGraph(context)
         node = MockNode(
             "BadNode",
@@ -145,12 +150,15 @@ class TestFlowGraph:
         )
         graph.add_node(node, is_start=True)
 
-        result = graph.run()
+        result = await graph.run()
 
-        assert "not found" in result
+        assert "not found" in result.message
 
-    def test_run_max_steps_limit(self, context):
+    @pytest.mark.asyncio
+    async def test_run_max_steps_limit(self, context):
         """Test that graph doesn't run forever."""
+        # Enable auto_mode to avoid interruption checkpoints
+        context.auto_mode = True
         graph = FlowGraph(context)
 
         # Create a cycle
@@ -166,6 +174,6 @@ class TestFlowGraph:
         graph.add_node(node1, is_start=True)
         graph.add_node(node2)
 
-        result = graph.run()
+        result = await graph.run()
 
-        assert "Max steps" in result or "Loop" in result
+        assert "Max steps" in result.message or "Loop" in result.message

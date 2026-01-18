@@ -1,14 +1,25 @@
 from datetime import datetime, timedelta
 from unittest.mock import patch
 
+import pytest
+
 from boring.intelligence.brain_manager import BrainManager, GlobalKnowledgeStore, LearnedPattern
+from boring.services.storage import _clear_thread_local_connection
+
+
+@pytest.fixture
+def temp_project(tmp_path):
+    project = tmp_path / "project"
+    project.mkdir()
+    yield project
+    _clear_thread_local_connection()
 
 
 class TestBrainManagerEnhanced:
     """Enhanced tests for BrainManager (V10.23+ features)."""
 
-    def test_incremental_learn(self, tmp_path):
-        brain = BrainManager(tmp_path)
+    def test_incremental_learn(self, temp_project):
+        brain = BrainManager(temp_project)
         print(f"DEBUG: BrainManager methods: {[m for m in dir(brain) if not m.startswith('_')]}")
 
         # Test basic incremental learning
@@ -24,8 +35,8 @@ class TestBrainManagerEnhanced:
         assert len(patterns) == 1
         assert patterns[0]["pattern_type"] == "error_solution"
 
-    def test_pattern_relevance_decay(self, tmp_path):
-        brain = BrainManager(tmp_path)
+    def test_pattern_relevance_decay(self, temp_project):
+        brain = BrainManager(temp_project)
 
         # Create an old pattern
         old_date = (datetime.now() - timedelta(days=100)).isoformat()
@@ -52,8 +63,8 @@ class TestBrainManagerEnhanced:
         patterns = brain._load_patterns()
         assert patterns[0]["decay_score"] < 1.0
 
-    def test_prune_patterns(self, tmp_path):
-        brain = BrainManager(tmp_path)
+    def test_prune_patterns(self, temp_project):
+        brain = BrainManager(temp_project)
 
         # Add patterns via the official API
         brain.learn_pattern("temp", "Low score pattern", "ctx", "sol")
@@ -68,8 +79,8 @@ class TestBrainManagerEnhanced:
         # Result should indicate pruning operation completed
         assert "pruned_count" in result or "status" in result
 
-    def test_get_pattern_stats(self, tmp_path):
-        brain = BrainManager(tmp_path)
+    def test_get_pattern_stats(self, temp_project):
+        brain = BrainManager(temp_project)
         brain.learn_pattern("code_style", "Indent 4", "ctx", "sol")
         brain.learn_pattern("error_solution", "Fix bug", "ctx2", "sol2")
 
@@ -78,36 +89,36 @@ class TestBrainManagerEnhanced:
         assert stats["by_type"]["code_style"] == 1
         assert stats["by_type"]["error_solution"] == 1
 
-    def test_global_knowledge_store_empty(self, tmp_path):
-        with patch("pathlib.Path.home", return_value=tmp_path):
+    def test_global_knowledge_store_empty(self, temp_project):
+        with patch("pathlib.Path.home", return_value=temp_project):
             store = GlobalKnowledgeStore()
             assert store.list_global_patterns() == []
 
             # Export from project
-            brain = BrainManager(tmp_path / "proj")
+            brain = BrainManager(temp_project / "proj")
             brain.learn_pattern("test", "desc", "ctx", "sol")
             # Set success count to 2 to pass default threshold
             patterns = brain._load_patterns()
             patterns[0]["success_count"] = 5
             brain._save_patterns(patterns)
 
-            result = store.export_from_project(tmp_path / "proj", min_success_count=2)
+            result = store.export_from_project(temp_project / "proj", min_success_count=2)
             assert result["exported"] == 1
 
             # Import to another project
-            result_import = store.import_to_project(tmp_path / "proj2")
+            result_import = store.import_to_project(temp_project / "proj2")
             assert result_import["imported"] == 1
 
-    def test_brain_health_report(self, tmp_path):
-        brain = BrainManager(tmp_path)
+    def test_brain_health_report(self, temp_project):
+        brain = BrainManager(temp_project)
         brain.learn_pattern("error", "desc", "ctx", "sol")
 
         report = brain.get_brain_health_report()
         assert report["total_patterns"] == 1
         assert "health_status" in report
 
-    def test_intelligent_pattern_match_no_words(self, tmp_path):
-        brain = BrainManager(tmp_path)
+    def test_intelligent_pattern_match_no_words(self, temp_project):
+        brain = BrainManager(temp_project)
         brain.learn_pattern("test", "desc", "ctx", "sol")
 
         # Test with empty context

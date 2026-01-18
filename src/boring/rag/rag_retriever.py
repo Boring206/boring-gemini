@@ -749,14 +749,14 @@ class RAGRetriever:
         """
         Async version of retrieve for non-blocking operations.
 
-        Wraps ChromaDB calls in asyncio.to_thread for async compatibility.
+        Wraps ChromaDB calls in a budgeted thread pool for async compatibility.
         """
-        import asyncio
+        from ..core.resources import get_resources
 
         def _sync_retrieve():
             return self.retrieve(query, n_results, expand_graph, file_filter, chunk_types)
 
-        return await asyncio.to_thread(_sync_retrieve)
+        return await get_resources().run_in_thread(_sync_retrieve)
 
     def get_modification_context(
         self, file_path: str, function_name: str | None = None, class_name: str | None = None

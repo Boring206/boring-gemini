@@ -188,3 +188,64 @@ class MemoryManager:
             parts.append(error_warning)
 
         return "\n".join(parts)
+
+    def export_sync_state(self, file_path: Path) -> None:
+        """
+        Export critical project state to a JSON file for Git synchronization.
+        This enables 'Serverless Collaboration' by allowing the state to be versioned.
+        """
+        state = self.get_project_state()
+        sync_data = {
+            "version": "1.0",
+            "project_state": state,
+            # We can expand this to include task lists, architectural decisions, etc.
+        }
+        file_path.write_text(json.dumps(sync_data, indent=2, sort_keys=True), encoding="utf-8")
+
+    def import_sync_state(self, file_path: Path) -> dict[str, Any]:
+        """
+        Import and merge project state from a sync JSON file.
+        Returns a diff/summary of what changed.
+
+        Strategy: Union Merge for lists, Latest Wins for scalars (simplified).
+        """
+        if not file_path.exists():
+            return {"status": "no_file"}
+
+        try:
+            data = json.loads(file_path.read_text(encoding="utf-8"))
+            remote_state = data.get("project_state", {})
+            local_state = self.get_project_state()
+
+            changes = []
+
+            # 1. Merge Lists (Privacy-preserving union)
+            for key in ["completed_milestones", "pending_issues", "learned_patterns"]:
+                local_list = set(local_state.get(key, []) or [])
+                remote_list = set(remote_state.get(key, []) or [])
+                new_items = remote_list - local_list
+                if new_items:
+                    # Update local state list
+                    updated_list = list(local_list | remote_list)
+                    # Ideally we want to preserve order, but set destroys it.
+                    # For sync, existence is more important than order.
+                    updated_list.sort()
+                    local_state[key] = updated_list
+                    changes.append(f"Merged {len(new_items)} items into {key}")
+
+            # 2. Update Scalars if remote looks "newer" or different?
+            # For now, we only merge lists. Scalars like 'total_loops' are strictly local metrics.
+            # 'current_focus' might be interesting to sync.
+            if remote_state.get("current_focus") and remote_state[
+                "current_focus"
+            ] != local_state.get("current_focus"):
+                local_state["current_focus"] = remote_state["current_focus"]
+                changes.append(f"Updated focus to: {remote_state['current_focus']}")
+
+            # Save back to SQLite
+            self.update_project_state(local_state)
+
+            return {"status": "merged", "changes": changes}
+
+        except Exception as e:
+            return {"status": "error", "error": str(e)}

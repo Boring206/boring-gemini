@@ -5,7 +5,7 @@ Internationalization (i18n) support for Boring CLI.
 Supports: English, Chinese (Traditional), Spanish, Hindi, Arabic.
 """
 
-import locale
+import os
 
 from rich.console import Console
 
@@ -93,6 +93,13 @@ _TRANSLATIONS = {
         "es": "Instalar Servidor MCP en el Editor",
         "hi": "संपादक में MCP सर्वर स्थापित करें",
         "ar": "تثبيت خادم MCP في المحرر",
+    },
+    "menu_configure_language": {
+        "en": "Configure Language",
+        "zh": "設定語言",
+        "es": "Configurar idioma",
+        "hi": "भाषा कॉन्फ़िगर करें",
+        "ar": "تكوين اللغة",
     },
     "menu_return": {
         "en": "Return / Back",
@@ -1368,8 +1375,16 @@ class I18nManager:
     def _detect_language(self):
         """Try to detect system language."""
         try:
-            sys_lang, _ = locale.getdefaultlocale()
+            # V11.5: Fix DeprecationWarning for locale.getdefaultlocale()
+            import locale
+
+            sys_lang, _ = locale.getlocale()
+            if not sys_lang:
+                # Fallback to env vars for headless/container environments
+                sys_lang = os.environ.get("LANG") or os.environ.get("LC_ALL")
+
             if sys_lang:
+                sys_lang = sys_lang.lower()
                 if sys_lang.startswith("zh"):
                     self.language = "zh"
                 elif sys_lang.startswith("es"):

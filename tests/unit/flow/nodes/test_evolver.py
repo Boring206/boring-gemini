@@ -25,15 +25,17 @@ class TestEvolverNode:
     def test_node_name(self, evolver):
         assert evolver.name == "Evolver"
 
-    def test_process_success(self, evolver, context):
+    @pytest.mark.asyncio
+    async def test_process_success(self, evolver, context):
         """Test process completes successfully."""
-        result = evolver.process(context)
+        result = await evolver.process(context)
 
         assert result.status == NodeResultStatus.SUCCESS
         assert result.next_node is None  # End of flow
         assert "Evolution complete" in result.message
 
-    def test_process_with_module_errors(self, evolver, context):
+    @pytest.mark.asyncio
+    async def test_process_with_module_errors(self, evolver, context):
         """Test process handles ModuleNotFoundError in history."""
         context.errors.append("ModuleNotFoundError: No module named 'xyz'")
 
@@ -41,7 +43,7 @@ class TestEvolverNode:
         prompt_file = context.project_root / "PROMPT.md"
         prompt_file.write_text("# Instructions\n", encoding="utf-8")
 
-        result = evolver.process(context)
+        result = await evolver.process(context)
 
         assert result.status == NodeResultStatus.SUCCESS
         # Should have added guideline
@@ -84,10 +86,11 @@ class TestEvolverNode:
         # Should not raise
         evolver._synthesize_skills(context.project_root)
 
-    def test_process_no_errors_triggers_synthesis(self, evolver, context):
+    @pytest.mark.asyncio
+    async def test_process_no_errors_triggers_synthesis(self, evolver, context):
         """Test that process with no errors triggers skill synthesis."""
         assert len(context.errors) == 0
 
         with patch.object(evolver, "_synthesize_skills") as mock_synth:
-            evolver.process(context)
+            await evolver.process(context)
             mock_synth.assert_called_once_with(context.project_root)

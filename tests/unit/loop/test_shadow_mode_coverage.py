@@ -13,7 +13,11 @@ from boring.loop.shadow_mode import (
 
 class TestShadowModeGuard:
     @pytest.fixture
-    def temp_dir(self, tmp_path):
+    def temp_dir(self, tmp_path, monkeypatch):
+        from boring.core.config import settings
+
+        (tmp_path / ".boring").mkdir(exist_ok=True)
+        monkeypatch.setattr(settings, "PROJECT_ROOT", tmp_path)
         return tmp_path
 
     @pytest.fixture
