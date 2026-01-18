@@ -201,16 +201,20 @@ class TestGeminiProvider:
         """规格：backend="sdk", client=None → generate(prompt) 应返回错误"""
         with (
             patch("boring.llm.gemini.settings") as mock_settings,
+            patch("boring.llm.gemini.genai"),
             patch("boring.llm.gemini.get_boring_tools", return_value=[]),
+            patch("boring.llm.gemini.SDK_AVAILABLE", True),
         ):
             mock_settings.DEFAULT_MODEL = "gemini-2.0-flash"
             mock_settings.LOG_DIR = temp_project / "logs"
-            mock_settings.GOOGLE_API_KEY = None
+            mock_settings.GOOGLE_API_KEY = "test-key"
             mock_settings.USE_FUNCTION_CALLING = False
             mock_settings.OFFLINE_MODE = False
 
-            provider = GeminiProvider()
+            # Init with key to pass validation
+            provider = GeminiProvider(api_key="test-key")
             provider.backend = "sdk"
+            # Force client to None to simulate uninitialized state (or lost connection)
             provider.client = None
 
             result, success = provider.generate("Test prompt")

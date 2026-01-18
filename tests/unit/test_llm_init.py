@@ -41,7 +41,17 @@ class TestGetProvider:
 
     def test_当未指定provider时_应返回GeminiProvider(self):
         """规格：provider_name=None → 默认返回 GeminiProvider"""
-        provider = get_provider()
+        # Patch settings in boring.llm.gemini which GeminiProvider uses
+        with (
+            patch("boring.llm.gemini.settings") as mock_settings,
+            patch("boring.llm.gemini.genai"),  # Avoid init network calls
+            patch("boring.llm.gemini.get_boring_tools", return_value=[]),
+        ):
+            mock_settings.GOOGLE_API_KEY = "test-key"
+            mock_settings.OFFLINE_MODE = False
+            mock_settings.DEFAULT_MODEL = "gemini-test"
+
+            provider = get_provider()
 
         assert provider is not None
         assert hasattr(provider, "generate")
@@ -59,7 +69,16 @@ class TestGetProvider:
 
     def test_当指定model_name时_应传递给provider(self):
         """规格：model_name="custom-model" → provider.model_name 应该是 "custom-model" """
-        provider = get_provider(model_name="gemini-2.0-flash")
+        with (
+            patch("boring.llm.gemini.settings") as mock_settings,
+            patch("boring.llm.gemini.genai"),
+            patch("boring.llm.gemini.get_boring_tools", return_value=[]),
+        ):
+            mock_settings.GOOGLE_API_KEY = "test-key"
+            mock_settings.OFFLINE_MODE = False
+            mock_settings.DEFAULT_MODEL = "gemini-2.0-flash"
+
+            provider = get_provider(model_name="gemini-2.0-flash")
 
         assert provider is not None
         assert provider.model_name == "gemini-2.0-flash"
