@@ -6,6 +6,7 @@ Refactored to use subprocess for true integration testing.
 
 import subprocess
 import sys
+import os
 from pathlib import Path
 
 import pytest
@@ -20,8 +21,6 @@ def run_cli(args, cwd=None):
     env = {"PYTHONPATH": src_path, "BORING_USER_NAME": "TestUser"}
 
     # Merge with system env to find git etc
-    import os
-
     full_env = os.environ.copy()
     full_env.update(env)
 

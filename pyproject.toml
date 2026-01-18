@@ -147,6 +147,14 @@ lint.ignore = [
     "B008",  # Do not perform function call in argument defaults (common in Typer)
 ]
 
+# Formatter configuration
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["B011", "E402"]  # Allow assert and late imports in tests
 

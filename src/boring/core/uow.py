@@ -27,7 +27,7 @@ class BoringUnitOfWork:
     with BoringUnitOfWork(project_root) as uow:
         # 1. Modify files via normal FS calls
         # 2. Update state via uow.state.update()
-        uow.commit() # Save both
+        uow.commit()  # Save both
     ```
     If an exception occurs or commit() is not called, it rolls back both.
     """
