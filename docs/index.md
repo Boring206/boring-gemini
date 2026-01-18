@@ -1,7 +1,7 @@
 # Boring Documentation
 
 > **Boring for Gemini** - The autonomous AI development loop. Make AI development boring (in a good way).
-> **Current Version**: V15.0.0 (Anti-Rage & UX Hardening Loop)
+> **Current Version**: V15.1.0 (Smart Wizard + Ecosystem Sync)
 
 ---
 

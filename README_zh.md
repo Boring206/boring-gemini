@@ -2,7 +2,7 @@
   <img src="docs/assets/logo.png" width="180" alt="Boring for Gemini Logo">
 </p>
 
-# Boring for Gemini (V15.0.0) 💎
+# Boring for Gemini (V15.1.0) 💎
 
 <h1 align="center">Boring</h1>
 

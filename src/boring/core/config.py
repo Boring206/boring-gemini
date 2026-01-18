@@ -60,6 +60,9 @@ if TYPE_CHECKING:
         GMAIL_USER: str | None
         GMAIL_PASSWORD: str | None
         USE_FUNCTION_CALLING: bool
+        LOCAL_LLM_MODEL: str | None
+        LOCAL_LLM_CONTEXT_SIZE: int
+        MODEL_DIR: str | None
 
 
 logger = logging.getLogger(__name__)
@@ -284,6 +287,11 @@ class Settings(BaseSettings):
 
     # Tools
     USE_FUNCTION_CALLING: bool = True
+
+    # Offline / Local LLM
+    LOCAL_LLM_MODEL: str | None = None
+    LOCAL_LLM_CONTEXT_SIZE: int = 4096
+    MODEL_DIR: str | None = None
 
 
 def _get_settings():

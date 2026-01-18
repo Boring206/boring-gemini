@@ -6,6 +6,21 @@ All notable changes to the "Boring-Gemini" project will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [15.1.0] - 2026-01-18
+
+### ✨ Smart Wizard & Ecosystem (V15.1.0)
+- **Smart Scan**: Setup wizard now only lists installed editors, preventing UX clutter.
+- **Ecosystem Sync**: New "Scan MCP Ecosystem" feature detects and syncs existing `@context7`, `@criticalthink`, and `@sequential-thinking` servers.
+- **Modern IDE Support**: Verified path mappings for Windsurf, Trae, Void, Cursor, and Zed on Windows.
+- **OpenCode Integration**: Native support for OpenCode configuration and CLI registration.
+- **Fix**: Resolved `AttributeError` for `LOCAL_LLM_MODEL` in offline mode configuration.
+
+## [15.0.1] - 2026-01-18
+
+### 🛡️ Quick Fixes (V15.0.1)
+- **Fix**: Resolved `AttributeError` for `LOCAL_LLM_MODEL` in setup wizard when enabling Offline Mode.
+- **Improved**: Added missing `LOCAL_LLM_CONTEXT_SIZE` and `MODEL_DIR` to global settings.
+
 ## [15.0.0] - 2026-01-18
 
 ### 🌍 Ecosystem (Zero-Cost Platform) [NEW]

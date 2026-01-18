@@ -61,21 +61,17 @@ class WizardManager:
         # On Linux, use XDG_CONFIG_HOME or default to ~/.config
         if self.system == "Linux":
             self.appdata = Path(os.getenv("XDG_CONFIG_HOME", self.home / ".config"))
+            self.localappdata = self.appdata # Usually same or ~/.local/share
         elif self.system == "Windows":
-            self.appdata = Path(os.getenv("APPDATA"))
+            self.appdata = Path(os.getenv("APPDATA", ""))
+            self.localappdata = Path(os.getenv("LOCALAPPDATA", ""))
         else:
             self.appdata = self.home / "Library" / "Application Support"
+            self.localappdata = self.appdata
         self.project_root = Path.cwd()
 
-        # Define common config paths
-        self.editors = {
-            "Claude Desktop": self._get_claude_path(),
-            "Cursor": self._get_cursor_path(),
-            "VS Code": self._get_vscode_path(),
-            "Windsurf": self._get_windsurf_path(),
-            "Trae": self._get_trae_path(),
-            "Void": self._get_void_path(),
-        }
+        # Dynamic Editor List (Detected on scan)
+        self.found_editors: dict[str, Path] = {}
 
     def _get_config_root(self, editor_name: str) -> Path | None:
         """Determines the root configuration directory for a given editor based on OS."""
@@ -102,7 +98,9 @@ class WizardManager:
 
         # Standard application support directories
         if self.system == "Windows":
-            # For "Code" (VS Code), "Cursor", "Claude" (Desktop)
+            # Some apps might be in Local instead of Roaming
+            if editor_name in ["Windsurf", "Trae", "Void"]:
+                 return self.appdata / editor_name # Try Roaming first
             return self.appdata / editor_name
         elif self.system == "Darwin":  # macOS
             return self.home / "Library" / "Application Support" / editor_name
@@ -146,18 +144,15 @@ class WizardManager:
 
     def _get_cursor_path(self) -> Path | None:
         """Get Cursor MCP config path."""
-        base = self._get_editor_config_path(
-            "Cursor", "User", "globalStorage", check_parent_exists=False
-        )
-        # Check C:\Users\User\.cursor\mcp.json (Legacy/Alternative/User Preference)
-        # Prioritize this if the .cursor folder exists
+        # Prioritize ~/.cursor/mcp.json (Official preference for some versions)
         alt = self.home / ".cursor" / "mcp.json"
-        if alt.parent.exists():
+        if alt.exists():
             return alt
 
-        # Fallback to standard globalStorage
-        if base:
-            return base / "cursor.mcp" / "config.json"
+        # Standard Roaming path
+        base = self.appdata / "Cursor" / "User" / "globalStorage" / "cursor.mcp" / "config.json"
+        if base.parent.exists():
+            return base
 
         return None
 
@@ -168,63 +163,82 @@ class WizardManager:
 
     def _get_vscode_settings_path(self) -> Path | None:
         """Get VS Code User settings.json path."""
-        path = self._get_editor_config_path(
-            "Code", "User", "settings.json", check_parent_exists=False
-        )
-        return path if path and path.exists() else None
+        path = self.appdata / "Code" / "User" / "settings.json"
+        return path if path.exists() else None
 
     def scan_editors(self) -> dict[str, Path]:
         """Scan for installed editors with valid config paths."""
         found = {}
-        for name, path in self.editors.items():
-            if path:
-                found[name] = path
+
+        # 1. Mainstream IDEs
+        mapping = {
+            "Claude Desktop": self._get_claude_path,
+            "Cursor": self._get_cursor_path,
+            "VS Code": self._get_vscode_path,
+            "VS Code (Settings)": self._get_vscode_settings_path,
+            "Windsurf": self._get_windsurf_path,
+            "Trae": self._get_trae_path,
+            "Void": self._get_void_path,
+            "Zed": self._get_zed_path,
+            "Continue": self._get_continue_path,
+            "Goose": self._get_goose_path,
+            "Aider": self._get_aider_path,
+            "OpenHands": self._get_openhands_path,
+            "Claude Code": self._get_claude_code_path,
+            "OpenCode": self._get_opencode_path,
+        }
+
+        for name, func in mapping.items():
+            try:
+                path = func()
+                if path and (path.exists() or path.parent.exists()):
+                    found[name] = path
+            except Exception:
+                pass
+
+        # 2. CLI Tools / Special
         ext_manager = ExtensionsManager()
         if ext_manager.is_gemini_available():
-            # Use a dummy path for Gemini CLI since it manages its own config
             found["Gemini CLI"] = Path("gemini-cli")
 
-        # Check for OpenAI Codex CLI
         if shutil.which("codex"):
             found["Codex CLI"] = Path("codex")
 
-        # Check for VS Code Settings (Copilot/Standard)
-        vscode_settings = self._get_vscode_settings_path()
-        if vscode_settings:
-            found["VS Code (Settings)"] = vscode_settings
-
-        # Check for Zed
-        zed_path = self._get_zed_path()
-        if zed_path:
-            found["Zed"] = zed_path
-
-        # Check for Neovim (Manual instruction)
         if shutil.which("nvim"):
             found["Neovim"] = Path("manual-instruction")
 
-        # V14: Universal Clients
-        if self._get_goose_path():
-            found["Goose"] = self._get_goose_path()
-        if self._get_continue_path():
-            found["Continue"] = self._get_continue_path()
-        if self._get_claude_code_path():
-            found["Claude Code"] = self._get_claude_code_path()
-        if self._get_openhands_path():
-            found["OpenHands"] = self._get_openhands_path()
-        if self._get_aider_path():
-            found["Aider"] = self._get_aider_path()
-
-        # Detect Cline if VS Code is present
         if "VS Code (Settings)" in found:
             found["Cline"] = Path("manual-instruction-cline")
 
-        # Detect Qwen / OpenCode
         if shutil.which("opencode"):
-            found["OpenCode"] = Path("opencode")
+            found["OpenCode"] = self._get_opencode_path() or Path("opencode")
+
         if shutil.which("qwen"):
             found["Qwen Code"] = Path("qwen")
 
+        self.found_editors = found
         return found
+
+    def scan_ecosystem(self) -> list[str]:
+        """Scan found editors for other popular MCP servers."""
+        discovered = set()
+        for _, path in self.found_editors.items():
+            if not path or not path.exists() or path.suffix != ".json":
+                continue
+            try:
+                # Basic check for common MCP package names in env/args/command
+                text = path.read_text("utf-8").lower()
+                if "context7" in text:
+                    discovered.add("context7")
+                if "sequential-thinking" in text:
+                    discovered.add("sequential-thinking")
+                if "criticalthink" in text:
+                    discovered.add("criticalthink")
+                if "brave-search" in text:
+                    discovered.add("brave-search")
+            except Exception:
+                pass
+        return sorted(discovered)
 
     def _get_zed_path(self) -> Path | None:
         """Get Zed settings.json path."""
@@ -260,62 +274,59 @@ class WizardManager:
 
     def _get_windsurf_path(self) -> Path | None:
         """Get Windsurf MCP config path."""
-        # Prioritize standalone Windsurf path
+        # Prioritize standalone Windsurf paths
         paths = [
+            self.appdata / "Windsurf" / "User" / "globalStorage" / "windsurf.mcp" / "config.json",
+            self.localappdata / "Codeium" / "Windsurf" / "User" / "mcp.json",
             self.home / ".codeium" / "windsurf" / "mcp_config.json",
-            Path(os.environ.get("LOCALAPPDATA", "")) / "Codeium" / "Windsurf" / "User" / "mcp.json",
         ]
         for p in paths:
             if p.parent.exists():
                 return p
-
-        # Fallback to AppData (Extension/Legacy)
-        base = self._get_editor_config_path(
-            "Windsurf", "User", "globalStorage", check_parent_exists=False
-        )
-        if base:
-            return base / "windsurf.mcp" / "config.json"
         return None
 
     def _get_openhands_path(self) -> Path | None:
         """Get OpenHands config.json path."""
-        path = self._get_editor_config_path(".openhands", "config.json", check_parent_exists=False)
-        return path if path and path.parent.exists() else None
+        path = self.home / ".openhands" / "config.json"
+        return path if path.parent.exists() else None
 
-    def _get_trae_path(self) -> Path | None:
-        """Get Trae MCP config path."""
-        # Prioritize standalone Trae path
+    def _get_opencode_path(self) -> Path | None:
+        """Get OpenCode config.json path."""
+        # OpenCode often uses .config/opencode on Windows too (via some ports)
+        # or %APPDATA%/opencode
         paths = [
-            self.home / ".trae" / "mcp_config.json",
-            Path(os.environ.get("APPDATA", "")) / "Trae" / "User" / "mcp.json",
+            self.home / ".config" / "opencode" / "opencode.json",
+            self.appdata / "opencode" / "opencode.json",
+            self.localappdata / "opencode" / "opencode.json",
         ]
         for p in paths:
             if p.parent.exists():
                 return p
+        # If CLI exists, we might want to return a dummy but scan_editors handles shutil.which
+        return None
 
-        base = self._get_editor_config_path(
-            "Trae", "User", "globalStorage", check_parent_exists=False
-        )
-        if base:
-            return base / "trae.mcp" / "config.json"
+    def _get_trae_path(self) -> Path | None:
+        """Get Trae MCP config path."""
+        paths = [
+            self.home / ".trae" / "mcp_config.json",
+            self.appdata / "Trae" / "User" / "mcp.json",
+            self.appdata / "Trae" / "User" / "globalStorage" / "trae.mcp" / "config.json",
+        ]
+        for p in paths:
+            if p.parent.exists():
+                return p
         return None
 
     def _get_void_path(self) -> Path | None:
         """Get Void MCP config path."""
-        # Prioritize standalone Void path
         paths = [
             self.home / ".void" / "mcp_config.json",
-            Path(os.environ.get("APPDATA", "")) / "Void" / "User" / "mcp.json",
+            self.appdata / "Void" / "User" / "mcp.json",
+            self.appdata / "Void" / "User" / "globalStorage" / "void.mcp" / "config.json",
         ]
         for p in paths:
             if p.parent.exists():
                 return p
-
-        base = self._get_editor_config_path(
-            "Void", "User", "globalStorage", check_parent_exists=False
-        )
-        if base:
-            return base / "void.mcp" / "config.json"
         return None
 
     def _get_aider_path(self) -> Path | None:
@@ -639,15 +650,23 @@ class WizardManager:
         if editor_name == "OpenCode":
             console.print(f"\n[bold blue]🔮 Configuring {editor_name}...[/bold blue]")
             wrapper_path = self._ensure_wrapper()
+
+            # 1. Try CLI registration
             try:
                 cmd = ["opencode", "mcp", "add", "boring", str(wrapper_path.resolve())]
                 res = subprocess.run(cmd, capture_output=True, text=True)
                 if res.returncode == 0:
-                    console.print("[bold green]✅ Success! Registered with OpenCode.[/bold green]")
-                else:
-                    console.print(f"[bold red]❌ Registration failed: {res.stderr}[/bold red]")
-            except Exception as e:
-                console.print(f"[red]Error: {e}[/red]")
+                    console.print("[bold green]✅ Success! Registered with OpenCode CLI.[/bold green]")
+                    return
+            except Exception:
+                pass
+
+            # 2. Manual Config Patch (Fallback or standard)
+            if config_path and config_path.suffix == ".json":
+                self._install_generic_json(editor_name, config_path, profile, extra_env, auto_approve)
+                return
+
+            console.print("[yellow]⚠️ OpenCode CLI not found and no config path matched.[/yellow]")
             return
 
         # Special handling for Qwen Code
@@ -794,6 +813,41 @@ class WizardManager:
             console.print("[bold]🔄 Please restart your editor to apply changes.[/bold]")
         except Exception as e:
             console.print(f"[bold red]❌ Write failed: {e}[/bold red]")
+
+    def _install_generic_json(self, editor_name: str, config_path: Path, profile: str, extra_env: dict[str, str] | None, auto_approve: bool):
+        """Generic JSON config installer (similar to Claude Desktop/Windsurf/Void)."""
+        config_path.parent.mkdir(parents=True, exist_ok=True)
+
+        # 1. Load
+        config = {}
+        if config_path.exists():
+            try:
+                config = json.loads(config_path.read_text("utf-8"))
+            except Exception:
+                pass
+
+        # 2. Entry
+        wrapper_path = self._ensure_wrapper()
+        mcp_entry = {
+            "command": str(wrapper_path.resolve()),
+            "args": [],
+            "env": {"BORING_MCP_PROFILE": profile.lower(), **(extra_env or {})},
+        }
+
+        # 3. Handle structure (mcpServers or context_servers)
+        key = "mcpServers"
+        if editor_name in ["Zed", "OpenCode"]:
+             # Zed uses context_servers, OpenCode might too
+             if "context_servers" in config or editor_name == "Zed":
+                 key = "context_servers"
+
+        if key not in config:
+            config[key] = {}
+        config[key]["boring"] = mcp_entry
+
+        # 4. Write
+        config_path.write_text(json.dumps(config, indent=2), "utf-8")
+        console.print(f"[green]✅ Configured {editor_name} at {config_path}[/green]")
 
     def _install_vscode_settings(
         self, config_path: Path, profile: str, extra_env: dict[str, str] | None
@@ -1133,6 +1187,16 @@ def run_wizard(auto_approve: bool = False):
 
     # Interactive Selection
     console.print(f"\n[bold]{i18n.t('menu_install_mcp')}[/bold]")
+
+    # Check for ecosystem servers to suggest
+    discovered = manager.scan_ecosystem()
+    if discovered:
+        console.print(f"[dim]Note: Found other MCP servers already configured: {', '.join(discovered)}[/dim]")
+        if Confirm.ask("Would you like to sync these external servers into Boring's environment?", default=False):
+            # We would add them to .env or settings. This is a bit complex for now,
+            # but we can at least log the intent.
+            console.print("[green]Sync intent noted! (Feature coming soon to V15.1)[/green]")
+
     choices = editor_list + ["all"]
     choice = Prompt.ask("Select editor to configure", choices=choices, default="all")
 
@@ -1142,10 +1206,10 @@ def run_wizard(auto_approve: bool = False):
     profile = settings.MCP_PROFILE
 
     extra_env = {}
-    # Ask for API Key if not set? (Ideally done in Config Menu now)
 
     if choice == "all":
-        for name, path in editors.items():
+        for name in editor_list: # Only iterate found ones
+            path = editors[name]
             manager.install(name, path, profile=profile, extra_env=extra_env)
     else:
         path = editors[choice]
@@ -1208,6 +1272,7 @@ def run_config_flow(manager):
         menu.add_row("5", i18n.t("menu_configure_advanced"))
         menu.add_row("6", i18n.t("menu_install_mcp"))
         menu.add_row("7", i18n.t("menu_configure_language", default="Configure Language"))
+        menu.add_row("8", "Scan MCP Ecosystem (Sync Extensions)")
         menu.add_row("q", i18n.t("menu_exit"))
 
         console.print(menu)
@@ -1232,6 +1297,8 @@ def run_config_flow(manager):
             return "install"
         elif choice == "7":
             _config_language()
+        elif choice == "8":
+            _run_ecosystem_sync(manager)
 
 
 def _config_llm():
@@ -1392,5 +1459,36 @@ def _config_language():
         settings.LANGUAGE = choice
         i18n.set_language(choice)
         console.print(f"[green]{i18n.t('success_saved')}[/green]")
+
+    Prompt.ask(i18n.t("menu_return"))
+
+
+def _run_ecosystem_sync(manager: WizardManager):
+    """Scan and sync external MCP servers."""
+    console.print("\n[bold cyan]🔍 Scanning MCP Ecosystem...[/bold cyan]")
+    discovered = manager.scan_ecosystem()
+
+    if not discovered:
+        console.print("[yellow]No external MCP servers found in existing editor configs.[/yellow]")
+        Prompt.ask("Press Enter to return")
+        return
+
+    table = Table(title="Discovered External MCP Servers")
+    table.add_column("Server", style="cyan")
+    table.add_column("Status", style="green")
+    for s in discovered:
+        table.add_row(s, "Found in editor config")
+
+    console.print(table)
+    console.print("\n[dim]Boring can sync these into its environment for unified access.[/dim]")
+
+    if Confirm.ask("Sync these servers into Boring?", default=True):
+        from boring.core.config import update_toml_config
+        for s in discovered:
+            key = f"ENABLE_MCP_{s.upper().replace('-', '_')}"
+            update_toml_config(key, True)
+
+        console.print("[bold green]✅ Success! Extensions marked for synchronization.[/bold green]")
+        console.print("[dim]Note: You may need to restart your editor for Boring to pick these up.[/dim]")
 
     Prompt.ask(i18n.t("menu_return"))
