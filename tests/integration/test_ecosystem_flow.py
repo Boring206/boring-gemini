@@ -21,19 +21,14 @@ def run_cli(args, cwd=None):
 
     # Merge with system env to find git etc
     import os
+
     full_env = os.environ.copy()
     full_env.update(env)
 
     # Prepend sys.path[0] to PATH if needed (though unlikely for git resolution)
     # full_env["PATH"] = f"{sys.path[0]};{full_env.get('PATH', '')}"
 
-    result = subprocess.run(
-        cmd,
-        cwd=cwd,
-        capture_output=True,
-        text=True,
-        env=full_env
-    )
+    result = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, env=full_env)
 
     with open("test_output.log", "a", encoding="utf-8") as f:
         f.write(f"\n--- CMD: {' '.join(cmd)} ---\n")
@@ -46,6 +41,7 @@ def run_cli(args, cwd=None):
         print(f"CMD Failed: {' '.join(cmd)}")
     return result
 
+
 @pytest.fixture
 def temp_workspace(tmp_path):
     """Isolate tests to a temp directory."""
@@ -53,6 +49,7 @@ def temp_workspace(tmp_path):
     (tmp_path / ".boring").mkdir()
     (tmp_path / "home").mkdir()
     return tmp_path
+
 
 def test_pack_lifecycle_e2e(temp_workspace):
     """Test Pack Init -> Build -> Install."""
@@ -111,18 +108,18 @@ def test_brain_export_import_e2e(temp_workspace):
     # If it says "No brain directory", it implies path resolution fail.
 
     if res.returncode == 0:
-         assert output_file.exists()
+        assert output_file.exists()
     else:
-         # If it failed, assert it wasn't a cliff-crash
-         # "No brain directory found" -> means logic worked but env missing.
-         # Make sure it's NOT a python traceback.
-         assert "Traceback" not in res.stderr
+        # If it failed, assert it wasn't a cliff-crash
+        # "No brain directory found" -> means logic worked but env missing.
+        # Make sure it's NOT a python traceback.
+        assert "Traceback" not in res.stderr
 
 
 def test_sync_state_e2e(temp_workspace):
     """Test Sync State Dump."""
     root = temp_workspace
-    (root / ".git").mkdir() # Fake git repo
+    (root / ".git").mkdir()  # Fake git repo
 
     # Sync will try to git pull/push. It will likely fail on git commands.
     # But before that, it should dump state.

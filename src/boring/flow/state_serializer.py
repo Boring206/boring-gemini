@@ -24,7 +24,9 @@ class StateSerializer:
                 "project_root": str(context.project_root),
                 "user_goal": context.user_goal,
                 # Convert memory objects to dict/list if needed, assuming they constitute simple types here for now
-                "memory": context.memory if isinstance(context.memory, (dict, list, str, int, float, bool, type(None))) else str(context.memory),
+                "memory": context.memory
+                if isinstance(context.memory, (dict, list, str, int, float, bool, type(None)))
+                else str(context.memory),
                 "errors": context.errors,
                 "auto_mode": getattr(context, "auto_mode", False),
                 "metadata": {"step_count": step_count, "current_node": current_node},
