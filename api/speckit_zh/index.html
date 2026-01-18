@@ -2782,7 +2782,7 @@ including file changes, dependencies, and step-by-step instructions.</p>
 
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/boring/mcp/speckit_tools.py</code></summary>
+              <summary>Source code in <code>src\boring\mcp\speckit_tools.py</code></summary>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-89"> 89</a></span>
 <span class="normal"><a href="#__codelineno-0-90"> 90</a></span>
 <span class="normal"><a href="#__codelineno-0-91"> 91</a></span>
@@ -2855,7 +2855,7 @@ including file changes, dependencies, and step-by-step instructions.</p>
 <span class="normal"><a href="#__codelineno-0-158">158</a></span>
 <span class="normal"><a href="#__codelineno-0-159">159</a></span>
 <span class="normal"><a href="#__codelineno-0-160">160</a></span>
-<span class="normal"><a href="#__codelineno-0-161">161</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">boring_speckit_plan</span><span class="p">(</span>
+<span class="normal"><a href="#__codelineno-0-161">161</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">boring_speckit_plan</span><span class="p">(</span>
 </span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90"></a>    <span class="n">context</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
 </span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91"></a>        <span class="nb">str</span><span class="p">,</span>
 </span><span id="__span-0-92"><a id="__codelineno-0-92" name="__codelineno-0-92"></a>        <span class="n">Field</span><span class="p">(</span>
@@ -2879,11 +2879,11 @@ including file changes, dependencies, and step-by-step instructions.</p>
 </span><span id="__span-0-110"><a id="__codelineno-0-110" name="__codelineno-0-110"></a>    <span class="c1"># [ONE DRAGON GAP FIX] Inject Mastered Skills &amp; Learned Brain Patterns (Cognitive Evolution)</span>
 </span><span id="__span-0-111"><a id="__codelineno-0-111" name="__codelineno-0-111"></a>    <span class="k">try</span><span class="p">:</span>
 </span><span id="__span-0-112"><a id="__codelineno-0-112" name="__codelineno-0-112"></a>
-</span><span id="__span-0-113"><a id="__codelineno-0-113" name="__codelineno-0-113"></a>        <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_fetch_brain_context</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+</span><span id="__span-0-113"><a id="__codelineno-0-113" name="__codelineno-0-113"></a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">_fetch_brain_context</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
 </span><span id="__span-0-114"><a id="__codelineno-0-114" name="__codelineno-0-114"></a>            <span class="k">try</span><span class="p">:</span>
-</span><span id="__span-0-115"><a id="__codelineno-0-115" name="__codelineno-0-115"></a>                <span class="kn">from</span><span class="w"> </span><span class="nn">boring.intelligence.brain_manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">BrainManager</span>
+</span><span id="__span-0-115"><a id="__codelineno-0-115" name="__codelineno-0-115"></a>                <span class="kn">from</span> <span class="nn">boring.intelligence.brain_manager</span> <span class="kn">import</span> <span class="n">BrainManager</span>
 </span><span id="__span-0-116"><a id="__codelineno-0-116" name="__codelineno-0-116"></a>
-</span><span id="__span-0-117"><a id="__codelineno-0-117" name="__codelineno-0-117"></a>                <span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">detect_project_root</span>
+</span><span id="__span-0-117"><a id="__codelineno-0-117" name="__codelineno-0-117"></a>                <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">detect_project_root</span>
 </span><span id="__span-0-118"><a id="__codelineno-0-118" name="__codelineno-0-118"></a>
 </span><span id="__span-0-119"><a id="__codelineno-0-119" name="__codelineno-0-119"></a>                <span class="n">root</span> <span class="o">=</span> <span class="n">detect_project_root</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 </span><span id="__span-0-120"><a id="__codelineno-0-120" name="__codelineno-0-120"></a>                <span class="k">if</span> <span class="ow">not</span> <span class="n">root</span><span class="p">:</span>
@@ -2955,7 +2955,7 @@ with clear acceptance criteria.</p>
 
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/boring/mcp/speckit_tools.py</code></summary>
+              <summary>Source code in <code>src\boring\mcp\speckit_tools.py</code></summary>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-164">164</a></span>
 <span class="normal"><a href="#__codelineno-0-165">165</a></span>
 <span class="normal"><a href="#__codelineno-0-166">166</a></span>
@@ -2976,7 +2976,7 @@ with clear acceptance criteria.</p>
 <span class="normal"><a href="#__codelineno-0-181">181</a></span>
 <span class="normal"><a href="#__codelineno-0-182">182</a></span>
 <span class="normal"><a href="#__codelineno-0-183">183</a></span>
-<span class="normal"><a href="#__codelineno-0-184">184</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-164"><a id="__codelineno-0-164" name="__codelineno-0-164"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">boring_speckit_tasks</span><span class="p">(</span>
+<span class="normal"><a href="#__codelineno-0-184">184</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-164"><a id="__codelineno-0-164" name="__codelineno-0-164"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">boring_speckit_tasks</span><span class="p">(</span>
 </span><span id="__span-0-165"><a id="__codelineno-0-165" name="__codelineno-0-165"></a>    <span class="n">context</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
 </span><span id="__span-0-166"><a id="__codelineno-0-166" name="__codelineno-0-166"></a>        <span class="nb">str</span><span class="p">,</span>
 </span><span id="__span-0-167"><a id="__codelineno-0-167" name="__codelineno-0-167"></a>        <span class="n">Field</span><span class="p">(</span>
@@ -3024,7 +3024,7 @@ inconsistencies, and missing coverage areas.</p>
 
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/boring/mcp/speckit_tools.py</code></summary>
+              <summary>Source code in <code>src\boring\mcp\speckit_tools.py</code></summary>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-187">187</a></span>
 <span class="normal"><a href="#__codelineno-0-188">188</a></span>
 <span class="normal"><a href="#__codelineno-0-189">189</a></span>
@@ -3045,7 +3045,7 @@ inconsistencies, and missing coverage areas.</p>
 <span class="normal"><a href="#__codelineno-0-204">204</a></span>
 <span class="normal"><a href="#__codelineno-0-205">205</a></span>
 <span class="normal"><a href="#__codelineno-0-206">206</a></span>
-<span class="normal"><a href="#__codelineno-0-207">207</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-187"><a id="__codelineno-0-187" name="__codelineno-0-187"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">boring_speckit_analyze</span><span class="p">(</span>
+<span class="normal"><a href="#__codelineno-0-207">207</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-187"><a id="__codelineno-0-187" name="__codelineno-0-187"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">boring_speckit_analyze</span><span class="p">(</span>
 </span><span id="__span-0-188"><a id="__codelineno-0-188" name="__codelineno-0-188"></a>    <span class="n">context</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
 </span><span id="__span-0-189"><a id="__codelineno-0-189" name="__codelineno-0-189"></a>        <span class="nb">str</span><span class="p">,</span>
 </span><span id="__span-0-190"><a id="__codelineno-0-190" name="__codelineno-0-190"></a>        <span class="n">Field</span><span class="p">(</span>
@@ -3093,7 +3093,7 @@ before implementation begins.</p>
 
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/boring/mcp/speckit_tools.py</code></summary>
+              <summary>Source code in <code>src\boring\mcp\speckit_tools.py</code></summary>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-210">210</a></span>
 <span class="normal"><a href="#__codelineno-0-211">211</a></span>
 <span class="normal"><a href="#__codelineno-0-212">212</a></span>
@@ -3114,7 +3114,7 @@ before implementation begins.</p>
 <span class="normal"><a href="#__codelineno-0-227">227</a></span>
 <span class="normal"><a href="#__codelineno-0-228">228</a></span>
 <span class="normal"><a href="#__codelineno-0-229">229</a></span>
-<span class="normal"><a href="#__codelineno-0-230">230</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-210"><a id="__codelineno-0-210" name="__codelineno-0-210"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">boring_speckit_clarify</span><span class="p">(</span>
+<span class="normal"><a href="#__codelineno-0-230">230</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-210"><a id="__codelineno-0-210" name="__codelineno-0-210"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">boring_speckit_clarify</span><span class="p">(</span>
 </span><span id="__span-0-211"><a id="__codelineno-0-211" name="__codelineno-0-211"></a>    <span class="n">context</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
 </span><span id="__span-0-212"><a id="__codelineno-0-212" name="__codelineno-0-212"></a>        <span class="nb">str</span><span class="p">,</span>
 </span><span id="__span-0-213"><a id="__codelineno-0-213" name="__codelineno-0-213"></a>        <span class="n">Field</span><span class="p">(</span>
@@ -3162,7 +3162,7 @@ that guide all implementation decisions.</p>
 
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/boring/mcp/speckit_tools.py</code></summary>
+              <summary>Source code in <code>src\boring\mcp\speckit_tools.py</code></summary>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-233">233</a></span>
 <span class="normal"><a href="#__codelineno-0-234">234</a></span>
 <span class="normal"><a href="#__codelineno-0-235">235</a></span>
@@ -3183,7 +3183,7 @@ that guide all implementation decisions.</p>
 <span class="normal"><a href="#__codelineno-0-250">250</a></span>
 <span class="normal"><a href="#__codelineno-0-251">251</a></span>
 <span class="normal"><a href="#__codelineno-0-252">252</a></span>
-<span class="normal"><a href="#__codelineno-0-253">253</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-233"><a id="__codelineno-0-233" name="__codelineno-0-233"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">boring_speckit_constitution</span><span class="p">(</span>
+<span class="normal"><a href="#__codelineno-0-253">253</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-233"><a id="__codelineno-0-233" name="__codelineno-0-233"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">boring_speckit_constitution</span><span class="p">(</span>
 </span><span id="__span-0-234"><a id="__codelineno-0-234" name="__codelineno-0-234"></a>    <span class="n">context</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
 </span><span id="__span-0-235"><a id="__codelineno-0-235" name="__codelineno-0-235"></a>        <span class="nb">str</span><span class="p">,</span>
 </span><span id="__span-0-236"><a id="__codelineno-0-236" name="__codelineno-0-236"></a>        <span class="n">Field</span><span class="p">(</span>
@@ -3231,7 +3231,7 @@ and requirement coverage.</p>
 
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/boring/mcp/speckit_tools.py</code></summary>
+              <summary>Source code in <code>src\boring\mcp\speckit_tools.py</code></summary>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-256">256</a></span>
 <span class="normal"><a href="#__codelineno-0-257">257</a></span>
 <span class="normal"><a href="#__codelineno-0-258">258</a></span>
@@ -3252,7 +3252,7 @@ and requirement coverage.</p>
 <span class="normal"><a href="#__codelineno-0-273">273</a></span>
 <span class="normal"><a href="#__codelineno-0-274">274</a></span>
 <span class="normal"><a href="#__codelineno-0-275">275</a></span>
-<span class="normal"><a href="#__codelineno-0-276">276</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-256"><a id="__codelineno-0-256" name="__codelineno-0-256"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">boring_speckit_checklist</span><span class="p">(</span>
+<span class="normal"><a href="#__codelineno-0-276">276</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-256"><a id="__codelineno-0-256" name="__codelineno-0-256"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">boring_speckit_checklist</span><span class="p">(</span>
 </span><span id="__span-0-257"><a id="__codelineno-0-257" name="__codelineno-0-257"></a>    <span class="n">context</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
 </span><span id="__span-0-258"><a id="__codelineno-0-258" name="__codelineno-0-258"></a>        <span class="nb">str</span><span class="p">,</span>
 </span><span id="__span-0-259"><a id="__codelineno-0-259" name="__codelineno-0-259"></a>        <span class="n">Field</span><span class="p">(</span>
@@ -3357,7 +3357,7 @@ and requirement coverage.</p>
 
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/boring/mcp/speckit_tools.py</code></summary>
+              <summary>Source code in <code>src\boring\mcp\speckit_tools.py</code></summary>
               <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-279">279</a></span>
 <span class="normal"><a href="#__codelineno-0-280">280</a></span>
 <span class="normal"><a href="#__codelineno-0-281">281</a></span>
@@ -3405,7 +3405,7 @@ and requirement coverage.</p>
 <span class="normal"><a href="#__codelineno-0-323">323</a></span>
 <span class="normal"><a href="#__codelineno-0-324">324</a></span>
 <span class="normal"><a href="#__codelineno-0-325">325</a></span>
-<span class="normal"><a href="#__codelineno-0-326">326</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-279"><a id="__codelineno-0-279" name="__codelineno-0-279"></a><span class="k">def</span><span class="w"> </span><span class="nf">register_speckit_tools</span><span class="p">(</span><span class="n">mcp</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">audited</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">helpers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-326">326</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-279"><a id="__codelineno-0-279" name="__codelineno-0-279"></a><span class="k">def</span> <span class="nf">register_speckit_tools</span><span class="p">(</span><span class="n">mcp</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">audited</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">helpers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
 </span><span id="__span-0-280"><a id="__codelineno-0-280" name="__codelineno-0-280"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-281"><a id="__codelineno-0-281" name="__codelineno-0-281"></a><span class="sd">    Register SpecKit tools with the MCP server.</span>
 </span><span id="__span-0-282"><a id="__codelineno-0-282" name="__codelineno-0-282"></a>
