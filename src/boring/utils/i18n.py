@@ -1375,11 +1375,9 @@ class I18nManager:
     def _detect_language(self):
         """Try to detect system language."""
         # V15.0: Default to English for International Version.
-        # Use BORING_LANGUAGE env var to strictly opt-in for other languages.
         self.language = "en"
-        
         env_lang = os.environ.get("BORING_LANGUAGE") or os.environ.get("BORING_LANG")
-        
+
         if env_lang:
             env_lang = env_lang.lower()
             if env_lang.startswith("zh"):

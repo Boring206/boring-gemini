@@ -85,10 +85,10 @@ def _verify_plugin_manifest(plugin_path: Path) -> bool:
     # Check tools/ directory (Pack structure)
     tools_dir = plugin_path / "tools"
     if tools_dir.exists():
-         py_files = list(tools_dir.glob("*.py"))
-         if py_files:
-             console.print(f"[green]Found tools in {tools_dir.name}[/green]")
-             return True
+        py_files = list(tools_dir.glob("*.py"))
+        if py_files:
+            console.print(f"[green]Found tools in {tools_dir.name}[/green]")
+            return True
 
     # Check root (Simple Plugin structure)
     py_files = list(plugin_path.glob("*.py"))
@@ -141,12 +141,14 @@ def install_plugin(
         # Check if local
         local_target = Path(url)
         if local_target.exists():
-             repo_name = local_target.stem # Use filename as plugin name
-             if (url.endswith(".tar.gz")): # Handle tarball edge case if needed, but stem handles .zip usually
-                  repo_name = local_target.name.replace(".tar.gz", "")
-             full_url = str(local_target.resolve())
+            repo_name = local_target.stem  # Use filename as plugin name
+            if url.endswith(
+                ".tar.gz"
+            ):  # Handle tarball edge case if needed, but stem handles .zip usually
+                repo_name = local_target.name.replace(".tar.gz", "")
+            full_url = str(local_target.resolve())
         else:
-             full_url, repo_name = _parse_repo_url(url)
+            full_url, repo_name = _parse_repo_url(url)
 
         plugin_path = install_dir / repo_name
 
@@ -161,7 +163,6 @@ def install_plugin(
                 console.print("Use --force to overwrite or 'boring update' to pull changes.")
                 raise typer.Exit(1)
 
-
         console.print(f"[blue]Installing {url} into {plugin_path}...[/blue]")
 
         # Check for local file/dir
@@ -169,14 +170,14 @@ def install_plugin(
         if local_path.exists():
             # LOCAL INSTALLATION
             if local_path.is_file() and (url.endswith(".zip") or url.endswith(".boring-pack")):
-                 with zipfile.ZipFile(local_path, 'r') as zip_ref:
+                with zipfile.ZipFile(local_path, "r") as zip_ref:
                     zip_ref.extractall(plugin_path)
             elif local_path.is_dir():
                 # Copy directory
                 shutil.copytree(local_path, plugin_path, dirs_exist_ok=True)
             else:
-                 console.print(f"[red]Unsupported local file type: {local_path}[/red]")
-                 raise typer.Exit(1)
+                console.print(f"[red]Unsupported local file type: {local_path}[/red]")
+                raise typer.Exit(1)
         else:
             # GIT INSTALLATION
             full_url, repo_name = _parse_repo_url(url)
