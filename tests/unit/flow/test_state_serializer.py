@@ -1,12 +1,10 @@
-
 import json
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from boring.flow.state_serializer import StateSerializer
 from boring.flow.nodes.base import FlowContext
+from boring.flow.state_serializer import StateSerializer
 
 
 class TestStateSerializer:
@@ -44,12 +42,12 @@ class TestStateSerializer:
     def test_save_checkpoint_complex_memory(self, serializer, mock_context):
         """Test saving with non-JSON serializable memory (should be stringified)."""
         mock_context.memory = object()  # Not serializable
-        
+
         result = serializer.save_checkpoint(mock_context, 1, "start")
-        
+
         with open(result, encoding="utf-8") as f:
             data = json.load(f)
-            
+
         assert isinstance(data["memory"], str)
         assert "object" in data["memory"]
 
@@ -57,16 +55,16 @@ class TestStateSerializer:
         """Test handling of save failures."""
         with patch("builtins.open", side_effect=OSError("Permission denied")):
             result = serializer.save_checkpoint(mock_context, 1, "start")
-        
+
         assert result is None
 
     def test_load_checkpoint_success(self, serializer, mock_context):
         """Test successful loading."""
         # Save first
         serializer.save_checkpoint(mock_context, 1, "start")
-        
+
         data = serializer.load_checkpoint()
-        
+
         assert data is not None
         assert data["user_goal"] == "Test Goal"
 
@@ -81,7 +79,7 @@ class TestStateSerializer:
         checkpoint_file = serializer.checkpoint_dir / "latest.json"
         serializer.checkpoint_dir.mkdir(parents=True, exist_ok=True)
         checkpoint_file.write_text("{invalid json", encoding="utf-8")
-        
+
         with patch("boring.flow.state_serializer.logger") as mock_logger:
             data = serializer.load_checkpoint()
             assert data is None
